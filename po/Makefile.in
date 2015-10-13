@@ -23,7 +23,8 @@ top_srcdir = ..
 
 prefix = /usr
 exec_prefix = ${prefix}
-datadir = ${prefix}/share
+datarootdir = ${prefix}/share
+datadir = ${datarootdir}
 localedir = $(datadir)/locale
 gettextsrcdir = $(datadir)/gettext/po
 
