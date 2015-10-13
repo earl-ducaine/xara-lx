@@ -1,4 +1,4 @@
-// $Id$
+// $Id: scrlthmb.cpp 751 2006-03-31 15:43:49Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  
@@ -117,7 +117,7 @@ static char BASED_CODE THIS_FILE[] = __FILE__;
 #endif
 
 // Version information.
-DECLARE_SOURCE("$Revision$");
+DECLARE_SOURCE("$Revision: 751 $");
 
 
 

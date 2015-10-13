@@ -1,4 +1,4 @@
-// $Id$
+// $Id: hardwaremanager.h 1696 2006-08-13 10:21:04Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  

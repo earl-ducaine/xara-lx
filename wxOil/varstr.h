@@ -1,4 +1,4 @@
-// $Id$
+// $Id: varstr.h 1619 2006-07-31 12:06:45Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  

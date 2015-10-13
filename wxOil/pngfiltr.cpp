@@ -1,4 +1,4 @@
-// $Id$
+// $Id: pngfiltr.cpp 1558 2006-07-26 15:51:53Z luke $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  

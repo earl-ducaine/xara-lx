@@ -1,4 +1,4 @@
-// $Id$
+// $Id: textops.cpp 1446 2006-07-14 21:53:52Z phil $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  
@@ -159,7 +159,7 @@ service marks of Xara Group Ltd. All rights in these marks are reserved.
 
 extern void Beep();
 
-DECLARE_SOURCE( "$Revision$" );
+DECLARE_SOURCE( "$Revision: 1446 $" );
 
 
 // CC_IMPLEMENTS for all classes

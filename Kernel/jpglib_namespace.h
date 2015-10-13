@@ -1,4 +1,4 @@
-// $Id$
+// $Id: jpglib_namespace.h 878 2006-04-25 09:40:34Z luke $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  

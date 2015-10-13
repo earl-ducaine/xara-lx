@@ -1,4 +1,4 @@
-// $Id$
+// $Id: rechpath.h 1688 2006-08-10 12:05:20Z gerry $
 // Header for the path record handling class for the v2 file format
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================

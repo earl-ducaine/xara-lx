@@ -1,4 +1,4 @@
-// $Id$
+// $Id: cxfile.h 1688 2006-08-10 12:05:20Z gerry $
 // Header for the controlling class of the v2 file format
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================

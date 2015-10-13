@@ -1,4 +1,4 @@
-// $Id$
+// $Id: nodeliveeffect.cpp 1688 2006-08-10 12:05:20Z gerry $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  
@@ -134,7 +134,7 @@ service marks of Xara Group Ltd. All rights in these marks are reserved.
 
 #include "ophist.h"
 
-DECLARE_SOURCE( "$Revision$" );
+DECLARE_SOURCE( "$Revision: 1688 $" );
 
 CC_IMPLEMENT_DYNCREATE(NodeBitmapEffect, NodeEffect)
 CC_IMPLEMENT_DYNCREATE(NodeLiveEffect, NodeBitmapEffect)

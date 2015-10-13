@@ -1,4 +1,4 @@
-// $Id$
+// $Id: giffiltr.cpp 1461 2006-07-18 09:50:40Z luke $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  
@@ -141,7 +141,7 @@ service marks of Xara Group Ltd. All rights in these marks are reserved.
 //#include "animparams.h" - in camtypes.h [AUTOMATICALLY REMOVED]
 #include "tmplmngr.h"
 
-DECLARE_SOURCE("$Revision$");
+DECLARE_SOURCE("$Revision: 1461 $");
 
 CC_IMPLEMENT_DYNAMIC(TI_GIFFilter, MaskedFilter)
 CC_IMPLEMENT_MEMDUMP(GIFImportOptions, BitmapImportOptions)

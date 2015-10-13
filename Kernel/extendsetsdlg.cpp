@@ -1,4 +1,4 @@
-// $Id$
+// $Id: extendsetsdlg.cpp 892 2006-04-26 12:06:57Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  
@@ -111,7 +111,7 @@ service marks of Xara Group Ltd. All rights in these marks are reserved.
 static char BASED_CODE THIS_FILE[] = __FILE__;
 #endif
 
-DECLARE_SOURCE("$Revision$");
+DECLARE_SOURCE("$Revision: 892 $");
 
 // dynamic class creation stuff.
 CC_IMPLEMENT_DYNCREATE(ExtendSetsDlg, DialogOp);

@@ -1,4 +1,4 @@
-// $Id$
+// $Id: range.h 1252 2006-06-05 14:59:29Z phil $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  

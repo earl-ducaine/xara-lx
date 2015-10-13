@@ -1,4 +1,4 @@
-// $Id$
+// $Id: dragtrgt.cpp 1328 2006-06-15 19:23:45Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  

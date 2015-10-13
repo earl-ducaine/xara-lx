@@ -1,4 +1,4 @@
-// $Id$
+// $Id: printctl.cpp 1454 2006-07-17 11:52:51Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  
@@ -133,7 +133,7 @@ CC_IMPLEMENT_MEMDUMP(TypesetInfo,	CC_CLASS_MEMDUMP)
 
 // This is not compulsory, but you may as well put it in so that the correct version
 // of your file can be registered in the .exe
-DECLARE_SOURCE("$Revision$");
+DECLARE_SOURCE("$Revision: 1454 $");
 
 #define Swap(a,b)       { (a)^=(b), (b)^=(a), (a)^=(b); }
 

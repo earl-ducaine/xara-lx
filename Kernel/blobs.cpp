@@ -1,4 +1,4 @@
-// $Id$
+// $Id: blobs.cpp 1601 2006-07-29 16:26:32Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  
@@ -113,7 +113,7 @@ service marks of Xara Group Ltd. All rights in these marks are reserved.
 //#include "tool.h" - in camtypes.h [AUTOMATICALLY REMOVED]
 
 // Declare the source version number
-DECLARE_SOURCE("$Revision$");
+DECLARE_SOURCE("$Revision: 1601 $");
 
 //Give my name in memory dumps
 CC_IMPLEMENT_MEMDUMP(BlobManager, MessageHandler)

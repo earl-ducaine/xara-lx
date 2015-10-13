@@ -1,4 +1,4 @@
-// $Id$
+// $Id: pmaskrgn.h 1288 2006-06-09 13:16:24Z phil $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  

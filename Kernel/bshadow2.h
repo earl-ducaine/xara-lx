@@ -1,4 +1,4 @@
-// $Id$
+// $Id: bshadow2.h 1170 2006-05-23 10:29:28Z gavin $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  

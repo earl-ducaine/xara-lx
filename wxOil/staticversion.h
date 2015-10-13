@@ -1,4 +1,4 @@
-// $Id$
+// $Id: staticversion.h 1536 2006-07-25 17:10:01Z luke $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  

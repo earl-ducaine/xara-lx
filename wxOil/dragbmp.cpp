@@ -1,4 +1,4 @@
-// $Id$
+// $Id: dragbmp.cpp 1658 2006-08-03 14:50:05Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  
@@ -125,7 +125,7 @@ service marks of Xara Group Ltd. All rights in these marks are reserved.
 //#include "spread.h" - in camtypes.h [AUTOMATICALLY REMOVED]
 #include "palman.h"
 
-DECLARE_SOURCE("$Revision$");
+DECLARE_SOURCE("$Revision: 1658 $");
 
 CC_IMPLEMENT_DYNCREATE(BitmapDragInformation, DragInformation)
 

@@ -1,4 +1,4 @@
-// $Id$
+// $Id: styles.cpp 1688 2006-08-10 12:05:20Z gerry $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  
@@ -258,7 +258,7 @@ public:
 
 
 
-DECLARE_SOURCE("$Revision$");
+DECLARE_SOURCE("$Revision: 1688 $");
 
 #define ENSURE_KIND(pInstance, Class)	ERROR3IF(!pInstance->IS_KIND_OF(Class), #pInstance" is not kind of "#Class);
 

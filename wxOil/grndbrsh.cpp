@@ -1,4 +1,4 @@
-// $Id$
+// $Id: grndbrsh.cpp 1755 2006-09-16 12:00:36Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  

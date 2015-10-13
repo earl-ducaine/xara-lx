@@ -1,4 +1,4 @@
-// $Id$
+// $Id: nodeblnd.cpp 1688 2006-08-10 12:05:20Z gerry $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  
@@ -132,7 +132,7 @@ service marks of Xara Group Ltd. All rights in these marks are reserved.
 #include "brshattr.h"
 #include "slicehelper.h"
 
-DECLARE_SOURCE("$Revision$");
+DECLARE_SOURCE("$Revision: 1688 $");
 
 CC_IMPLEMENT_DYNAMIC(NodeBlend,NodeGroup)
 CC_IMPLEMENT_DYNCREATE(InitBlendAction,Action)

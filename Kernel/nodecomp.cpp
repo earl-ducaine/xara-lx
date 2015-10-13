@@ -1,4 +1,4 @@
-// $Id$
+// $Id: nodecomp.cpp 1385 2006-06-28 16:48:01Z gerry $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  
@@ -133,7 +133,7 @@ service marks of Xara Group Ltd. All rights in these marks are reserved.
 #include "pathops.h"
 //#include "group.h" - in camtypes.h [AUTOMATICALLY REMOVED]
 
-DECLARE_SOURCE( "$Revision$" );
+DECLARE_SOURCE( "$Revision: 1385 $" );
 
 CC_IMPLEMENT_DYNCREATE(CompoundNodeTreeFactory, CCObject)
 CC_IMPLEMENT_DYNCREATE(NodeCompound, NodeRenderableInk)

@@ -1,4 +1,4 @@
-// $Id$
+// $Id: cxfrech.h 1237 2006-06-01 17:40:10Z gerry $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  

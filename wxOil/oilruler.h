@@ -1,4 +1,4 @@
-// $Id$
+// $Id: oilruler.h 1459 2006-07-17 17:35:57Z phil $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  

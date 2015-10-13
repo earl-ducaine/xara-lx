@@ -1,4 +1,4 @@
-// $Id$
+// $Id: tool.cpp 1535 2006-07-25 16:50:32Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  
@@ -259,7 +259,7 @@ CC_IMPLEMENT_MEMDUMP(TempToolItem,ListItem);
 #define new CAM_DEBUG_NEW
 
 
-DECLARE_SOURCE("$Revision$");
+DECLARE_SOURCE("$Revision: 1535 $");
 
 ToolList *Tool::Tools = NULL;
 

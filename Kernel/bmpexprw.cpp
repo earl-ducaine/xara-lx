@@ -1,4 +1,4 @@
-// $Id$
+// $Id: bmpexprw.cpp 1635 2006-08-01 13:09:47Z luke $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  
@@ -129,7 +129,7 @@ service marks of Xara Group Ltd. All rights in these marks are reserved.
 //#include "oilfltrs.h"	// for find filter ext - in camtypes.h [AUTOMATICALLY REMOVED]
 #include "bitmpinf.h"	// for BitmapInfo
 
-DECLARE_SOURCE("$Revision$");
+DECLARE_SOURCE("$Revision: 1635 $");
 
 CC_IMPLEMENT_DYNCREATE(BitmapExportPreviewDialog, DialogOp)
 

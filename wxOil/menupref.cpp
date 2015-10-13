@@ -1,4 +1,4 @@
-// $Id$
+// $Id: menupref.cpp 1550 2006-07-26 12:35:47Z luke $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  
@@ -111,7 +111,7 @@ service marks of Xara Group Ltd. All rights in these marks are reserved.
 //#include "mario.h"
 #include "oilfiles.h"
 
-DECLARE_SOURCE("$Revision$");  
+DECLARE_SOURCE("$Revision: 1550 $");  
 
 // We want better memory tracking
 #define new CAM_DEBUG_NEW

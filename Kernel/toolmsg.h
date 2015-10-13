@@ -1,4 +1,4 @@
-// $Id$
+// $Id: toolmsg.h 751 2006-03-31 15:43:49Z alex $
 // This file should contain any messages relating to tools
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================

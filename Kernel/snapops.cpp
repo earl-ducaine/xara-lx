@@ -1,4 +1,4 @@
-// $Id$
+// $Id: snapops.cpp 1785 2007-11-07 00:46:08Z martin $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  
@@ -115,7 +115,7 @@ service marks of Xara Group Ltd. All rights in these marks are reserved.
 #include "sprdmsg.h"
 #include "bubbleid.h"
 
-DECLARE_SOURCE("$Revision$");
+DECLARE_SOURCE("$Revision: 1785 $");
 
 CC_IMPLEMENT_DYNCREATE(OpShowGrid, 		Operation)
 CC_IMPLEMENT_DYNCREATE(OpSnapToGrid, 	Operation)

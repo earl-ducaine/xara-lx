@@ -1,4 +1,4 @@
-// $Id$
+// $Id: ppstroke.cpp 1502 2006-07-24 11:51:13Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  

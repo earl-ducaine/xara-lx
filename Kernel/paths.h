@@ -1,4 +1,4 @@
-// $Id$
+// $Id: paths.h 942 2006-05-03 08:23:54Z gerry $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  

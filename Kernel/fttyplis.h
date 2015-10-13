@@ -1,4 +1,4 @@
-// $Id$
+// $Id: fttyplis.h 1282 2006-06-09 09:46:49Z alex $
 // Header for the controlling class of the v2 file format
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================

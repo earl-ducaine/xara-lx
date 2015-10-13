@@ -1,4 +1,4 @@
-// $Id$
+// $Id: rechrect.h 1688 2006-08-10 12:05:20Z gerry $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  

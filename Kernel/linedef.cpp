@@ -1,4 +1,4 @@
-// $Id$
+// $Id: linedef.cpp 1735 2006-09-04 10:03:55Z luke $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  

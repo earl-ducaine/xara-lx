@@ -1,4 +1,4 @@
-// $Id$
+// $Id: combo.cpp 1496 2006-07-22 13:09:45Z alex $
 /* @@tag:xara-cn-tp@@ THIRD PARTY COPYRIGHT */
 // The following line makes normalize.pl skip type fixing
 /* SKIPFIXTYPES: START */

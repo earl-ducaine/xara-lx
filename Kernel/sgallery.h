@@ -1,4 +1,4 @@
-// $Id$
+// $Id: sgallery.h 1267 2006-06-08 00:50:11Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  

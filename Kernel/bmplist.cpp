@@ -1,4 +1,4 @@
-// $Id$
+// $Id: bmplist.cpp 1488 2006-07-20 15:31:34Z phil $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  

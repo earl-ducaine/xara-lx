@@ -1,4 +1,4 @@
-// $Id$
+// $Id: coldlog.cpp 1685 2006-08-09 19:25:40Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  

@@ -1,4 +1,4 @@
-// $Id$
+// $Id: pushtool.cpp 1464 2006-07-18 12:32:26Z gerry $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  
@@ -136,7 +136,7 @@ TCHAR* 	PushTool::ToolName		= _T("Push Tool");
 TCHAR*	PushTool::Purpose		= _T("To push the document around");
 TCHAR*	PushTool::Author		= _T("Rik");
 
-DECLARE_SOURCE("$Revision$");
+DECLARE_SOURCE("$Revision: 1464 $");
 
 
 CC_IMPLEMENT_MEMDUMP(PushTool, Tool_v1)

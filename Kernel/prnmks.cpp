@@ -1,4 +1,4 @@
-// $Id$
+// $Id: prnmks.cpp 1320 2006-06-14 14:39:32Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  
@@ -146,7 +146,7 @@ CC_IMPLEMENT_MEMDUMP(MarkFormatRegion, CC_CLASS_MEMDUMP);
 CC_IMPLEMENT_DYNCREATE(PageRect, ListItem);
 CC_IMPLEMENT_DYNAMIC(PageRectList, List);
 
-DECLARE_SOURCE("$Revision$");
+DECLARE_SOURCE("$Revision: 1320 $");
 
 #define new CAM_DEBUG_NEW
 

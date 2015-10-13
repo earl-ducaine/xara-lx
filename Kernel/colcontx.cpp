@@ -1,4 +1,4 @@
-// $Id$
+// $Id: colcontx.cpp 1402 2006-07-04 09:26:38Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  

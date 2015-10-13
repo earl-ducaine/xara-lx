@@ -1,4 +1,4 @@
-// $Id$
+// $Id: scrlbutn.cpp 1282 2006-06-09 09:46:49Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  
@@ -116,7 +116,7 @@ static char BASED_CODE THIS_FILE[] = __FILE__;
 #endif
 
 
-DECLARE_SOURCE("$Revision$");
+DECLARE_SOURCE("$Revision: 1282 $");
 
 
 

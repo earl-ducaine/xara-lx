@@ -1,4 +1,4 @@
-// $Id$
+// $Id: pathname.cpp 1282 2006-06-09 09:46:49Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  
@@ -133,7 +133,7 @@ service marks of Xara Group Ltd. All rights in these marks are reserved.
 #define END_OF_PATH_SYM	"\0"
 #define NET_DRIVE_SYM	"\\\\"
 
-DECLARE_SOURCE("$Revision$");
+DECLARE_SOURCE("$Revision: 1282 $");
 
 extern void AbbreviateName(LPTSTR lpszCanon, INT32 cchMax, BOOL bAtLeastName);
 

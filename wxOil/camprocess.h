@@ -1,4 +1,4 @@
-// $Id$
+// $Id: camprocess.h 1181 2006-05-23 17:45:27Z gerry $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  

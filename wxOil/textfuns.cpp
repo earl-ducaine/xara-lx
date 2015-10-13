@@ -1,4 +1,4 @@
-// $Id$
+// $Id: textfuns.cpp 1495 2006-07-22 12:27:56Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  
@@ -111,7 +111,7 @@ service marks of Xara Group Ltd. All rights in these marks are reserved.
 #endif
 #include "unicdman.h"
 
-DECLARE_SOURCE( "$Revision$" );
+DECLARE_SOURCE( "$Revision: 1495 $" );
 
 CC_IMPLEMENT_MEMDUMP( CharMetrics, CC_CLASS_MEMDUMP );
 

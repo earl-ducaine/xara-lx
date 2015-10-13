@@ -1,4 +1,4 @@
-// $Id$
+// $Id: psdc.cpp 1389 2006-06-29 11:29:54Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  
@@ -103,7 +103,7 @@ service marks of Xara Group Ltd. All rights in these marks are reserved.
 
 #include "camtypes.h"
 
-DECLARE_SOURCE("$Revision$");
+DECLARE_SOURCE("$Revision: 1389 $");
 
 #define new CAM_DEBUG_NEW
 

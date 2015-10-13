@@ -1,4 +1,4 @@
-// $Id$
+// $Id: filedlgs.cpp 1712 2006-08-22 16:01:26Z luke $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  

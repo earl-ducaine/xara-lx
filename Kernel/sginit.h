@@ -1,4 +1,4 @@
-// $Id$
+// $Id: sginit.h 801 2006-04-11 09:31:36Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  

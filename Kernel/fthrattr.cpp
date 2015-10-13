@@ -1,4 +1,4 @@
-// $Id$
+// $Id: fthrattr.cpp 1738 2006-09-04 15:23:34Z luke $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  
@@ -149,7 +149,7 @@ service marks of Xara Group Ltd. All rights in these marks are reserved.
 //#include "bitmapcache.h"
 #include "pathndge.h"
 
-//DECLARE_SOURCE("$Revision$")
+//DECLARE_SOURCE("$Revision: 1738 $")
 
 CC_IMPLEMENT_DYNCREATE( FeatherAttrValue, OffscreenAttrValue )
 CC_IMPLEMENT_DYNAMIC( AttrFeather, NodeAttribute )

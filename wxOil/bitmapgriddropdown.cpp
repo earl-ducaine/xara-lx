@@ -105,6 +105,7 @@ service marks of Xara Group Ltd. All rights in these marks are reserved.
 //-----------------------------------------------------------------------------------------
 // Include files
 
+#include <algorithm>
 #include "camtypes.h"
 #include "camelot.h"
 #include "errors.h"

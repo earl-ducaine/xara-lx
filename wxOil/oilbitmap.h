@@ -1,4 +1,4 @@
-// $Id$
+// $Id: oilbitmap.h 1366 2006-06-26 11:18:18Z gerry $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  

@@ -1,4 +1,4 @@
-// $Id$
+// $Id: outptpng.cpp 1372 2006-06-27 11:23:21Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  

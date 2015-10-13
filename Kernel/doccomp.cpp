@@ -1,4 +1,4 @@
-// $Id$
+// $Id: doccomp.cpp 1302 2006-06-12 21:02:01Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  
@@ -106,7 +106,7 @@ service marks of Xara Group Ltd. All rights in these marks are reserved.
 //#include "doccomp.h" - in camtypes.h [AUTOMATICALLY REMOVED]
 
 
-DECLARE_SOURCE("$Revision$");
+DECLARE_SOURCE("$Revision: 1302 $");
 
 // Declare smart memory handling in Debug builds
 #define new CAM_DEBUG_NEW

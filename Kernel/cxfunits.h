@@ -1,4 +1,4 @@
-// $Id$
+// $Id: cxfunits.h 751 2006-03-31 15:43:49Z alex $
 // Default unit definitions for the v2 file format
 // These are the built in units that can be referred to by just their reference number
 // as they are assumed to be built in.

@@ -1,4 +1,4 @@
-// $Id$
+// $Id: impstr.h 1282 2006-06-09 09:46:49Z alex $
 // Defines a class used when importing string records in the v2 file format
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================

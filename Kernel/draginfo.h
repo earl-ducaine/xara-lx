@@ -1,4 +1,4 @@
-// $Id$
+// $Id: draginfo.h 1216 2006-05-30 19:42:02Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  

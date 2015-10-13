@@ -1,4 +1,4 @@
-// $Id$
+// $Id: bitfilt.cpp 1762 2006-09-27 09:39:14Z luke $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  

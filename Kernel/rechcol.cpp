@@ -1,4 +1,4 @@
-// $Id$
+// $Id: rechcol.cpp 1688 2006-08-10 12:05:20Z gerry $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  
@@ -106,7 +106,7 @@ service marks of Xara Group Ltd. All rights in these marks are reserved.
 #include "cxftags.h"	// TAG_DEFINERGBCOLOUR TAG_DEFINECOMPLEXCOLOUR
 //#include "cxfrec.h"	// TAG_DEFINERGBCOLOUR TAG_DEFINECOMPLEXCOLOUR - in camtypes.h [AUTOMATICALLY REMOVED]
 
-DECLARE_SOURCE("$Revision$");
+DECLARE_SOURCE("$Revision: 1688 $");
 
 // An implement to match the Declare in the .h file.
 CC_IMPLEMENT_DYNAMIC(ColourRecordHandler,CamelotRecordHandler);

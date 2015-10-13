@@ -1,4 +1,4 @@
-// $Id$
+// $Id: maskfilt.cpp 1634 2006-08-01 13:09:37Z luke $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  

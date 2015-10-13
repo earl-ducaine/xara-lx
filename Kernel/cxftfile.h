@@ -1,4 +1,4 @@
-// $Id$
+// $Id: cxftfile.h 1679 2006-08-08 09:47:27Z gerry $
 // Header for the CXaraTemplateFile class
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================

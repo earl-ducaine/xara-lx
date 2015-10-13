@@ -1,4 +1,4 @@
-// $Id$
+// $Id: shadtool.cpp 1386 2006-06-28 17:49:55Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  
@@ -141,7 +141,7 @@ service marks of Xara Group Ltd. All rights in these marks are reserved.
 #include "ophist.h"
 #include "shadinfo.h"
 
-DECLARE_SOURCE( "$Revision$" );
+DECLARE_SOURCE( "$Revision: 1386 $" );
 
 CC_IMPLEMENT_MEMDUMP(SoftShadowTool,Tool_v1)
 CC_IMPLEMENT_DYNCREATE(OpDragCreateShadow2, SelOperation)

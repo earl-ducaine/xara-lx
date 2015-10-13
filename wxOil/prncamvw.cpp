@@ -1,4 +1,4 @@
-// $Id$
+// $Id: prncamvw.cpp 1593 2006-07-29 11:22:30Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  
@@ -122,7 +122,7 @@ service marks of Xara Group Ltd. All rights in these marks are reserved.
 #include "prnmks.h"
 #include "opbevel.h"
 
-DECLARE_SOURCE("$Revision$");
+DECLARE_SOURCE("$Revision: 1593 $");
 
 #define new CAM_DEBUG_NEW
 #define USERNAME "Mike"

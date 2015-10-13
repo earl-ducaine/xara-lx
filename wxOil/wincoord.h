@@ -1,4 +1,4 @@
-// $Id$
+// $Id: wincoord.h 1395 2006-06-30 17:00:00Z phil $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  

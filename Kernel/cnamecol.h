@@ -1,4 +1,4 @@
-// $Id$
+// $Id: cnamecol.h 751 2006-03-31 15:43:49Z alex $
 // $Header:
 // CNamedColourReplacer class header
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE

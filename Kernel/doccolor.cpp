@@ -1,4 +1,4 @@
-// $Id$
+// $Id: doccolor.cpp 1605 2006-07-29 19:26:03Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  

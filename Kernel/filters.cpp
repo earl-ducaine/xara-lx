@@ -1,4 +1,4 @@
-// $Id$
+// $Id: filters.cpp 1760 2006-09-22 10:13:32Z luke $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  

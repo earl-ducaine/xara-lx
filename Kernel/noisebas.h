@@ -1,4 +1,4 @@
-// $Id$
+// $Id: noisebas.h 751 2006-03-31 15:43:49Z alex $
 // noisebas.h
 //
 // Author  : Mike

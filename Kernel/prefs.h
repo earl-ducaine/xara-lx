@@ -1,4 +1,4 @@
-// $Id$
+// $Id: prefs.h 930 2006-05-02 12:25:56Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  

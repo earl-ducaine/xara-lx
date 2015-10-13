@@ -1,4 +1,4 @@
-// $Id$
+// $Id: colpick.cpp 1350 2006-06-22 13:20:47Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  

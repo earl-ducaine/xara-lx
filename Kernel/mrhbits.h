@@ -1,4 +1,4 @@
-// $Id$
+// $Id: mrhbits.h 1272 2006-06-08 17:01:06Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  

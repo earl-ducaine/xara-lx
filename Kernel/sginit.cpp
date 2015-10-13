@@ -1,4 +1,4 @@
-// $Id$
+// $Id: sginit.cpp 1464 2006-07-18 12:32:26Z gerry $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  
@@ -121,7 +121,7 @@ service marks of Xara Group Ltd. All rights in these marks are reserved.
 //#include "sglinepr.h"	// For SGalleryLinePropertiesDlg::Init()
 #endif
 
-DECLARE_SOURCE("$Revision$");
+DECLARE_SOURCE("$Revision: 1464 $");
 
 CC_IMPLEMENT_MEMDUMP(SGInit, CC_CLASS_MEMDUMP)
 

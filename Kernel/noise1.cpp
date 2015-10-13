@@ -1,4 +1,4 @@
-// $Id$
+// $Id: noise1.cpp 751 2006-03-31 15:43:49Z alex $
 // noise1.cpp
 //
 // Author  : Mike

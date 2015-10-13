@@ -1,4 +1,4 @@
-// $Id$
+// $Id: helpdownload.cpp 836 2006-04-18 16:06:15Z gerry $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  
@@ -118,7 +118,7 @@ service marks of Xara Group Ltd. All rights in these marks are reserved.
 using namespace WEBFILEUPDATERLib;
 
 
-DECLARE_SOURCE("$Revision$");
+DECLARE_SOURCE("$Revision: 836 $");
 
 CC_IMPLEMENT_DYNCREATE(HelpDownloadOp, DownloadOp)
 CC_IMPLEMENT_DYNCREATE(HelpDownloadDlg, Operation)

@@ -1,4 +1,4 @@
-// $Id$
+// $Id: dibconv.cpp 1378 2006-06-28 11:12:55Z gerry $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  

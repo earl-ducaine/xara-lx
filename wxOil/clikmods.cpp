@@ -1,4 +1,4 @@
-// $Id$
+// $Id: clikmods.cpp 1282 2006-06-09 09:46:49Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  
@@ -108,7 +108,7 @@ service marks of Xara Group Ltd. All rights in these marks are reserved.
 //#include "wxXtra/wxmousestate.h"
 //#include "phil.h"
 
-DECLARE_SOURCE($Revision$);
+DECLARE_SOURCE($Revision: 1282 $);
 
 CC_IMPLEMENT_MEMDUMP(ClickModifiers,CCObject);
 

@@ -1,4 +1,4 @@
-// $Id$
+// $Id: binreloc.h 1082 2006-05-16 14:42:54Z alex $
 // The following line makes normalize.pl skip type fixing
 /* SKIPFIXTYPES: START */
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE

@@ -1,4 +1,4 @@
-// $Id$
+// $Id: txtattr.cpp 1568 2006-07-27 13:03:38Z phil $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  
@@ -145,7 +145,7 @@ service marks of Xara Group Ltd. All rights in these marks are reserved.
 #include "nodetext.h"
 #include "cxftext.h"
 
-DECLARE_SOURCE("$Revision$");
+DECLARE_SOURCE("$Revision: 1568 $");
 
 
 // All IMPLEMENTS here

@@ -1,4 +1,4 @@
-// $Id$
+// $Id: docview.h 1718 2006-08-25 11:06:06Z martin $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  

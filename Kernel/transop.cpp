@@ -1,4 +1,4 @@
-// $Id$
+// $Id: transop.cpp 1393 2006-06-30 10:27:41Z phil $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  
@@ -135,7 +135,7 @@ service marks of Xara Group Ltd. All rights in these marks are reserved.
 //#include "range.h" - in camtypes.h [AUTOMATICALLY REMOVED]
 
 // declare this files version number to the program and give our name in memory dumps
-DECLARE_SOURCE("$Revision$");
+DECLARE_SOURCE("$Revision: 1393 $");
 CC_IMPLEMENT_DYNCREATE(TransOperation, UndoableOperation)
 
 // Declare smart memory handling in Debug builds

@@ -1,4 +1,4 @@
-// $Id$
+// $Id: app.h 1461 2006-07-18 09:50:40Z luke $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  

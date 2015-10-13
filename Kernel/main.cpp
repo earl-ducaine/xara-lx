@@ -1,4 +1,4 @@
-// $Id$
+// $Id: main.cpp 1464 2006-07-18 12:32:26Z gerry $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  
@@ -142,7 +142,7 @@ BOOL InitPostTools2();
 // Declare smart memory handling in Debug builds
 #define new CAM_DEBUG_NEW
 
-DECLARE_SOURCE("$Revision$");
+DECLARE_SOURCE("$Revision: 1464 $");
 
 
 /*******************************************************************

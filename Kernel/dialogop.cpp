@@ -1,4 +1,4 @@
-// $Id$
+// $Id: dialogop.cpp 1751 2006-09-13 11:33:14Z luke $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  
@@ -165,7 +165,7 @@ struct ReDrawInfoType;
 
 //-----------------------------------------------------------------------------------------
 
-DECLARE_SOURCE("$Revision$");
+DECLARE_SOURCE("$Revision: 1751 $");
 
 // All dynamic implement macros here before CAM_DEBUG_NEW
 

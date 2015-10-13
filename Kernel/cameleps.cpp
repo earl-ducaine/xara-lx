@@ -1,4 +1,4 @@
-// $Id$
+// $Id: cameleps.cpp 1431 2006-07-11 15:14:59Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  
@@ -164,7 +164,7 @@ service marks of Xara Group Ltd. All rights in these marks are reserved.
 
 #include "unicdman.h"		// For MBCS support
 
-DECLARE_SOURCE("$Revision$");
+DECLARE_SOURCE("$Revision: 1431 $");
 
 #define new CAM_DEBUG_NEW
 

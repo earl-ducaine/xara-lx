@@ -1,4 +1,4 @@
-// $Id$
+// $Id: dragtool.h 1282 2006-06-09 09:46:49Z alex $
 // Header for the drag tool implementation.
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================

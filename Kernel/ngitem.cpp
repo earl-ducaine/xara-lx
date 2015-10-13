@@ -1,4 +1,4 @@
-// $Id$
+// $Id: ngitem.cpp 1488 2006-07-20 15:31:34Z phil $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  
@@ -144,7 +144,7 @@ service marks of Xara Group Ltd. All rights in these marks are reserved.
 static char BASED_CODE THIS_FILE[] = __FILE__;
 #endif
 
-DECLARE_SOURCE("$Revision$");
+DECLARE_SOURCE("$Revision: 1488 $");
 
 // Implement the dynamic class bits...
 CC_IMPLEMENT_DYNAMIC(SGNameItem,	SGDisplayItem);

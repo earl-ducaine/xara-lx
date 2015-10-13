@@ -1,4 +1,4 @@
-// $Id$
+// $Id: swftext.cpp 1313 2006-06-13 16:55:22Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  

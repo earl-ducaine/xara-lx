@@ -1,4 +1,4 @@
-// $Id$
+// $Id: ai_epsrr.h 1336 2006-06-17 16:18:41Z alex $
 // Declaration of Adobe Illustrator EPS render region.
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================

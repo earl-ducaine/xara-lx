@@ -1,4 +1,4 @@
-// $Id$
+// $Id: selop.h 1552 2006-07-26 13:43:02Z phil $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  

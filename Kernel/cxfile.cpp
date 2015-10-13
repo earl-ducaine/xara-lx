@@ -1,4 +1,4 @@
-// $Id$
+// $Id: cxfile.cpp 1708 2006-08-17 17:13:38Z gerry $
 // Implementation of the controlling class of the v2 file format
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================

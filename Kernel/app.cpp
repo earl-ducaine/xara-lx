@@ -1,4 +1,4 @@
-// $Id$
+// $Id: app.cpp 1531 2006-07-25 16:05:48Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  
@@ -159,7 +159,7 @@ service marks of Xara Group Ltd. All rights in these marks are reserved.
 
 #include "sgliboil.h"	// AppendSlashIfNotPresent
 
-DECLARE_SOURCE("$Revision$");
+DECLARE_SOURCE("$Revision: 1531 $");
 
 CC_IMPLEMENT_MEMDUMP(Application, CCObject)
 

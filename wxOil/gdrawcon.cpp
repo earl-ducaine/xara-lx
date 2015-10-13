@@ -1,4 +1,4 @@
-// $Id$
+// $Id: gdrawcon.cpp 1135 2006-05-19 16:20:32Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  

@@ -1,4 +1,4 @@
-// $Id$
+// $Id: cartprov.cpp 1013 2006-05-11 20:24:13Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  

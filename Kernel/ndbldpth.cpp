@@ -1,4 +1,4 @@
-// $Id$
+// $Id: ndbldpth.cpp 1282 2006-06-09 09:46:49Z alex $
 // NodeBlendPath implementation. This file controls the tree node 'mouldpath'
 // which is the shape of the mould for perspective and envelope shapes.
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
@@ -125,7 +125,7 @@ service marks of Xara Group Ltd. All rights in these marks are reserved.
 #include "ophist.h"
 
 
-DECLARE_SOURCE("$Revision$");
+DECLARE_SOURCE("$Revision: 1282 $");
 
 CC_IMPLEMENT_DYNCREATE(NodeBlendPath,NodePath);
 CC_IMPLEMENT_DYNCREATE(InitNodeBlendPathAction,Action);

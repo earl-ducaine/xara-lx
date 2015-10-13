@@ -1,4 +1,4 @@
-// $Id$
+// $Id: textops.h 1446 2006-07-14 21:53:52Z phil $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  

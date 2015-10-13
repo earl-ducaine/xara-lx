@@ -1,4 +1,4 @@
-// $Id$
+// $Id: hotkeys.cpp 1769 2007-06-17 19:33:43Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  
@@ -116,7 +116,7 @@ service marks of Xara Group Ltd. All rights in these marks are reserved.
 #include "basebar.h"
 #include "wxkeymap.h"
 
-DECLARE_SOURCE("$Revision$");
+DECLARE_SOURCE("$Revision: 1769 $");
 
 CC_IMPLEMENT_MEMDUMP(HotKey,ListItem)
 

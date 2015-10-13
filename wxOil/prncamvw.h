@@ -1,4 +1,4 @@
-// $Id$
+// $Id: prncamvw.h 1593 2006-07-29 11:22:30Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  

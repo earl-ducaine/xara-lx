@@ -1,4 +1,4 @@
-// $Id$
+// $Id: nodetext.cpp 1478 2006-07-19 14:44:47Z phil $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  
@@ -142,7 +142,7 @@ service marks of Xara Group Ltd. All rights in these marks are reserved.
 
 #include "ai_epsrr.h"
 
-DECLARE_SOURCE("$Revision$")
+DECLARE_SOURCE("$Revision: 1478 $")
 
 CC_IMPLEMENT_DYNAMIC(VisibleTextNode, BaseTextClass)
 CC_IMPLEMENT_DYNAMIC(CaretNode, VisibleTextNode)

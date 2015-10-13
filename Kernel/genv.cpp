@@ -1,4 +1,4 @@
-// $Id$
+// $Id: genv.cpp 751 2006-03-31 15:43:49Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  
@@ -118,7 +118,7 @@ $Log: /wxCamelot/Kernel/genv.cpp $
 #include "gmould.h"
 #include "genv.h"
 
-DECLARE_SOURCE("$Revision$");
+DECLARE_SOURCE("$Revision: 751 $");
 
 CC_IMPLEMENT_DYNAMIC(GEnvelope, GMould)
 CC_IMPLEMENT_DYNAMIC(GEnvelope2x2, GMould)

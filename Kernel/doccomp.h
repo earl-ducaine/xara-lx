@@ -1,4 +1,4 @@
-// $Id$
+// $Id: doccomp.h 1302 2006-06-12 21:02:01Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  

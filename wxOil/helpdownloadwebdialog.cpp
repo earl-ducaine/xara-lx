@@ -1,4 +1,4 @@
-// $Id$
+// $Id: helpdownloadwebdialog.cpp 751 2006-03-31 15:43:49Z alex $
 // HelpDownloadWebDialog.cpp : implementation file
 //
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE

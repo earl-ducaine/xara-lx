@@ -1,10 +1,10 @@
-// $Id$
+// $Id: zconf.h 751 2006-03-31 15:43:49Z alex $
 /* zconf.h -- configuration of the zlib compression library
  * Copyright (C) 1995-2004 Jean-loup Gailly.
  * For conditions of distribution and use, see copyright notice in zlib.h
  */
 /* @@tag:xara-cn-tp@@ THIRD PARTY COPYRIGHT */
-/* @(#) $Id$ */
+/* @(#) $Id: zconf.h 751 2006-03-31 15:43:49Z alex $ */
 
 #ifndef ZCONF_H
 #define ZCONF_H

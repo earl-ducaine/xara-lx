@@ -1,4 +1,4 @@
-// $Id$
+// $Id: outptgif.h 1348 2006-06-21 12:47:25Z luke $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  

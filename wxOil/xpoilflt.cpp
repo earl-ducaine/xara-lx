@@ -1,4 +1,4 @@
-// $Id$
+// $Id: xpoilflt.cpp 1708 2006-08-17 17:13:38Z gerry $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  

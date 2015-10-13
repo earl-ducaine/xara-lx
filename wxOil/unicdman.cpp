@@ -1,4 +1,4 @@
-// $Id$
+// $Id: unicdman.cpp 788 2006-04-07 10:05:16Z luke $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  

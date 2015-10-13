@@ -1,4 +1,4 @@
-// $Id$
+// $Id: winrect.h 1384 2006-06-28 15:46:49Z phil $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  

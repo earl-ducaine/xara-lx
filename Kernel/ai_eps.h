@@ -1,4 +1,4 @@
-// $Id$
+// $Id: ai_eps.h 1312 2006-06-13 15:46:45Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  

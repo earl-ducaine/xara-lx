@@ -1,4 +1,4 @@
-// $Id$
+// $Id: bmpalctrl.cpp 1269 2006-06-08 09:27:36Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  

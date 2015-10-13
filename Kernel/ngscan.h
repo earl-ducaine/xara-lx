@@ -1,4 +1,4 @@
-// $Id$
+// $Id: ngscan.h 803 2006-04-11 14:36:26Z luke $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  

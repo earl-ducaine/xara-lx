@@ -1,4 +1,4 @@
-// $Id$
+// $Id: attrval.h 1445 2006-07-14 20:15:02Z phil $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  

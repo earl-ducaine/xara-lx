@@ -1,4 +1,4 @@
-// $Id$
+// $Id: oilfiles.cpp 1413 2006-07-06 09:13:18Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  
@@ -114,7 +114,7 @@ service marks of Xara Group Ltd. All rights in these marks are reserved.
 #include "oilmods.h"
 
 
-DECLARE_SOURCE("$Revision$");
+DECLARE_SOURCE("$Revision: 1413 $");
                         
 /********************************************************************************************
 										CCResourceFile

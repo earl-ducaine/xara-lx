@@ -1,4 +1,4 @@
-// $Id$
+// $Id: osrndrgn.cpp 1571 2006-07-27 15:18:28Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  
@@ -149,7 +149,7 @@ service marks of Xara Group Ltd. All rights in these marks are reserved.
 #include "cartprov.h"
 #include "lineattr.h"
 
-DECLARE_SOURCE("$Revision$");
+DECLARE_SOURCE("$Revision: 1571 $");
 
 /********************************************************************************************
 

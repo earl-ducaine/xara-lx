@@ -1,4 +1,4 @@
-// $Id$
+// $Id: cxftree.h 1693 2006-08-11 18:04:37Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  

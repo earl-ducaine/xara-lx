@@ -1,4 +1,4 @@
-// $Id$
+// $Id: gcache.cpp 754 2006-04-01 15:29:59Z alex $
 /////////////////////////////////////////////////////////////////////////////////////////////////
 //
 // GCache.cpp
@@ -117,7 +117,7 @@ CamCache::CamCache( size_t Size, UINT32 Log2MaxEntries )
 	HashTable	  = NULL ;
 	CacheStart	  = NULL ;
 
-	HashTable	= new ( CacheBlock* [HashTableSize] ) ;
+	HashTable	= new CacheBlock* [HashTableSize];
 	CacheStart	= (CacheBlock*) new BYTE[Size+2*FreeCacheBlockSize] ;
 
 	if (!HashTable || !CacheStart)

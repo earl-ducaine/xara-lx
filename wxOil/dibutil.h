@@ -1,4 +1,4 @@
-// $Id$
+// $Id: dibutil.h 923 2006-04-29 19:13:19Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  

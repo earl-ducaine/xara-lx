@@ -1,4 +1,4 @@
-// $Id$
+// $Id: gradtbl.cpp 1372 2006-06-27 11:23:21Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  
@@ -114,7 +114,7 @@ service marks of Xara Group Ltd. All rights in these marks are reserved.
 //#include "fixmem.h" - in camtypes.h [AUTOMATICALLY REMOVED]
 #include "fillramp.h"
 
-DECLARE_SOURCE("$Revision$");
+DECLARE_SOURCE("$Revision: 1372 $");
 
 CC_IMPLEMENT_DYNCREATE(GradTable, CCObject)
 CC_IMPLEMENT_DYNCREATE(TranspGradTable, CCObject)

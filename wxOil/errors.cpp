@@ -1,4 +1,4 @@
-// $Id$
+// $Id: errors.cpp 1783 2007-10-21 21:58:59Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  
@@ -123,7 +123,7 @@ service marks of Xara Group Ltd. All rights in these marks are reserved.
 #endif
 
 // Put the source file into the revision list
-DECLARE_SOURCE("$Revision$");
+DECLARE_SOURCE("$Revision: 1783 $");
 
 #if 0
 #ifdef _DEBUG

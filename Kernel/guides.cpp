@@ -1,4 +1,4 @@
-// $Id$
+// $Id: guides.cpp 1315 2006-06-14 09:51:34Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  

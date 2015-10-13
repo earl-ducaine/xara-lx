@@ -1,4 +1,4 @@
-// $Id$
+// $Id: cctime.cpp 1320 2006-06-14 14:39:32Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  

@@ -1,4 +1,4 @@
-// $Id$
+// $Id: rechattr.cpp 1698 2006-08-13 19:47:04Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  
@@ -108,7 +108,7 @@ service marks of Xara Group Ltd. All rights in these marks are reserved.
 #include "cxftags.h"
 //#include "cxfrec.h" - in camtypes.h [AUTOMATICALLY REMOVED]
 
-DECLARE_SOURCE("$Revision$");
+DECLARE_SOURCE("$Revision: 1698 $");
 
 CC_IMPLEMENT_DYNAMIC(GeneralAttrRecordHandler, CamelotRecordHandler)
 

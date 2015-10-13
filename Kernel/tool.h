@@ -1,4 +1,4 @@
-// $Id$
+// $Id: tool.h 1535 2006-07-25 16:50:32Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  

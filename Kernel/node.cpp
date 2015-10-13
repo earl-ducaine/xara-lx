@@ -1,4 +1,4 @@
-// $Id$
+// $Id: node.cpp 1621 2006-07-31 15:35:28Z phil $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  
@@ -133,7 +133,7 @@ MILLIPOINT Node::PixelWidth;
 MILLIPOINT Node::PixelHeight; 
 BOOL Node::HourglassOn = FALSE; // When TRUE certain slow routines will call ContinueSlowJob
 
-DECLARE_SOURCE("$Revision$");
+DECLARE_SOURCE("$Revision: 1621 $");
 CC_IMPLEMENT_DYNAMIC(Node, CCObject)
       
 // Declare smart memory handling in Debug builds

@@ -1,4 +1,4 @@
-// $Id$
+// $Id: bfxitem.cpp 1282 2006-06-09 09:46:49Z alex $
 //
 // BfxPlugIn implementation file
 // This implementes a Bfx plug-in item.

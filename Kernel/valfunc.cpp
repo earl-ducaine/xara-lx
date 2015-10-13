@@ -1,4 +1,4 @@
-// $Id$
+// $Id: valfunc.cpp 1517 2006-07-24 21:05:42Z gavin $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  

@@ -1,4 +1,4 @@
-// $Id$
+// $Id: helpuser.cpp 1729 2006-08-30 12:48:48Z luke $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  
@@ -127,7 +127,7 @@ service marks of Xara Group Ltd. All rights in these marks are reserved.
 
 
 // Code version.
-DECLARE_SOURCE("$Revision$");
+DECLARE_SOURCE("$Revision: 1729 $");
 
 
 // We need to use the correct filename parsing functions, depending on whether we are

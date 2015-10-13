@@ -1,4 +1,4 @@
-// $Id$
+// $Id: coreleps.cpp 1312 2006-06-13 15:46:45Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  
@@ -115,7 +115,7 @@ service marks of Xara Group Ltd. All rights in these marks are reserved.
 //#include "cdrfiltr.h"
 
 
-DECLARE_SOURCE("$Revision$");
+DECLARE_SOURCE("$Revision: 1312 $");
 
 #define new CAM_DEBUG_NEW
 

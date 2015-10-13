@@ -1,4 +1,4 @@
-// $Id$
+// $Id: printprg.cpp 1593 2006-07-29 11:22:30Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  
@@ -118,7 +118,7 @@ service marks of Xara Group Ltd. All rights in these marks are reserved.
 //#include "justin2.h"
 #include "prncamvw.h"
 
-DECLARE_SOURCE("$Revision$");
+DECLARE_SOURCE("$Revision: 1593 $");
 
 CC_IMPLEMENT_DYNCREATE(PrintProgressDlg, DialogOp)
 

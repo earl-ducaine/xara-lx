@@ -1,4 +1,4 @@
-// $Id$
+// $Id: menucmds.cpp 1739 2006-09-05 11:07:16Z luke $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  
@@ -138,7 +138,7 @@ service marks of Xara Group Ltd. All rights in these marks are reserved.
 #include "filedlgs.h"
 #include "tmplmngr.h"
 
-DECLARE_SOURCE("$Revision$");  
+DECLARE_SOURCE("$Revision: 1739 $");  
 #define THIRTY_TWO 32
 
 /********************************************************************************************

@@ -1,4 +1,4 @@
-// $Id$
+// $Id: prnmks.h 1346 2006-06-20 20:35:06Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  

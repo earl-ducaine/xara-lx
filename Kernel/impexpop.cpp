@@ -1,4 +1,4 @@
-// $Id$
+// $Id: impexpop.cpp 1690 2006-08-10 13:53:03Z gerry $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  

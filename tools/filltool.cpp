@@ -1,4 +1,4 @@
-// $Id$
+// $Id: filltool.cpp 1730 2006-09-03 10:58:17Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  
@@ -142,7 +142,7 @@ service marks of Xara Group Ltd. All rights in these marks are reserved.
 #include "nodeliveeffect.h"
 
 // Revision Number
-DECLARE_SOURCE( "$Revision$" );
+DECLARE_SOURCE( "$Revision: 1730 $" );
 
 // The Names of the tools
 TCHAR*		GradFillTool::FamilyName = _T("Fill Tools");

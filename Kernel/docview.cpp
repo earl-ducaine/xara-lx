@@ -1,4 +1,4 @@
-// $Id$
+// $Id: docview.cpp 1729 2006-08-30 12:48:48Z luke $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  
@@ -175,7 +175,7 @@ service marks of Xara Group Ltd. All rights in these marks are reserved.
 #include "rendwnd.h"	// Shouldn't need this
 #include "draginfo.h"
 
-DECLARE_SOURCE("$Revision$");
+DECLARE_SOURCE("$Revision: 1729 $");
 
 
 // Used by SpreadRedraws class.

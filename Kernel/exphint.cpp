@@ -1,4 +1,4 @@
-// $Id$
+// $Id: exphint.cpp 1688 2006-08-10 12:05:20Z gerry $
 // $$
 //
 // Export hint class

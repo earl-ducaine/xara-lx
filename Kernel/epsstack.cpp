@@ -1,4 +1,4 @@
-// $Id$
+// $Id: epsstack.cpp 1660 2006-08-03 17:28:20Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  

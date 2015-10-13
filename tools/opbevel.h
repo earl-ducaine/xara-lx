@@ -1,4 +1,4 @@
-// $Id$
+// $Id: opbevel.h 1752 2006-09-15 09:13:05Z luke $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  

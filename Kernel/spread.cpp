@@ -1,4 +1,4 @@
-// $Id$
+// $Id: spread.cpp 1737 2006-09-04 15:17:04Z luke $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  

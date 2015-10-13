@@ -1,4 +1,4 @@
-// $Id$
+// $Id: filters.h 1476 2006-07-19 11:58:34Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  

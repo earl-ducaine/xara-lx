@@ -1,4 +1,4 @@
-// $Id$
+// $Id: nodershp.h 1776 2007-06-27 11:16:49Z luke $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  

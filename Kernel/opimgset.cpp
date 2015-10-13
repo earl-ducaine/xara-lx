@@ -1,4 +1,4 @@
-// $Id$
+// $Id: opimgset.cpp 1357 2006-06-25 11:31:45Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  

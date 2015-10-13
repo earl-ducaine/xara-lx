@@ -1,4 +1,4 @@
-// $Id$
+// $Id: ccolbar.h 1282 2006-06-09 09:46:49Z alex $
 // CColBar.h - The CColourBar class - A status-bar like colour strip bar thing
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================

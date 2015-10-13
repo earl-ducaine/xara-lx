@@ -1,4 +1,4 @@
-// $Id$
+// $Id: fontdrop.h 1164 2006-05-22 19:11:58Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  

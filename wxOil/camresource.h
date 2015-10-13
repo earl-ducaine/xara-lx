@@ -1,4 +1,4 @@
-// $Id$
+// $Id: camresource.h 1184 2006-05-23 19:27:20Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  

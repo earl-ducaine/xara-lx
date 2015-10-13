@@ -1,4 +1,4 @@
-// $Id$
+// $Id: cameleps.h 1398 2006-07-02 19:23:26Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  

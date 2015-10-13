@@ -1,4 +1,4 @@
-// $Id$
+// $Id: errors.h 1140 2006-05-19 19:49:43Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  

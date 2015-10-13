@@ -1,4 +1,4 @@
-// $Id$
+// $Id: prdlgctl.h 1742 2006-09-05 17:25:58Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  

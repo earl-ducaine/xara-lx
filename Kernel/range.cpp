@@ -1,4 +1,4 @@
-// $Id$
+// $Id: range.cpp 1744 2006-09-06 15:58:54Z luke $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  
@@ -143,7 +143,7 @@ service marks of Xara Group Ltd. All rights in these marks are reserved.
 //#include "bars.h" - in camtypes.h [AUTOMATICALLY REMOVED]
 #include "fillattr2.h"
 
-DECLARE_SOURCE( "$Revision$" );    
+DECLARE_SOURCE( "$Revision: 1744 $" );    
 
 CC_IMPLEMENT_DYNAMIC(Range, CCObject)   
 CC_IMPLEMENT_DYNAMIC(NodeListItem, ListItem)

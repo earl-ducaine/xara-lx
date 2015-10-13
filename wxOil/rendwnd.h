@@ -1,4 +1,4 @@
-// $Id$
+// $Id: rendwnd.h 1323 2006-06-14 18:52:43Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  

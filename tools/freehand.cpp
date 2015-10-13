@@ -1,4 +1,4 @@
-// $Id$
+// $Id: freehand.cpp 1750 2006-09-12 08:59:56Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  
@@ -164,7 +164,7 @@ service marks of Xara Group Ltd. All rights in these marks are reserved.
 #include "layer.h"
 
 // Set things up so that the tool will be listed in the Dialog box
-DECLARE_SOURCE("$Revision$");
+DECLARE_SOURCE("$Revision: 1750 $");
 
 
 // These are still TCHAR* while we wait for resource technology to be developed for modules

@@ -1,4 +1,4 @@
-// $Id$
+// $Id: cwfrompoint.h 1127 2006-05-19 11:41:07Z alex $
 /* @@tag:xara-cn-tp@@ THIRD PARTY COPYRIGHT */
 // The following line makes normalize.pl skip type fixing
 /* SKIPFIXTYPES: START */

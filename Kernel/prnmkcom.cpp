@@ -1,4 +1,4 @@
-// $Id$
+// $Id: prnmkcom.cpp 1282 2006-06-09 09:46:49Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  
@@ -120,7 +120,7 @@ CC_IMPLEMENT_DYNAMIC(PrintMarkComponentClass, DocComponentClass)
 CC_IMPLEMENT_DYNAMIC(DocPrintMarkList, List)
 CC_IMPLEMENT_DYNCREATE(DocPrintMark, ListItem)
 
-DECLARE_SOURCE("$Revision$");
+DECLARE_SOURCE("$Revision: 1282 $");
 
 // Declare smart memory handling in Debug builds
 #define new CAM_DEBUG_NEW

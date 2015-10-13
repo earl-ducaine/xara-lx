@@ -1,4 +1,4 @@
-// $Id$
+// $Id: bmpsdlg.cpp 1282 2006-06-09 09:46:49Z alex $
 // Implementation of the Bitmap Properties Dialog for XWP.
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================

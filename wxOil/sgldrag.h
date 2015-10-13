@@ -1,4 +1,4 @@
-// $Id$
+// $Id: sgldrag.h 1250 2006-06-05 12:06:28Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  

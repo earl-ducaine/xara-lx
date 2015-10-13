@@ -1,4 +1,4 @@
-// $Id$
+// $Id: epsfiltr.cpp 1668 2006-08-04 11:45:17Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  
@@ -156,7 +156,7 @@ service marks of Xara Group Ltd. All rights in these marks are reserved.
 #include "epscdef.h"
 #include "nodetext.h"
 
-DECLARE_SOURCE("$Revision$");
+DECLARE_SOURCE("$Revision: 1668 $");
 
 CC_IMPLEMENT_DYNAMIC(EPSFilter, VectorFilter);
 CC_IMPLEMENT_MEMDUMP(RangeList, List);

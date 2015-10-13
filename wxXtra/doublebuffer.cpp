@@ -1,4 +1,4 @@
-// $Id$
+// $Id: doublebuffer.cpp 757 2006-04-01 16:04:45Z alex $
 /* @@tag:xara-cn-tp@@ THIRD PARTY COPYRIGHT */
 // The following line makes normalize.pl skip type fixing
 /* SKIPFIXTYPES: START */

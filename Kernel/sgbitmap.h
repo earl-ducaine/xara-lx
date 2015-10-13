@@ -1,4 +1,4 @@
-// $Id$
+// $Id: sgbitmap.h 1664 2006-08-04 10:06:16Z gerry $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  

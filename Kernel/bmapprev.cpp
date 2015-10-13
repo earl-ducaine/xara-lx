@@ -1,4 +1,4 @@
-// $Id$
+// $Id: bmapprev.cpp 1745 2006-09-08 14:23:18Z luke $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  
@@ -139,7 +139,7 @@ service marks of Xara Group Ltd. All rights in these marks are reserved.
 //#include "exprwres.h"	// for _R(IDS_BITMAPPREVIEWDIALOG)
 //#include "units.h" - in camtypes.h [AUTOMATICALLY REMOVED]
 
-DECLARE_SOURCE("$Revision$");
+DECLARE_SOURCE("$Revision: 1745 $");
 
 CC_IMPLEMENT_DYNCREATE(BmapPrevDlg, DialogTabOp)
 

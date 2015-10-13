@@ -1,4 +1,4 @@
-// $Id$
+// $Id: dlgevt.cpp 1729 2006-08-30 12:48:48Z luke $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  

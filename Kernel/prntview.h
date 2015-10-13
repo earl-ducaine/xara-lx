@@ -1,4 +1,4 @@
-// $Id$
+// $Id: prntview.h 1354 2006-06-23 20:23:25Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  

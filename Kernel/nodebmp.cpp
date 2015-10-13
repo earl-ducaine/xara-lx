@@ -1,4 +1,4 @@
-// $Id$
+// $Id: nodebmp.cpp 1771 2007-06-17 20:14:43Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  
@@ -177,7 +177,7 @@ service marks of Xara Group Ltd. All rights in these marks are reserved.
 #include "plugop.h"		// PlugInsContextMenu 
 #endif
 
-DECLARE_SOURCE("$Revision$");
+DECLARE_SOURCE("$Revision: 1771 $");
 
 CC_IMPLEMENT_DYNCREATE(NodeBitmap, NodeRect);
 #if !defined(EXCLUDE_FROM_RALPH)

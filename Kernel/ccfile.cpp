@@ -1,4 +1,4 @@
-// $Id$
+// $Id: ccfile.cpp 1607 2006-07-29 20:24:58Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  
@@ -122,7 +122,7 @@ service marks of Xara Group Ltd. All rights in these marks are reserved.
 //#include "nev.h"
 //#include "tim.h"
 
-DECLARE_SOURCE("$Revision$");
+DECLARE_SOURCE("$Revision: 1607 $");
 
 CC_IMPLEMENT_DYNAMIC(CCFile, CCObject);
 CC_IMPLEMENT_DYNAMIC(CCLexFile, CCFile);

@@ -1,4 +1,4 @@
-// $Id$
+// $Id: xagdraw.h 882 2006-04-25 15:40:57Z gavin $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  

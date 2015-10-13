@@ -1,4 +1,4 @@
-// $Id$
+// $Id: menuitem.cpp 1464 2006-07-18 12:32:26Z gerry $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  
@@ -113,7 +113,7 @@ service marks of Xara Group Ltd. All rights in these marks are reserved.
 #include "oilmenus.h"
 #include "hotkeys.h"
 
-DECLARE_SOURCE("$Revision$");  
+DECLARE_SOURCE("$Revision: 1464 $");  
 
 
 const OpState MenuItem::DefaultMenuState( FALSE, TRUE );		// not ticked, but greyed

@@ -1,4 +1,4 @@
-// $Id$
+// $Id: opcntr.cpp 1754 2006-09-15 16:01:48Z phil $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  
@@ -162,7 +162,7 @@ CC_IMPLEMENT_DYNCREATE(OpConvertPathToShapes, SelOperation)
 CC_IMPLEMENT_DYNCREATE(OpToggleContourInsetPath, SelOperation)
 CC_IMPLEMENT_DYNCREATE(ToggleInsetPathAction, Action)
 
-DECLARE_SOURCE( "$Revision$" );
+DECLARE_SOURCE( "$Revision: 1754 $" );
 
 #define new CAM_DEBUG_NEW
 

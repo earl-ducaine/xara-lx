@@ -1,5 +1,5 @@
-// $Id$
-// $Id$
+// $Id: fontimpl.h 853 2006-04-21 12:32:46Z luke $
+// $Id: fontimpl.h 853 2006-04-21 12:32:46Z luke $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  

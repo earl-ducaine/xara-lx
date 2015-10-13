@@ -1,4 +1,4 @@
-// $Id$
+// $Id: palmenu.cpp 1088 2006-05-16 16:56:32Z luke $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  
@@ -102,7 +102,7 @@ service marks of Xara Group Ltd. All rights in these marks are reserved.
 #include "bmpalctrl.h"
 #include "bmapprev.h"
 
-DECLARE_SOURCE("$Revision$");
+DECLARE_SOURCE("$Revision: 1088 $");
 
 //  An implementation to match the declaration in the header file.
 CC_IMPLEMENT_DYNCREATE(OpPalettePopupCommand, Operation)

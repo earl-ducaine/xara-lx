@@ -1,4 +1,4 @@
-// $Id$
+// $Id: ai8_eps.cpp 1314 2006-06-14 08:58:56Z builder1 $
 // ai8_eps.cpp: implementation of the AI8EPSFilter class.
 //
 //////////////////////////////////////////////////////////////////////

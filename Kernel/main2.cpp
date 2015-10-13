@@ -1,4 +1,4 @@
-// $Id$
+// $Id: main2.cpp 1739 2006-09-05 11:07:16Z luke $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  

@@ -1,4 +1,4 @@
-// $Id$
+// $Id: memblk.cpp 1467 2006-07-18 17:00:07Z gerry $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  

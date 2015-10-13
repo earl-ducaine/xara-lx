@@ -1,4 +1,4 @@
-// $Id$
+// $Id: oilmods.cpp 1464 2006-07-18 12:32:26Z gerry $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  
@@ -118,7 +118,7 @@ service marks of Xara Group Ltd. All rights in these marks are reserved.
 #include "viewmod.h"
 //#include "zoomres.h"
 
-DECLARE_SOURCE("$Revision$");
+DECLARE_SOURCE("$Revision: 1464 $");
 
 // Declare smart memory handling in Debug builds
 #define new CAM_DEBUG_NEW

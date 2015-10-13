@@ -1,4 +1,4 @@
-// $Id$
+// $Id: cxfrech.cpp 1688 2006-08-10 12:05:20Z gerry $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  
@@ -114,7 +114,7 @@ service marks of Xara Group Ltd. All rights in these marks are reserved.
 //#include "cxfrec.h" - in camtypes.h [AUTOMATICALLY REMOVED]
 #include "cxftags.h"
 
-DECLARE_SOURCE("$Revision$");
+DECLARE_SOURCE("$Revision: 1688 $");
 
 // An implement to match the Declare in the .h file.
 CC_IMPLEMENT_DYNAMIC(CXaraFileRecordHandler,ListItem);

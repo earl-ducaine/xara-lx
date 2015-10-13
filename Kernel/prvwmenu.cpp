@@ -1,4 +1,4 @@
-// $Id$
+// $Id: prvwmenu.cpp 1482 2006-07-20 10:23:23Z luke $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  
@@ -110,7 +110,7 @@ Code for the colour selector tool added 22/07/99 ap
 
 // This is not compulsory, but you may as well put it in so that the correct version
 // of your file can be registered in the .exe
-DECLARE_SOURCE("$Revision$");
+DECLARE_SOURCE("$Revision: 1482 $");
 
 // An implement to match the Declare in the .h file.
 // If you have many classes, it is recommended to place them all together, here at the start of the file

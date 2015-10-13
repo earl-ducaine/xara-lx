@@ -1,4 +1,4 @@
-// $Id$
+// $Id: finfodlg.cpp 1765 2007-01-31 11:43:52Z luke $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  
@@ -102,7 +102,7 @@ service marks of Xara Group Ltd. All rights in these marks are reserved.
 
 #include "camtypes.h"
 
-DECLARE_SOURCE("$Revision$");
+DECLARE_SOURCE("$Revision: 1765 $");
 
 #include "camelot.h"
 //#include "dlgtypes.h"  - in camtypes.h [AUTOMATICALLY REMOVED]

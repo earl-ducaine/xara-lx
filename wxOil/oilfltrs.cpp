@@ -1,4 +1,4 @@
-// $Id$
+// $Id: oilfltrs.cpp 1679 2006-08-08 09:47:27Z gerry $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  

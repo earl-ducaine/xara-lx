@@ -1490,14 +1490,14 @@ BOOL ImageMagickFilter::CheckPath()
 		s_ImageMagickPath = DIP_QUOTE(DEFAULT_IMAGEMAGICK_PATH);
 
 	wxArrayString output;
-	long /*TYPENOTE: Correct*/ ret=::wxExecute(wxString((const TCHAR *)s_ImageMagickPath)/*+_T(" --version")*/, output, wxEXEC_SYNC | wxEXEC_NODISABLE);
+	long /*TYPENOTE: Correct*/ ret=::wxExecute(wxString((const TCHAR *)s_ImageMagickPath)+_T(" --version"), output, wxEXEC_SYNC | wxEXEC_NODISABLE);
 	if (!ret && output.GetCount()>0)
 	{
 		wxString check = output[0];
 		wxString version;
 		if (check.StartsWith(_T("Version: ImageMagick "),&version))
 		{
-			wxStringTokenizer tk(version, _T(".: "));
+			wxStringTokenizer tk(version, _T(".:- "));
 			if (tk.CountTokens()>=3)
 			{
 				long /*TYPENOTE: Correct*/ v1,v2,v3=0;

@@ -1,4 +1,4 @@
-// $Id$
+// $Id: vectrndr.cpp 1304 2006-06-12 23:03:14Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  

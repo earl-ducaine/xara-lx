@@ -1,4 +1,4 @@
-// $Id$
+// $Id: ndmldpth.cpp 1315 2006-06-14 09:51:34Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  
@@ -118,7 +118,7 @@ service marks of Xara Group Ltd. All rights in these marks are reserved.
 //#include "cxfrec.h" - in camtypes.h [AUTOMATICALLY REMOVED]
 //#include "camfiltr.h" - in camtypes.h [AUTOMATICALLY REMOVED]
 
-DECLARE_SOURCE("$Revision$");
+DECLARE_SOURCE("$Revision: 1315 $");
 
 CC_IMPLEMENT_DYNCREATE( NodeMouldPath, NodePath )  
 

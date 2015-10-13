@@ -1,4 +1,4 @@
-// $Id$
+// $Id: nativeps.cpp 1668 2006-08-04 11:45:17Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  

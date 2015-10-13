@@ -1,4 +1,4 @@
-// $Id$
+// $Id: ops.h 877 2006-04-24 17:15:07Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  

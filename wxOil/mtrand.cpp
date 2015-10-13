@@ -1,4 +1,4 @@
-// $Id$
+// $Id: mtrand.cpp 751 2006-03-31 15:43:49Z alex $
 // mtrand.cpp : Defines the entry point for the console application.
 //
 /* @@tag:xara-cn-tp@@ THIRD PARTY COPYRIGHT */

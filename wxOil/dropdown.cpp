@@ -1,4 +1,4 @@
-// $Id$
+// $Id: dropdown.cpp 1412 2006-07-05 19:53:47Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  

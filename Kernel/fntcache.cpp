@@ -1,4 +1,4 @@
-// $Id$
+// $Id: fntcache.cpp 1282 2006-06-09 09:46:49Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  
@@ -512,7 +512,7 @@ UINT32 FontCache::Misses = 0;
 
 BOOL FontCache::InitCalled = FALSE; // Set to TRUE on entry to Init function 
 
-DECLARE_SOURCE("$Revision$")
+DECLARE_SOURCE("$Revision: 1282 $")
 
 // Declare nodes dynamic
 CC_IMPLEMENT_DYNAMIC(PathHandleItem, CCObject)

@@ -1,4 +1,4 @@
-// $Id$
+// $Id: opbevel.cpp 1752 2006-09-15 09:13:05Z luke $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  
@@ -155,7 +155,7 @@ service marks of Xara Group Ltd. All rights in these marks are reserved.
 //#include "bevres.h"
 
 
-DECLARE_SOURCE( "$Revision$" );
+DECLARE_SOURCE( "$Revision: 1752 $" );
 
 CC_IMPLEMENT_DYNCREATE(OpCreateBevel, SelOperation)
 CC_IMPLEMENT_DYNCREATE(OpRemoveBevel, SelOperation)

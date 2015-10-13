@@ -1,4 +1,4 @@
-// $Id$
+// $Id: shadinfo.cpp 1401 2006-07-03 11:17:52Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  
@@ -140,7 +140,7 @@ service marks of Xara Group Ltd. All rights in these marks are reserved.
 #include "selector.h"
 #include "ophist.h"
 
-DECLARE_SOURCE( "$Revision$" );
+DECLARE_SOURCE( "$Revision: 1401 $" );
 CC_IMPLEMENT_DYNCREATE(SoftShadowInfoBarOp,InformationBarOp)
 CC_IMPLEMENT_DYNCREATE(ShadowDragData,ListItem)
 

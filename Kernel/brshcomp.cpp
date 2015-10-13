@@ -1,4 +1,4 @@
-// $Id$
+// $Id: brshcomp.cpp 1732 2006-09-03 14:08:16Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  
@@ -140,7 +140,7 @@ service marks of Xara Group Ltd. All rights in these marks are reserved.
 //#include "brdlgres.h"
 #include "brushop.h"
 
-DECLARE_SOURCE("$Revision$");
+DECLARE_SOURCE("$Revision: 1732 $");
 
 CC_IMPLEMENT_DYNAMIC(BrushDefinition, LineDefinition)
 CC_IMPLEMENT_DYNAMIC(BrushComponent, LineComponent)

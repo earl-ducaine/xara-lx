@@ -1,4 +1,4 @@
-// $Id$
+// $Id: oilmenus.cpp 1667 2006-08-04 11:40:10Z luke $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  
@@ -121,7 +121,7 @@ service marks of Xara Group Ltd. All rights in these marks are reserved.
 #include "camframe.h"	// GetMainFrame()
 #include "camelot.h"	// wxGetApp
 
-DECLARE_SOURCE("$Revision$");  
+DECLARE_SOURCE("$Revision: 1667 $");  
 
 // This wasn't here before 7/3/97
 // We want better memory tracking

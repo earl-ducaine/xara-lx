@@ -1,4 +1,4 @@
-// $Id$
+// $Id: outptdib.h 1182 2006-05-23 18:17:01Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  

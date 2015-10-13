@@ -1,4 +1,4 @@
-// $Id$
+// $Id: customlist.cpp 1082 2006-05-16 14:42:54Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  

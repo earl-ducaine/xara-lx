@@ -1,4 +1,4 @@
-// $Id$
+// $Id: dlgmgr.h 1769 2007-06-17 19:33:43Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  

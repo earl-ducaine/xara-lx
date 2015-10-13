@@ -1,4 +1,4 @@
-// $Id$
+// $Id: cversion.h 809 2006-04-13 11:28:42Z phil $
 // (automatically built by CALCVER. Do not edit by hand)
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================

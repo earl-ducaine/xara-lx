@@ -1,4 +1,4 @@
-// $Id$
+// $Id: blendatt.h 1273 2006-06-08 19:41:59Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  

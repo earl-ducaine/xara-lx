@@ -1,4 +1,4 @@
-// $Id$
+// $Id: stack.cpp 1282 2006-06-09 09:46:49Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  
@@ -106,7 +106,7 @@ service marks of Xara Group Ltd. All rights in these marks are reserved.
 //#include "ensure.h" - in camtypes.h [AUTOMATICALLY REMOVED]
 //#include "listitem.h" - in camtypes.h [AUTOMATICALLY REMOVED]
 
-DECLARE_SOURCE("$Revision$");
+DECLARE_SOURCE("$Revision: 1282 $");
 
 // Declare smart memory handling in Debug builds
 #define new CAM_DEBUG_NEW

@@ -1,4 +1,4 @@
-// $Id$
+// $Id: fontman.h 1642 2006-08-02 10:15:44Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  

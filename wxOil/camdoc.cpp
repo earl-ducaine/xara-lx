@@ -1,4 +1,4 @@
-// $Id$
+// $Id: camdoc.cpp 1777 2007-07-04 10:37:58Z luke $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  

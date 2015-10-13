@@ -1,4 +1,4 @@
-// $Id$
+// $Id: fontpgen.h 922 2006-04-29 15:22:04Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  

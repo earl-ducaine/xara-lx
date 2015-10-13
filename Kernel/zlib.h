@@ -1,4 +1,4 @@
-// $Id$
+// $Id: zlib.h 751 2006-03-31 15:43:49Z alex $
 
 /* @@tag:xara-cn-tp@@ THIRD PARTY COPYRIGHT */
 /* zlib.h -- interface of the 'zlib' general purpose compression library

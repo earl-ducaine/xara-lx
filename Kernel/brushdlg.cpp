@@ -1,4 +1,4 @@
-// $Id$
+// $Id: brushdlg.cpp 1732 2006-09-03 14:08:16Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  
@@ -98,7 +98,7 @@ service marks of Xara Group Ltd. All rights in these marks are reserved.
 
 #include "camtypes.h"		// the precompiled stuff
 
-DECLARE_SOURCE("$Revision$");
+DECLARE_SOURCE("$Revision: 1732 $");
 
 #include "brushdlg.h"		// include our class header
 #include "dlgmgr.h"

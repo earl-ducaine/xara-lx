@@ -1,4 +1,4 @@
-// $Id$
+// $Id: cutop.cpp 1467 2006-07-18 17:00:07Z gerry $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  
@@ -157,7 +157,7 @@ service marks of Xara Group Ltd. All rights in these marks are reserved.
 #include "effects_stack.h"
 #include "ophist.h"
 
-DECLARE_SOURCE("$Revision$");
+DECLARE_SOURCE("$Revision: 1467 $");
 
 CC_IMPLEMENT_DYNCREATE(OpCut, SelOperation)
 CC_IMPLEMENT_DYNCREATE(OpCopy, UndoableOperation)  

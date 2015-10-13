@@ -1,4 +1,4 @@
-// $Id$
+// $Id: localenv.cpp 899 2006-04-26 15:04:10Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  
@@ -103,7 +103,7 @@ service marks of Xara Group Ltd. All rights in these marks are reserved.
 
 #include "localenv.h"
 
-DECLARE_SOURCE("$Revision$");
+DECLARE_SOURCE("$Revision: 899 $");
 
 CC_IMPLEMENT_MEMDUMP(LocalEnvironment, CC_CLASS_MEMDUMP)
 CC_IMPLEMENT_DYNAMIC(LocaleChangedMsg, Msg)

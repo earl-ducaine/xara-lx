@@ -1,4 +1,4 @@
-// $Id$
+// $Id: stdbars.cpp 1608 2006-07-29 20:34:08Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  
@@ -98,7 +98,7 @@ service marks of Xara Group Ltd. All rights in these marks are reserved.
 
 #include "camtypes.h"
 
-DECLARE_SOURCE("$Revision$");
+DECLARE_SOURCE("$Revision: 1608 $");
 
 #include "stdbars.h"
 #include "statline.h"

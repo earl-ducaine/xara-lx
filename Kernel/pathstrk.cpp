@@ -1,4 +1,4 @@
-// $Id$
+// $Id: pathstrk.cpp 1516 2006-07-24 21:03:00Z gavin $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  

@@ -1,4 +1,4 @@
-// $Id$
+// $Id: dlgmgr.cpp 1770 2007-06-17 19:42:21Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  
@@ -149,7 +149,7 @@ service marks of Xara Group Ltd. All rights in these marks are reserved.
 #include "statline.h"
 #include <wx/imaglist.h>
 
-DECLARE_SOURCE("$Revision$");
+DECLARE_SOURCE("$Revision: 1770 $");
 
 CC_IMPLEMENT_DYNAMIC(CGadgetImageList, CCObject);
 

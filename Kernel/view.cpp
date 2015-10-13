@@ -1,4 +1,4 @@
-// $Id$
+// $Id: view.cpp 1357 2006-06-25 11:31:45Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  
@@ -147,7 +147,7 @@ service marks of Xara Group Ltd. All rights in these marks are reserved.
 #include "ralphdoc.h"
 #endif
 
-DECLARE_SOURCE("$Revision$");
+DECLARE_SOURCE("$Revision: 1357 $");
 
 CC_IMPLEMENT_DYNAMIC(View, ListItem)
 

@@ -1,4 +1,4 @@
-// $Id$
+// $Id: cxfrec.cpp 1695 2006-08-12 19:08:10Z alex $
 // Implementation of the record class of the v2 file format
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================

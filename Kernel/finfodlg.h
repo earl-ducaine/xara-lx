@@ -1,4 +1,4 @@
-// $Id$
+// $Id: finfodlg.h 1765 2007-01-31 11:43:52Z luke $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  

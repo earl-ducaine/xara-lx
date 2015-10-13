@@ -1,4 +1,4 @@
-// $Id$
+// $Id: xpfrgn.h 1380 2006-06-28 11:15:10Z gerry $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  

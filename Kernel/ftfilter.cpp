@@ -1,4 +1,4 @@
-// $Id$
+// $Id: ftfilter.cpp 1680 2006-08-08 10:14:11Z gerry $
 // $$
 //
 // The Flare Template format

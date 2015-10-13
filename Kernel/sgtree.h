@@ -1,4 +1,4 @@
-// $Id$
+// $Id: sgtree.h 1139 2006-05-19 17:47:07Z gerry $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  

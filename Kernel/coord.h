@@ -1,4 +1,4 @@
-// $Id$
+// $Id: coord.h 1285 2006-06-09 11:10:27Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  

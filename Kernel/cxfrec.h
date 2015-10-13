@@ -1,4 +1,4 @@
-// $Id$
+// $Id: cxfrec.h 1237 2006-06-01 17:40:10Z gerry $
 // Header for the controlling class of the v2 file format
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================

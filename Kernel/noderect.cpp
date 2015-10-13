@@ -1,4 +1,4 @@
-// $Id$
+// $Id: noderect.cpp 1315 2006-06-14 09:51:34Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  
@@ -111,7 +111,7 @@ service marks of Xara Group Ltd. All rights in these marks are reserved.
 
 
 // Put my version Number into the About box
-DECLARE_SOURCE( "$Revision$" );
+DECLARE_SOURCE( "$Revision: 1315 $" );
 
 // Declare class and give details in memory dumps
 CC_IMPLEMENT_DYNCREATE(NodeRect, NodeSimpleShape)

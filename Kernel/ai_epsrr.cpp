@@ -1,4 +1,4 @@
-// $Id$
+// $Id: ai_epsrr.cpp 1336 2006-06-17 16:18:41Z alex $
 // Implementation of Adobe Illustrator EPS filter.
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================

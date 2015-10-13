@@ -1,4 +1,4 @@
-// $Id$
+// $Id: paths.cpp 1492 2006-07-20 19:19:48Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  
@@ -135,7 +135,7 @@ service marks of Xara Group Ltd. All rights in these marks are reserved.
 #define new CAM_DEBUG_NEW
 
 // Put my version number into the about box
-DECLARE_SOURCE( "$Revision$" );
+DECLARE_SOURCE( "$Revision: 1492 $" );
 
 /********************************************************************************************
 

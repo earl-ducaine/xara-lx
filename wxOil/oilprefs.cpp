@@ -1,4 +1,4 @@
-// $Id$
+// $Id: oilprefs.cpp 1466 2006-07-18 16:24:30Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  

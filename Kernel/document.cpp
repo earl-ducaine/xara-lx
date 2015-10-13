@@ -1,4 +1,4 @@
-// $Id$
+// $Id: document.cpp 1668 2006-08-04 11:45:17Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  
@@ -157,7 +157,7 @@ service marks of Xara Group Ltd. All rights in these marks are reserved.
 //#include "ralphvw.h"
 #include "vstate.h"
 
-DECLARE_SOURCE("$Revision$");
+DECLARE_SOURCE("$Revision: 1668 $");
 
 CC_IMPLEMENT_DYNAMIC(Document, BaseDocument)
 CC_IMPLEMENT_DYNAMIC(DocChangingMsg, Msg)

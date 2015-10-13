@@ -1,4 +1,4 @@
-// $Id$
+// $Id: bevinfo.cpp 1752 2006-09-15 09:13:05Z luke $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  
@@ -136,7 +136,7 @@ service marks of Xara Group Ltd. All rights in these marks are reserved.
 //#include "camvw.h"
 #include "nodebev.h"
 
-DECLARE_SOURCE( "$Revision$" );
+DECLARE_SOURCE( "$Revision: 1752 $" );
 
 // Declare stuff for the memory tracking
 CC_IMPLEMENT_DYNCREATE( BevelInfoBarOp, InformationBarOp )

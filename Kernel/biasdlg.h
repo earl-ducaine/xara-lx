@@ -1,4 +1,4 @@
-// $Id$
+// $Id: biasdlg.h 1756 2006-09-16 12:02:30Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  

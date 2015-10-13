@@ -1,4 +1,4 @@
-// $Id$
+// $Id: optsview.cpp 1771 2007-06-17 20:14:43Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  
@@ -125,7 +125,7 @@ CC_IMPLEMENT_DYNAMIC(ViewTab, OptionsTabs)
 			  
 // This is not compulsory, but you may as well put it in so that the correct version
 // of your file can be registered in the .exe
-DECLARE_SOURCE("$Revision$");
+DECLARE_SOURCE("$Revision: 1771 $");
 
 /********************************************************************************************
 

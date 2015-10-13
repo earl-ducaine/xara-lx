@@ -1,4 +1,4 @@
-// $Id$
+// $Id: ftfonts.cpp 1535 2006-07-25 16:50:32Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  
@@ -102,7 +102,7 @@ service marks of Xara Group Ltd. All rights in these marks are reserved.
 */
 
 #include "camtypes.h"
-DECLARE_SOURCE( "$Revision$" );
+DECLARE_SOURCE( "$Revision: 1535 $" );
 
 // we do not compile any of the functions on non-wxGTK builds
 #if defined(__WXGTK__)
@@ -122,8 +122,10 @@ DECLARE_SOURCE( "$Revision$" );
 #include FT_TYPE1_TABLES_H
 
 #ifdef __WXGTK20__
+#define GSocket GlibGSocket
 #include <gtk/gtk.h>
 extern GtkWidget *wxGetRootWindow();
+#undef GSocket
 #endif
 
 CC_IMPLEMENT_DYNCREATE( FTFontMan, CCObject )

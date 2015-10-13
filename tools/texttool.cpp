@@ -1,4 +1,4 @@
-// $Id$
+// $Id: texttool.cpp 1656 2006-08-03 12:59:39Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  
@@ -142,7 +142,7 @@ service marks of Xara Group Ltd. All rights in these marks are reserved.
 #include "usercord.h"
 #include "camview.h"
 
-DECLARE_SOURCE( "$Revision$" );
+DECLARE_SOURCE( "$Revision: 1656 $" );
 
 CC_IMPLEMENT_MEMDUMP(TextTool,Tool_v1)
 CC_IMPLEMENT_DYNAMIC(TextToolBlobPosItem, ListItem);

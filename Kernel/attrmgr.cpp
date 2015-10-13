@@ -1,4 +1,4 @@
-// $Id$
+// $Id: attrmgr.cpp 1445 2006-07-14 20:15:02Z phil $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  
@@ -144,7 +144,7 @@ service marks of Xara Group Ltd. All rights in these marks are reserved.
 #include "cxftags.h"
 #include "ophist.h"
 
-DECLARE_SOURCE("$Revision$");
+DECLARE_SOURCE("$Revision: 1445 $");
 
 CC_IMPLEMENT_DYNAMIC(CurrentAttrChangedMsg, Msg) 
 

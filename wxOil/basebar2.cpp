@@ -1,4 +1,4 @@
-// $Id$
+// $Id: basebar2.cpp 1282 2006-06-09 09:46:49Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  
@@ -4564,8 +4564,8 @@ void BaseBar::StartDrag(wxPoint point, DlgDragType TypeOfDrag)
 // -----------------------------------------------------------------------------------------
 // Message map - maintained by Class Wizard.
 
-BEGIN_EVENT_TABLE( BaseBar, wxWindow )
 #pragma message( __LOCMSG__ "Removed BaseBar message map" )
+BEGIN_EVENT_TABLE( BaseBar, wxWindow )
 /*	ON_WM_NCCALCSIZE()
 	ON_WM_NCPAINT()
 	ON_WM_NCACTIVATE()

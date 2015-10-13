@@ -1,4 +1,4 @@
-// $Id$
+// $Id: psrndrgn.cpp 1365 2006-06-25 20:29:01Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  
@@ -122,7 +122,7 @@ service marks of Xara Group Ltd. All rights in these marks are reserved.
 #include "printctl.h"
 //#include "view.h" - in camtypes.h [AUTOMATICALLY REMOVED]
 
-DECLARE_SOURCE("$Revision$");
+DECLARE_SOURCE("$Revision: 1365 $");
 
 CC_IMPLEMENT_DYNAMIC(PrintPSRenderRegion, CamelotEPSRenderRegion)
 

@@ -1,4 +1,4 @@
-// $Id$
+// $Id: fthelper.cpp 1282 2006-06-09 09:46:49Z alex $
 // Implementation of the FlareTemplateHelper class
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================

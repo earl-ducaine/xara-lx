@@ -1,4 +1,4 @@
-// $Id$
+// $Id: camplatform.cpp 1080 2006-05-16 13:24:45Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  

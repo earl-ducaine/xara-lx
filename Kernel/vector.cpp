@@ -1,4 +1,4 @@
-// $Id$
+// $Id: vector.cpp 900 2006-04-26 15:06:27Z gerry $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  

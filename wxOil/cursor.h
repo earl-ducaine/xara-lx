@@ -1,4 +1,4 @@
-// $Id$
+// $Id: cursor.h 1646 2006-08-02 15:32:50Z luke $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  

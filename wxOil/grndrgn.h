@@ -1,4 +1,4 @@
-// $Id$
+// $Id: grndrgn.h 1361 2006-06-25 16:43:38Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  

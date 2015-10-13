@@ -1,4 +1,4 @@
-// $Id$
+// $Id: colmenu.cpp 1149 2006-05-22 08:50:00Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  
@@ -110,7 +110,7 @@ service marks of Xara Group Ltd. All rights in these marks are reserved.
 
 //#include "will2.h"
 
-DECLARE_SOURCE("$Revision$");
+DECLARE_SOURCE("$Revision: 1149 $");
 
 
 CC_IMPLEMENT_MEMDUMP(ColEditContextMenu, ContextMenu)

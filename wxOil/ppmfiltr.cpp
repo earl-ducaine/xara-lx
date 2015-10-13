@@ -1,4 +1,4 @@
-// $Id$
+// $Id: ppmfiltr.cpp 1460 2006-07-17 19:00:12Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  

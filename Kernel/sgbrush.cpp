@@ -1,4 +1,4 @@
-// $Id$
+// $Id: sgbrush.cpp 1732 2006-09-03 14:08:16Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  

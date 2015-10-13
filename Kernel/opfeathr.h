@@ -1,4 +1,4 @@
-// $Id$
+// $Id: opfeathr.h 1526 2006-07-25 13:32:07Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  

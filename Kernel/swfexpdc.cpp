@@ -1,4 +1,4 @@
-// $Id$
+// $Id: swfexpdc.cpp 1314 2006-06-14 08:58:56Z builder1 $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  

@@ -1,4 +1,4 @@
-// $Id$
+// $Id: bitmapcache.h 751 2006-03-31 15:43:49Z alex $
 // BitmapCache.h: interface for the CBitmapCache class.
 //
 //////////////////////////////////////////////////////////////////////

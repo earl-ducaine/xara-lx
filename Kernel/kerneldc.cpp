@@ -1,4 +1,4 @@
-// $Id$
+// $Id: kerneldc.cpp 1432 2006-07-11 15:46:55Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  
@@ -108,7 +108,7 @@ service marks of Xara Group Ltd. All rights in these marks are reserved.
 //#include "fixmem.h" - in camtypes.h [AUTOMATICALLY REMOVED]
 //#include "epsfiltr.h" - in camtypes.h [AUTOMATICALLY REMOVED]
 
-DECLARE_SOURCE("$Revision$");
+DECLARE_SOURCE("$Revision: 1432 $");
 
 #define new CAM_DEBUG_NEW
 

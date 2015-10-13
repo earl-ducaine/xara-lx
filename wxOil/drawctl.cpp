@@ -1,4 +1,4 @@
-// $Id$
+// $Id: drawctl.cpp 1243 2006-06-04 19:41:37Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  

@@ -1,4 +1,4 @@
-// $Id$
+// $Id: webattr.cpp 1361 2006-06-25 16:43:38Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  
@@ -113,7 +113,7 @@ service marks of Xara Group Ltd. All rights in these marks are reserved.
 #include "rechattr.h"	// Record handling classes for attributes
 //#include "cxfrec.h" - in camtypes.h [AUTOMATICALLY REMOVED]
 //#include "resimmap.h"	//_R(IDS_TAG_WEBADDRESS)
-DECLARE_SOURCE("$Revision$");
+DECLARE_SOURCE("$Revision: 1361 $");
 
 CC_IMPLEMENT_DYNCREATE(AttrWebAddress, NodeAttribute)
 CC_IMPLEMENT_DYNCREATE(WebAddressAttribute, AttributeValue)

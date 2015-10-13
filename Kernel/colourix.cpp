@@ -1,4 +1,4 @@
-// $Id$
+// $Id: colourix.cpp 1333 2006-06-16 20:34:16Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  

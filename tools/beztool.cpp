@@ -1,4 +1,4 @@
-// $Id$
+// $Id: beztool.cpp 1700 2006-08-15 13:32:14Z luke $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  
@@ -154,7 +154,7 @@ service marks of Xara Group Ltd. All rights in these marks are reserved.
 #include "opbevel.h"
 #include "nodebev.h"
 
-DECLARE_SOURCE("$Revision$");
+DECLARE_SOURCE("$Revision: 1700 $");
 
 CC_IMPLEMENT_MEMDUMP( BezierTool, Tool_v1 )
 CC_IMPLEMENT_DYNCREATE( BezToolInfoBarOp, InformationBarOp )

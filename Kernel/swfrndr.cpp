@@ -1,4 +1,4 @@
-// $Id$
+// $Id: swfrndr.cpp 1611 2006-07-30 11:22:17Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  

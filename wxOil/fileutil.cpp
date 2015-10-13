@@ -1,4 +1,4 @@
-// $Id$
+// $Id: fileutil.cpp 1482 2006-07-20 10:23:23Z luke $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  

@@ -1,4 +1,4 @@
-// $Id$
+// $Id: jpgsrc.h 809 2006-04-13 11:28:42Z phil $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  

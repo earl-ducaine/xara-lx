@@ -1,4 +1,4 @@
-// $Id$
+// $Id: cursor.cpp 1709 2006-08-18 14:28:54Z luke $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  
@@ -118,7 +118,7 @@ service marks of Xara Group Ltd. All rights in these marks are reserved.
 
 //#include "hotlink.h"  //For the pointing hand cursor
 
-DECLARE_SOURCE("$Revision$");
+DECLARE_SOURCE("$Revision: 1709 $");
 
 // Memory dump info
 CC_IMPLEMENT_MEMDUMP(Cursor, CC_CLASS_MEMDUMP)

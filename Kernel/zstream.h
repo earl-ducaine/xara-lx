@@ -1,4 +1,4 @@
-// $Id$
+// $Id: zstream.h 1282 2006-06-09 09:46:49Z alex $
 /* @@tag:xara-cn-tp@@ THIRD PARTY COPYRIGHT */
 // This class contains all the streaming file zipping code
 

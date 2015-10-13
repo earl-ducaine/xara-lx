@@ -1,4 +1,4 @@
-// $Id$
+// $Id: opclip.cpp 1144 2006-05-20 18:43:14Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  
@@ -113,7 +113,7 @@ service marks of Xara Group Ltd. All rights in these marks are reserved.
 CC_IMPLEMENT_DYNCREATE(OpApplyClipView, SelOperation);
 CC_IMPLEMENT_DYNCREATE(OpRemoveClipView, SelOperation);
 
-DECLARE_SOURCE("$Revision$");
+DECLARE_SOURCE("$Revision: 1144 $");
 
 #define new CAM_DEBUG_NEW
 

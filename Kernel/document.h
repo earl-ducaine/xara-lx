@@ -1,4 +1,4 @@
-// $Id$
+// $Id: document.h 1310 2006-06-13 13:03:40Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  

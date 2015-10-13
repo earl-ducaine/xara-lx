@@ -1,4 +1,4 @@
-// $Id$
+// $Id: ktimer.h 1080 2006-05-16 13:24:45Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  

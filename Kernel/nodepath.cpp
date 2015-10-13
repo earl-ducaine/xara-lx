@@ -1,4 +1,4 @@
-// $Id$
+// $Id: nodepath.cpp 1688 2006-08-10 12:05:20Z gerry $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  
@@ -154,7 +154,7 @@ service marks of Xara Group Ltd. All rights in these marks are reserved.
 #include "attrmap.h"
 
 // Put my version Number into the About box
-DECLARE_SOURCE( "$Revision$" );
+DECLARE_SOURCE( "$Revision: 1688 $" );
 
 CC_IMPLEMENT_DYNCREATE( NodePath, NodeRenderableInk )
 

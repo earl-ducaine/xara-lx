@@ -1,4 +1,4 @@
-// $Id$
+// $Id: xlong.h 1261 2006-06-06 11:58:26Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  

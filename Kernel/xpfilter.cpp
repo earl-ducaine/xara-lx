@@ -1,4 +1,4 @@
-// $Id$
+// $Id: xpfilter.cpp 1771 2007-06-17 20:14:43Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  

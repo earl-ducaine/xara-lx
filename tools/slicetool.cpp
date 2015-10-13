@@ -1,4 +1,4 @@
-// $Id$
+// $Id: slicetool.cpp 1282 2006-06-09 09:46:49Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  
@@ -160,7 +160,7 @@ service marks of Xara Group Ltd. All rights in these marks are reserved.
 
 void UpdateCurrentStateGadget(); // forward def
 
-DECLARE_SOURCE( "$Revision$" );
+DECLARE_SOURCE( "$Revision: 1282 $" );
 
 #define MIN(a, b)	((a) < (b) ? (a) : (b))
 #define MAX(a, b)	((a) < (b) ? (b) : (a))

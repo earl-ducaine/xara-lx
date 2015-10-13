@@ -1,4 +1,4 @@
-// $Id$
+// $Id: prpsgds.cpp 1282 2006-06-09 09:46:49Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  
@@ -130,7 +130,7 @@ CC_IMPLEMENT_DYNCREATE(OpChangeLayerColour,		UndoableOperation)
 
 // This is not compulsory, but you may as well put it in so that the correct version
 // of your file can be registered in the .exe
-DECLARE_SOURCE("$Revision$");
+DECLARE_SOURCE("$Revision: 1282 $");
 
 #define new CAM_DEBUG_NEW
 

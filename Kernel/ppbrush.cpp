@@ -1,4 +1,4 @@
-// $Id$
+// $Id: ppbrush.cpp 1328 2006-06-15 19:23:45Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  
@@ -139,7 +139,7 @@ service marks of Xara Group Ltd. All rights in these marks are reserved.
 #include "ophist.h"
 #include "vectrndr.h"
 
-DECLARE_SOURCE("$Revision$");
+DECLARE_SOURCE("$Revision: 1328 $");
 
 CC_IMPLEMENT_DYNAMIC(PathProcessorBrush, PathProcessor);
 PORTNOTE("other","Removed BrushSubRenderContext - derived from SubRenderContext")

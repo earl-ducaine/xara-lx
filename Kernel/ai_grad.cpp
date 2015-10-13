@@ -1,4 +1,4 @@
-// $Id$
+// $Id: ai_grad.cpp 1313 2006-06-13 16:55:22Z alex $
 // ai_grad.cpp: implementation of the AIGradientProcessor class.
 //
 //////////////////////////////////////////////////////////////////////

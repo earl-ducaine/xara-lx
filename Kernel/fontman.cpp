@@ -1,4 +1,4 @@
-// $Id$
+// $Id: fontman.cpp 1642 2006-08-02 10:15:44Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  
@@ -110,7 +110,7 @@ service marks of Xara Group Ltd. All rights in these marks are reserved.
 //#include "txtattr.h" - in camtypes.h [AUTOMATICALLY REMOVED]
 //#include "richard2.h"
 
-DECLARE_SOURCE( "$Revision$" );
+DECLARE_SOURCE( "$Revision: 1642 $" );
 
 CC_IMPLEMENT_DYNCREATE( CachedFontItem, ListItem )
 CC_IMPLEMENT_DYNCREATE( FontManager, CCObject )

@@ -1,4 +1,4 @@
-// $Id$
+// $Id: keypress.cpp 1361 2006-06-25 16:43:38Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  
@@ -114,7 +114,7 @@ service marks of Xara Group Ltd. All rights in these marks are reserved.
 //#include "dragmgr.h"
 #include "unicdman.h"
 
-DECLARE_SOURCE("$Revision$");
+DECLARE_SOURCE("$Revision: 1361 $");
 
 CC_IMPLEMENT_MEMDUMP(KeyPressSysMsg,CC_CLASS_MEMDUMP)
 CC_IMPLEMENT_MEMDUMP(KeyPress,		CC_CLASS_MEMDUMP)

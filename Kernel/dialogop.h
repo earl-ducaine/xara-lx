@@ -1,4 +1,4 @@
-// $Id$
+// $Id: dialogop.h 1751 2006-09-13 11:33:14Z luke $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  

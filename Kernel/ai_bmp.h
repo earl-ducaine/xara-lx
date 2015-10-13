@@ -1,4 +1,4 @@
-// $Id$
+// $Id: ai_bmp.h 751 2006-03-31 15:43:49Z alex $
 // ai_bmp.h: interface for the AIBitmapProcessor class.
 //
 //////////////////////////////////////////////////////////////////////

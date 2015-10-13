@@ -1,4 +1,4 @@
-// $Id$
+// $Id: cnamecol.cpp 1282 2006-06-09 09:46:49Z alex $
 // $Header:
 // CNamedColourReplacer class implementation
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
@@ -145,7 +145,7 @@ CNamedColourReplacer::CNamedColourReplacer()
 CNamedColourReplacer::CNamedColourReplacer(ColourFillAttribute* pFillAttr, DocColour* pColour)
 {
 	// call the default constructor that NULLs all the member pointers
-	CNamedColourReplacer::CNamedColourReplacer();
+	CNamedColourReplacer();
 	Initialise(pFillAttr, pColour);
 }
 

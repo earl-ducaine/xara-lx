@@ -1,4 +1,4 @@
-// $Id$
+// $Id: freeeps.cpp 1314 2006-06-14 08:58:56Z builder1 $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  
@@ -112,7 +112,7 @@ service marks of Xara Group Ltd. All rights in these marks are reserved.
 //#include "fixmem.h" - in camtypes.h [AUTOMATICALLY REMOVED]
 #include "nodepath.h"
 
-DECLARE_SOURCE("$Revision$");
+DECLARE_SOURCE("$Revision: 1314 $");
 
 CC_IMPLEMENT_DYNAMIC(FreeHandEPSFilter, EPSFilter)
 

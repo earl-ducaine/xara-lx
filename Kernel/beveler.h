@@ -1,4 +1,4 @@
-// $Id$
+// $Id: beveler.h 751 2006-03-31 15:43:49Z alex $
 /////////////////////////////////////////////////
 // the bitmap beveler (for inner bevels)
 // DMc 2/6/98

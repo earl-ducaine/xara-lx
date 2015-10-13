@@ -1,4 +1,4 @@
-// $Id$
+// $Id: ccpanose.cpp 836 2006-04-18 16:06:15Z gerry $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  

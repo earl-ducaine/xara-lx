@@ -1,4 +1,4 @@
-// $Id$
+// $Id: cammemory.h 1492 2006-07-20 19:19:48Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  

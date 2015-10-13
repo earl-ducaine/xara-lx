@@ -1,4 +1,4 @@
-// $Id$
+// $Id: mtrand.h 751 2006-03-31 15:43:49Z alex $
 #ifndef MTRAND_H
 #define MTRAND_H
 

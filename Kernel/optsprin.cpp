@@ -1,4 +1,4 @@
-// $Id$
+// $Id: optsprin.cpp 1357 2006-06-25 11:31:45Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  
@@ -152,7 +152,7 @@ CC_IMPLEMENT_DYNCREATE(SepsDlg,				DialogOp);
 
 // This is not compulsory, but you may as well put it in so that the correct version
 // of your file can be registered in the .exe
-DECLARE_SOURCE("$Revision$");
+DECLARE_SOURCE("$Revision: 1357 $");
 
 //------------------------------------------------
 

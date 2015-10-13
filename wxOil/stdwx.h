@@ -1,4 +1,4 @@
-// $Id$
+// $Id: stdwx.h 1589 2006-07-28 20:53:48Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  

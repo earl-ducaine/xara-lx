@@ -1,4 +1,4 @@
-// $Id$
+// $Id: selector.cpp 1740 2006-09-05 11:08:36Z luke $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  
@@ -165,7 +165,7 @@ service marks of Xara Group Ltd. All rights in these marks are reserved.
 #include "cartprov.h"
 
 
-DECLARE_SOURCE( "$Revision$" );
+DECLARE_SOURCE( "$Revision: 1740 $" );
 
 // Karim 09/08/2000 - enable the new tab selection-iteration code.
 #define NEW_SELECTION_TAB_ITERATION

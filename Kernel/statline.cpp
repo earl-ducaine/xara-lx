@@ -1,4 +1,4 @@
-// $Id$
+// $Id: statline.cpp 1404 2006-07-04 19:57:01Z gerry $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  
@@ -131,7 +131,7 @@ service marks of Xara Group Ltd. All rights in these marks are reserved.
 #include "camview.h"
 #include "prncamvw.h"
 
-DECLARE_SOURCE("$Revision$");
+DECLARE_SOURCE("$Revision: 1404 $");
 
 CC_IMPLEMENT_DYNCREATE(StatusLine, StandardBar);
 

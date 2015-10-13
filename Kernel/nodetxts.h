@@ -1,4 +1,4 @@
-// $Id$
+// $Id: nodetxts.h 1405 2006-07-04 19:58:04Z gerry $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  

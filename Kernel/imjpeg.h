@@ -1,4 +1,4 @@
-// $Id$
+// $Id: imjpeg.h 1758 2006-09-20 11:25:11Z luke $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  

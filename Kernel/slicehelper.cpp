@@ -1,4 +1,4 @@
-// $Id$
+// $Id: slicehelper.cpp 1282 2006-06-09 09:46:49Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  
@@ -148,7 +148,7 @@ extern INT32 g_NoOfBarsBeforeImport;
 static char BASED_CODE THIS_FILE[] = __FILE__;
 #endif
 
-DECLARE_SOURCE("$Revision$");
+DECLARE_SOURCE("$Revision: 1282 $");
 
 // Declare smart memory handling in Debug builds
 #define new CAM_DEBUG_NEW

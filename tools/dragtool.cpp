@@ -1,4 +1,4 @@
-// $Id$
+// $Id: dragtool.cpp 1282 2006-06-09 09:46:49Z alex $
 // Implementation of the drag tool.
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
@@ -103,7 +103,7 @@ service marks of Xara Group Ltd. All rights in these marks are reserved.
 #include "selector.h"
 //#include "spread.h" - in camtypes.h [AUTOMATICALLY REMOVED]
 
-DECLARE_SOURCE( "$Revision$" );
+DECLARE_SOURCE( "$Revision: 1282 $" );
 
 // Run-time type checking etc etc
 CC_IMPLEMENT_MEMDUMP(DragTool, Tool_v1)

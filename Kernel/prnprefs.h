@@ -1,4 +1,4 @@
-// $Id$
+// $Id: prnprefs.h 1362 2006-06-25 17:49:11Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  

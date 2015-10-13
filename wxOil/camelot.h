@@ -1,4 +1,4 @@
-// $Id$
+// $Id: camelot.h 1714 2006-08-23 14:52:52Z luke $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  

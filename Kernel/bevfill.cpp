@@ -1,4 +1,4 @@
-// $Id$
+// $Id: bevfill.cpp 1282 2006-06-09 09:46:49Z alex $
 //////////////////////////////////////////////////////
 // bevel filling class implementation
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE

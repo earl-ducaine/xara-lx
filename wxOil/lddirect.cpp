@@ -1,4 +1,4 @@
-// $Id$
+// $Id: lddirect.cpp 1320 2006-06-14 14:39:32Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  
@@ -105,7 +105,7 @@ service marks of Xara Group Ltd. All rights in these marks are reserved.
 
 CC_IMPLEMENT_MEMDUMP(LoadDirect, CC_CLASS_MEMDUMP);
 
-DECLARE_SOURCE("$Revision$");
+DECLARE_SOURCE("$Revision: 1320 $");
 
 
 /*****************************************************************************************

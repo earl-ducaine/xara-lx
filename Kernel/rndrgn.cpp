@@ -1,4 +1,4 @@
-// $Id$
+// $Id: rndrgn.cpp 1609 2006-07-30 09:47:03Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  
@@ -140,7 +140,7 @@ service marks of Xara Group Ltd. All rights in these marks are reserved.
 
 #include "rendwnd.h"	// Temporary until DC creation moved to wxOil
 
-DECLARE_SOURCE("$Revision$");
+DECLARE_SOURCE("$Revision: 1609 $");
 
 // Declare smart memory handling in Debug builds
 #define new CAM_DEBUG_NEW
