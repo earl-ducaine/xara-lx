@@ -1,7 +1,7 @@
 // $Id: sgldrag.cpp 1282 2006-06-09 09:46:49Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
- 
+
                Xara LX, a vector drawing and manipulation program.
                     Copyright (C) 1993-2006 Xara Group Ltd.
        Copyright on certain contributions may be held in joint with their
@@ -32,7 +32,7 @@ ADDITIONAL RIGHTS
 
 Conditional upon your continuing compliance with the GNU General Public
 License described above, Xara Group Ltd grants to you certain additional
-rights. 
+rights.
 
 The additional rights are to use, modify, and distribute the software
 together with the wxWidgets library, the wxXtra library, and the "CDraw"
@@ -130,8 +130,8 @@ const LineAttrItem::TextPosition c_eLineAttrDragTextPos = LineAttrItem::NO_LABEL
 
 /********************************************************************************************
 
->	SGLineDragTarget::SGLineDragTarget(DialogOp *TheDialog, CGadgetID TheGadget = NULL)
-	 
+>	SGLineDragTarget::SGLineDragTarget(DialogOp *TheDialog, CGadgetID TheGadget = 0)
+
 	Author:		Will_Cowling (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	10/4/95
 	Inputs:		TheDialog - The kernel dialog in which the target exists
@@ -212,10 +212,10 @@ BOOL SGLineDragTarget::ProcessEvent(DragEventType Event, DragInformation *pDragI
 
 /********************************************************************************************
 
->	void GalleryLineDragInfo::GalleryLineDragInfo() 
-	 
+>	void GalleryLineDragInfo::GalleryLineDragInfo()
+
 	Author:		Will_Cowling (Xara Group Ltd) <camelotdev@xara.com>
-	Created:	10/4/95		  
+	Created:	10/4/95
 
 	Purpose:	Default constructor - do not call this constructor
 
@@ -223,7 +223,7 @@ BOOL SGLineDragTarget::ProcessEvent(DragEventType Event, DragInformation *pDragI
 
 GalleryLineDragInfo::GalleryLineDragInfo()
 {
-	ERROR3("Default GalleryLineDragInfo constructor called");	
+	ERROR3("Default GalleryLineDragInfo constructor called");
 }
 
 
@@ -233,9 +233,9 @@ GalleryLineDragInfo::GalleryLineDragInfo()
 >	GalleryLineDragInfo::GalleryLineDragInfo(LineAttrItem *pSourceItem,
 											SGMouseInfo *pMouseInfo, SGMiscInfo *pMiscInfo,
  											BOOL IsAdjust = FALSE)
-	 
+
 	Author:		Will_Cowling (Xara Group Ltd) <camelotdev@xara.com>
-	Created:	10/4/95		  
+	Created:	10/4/95
 
 	Inputs:		pSourceItem - The gallery item from which the drag originated
 				pMouseInfo	- The mouse info which made the item start the drag
@@ -263,9 +263,9 @@ GalleryLineDragInfo::GalleryLineDragInfo(LineAttrItem *pSourceItem,
 /********************************************************************************************
 
 >	GalleryLineDragInfo::~GalleryLineDragInfo()
- 
+
 	Author:		Will_Cowling (Xara Group Ltd) <camelotdev@xara.com>
-	Created:	10/4/95		  
+	Created:	10/4/95
 
 	Purpose:	Destructor. Deletes the dragged bitmap.
 
@@ -285,14 +285,14 @@ GalleryLineDragInfo::~GalleryLineDragInfo()
 
 /********************************************************************************************
 
->	void GalleryLineDragInfo::OnClick(INT32 Flags,POINT Point) 
-	 
+>	void GalleryLineDragInfo::OnClick(INT32 Flags,POINT Point)
+
 	Author:		Will_Cowling (Xara Group Ltd) <camelotdev@xara.com>
-	Created:	10/4/95		  
+	Created:	10/4/95
 	Inputs:		-
 	Outputs:	-
 	Returns:	-
-	Purpose:	This is called if a drag was attempted but never started because it was a 
+	Purpose:	This is called if a drag was attempted but never started because it was a
 				click all along. It calls back the SourceItem SGDisplayLine, to get it
 				to handle the click.
 	Errors:		-
@@ -381,7 +381,7 @@ UINT32 GalleryLineDragInfo::GetCursorID(DragTarget* pDragTarget)
 	Created:	10/4/95
 	Returns:	Whether String is valid
 	Purpose:	provide status line text for this target
-   
+
 ********************************************************************************************/
 
 BOOL GalleryLineDragInfo::GetStatusLineText(String_256 * TheText, DragTarget* pDragTarget)
@@ -445,16 +445,16 @@ BOOL GalleryLineDragInfo::GetStatusLineText(String_256 * TheText, DragTarget* pD
 	 	*TheText = DragString;
 		return TRUE;
 	}
- 	
+
 	return FALSE;
 }
 
 /********************************************************************************************
 
 >	BOOL GalleryBitmapDragInfo::OnPageDrop(ViewDragTarget* pDragTarget)
- 
+
 	Author:		Will_Cowling (Xara Group Ltd) <camelotdev@xara.com>
-	Created:	10/4/95		  
+	Created:	10/4/95
 	Inputs:		-
 	Outputs:	-
 	Returns:	-
@@ -495,7 +495,7 @@ BOOL GalleryLineDragInfo::OnPageDrop(ViewDragTarget* pDragTarget)
 		Attrib = MakeStartOrEndArrow(Attrib, IsStart);
 	}
 
-	if (pObjectHit) 
+	if (pObjectHit)
 	{
 		// Hit a Line Object, so apply attribute to it
 		AttributeManager::ApplyAttribToNode(pObjectHit, Attrib);
@@ -513,9 +513,9 @@ BOOL GalleryLineDragInfo::OnPageDrop(ViewDragTarget* pDragTarget)
 /********************************************************************************************
 
 >	INT32 GalleryLineDragInfo::GetDragTransparency()
- 
+
 	Author:		Will_Cowling (Xara Group Ltd) <camelotdev@xara.com>
-	Created:	10/4/95		  
+	Created:	10/4/95
 	Returns:	-
 	Purpose:	Specifies how transparent a drag should be.
 				A value of 0, will cause a normal solid blit.
@@ -537,7 +537,7 @@ INT32 GalleryLineDragInfo::GetDragTransparency()
 >	KernelBitmap* GalleryLineDragInfo::GetSolidDragMask()
 
 	Author:		Will_Cowling (Xara Group Ltd) <camelotdev@xara.com>
-	Created:	10/4/95		  
+	Created:	10/4/95
 	Returns:	-
 	Purpose:	Makes a 1bpp KernelBitmap mask for the solid drag.
 	SeeAlso:	-
@@ -555,7 +555,7 @@ KernelBitmap* GalleryLineDragInfo::GetSolidDragMask()
 		{
 			return NULL;
 		}
-		
+
 		Spread *pSpread = View->FindEnclosingSpread(OilCoord(0,0));
 		if (pSpread == NULL)
 		{
@@ -572,7 +572,7 @@ KernelBitmap* GalleryLineDragInfo::GetSolidDragMask()
 		wxScreenDC DisplayDC;
 		double dpi = (double) OSRenderRegion::GetFixedDCPPI(DisplayDC).GetWidth();
 
-		GRenderBitmap* pMaskRegion 	= new GRenderBitmap(ClipRegion, ConvertMatrix, ViewScale, 
+		GRenderBitmap* pMaskRegion 	= new GRenderBitmap(ClipRegion, ConvertMatrix, ViewScale,
 														32, dpi);
 
 		pMaskRegion->SetDoCompression(TRUE); // misnamed call to indicate we want transparency
@@ -584,7 +584,7 @@ KernelBitmap* GalleryLineDragInfo::GetSolidDragMask()
 		pMaskRegion->StopRender();
 
 		OILBitmap* pOilMaskBmp = pMaskRegion->ExtractBitmap();
-		TheBitmap = new KernelBitmap(pOilMaskBmp, TRUE);	
+		TheBitmap = new KernelBitmap(pOilMaskBmp, TRUE);
 
 		delete pMaskRegion;
 	}
@@ -598,7 +598,7 @@ KernelBitmap* GalleryLineDragInfo::GetSolidDragMask()
 											  BOOL* IsStart)
 
 	Author:		Will_Cowling (Xara Group Ltd) <camelotdev@xara.com>
-	Created:	10/4/95		  
+	Created:	10/4/95
 	Returns:	-
 	Purpose:	Checks to see whether the arrow was dropped nearer to the start or end of
 				a path.
@@ -624,7 +624,7 @@ BOOL GalleryLineDragInfo::DropStartOrEndArrow(Path* pPathHit, DocCoord DropPos,
 
 	// Find the first position of an ArrowHead
 	BOOL GotPos = ArrowRec::GetFirstArrowPos(TRUE,
-											 Coords, Verbs, NumCoords, 
+											 Coords, Verbs, NumCoords,
 								   			 &PathIndex, &ArrowCentre, &ArrowDirection);
 	while (GotPos)
 	{
@@ -639,7 +639,7 @@ BOOL GalleryLineDragInfo::DropStartOrEndArrow(Path* pPathHit, DocCoord DropPos,
 
 		// Find the next Arrow position (if there are any more subpaths)
 		GotPos = ArrowRec::GetNextArrowPos(TRUE,
-								 		   Coords, Verbs, NumCoords, 
+								 		   Coords, Verbs, NumCoords,
 							     		   &PathIndex, &ArrowCentre, &ArrowDirection);
 	}
 
@@ -648,7 +648,7 @@ BOOL GalleryLineDragInfo::DropStartOrEndArrow(Path* pPathHit, DocCoord DropPos,
 
 	// Find the first position of an ArrowHead
 	GotPos = ArrowRec::GetFirstArrowPos(FALSE,
-										 Coords, Verbs, NumCoords, 
+										 Coords, Verbs, NumCoords,
 							   			 &PathIndex, &ArrowCentre, &ArrowDirection);
 	while (GotPos)
 	{
@@ -663,7 +663,7 @@ BOOL GalleryLineDragInfo::DropStartOrEndArrow(Path* pPathHit, DocCoord DropPos,
 
 		// Find the next Arrow position (if there are any more subpaths)
 		GotPos = ArrowRec::GetNextArrowPos(FALSE,
-								 		   Coords, Verbs, NumCoords, 
+								 		   Coords, Verbs, NumCoords,
 							     		   &PathIndex, &ArrowCentre, &ArrowDirection);
 	}
 
@@ -678,7 +678,7 @@ BOOL GalleryLineDragInfo::DropStartOrEndArrow(Path* pPathHit, DocCoord DropPos,
 >	NodeAttribute* GalleryLineDragInfo::MakeStartOrEndArrow(NodeAttribute* pArrowAttr, BOOL Start)
 
 	Author:		Will_Cowling (Xara Group Ltd) <camelotdev@xara.com>
-	Created:	10/4/95		  
+	Created:	10/4/95
 	Returns:	-
 	Purpose:	Makes a Start or End arrow depending on where the arrow was dropped.
 	SeeAlso:	-
@@ -701,12 +701,12 @@ NodeAttribute* GalleryLineDragInfo::MakeStartOrEndArrow(NodeAttribute* pArrowAtt
 
 	if (Start)
 	{
-		NewAttr = new AttrStartArrow();	
+		NewAttr = new AttrStartArrow();
 		((AttrStartArrow*)NewAttr)->Value.StartArrow = Arrow;
 	}
 	else
 	{
-		NewAttr = new AttrEndArrow();	
+		NewAttr = new AttrEndArrow();
 		((AttrEndArrow*)NewAttr)->Value.EndArrow = Arrow;
 	}
 

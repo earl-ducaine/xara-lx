@@ -1,7 +1,7 @@
 // $Id: sgldrag.h 1250 2006-06-05 12:06:28Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
- 
+
                Xara LX, a vector drawing and manipulation program.
                     Copyright (C) 1993-2006 Xara Group Ltd.
        Copyright on certain contributions may be held in joint with their
@@ -32,7 +32,7 @@ ADDITIONAL RIGHTS
 
 Conditional upon your continuing compliance with the GNU General Public
 License described above, Xara Group Ltd grants to you certain additional
-rights. 
+rights.
 
 The additional rights are to use, modify, and distribute the software
 together with the wxWidgets library, the wxXtra library, and the "CDraw"
@@ -115,13 +115,13 @@ class KernelBitmap;
 	Created:	10/4/95
 	Purpose:	A Line attribute drag, which was started from the line gallery
 	SeeAlso:	BitmapDragInformation
-				
+
 ********************************************************************************************/
 
 class GalleryLineDragInfo : public BitmapDragInformation
-{ 
+{
 	CC_DECLARE_DYNCREATE(GalleryLineDragInfo)
- 
+
 public:
 	GalleryLineDragInfo();
  	GalleryLineDragInfo(	LineAttrItem *pSourceItem,
@@ -162,7 +162,7 @@ protected:
 	Author:		Will_Cowling (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	10/4/95
 
-	Purpose:	An instantiation of this class is created by each entity which wishes to 
+	Purpose:	An instantiation of this class is created by each entity which wishes to
 				provide a 'destination' to which the mouse can go to complete a drag.
 
 				This particular target is used for handling drags of BitmapSGalllery items
@@ -174,7 +174,7 @@ protected:
 
 				To remove a drag target at any time, destruct it - it automatically deregisters
 				and cleans up.
-				
+
 	SeeAlso:	DragManagerOp::StartDrag; DragInformation; DragTarget;
 				SGBitmapDragTarget::ProcessEvent
 
@@ -185,11 +185,11 @@ protected:
 class SGLineDragTarget : public SGListDragTarget
 {
 friend class DragManagerOp;
-	
+
 CC_DECLARE_DYNAMIC(SGLineDragTarget)
 
 public:	// Public interface
-	SGLineDragTarget(DialogOp *TheDialog, CGadgetID TheGadget = NULL);
+	SGLineDragTarget(DialogOp *TheDialog, CGadgetID TheGadget = 0);
 
 protected:
 		// Process a drag-related event

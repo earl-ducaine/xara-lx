@@ -1,7 +1,7 @@
 // $Id: sgdfonts.h 1282 2006-06-09 09:46:49Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
- 
+
                Xara LX, a vector drawing and manipulation program.
                     Copyright (C) 1993-2006 Xara Group Ltd.
        Copyright on certain contributions may be held in joint with their
@@ -32,7 +32,7 @@ ADDITIONAL RIGHTS
 
 Conditional upon your continuing compliance with the GNU General Public
 License described above, Xara Group Ltd grants to you certain additional
-rights. 
+rights.
 
 The additional rights are to use, modify, and distribute the software
 together with the wxWidgets library, the wxXtra library, and the "CDraw"
@@ -120,13 +120,13 @@ class SGLibFontItem;
 	Created:	8/4/95
 	Purpose:	A fill drag, which was started from the fill gallery
 	SeeAlso:	BitmapDragInformation
-				
+
 ********************************************************************************************/
 
 class GalleryFontsDragInfo : public BitmapDragInformation
-{ 
+{
 	CC_DECLARE_DYNCREATE(GalleryFontsDragInfo)
- 
+
 public:
 	GalleryFontsDragInfo();
 	~GalleryFontsDragInfo();
@@ -162,13 +162,13 @@ protected:
 	Created:	8/4/95
 	Purpose:	A fill drag, which was started from the fill gallery
 	SeeAlso:	BitmapDragInformation
-				
+
 ********************************************************************************************/
 
 class GalleryLibFontsDragInfo : public BitmapDragInformation
-{ 
+{
 	CC_DECLARE_DYNCREATE(GalleryLibFontsDragInfo)
- 
+
 public:
 	GalleryLibFontsDragInfo();
 	~GalleryLibFontsDragInfo();
@@ -189,7 +189,7 @@ public:
 	INT32 GetDragTransparency();
 
 	KernelBitmap* GetSolidDragMask();
-	
+
 protected:
 	SGLibFontItem*		SourceItem;
 	SGMouseInfo				MouseInfo;
@@ -203,7 +203,7 @@ protected:
 	Author:		Will_Cowling (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	8/4/95
 
-	Purpose:	An instantiation of this class is created by each entity which wishes to 
+	Purpose:	An instantiation of this class is created by each entity which wishes to
 				provide a 'destination' to which the mouse can go to complete a drag.
 
 				This particular target is used for handling drags of BitmapSGalllery items
@@ -215,7 +215,7 @@ protected:
 
 				To remove a drag target at any time, destruct it - it automatically deregisters
 				and cleans up.
-				
+
 	SeeAlso:	DragManagerOp::StartDrag; DragInformation; DragTarget;
 				SGBitmapDragTarget::ProcessEvent
 
@@ -226,11 +226,11 @@ protected:
 class SGFontsDragTarget : public SGListDragTarget
 {
 friend class DragManagerOp;
-	
+
 CC_DECLARE_DYNAMIC(SGFontsDragTarget)
 
 public:	// Public interface
-	SGFontsDragTarget(DialogOp *TheDialog, CGadgetID TheGadget = NULL);
+	SGFontsDragTarget(DialogOp *TheDialog, CGadgetID TheGadget = 0);
 
 protected:
 		// Process a drag-related event

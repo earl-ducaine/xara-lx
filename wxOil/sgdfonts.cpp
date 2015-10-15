@@ -1,7 +1,7 @@
 // $Id: sgdfonts.cpp 1282 2006-06-09 09:46:49Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
- 
+
                Xara LX, a vector drawing and manipulation program.
                     Copyright (C) 1993-2006 Xara Group Ltd.
        Copyright on certain contributions may be held in joint with their
@@ -32,7 +32,7 @@ ADDITIONAL RIGHTS
 
 Conditional upon your continuing compliance with the GNU General Public
 License described above, Xara Group Ltd grants to you certain additional
-rights. 
+rights.
 
 The additional rights are to use, modify, and distribute the software
 together with the wxWidgets library, the wxXtra library, and the "CDraw"
@@ -118,7 +118,7 @@ service marks of Xara Group Ltd. All rights in these marks are reserved.
 //#include "sgallery.h" - in camtypes.h [AUTOMATICALLY REMOVED]
 //#include "fixmem.h" - in camtypes.h [AUTOMATICALLY REMOVED]
 #include "wbitmap.h"
-//#include "richard.h"	
+//#include "richard.h"
 //#include "sgscan.h" - in camtypes.h [AUTOMATICALLY REMOVED]
 #include "sgscanf.h"
 #include "sglib.h"
@@ -134,7 +134,7 @@ service marks of Xara Group Ltd. All rights in these marks are reserved.
 
 // For apply
 //#include "txtattr.h"
-//#include "attrmgr.h"	
+//#include "attrmgr.h"
 //#include "textinfo.h"
 #include "nodetext.h"	// For status line stuff
 
@@ -164,8 +164,8 @@ CC_IMPLEMENT_DYNAMIC(SGFontsDragTarget, SGListDragTarget)
 
 /********************************************************************************************
 
->	SGFontsDragTarget::SGFontsDragTarget(DialogOp *TheDialog, CGadgetID TheGadget = NULL)
-	 
+>	SGFontsDragTarget::SGFontsDragTarget(DialogOp *TheDialog, CGadgetID TheGadget = 0)
+
 	Author:		Will_Cowling (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	25/3/95
 	Inputs:		TheDialog - The kernel dialog in which the target exists
@@ -257,7 +257,7 @@ BOOL SGFontsDragTarget::ProcessEvent(DragEventType Event, DragInformation *pDrag
 							SGDisplayNode *SourceGroup = DraggedNode->GetParent();
 
 							if(DestGroup != NULL && SourceGroup != NULL)
-							{	
+							{
 								// We're dragging within a group - that's ok
 								if(SourceGroup == DestGroup)
 									return(DetermineCursorShape(ParentGallery, DraggedNode, pMousePos));
@@ -266,7 +266,7 @@ BOOL SGFontsDragTarget::ProcessEvent(DragEventType Event, DragInformation *pDrag
 								if(SourceGroup->IS_KIND_OF(SGLibGroup) && DestGroup->IS_KIND_OF(SGFontsGroup))
 									return(DetermineCursorShape(ParentGallery, DraggedNode, pMousePos));
 							}
-						}		
+						}
 					}
 				}
 
@@ -282,10 +282,10 @@ BOOL SGFontsDragTarget::ProcessEvent(DragEventType Event, DragInformation *pDrag
 
 /********************************************************************************************
 
->	void GalleryFontsDragInfo::GalleryFontsDragInfo() 
-	 
+>	void GalleryFontsDragInfo::GalleryFontsDragInfo()
+
 	Author:		Will_Cowling (Xara Group Ltd) <camelotdev@xara.com>
-	Created:	19/3/95		  
+	Created:	19/3/95
 
 	Purpose:	Default constructor - do not call this constructor
 
@@ -293,15 +293,15 @@ BOOL SGFontsDragTarget::ProcessEvent(DragEventType Event, DragInformation *pDrag
 
 GalleryFontsDragInfo::GalleryFontsDragInfo()
 {
-	ERROR3("Default GalleryFontsDragInfo constructor called");	
+	ERROR3("Default GalleryFontsDragInfo constructor called");
 }
 
 /********************************************************************************************
 
->	void GalleryFontsDragInfo::~GalleryFontsDragInfo() 
-	 
+>	void GalleryFontsDragInfo::~GalleryFontsDragInfo()
+
 	Author:		Richard_Millican (Xara Group Ltd) <camelotdev@xara.com>
-	Created:	27/4/95		  
+	Created:	27/4/95
 
 	Purpose:	Destructor - reclaim temporary bitmap memory
 
@@ -323,9 +323,9 @@ GalleryFontsDragInfo::~GalleryFontsDragInfo()
 >	GalleryFontsDragInfo::GalleryFontsDragInfo(SGDisplayPreviewFonts *pSourceItem,
 											SGMouseInfo *pMouseInfo, SGMiscInfo *pMiscInfo,
  											BOOL IsAdjust = FALSE,  INT32 XSize, INT32 YSize)
-	 
+
 	Author:		Will_Cowling (Xara Group Ltd) <camelotdev@xara.com>
-	Created:	19/3/95		  
+	Created:	19/3/95
 
 	Inputs:		pSourceItem - The gallery item from which the drag originated
 				pMouseInfo	- The mouse info which made the item start the drag
@@ -355,14 +355,14 @@ GalleryFontsDragInfo::GalleryFontsDragInfo(SGDisplayPreviewFonts *pSourceItem,
 
 /********************************************************************************************
 
->	void GalleryFontsDragInfo::OnClick(INT32 Flags,POINT Point) 
-	 
+>	void GalleryFontsDragInfo::OnClick(INT32 Flags,POINT Point)
+
 	Author:		Will_Cowling (Xara Group Ltd) <camelotdev@xara.com>
-	Created:	19/3/95		  
+	Created:	19/3/95
 	Inputs:		-
 	Outputs:	-
 	Returns:	-
-	Purpose:	This is called if a drag was attempted but never started because it was a 
+	Purpose:	This is called if a drag was attempted but never started because it was a
 				click all along. It calls back the SourceItem SGDisplayBitmap, to get it
 				to handle the click.
 	Errors:		-
@@ -426,7 +426,7 @@ UINT32 GalleryFontsDragInfo::GetCursorID(DragTarget* pDragTarget)
 	Created:	25/3/95
 	Returns:	Whether String is valid
 	Purpose:	provide status line text for this target
-   
+
 ********************************************************************************************/
 
 BOOL GalleryFontsDragInfo::GetStatusLineText(String_256 * TheText, DragTarget* pDragTarget)
@@ -451,7 +451,7 @@ BOOL GalleryFontsDragInfo::GetStatusLineText(String_256 * TheText, DragTarget* p
 	if (pDragTarget && pDragTarget->IS_KIND_OF(ViewDragTarget))
 	{
 		DragString += String_8(_R(IDS_SGDFONTS_STAT_COLON_SEP)); //" : ";
-	
+
 		PageDropInfo PageDropInfo;
 		((ViewDragTarget*)pDragTarget)->GetDropInfo(&PageDropInfo);
 
@@ -518,9 +518,9 @@ BOOL GalleryFontsDragInfo::GetStatusLineText(String_256 * TheText, DragTarget* p
 /********************************************************************************************
 
 >	BOOL GalleryFontsDragInfo::OnPageDrop(ViewDragTarget* pDragTarget)
- 
+
 	Author:		Will_Cowling (Xara Group Ltd) <camelotdev@xara.com>
-	Created:	19/3/95		  
+	Created:	19/3/95
 	Inputs:		-
 	Outputs:	-
 	Returns:	-
@@ -551,7 +551,7 @@ BOOL GalleryFontsDragInfo::OnPageDrop(ViewDragTarget* pDragTarget)
 >	INT32 GalleryFontsDragInfo::GetDragTransparency()
 
 	Author:		Will_Cowling (Xara Group Ltd) <camelotdev@xara.com>
-	Created:	19/4/95		
+	Created:	19/4/95
 	Returns:	The drag tranparency to use for a Font Drag.
 	Purpose:	Determines how transparent the dragged font will be.
 
@@ -572,7 +572,7 @@ INT32 GalleryFontsDragInfo::GetDragTransparency()
 >	KernelBitmap* GalleryFontsDragInfo::GetSolidDragMask()
 
 	Author:		Will_Cowling (Xara Group Ltd) <camelotdev@xara.com>
-	Created:	19/4/95		
+	Created:	19/4/95
 	Returns:	A pointer to the 1bpp Mask bitmap.
 	Purpose:	Makes a 1bpp KernelBitmap mask for the Font preview solid drag.
 
@@ -652,7 +652,7 @@ KernelBitmap* GalleryFontsDragInfo::GetSolidDragMask()
 
 		RGBQUAD* Palette = WinBM->BMInfo->bmiColors;
 		RGBQUAD OldPalette[256];
-		
+
 		// Make a copy of the existing palette
 		for (INT32 i=0; i<256; i++)
 		{
@@ -684,7 +684,7 @@ KernelBitmap* GalleryFontsDragInfo::GetSolidDragMask()
 
 		// Get the 1bpp Mask bitmap out of the Render Region
 		OILBitmap* pOilMaskBmp = pMaskRegion->ExtractBitmap();
-		DragMask = new KernelBitmap(pOilMaskBmp, TRUE);	
+		DragMask = new KernelBitmap(pOilMaskBmp, TRUE);
 
 		// Tidy up
 		delete pMaskRegion;
@@ -701,10 +701,10 @@ KernelBitmap* GalleryFontsDragInfo::GetSolidDragMask()
 
 /********************************************************************************************
 
->	void GalleryLibFontsDragInfo::GalleryLibFontsDragInfo() 
-	 
+>	void GalleryLibFontsDragInfo::GalleryLibFontsDragInfo()
+
 	Author:		Will_Cowling (Xara Group Ltd) <camelotdev@xara.com>
-	Created:	19/3/95		  
+	Created:	19/3/95
 
 	Purpose:	Default constructor - do not call this constructor
 
@@ -712,15 +712,15 @@ KernelBitmap* GalleryFontsDragInfo::GetSolidDragMask()
 
 GalleryLibFontsDragInfo::GalleryLibFontsDragInfo()
 {
-	ERROR3("Default GalleryLibFontsDragInfo constructor called");	
+	ERROR3("Default GalleryLibFontsDragInfo constructor called");
 }
 
 /********************************************************************************************
 
->	void GalleryLibFontsDragInfo::~GalleryLibFontsDragInfo() 
-	 
+>	void GalleryLibFontsDragInfo::~GalleryLibFontsDragInfo()
+
 	Author:		Richard_Millican (Xara Group Ltd) <camelotdev@xara.com>
-	Created:	27/4/95		  
+	Created:	27/4/95
 
 	Purpose:	Destructor - reclaim temporary bitmap memory
 
@@ -742,9 +742,9 @@ GalleryLibFontsDragInfo::~GalleryLibFontsDragInfo()
 >	GalleryLibFontsDragInfo::GalleryLibFontsDragInfo(SGLibFontItem *pSourceItem,
 											SGMouseInfo *pMouseInfo, SGMiscInfo *pMiscInfo,
  											BOOL IsAdjust = FALSE, INT32 XSize = 0, INT32 YSize = 0)
-	 
+
 	Author:		Will_Cowling (Xara Group Ltd) <camelotdev@xara.com>
-	Created:	19/3/95		  
+	Created:	19/3/95
 
 	Inputs:		pSourceItem - The gallery item from which the drag originated
 				pMouseInfo	- The mouse info which made the item start the drag
@@ -772,14 +772,14 @@ GalleryLibFontsDragInfo::GalleryLibFontsDragInfo(SGLibFontItem *pSourceItem,
 
 /********************************************************************************************
 
->	void GalleryLibFontsDragInfo::OnClick(INT32 Flags,POINT Point) 
-	 
+>	void GalleryLibFontsDragInfo::OnClick(INT32 Flags,POINT Point)
+
 	Author:		Will_Cowling (Xara Group Ltd) <camelotdev@xara.com>
-	Created:	19/3/95		  
+	Created:	19/3/95
 	Inputs:		-
 	Outputs:	-
 	Returns:	-
-	Purpose:	This is called if a drag was attempted but never started because it was a 
+	Purpose:	This is called if a drag was attempted but never started because it was a
 				click all along. It calls back the SourceItem SGDisplayBitmap, to get it
 				to handle the click.
 	Errors:		-
@@ -813,7 +813,7 @@ UINT32 GalleryLibFontsDragInfo::GetCursorID(DragTarget* pDragTarget)
 
 		NodeRenderableInk* pObjectHit 	= PageDropInfo.pObjectHit;
 		ObjectDragTarget TargetHit 		= PageDropInfo.TargetHit;
-		
+
 		String_256 Desc256;
 		SourceItem->GetNameText(&Desc256);
 		if (pObjectHit && !FontsSGallery::IsFontAlreadyInstalled(&Desc256, SourceItem->GetType()) && SourceItem->GetParentLibrary() && SourceItem->GetParentLibrary()->IsWebLibrary())
@@ -849,7 +849,7 @@ UINT32 GalleryLibFontsDragInfo::GetCursorID(DragTarget* pDragTarget)
 	Created:	25/3/95
 	Returns:	Whether String is valid
 	Purpose:	provide status line text for this target
-   
+
 ********************************************************************************************/
 
 BOOL GalleryLibFontsDragInfo::GetStatusLineText(String_256 * TheText, DragTarget* pDragTarget)
@@ -884,7 +884,7 @@ BOOL GalleryLibFontsDragInfo::GetStatusLineText(String_256 * TheText, DragTarget
 		if (pDragTarget && pDragTarget->IS_KIND_OF(SGFontsDragTarget))
 		{
 			DragString += String_8(_R(IDS_SGDFONTS_STAT_COLON_SEP)); //" : ";
-		
+
 			// + "Drop to Install this font"
 			String_64 DropToInstall(_R(IDS_FONTS_DROP_TO_INSTALL));
 			DragString += DropToInstall;
@@ -896,7 +896,7 @@ BOOL GalleryLibFontsDragInfo::GetStatusLineText(String_256 * TheText, DragTarget
 		if (pDragTarget && pDragTarget->IS_KIND_OF(ViewDragTarget))
 		{
 			DragString += String_8(_R(IDS_SGDFONTS_STAT_COLON_SEP)); //" : ";
-		
+
 
 			if (pObjectHit && pObjectHit->RequiresAttrib(CC_RUNTIME_CLASS(AttrTxtFontTypeface)))
 				TargetHit = FILL_TARGET;
@@ -960,9 +960,9 @@ BOOL GalleryLibFontsDragInfo::GetStatusLineText(String_256 * TheText, DragTarget
 /********************************************************************************************
 
 >	BOOL GalleryLibFontsDragInfo::OnPageDrop(ViewDragTarget* pDragTarget)
- 
+
 	Author:		Richard_Millican (Xara Group Ltd) <camelotdev@xara.com>
-	Created:	20/4/95		  
+	Created:	20/4/95
 	Inputs:		-
 	Outputs:	-
 	Returns:	-
@@ -994,7 +994,7 @@ BOOL GalleryLibFontsDragInfo::OnPageDrop(ViewDragTarget* pDragTarget)
 >	INT32 GalleryLibFontsDragInfo::GetDragTransparency()
 
 	Author:		Will_Cowling (Xara Group Ltd) <camelotdev@xara.com>
-	Created:	19/4/95		
+	Created:	19/4/95
 	Returns:	The drag tranparency to use for a Font Drag.
 	Purpose:	Determines how transparent the dragged font will be.
 
@@ -1015,7 +1015,7 @@ INT32 GalleryLibFontsDragInfo::GetDragTransparency()
 >	KernelBitmap* GalleryLibFontsDragInfo::GetSolidDragMask()
 
 	Author:		Will_Cowling (Xara Group Ltd) <camelotdev@xara.com>
-	Created:	19/4/95		
+	Created:	19/4/95
 	Returns:	A pointer to the 1bpp Mask bitmap.
 	Purpose:	Makes a 1bpp KernelBitmap mask for the Font preview solid drag.
 
@@ -1094,7 +1094,7 @@ KernelBitmap* GalleryLibFontsDragInfo::GetSolidDragMask()
 
 		RGBQUAD* Palette = WinBM->BMInfo->bmiColors;
 		RGBQUAD OldPalette[256];
-		
+
 		// Make a copy of the existing palette
 		for (INT32 i=0; i<256; i++)
 		{
@@ -1126,7 +1126,7 @@ KernelBitmap* GalleryLibFontsDragInfo::GetSolidDragMask()
 
 		// Get the 1bpp Mask bitmap out of the Render Region
 		OILBitmap* pOilMaskBmp = pMaskRegion->ExtractBitmap();
-		DragMask = new KernelBitmap(pOilMaskBmp, TRUE);	
+		DragMask = new KernelBitmap(pOilMaskBmp, TRUE);
 
 		// Tidy up
 		delete pMaskRegion;
