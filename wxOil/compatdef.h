@@ -1,7 +1,7 @@
 // $Id: compatdef.h 1668 2006-08-04 11:45:17Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
- 
+
                Xara LX, a vector drawing and manipulation program.
                     Copyright (C) 1993-2006 Xara Group Ltd.
        Copyright on certain contributions may be held in joint with their
@@ -32,7 +32,7 @@ ADDITIONAL RIGHTS
 
 Conditional upon your continuing compliance with the GNU General Public
 License described above, Xara Group Ltd grants to you certain additional
-rights. 
+rights.
 
 The additional rights are to use, modify, and distribute the software
 together with the wxWidgets library, the wxXtra library, and the "CDraw"
@@ -107,10 +107,10 @@ service marks of Xara Group Ltd. All rights in these marks are reserved.
 // New string function wrappers allowing portability issues to be resolved
 // For now, in wxOil, they are mostly defined as the wxWidgets equivalent
 
-// These should be used for all TCHAR string manipulation that doesn't use a 
+// These should be used for all TCHAR string manipulation that doesn't use a
 // string class
 
-// All ASCII string (plain char) manipulation should be done using the standard 
+// All ASCII string (plain char) manipulation should be done using the standard
 // strcpy type functions.
 
 #define camIsalnum		wxIsalnum
@@ -269,10 +269,11 @@ typedef unsigned short		UINT16;
 typedef unsigned int		DWORD;
 typedef signed int			INT32;
 typedef unsigned int		UINT32;
-#define INT32_MAX INT_MAX
-#define INT32_MIN INT_MIN
-#define UINT32_MAX UINT_MAX
-#define UINT32_MIN UINT_MIN
+// Should be defined in stdint.h
+// #define INT32_MAX INT_MAX
+// #define INT32_MIN INT_MIN
+// #define UINT32_MAX UINT_MAX
+// #define UINT32_MIN UINT_MIN
 #elif SIZEOF_LONG == 4
 typedef unsigned long		DWORD;
 typedef signed long			INT32;
