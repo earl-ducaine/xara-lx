@@ -1,7 +1,7 @@
 // $Id: sgbitmap.h 1664 2006-08-04 10:06:16Z gerry $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
- 
+
                Xara LX, a vector drawing and manipulation program.
                     Copyright (C) 1993-2006 Xara Group Ltd.
        Copyright on certain contributions may be held in joint with their
@@ -32,7 +32,7 @@ ADDITIONAL RIGHTS
 
 Conditional upon your continuing compliance with the GNU General Public
 License described above, Xara Group Ltd grants to you certain additional
-rights. 
+rights.
 
 The additional rights are to use, modify, and distribute the software
 together with the wxWidgets library, the wxXtra library, and the "CDraw"
@@ -106,7 +106,7 @@ service marks of Xara Group Ltd. All rights in these marks are reserved.
 #include "sgdrag.h"
 //#include "bmpsdlg.h"
 
-const INT32 SG_DefaultSmallBmp		= 64000;	
+const INT32 SG_DefaultSmallBmp		= 64000;
 const INT32 SG_DefaultSmallBmpText	= 80000;
 const INT32 SG_DefaultLargeBmp		= 96000;
 const INT32 SG_DefaultLargeBmpText	= 120000;
@@ -124,13 +124,13 @@ class SGDisplayKernelBitmap;
 	Created:	19/3/95
 	Purpose:	A bitmap drag, which was started from the bitmap gallery
 	SeeAlso:	BitmapDragInformation
-				
+
 ********************************************************************************************/
 
 class GalleryBitmapDragInfo : public BitmapDragInformation
-{ 
+{
 	CC_DECLARE_DYNCREATE(GalleryBitmapDragInfo)
- 
+
 public:
 	GalleryBitmapDragInfo();
  	GalleryBitmapDragInfo(	SGDisplayKernelBitmap *pSourceItem,
@@ -161,7 +161,7 @@ protected:
 	Author:		Will_Cowling (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	25/3/95
 
-	Purpose:	An instantiation of this class is created by each entity which wishes to 
+	Purpose:	An instantiation of this class is created by each entity which wishes to
 				provide a 'destination' to which the mouse can go to complete a drag.
 
 				This particular target is used for handling drags of BitmapSGalllery items
@@ -173,7 +173,7 @@ protected:
 
 				To remove a drag target at any time, destruct it - it automatically deregisters
 				and cleans up.
-				
+
 	SeeAlso:	DragManagerOp::StartDrag; DragInformation; DragTarget;
 				SGBitmapDragTarget::ProcessEvent
 
@@ -184,11 +184,11 @@ protected:
 class SGBitmapDragTarget : public SGListDragTarget
 {
 friend class DragManagerOp;
-	
+
 CC_DECLARE_DYNAMIC(SGBitmapDragTarget)
 
 public:	// Public interface
-	SGBitmapDragTarget(DialogOp *TheDialog, CGadgetID TheGadget = NULL);
+	SGBitmapDragTarget(DialogOp *TheDialog, CGadgetID TheGadget = 0);
 
 protected:
 		// Process a drag-related event
@@ -261,7 +261,7 @@ private:		// Special member variables
 	Created:	27/1/95
 
 	Returns:	A pointer to the KernelBitmap which this Display Item is used to display.
-			
+
 	Purpose:	To find out the KernelBitmap this object is responsible for displaying
 
 ********************************************************************************************/
@@ -304,7 +304,7 @@ public:
 	virtual MsgResult Message(Msg* Message);
 	virtual void SelectionHasChanged(void);
 
-	virtual SGDisplayItem *CopyDisplayItem(SGDisplayItem *SourceItem, 
+	virtual SGDisplayItem *CopyDisplayItem(SGDisplayItem *SourceItem,
 								SGDisplayGroup *DestGroup,
 								SGDisplayItem *TargetPosition = NULL);
 		// Asks the gallery to copy (or if appropriate, move) the given item to
@@ -360,7 +360,7 @@ public:
 	//BOOL AreDelayValuesSame();
 	//UINT32 GetBitmapDelay();
 	BOOL IsJPEG(KernelBitmap** pList,UINT32 ListSize, BmpDlgParam* Param, INT32* pBytes);
-	
+
 protected:
 	BOOL DeleteSelection();
 
@@ -383,7 +383,7 @@ public:
 //-------------------------------------------------------------------------------
 
 // Optoken for the display bitmap gallery operation
-#define OPTOKEN_DISPLAYBITMAPGALLERY _T("DisplayBitmapGallery")	
+#define OPTOKEN_DISPLAYBITMAPGALLERY _T("DisplayBitmapGallery")
 
 /********************************************************************************************
 
@@ -397,14 +397,13 @@ public:
 ********************************************************************************************/
 
 class CCAPI OpDisplayBitmapGallery: public Operation
-{         
+{
 	CC_DECLARE_DYNCREATE( OpDisplayBitmapGallery );
 
 public:
-	static BOOL		Init();				
-	static OpState	GetState(String_256*, OpDescriptor*);		
-	void 			Do(OpDescriptor*);	
-};  
+	static BOOL		Init();
+	static OpState	GetState(String_256*, OpDescriptor*);
+	void 			Do(OpDescriptor*);
+};
 
 #endif
-

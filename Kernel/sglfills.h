@@ -1,7 +1,7 @@
 // $Id: sglfills.h 1282 2006-06-09 09:46:49Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
- 
+
                Xara LX, a vector drawing and manipulation program.
                     Copyright (C) 1993-2006 Xara Group Ltd.
        Copyright on certain contributions may be held in joint with their
@@ -32,7 +32,7 @@ ADDITIONAL RIGHTS
 
 Conditional upon your continuing compliance with the GNU General Public
 License described above, Xara Group Ltd grants to you certain additional
-rights. 
+rights.
 
 The additional rights are to use, modify, and distribute the software
 together with the wxWidgets library, the wxXtra library, and the "CDraw"
@@ -112,7 +112,7 @@ service marks of Xara Group Ltd. All rights in these marks are reserved.
 // LibraryGallery
 #include "sglbase.h"
 
-enum CALLRESULT {FAILURE = 0, SUCCESS, PENDING}; 
+enum CALLRESULT {FAILURE = 0, SUCCESS, PENDING};
 
 /***********************************************************************************************
 
@@ -232,7 +232,7 @@ protected:
 	// Sort the entire gallery alphabetically
 	void SortGallery(void);
 
-	SGDisplayItem *CopyDisplayItem(SGDisplayItem *SourceItem, 
+	SGDisplayItem *CopyDisplayItem(SGDisplayItem *SourceItem,
 								SGDisplayGroup *DestGroup, SGDisplayItem *TargetPosition);
 
 	KernelBitmap* GetSelectedBitmap(void);
@@ -254,7 +254,7 @@ public:
 	// Quiet status of the gallery
 	static BOOL QuietStatus;
 };
-								  
+
 
 /********************************************************************************************
 
@@ -272,18 +272,18 @@ public:
 #define OPTOKEN_DISPLAYFILLSGALLERY _T("DisplayFillsGallery")
 
 class CCAPI OpDisplayLibFillsGallery: public Operation
-{         
+{
 	CC_DECLARE_DYNCREATE( OpDisplayLibFillsGallery );
 
 public:
-	static BOOL		Init();				
-	static OpState	GetState(String_256*, OpDescriptor*);		
+	static BOOL		Init();
+	static OpState	GetState(String_256*, OpDescriptor*);
     void 			Do(OpDescriptor*);
 
 private:
 	static DialogBarOp *FindGallery(void);
 			// Finds the LibFills gallery class instance
-};  
+};
 
 /********************************************************************************************
 
@@ -294,11 +294,11 @@ private:
 
 	Purpose:	A fills gallery item
 	SeeAlso:
-	
+
 ********************************************************************************************/
 
 class SGFillsItem: public SGLibDisplayItem
-{         
+{
 	CC_DECLARE_DYNCREATE( SGFillsItem );
 public:
 	SGFillsItem();
@@ -319,13 +319,13 @@ protected:
 	Created:	8/4/95
 	Purpose:	A fill drag, which was started from the fill gallery
 	SeeAlso:	BitmapDragInformation
-				
+
 ********************************************************************************************/
 
 class GalleryFillsDragInfo : public BitmapDragInformation
-{ 
+{
 	CC_DECLARE_DYNCREATE(GalleryFillsDragInfo)
- 
+
 public:
 	GalleryFillsDragInfo();
 	~GalleryFillsDragInfo();
@@ -358,7 +358,7 @@ protected:
 	Author:		Will_Cowling (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	8/4/95
 
-	Purpose:	An instantiation of this class is created by each entity which wishes to 
+	Purpose:	An instantiation of this class is created by each entity which wishes to
 				provide a 'destination' to which the mouse can go to complete a drag.
 
 				This particular target is used for handling drags of BitmapSGalllery items
@@ -370,7 +370,7 @@ protected:
 
 				To remove a drag target at any time, destruct it - it automatically deregisters
 				and cleans up.
-				
+
 	SeeAlso:	DragManagerOp::StartDrag; DragInformation; DragTarget;
 				SGBitmapDragTarget::ProcessEvent
 
@@ -381,11 +381,11 @@ protected:
 class SGFillsDragTarget : public SGListDragTarget
 {
 friend class DragManagerOp;
-	
+
 CC_DECLARE_DYNAMIC(SGFillsDragTarget)
 
 public:	// Public interface
-	SGFillsDragTarget(DialogOp *TheDialog, CGadgetID TheGadget = NULL);
+	SGFillsDragTarget(DialogOp *TheDialog, CGadgetID TheGadget = 0);
 
 protected:
 		// Process a drag-related event
@@ -396,4 +396,3 @@ protected:
 
 
 #endif
-

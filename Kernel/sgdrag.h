@@ -1,7 +1,7 @@
 // $Id: sgdrag.h 1282 2006-06-09 09:46:49Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
- 
+
                Xara LX, a vector drawing and manipulation program.
                     Copyright (C) 1993-2006 Xara Group Ltd.
        Copyright on certain contributions may be held in joint with their
@@ -32,7 +32,7 @@ ADDITIONAL RIGHTS
 
 Conditional upon your continuing compliance with the GNU General Public
 License described above, Xara Group Ltd grants to you certain additional
-rights. 
+rights.
 
 The additional rights are to use, modify, and distribute the software
 together with the wxWidgets library, the wxXtra library, and the "CDraw"
@@ -120,7 +120,7 @@ class DocCoord;
 	Author:		Jason_Williams (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	26/2/95
 
-	Purpose:	An instantiation of this class is created by each entity which wishes to 
+	Purpose:	An instantiation of this class is created by each entity which wishes to
 				provide a 'destination' to which the mouse can go to complete a drag.
 
 				This particular target is used for handling drags of supergallery scroll
@@ -131,7 +131,7 @@ class DocCoord;
 
 				To remove a drag target at any time, destruct it - it automatically deregisters
 				and cleans up.
-				
+
 	SeeAlso:	DragManagerOp::StartDrag; DragInformation; DragTarget
 
 	Documentation:	Docs\Specs\DragMan.doc
@@ -141,13 +141,13 @@ class DocCoord;
 class SGScrollDragTarget : public KernelDragTarget
 {
 friend class DragManagerOp;
-	
+
 CC_DECLARE_DYNAMIC(SGScrollDragTarget)
 
 
 public:	// Public interface
 	SGScrollDragTarget(DialogOp *TheDialog, CGadgetID TheGadget = NULL);
-	
+
 	virtual UINT32 GetCursorID();
 	virtual BOOL GetStatusLineText(String_256 * TheText);
 
@@ -182,21 +182,21 @@ typedef enum
 	Author:		Jason_Williams (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	26/2/95
 	Purpose:	Describes a supergallery scroll drag
-				
+
 ********************************************************************************************/
 
 class SGScrollDragInfo : public DragInformation
-{ 
+{
 CC_DECLARE_DYNCREATE(SGScrollDragInfo)
- 
+
 public:
 	SGScrollDragInfo();
  	SGScrollDragInfo(SGDisplayRootScroll *ParentRootNode, SGDragType TheDragType,
 						SGMiscInfo *MiscInfo, INT32 DragAnchorOffset,
 						BOOL IsAdjust = FALSE);
-	
+
 	void OnClick(INT32 Flags, POINT Point);
-	
+
 	virtual UINT32 GetCursorID(void);
  	virtual BOOL GetStatusLineText(String_256 * TheText);
 
@@ -236,7 +236,7 @@ typedef enum								// Where an item can be inserted...
 	Author:		Jason_Williams (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	14/3/95
 
-	Purpose:	An instantiation of this class is created by each entity which wishes to 
+	Purpose:	An instantiation of this class is created by each entity which wishes to
 				provide a 'destination' to which the mouse can go to complete a drag.
 
 				This particular target is used for handling drags of supergallery items
@@ -252,7 +252,7 @@ typedef enum								// Where an item can be inserted...
 
 				To remove a drag target at any time, destruct it - it automatically deregisters
 				and cleans up.
-				
+
 	SeeAlso:	DragManagerOp::StartDrag; DragInformation; DragTarget;
 				SGColourDragTarget::ProcessEvent
 
@@ -265,13 +265,13 @@ class SGListDragInfo;
 class SGListDragTarget : public KernelDragTarget
 {
 friend class DragManagerOp;
-	
+
 CC_DECLARE_DYNAMIC(SGListDragTarget)
 
 
 public:	// Public interface
-	SGListDragTarget(DialogOp *TheDialog, CGadgetID TheGadget = NULL);
-	
+	SGListDragTarget(DialogOp *TheDialog, CGadgetID TheGadget = 0);
+
 	virtual UINT32 GetCursorID();
 	virtual BOOL GetStatusLineText(String_256 * TheText);
 
@@ -322,20 +322,20 @@ protected:
 	Documentation:	Docs\Specs\DragMan.doc; Docs\HowToUse\SGallery.doc
 
 	SeeAlso:	SGListDragTarget; SuperGallery; SGDisplayNode::HandleEvent
-				
+
 ********************************************************************************************/
 
 class SGListDragInfo : public DragInformation
-{ 
+{
 CC_DECLARE_DYNCREATE(SGListDragInfo)
- 
+
 public:
 	SGListDragInfo();
  	SGListDragInfo(SuperGallery *ParentGal, SGDisplayNode *DraggedNode,
 					SGMouseInfo *TheMouseInfo, BOOL IsAdjust = FALSE);
-	
+
 	void OnClick(INT32 Flags, POINT Point);
-	
+
 	virtual UINT32 GetCursorID(void);
  	virtual BOOL GetStatusLineText(String_256 * TheText);
 
@@ -351,7 +351,3 @@ private:
 
 
 #endif
-
-
-
-

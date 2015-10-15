@@ -1,7 +1,7 @@
 // $Id: sgdrag.cpp 1282 2006-06-09 09:46:49Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
- 
+
                Xara LX, a vector drawing and manipulation program.
                     Copyright (C) 1993-2006 Xara Group Ltd.
        Copyright on certain contributions may be held in joint with their
@@ -32,7 +32,7 @@ ADDITIONAL RIGHTS
 
 Conditional upon your continuing compliance with the GNU General Public
 License described above, Xara Group Ltd grants to you certain additional
-rights. 
+rights.
 
 The additional rights are to use, modify, and distribute the software
 together with the wxWidgets library, the wxXtra library, and the "CDraw"
@@ -136,8 +136,8 @@ const INT32 AUTOREPEATTIME = 150;			// Auto-repeat a maximum of ~7 times per sec
 
 /********************************************************************************************
 
->	SGScrollDragTarget::SGScrollDragTarget(DialogOp *TheDialog, CGadgetID TheGadget = NULL)
-	 
+>	SGScrollDragTarget::SGScrollDragTarget(DialogOp *TheDialog, CGadgetID TheGadget = 0)
+
 	Author:		Jason_Williams (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	27/2/95
 	Inputs:		TheDialog - The kernel dialog in which the target exists
@@ -164,7 +164,7 @@ SGScrollDragTarget::SGScrollDragTarget(DialogOp *TheDialog, CGadgetID TheGadget)
 										OilCoord *pMousePos, KeyPress* pKeyPress)
 
 	Author:		Jason_Williams (Xara Group Ltd) <camelotdev@xara.com>
-	Created:	27/2/95		  
+	Created:	27/2/95
 	Inputs:		Event - Indicates what has happened
 				pDragInfo - points to drag information describing this drag. This
 				should be an SGScrollDragInfo or something has gone seriously wrong.
@@ -240,15 +240,15 @@ BOOL SGScrollDragTarget::ProcessEvent(DragEventType Event, DragInformation *pDra
 		INT32 AnchorOffset = DragInfo->GetDragAnchorOffset();
 
 		INT32 ScrollWindowTo;
-		
+
 		if (SausageRect.Height() <= SausageRect.Width())
 		{
 			// The sausage is a minimum-size square, so now does not proportionally represent
 			// the displayed area of the window. Thus, we need to use the top position of the
-			// bar in (barheight - sausageheight) as a fractional scroll between 0 and 
+			// bar in (barheight - sausageheight) as a fractional scroll between 0 and
 			// (ScrollExtent - WindowHeight)
 			ScrollWindowTo = (INT32) (
-									( ((double) (ScrollRect.hi.y - (MousePos.y + AnchorOffset))) / 
+									( ((double) (ScrollRect.hi.y - (MousePos.y + AnchorOffset))) /
 										(double) (ScrollRect.Height() - SausageRect.Height()) ) *
 										 	(double) (Root->GetCachedListExtent() - MiscInfo->WindowHeight)
 									);
@@ -259,7 +259,7 @@ BOOL SGScrollDragTarget::ProcessEvent(DragEventType Event, DragInformation *pDra
 			// fractional position of the top of the bar, and that gives the position to scroll
 			// the top of the displayed area to.
 			ScrollWindowTo = (INT32) (
-									( ((double) (ScrollRect.hi.y - (MousePos.y + AnchorOffset))) / 
+									( ((double) (ScrollRect.hi.y - (MousePos.y + AnchorOffset))) /
 										(double) ScrollRect.Height() ) *
 									 		(double) Root->GetCachedListExtent()
 									);
@@ -275,7 +275,7 @@ BOOL SGScrollDragTarget::ProcessEvent(DragEventType Event, DragInformation *pDra
 	//		1) Event is 'initialise' (so it scrolls immediately the button goes down)
 	//		2) Event is 'deinitialise' (so we must ensure all buttons are popped up)
 	//		3) Or if it is time for another autorepeat
-	if (Event != DRAGEVENT_INITIALISE	&& 
+	if (Event != DRAGEVENT_INITIALISE	&&
 		Event != DRAGEVENT_DEINITIALISE	&&
 		!Timer.Elapsed(AUTOREPEATTIME))
 	{
@@ -398,7 +398,7 @@ UINT32 SGScrollDragTarget::GetCursorID()
 	Returns:	FALSE - we never provide any status line help for scroll-drags
 
 	Purpose:	Provide status line text for this target
-   
+
 ********************************************************************************************/
 
 BOOL SGScrollDragTarget::GetStatusLineText(String_256 * TheText)
@@ -423,17 +423,17 @@ BOOL SGScrollDragTarget::GetStatusLineText(String_256 * TheText)
 
 /********************************************************************************************
 
->	void SGScrollDragInfo::SGScrollDragInfo() 
-	 
+>	void SGScrollDragInfo::SGScrollDragInfo()
+
 	Author:		Jason_Williams (Xara Group Ltd) <camelotdev@xara.com>
-	Created:	27/2/95		  
+	Created:	27/2/95
 
 	Purpose:	Default constructor. DO NOT CALL THIS CONSTRUCTOR
 
 ********************************************************************************************/
 SGScrollDragInfo::SGScrollDragInfo()
 {
-	ERROR3("Default SGScrollDragInfo constructor called");	
+	ERROR3("Default SGScrollDragInfo constructor called");
 }
 
 
@@ -447,7 +447,7 @@ SGScrollDragInfo::SGScrollDragInfo()
 										BOOL IsAdjust = FALSE)
 
 	Author:		Jason_Williams (Xara Group Ltd) <camelotdev@xara.com>
-	Created:	27/2/95		  
+	Created:	27/2/95
 
 	Inputs:		ParentRootNode - The SGDisplayRootScroll for the DisplayTree for which
 				the drag is occurring
@@ -461,7 +461,7 @@ SGScrollDragInfo::SGScrollDragInfo()
 				sausage, to "lock" the sausage to the mouse pointer)
 
 				IsAdjust - TRUE if it is an "adjust" drag [NOTE - Adjust drags are legal
-				when dragging scrollbars, and are not turned into clicks like normal drags]				
+				when dragging scrollbars, and are not turned into clicks like normal drags]
 
 	Purpose:	Constructor
 
@@ -500,7 +500,7 @@ SGScrollDragInfo::SGScrollDragInfo(SGDisplayRootScroll *ParentRootNode,
 
 	Purpose:	To provide the resource ID of the cursor to use during this drag.
 				For scrollbar drags, the cursor should remain the normal arrow shape.
-   
+
 ********************************************************************************************/
 
 UINT32 SGScrollDragInfo::GetCursorID()
@@ -520,7 +520,7 @@ UINT32 SGScrollDragInfo::GetCursorID()
 	Returns:	FALSE - The string has not been filled in
 	Purpose:	Provide status line text for this drag - While dragging scrollbars no help
 				is required/given, so this always returns FALSE
-   
+
 ********************************************************************************************/
 
 BOOL SGScrollDragInfo::GetStatusLineText(String_256 * TheText)
@@ -532,14 +532,14 @@ BOOL SGScrollDragInfo::GetStatusLineText(String_256 * TheText)
 
 /********************************************************************************************
 
->	void SGScrollDragInfo::OnClick(INT32 Flags,POINT Point) 
-	 
+>	void SGScrollDragInfo::OnClick(INT32 Flags,POINT Point)
+
 	Author:		Jason_Williams (Xara Group Ltd) <camelotdev@xara.com>
-	Created:	27/2/95		  
+	Created:	27/2/95
 	Inputs:		Flags - Some flags
 				Point - the point which was clicked
 
-	Purpose:	This is called if a drag was attempted but never started because it was a 
+	Purpose:	This is called if a drag was attempted but never started because it was a
 				click all along
 
 ********************************************************************************************/
@@ -566,8 +566,8 @@ void SGScrollDragInfo::OnClick(INT32 Flags, POINT Point)
 
 /********************************************************************************************
 
->	SGListDragTarget::SGListDragTarget(DialogOp *TheDialog, CGadgetID TheGadget = NULL)
-	 
+>	SGListDragTarget::SGListDragTarget(DialogOp *TheDialog, CGadgetID TheGadget = 0)
+
 	Author:		Jason_Williams (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	14/3/95
 	Inputs:		TheDialog - The kernel dialog in which the target exists
@@ -580,7 +580,7 @@ void SGScrollDragInfo::OnClick(INT32 Flags, POINT Point)
 SGListDragTarget::SGListDragTarget(DialogOp *TheDialog, CGadgetID TheGadget)
 					: KernelDragTarget(TheDialog, TheGadget)
 {
-	CurrentCursorID = _R(IDC_SGDRAGCURSOR);	
+	CurrentCursorID = _R(IDC_SGDRAGCURSOR);
 
 	ERROR3IF(!TheDialog->IsKindOf(CC_RUNTIME_CLASS(SuperGallery)),
 			"You can only use SGListDragTargets with SuperGallery dialogues!");
@@ -593,7 +593,7 @@ SGListDragTarget::SGListDragTarget(DialogOp *TheDialog, CGadgetID TheGadget)
 >	BOOL SGListDragTarget::OwnsEntireLine(SGDisplayNode *TheNode)
 
 	Author:		Jason_Williams (Xara Group Ltd) <camelotdev@xara.com>
-	Created:	17/3/95		  
+	Created:	17/3/95
 
 	Inputs:		TheNode - the node to check
 
@@ -645,7 +645,7 @@ BOOL SGListDragTarget::OwnsEntireLine(SGDisplayNode *TheNode)
 												OilCoord *pMousePos,
 												SGDisplayNode *DestNode)
 	Author:		Jason_Williams (Xara Group Ltd) <camelotdev@xara.com>
-	Created:	14/3/95		  
+	Created:	14/3/95
 
 	Inputs:		ParentGallery - The gallery in which the drag completed
 
@@ -775,7 +775,7 @@ SGDragInsertType SGListDragTarget::GetDragInsertType(SuperGallery *ParentGallery
 												OilCoord *pMousePos,
 												BOOL DragThisItemOnly = FALSE)
 	Author:		Jason_Williams (Xara Group Ltd) <camelotdev@xara.com>
-	Created:	14/3/95		  
+	Created:	14/3/95
 	Inputs:		ParentGallery - The gallery in which the drag completed
 
 				DraggedNode - The node being dragged
@@ -893,7 +893,7 @@ void SGListDragTarget::HandleDragCompleted(SuperGallery *ParentGallery,
 
 	SGDisplayNode *NewItem = NULL;
 
-	for (ItemIndex = 0; ItemIndex < ItemCount; ItemIndex++) 
+	for (ItemIndex = 0; ItemIndex < ItemCount; ItemIndex++)
 	{
 		if (DraggedArray != NULL)
 			DraggedNode = DraggedArray[ItemIndex];
@@ -1009,7 +1009,7 @@ void SGListDragTarget::HandleDragCompleted(SuperGallery *ParentGallery,
 				will result in the cursor shape beng updated correctly.
 
 	Notes:		This is a subroutine to minimise the amount of work involved in
-				deriving classes from SGListDragTarget for recieving drags of 
+				deriving classes from SGListDragTarget for recieving drags of
 				specific things (e.g. colours, bitmaps, etc) in gallery listboxes
 
 ********************************************************************************************/
@@ -1025,7 +1025,7 @@ BOOL SGListDragTarget::DetermineCursorShape(SuperGallery *ParentGallery,
 		return(FALSE);
 
 	// Convert the OilCoords into DocCoords
-	DocCoord MousePos(pMousePos->x, pMousePos->y);	
+	DocCoord MousePos(pMousePos->x, pMousePos->y);
 
 	// Make the gallery scroll the list if we're dragging near the top/bottom
 	ParentGallery->AutoScrollForDrag(&MousePos);
@@ -1039,7 +1039,7 @@ BOOL SGListDragTarget::DetermineCursorShape(SuperGallery *ParentGallery,
 		case SGDRAGINSERT_NONE:
 			CurrentCursorID = _R(IDC_DRAGGING_COLOUR);		// No-can-drop cursor shape
 			break;
-		
+
 		case SGDRAGINSERT_ADD:
 			CurrentCursorID = _R(IDC_SGDRAGCURSOR);			// Can drop here
 			break;
@@ -1067,7 +1067,7 @@ BOOL SGListDragTarget::DetermineCursorShape(SuperGallery *ParentGallery,
 										OilCoord *pMousePos, KeyPress* pKeyPress)
 
 	Author:		Jason_Williams (Xara Group Ltd) <camelotdev@xara.com>
-	Created:	14/3/95		  
+	Created:	14/3/95
 	Inputs:		Event - Indicates what has happened
 				pDragInfo - points to drag information describing this drag. This
 				should be an SGListDragInfo or something has gone seriously wrong.
@@ -1143,7 +1143,7 @@ UINT32 SGListDragTarget::GetCursorID()
 
 	Notes:		Bases the text on the current value of the member var CurrentCursorID.
 				If this is an unknown value, defaults to _R(IDS_SGDRAG_LISTITEM)
-   
+
 ********************************************************************************************/
 
 BOOL SGListDragTarget::GetStatusLineText(String_256 * TheText)
@@ -1183,17 +1183,17 @@ BOOL SGListDragTarget::GetStatusLineText(String_256 * TheText)
 
 /********************************************************************************************
 
->	void SGListDragInfo::SGListDragInfo() 
-	 
+>	void SGListDragInfo::SGListDragInfo()
+
 	Author:		Jason_Williams (Xara Group Ltd) <camelotdev@xara.com>
-	Created:	14/3/95		  
+	Created:	14/3/95
 
 	Purpose:	Default constructor. DO NOT CALL THIS CONSTRUCTOR
 
 ********************************************************************************************/
 SGListDragInfo::SGListDragInfo()
 {
-	ERROR3("Default SGListDragInfo constructor called");	
+	ERROR3("Default SGListDragInfo constructor called");
 }
 
 
@@ -1204,7 +1204,7 @@ SGListDragInfo::SGListDragInfo()
 									SGMouseInfo *TheMouseInfo, BOOL IsAdjust = FALSE)
 
 	Author:		Jason_Williams (Xara Group Ltd) <camelotdev@xara.com>
-	Created:	14/3/95		  
+	Created:	14/3/95
 
 	Inputs:		ParentGal - The gallery from which the drag originated
 
@@ -1215,7 +1215,7 @@ SGListDragInfo::SGListDragInfo()
 				SGDisplayNode::DragWasReallyAClick handler if the drag becomes a click)
 
 				IsAdjust - TRUE if it is an "adjust" drag [NOTE - Adjust drags are legal
-				when dragging scrollbars, and are not turned into clicks like normal drags]				
+				when dragging scrollbars, and are not turned into clicks like normal drags]
 
 	Purpose:	Constructor
 
@@ -1248,7 +1248,7 @@ SGListDragInfo::SGListDragInfo(SuperGallery *ParentGal, SGDisplayNode *DraggedNo
 
 	Purpose:	To provide the resource ID of the cursor to use during this drag.
 				For scrollbar drags, the cursor should remain the normal arrow shape.
-   
+
 ********************************************************************************************/
 
 UINT32 SGListDragInfo::GetCursorID()
@@ -1268,7 +1268,7 @@ UINT32 SGListDragInfo::GetCursorID()
 	Returns:	FALSE - The string has not been filled in
 	Purpose:	Provide status line text for this drag - While dragging scrollbars no help
 				is required/given, so this always returns FALSE
-   
+
 ********************************************************************************************/
 
 BOOL SGListDragInfo::GetStatusLineText(String_256 * TheText)
@@ -1283,14 +1283,14 @@ BOOL SGListDragInfo::GetStatusLineText(String_256 * TheText)
 
 /********************************************************************************************
 
->	void SGListDragInfo::OnClick(INT32 Flags,POINT Point) 
-	 
+>	void SGListDragInfo::OnClick(INT32 Flags,POINT Point)
+
 	Author:		Jason_Williams (Xara Group Ltd) <camelotdev@xara.com>
-	Created:	14/3/95		  
+	Created:	14/3/95
 	Inputs:		Flags - Some flags
 				Point - the point which was clicked
 
-	Purpose:	This is called if a drag was attempted but never started because it was a 
+	Purpose:	This is called if a drag was attempted but never started because it was a
 				click all along. It passes the original Click information back to the
 				SGDisplayNode which started the drag by calling its DragWasReallyAClick
 				method
@@ -1309,5 +1309,3 @@ void SGListDragInfo::OnClick(INT32 Flags, POINT Point)
 		DragNode->DragWasReallyAClick(&MouseInfo, &MiscInfo);
 	}
 }
-
-

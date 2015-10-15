@@ -1,7 +1,7 @@
 // $Id: sgbitmap.cpp 1664 2006-08-04 10:06:16Z gerry $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
- 
+
                Xara LX, a vector drawing and manipulation program.
                     Copyright (C) 1993-2006 Xara Group Ltd.
        Copyright on certain contributions may be held in joint with their
@@ -32,7 +32,7 @@ ADDITIONAL RIGHTS
 
 Conditional upon your continuing compliance with the GNU General Public
 License described above, Xara Group Ltd grants to you certain additional
-rights. 
+rights.
 
 The additional rights are to use, modify, and distribute the software
 together with the wxWidgets library, the wxXtra library, and the "CDraw"
@@ -103,20 +103,20 @@ service marks of Xara Group Ltd. All rights in these marks are reserved.
 //nclude "gallery.h"	// For _R(IDC_GALLERY_LISTBOX)
 //#include "galstr.h"
 //#include "galres.h"
-#include "sgbitmap.h"	
-#include "sginit.h"	
+#include "sgbitmap.h"
+#include "sginit.h"
 #include "sgmenu.h"
 
 //nclude "ccdc.h"		// For render-into-dialogue support
 //nclude "fillval.h"
 //nclude "grnddib.h"
 //#include "will.h"		// For OpShowBitmapGallery ID's
-//nclude "bitmap.h"	
-#include "bitmpinf.h"	
+//nclude "bitmap.h"
+#include "bitmpinf.h"
 //#include "fillattr.h"	 - in camtypes.h [AUTOMATICALLY REMOVED]
-//nclude "attrmgr.h"	
-#include "nodebmp.h"	
-//nclude "convert.h"	
+//nclude "attrmgr.h"
+#include "nodebmp.h"
+//nclude "convert.h"
 //#include "resource.h"	// For _R(IDS_CANCEL)
 
 #include "dragmgr.h"
@@ -136,8 +136,8 @@ service marks of Xara Group Ltd. All rights in these marks are reserved.
 //nclude "sglib.h"
 
 //#include "richard2.h"	// extra resource strings
-#include "bmpcomp.h"	
-//#include "will3.h"	
+#include "bmpcomp.h"
+//#include "will3.h"
 //#include "phil.h"
 
 #include "comattrmsg.h"
@@ -188,8 +188,8 @@ BOOL BitmapSGallery::IgnoreBmpListChange = FALSE;
 
 /********************************************************************************************
 
->	SGBitmapDragTarget::SGBitmapDragTarget(DialogOp *TheDialog, CGadgetID TheGadget = NULL)
-	 
+>	SGBitmapDragTarget::SGBitmapDragTarget(DialogOp *TheDialog, CGadgetID TheGadget = 0)
+
 	Author:		Will_Cowling (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	25/3/95
 	Inputs:		TheDialog - The kernel dialog in which the target exists
@@ -272,10 +272,10 @@ BOOL SGBitmapDragTarget::ProcessEvent(DragEventType Event, DragInformation *pDra
 
 /********************************************************************************************
 
->	void GalleryBitmapDragInfo::GalleryBitmapDragInfo() 
-	 
+>	void GalleryBitmapDragInfo::GalleryBitmapDragInfo()
+
 	Author:		Will_Cowling (Xara Group Ltd) <camelotdev@xara.com>
-	Created:	19/3/95		  
+	Created:	19/3/95
 
 	Purpose:	Default constructor - do not call this constructor
 
@@ -283,7 +283,7 @@ BOOL SGBitmapDragTarget::ProcessEvent(DragEventType Event, DragInformation *pDra
 
 GalleryBitmapDragInfo::GalleryBitmapDragInfo()
 {
-	ERROR3("Default GalleryBitmapDragInfo constructor called");	
+	ERROR3("Default GalleryBitmapDragInfo constructor called");
 }
 
 
@@ -293,9 +293,9 @@ GalleryBitmapDragInfo::GalleryBitmapDragInfo()
 >	GalleryBitmapDragInfo::GalleryBitmapDragInfo(SGDisplayKernelBitmap *pSourceItem,
 											SGMouseInfo *pMouseInfo, SGMiscInfo *pMiscInfo,
  											BOOL IsAdjust = FALSE)
-	 
+
 	Author:		Will_Cowling (Xara Group Ltd) <camelotdev@xara.com>
-	Created:	19/3/95		  
+	Created:	19/3/95
 
 	Inputs:		pSourceItem - The gallery item from which the drag originated
 				pMouseInfo	- The mouse info which made the item start the drag
@@ -321,9 +321,9 @@ GalleryBitmapDragInfo::GalleryBitmapDragInfo(SGDisplayKernelBitmap *pSourceItem,
 /********************************************************************************************
 
 >	GalleryBitmapDragInfo::~GalleryBitmapDragInfo()
- 
+
 	Author:		Will_Cowling (Xara Group Ltd) <camelotdev@xara.com>
-	Created:	19/3/95		  
+	Created:	19/3/95
 
 	Purpose:	Destructor
 
@@ -336,14 +336,14 @@ GalleryBitmapDragInfo::~GalleryBitmapDragInfo()
 
 /********************************************************************************************
 
->	void GalleryBitmapDragInfo::OnClick(INT32 Flags,POINT Point) 
-	 
+>	void GalleryBitmapDragInfo::OnClick(INT32 Flags,POINT Point)
+
 	Author:		Will_Cowling (Xara Group Ltd) <camelotdev@xara.com>
-	Created:	19/3/95		  
+	Created:	19/3/95
 	Inputs:		-
 	Outputs:	-
 	Returns:	-
-	Purpose:	This is called if a drag was attempted but never started because it was a 
+	Purpose:	This is called if a drag was attempted but never started because it was a
 				click all along. It calls back the SourceItem SGDisplayBitmap, to get it
 				to handle the click.
 	Errors:		-
@@ -422,7 +422,7 @@ UINT32 GalleryBitmapDragInfo::GetCursorID(DragTarget* pDragTarget)
 	Created:	25/3/95
 	Returns:	Whether String is valid
 	Purpose:	provide status line text for this target
-   
+
 ********************************************************************************************/
 
 BOOL GalleryBitmapDragInfo::GetStatusLineText(String_256 * TheText, DragTarget* pDragTarget)
@@ -495,16 +495,16 @@ BOOL GalleryBitmapDragInfo::GetStatusLineText(String_256 * TheText, DragTarget* 
 	 	*TheText = DragString;
 		return TRUE;
 	}
- 	
+
 	return FALSE;
 }
 
 /********************************************************************************************
 
 >	BOOL GalleryBitmapDragInfo::OnPageDrop(ViewDragTarget* pDragTarget)
- 
+
 	Author:		Will_Cowling (Xara Group Ltd) <camelotdev@xara.com>
-	Created:	19/3/95		  
+	Created:	19/3/95
 	Inputs:		-
 	Outputs:	-
 	Returns:	-
@@ -529,7 +529,7 @@ BOOL GalleryBitmapDragInfo::OnPageDrop(ViewDragTarget* pDragTarget)
 
 	// See if the user dropped the bitmap onto an object(s) on the page
 	// If so then try and apply that bitmap as a fill to that object(s).
-	if (pObjectHit && !pObjectHit->IS_KIND_OF(NodeBitmap)) 
+	if (pObjectHit && !pObjectHit->IS_KIND_OF(NodeBitmap))
 	{
 		// Fill the object(s) with the dropped bitmap
 		AttrBitmapColourFill* Attrib = new AttrBitmapColourFill;
@@ -554,28 +554,28 @@ BOOL GalleryBitmapDragInfo::OnPageDrop(ViewDragTarget* pDragTarget)
 				return FALSE;
 			OpBackgroundParam Param;
 			Param.pBitmap = BitmapToApply;
-			Param.pDoc = pDocument;			
+			Param.pDoc = pDocument;
 			Param.pSpread = ThePageDropInfo.pSpread;
-			
-			// Obtain a pointer to the op descriptor for the create operation 
+
+			// Obtain a pointer to the op descriptor for the create operation
 			OpDescriptor* pOpDesc = OpDescriptor::FindOpDescriptor(OPTOKEN_BACKGROUND);
 
 			// Invoke the operation, passing in our parameters
 			if (pOpDesc)
-				pOpDesc->Invoke(&Param);		 
+				pOpDesc->Invoke(&Param);
 		}
 		else
 		{
 			// Create a new bitmap on the page at the drop point
 
-			// Obtain a pointer to the op descriptor for the create operation 
+			// Obtain a pointer to the op descriptor for the create operation
 			OpDescriptor* OpDesc = OpDescriptor::FindOpDescriptor(CC_RUNTIME_CLASS(OpCreateNodeBitmap));
 
 			if (OpDesc)
 			{
 				// Invoke the operation, passing DocView and Pos as parameters
 				OpParam param((void *)BitmapToApply,(void *)&ThePageDropInfo);
-				OpDesc->Invoke(&param);		 
+				OpDesc->Invoke(&param);
 			}
 		}
 	}
@@ -750,9 +750,9 @@ void SGDisplayKernelBitmap::HandleRedraw(SGRedrawInfo *RedrawInfo, SGMiscInfo *M
 
 	// Check the rectangle is at least our minimum height,
 	// and adjust it if not
-	//INT32 SelHeight = 16000; 
+	//INT32 SelHeight = 16000;
 	// Changed to allow a third line of text.
-	INT32 SelHeight = 23000; 
+	INT32 SelHeight = 23000;
 
 	if (MyRect.Height() < SelHeight*3)
 	{
@@ -803,7 +803,7 @@ void SGDisplayKernelBitmap::HandleRedraw(SGRedrawInfo *RedrawInfo, SGMiscInfo *M
 				YSize = GridLock(MiscInfo, SG_DefaultLargeBmp);
 				break;
 		}
-		
+
 		// If the bitmap is very Wide and Thin, then we need to scale it
 		// so it fits into out maximum icon width
 		if (IconWidth > YSize)
@@ -871,10 +871,10 @@ void SGDisplayKernelBitmap::HandleRedraw(SGRedrawInfo *RedrawInfo, SGMiscInfo *M
 		}
 	}
 
-	// This section doesn't currently do anything special as we 
+	// This section doesn't currently do anything special as we
 	// have gone back to using an OSRenderRegion
-	// If the display quality is too bad then we should modify 
-	// this code to render a high quality thumbnail and store it 
+	// If the display quality is too bad then we should modify
+	// this code to render a high quality thumbnail and store it
 	// for future use, rendering the thumbnail into an OSRenderRegion
 /*	Renderer->SetUsingSmoothedBitmaps(bScaleDown);
 	if (bScaleDown)
@@ -903,7 +903,7 @@ void SGDisplayKernelBitmap::HandleRedraw(SGRedrawInfo *RedrawInfo, SGMiscInfo *M
 
 	if (IconRect.Width() > ThreePixels * 2)
 		IconRect.Inflate(-ThreePixels, 0);		// Leave a bit of space around the edge
-	
+
 	GridLockRect(MiscInfo, &IconRect);	// Ensure it maps exactly to specific pixels
 
 	// Need to remember the icon rect size before the selection rectangle takes over...
@@ -979,7 +979,7 @@ void SGDisplayKernelBitmap::HandleRedraw(SGRedrawInfo *RedrawInfo, SGMiscInfo *M
 				return;
 			}
 
-			// Set the NodeBitmap path to be our IconRect, 
+			// Set the NodeBitmap path to be our IconRect,
 			// and attach the Bitmap to it.
 			DummyBmp->SetUpPath();
 			DummyBmp->CreateShape(ThumbnailRect);
@@ -1010,7 +1010,7 @@ void SGDisplayKernelBitmap::HandleRedraw(SGRedrawInfo *RedrawInfo, SGMiscInfo *M
 		return;
 	}
 
-	// Set the NodeBitmap path to be our IconRect, 
+	// Set the NodeBitmap path to be our IconRect,
 	// and attach the Bitmap to it.
 	DummyBmp->SetUpPath();
 	DummyBmp->CreateShape(ThumbnailRect);
@@ -1038,7 +1038,7 @@ void SGDisplayKernelBitmap::HandleRedraw(SGRedrawInfo *RedrawInfo, SGMiscInfo *M
 		INT32 bpp = TheKernelBitmap->GetBPP();
 
 		BOOL HasTransparency = FALSE;
-		
+
 		if (bpp <= 8)
 		{
 			// Check to see if this is a masked bitmap
@@ -1098,7 +1098,7 @@ void SGDisplayKernelBitmap::HandleRedraw(SGRedrawInfo *RedrawInfo, SGMiscInfo *M
 		// Now get its pixel Width and Height
 		String_256 BitmapWidth;
 		Convert::LongToString(Info.PixelWidth, &BitmapWidth);
-		
+
 		String_256 BitmapHeight;
 		Convert::LongToString(Info.PixelHeight, &BitmapHeight);
 
@@ -1167,12 +1167,12 @@ PORTNOTE("other", "Removed XPE hook")
 		TopRect.lo.y 	+= 18000;
 		MiddleRect.hi.y 	-= 5000;
 		//MiddleRect.hi.y 	-= 16000; Down
-		BottomRect.hi.y	-= 26000; 
+		BottomRect.hi.y	-= 26000;
 
 		// Plot the Name and Memory used on the Top Line
 		String_256 TopLine; // = "'"+BitmapName+"', "+BitmapFormat", "+MemoryUsed;
 		TopLine.MakeMsg(_R(IDS_SGBITMAP_FULLINFO_TOPLINE),(TCHAR *)BitmapName,(TCHAR*)BitmapFormat,(TCHAR *)MemoryUsed);
-		Renderer->DrawFixedSystemText(&TopLine, TopRect);				
+		Renderer->DrawFixedSystemText(&TopLine, TopRect);
 
 
 		// Plot the Dimensions and Colours on the Bottom Line
@@ -1194,12 +1194,12 @@ PORTNOTE("other", "Removed XPE hook")
 			camSnprintf(dpitext, 256, _T("%u x %u"), hdpi, vdpi);
 			MiddleLine.MakeMsg(_R(IDS_SGBITMAP_FULLINFO_BOTTOMLINE), (TCHAR *)BitmapWidth, (TCHAR *)BitmapHeight, (TCHAR *)BitmapCols, (TCHAR *)dpitext);
 		}
-		Renderer->DrawFixedSystemText(&MiddleLine, MiddleRect);				
+		Renderer->DrawFixedSystemText(&MiddleLine, MiddleRect);
 
 
-		// Find the Restore type 
+		// Find the Restore type
 		GIFDisposalMethod RestoreType = TheKernelBitmap->ActualBitmap->GetAnimationRestoreType();
-		
+
 		switch(RestoreType)
 		{
 			case GDM_NONE:
@@ -1207,7 +1207,7 @@ PORTNOTE("other", "Removed XPE hook")
 				String_256 BottomLine;
 				String_256 Nothing(_R(IDS_NOTHING));
 				BottomLine.MakeMsg(_R(IDS_SGBITMAP_DELAY_RESTORE_BOTTOMLINE), (TCHAR*)Delay, (TCHAR*)Nothing);
-				Renderer->DrawFixedSystemText(&BottomLine, BottomRect);	
+				Renderer->DrawFixedSystemText(&BottomLine, BottomRect);
 			}
 			break;
 			case  GDM_LEAVE:
@@ -1215,7 +1215,7 @@ PORTNOTE("other", "Removed XPE hook")
 				String_256 BottomLine;
 				String_256 Leave(_R(IDS_LEAVE));
 				BottomLine.MakeMsg(_R(IDS_SGBITMAP_DELAY_RESTORE_BOTTOMLINE), (TCHAR*)Delay, (TCHAR*)Leave);
-				Renderer->DrawFixedSystemText(&BottomLine, BottomRect);				
+				Renderer->DrawFixedSystemText(&BottomLine, BottomRect);
 			}
 			break;
 			case GDM_BACKTOBACK:
@@ -1223,7 +1223,7 @@ PORTNOTE("other", "Removed XPE hook")
 				String_256 BottomLine;
 				String_256 Back(_R(IDS_BACKGROUND));
 				BottomLine.MakeMsg(_R(IDS_SGBITMAP_DELAY_RESTORE_BOTTOMLINE), (TCHAR*)Delay, (TCHAR*)Back);
-				Renderer->DrawFixedSystemText(&BottomLine, BottomRect);				
+				Renderer->DrawFixedSystemText(&BottomLine, BottomRect);
 			}
 			break;
 			case GDM_PREVIOUS:
@@ -1231,7 +1231,7 @@ PORTNOTE("other", "Removed XPE hook")
 				String_256 BottomLine;
 				String_256 Previous(_R(IDS_PREVIOUS));
 				BottomLine.MakeMsg(_R(IDS_SGBITMAP_DELAY_RESTORE_BOTTOMLINE), (TCHAR*)Delay, (TCHAR*)Previous);
-				Renderer->DrawFixedSystemText(&BottomLine, BottomRect);				
+				Renderer->DrawFixedSystemText(&BottomLine, BottomRect);
 			}
 			break;
 
@@ -1462,7 +1462,7 @@ void SGDisplayKernelBitmap::GetFullInfoText(String_256 *Result)
 				so that moving display items can have a further effect of also rearranging
 				the displayed "real" items. Before/After moving the real item, the
 				derived class can then call this baseclass method to complete the action.
-		
+
 				Take care when moving items between groups (e.g. if an item is "moved"
 				from one docuemnt to another, it could be a bad thing, so be very
 				careful in derived classes to take appropriate action)
@@ -1495,16 +1495,16 @@ void SGDisplayKernelBitmap::MoveAfter(SGDisplayNode *NodeToMove)
 		return;
 	}
 
-	BitmapSGallery::IgnoreBmpListChange = TRUE;	
+	BitmapSGallery::IgnoreBmpListChange = TRUE;
 
 	// And get the bitmap list
 	BitmapList* BmpList = ScopeDoc->GetBitmapList();
 	ERROR3IF(BmpList == NULL, "A document with no bitmap list?!");
-	
+
 	BmpList->MoveAfter(GetDisplayedKernelBitmap(), BitmapToMove);
 	SGDisplayNode::MoveAfter(NodeToMove);
 
-	BitmapSGallery::IgnoreBmpListChange = FALSE;	
+	BitmapSGallery::IgnoreBmpListChange = FALSE;
 }
 
 /***********************************************************************************************
@@ -1525,7 +1525,7 @@ void SGDisplayKernelBitmap::MoveAfter(SGDisplayNode *NodeToMove)
 				so that moving display items can have a further effect of also rearranging
 				the displayed "real" items. Before/After moving the real item, the
 				derived class can then call this baseclass method to complete the action.
-		
+
 				Take care when moving items between groups (e.g. if an item is "moved"
 				from one docuemnt to another, it could be a bad thing, so be very
 				careful in derived classes to take appropriate action)
@@ -1558,17 +1558,17 @@ void SGDisplayKernelBitmap::MoveBefore(SGDisplayNode *NodeToMove)
 		return;
 	}
 
-	BitmapSGallery::IgnoreBmpListChange = TRUE;	
+	BitmapSGallery::IgnoreBmpListChange = TRUE;
 
 	// And get the bitmap list
 	BitmapList* BmpList = ScopeDoc->GetBitmapList();
 	ERROR3IF(BmpList == NULL, "A document with no bitmap list?!");
-	
+
 	BmpList->MoveBefore(GetDisplayedKernelBitmap(), BitmapToMove);
 
 	SGDisplayNode::MoveBefore(NodeToMove);
 
-	BitmapSGallery::IgnoreBmpListChange = FALSE;	
+	BitmapSGallery::IgnoreBmpListChange = FALSE;
 }
 
 /********************************************************************************************
@@ -1586,11 +1586,11 @@ void SGDisplayKernelBitmap::MoveBefore(SGDisplayNode *NodeToMove)
 				will contain a status line help string for this item
 
 	Returns:	TRUE if it filled in the string, FALSE if it did not
-				
+
 	Purpose:	Called by the parent gallery when status line help is needed. The parent
 				gallery will do a hit test to determine which node contains the pointer,
 				and will then ask that node to supply bubble/status-line help.
-				
+
 	Notes:		The base class returns FALSE (i.e. provides no help)
 				If you can provide help, then override the base class method to do so.
 
@@ -1625,7 +1625,7 @@ BOOL SGDisplayKernelBitmap::GetStatusLineHelp(DocCoord *MousePos, String_256 *Re
 /********************************************************************************************
 
 >	BitmapSGallery::BitmapSGallery()
-												 
+
 	Author:		Will_Cowling (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	27/1/95 (base generated in sgbase.cpp)
 	Purpose:	BitmapSGallery default constructor
@@ -1642,7 +1642,7 @@ BitmapSGallery::BitmapSGallery()
 	CSize Size(333, 256);
 	SetGallerySize(Size);
 #endif
-} 
+}
 
 
 
@@ -1675,9 +1675,9 @@ BitmapSGallery::~BitmapSGallery()
 				it clears all displayitems from the group and rebuilds it in place - this
 				stops the display group moving around the tree at random!)
 
-	Purpose:	Internal call. This takes the KernelBitmap list of the given document and 
+	Purpose:	Internal call. This takes the KernelBitmap list of the given document and
 				creates a DisplayTree subtree from it. This subtree is then added to
-				the DisplayTree. Note that this does not force a redraw of the list - 
+				the DisplayTree. Note that this does not force a redraw of the list -
 				after making this call, you should also call ForceRedrawOfList
 
 	Notes:		Passing in a NULL parent document pointer results in an ERROR3 -
@@ -1698,7 +1698,7 @@ void BitmapSGallery::CreateNewSubtree(Document *ParentDoc, SGDisplayGroup *Exist
 
 	if (ExistingGroup != NULL)
 	{
-		ERROR3IF(ExistingGroup->GetParentDocument() != ParentDoc, 
+		ERROR3IF(ExistingGroup->GetParentDocument() != ParentDoc,
 				 "This group is not for that document! What's going down, dude?");
 		DisplayDocument = ExistingGroup;							// Use existing group
 		DisplayDocument->DestroySubtree(FALSE);	// Wipe any existing KernelBitmap display items
@@ -1779,7 +1779,7 @@ BOOL BitmapSGallery::PreCreate(void)
 	{
 		// Set the group's folded state, but don't bother trying to redraw, because we know
 		// that the window is not currently visible, and that we are doing this to multiple groups.
-		Group->SetFoldedState((Group->GetParentDocument() != Document::GetSelected()), FALSE);		
+		Group->SetFoldedState((Group->GetParentDocument() != Document::GetSelected()), FALSE);
 		Group = (SGDisplayGroup *) Group->GetNext();
 	}
 
@@ -1808,7 +1808,7 @@ void BitmapSGallery::SetSelectionFromDocument(BOOL AlwaysScroll)
 {
 	if (DisplayTree == NULL || !IsVisible())
 		return;
-	
+
 	SGDisplayGroup *DocGroup = DisplayTree->FindSubtree(this, Document::GetSelected(), NULL);
 	SelectItems(FALSE);					// Clear the current selection
 
@@ -1849,7 +1849,7 @@ void BitmapSGallery::SetSelectionFromDocument(BOOL AlwaysScroll)
 
 /********************************************************************************************
 
->	virtual SGDisplayItem *BitmapSGallery::CopyDisplayItem(SGDisplayItem *SourceItem, 
+>	virtual SGDisplayItem *BitmapSGallery::CopyDisplayItem(SGDisplayItem *SourceItem,
 									SGDisplayGroup *DestGroup,
 									SGDisplayItem *TargetPosition = NULL)
 	Author:		Jason_Williams (Xara Group Ltd) <camelotdev@xara.com>
@@ -1865,9 +1865,9 @@ void BitmapSGallery::SetSelectionFromDocument(BOOL AlwaysScroll)
 	Returns:	NULL (failed) or a pointer to the new (copied) display item
 
 	Purpose:	"Copies" the existing node in the tree in an appropriate fashion.
-				
+
 				This method is normally called when a gallery-organising drag completes,
-				and it is discovered that the dragged item(s) have been dragged to a 
+				and it is discovered that the dragged item(s) have been dragged to a
 				different display group.
 
 	Notes:		This method should be overridden by derived galleries to provide
@@ -1886,7 +1886,7 @@ void BitmapSGallery::SetSelectionFromDocument(BOOL AlwaysScroll)
 
 ********************************************************************************************/
 
-SGDisplayItem *BitmapSGallery::CopyDisplayItem(SGDisplayItem *SourceItem, 
+SGDisplayItem *BitmapSGallery::CopyDisplayItem(SGDisplayItem *SourceItem,
 						SGDisplayGroup *DestGroup, SGDisplayItem *TargetPosition)
 {
 	ERROR3IF(SourceItem == NULL || DestGroup == NULL, "Illegal NULL param");
@@ -1901,7 +1901,7 @@ SGDisplayItem *BitmapSGallery::CopyDisplayItem(SGDisplayItem *SourceItem,
 	if (we really want to copy the items, rather than just move them)
 	{
 		// Just copy the items...
-		
+
 		// First, copy the real-item associated with the display item
 		ThingyType *NewThingy = new ThingyType(ThingyToCopy);
 
@@ -1930,7 +1930,7 @@ SGDisplayItem *BitmapSGallery::CopyDisplayItem(SGDisplayItem *SourceItem,
 	else
 	{
 		// Just move the items
-		
+
 		// This code will be much the same as the above, but instead of copying the
 		// real-item, you will have to move it as appropriate. Instead of making
 		// a new DisplayItem to pass on to InsertCopiedItem, simply delink it from the
@@ -1954,7 +1954,7 @@ KernelBitmap* BitmapSGallery::GetSelectedBitmap()
 	Document		*SelectedDoc = Document::GetSelected();
 	/*SGDisplayGroup	*DocumentGroup =*/ DisplayTree->FindSubtree(this, SelectedDoc, NULL);
 	SGDisplayKernelBitmap	*FirstSelected = NULL;
-	
+
 	// Lets see if any of our Items are selected
 	Document *ParentDoc = (Document *) GetApplication()->Documents.GetHead();
 	while (ParentDoc != NULL)
@@ -2009,7 +2009,7 @@ BOOL BitmapSGallery::ApplyAction(SGActionType Action)
 	Document		*SelectedDoc = Document::GetSelected();
 	/*SGDisplayGroup	*DocumentGroup =*/ DisplayTree->FindSubtree(this, SelectedDoc, NULL);
 	SGDisplayKernelBitmap	*FirstSelected = NULL;
-	
+
 	// Lets see if any of our Items are selected
 	Document *ParentDoc = (Document *) GetApplication()->Documents.GetHead();
 	while (ParentDoc != NULL)
@@ -2147,7 +2147,7 @@ BOOL BitmapSGallery::DeleteSelection()
 
 			ParentDoc = (Document *) GetApplication()->Documents.GetNext(ParentDoc);
 		}
-		
+
 		IgnoreBmpListChange = FALSE;
 
 		if (DeletedBitmaps)
@@ -2367,7 +2367,7 @@ void BitmapSGallery::DoShadeGallery(BOOL ShadeIt)
 	EnableGadget(_R(IDC_BMPGAL_SAVE),	!ShadeIt);
 
 	EnableGadget(_R(IDC_BMPGAL_PROPS),	!ShadeIt);
-	
+
 	EnableGadget(_R(IDC_BMPGAL_BACKGROUND),	!ShadeIt);
 #ifdef PHOTOSHOPPLUGINS
 // Only add in if required - general plug-in removal at present
@@ -2431,7 +2431,7 @@ MsgResult BitmapSGallery::Message(Msg* Message)
 			case DIM_LFT_BN_CLICKED:
 				if (FALSE) {}
 				else if (Msg->GadgetID == _R(IDC_BMPGAL_CREATE))
-				{	
+				{
 					SelectedBitmap = GetSelectedBitmap();
 
 					if (SelectedBitmap != NULL)
@@ -2443,16 +2443,16 @@ MsgResult BitmapSGallery::Message(Msg* Message)
 
 						FindCentreInsertionPosition(&DropInfo.pSpread, &DropInfo.DropPos);
 
-						// Obtain a pointer to the op descriptor for the create operation 
+						// Obtain a pointer to the op descriptor for the create operation
 						OpDescriptor* OpDesc = OpDescriptor::FindOpDescriptor(CC_RUNTIME_CLASS(OpCreateNodeBitmap));
 
 						// Invoke the operation, passing DocView and Pos as parameters
 						OpParam param((void *)SelectedBitmap,(void *)&DropInfo);
-						OpDesc->Invoke(&param);		 
+						OpDesc->Invoke(&param);
 					}
 				}
 				else if (Msg->GadgetID == _R(IDC_BMPGAL_FILL))
-				{	
+				{
 					SelectedBitmap = GetSelectedBitmap();
 
 					if (SelectedBitmap != NULL)
@@ -2469,7 +2469,7 @@ MsgResult BitmapSGallery::Message(Msg* Message)
 					}
 				}
 				else if (Msg->GadgetID == _R(IDC_BMPGAL_TEXTURE))
-				{	
+				{
 					SelectedBitmap = GetSelectedBitmap();
 
 					if (SelectedBitmap != NULL)
@@ -2496,11 +2496,11 @@ MsgResult BitmapSGallery::Message(Msg* Message)
 PORTNOTE("other", "Remove XPE hooks")
 #ifndef EXCLUDE_FROM_XARALX
 				else if (Msg->GadgetID == _R(IDC_BMPGAL_XPE_EDIT))
-				{	
+				{
 					SelectedBitmap = GetSelectedBitmap();
 					if (SelectedBitmap != NULL)
 					{
-						// Obtain a pointer to the op descriptor for the create operation 
+						// Obtain a pointer to the op descriptor for the create operation
 						OpDescriptor* OpDesc = OpDescriptor::FindOpDescriptor(CC_RUNTIME_CLASS(XPEEditItemOp));
 
 						// Invoke the operation, passing DocView and Pos as parameters
@@ -2510,7 +2510,7 @@ PORTNOTE("other", "Remove XPE hooks")
 				}
 #endif
 				else if (Msg->GadgetID == _R(IDC_BMPGAL_TRACE))
-				{	
+				{
 					SelectedBitmap = GetSelectedBitmap();
 				// WEBSTER-Martin-09/01/97 we don't trace stuff
 				#ifndef WEBSTER
@@ -2521,7 +2521,7 @@ PORTNOTE("other", "Remove XPE hooks")
 				#endif //webster
 				}
 				/* else if (Msg->GadgetID == _R(IDC_BMPGAL_EFFECTS))
-				{	
+				{
 					SelectedBitmap = GetSelectedBitmap();
 				// WEBSTER-Martin-09/01/97
 				#ifndef WEBSTER
@@ -2533,7 +2533,7 @@ PORTNOTE("other", "Remove XPE hooks")
 					break;
 				} */
 				else if (Msg->GadgetID == _R(IDC_BMPGAL_SAVE))
-				{	
+				{
 					// Generate a list of the selected bitmaps
 					UINT32 ListSize = 0;
 					KernelBitmap** pList = NULL;
@@ -2549,11 +2549,11 @@ PORTNOTE("other", "Remove XPE hooks")
 							// Save the Bitmap deatils for use in the bitmap export code.#
 							BmpDlgParam.SetBitmapList(pList);
 							BmpDlgParam.SetListSize(ListSize);
-							
+
 							BitmapExportParam ExportList(ListSize, pList, &BmpDlgParam);
 							// Invoke the export operation
 							OpDescriptor* OpDesc = OpDescriptor::FindOpDescriptor(CC_RUNTIME_CLASS(OpMenuExport));
-							OpDesc->Invoke(&ExportList);		 
+							OpDesc->Invoke(&ExportList);
 							SetBmpInfo(&BmpDlgParam);
 							ForceRedrawOfList();
 						}
@@ -2564,7 +2564,7 @@ PORTNOTE("other", "Remove XPE hooks")
 						CCFree(pList);
 				}
 				else if (Msg->GadgetID == _R(IDC_BMPGAL_HELP))
-				{	
+				{
 					// HelpUserTopic(_R(IDH_Gallery_Bitmap));
 					HelpUserTopic(_R(IDS_HELPPATH_Gallery_Bitmap));
 					break;
@@ -2636,7 +2636,7 @@ PORTNOTE("other", "Remove XPE hooks")
 #ifdef PHOTOSHOPPLUGINS
 // Only add in if required - general plug-in removal at present
 				else if (Msg->GadgetID == _R(IDC_BMPGAL_PLUGINS))
-				{	
+				{
 					// Need to say which document and more importantly which bitmap we
 					// want the menu to apply to.
 					SelectedBitmap = GetSelectedBitmap();
@@ -2650,7 +2650,7 @@ PORTNOTE("other", "Remove XPE hooks")
 					ERROR3IF(pDocument == NULL, "No parent document?!");
 					if (SelectedBitmap != NULL && pDocument != NULL)
 					{
-						// replaced menu with direct invocation of Bfx:Special Effects operation since this was 
+						// replaced menu with direct invocation of Bfx:Special Effects operation since this was
 						// the only option left on menu - all the other plug-in options have been superseded
 						// by the new Live Effects implementation. Fixes #11376.
 
@@ -2670,7 +2670,7 @@ PORTNOTE("other", "Remove XPE hooks")
 				}
 #endif
 				else if (Msg->GadgetID == _R(IDC_BMPGAL_BACKGROUND))
-				{	
+				{
 					// Need to say which document and more importantly which bitmap we
 					// want the menu to apply to.
 					SelectedBitmap = GetSelectedBitmap();
@@ -2687,17 +2687,17 @@ PORTNOTE("other", "Remove XPE hooks")
 						// Apply the bitmap as the new background
 						OpBackgroundParam Param;
 						Param.pBitmap = SelectedBitmap;
-						Param.pDoc = pDocument;			
-						
-						// Obtain a pointer to the op descriptor for the create operation 
+						Param.pDoc = pDocument;
+
+						// Obtain a pointer to the op descriptor for the create operation
 						OpDescriptor* pOpDesc = OpDescriptor::FindOpDescriptor(OPTOKEN_BACKGROUND);
 
 						// Invoke the operation, passing in our parameters
-						pOpDesc->Invoke(&Param);		 
+						pOpDesc->Invoke(&Param);
 					}
 				}
 				else if (Msg->GadgetID == _R(IDC_BMPGAL_PROPS))
-				{	
+				{
 					// Generate a list of the selected bitmaps
 					UINT32 ListSize = 0;
 					KernelBitmap** pList = NULL;
@@ -2776,7 +2776,7 @@ PORTNOTE("other", "Remove XPE hooks")
 
 				// And force a redraw of the entire list
 				ForceRedrawOfList();
-				
+
 				// The above will loose the selection, so we can listen out for the special
 				// form of the message which says which bitmap to reselect.
 				if ((TheMsg->State == BitmapListChangedMsg::SELECTNEWBITMAP) &&
@@ -2812,7 +2812,7 @@ PORTNOTE("other", "Remove XPE hooks")
 						pCurrentItem = (SGDisplayKernelBitmap *) pCurrentItem->GetNext();
 					}
 
-						
+
 					// Try and scroll to the selected item, if we have one
 					if (HaveSelected)
 					{
@@ -2820,7 +2820,7 @@ PORTNOTE("other", "Remove XPE hooks")
 						ScrollToShow(&ScrollToRect, ScrollToBottom);
 					}
 				}
-			
+
 				// Was not present before 20/12/96, safest to have it present as this action
 				// will lose the selection.
 				SelectionHasChanged();
@@ -2835,7 +2835,7 @@ PORTNOTE("other", "Remove XPE hooks")
 	}
 
 	return(SuperGallery::Message(Message));
-}    
+}
 
 
 /********************************************************************************************
@@ -2888,13 +2888,13 @@ void BitmapSGallery::HandleDragStart(DragMessage *DragMsg)
 BOOL BitmapSGallery::FindCentreInsertionPosition(Spread** Spread, DocCoord* Position)
 {
 	// ---------------------------------------------------------------------------------
-	// Find out which spread is in the centre of the view 
+	// Find out which spread is in the centre of the view
 	// this is the spread that the pasted objects will be placed on
 
 	// Obtain the current DocView
 	DocView* CurDocView = DocView::GetCurrent();
 
-	ENSURE(CurDocView != NULL, "The current DocView is NULL"); 
+	ENSURE(CurDocView != NULL, "The current DocView is NULL");
 	if (CurDocView == NULL)
 	{
 		return FALSE; // No DocView
@@ -2907,39 +2907,39 @@ BOOL BitmapSGallery::FindCentreInsertionPosition(Spread** Spread, DocCoord* Posi
 	{
 		return FALSE; // Defensive
 	}
-	
+
 	// Determine the centre of the view
-	WorkCoord WrkCentreOfView; 
-	WrkCentreOfView.x = WrkViewRect.lo.x	+ (WrkViewRect.Width()/2); 
+	WorkCoord WrkCentreOfView;
+	WrkCentreOfView.x = WrkViewRect.lo.x	+ (WrkViewRect.Width()/2);
 	WrkCentreOfView.y = WrkViewRect.lo.y	+ (WrkViewRect.Height()/2);
-	
+
 	// FindEnclosing spread requires an OilCoord
-	OilCoord OilCentreOfView = WrkCentreOfView.ToOil(CurDocView->GetScrollOffsets()); 
+	OilCoord OilCentreOfView = WrkCentreOfView.ToOil(CurDocView->GetScrollOffsets());
 
 	// Find out which spread to insert the pasteboard objects onto
 	(*Spread) = CurDocView->FindEnclosingSpread(OilCentreOfView);
 	if ((*Spread) == NULL)
 	{
 		// There is no spread
-		return FALSE; 
+		return FALSE;
 	}
 
 	// Phew
 	// ---------------------------------------------------------------------------------
 	// Now lets find the spread coordinate of the centre of the view
 	DocRect DocViewRect = CurDocView->GetDocViewRect(*Spread);
-	
+
 	if ( DocViewRect.IsEmpty() || (!DocViewRect.IsValid()) )
 	{
 		return FALSE; // Defensive
 	}
 
-	ENSURE( ( (!DocViewRect.IsEmpty()) && DocViewRect.IsValid()), 
+	ENSURE( ( (!DocViewRect.IsEmpty()) && DocViewRect.IsValid()),
 			"DocViewRect is invalid" );
 
 	// Find the centre of the DocViewRect
-   	DocCoord DocCentreOfView; 
-	DocCentreOfView.x = DocViewRect.lo.x	+ (DocViewRect.Width()/2); 
+   	DocCoord DocCentreOfView;
+	DocCentreOfView.x = DocViewRect.lo.x	+ (DocViewRect.Width()/2);
 	DocCentreOfView.y = DocViewRect.lo.y	+ (DocViewRect.Height()/2);
 
 	// Now convert from DocCoords to spread coords
@@ -2947,8 +2947,8 @@ BOOL BitmapSGallery::FindCentreInsertionPosition(Spread** Spread, DocCoord* Posi
 
 	// Finally, fill in the return value
 	*Position = DocCentreOfView;
-	
-	return TRUE;  
+
+	return TRUE;
 }
 
 
@@ -3003,7 +3003,7 @@ void BitmapSGallery::DestroyRenderRegion(RenderRegion *pRender)
 /********************************************************************************************
 
 >	virtual BOOL BitmapSGallery::PreContextMenu(void)
-												 
+
 	Author:		Neville_Humphrys (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	28/10/97
 	Returns:	TRUE for success
@@ -3034,7 +3034,7 @@ BOOL BitmapSGallery::PreContextMenu(void)
 /********************************************************************************************
 
 >	virtual BOOL BitmapSGallery::InitMenuCommands(void)
-												 
+
 	Author:		Jason_Williams (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	18/9/95
 
@@ -3114,7 +3114,7 @@ BOOL BitmapSGallery::InitMenuCommands(void)
 	Returns:	TRUE if it succeeded
 
 	Purpose:	To build a menu of commands to be popped up over the gallery.
-	
+
 	Notes:		Override this method to stop the default menus being built
 
 ********************************************************************************************/
@@ -3146,7 +3146,7 @@ BOOL BitmapSGallery::BuildCommandMenu(GalleryContextMenu *TheMenu, SGMenuID Menu
 #ifndef WEBSTER
 		ok = ok && AddCommand(TheMenu, (StringBase *) &SGCmd_XPE_Edit);
 		ok = ok && AddCommand(TheMenu, (StringBase *) &SGCmd_Trace);
-//		ok = ok && AddCommand(TheMenu, (StringBase *) &SGCmd_Effects);		
+//		ok = ok && AddCommand(TheMenu, (StringBase *) &SGCmd_Effects);
 #endif //webster
 
 #ifdef PHOTOSHOPPLUGINS
@@ -3163,7 +3163,7 @@ BOOL BitmapSGallery::BuildCommandMenu(GalleryContextMenu *TheMenu, SGMenuID Menu
 			pDocument = ((SGDisplayGroup *) FirstSelected->GetParent())->GetParentDocument();
 		ERROR3IF(pDocument == NULL, "No parent document?!");
 
-		// Add plug-in ("Special Effects" is the only one still used since Live Effects) to the 
+		// Add plug-in ("Special Effects" is the only one still used since Live Effects) to the
 		// main menu, not a submenu. Fixes #11376
 		// Well, in fact we will ask the PlugInsContextMenu to do it for us!
 		ok = ok && PlugInsContextMenu::BuildMenu(pSelectedBitmap, pDocument, TheMenu, NULL, TRUE);
@@ -3206,7 +3206,7 @@ BOOL BitmapSGallery::BuildCommandMenu(GalleryContextMenu *TheMenu, SGMenuID Menu
 
 	Purpose:	To determine the state of a given menu item. This method is an exact
 				parallel to an Op's GetState method (in fact, it is called by an Op's GetState)
-	
+
 	Notes:		Override this method to provide state info for your special commands
 				Call the base class for unknown commands to allow it to handle them for you
 
@@ -3301,7 +3301,7 @@ OpState BitmapSGallery::GetCommandState(StringBase *CommandID, String_256 *Shade
 	Inputs:		CommandID - The String ID of the command
 
 	Purpose:	To apply a given command when it is chosen from the menu.
-	
+
 	Notes:		Override this method to provide handling for your special commands.
 				Call the base class if you don't recognise the command, so that it can
 				handle standard commands.
@@ -3415,11 +3415,11 @@ void BitmapSGallery::DoCommand(StringBase *CommandID)
 	Created:	31/1/95
 	Inputs:		-
 	Outputs:	-
-	Returns:	TRUE if the operation could be successfully initialised 
-				FALSE if no more memory could be allocated 
-				
+	Returns:	TRUE if the operation could be successfully initialised
+				FALSE if no more memory could be allocated
+
 	Purpose:	OpDisplayBitmapGallery initialiser method
-	Errors:		ERROR will be called if there was insufficient memory to allocate the 
+	Errors:		ERROR will be called if there was insufficient memory to allocate the
 				operation.
 	SeeAlso:	-
 
@@ -3441,13 +3441,13 @@ BOOL OpDisplayBitmapGallery::Init()
 								SYSTEMBAR_ILLEGAL,	  // SystemBarType GroupBarID = SYSTEMBAR_ILLEGAL,	// group bar ID
 				 				TRUE,	  // BOOL ReceiveMessages = TRUE,	// BODGE
 				 				FALSE,	  // BOOL Smart = FALSE,
-				 				TRUE,	  // BOOL Clean = TRUE,   
+				 				TRUE,	  // BOOL Clean = TRUE,
 								NULL,	  // OpDescriptor *pVertOpDesc = NULL,
-								0,	  // UINT32 OneOpenInstID = 0,		
+								0,	  // UINT32 OneOpenInstID = 0,
 								0,	  // UINT32 AutoStateFlags = 0,
 								TRUE	  // BOOL fCheckable = FALSE
 								)
-			
+
 PORTNOTE("other", "Removed BitmapExportPreviewDialog")
 #ifndef EXCLUDE_FROM_XARALX
 //#if _DEBUG
@@ -3456,8 +3456,8 @@ PORTNOTE("other", "Removed BitmapExportPreviewDialog")
 #endif
 			&& PreviewDialog::Init()
 			);
-}               
-    
+}
+
 /********************************************************************************************
 
 >	OpState	OpDisplayBitmapGallery::GetState(String_256*, OpDescriptor*)
@@ -3467,7 +3467,7 @@ PORTNOTE("other", "Removed BitmapExportPreviewDialog")
 	Inputs:		-
 	Outputs:	-
 	Returns:	The state of the OpDisplayBitmapGallery operation
-	Purpose:	For finding the OpDisplayBitmapGallery's state. 
+	Purpose:	For finding the OpDisplayBitmapGallery's state.
 	Errors:		-
 	SeeAlso:	-
 
@@ -3558,7 +3558,7 @@ BOOL BitmapSGallery::GetSelectedBitmaps(KernelBitmap*** pOutputArray, UINT32* pO
 	ERROR2IF(pOutputArray==NULL || pOutputCount==NULL, FALSE, "NULL output param");
 	KernelBitmap** pBuildingArray = NULL;
 //	UINT32 BuildingCount = 0;
-	
+
 	// Lets see if any of our items are selected
 	Document* ParentDoc = (Document*) GetApplication()->Documents.GetHead();
 	BOOL ok = TRUE;
@@ -3594,7 +3594,7 @@ BOOL BitmapSGallery::GetSelectedBitmaps(KernelBitmap*** pOutputArray, UINT32* pO
 					}
 					(*pOutputCount)++;
 				}
-	
+
 				pCurrent = (SGDisplayKernelBitmap*)DocGroup->FindNextSelectedItem(pCurrent);
 			}
 		}
@@ -3625,7 +3625,7 @@ BOOL BitmapSGallery::GetSelectedBitmaps(KernelBitmap*** pOutputArray, UINT32* pO
 	Created:	05/01/96
 	Inputs:		Param - Allows the transfer of data to and from the bitmap poperties dialog.
 	Outputs:	-
-	Returns:	TRUE if Successful, else FALSE. 
+	Returns:	TRUE if Successful, else FALSE.
 	Purpose:	Retrieves inforamtion from Bitmaps selected in the Bitmaps Gallery.
 	SeeAlso:	-
 
@@ -3635,10 +3635,10 @@ BOOL BitmapSGallery::GetBmpInfo(BmpDlgParam* Param)
 {
 	ERROR2IF(Param == NULL,FALSE,"Param is NULL");
 
-	UINT32 ListSize = 0;				
-	KernelBitmap** pList = NULL;	
+	UINT32 ListSize = 0;
+	KernelBitmap** pList = NULL;
 //	BOOL Done = FALSE;
-	
+
 	if (!GetSelectedBitmaps(&pList, &ListSize))
 		return FALSE;
 
@@ -3650,7 +3650,7 @@ BOOL BitmapSGallery::GetBmpInfo(BmpDlgParam* Param)
 	{
 		Param->SetMany(TRUE);
 	}
-	
+
 		String_256* BitmapCols = new String_256[ListSize];
 		String_256* Width = new String_256[ListSize];
 		String_256* Height = new String_256[ListSize];
@@ -3661,12 +3661,12 @@ BOOL BitmapSGallery::GetBmpInfo(BmpDlgParam* Param)
 		UINT32* TranspType = new UINT32[ListSize];
 
 		if ( !BitmapCols || !Width || !Height ||
-			 !BitmapFormat  || !Delay  || !DisposalMethod || !TranspType ) 
+			 !BitmapFormat  || !Delay  || !DisposalMethod || !TranspType )
 			return FALSE;
 
-			UINT32 i=0;					// Loop index    
+			UINT32 i=0;					// Loop index
 			UINT32 TempListSize=ListSize; // Keep a record of our list size.
-			INT32 Bytes =0;				// Holds the bitmap Memory info.	
+			INT32 Bytes =0;				// Holds the bitmap Memory info.
 
 		while (ListSize>0)
 		{
@@ -3675,7 +3675,7 @@ BOOL BitmapSGallery::GetBmpInfo(BmpDlgParam* Param)
 			KernelBitmap* pKernelBitmap = pList[ListSize];
 			if (pKernelBitmap == NULL)
 				return FALSE;
-							
+
 			OILBitmap* pOILBitmap = pKernelBitmap->GetActualBitmap();
 			if (pOILBitmap == NULL)
 				return FALSE;
@@ -3726,7 +3726,7 @@ PORTNOTE("other", "Removed XPE hooks")
 				// Check to see if this is a masked bitmap.
 				INT32 Index=0;
 
-				if(pKernelBitmap->GetTransparencyIndex(&Index)) 
+				if(pKernelBitmap->GetTransparencyIndex(&Index))
 				{
 					Param->SetBitmapTranspType(_R(IDS_BITMAPTRANSPTYPE_MASKED));
 					ttype = TT_Mix;
@@ -3759,7 +3759,7 @@ PORTNOTE("other", "Removed XPE hooks")
 				case 8:
 						Param->SetBitmapCols(_R(IDS_SGBITMAP_256COLOURS)); 	// "256 colours";
 				break;
-	
+
 				case 16:
 						Param->SetBitmapCols(_R(IDS_SGBITMAP_65COLOURS)); 		// "65K colours";
 				break;
@@ -3776,7 +3776,7 @@ PORTNOTE("other", "Removed XPE hooks")
 						Param->SetBitmapCols ("");
 					break;
 			}
-		
+
 			// Get the bitmap Dimensions.
 			BitmapInfo Info;
 
@@ -3785,7 +3785,7 @@ PORTNOTE("other", "Removed XPE hooks")
 				// Get its pixel Width and Height.
 				Convert::LongToString(Info.PixelWidth, &Param->GetBitmapWidth());
 				Convert::LongToString(Info.PixelHeight, &Param->GetBitmapHeight());
-			
+
 				// If this bitmap is not have a compressed JPEG, then calculate the memeory used by the bitmap.
 				if(!Param->GetIsJPEG() && !bIsXPE)
 				{
@@ -3807,11 +3807,11 @@ PORTNOTE("other", "Removed XPE hooks")
 			DisposalMethod[i] = Param->GetRestoreType();
 			TranspType[i]	= ttype;
 			i++;
-		}	
+		}
 
 		// ok, we have no more bitmaps\JPEGS, so convert the memory (Bytes), into a string.
 		Convert::BytesToString(&Param->GetMemoryUsed(),(INT32)Bytes);
-			
+
 		// Compare the bitmap colors,Dimensions,Transparency and Format fields and set their flags appropriately.
 		// i.e. If for any one field, all the bitmaps are not the same, then we output "-", instead of the details.
 		// Only do this if more than one bitmap is selected..
@@ -3824,10 +3824,10 @@ PORTNOTE("other", "Removed XPE hooks")
 				{
 					if (BitmapCols[i] != BitmapCols[e])
 							Param->SetSameColors(FALSE);
-						
+
 					if (Width[i] != Width[e])
 							Param->SetSameDimensions(FALSE);
-						
+
 					if (Height[i] != Height[e])
 							Param->SetSameDimensions(FALSE);
 
@@ -3848,7 +3848,7 @@ PORTNOTE("other", "Removed XPE hooks")
 				}
 			}
 		}
-							
+
 		if (pList != NULL)
 		CCFree(pList);
 		delete [] BitmapCols;
@@ -3869,7 +3869,7 @@ PORTNOTE("other", "Removed XPE hooks")
 
 	Author:		Ranbir_Rana (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	05/01/96
-	Inputs:		Param - Allows the transfer of data to and from the bitmap poperties dialog.   
+	Inputs:		Param - Allows the transfer of data to and from the bitmap poperties dialog.
 	Outputs:	-
 	Returns:	TRUE if Successful, FALSE otherwise.
 	Purpose:	Stores info, retrieved from the Bitmap Properties Dialog, in an OILBitmap.
@@ -3948,7 +3948,7 @@ BOOL BitmapSGallery::SetBmpInfo(BmpDlgParam* Param)
 		}
 		if (pList != NULL)
 			CCFree(pList);
-		
+
 	return TRUE;
 }
 
@@ -3959,10 +3959,10 @@ BOOL BitmapSGallery::SetBmpInfo(BmpDlgParam* Param)
 
 	Author:		Ranbir_Rana (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	05/01/96
-	Inputs:		pList	 - A ptr to a Kernel bitmap. 
-				ListSize - The number of bitmaps selected in the bitmap gallery. 
+	Inputs:		pList	 - A ptr to a Kernel bitmap.
+				ListSize - The number of bitmaps selected in the bitmap gallery.
 				Param	 - Allows data to be passed to and from the bitmap properties dialog.
-				pBytes	 - If it is a JPEG, the memory (bytes), is returned to the caller. 
+				pBytes	 - If it is a JPEG, the memory (bytes), is returned to the caller.
 	Outputs:	-
 	Returns:	True if the selected bitmap is a compressed JPEG, false otherwise
 	Purpose:	To determine whether an imported bitmap is a compressed JPEG.
@@ -3981,9 +3981,9 @@ BOOL BitmapSGallery::IsJPEG(KernelBitmap** pList,UINT32 ListSize, BmpDlgParam* P
 
 	if (pKernelBitmap == NULL)
 		return FALSE;
-	
+
 	BOOL OriginalSourcePresent = pKernelBitmap->GetOriginalSource(&pSource, &pDummyFilter);
-	
+
 	if(OriginalSourcePresent)
 	{
 		if (pSource != NULL)
@@ -4019,14 +4019,14 @@ BOOL BitmapSGallery::IsJPEG(KernelBitmap** pList,UINT32 ListSize, BmpDlgParam* P
 BOOL BitmapSGallery::AreDelayValuesSame()
 {
 
-	
-	UINT32 ListSize = 0;				
-	KernelBitmap** pList = NULL;	
+
+	UINT32 ListSize = 0;
+	KernelBitmap** pList = NULL;
 	BOOL DelayValuesDiffer = FALSE;
 	UINT32 i =0;
 	UINT32 e=0;
 	UINT32 Value =0;
-	
+
 	if (!GetSelectedBitmaps(&pList, &ListSize))
 		return FALSE;
 
@@ -4045,7 +4045,7 @@ BOOL BitmapSGallery::AreDelayValuesSame()
 		i++;
 	}
 
-	// Compare the values.		
+	// Compare the values.
 	for(i=0; i<TempListSize; i++)
 	{
 		for(UINT32 e=0; e<TempListSize; e++)
@@ -4067,25 +4067,22 @@ BOOL BitmapSGallery::AreDelayValuesSame()
 
 	Author:		Ranbir_Rana (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	05/01/96
-	Inputs:		 
+	Inputs:
 	Outputs:	-
 	Returns:	The Delay value stored in a Bitmap.
-	Purpose:	
+	Purpose:
 	SeeAlso:	-
 ********************************************************************************************/
 /*
 UINT32 BitmapSGallery::GetBitmapDelay()
 {
 	UINT32 ListSize = 0;
-	KernelBitmap** pList = NULL;	
+	KernelBitmap** pList = NULL;
 	UINT32 i =0;
-	
+
 	if (!GetSelectedBitmaps(&pList, &ListSize))
 		InformError();
 
 	return	pList[i]->GetActualBitmap()->GetBitmapAnimDelay();
 }
 */
-
-
-

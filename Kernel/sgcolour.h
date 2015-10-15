@@ -1,7 +1,7 @@
 // $Id: sgcolour.h 1282 2006-06-09 09:46:49Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
- 
+
                Xara LX, a vector drawing and manipulation program.
                     Copyright (C) 1993-2006 Xara Group Ltd.
        Copyright on certain contributions may be held in joint with their
@@ -32,7 +32,7 @@ ADDITIONAL RIGHTS
 
 Conditional upon your continuing compliance with the GNU General Public
 License described above, Xara Group Ltd grants to you certain additional
-rights. 
+rights.
 
 The additional rights are to use, modify, and distribute the software
 together with the wxWidgets library, the wxXtra library, and the "CDraw"
@@ -128,14 +128,14 @@ class ColourListComponent;
 	Notes:		Note that Library/Document colour dragging is handled in the base class
 
 	SeeAlso:	ColourDragInformation
-				
+
 ********************************************************************************************/
 class SGDisplayColour;
 
 class GalleryColourDragInfo : public ColourDragInformation
-{ 
+{
 	CC_DECLARE_DYNCREATE(GalleryColourDragInfo)
- 
+
 public:
 	GalleryColourDragInfo();
 
@@ -148,7 +148,7 @@ public:
  	GalleryColourDragInfo(SGDisplayColour *pSourceItem,
 							SGMouseInfo *pMouseInfo, SGMiscInfo *pMiscInfo,
  							BOOL IsAdjust = FALSE);
-	
+
 	virtual void OnClick(INT32 Flags, POINT Point);
 
 	SGDisplayColour *GetDraggedColour(void)	{ return(SourceItem); }
@@ -169,7 +169,7 @@ protected:
 	Author:		Jason_Williams (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	20/3/95
 
-	Purpose:	An instantiation of this class is created by each entity which wishes to 
+	Purpose:	An instantiation of this class is created by each entity which wishes to
 				provide a 'destination' to which the mouse can go to complete a drag.
 
 				This particular target is used for handling drags of ColourSGalllery items
@@ -181,7 +181,7 @@ protected:
 
 				To remove a drag target at any time, destruct it - it automatically deregisters
 				and cleans up.
-				
+
 	SeeAlso:	DragManagerOp::StartDrag; DragInformation; DragTarget;
 				SGColourDragTarget::ProcessEvent
 
@@ -192,11 +192,11 @@ protected:
 class SGColourDragTarget : public SGListDragTarget
 {
 friend class DragManagerOp;
-	
+
 CC_DECLARE_DYNAMIC(SGColourDragTarget)
 
 public:	// Public interface
-	SGColourDragTarget(DialogOp *TheDialog, CGadgetID TheGadget = NULL);
+	SGColourDragTarget(DialogOp *TheDialog, CGadgetID TheGadget = 0);
 
 protected:
 		// Process a drag-related event
@@ -246,7 +246,7 @@ public:		// Virtual overrides
 
 	virtual BOOL GetBubbleHelp(DocCoord *MousePos, String_256 *Result);
 		// Returns a bubble help string (or returns FALSE if it couldn't supply one)
-	
+
 	virtual BOOL GetStatusLineHelp(DocCoord *MousePos, String_256 *Result);
 		// Returns a status-line help string (or returns FALSE if it couldn't)
 
@@ -293,7 +293,7 @@ protected:	// Special member variables
 	Created:	18/1/95
 
 	Returns:	A pointer to the colour which this Display Item is used to display.
-			
+
 	Purpose:	To find out the colour this object is responsible for displaying
 
 ********************************************************************************************/
@@ -423,13 +423,13 @@ public:	// Functions for virtualisation of groups (building groups but not addin
 
 	virtual BOOL IsLibrary() { return TRUE; }
 
-	virtual BOOL DisplayInColourLine() { return m_DisplayInColourLine; } 
+	virtual BOOL DisplayInColourLine() { return m_DisplayInColourLine; }
 	virtual BOOL SetDisplayInColourLine(BOOL NewState);
 	virtual BOOL ToggleDisplayInColourLine();
 
 	// count the number of children that this group has
 	INT32 CountChildren();
-	
+
 	// find the nth child of this group and return the associated DocColour
 	DocColour *GetItemColour(UINT32 Index, SGDisplayLibColour **ppLibColour = NULL);
 
@@ -494,7 +494,7 @@ protected:				// Overridden upcall methods
 		// to shade/unshade any extra controls it may have in the window
 
 public:					// Overridden upcall methods
-	virtual SGDisplayItem *CopyDisplayItem(SGDisplayItem *SourceItem, 
+	virtual SGDisplayItem *CopyDisplayItem(SGDisplayItem *SourceItem,
 								SGDisplayGroup *DestGroup,
 								SGDisplayItem *TargetPosition = NULL);
 		// Asks the gallery to copy (or if appropriate, move) the given item to
@@ -576,7 +576,7 @@ public:		// preferences
 
 	static INT32 DefaultDisplayMode;		// Memory of current display mode between sessions
 
-	static String_256 PalettePath;		// The path to load the palettes from 
+	static String_256 PalettePath;		// The path to load the palettes from
 
 	static BOOL	ShowDocumentColours;	// True if want document colours in colour line
 
@@ -589,7 +589,7 @@ private:
 public:
 	// This will create the gallery groups (unless they're already there) and return TRUE if ok.
 	BOOL MakeSureGroupsHaveBeenCreated();
-	
+
 	// Walk through the list of library colour galleries
 	SGDisplayLibColGroup * GetFirstLibGroup();
 	SGDisplayLibColGroup * GetNextLibGroup(SGDisplayLibColGroup * pLibGroup);
@@ -622,17 +622,17 @@ protected:
 #define OPTOKEN_DISPLAYCOLOURGALLERY _T("DisplayColourGallery")
 
 class CCAPI OpDisplayColourGallery: public Operation
-{         
+{
 	CC_DECLARE_DYNCREATE( OpDisplayColourGallery );
 
 public:
-	static BOOL		Init();				
-	static OpState	GetState(String_256*, OpDescriptor*);		
+	static BOOL		Init();
+	static OpState	GetState(String_256*, OpDescriptor*);
     void 			Do(OpDescriptor*);
 
 	static SuperGallery *FindGallery(void);
 			// Finds the Colour gallery class instance
-};  
+};
 
 
 
@@ -680,7 +680,7 @@ public:
 
 
 class ColourNameDlg : public DialogOp
-{         
+{
 CC_DECLARE_DYNCREATE(ColourNameDlg)
 
 public:		// External inteface
@@ -692,13 +692,13 @@ public:		// DialogOp interface
 	ColourNameDlg();
 
 	void DoWithParam(OpDescriptor*, OpParam*);
-	BOOL Create(); 
+	BOOL Create();
 
 	static const INT32 IDD;
 	static const CDlgMode Mode;
 
-	static OpState GetState(String_256*, OpDescriptor*);	
-	static BOOL Init();                        
+	static OpState GetState(String_256*, OpDescriptor*);
+	static BOOL Init();
 
 	virtual MsgResult Message(Msg* Message);
 
@@ -707,8 +707,7 @@ protected:
 
 protected:	// Data members
 	ColourNameParam *Info;
-}; 
+};
 
 
 #endif
-

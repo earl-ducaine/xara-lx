@@ -1,7 +1,7 @@
 // $Id: sglcart.h 1282 2006-06-09 09:46:49Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
- 
+
                Xara LX, a vector drawing and manipulation program.
                     Copyright (C) 1993-2006 Xara Group Ltd.
        Copyright on certain contributions may be held in joint with their
@@ -32,7 +32,7 @@ ADDITIONAL RIGHTS
 
 Conditional upon your continuing compliance with the GNU General Public
 License described above, Xara Group Ltd grants to you certain additional
-rights. 
+rights.
 
 The additional rights are to use, modify, and distribute the software
 together with the wxWidgets library, the wxXtra library, and the "CDraw"
@@ -238,7 +238,7 @@ public:			// Overridden Command interface (for Ops and menu support)
 
 protected:
 	void DoShadeGallery(BOOL ShadeIt);
-	
+
 
 	virtual BOOL ApplyAction(SGActionType Action);
 
@@ -249,11 +249,11 @@ protected:
 
 
 	// Load and save all the currently selected clipart
-	BOOL LoadAndSave(void);				 
+	BOOL LoadAndSave(void);
 
 	void HandleDragStart(DragMessage *DragMsg);
 
-	SGDisplayItem *CopyDisplayItem(SGDisplayItem *SourceItem, 
+	SGDisplayItem *CopyDisplayItem(SGDisplayItem *SourceItem,
 								SGDisplayGroup *DestGroup, SGDisplayItem *TargetPosition);
 
 protected:
@@ -350,18 +350,18 @@ private:
 #define OPTOKEN_DISPLAYCLIPARTGALLERY _T("DisplayClipartGallery")
 
 class CCAPI OpDisplayLibClipartGallery: public Operation
-{         
+{
 	CC_DECLARE_DYNCREATE( OpDisplayLibClipartGallery );
 
 public:
-	static BOOL		Init();				
-	static OpState	GetState(String_256*, OpDescriptor*);		
+	static BOOL		Init();
+	static OpState	GetState(String_256*, OpDescriptor*);
     void 			Do(OpDescriptor*);
 
 private:
 	static DialogBarOp *FindGallery(void);
 			// Finds the LibClipart gallery class instance
-};  
+};
 
 /********************************************************************************************
 
@@ -372,13 +372,13 @@ private:
 
 	Purpose:	A clipart gallery item
 	SeeAlso:	SGClipartItem
-	
+
 ********************************************************************************************/
 
 class SGClipartItem: public SGLibDisplayItem
-{         
+{
 	CC_DECLARE_DYNCREATE( SGClipartItem );
-	
+
 public:
 
 	SGClipartItem();
@@ -391,7 +391,7 @@ public:
 //	void DragWasReallyAClick(SGMouseInfo *Mouse, SGMiscInfo *MiscInfo);
 
 protected:
-	
+
 	virtual	BOOL HandleEvent(SGEventType EventType, void *EventInfo,
 							 SGMiscInfo *MiscInfo);
 
@@ -405,13 +405,13 @@ protected:
 	Created:	8/4/95
 	Purpose:	A fill drag, which was started from the fill gallery
 	SeeAlso:	BitmapDragInformation
-				
+
 ********************************************************************************************/
 
 class GalleryClipartDragInfo : public BitmapDragInformation
-{ 
+{
 	CC_DECLARE_DYNCREATE(GalleryClipartDragInfo)
- 
+
 public:
 	GalleryClipartDragInfo();
  	GalleryClipartDragInfo(	SGClipartItem *pSourceItem,
@@ -445,7 +445,7 @@ protected:
 	Author:		Will_Cowling (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	8/4/95
 
-	Purpose:	An instantiation of this class is created by each entity which wishes to 
+	Purpose:	An instantiation of this class is created by each entity which wishes to
 				provide a 'destination' to which the mouse can go to complete a drag.
 
 				This particular target is used for handling drags of BitmapSGalllery items
@@ -457,7 +457,7 @@ protected:
 
 				To remove a drag target at any time, destruct it - it automatically deregisters
 				and cleans up.
-				
+
 	SeeAlso:	DragManagerOp::StartDrag; DragInformation; DragTarget;
 				SGBitmapDragTarget::ProcessEvent
 
@@ -468,11 +468,11 @@ protected:
 class SGClipartDragTarget : public SGListDragTarget
 {
 friend class DragManagerOp;
-	
+
 CC_DECLARE_DYNAMIC(SGClipartDragTarget)
 
 public:	// Public interface
-	SGClipartDragTarget(DialogOp *TheDialog, CGadgetID TheGadget = NULL);
+	SGClipartDragTarget(DialogOp *TheDialog, CGadgetID TheGadget = 0);
 
 protected:
 		// Process a drag-related event
@@ -498,7 +498,7 @@ protected:
 
 				To remove a drag target at any time, destruct it - it automatically deregisters
 				and cleans up.
-				
+
 	SeeAlso:	DragManagerOp::StartDrag; DragInformation; DragTarget;
 				SGColourDragTarget::ProcessEvent
 
@@ -509,13 +509,13 @@ protected:
 class SGOilClipartDragTarget : public WinoilDragTarget
 {
 friend class DragManagerOp;
-	
+
 CC_DECLARE_DYNAMIC(SGOilClipartDragTarget)
 
 
 public:	// Public interface
 	SGOilClipartDragTarget(HWND TheWindow, CRect *ClientArea = NULL);
-	
+
 	virtual UINT32 GetCursorID();
 	virtual BOOL GetStatusLineText(String_256 * TheText);
 
@@ -528,4 +528,3 @@ protected:
 
 
 #endif
-

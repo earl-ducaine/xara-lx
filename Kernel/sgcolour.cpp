@@ -1,7 +1,7 @@
 // $Id: sgcolour.cpp 1282 2006-06-09 09:46:49Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
- 
+
                Xara LX, a vector drawing and manipulation program.
                     Copyright (C) 1993-2006 Xara Group Ltd.
        Copyright on certain contributions may be held in joint with their
@@ -32,7 +32,7 @@ ADDITIONAL RIGHTS
 
 Conditional upon your continuing compliance with the GNU General Public
 License described above, Xara Group Ltd grants to you certain additional
-rights. 
+rights.
 
 The additional rights are to use, modify, and distribute the software
 together with the wxWidgets library, the wxXtra library, and the "CDraw"
@@ -158,7 +158,7 @@ CC_IMPLEMENT_MEMDUMP(ColourNameParam, OpParam)
 #define new CAM_DEBUG_NEW
 
 
-// Nasty PANTONE bodge - after any change of ordering in any library, the 
+// Nasty PANTONE bodge - after any change of ordering in any library, the
 // Pantone library no longer puts line breaks after every 9th item.
 static BOOL LibraryHasBeenSorted = FALSE;
 
@@ -257,8 +257,8 @@ String_256 ColourSGallery::PalettePath = TEXT("");
 
 /********************************************************************************************
 
->	SGColourDragTarget::SGColourDragTarget(DialogOp *TheDialog, CGadgetID TheGadget = NULL)
-	 
+>	SGColourDragTarget::SGColourDragTarget(DialogOp *TheDialog, CGadgetID TheGadget = 0)
+
 	Author:		Jason_Williams (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	20/3/95
 	Inputs:		TheDialog - The kernel dialog in which the target exists
@@ -406,10 +406,10 @@ BOOL SGColourDragTarget::ProcessEvent(DragEventType Event, DragInformation *pDra
 
 /********************************************************************************************
 
->	void GalleryColourDragInfo::GalleryColourDragInfo() 
-	 
+>	void GalleryColourDragInfo::GalleryColourDragInfo()
+
 	Author:		Jason_Williams (Xara Group Ltd) <camelotdev@xara.com>
-	Created:	16/2/95		  
+	Created:	16/2/95
 
 	Purpose:	Default constructor - do not call this constructor
 
@@ -417,7 +417,7 @@ BOOL SGColourDragTarget::ProcessEvent(DragEventType Event, DragInformation *pDra
 
 GalleryColourDragInfo::GalleryColourDragInfo()
 {
-	ERROR3("Default GalleryColourDragInfo constructor called");	
+	ERROR3("Default GalleryColourDragInfo constructor called");
 }
 
 
@@ -428,7 +428,7 @@ GalleryColourDragInfo::GalleryColourDragInfo()
 											SGMouseInfo *pMouseInfo, SGMiscInfo *pMiscInfo,
  											BOOL IsAdjust = FALSE)
 	Author:		Jason_Williams (Xara Group Ltd) <camelotdev@xara.com>
-	Created:	16/2/95		  
+	Created:	16/2/95
 
 	Inputs:		pDocument	- The document in which the colour lives
 				pSourceItem - The gallery item from which the drag originated
@@ -463,9 +463,9 @@ GalleryColourDragInfo::GalleryColourDragInfo(Document *pDocument, SGDisplayColou
 >	GalleryColourDragInfo::GalleryColourDragInfo(SGDisplayColour *pSourceItem,
 											SGMouseInfo *pMouseInfo, SGMiscInfo *pMiscInfo,
  											BOOL IsAdjust = FALSE)
-	 
+
 	Author:		Jason_Williams (Xara Group Ltd) <camelotdev@xara.com>
-	Created:	16/2/95		  
+	Created:	16/2/95
 
 	Inputs:		pSourceItem - The gallery item from which the drag originated
 				pMouseInfo	- The mouse info which made the item start the drag
@@ -501,16 +501,16 @@ GalleryColourDragInfo::GalleryColourDragInfo(SGDisplayColour *pSourceItem,
 
 /********************************************************************************************
 
->	virtual void GalleryColourDragInfo::OnClick(INT32 Flags, POINT Point) 
-	 
+>	virtual void GalleryColourDragInfo::OnClick(INT32 Flags, POINT Point)
+
 	Author:		Chris_Snook (Xara Group Ltd) <camelotdev@xara.com>
-	Created:	12/1/95		  
+	Created:	12/1/95
 	Inputs:		-
 	Outputs:	-
 	Returns:	-
-	Purpose:	This is called if a drag was attempted but never started because it was a 
+	Purpose:	This is called if a drag was attempted but never started because it was a
 				click all along. It calls back the SourceItem SGDisplayColour, to get it
-				to handle the click. 
+				to handle the click.
 	Errors:		-
 	SeeAlso:	-
 
@@ -1065,7 +1065,7 @@ void SGDisplayColour::HandleRedraw(SGRedrawInfo *RedrawInfo, SGMiscInfo *MiscInf
 	MyRect.lo.x = IconRect.hi.x + TwoPixels;
 
 	// Redraw the icon
-	GridLockRect(MiscInfo, &IconRect);	
+	GridLockRect(MiscInfo, &IconRect);
 
 	Renderer->SetLineWidth(0);
 	Renderer->SetLineColour(RedrawInfo->Transparent);
@@ -1172,7 +1172,7 @@ void SGDisplayColour::HandleRedraw(SGRedrawInfo *RedrawInfo, SGMiscInfo *MiscInf
 
 			// Draw the name text next to the icon
 			Renderer->DrawFixedSystemText(&Name, TextRect);
-			
+
 			// Move to the right, to fill the remaining space with information
 			// (Leave a 6-pixel gap in case the name didn't all fit in the available space)
 			TextRect.lo.x = TextRect.hi.x + DevicePixels(MiscInfo, 6);
@@ -1218,7 +1218,7 @@ void SGDisplayColour::HandleRedraw(SGRedrawInfo *RedrawInfo, SGMiscInfo *MiscInf
 void SGDisplayColour::DragWasReallyAClick(SGMouseInfo *Mouse, SGMiscInfo *MiscInfo)
 {
 	// Just get default selection action to be applied for this click.
-	// The TRUE indicates that this is a drag-click, and we previously called 
+	// The TRUE indicates that this is a drag-click, and we previously called
 	// the DefaultPreDragHandler - we don't want it to do those same actions twice!
 	DefaultClickHandler(Mouse, MiscInfo, TRUE);
 }
@@ -1369,7 +1369,7 @@ BOOL SGDisplayColour::HandleEvent(SGEventType EventType, void *EventInfo,
 				so that moving display items can have a further effect of also rearranging
 				the displayed "real" items. Before/After moving the real item, the
 				derived class can then call this baseclass method to complete the action.
-		
+
 				Take care when moving items between groups (e.g. if an item is "moved"
 				from one docuemnt to another, it could be a bad thing, so be very
 				careful in derived classes to take appropriate action)
@@ -1419,7 +1419,7 @@ void SGDisplayColour::MoveAfter(SGDisplayNode *NodeToMove)
 
 	ColourList *ColList = ScopeDoc->GetIndexedColours();
 	ERROR3IF(ColList == NULL, "A document with no colour list?!");
-	
+
 	ColList->RemoveItem(ColToMove);
 	ColList->InsertAfter(TargetColour, ColToMove);
 
@@ -1433,9 +1433,9 @@ void SGDisplayColour::MoveAfter(SGDisplayNode *NodeToMove)
 //	ColourSGallery *ParentGallery = (ColourSGallery *)GetParentGallery();
 //	BOOL OldSentState = ParentGallery->ISentTheMessage;
 //	ParentGallery->ISentTheMessage = TRUE;
-//	
+//
 //	ColourManager::ColourListHasChanged(ColList);
-//	
+//
 //	ParentGallery->ISentTheMessage = OldSentState;
 }
 
@@ -1459,7 +1459,7 @@ void SGDisplayColour::MoveAfter(SGDisplayNode *NodeToMove)
 				so that moving display items can have a further effect of also rearranging
 				the displayed "real" items. Before/After moving the real item, the
 				derived class can then call this baseclass method to complete the action.
-		
+
 				Take care when moving items between groups (e.g. if an item is "moved"
 				from one docuemnt to another, it could be a bad thing, so be very
 				careful in derived classes to take appropriate action)
@@ -1508,7 +1508,7 @@ void SGDisplayColour::MoveBefore(SGDisplayNode *NodeToMove)
 
 	ColourList *ColList = ScopeDoc->GetIndexedColours();
 	ERROR3IF(ColList == NULL, "A document with no colour list?!");
-	
+
 	ColList->RemoveItem(ColToMove);
 	ColList->InsertBefore(TargetColour, ColToMove);
 
@@ -1522,9 +1522,9 @@ void SGDisplayColour::MoveBefore(SGDisplayNode *NodeToMove)
 //	ColourSGallery *ParentGallery = (ColourSGallery *)GetParentGallery();
 //	BOOL OldSentState = ParentGallery->ISentTheMessage;
 //	ParentGallery->ISentTheMessage = TRUE;
-//	
+//
 //	ColourManager::ColourListHasChanged(ColList);
-//	
+//
 //	ParentGallery->ISentTheMessage = OldSentState;
 }
 
@@ -1545,11 +1545,11 @@ void SGDisplayColour::MoveBefore(SGDisplayNode *NodeToMove)
 				will contain a bubble help string for this item
 
 	Returns:	TRUE if it filled in the string, FALSE if it did not
-				
+
 	Purpose:	Called by the parent gallery when bubble help is needed. The parent
 				gallery will do a hit test to determine which node contains the pointer,
 				and will then ask that node to supply bubble/status-line help.
-				
+
 	Notes:		The base class returns FALSE (i.e. provides no help)
 				If you can provide help, then override the base class method to do so.
 
@@ -1565,7 +1565,7 @@ BOOL SGDisplayColour::GetBubbleHelp(DocCoord *MousePos, String_256 *Result)
 }
 
 
-	
+
 /********************************************************************************************
 
 >	virtual BOOL SGDisplayColour::GetStatusLineHelp(DocCoord *MousePos, String_256 *Result)
@@ -1581,11 +1581,11 @@ BOOL SGDisplayColour::GetBubbleHelp(DocCoord *MousePos, String_256 *Result)
 				will contain a status line help string for this item
 
 	Returns:	TRUE if it filled in the string, FALSE if it did not
-				
+
 	Purpose:	Called by the parent gallery when status line help is needed. The parent
 				gallery will do a hit test to determine which node contains the pointer,
 				and will then ask that node to supply bubble/status-line help.
-				
+
 	Notes:		The base class returns FALSE (i.e. provides no help)
 				If you can provide help, then override the base class method to do so.
 
@@ -2264,7 +2264,7 @@ INT32 SGDisplayLibColGroup::CountChildren()
 	Created:	19/3/97
 	Inputs:		The index of the item required
 				An optional SGDisplayLibColour pointer, defaults to null.
-	Returns:	The DocColour associated with the specified item or NULL 
+	Returns:	The DocColour associated with the specified item or NULL
 	Purpose:	Returns the DocColour associated with the specified item in this group or NULL.
 				If the SGDisplayLibColour pointer is provided it is updated with the found item
 				THe called can then interogate the item if so desired.
@@ -2285,7 +2285,7 @@ DocColour *SGDisplayLibColGroup::GetItemColour(UINT32 Index, SGDisplayLibColour 
 				*ppLibColour = pChild;
 			return pChild->GetDisplayedColour();
 		}
-		
+
 		item ++;
 		pChild = (SGDisplayLibColour *)pChild->GetNext();
 	}
@@ -2359,7 +2359,7 @@ BOOL SGDisplayLibColGroup::ToggleDisplayInColourLine()
 /********************************************************************************************
 
 >	ColourSGallery::ColourSGallery()
-												 
+
 	Author:		Jason_Williams (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	27/10/94
 	Purpose:	ColourSGallery default constructor
@@ -2420,7 +2420,7 @@ ColourSGallery::~ColourSGallery()
 /********************************************************************************************
 
 >	static BOOL ColourSGallery::Init(void)
-												 
+
 	Author:		Jason_Williams (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	20/3/95
 
@@ -2480,9 +2480,9 @@ ColourSGallery* ColourSGallery::GetInstance()
 				it clears all displayitems from the group and rebuilds it in place - this
 				stops the display group moving around the tree at random!)
 
-	Purpose:	Internal call. This takes the colour list of the given document and 
+	Purpose:	Internal call. This takes the colour list of the given document and
 				creates a DisplayTree subtree from it. This subtree is then added to
-				the DisplayTree. Note that this does not force a redraw of the list - 
+				the DisplayTree. Note that this does not force a redraw of the list -
 				after making this call, you should also call ForceRedrawOfList
 
 	Notes:		Passing in a NULL parent document pointer results in an ERROR3 -
@@ -2510,7 +2510,7 @@ void ColourSGallery::CreateNewSubtree(Document *ParentDoc, SGDisplayColourGroup 
 
 	if (ExistingGroup != NULL)
 	{
-		ERROR3IF(ExistingGroup->GetParentDocument() != ParentDoc, 
+		ERROR3IF(ExistingGroup->GetParentDocument() != ParentDoc,
 				 "This group is not for that document! What's going down, dude?");
 		DisplayDocument = ExistingGroup;							// Use existing group
 
@@ -2646,7 +2646,7 @@ BOOL ColourSGallery::CanAddColourToGallery(IndexedColour *pCol,ColourList* pColL
 //			{
 //				if (pColInList != pCol && pColInList->IsADescendantOf(pCol))
 //					return TRUE;
-//		
+//
 //				pColInList = pColList->GetUndeletedNext(pColInList);
 //			}
 //		}
@@ -2740,7 +2740,7 @@ PORTNOTE("other", "Colour gallery needs to use the resource system for finding p
 			// Add a trailing slash if it hasn't got one
 			SGLibOil::AppendSlashIfNotPresent(&SearchPath);
 		}
-			
+
 		// Make up the search string to use so that we see all files.
 		String_256 SearchSpec(SearchPath);
 		SearchSpec += TEXT("*.*");	// This is a fixed (non-internationalised) string
@@ -2783,7 +2783,7 @@ PORTNOTE("other", "Colour gallery needs to use the resource system for finding p
 				and return TRUE if ok.
 
 ********************************************************************************************/
- 
+
 BOOL ColourSGallery::MakeSureGroupsHaveBeenCreated()
 {
 	// We will use the DisplayTree presence or absence to dictate whether the groups are
@@ -3043,7 +3043,7 @@ BOOL ColourSGallery::DeleteSelection(SGDisplayGroup *DocumentGroup, ColourList *
 		// And move on to the NextItem item
 		Item = NextItem;
 	}
-	
+
 	KillList[KillIndex] = NULL;		// NULL terminate the list
 
 	// Now cause a redraw of the tree in its new state, before the message broadcast goes around
@@ -3115,7 +3115,7 @@ BOOL ColourSGallery::ApplyAction(SGActionType Action)
 
 		TheColour = FirstSelected->GetDisplayedColour();
 		ERROR3IF(TheColour == NULL, "SGDisplayColour has no colour in it?");
-		
+
 		SelectedColour = TheColour->FindParentIndexedColour();
 	}
 
@@ -3358,7 +3358,7 @@ BOOL ColourSGallery::ApplyAction(SGActionType Action)
 					NewCol->SetLinkedParent(NULL,
 							(NewCol->GetType() == COLOURTYPE_SPOT) ? COLOURTYPE_SPOT : COLOURTYPE_NORMAL);
 				}
-  
+
 				// Compose a new, unique, name for it - e.g. "Red (Redefined)"
 				String_128 NewName(_R(IDS_UNNAMEDCOLOUR));
 				if (SelectedColour->IsNamed())
@@ -3539,7 +3539,7 @@ void ColourSGallery::SetSelectionFromDocument(BOOL AlwaysScroll)
 {
 	if (DisplayTree == NULL || !IsVisible())
 		return;
-	
+
 	DocColour *SelColour[2];
 	BOOL AreCurrentAttrs =
 			ColourManager::GetCurrentLineAndFillColours(&SelColour[0], &SelColour[1]);
@@ -3593,7 +3593,7 @@ void ColourSGallery::SetSelectionFromDocument(BOOL AlwaysScroll)
 								ScrollToBottom = (TempRect.hi.y <= ScrollToRect.lo.y);
 
 								ScrollToRect = ScrollToRect.Union(TempRect);
-							}								
+							}
 
 							// And select the item, and update the selection-anchor
 							Ptr->SetSelected(TRUE);
@@ -3777,7 +3777,7 @@ MsgResult ColourSGallery::Message(Msg* Message)
 						InvalidateCachedFormat();
 						ReformatAndRedrawIfNecessary();
 					}
-				}				
+				}
 				break;
 
 
@@ -3800,7 +3800,7 @@ MsgResult ColourSGallery::Message(Msg* Message)
 				break;
 		}
 	}
-	// The new CommonAttrsChanged msg replaces this messages. It handles 
+	// The new CommonAttrsChanged msg replaces this messages. It handles
 	// a change in the Current Attribute group associated with a tool, and a change in the
 	// value of a current attribute.
 	/*else if (MESSAGE_IS_A(Message, SelChangingMsg))
@@ -3889,7 +3889,7 @@ void ColourSGallery::HandleDragStart(DragMessage *DragMsg)
 
 /********************************************************************************************
 
->	virtual SGDisplayItem *ColourSGallery::CopyDisplayItem(SGDisplayItem *SourceItem, 
+>	virtual SGDisplayItem *ColourSGallery::CopyDisplayItem(SGDisplayItem *SourceItem,
 									SGDisplayGroup *DestGroup,
 									SGDisplayItem *TargetPosition = NULL)
 	Author:		Jason_Williams (Xara Group Ltd) <camelotdev@xara.com>
@@ -3905,13 +3905,13 @@ void ColourSGallery::HandleDragStart(DragMessage *DragMsg)
 	Returns:	NULL (failed) or a pointer to the new (copied) display item
 
 	Purpose:	"Copies" the existing node in the tree in an appropriate fashion.
-				
+
 				This method is normally called when a gallery-organising drag completes,
-				and it is discovered that the dragged item(s) have been dragged to a 
+				and it is discovered that the dragged item(s) have been dragged to a
 				different display group.
 
 	Notes:		This derived class override copies colours between documents.
-				
+
 				Currently, this just errors to the user, as copying between docs is
 				not possible, due to undo going into the selected doc. **** !!!!
 
@@ -3920,7 +3920,7 @@ void ColourSGallery::HandleDragStart(DragMessage *DragMsg)
 
 ********************************************************************************************/
 
-SGDisplayItem *ColourSGallery::CopyDisplayItem(SGDisplayItem *SourceItem, 
+SGDisplayItem *ColourSGallery::CopyDisplayItem(SGDisplayItem *SourceItem,
 						SGDisplayGroup *DestGroup, SGDisplayItem *TargetPosition)
 {
 	ERROR3IF(SourceItem == NULL || DestGroup == NULL, "Illegal NULL param");
@@ -3969,8 +3969,8 @@ SGDisplayItem *ColourSGallery::CopyDisplayItem(SGDisplayItem *SourceItem,
 			ERROR3("No memory for copied colour");
 		}
 	}
-	else	
-	{	
+	else
+	{
 		ColToCopy = DocColToCopy->FindParentIndexedColour();
 		ERROR3IF(ColToCopy == NULL, "NULL displayed colour?!");
 	}
@@ -4025,7 +4025,7 @@ SGDisplayItem *ColourSGallery::CopyDisplayItem(SGDisplayItem *SourceItem,
 		// Either the copy failed (we have no colour to display), or it was merged with
 		// an existing colour (in which case there will already be a display item for it)
 		delete NewDisplayItem;
-		
+
 		if (ColIsTemporary)
 			delete ColToCopy;
 
@@ -4176,7 +4176,7 @@ void ColourSGallery::DestroyRenderRegion(RenderRegion *pRender)
 /********************************************************************************************
 
 >	virtual BOOL ColourSGallery::InitMenuCommands(void)
-												 
+
 	Author:		Jason_Williams (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	18/9/95
 
@@ -4245,7 +4245,7 @@ BOOL ColourSGallery::InitMenuCommands(void)
 	Returns:	TRUE if it succeeded
 
 	Purpose:	To build a menu of commands to be popped up over the gallery.
-	
+
 	Notes:		Override this method to stop the default menus being built
 
 ********************************************************************************************/
@@ -4306,7 +4306,7 @@ BOOL ColourSGallery::BuildCommandMenu(GalleryContextMenu *TheMenu, SGMenuID Menu
 
 	Purpose:	To determine the state of a given menu item. This method is an exact
 				parallel to an Op's GetState method (in fact, it is called by an Op's GetState)
-	
+
 	Notes:		Override this method to provide state info for your special commands
 				Call the base class for unknown commands to allow it to handle them for you
 
@@ -4348,7 +4348,7 @@ OpState ColourSGallery::GetCommandState(StringBase *CommandID, String_256 *Shade
 		if (GetSelectedItemCount() > 1)
 		{
 			State.Greyed = TRUE;
-			ShadeReason->MakeMsg(_R(IDS_SGSHADE_SINGLE));			
+			ShadeReason->MakeMsg(_R(IDS_SGSHADE_SINGLE));
 		}
 	}
 	else if (*CommandID == SGCmd_Rename)									// --- Rename
@@ -4426,7 +4426,7 @@ OpState ColourSGallery::GetCommandState(StringBase *CommandID, String_256 *Shade
 	Inputs:		CommandID - The String ID of the command
 
 	Purpose:	To apply a given command when it is chosen from the menu.
-	
+
 	Notes:		Override this method to provide handling for your special commands.
 				Call the base class if you don't recognise the command, so that it can
 				handle standard commands.
@@ -4497,7 +4497,7 @@ void ColourSGallery::DoCommand(StringBase *CommandID)
 	Author:		Neville_Humphrys (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	27/3/97
 	Inputs:		-
-	Outputs:	-		
+	Outputs:	-
 	Returns:	True if worked correctly, False otherwise.
 	Purpose:	Takes the selected item in the gallery and tries to apply this as a new
 				background to the spread.
@@ -4522,20 +4522,20 @@ BOOL ColourSGallery::ApplySelectedAsBackground()
 		{
 			OpBackgroundParam Param;
 			Param.pDocColour = &ColourToApply;
-			Param.pDoc = pScopeDoc;			
-			
-			// Obtain a pointer to the op descriptor for the create operation 
+			Param.pDoc = pScopeDoc;
+
+			// Obtain a pointer to the op descriptor for the create operation
 			OpDescriptor* pOpDesc = OpDescriptor::FindOpDescriptor(OPTOKEN_BACKGROUND);
 
 			// Invoke the operation, passing DocView and Pos as parameters
-			pOpDesc->Invoke(&Param);		 
-		
+			pOpDesc->Invoke(&Param);
+
 			return TRUE;
 		}
-		
+
 		return FALSE;
 	}
-	
+
 	return FALSE;
 }
 
@@ -4548,7 +4548,7 @@ BOOL ColourSGallery::ApplySelectedAsBackground()
 	Created:	27/3/97
 	Inputs:		pFirstSelected	selected item in the gallery
 				pColourToApply	the DocColour which needs setting up
-	Outputs:	ppDoc			the document which we need to apply the colour to 			
+	Outputs:	ppDoc			the document which we need to apply the colour to
 	Returns:	True if worked ok, False otherwise.
 	Purpose:	To create a doc colour which can then be used to apply the colour in the
 				currently selected document. Copes with the simple case of the colour being
@@ -4570,10 +4570,10 @@ BOOL ColourSGallery::GetDocColourToApply(SGDisplayColour *pFirstSelected, DocCol
 	Document * pScopeDoc = DocumentGroup->GetParentDocument();
 	if (pScopeDoc == NULL)		// Must be a library item, so it will affect the selected doc
 		pScopeDoc = Document::GetSelected();
-	
+
 	// Return this to the caller
 	*pDoc = pScopeDoc;
-	
+
 	// If we have no document to work with then nothing doing
 	if (pScopeDoc == NULL)
 	{
@@ -4628,7 +4628,7 @@ BOOL ColourSGallery::GetDocColourToApply(SGDisplayColour *pFirstSelected, DocCol
 				pNewCol = NULL;
 			}
 		}
-	
+
 		return TRUE;
 	}
 
@@ -4742,11 +4742,11 @@ void ColourSGallery::DoShadeGallery(BOOL ShadeIt)
 	Created:	9/2/95 (base generated in sgbase.cpp)
 	Inputs:		-
 	Outputs:	-
-	Returns:	TRUE if the operation could be successfully initialised 
-				FALSE if no more memory could be allocated 
-				
+	Returns:	TRUE if the operation could be successfully initialised
+				FALSE if no more memory could be allocated
+
 	Purpose:	OpDisplayColourGallery initialiser method
-	Errors:		ERROR will be called if there was insufficient memory to allocate the 
+	Errors:		ERROR will be called if there was insufficient memory to allocate the
 				operation.
 	SeeAlso:	-
 
@@ -4767,16 +4767,16 @@ BOOL OpDisplayColourGallery::Init()
 								SYSTEMBAR_ILLEGAL,	  // SystemBarType GroupBarID = SYSTEMBAR_ILLEGAL,	// group bar ID
 				 				TRUE,	  // BOOL ReceiveMessages = TRUE,	// BODGE
 				 				FALSE,	  // BOOL Smart = FALSE,
-				 				TRUE,	  // BOOL Clean = TRUE,   
+				 				TRUE,	  // BOOL Clean = TRUE,
 								NULL,	  // OpDescriptor *pVertOpDesc = NULL,
-								0,	  // UINT32 OneOpenInstID = 0,		
+								0,	  // UINT32 OneOpenInstID = 0,
 								0,	  // UINT32 AutoStateFlags = 0,
 								TRUE	  // BOOL fCheckable = FALSE
 								)
 								);
 
-}               
-    
+}
+
 /********************************************************************************************
 
 >	OpState	OpDisplayColourGallery::GetState(String_256*, OpDescriptor*)
@@ -4786,7 +4786,7 @@ BOOL OpDisplayColourGallery::Init()
 	Inputs:		-
 	Outputs:	-
 	Returns:	The state of the OpDisplayColourGallery operation
-	Purpose:	For finding the OpDisplayColourGallery's state. 
+	Purpose:	For finding the OpDisplayColourGallery's state.
 	Errors:		-
 	SeeAlso:	-
 
@@ -4794,7 +4794,7 @@ BOOL OpDisplayColourGallery::Init()
 
 OpState	OpDisplayColourGallery::GetState(String_256* UIDescription, OpDescriptor*)
 {
-	OpState OpSt;  
+	OpState OpSt;
 
 	// If the gallery is currenty open, then the menu item should be ticked
 	SuperGallery* pSuperGallery = FindGallery();
@@ -4803,7 +4803,7 @@ OpState	OpDisplayColourGallery::GetState(String_256* UIDescription, OpDescriptor
 
 	// If there are no open documents, you can't toggle the gallery
 	OpSt.Greyed = (Document::GetSelected() == NULL);
- 	return(OpSt);   
+ 	return(OpSt);
 }
 
 
@@ -4837,7 +4837,7 @@ void OpDisplayColourGallery::Do(OpDescriptor*)
 		// And update the gallery button state
 		SGInit::UpdateGalleryButton(_R(OPTOKEN_DISPLAYCOLOURGALLERY), pSuperGallery->IsVisible());
 	}
-	
+
 	End();
 }
 
@@ -4898,7 +4898,7 @@ const CDlgMode ColourNameDlg::Mode = MODAL;
 
 /********************************************************************************************
 
->	ColourNameDlg::ColourNameDlg(): DialogOp(ColourNameDlg::IDD, ColourNameDlg::Mode) 
+>	ColourNameDlg::ColourNameDlg(): DialogOp(ColourNameDlg::IDD, ColourNameDlg::Mode)
 
 
 	Author:		Jason_Williams (Xara Group Ltd) <camelotdev@xara.com>
@@ -4908,9 +4908,9 @@ const CDlgMode ColourNameDlg::Mode = MODAL;
 
 ********************************************************************************************/
 
-ColourNameDlg::ColourNameDlg() : DialogOp(ColourNameDlg::IDD, ColourNameDlg::Mode) 
+ColourNameDlg::ColourNameDlg() : DialogOp(ColourNameDlg::IDD, ColourNameDlg::Mode)
 {
-}        
+}
 
 
 
@@ -4923,7 +4923,7 @@ ColourNameDlg::ColourNameDlg() : DialogOp(ColourNameDlg::IDD, ColourNameDlg::Mod
 	Inputs:		-
 	Outputs:	-
 	Returns:	-
-	Purpose:	Handles all the scale dialog's messages 
+	Purpose:	Handles all the scale dialog's messages
 	Errors:		-
 	SeeAlso:	-
 
@@ -4960,7 +4960,7 @@ MsgResult ColourNameDlg::Message(Msg* Message)
 					HighlightText    (_R(IDC_COLNAME_TEXT));
 				}
 				break;
-				
+
 			case DIM_COMMIT:
 			case DIM_SOFT_COMMIT:
 				CommitName();
@@ -5001,11 +5001,11 @@ MsgResult ColourNameDlg::Message(Msg* Message)
 				break;
 		}
 
-		return (DLG_EAT_IF_HUNGRY(Msg)); 
+		return (DLG_EAT_IF_HUNGRY(Msg));
 	}
 
-	return OK; 
-}  
+	return OK;
+}
 
 
 
@@ -5073,13 +5073,13 @@ void ColourNameDlg::CommitName(void)
 ********************************************************************************************/
 
 OpState	ColourNameDlg::GetState(String_256*, OpDescriptor*)
-{    
+{
 	OpState OpSt;
 	return(OpSt);
 }
 
 
-		 
+
 /********************************************************************************************
 
 >	BOOL ColourNameDlg::Init(void)
@@ -5092,7 +5092,7 @@ OpState	ColourNameDlg::GetState(String_256*, OpDescriptor*)
 ********************************************************************************************/
 
 BOOL ColourNameDlg::Init(void)
-{  
+{
 	return (RegisterOpDescriptor(
 								0,
 								_R(IDS_COLOURNAMEDLG),
@@ -5102,9 +5102,9 @@ BOOL ColourNameDlg::Init(void)
 								0,	// help ID
 								0   // bubble ID
 								)
-			); 
-}   
- 
+			);
+}
+
 
 
 /********************************************************************************************
@@ -5114,7 +5114,7 @@ BOOL ColourNameDlg::Init(void)
 	Author:		Jason_Williams (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	1/4/95
 	Returns:	TRUE if successful, else FALSE
-	Purpose:	ColourNameDlg create method 
+	Purpose:	ColourNameDlg create method
 
 ********************************************************************************************/
 
@@ -5133,7 +5133,7 @@ BOOL ColourNameDlg::Create()
 	Created:	1/4/95
 	Inputs:		pOpParam = ptr to a ColourNameParam struct
 
-	Purpose:	Creates then opens the dialog 
+	Purpose:	Creates then opens the dialog
 
 ********************************************************************************************/
 
@@ -5172,7 +5172,7 @@ void ColourNameDlg::DoWithParam(OpDescriptor*, OpParam* pOpParam)
 	Inputs:		ParentList	 - the list in which the colour resides (not NULL)
 				ColourToName - the colour whose name should be changed (not NULL)
 
-	Purpose:	Opens the gallery name dialogue on screen, elicits a response, 
+	Purpose:	Opens the gallery name dialogue on screen, elicits a response,
 				and returns having set the new name. This is a MODAL dlg.
 
 				This variant renames an existing colour. The window indicates
@@ -5219,7 +5219,7 @@ BOOL ColourNameDlg::InvokeDialog(ColourList *ParentList, IndexedColour *ColourTo
 				DisplayColour - A colour to be displayed in the dialogue. This is just
 				for the user to look at and say "oooh, pretty!"
 
-	Purpose:	Opens the gallery name dialogue on screen, elicits a response, 
+	Purpose:	Opens the gallery name dialogue on screen, elicits a response,
 				and returns having set the new name. This is a MODAL Dlg.
 
 				This variant gets the name of a new colour. The window indicates
@@ -5236,7 +5236,7 @@ BOOL ColourNameDlg::InvokeDialog(ColourList *ParentList, IndexedColour *ColourTo
 				you should be using the other variant of this method) then you MUST
 				ensure that the name you set is guaranteed to be unique within the
 				list (or export/import will fail).
-	
+
 ********************************************************************************************/
 
 BOOL ColourNameDlg::InvokeDialog(String_64 *NameToFill, IndexedColour *DisplayColour)
@@ -5254,4 +5254,3 @@ BOOL ColourNameDlg::InvokeDialog(String_64 *NameToFill, IndexedColour *DisplayCo
 
 	return(Info.Result);
 }
-

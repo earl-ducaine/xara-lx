@@ -1,7 +1,7 @@
 // $Id: coldlog.h 1282 2006-06-09 09:46:49Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
- 
+
                Xara LX, a vector drawing and manipulation program.
                     Copyright (C) 1993-2006 Xara Group Ltd.
        Copyright on certain contributions may be held in joint with their
@@ -32,7 +32,7 @@ ADDITIONAL RIGHTS
 
 Conditional upon your continuing compliance with the GNU General Public
 License described above, Xara Group Ltd grants to you certain additional
-rights. 
+rights.
 
 The additional rights are to use, modify, and distribute the software
 together with the wxWidgets library, the wxXtra library, and the "CDraw"
@@ -125,7 +125,7 @@ class DialogColourInfo;
 
 <	ColEditDragArea
 
-	Comment:	This enumerated type describes where the last drag in the colour editor 
+	Comment:	This enumerated type describes where the last drag in the colour editor
 				originated. This may be any of the colour patches, or in the colour
 				picker display - these gadgets may be further subdivided (e.g. the
 				HSV picker subdivides into the H/S colour wheel and the Value slider)
@@ -201,7 +201,7 @@ enum AbortColourState { SAVE_ABORTCOLOUR, SAVED_ABORTCOLOUR };
 				but this system allows 95% of the code to be kept in the kernel,
 				while still allowing ColourPicker to give access to a local OS
 				editor if a suitable one is available.
-	
+
 	SeeAlso:	ColourPicker
 
 ***********************************************************************************************/
@@ -298,19 +298,19 @@ protected:		// Preference values
 
 public:
 	/*****************************************************************************************\
-		
+
 		Custom colour picker interface functions
 
 	\*****************************************************************************************/
-	
+
 	// these functions allows camelots custom colour picker control to interface directly
 	// with the ColourEditDlg ....
-	
+
 	static ColourEditDlg* GetColourEditDlg () { return (TheEditor); }
-	
+
 	static void SetEditingColour (IndexedColour* newEditingColour, Node* pSourceNode = NULL);
 	static void SetAbortColourState (AbortColourState state) { abortColourState = state; }
-	
+
 	static void ApplyEditingColourNow (BOOL UseAbortColour = FALSE);
 	static BOOL DoAbortColourNow (CWindowID colourPicker);
 	static void DoHandleNamedcolour ();
@@ -328,7 +328,7 @@ public:
 	static void AbortColourPickerDrag();						// Abort any colour picker drag
 																// without trying to apply the colour
 	/*****************************************************************************************\
-		
+
 		End of custom colour picker interface functions
 
 	\*****************************************************************************************/
@@ -389,7 +389,7 @@ protected:		// Internal methods
 	void ShadeMyself(BOOL UnShade = FALSE, BOOL OtherGadgetsOnly = FALSE);
 
 	void SetControls(void);				// Sets the controls up from the colour
-	
+
 	void SetColourNameList(void);		// Sets the name field combobox list
 
 	void RedrawColourNameList(void);	// Ensures that the colour name list shows the correct colour
@@ -420,7 +420,7 @@ protected:		// Internal methods
 										// Finds a useful colour, and 'EditThisColour's it
 
 	//(WEBSTER - markn 14/12/96)
-	void ApplyNoColour(BOOL LineColour);					// Applies no colour to the selection 
+	void ApplyNoColour(BOOL LineColour);					// Applies no colour to the selection
 	void LimitTo216Only();									// Snaps the colour to the closest colour in the web browser palette
 	FIXED24 Nearest20Percent(FIXED24 n);		// Helper function for LimitTo216Only()
 
@@ -462,7 +462,7 @@ protected:		// Current window gadget/extent state (used to minimise unnecessary 
 protected:		// Kernel-rendered control support methods
 
 	static BOOL GetColourContext(ColourModel ColModel, ColourContext** ppContext);
-	
+
 										// Renders a marker cross into a render region
 	void RenderCross(RenderRegion *pRender, DocRect *CrossRect,
 							INT32 PixelSize, BOOL Shaded = FALSE);
@@ -514,7 +514,7 @@ protected:		// Kernel-rendered control click/drag handlers
 
 										// Handles setting new colour values from click/drags
 	void SetNewValueFromMousePos(ReDrawInfoType *Info, BOOL StartingNewDrag);
-																				
+
 										// Handling click/drags (for DisplayMode)
 	void SetNewValueHSV(ReDrawInfoType *Info, INT32 PixelSize, BOOL StartingNewDrag);
 	void SetNewValueRGB(ReDrawInfoType *Info, INT32 PixelSize, BOOL StartingNewDrag);
@@ -585,7 +585,7 @@ private:
 
 				To remove a drag target at any time, destruct it - it automatically deregisters
 				and cleans up.
-				
+
 	SeeAlso:	DragManagerOp::StartDrag; DragInformation; DragTarget
 
 	Documentation:	Docs\Specs\DragMan.doc
@@ -595,12 +595,12 @@ private:
 class ColEditorDragTarget : public KernelDragTarget
 {
 friend class DragManagerOp;
-	
+
 CC_DECLARE_DYNAMIC(ColEditorDragTarget)
 
 public:	// Public interface
-	ColEditorDragTarget(DialogOp *TheDialog, CGadgetID TheGadget = NULL);
-	
+	ColEditorDragTarget(DialogOp *TheDialog, CGadgetID TheGadget = 0);
+
 	virtual UINT32 GetCursorID();
 	virtual BOOL GetStatusLineText(String_256 * TheText);
 
@@ -624,11 +624,11 @@ protected:
 	Created:	15/10/95
 	Purpose:	Contains info that a colourdrag may find useful - used for drags
 				from the colour editor
-				
+
 ********************************************************************************************/
 
 class ColEditorDragInfo : public ColourDragInformation
-{ 	
+{
 CC_DECLARE_DYNCREATE(ColEditorDragInfo)
 
 public:
@@ -644,9 +644,9 @@ public:
 
 	Author:		Stefan_Stoykov (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	31/7/97
-	Purpose:	Operation to create copy of a colour (and its descendants) for the current 
+	Purpose:	Operation to create copy of a colour (and its descendants) for the current
 				frame.
-				
+
 ********************************************************************************************/
 
 class CCAPI OpMakeColourLocalToFrame: public UndoableOperation
@@ -661,7 +661,7 @@ public:
 	static OpState	GetState(String_256 *, OpDescriptor *);
 	void			Do(OpDescriptor *);
 	void			DoWithParam(OpDescriptor *, OpParam *);
-	virtual void PerformMergeProcessing() ; 
+	virtual void PerformMergeProcessing() ;
 
 	virtual BOOL Undo();
 	virtual BOOL Redo();
@@ -671,7 +671,7 @@ protected:
 	BOOL IsColourLocalToFrame(Layer *pTheLayer, IndexedColour *pCol);
 	IndexedColour *MakeColourLocalToFrame(IndexedColour *pCol);
 
-protected:	
+protected:
 	ColourList		*ParentList;		// The list in which it resides
 	Document		*pOurDoc;
 	Layer			*pActiveLayer;
@@ -683,4 +683,3 @@ protected:
 
 
 #endif
-
