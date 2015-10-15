@@ -2,7 +2,7 @@
 // $Id: fontclass.h 1138 2006-05-19 17:42:05Z gerry $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
- 
+
                Xara LX, a vector drawing and manipulation program.
                     Copyright (C) 1993-2006 Xara Group Ltd.
        Copyright on certain contributions may be held in joint with their
@@ -33,7 +33,7 @@ ADDITIONAL RIGHTS
 
 Conditional upon your continuing compliance with the GNU General Public
 License described above, Xara Group Ltd grants to you certain additional
-rights. 
+rights.
 
 The additional rights are to use, modify, and distribute the software
 together with the wxWidgets library, the wxXtra library, and the "CDraw"
@@ -108,7 +108,7 @@ service marks of Xara Group Ltd. All rights in these marks are reserved.
 	The types of fonts the OIL font manager recognises so far
 ********************************************************************************************/
 
-typedef enum FontClass {
+enum FontClass {
 	FC_UNDEFINED = 0,
 	FC_RASTER,
 	FC_DEVICE,
