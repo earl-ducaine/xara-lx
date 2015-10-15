@@ -1,7 +1,7 @@
 // $Id: app.cpp 1531 2006-07-25 16:05:48Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
- 
+
                Xara LX, a vector drawing and manipulation program.
                     Copyright (C) 1993-2006 Xara Group Ltd.
        Copyright on certain contributions may be held in joint with their
@@ -32,7 +32,7 @@ ADDITIONAL RIGHTS
 
 Conditional upon your continuing compliance with the GNU General Public
 License described above, Xara Group Ltd grants to you certain additional
-rights. 
+rights.
 
 The additional rights are to use, modify, and distribute the software
 together with the wxWidgets library, the wxXtra library, and the "CDraw"
@@ -166,6 +166,8 @@ CC_IMPLEMENT_MEMDUMP(Application, CCObject)
 // Declare smart memory handling in Debug builds
 #define new CAM_DEBUG_NEW
 
+char space_string[] = " ";
+
 Application Camelot;
 
 /***********************************************************************************************
@@ -174,15 +176,15 @@ Application Camelot;
 
     Author: 	Tim_Browse (Xara Group Ltd) <camelotdev@xara.com>
     Created:	20/5/93
-	
+
 	Inputs:		-
     Outputs:    -
     Returns:   	-
-                 
+
     Purpose:    Initialise the application.
-               
+
 	Errors:		None.
-                   			                                     
+
 ***********************************************************************************************/
 
 Application::Application() : m_pTemplateManager( new CTemplateManager )
@@ -222,7 +224,7 @@ PORTNOTE("other","Removed HKEY usage")
 #endif
 
 	// This variable will get set to TRUE when Camelot starts to shut down
-	CamelotShuttingDown = FALSE; 
+	CamelotShuttingDown = FALSE;
 	BgRendering = FALSE;
 
 	// Temporary: Remove when Kernel StatusLine is actually created by Oil statusline
@@ -235,22 +237,22 @@ PORTNOTE("other","Removed HKEY usage")
 
     Author: 	Tim_Browse (Xara Group Ltd) <camelotdev@xara.com>
     Created:	20/5/93
-	
-	Inputs:		- 
+
+	Inputs:		-
     Outputs:    -
     Returns:   	-
-                 
+
     Purpose:    Destroys any documents associated with this object.
-               
+
 	Errors:		None.
-                   			                                     
+
 ***********************************************************************************************/
 
 Application::~Application()
 {
 	// Delete any documents still associated with this application
 	Document *pDocument = (Document *) Documents.GetHead();
-	
+
 	while (pDocument != NULL)
 	{
 		delete Documents.RemoveItem(pDocument);
@@ -281,27 +283,27 @@ Application *GetApplication()
 
     Author: 	Tim_Browse (Xara Group Ltd) <camelotdev@xara.com>
     Created:	26/8/93
-	
+
 	Inputs:		-
     Outputs:    -
     Returns:   	TRUE if the object initialised ok.
-                 
+
     Purpose:    Initialise the application, including the user preferences system. This is
 				the earliest kernel-level code to be called - do NOT ADD THINGS HERE. Almost
 				everything that needs to be initialised should go in InitKernel, which gets
 				called after this and some OIL initialisation. If you think you qualify to
 				add something here, speak to Andy first.
-               
+
 	Errors:		None.
-                   			                                     
+
 ***********************************************************************************************/
 
 BOOL Application::Init()
 {
-	
+
 	// Initialise the message handler class groups
 	if(!(
-		MessageHandler::RegisterClassGroup(CC_RUNTIME_CLASS(MessageHandler)) && 
+		MessageHandler::RegisterClassGroup(CC_RUNTIME_CLASS(MessageHandler)) &&
 		MessageHandler::RegisterClassGroup(CC_RUNTIME_CLASS(Operation))		&&
 		MessageHandler::RegisterClassGroup(CC_RUNTIME_CLASS(DialogOp))		&&
 		MessageHandler::RegisterClassGroup(CC_RUNTIME_CLASS(OpDescriptor))	&&
@@ -329,7 +331,7 @@ PORTNOTE("colourmanager","Removed XaraCMS usage")
 		}
 	}
 	CMSManager = NULL;
-#else 
+#else
 	CMSManager = NULL;
 #endif
 
@@ -424,7 +426,7 @@ PORTNOTE("other","Removed init of stuff that is not supported")
 	{
 		return FALSE;
 	}
-	
+
 #endif // STANDALONE
 #endif // EXCLUDE_FROM_RALPH, EXCLUDE_FROM_XARALX
 
@@ -437,17 +439,17 @@ PORTNOTE("other","Removed init of stuff that is not supported")
 #endif
 #endif
 
-	// Initialise the object registry. 
+	// Initialise the object registry.
 	if (!ObjectRegistry::Init())
 	{
 		// Error has been set
-		return (FALSE);  
+		return (FALSE);
 	}
 
 	if (!InitWizOps())
 	{
 		return FALSE;
-	}  
+	}
 
 #if !defined(EXCLUDE_FROM_RALPH)
 	// Create and initialise the CamelotPrefs object.
@@ -480,7 +482,7 @@ PORTNOTE("other","Removed init of stuff that is not supported")
 		return FALSE;
 
 	// Eveything worked (gasp!)
-	return TRUE; 
+	return TRUE;
 }
 
 
@@ -492,7 +494,7 @@ PORTNOTE("other","Removed init of stuff that is not supported")
     Created:	26/12/96
     Returns:   	TRUE if OK, FALSE if failed
     Purpose:    Support function to initialize this Application's FilterManager
-                   			                                     
+
 ***********************************************************************************************/
 BOOL Application::InitFilterManager()
 {
@@ -523,7 +525,7 @@ BOOL Application::InitFilterManager()
 				registry.
 
     Returns:   	TRUE if OK, FALSE if failed
-                   			                                     
+
 ***********************************************************************************************/
 BOOL Application::InitWizOps()
 {
@@ -553,7 +555,7 @@ BOOL Application::InitWizOps()
 
     Returns:   	TRUE if OK, FALSE if failed
     Purpose:    Support function to initialize this Application's ConcurrencyController
-                   			                                     
+
 ***********************************************************************************************/
 BOOL Application::InitCCC()
 {
@@ -584,7 +586,7 @@ BOOL Application::InitCCC()
     Purpose:    Initialise the application object bits that require the preferences system
 				to be fully up & running. Currently that means the pen only.
 	Errors:		None.
-                   			                                     
+
 ***********************************************************************************************/
 
 BOOL Application::LateInit()
@@ -609,9 +611,9 @@ BOOL Application::LateInit()
 
     Author: 	Tim_Browse (Xara Group Ltd) <camelotdev@xara.com>
     Created:	26/8/93
-    Purpose:    Close down the kernel application object, including the user preferences 
+    Purpose:    Close down the kernel application object, including the user preferences
     			system.
-                   			                                     
+
 ********************************************************************************************/
 
 void Application::Deinit()
@@ -645,7 +647,7 @@ void Application::Deinit()
 		delete Selection;
 		Selection = NULL;
 	}
-		
+
 	if (DocComponentClasses != NULL)
 	{
 		DocComponentClasses->DeleteAll();
@@ -791,7 +793,7 @@ PORTNOTE("other","Removed un-=impl. stuff")
     Created:	26/12/96
     Returns:   	TRUE if OK, FALSE if failed
     Purpose:    Support function to deinitialize & destruct this Application's FilterManager
-                   			                                     
+
 ***********************************************************************************************/
 BOOL Application::DeinitFilterManager()
 {
@@ -830,7 +832,7 @@ BOOL Application::DeinitFilterManager()
     Purpose:    Support function to deinitialize & destruct this Application's WizOps
 
     Returns:   	TRUE if OK, FALSE if failed
-                   			                                     
+
 ***********************************************************************************************/
 BOOL Application::DeinitWizOps()
 {
@@ -859,9 +861,9 @@ BOOL Application::DeinitWizOps()
     Author: 	Colin_Barfoot (Xara Group Ltd) <camelotdev@xara.com>
     Created:	26/12/96
     Returns:   	TRUE if OK, FALSE if failed
-    Purpose:    Support function to deinitialize & destruct this Application's 
+    Purpose:    Support function to deinitialize & destruct this Application's
 				ConcurrencyController.
-                   			                                     
+
 ***********************************************************************************************/
 BOOL Application::DestroyCCC()
 {
@@ -963,7 +965,7 @@ BOOL Application::DeleteRenderRegion(RenderRegion *Region)
 		ENSURE( FALSE, "Couldn't find Region in List" );
 		return FALSE;
 	}
-	
+
 	RenderList.Remove(Region);
 	#ifdef RALPH
 		// Let another process have a go
@@ -981,7 +983,7 @@ BOOL Application::DeleteRenderRegion(RenderRegion *Region)
 	Created:	27/06/94
 	Returns:	TRUE if more rendering needs to be done, FALSE if there are no more
 				regions left to render.
-	Purpose:	Render some objects!  This function will either render any outstanding 
+	Purpose:	Render some objects!  This function will either render any outstanding
 				'immediate' render regions to completion, or render a background render
 				regions for one time-slice.
 	SeeAlso:	RenderRegionList::ImmediateRender; RenderRegionList::BackgroundRender
@@ -989,7 +991,7 @@ BOOL Application::DeleteRenderRegion(RenderRegion *Region)
 ********************************************************************************************/
 
 BOOL Application::ServiceRendering(BOOL bImmediate)
-{ 
+{
 #ifdef RALPH
 #ifdef _DEBUG
 	if(::GetCurrentThreadId() == RalphDocument::GetImportingThreadID())
@@ -1072,7 +1074,7 @@ BOOL Application::IsBgRendering()
 	Inputs:		pClass - pointer to the Document component class thatis to be added.
 	Purpose:	Register a new Document Component class with the application.  This class
 				will be asked to add an instance to a document every time a new document
-				is created. 
+				is created.
 	SeeAlso:	DocComponentClass; DocComponent
 
 ********************************************************************************************/
@@ -1129,7 +1131,7 @@ void Application::RegisterDocComponent(DocComponentClass *pClass)
 				MonoOff
 
 	SeeAlso:	Application::RegisterDocComponent;
-				DocComponent; 
+				DocComponent;
 				DocComponentClass
 
 ********************************************************************************************/
@@ -1162,7 +1164,7 @@ DocComponentClass *Application::EnumerateDocComponents(DocComponentClass *pConte
 				to it.  i.e., add a colour table, units information, etc.
 	Errors:		Out of memory, or other errors depending on implementations of each
 				document component.
-	SeeAlso:	DocComponent; 
+	SeeAlso:	DocComponent;
 				DocComponentClass
 
 ********************************************************************************************/
@@ -1205,7 +1207,7 @@ BOOL Application::ApplyDocComponents(BaseDocument *pDocument)
 
 				If at any of the stages the key is processed, this function exits immediately with TRUE,
 				i.e. it doesn't let the next stage try and deal with a key press that's been processed
-				
+
 	Errors:		-
 	SeeAlso:	KeyPress::TranslateMessage
 ********************************************************************************************/
@@ -1252,12 +1254,12 @@ PORTNOTE("other","Removed XaraCMS usage")
 
 				HIGH priority handlers are called on every Idle event. LOW priority
 				handlers will only be called on idle events if there were no high
-				priority handlers which returned TRUE from their OnIdle method. 
+				priority handlers which returned TRUE from their OnIdle method.
 				i.e. If any high priority handler is active, all low-priority idles
 				cease to occur.
 
 	Errors:		-
-	SeeAlso:	Operation::OnIdleEvent, Application::CallIdleProcessors, 
+	SeeAlso:	Operation::OnIdleEvent, Application::CallIdleProcessors,
 				Application::RemoveIdleProcessor
 
 ********************************************************************************************/
@@ -1364,7 +1366,7 @@ void Application::NeedMoreIdles()
 
 	Purpose:	To call registered operations OnIdle functions.
 
-	Notes:		It is assumed that if there are any processes registered, we still 
+	Notes:		It is assumed that if there are any processes registered, we still
 				require idle events.
 
 				When idle processsor methods are called, they return the following values:
@@ -1428,7 +1430,7 @@ BOOL Application::CallIdleProcessors()
 		while (CurrentOp != NULL)
 		{
 			// Remember the next item in the list now, in case this one deregisters itself
-			NextOp = (ListItemOpPtr *) IdleLowPriorityOps.GetNext(CurrentOp);				
+			NextOp = (ListItemOpPtr *) IdleLowPriorityOps.GetNext(CurrentOp);
 			MoreIdlesNeeded = MoreIdlesNeeded || CurrentOp->pOp->OnIdleEvent();
 			CurrentOp = NextOp;
 		}
@@ -1447,7 +1449,7 @@ BOOL Application::CallIdleProcessors()
 	Created:	12/9/94
 	Inputs:		IdleRedraw - TRUE if background redrawing should be performed.
 	Returns:	TRUE if more idle messages are needed.
-				FALSE if no more idle processing is needed 
+				FALSE if no more idle processing is needed
 	Purpose:	This is where idle events are recived by the kernel.
 	Errors:		-
 	SeeAlso:	CCamApp::OnIdle
@@ -1490,7 +1492,7 @@ BOOL Application::OnIdle(BOOL IdleRedraw)
 	Inputs:		-
 	Outputs:	-
 	Returns:	-
-	Purpose:	tell all documents to create a drag target for each of their views 
+	Purpose:	tell all documents to create a drag target for each of their views
 	SeeAlso:	-
 *********************************************************************************************/
 
@@ -1551,8 +1553,8 @@ BOOL Application::UpdateStatusBarText(String_256* ptext, BOOL PrefixSelDesc)
 
 //	ERROR2IF(pStatusLine==NULL,FALSE,"Application::UpdateStatusBarText() - pStatusLine==NULL");
 	if (pStatusLine==NULL)
-		return FALSE;	
-	
+		return FALSE;
+
 	return pStatusLine->UpdateText(ptext,PrefixSelDesc);
 }
 
@@ -1575,7 +1577,7 @@ BOOL Application::UpdateStatusBarText(String_256* ptext, BOOL PrefixSelDesc)
 				otherwise camelots status bar will never again update itself ....
 
 				NOTE:  this function can also be used to prevent the status bar from updating
-					   at all (as in the solution to the text tool probs) ....	
+					   at all (as in the solution to the text tool probs) ....
 	See Also:	Application::UnlockControlHelp ()
 ********************************************************************************************/
 
@@ -1584,7 +1586,7 @@ BOOL Application::LockOutControlHelp ()
 	StatusLine* pStatusLine = GetpStatusLine ();
 
 	if (pStatusLine==NULL)
-		return FALSE;	
+		return FALSE;
 
 	return (pStatusLine->LockOutControlHelp ());
 }
@@ -1608,7 +1610,7 @@ BOOL Application::UnlockControlHelp ()
 	StatusLine* pStatusLine = GetpStatusLine ();
 
 	if (pStatusLine==NULL)
-		return FALSE;	
+		return FALSE;
 
 	return (pStatusLine->UnlockControlHelp ());
 }
@@ -1800,7 +1802,7 @@ CCPen* Application::GetPressurePen()
 	Inputs:		-
 	Outputs:	-
 	Returns:	a pointer to the cache object
-	Purpose:	return a pointer to the cache object so that external objects can add object in 
+	Purpose:	return a pointer to the cache object so that external objects can add object in
 				the cache.
 	SeeAlso:	Application::Init(), Application::DeInit()
 
@@ -1846,7 +1848,7 @@ void Application::RegenerateNodesInList()
 				}
 
 				pItem->pNode->RegenerateNode(NULL, FALSE, FALSE);
-				
+
 				if (pItem->pNode->IsBounded())
 				{
 					((NodeRenderableBounded *)pItem->pNode)->InvalidateBoundingRect();
@@ -1928,13 +1930,13 @@ PORTNOTE("other","Removed HKEY usage")
 BOOL Application::ChangeRealDownloadBrowserOtion (HKEY rootKey, HKEY key, BOOL changeVal)
 {
 	LPCTSTR path = "software\\realnetworks\\realdownload\\";
-	
+
 	const INT32 buf_size = 256;
-	DWORD dwIndex	= 0;				// index of subkey to enumerate 
+	DWORD dwIndex	= 0;				// index of subkey to enumerate
 	TCHAR Name[buf_size];				// buffer for subkey name
-	DWORD cbName	= buf_size;			// size of subkey buffer 
-	TCHAR Class[buf_size];				// buffer for class string 
-	DWORD cbClass	= buf_size;			// size of class buffer 
+	DWORD cbName	= buf_size;			// size of subkey buffer
+	TCHAR Class[buf_size];				// buffer for class string
+	DWORD cbClass	= buf_size;			// size of class buffer
 	FILETIME ftLastWriteTime;			// time key last written to
 
 	BOOL returnVal = FALSE;
@@ -1957,7 +1959,7 @@ BOOL Application::ChangeRealDownloadBrowserOtion (HKEY rootKey, HKEY key, BOOL c
 
 			char subpath [100];
 			char newpath [200];
-			
+
 			sprintf (subpath, "%s", Name);
 			sprintf (newpath, "%s%s", path, subpath);
 
@@ -1966,7 +1968,7 @@ BOOL Application::ChangeRealDownloadBrowserOtion (HKEY rootKey, HKEY key, BOOL c
 			DWORD newval = (DWORD) changeVal;
 
 			if (subkey)
-			{	
+			{
 				DWORD type, dataVal, dataSize;
 
 				if (RegQueryValueEx (subkey, "EnableBrowserWatch", NULL, &type, (unsigned char*) &dataVal, &dataSize) == ERROR_SUCCESS)
@@ -2003,7 +2005,7 @@ BOOL Application::ChangeRealDownloadBrowserOtion (HKEY rootKey, HKEY key, BOOL c
 
 				RegCloseKey (subkey);
 			}
-			
+
 			//			KeyName = Name;
 		}
 
@@ -2110,7 +2112,7 @@ void Application::ResetRealDownload ()
 				ChangeRealDownloadBrowserOtion (HKEY_LOCAL_MACHINE, key2, TRUE);
 				RegCloseKey (key2);
 			}
-			
+
 			DisabledRealDownload = FALSE;
 		}
 		else if (key2)
@@ -2149,7 +2151,3 @@ BOOL Application::GetConvertToEditableShapesDPI (INT32* pValue)
 {
 	return (Camelot.GetPrefValue(TEXT("Displays"),TEXT("CompCToEDPI"),pValue));
 }
-
-
-
-

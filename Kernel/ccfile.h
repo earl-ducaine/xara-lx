@@ -1,7 +1,7 @@
 // $Id: ccfile.h 1492 2006-07-20 19:19:48Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
- 
+
                Xara LX, a vector drawing and manipulation program.
                     Copyright (C) 1993-2006 Xara Group Ltd.
        Copyright on certain contributions may be held in joint with their
@@ -32,7 +32,7 @@ ADDITIONAL RIGHTS
 
 Conditional upon your continuing compliance with the GNU General Public
 License described above, Xara Group Ltd grants to you certain additional
-rights. 
+rights.
 
 The additional rights are to use, modify, and distribute the software
 together with the wxWidgets library, the wxXtra library, and the "CDraw"
@@ -115,23 +115,23 @@ typedef INT32			FilePos;
 #define CCFILE_DEFAULTSIZE (1024)
 
 // Default String Sizes
-                         
+
 #define DEF_STRING_SIZE	32
 #define STRING_64_SIZE	64
 #define STRING_128_SIZE	128
 #define STRING_256_SIZE	256
 
-// CCMemTextFile::Read terminators 
+// CCMemTextFile::Read terminators
 
 #define END_OF_LINE '\n'
 #define END_OF_FILE '\0'
 
 
-// Enumeration of all the File Access rights available	
-enum FileAccess {CCMemRead, CCMemWrite};	
+// Enumeration of all the File Access rights available
+enum FileAccess {CCMemRead, CCMemWrite};
 
 
-class GZipFile; 
+class GZipFile;
 class GZipStream;
 class costream;
 struct IStream;
@@ -142,9 +142,9 @@ struct IStream;
 >	class CCFile : public CCObject
 
 	Author:		Mario_Shamtani (Xara Group Ltd) <camelotdev@xara.com>
-	Created:	31/8/1993          
+	Created:	31/8/1993
 	Base Class:	CCObject
-	Purpose:	Represents an abstract file class from which all other file classes will be 
+	Purpose:	Represents an abstract file class from which all other file classes will be
 				derived. It therefore acts as a generic interface to file handling of all
 				sorts. A routine can read or write to a CCFile object without caring whether
 				it is a real file on disk, or to the clipboard, or to a block of RAM
@@ -155,28 +155,29 @@ struct IStream;
 				analysis on a file object. (Note that CCLexFile is also	an abstract base
 				class.) The main use of this class will be for the export and import filters.
 				The class and its derivatives in this file used to just call InformError()
-				about any errors that were encountered by the routines. The caller had no 
-				control over this so the liklyhood was that users would see a number of 
+				about any errors that were encountered by the routines. The caller had no
+				control over this so the liklyhood was that users would see a number of
 				errors instead of just one. This is still the default but now all error
 				handling goes through a GotError function which can be made to call
 				InformError() and/or throw an exception. This is controlled by two protected
 				BOOL values	and can be either set in the constructor or via the public
 				SetReportErrors	and	SetThrowExceptions calls. GotError also tries to force
 				the bad(), fail() functions to fail on the next call so that no more file
-				accesses should happen. 
+				accesses should happen.
 	SeeAlso:	CCLexFile; CCDiskFile; CCMemFile; CCMemTextFile
 
 ********************************************************************************************/
 
+extern char space_string[];
 class CCAPI CCFile : public CCObject
-{                                   
+{
 	CC_DECLARE_DYNAMIC(CCFile);
 public:
-	// Constructor with default parameters 
+	// Constructor with default parameters
 	//CCFile() {}
 	CCFile(BOOL ErrorReporting = TRUE, BOOL ExceptionThrowing = FALSE);
 	virtual ~CCFile() { /* empty */ }
-	
+
 	// Switch between text and binary modes. (filebuf::text is non-standard and the same as 0)
 	virtual BOOL  setMode(INT32 fileMode = 0)				= 0;
 
@@ -195,11 +196,11 @@ public:
 	virtual CCFile&  read(void *buf, UINT32 length = 1)	= 0;
 	virtual CCFile&  read(StringBase *buf) 				= 0;
 	virtual CCFile&  read(char & buf)					= 0;
-	                                
+
 	// Write functions.
-	virtual CCFile&  write(const void *buf, 
+	virtual CCFile&  write(const void *buf,
 						   UINT32 length = 1)				= 0;
-	virtual CCFile&  write(const StringBase& buf, 
+	virtual CCFile&  write(const StringBase& buf,
 						   UINT32 length = 0) 			= 0;
 	virtual CCFile&  write(char& buf)					= 0;
 
@@ -232,7 +233,7 @@ public:
 	// Character access.
 	virtual CCFile&  get(char&);
 	virtual CCFile&  put(const char&);
-	
+
 	// Stream operators for Strings.
 	virtual CCFile&  operator>>(StringBase *buf);
 	virtual CCFile&  operator<<(const StringBase& buf);
@@ -248,8 +249,8 @@ public:
 	virtual BOOL IsThrowingSet();
 
 	// Uses the above flags to determine whether to report errors and/or throw exceptions
-	virtual void GotError( UINT32 errorID, const TCHAR *errorString );	
-	virtual void GotError( UINT32 errorID);					
+	virtual void GotError( UINT32 errorID, const TCHAR *errorString );
+	virtual void GotError( UINT32 errorID);
 
 	// Find out whether we have a useful name to return which we can append to say
 	// error messages to give feedback on what went wrong.
@@ -272,7 +273,7 @@ public:
 	virtual BOOL StopCompression()						= 0;
 
 protected:
-	// Determines whether InformError is to be called and/or exception throwing is required  
+	// Determines whether InformError is to be called and/or exception throwing is required
 	BOOL ReportErrors;						// Flag to say is we report errors
 	BOOL ThrowExceptions;					// Flag to say whether we throw exceptions
 
@@ -291,7 +292,7 @@ protected:
 	Purpose:	Provide a derivation of the CCFile class that provides support for lexical
 				analysis of a file. This allows a stream of tokens to be extracted from
 				an ASCII text file.  This is an abstract class - you should not try to
-				create an object of this class; use one of the derivations such as 
+				create an object of this class; use one of the derivations such as
 				CCDiskFile or CCMemFile.
 				Note that the lexical analysis facilities are present in all concrete
 				file classes, but the only overhead is a few tens of bytes on the size
@@ -336,7 +337,7 @@ public:
 	BOOL GetHexToken();
 
 	// Read until next token is TOKEN_NORMAL or TOKEN_STRING.
-	// Delimiter tokens are skipped. 
+	// Delimiter tokens are skipped.
 	// Return FALSE if error occurs or if TOKEN_EOF encountered
 	BOOL GetSimpleToken();
 
@@ -365,10 +366,10 @@ public:
 	// These very simple functions allow your token output code to look
 	// far neater. Besides, if we provide a GetToken() routine, it is only
 	// common decency to provide a PutToken() routine too...
-	BOOL	PutString( const StringBase &str, UINT32 length = 0, char* Sep=" " );
-	BOOL	PutToken( const StringBase &str, UINT32 length = 0, char* Sep=" " );
-	BOOL	PutToken( const TCHAR *buf, char *Sep=" " );
-	BOOL	PutToken( INT32 n, char* Sep=" " );
+	BOOL	PutString( const StringBase &str, UINT32 length = 0, char* Sep=space_string );
+	BOOL	PutToken( const StringBase &str, UINT32 length = 0, char* Sep=space_string );
+	BOOL	PutToken( const TCHAR *buf, char *Sep=space_string );
+	BOOL	PutToken( INT32 n, char* Sep=space_string );
 	BOOL	PutNewLine();
 	void	IncIndent();
 	void	DecIndent();
@@ -387,8 +388,8 @@ public:
 	// what you've read in.
 	const TCHAR *GetLineBuf() { return Buf; }
 
-	// this might look like a bodge but really it's a cunning way to avoid failure in 
-	// LoadInitialSegment() which sadly always requests 1K in the asynch csae 
+	// this might look like a bodge but really it's a cunning way to avoid failure in
+	// LoadInitialSegment() which sadly always requests 1K in the asynch csae
 	// ( cause we dont know the filesize till the downloads over
 	virtual void SetDontFail(BOOL state){ DontFail=state;};
 
@@ -414,7 +415,7 @@ public:
 
 	String_256 GetHTMLTagName();
 	String_256 GetHTMLParameterValue( const String_256 &strParameterName, BOOL fCorrectCase=TRUE);
-	
+
 protected:
 	//HTML code member variables
 	char			   *m_pcHTMLBuffer;			//The HTML buffer
@@ -425,9 +426,9 @@ protected:
 
 	BOOL				m_fIsCharacterWaiting;	//Whether a character is waiting to be read
 	char				m_cWaitingCharacter;	//The character waiting to be read
-		
+
 	BOOL				m_fEndOfHTMLFile;		//Whether we have reached the end of this file
-	
+
 
 protected:
 	//HTML code internal functions
@@ -436,7 +437,7 @@ protected:
 	void DeleteHTMLBuffer();			//Deletes the HTML buffer
 
 	void AddToHTMLBuffer(char cToAdd);//Adds a character to the HTML buffer
-	
+
 	char PeekNextHTMLChar();	//Looks at the next character to be read, without reading it
 	char ReadNextHTMLChar();	//Reads the next character from the file
 
@@ -467,22 +468,22 @@ protected:
 
 	// And a pointer to the string data
 	TCHAR			   *Buf;
-	
+
 	// Buffer to hold the current token
 	TCHAR			   *TokenBuf;
 
 	// Indicates what kind of token was read.
 	LexTokenType		TokenType;
-	
+
 	// The current line number
 	UINT32				Line;
-	
+
 	// Index into the buffer (the current character)
 	UINT32				Ofs;
 
 	// The current character
 	char				Ch;
-	
+
 	// How many characters have been read.
 	INT32				CharsRead;
 
@@ -517,7 +518,7 @@ protected:
 
 	// The number of spaces to output at the start of every line.
 	// This can be changed using IncIndent() and DecIndent() and is used
-	// by PutNewLine().  Together they provide a mechanism for outputting 
+	// by PutNewLine().  Together they provide a mechanism for outputting
 	// structures of tokens.
 	// IndentDelta is the amount that IndentSpaces is increased/decreased by
 	// IncIndent() and DecIndent().  It can be changed using SetIndentDelta()
@@ -544,7 +545,7 @@ private:
 ********************************************************************************************/
 
 class CCAPI CCStreamFile : public CCLexFile
-{                             
+{
 private:
 
 	CC_DECLARE_DYNAMIC(CCStreamFile);
@@ -552,32 +553,32 @@ private:
 	char*		buffer;			   			// Fixed Size Buffer
 	BOOL 		StreamFileInitialised;
                                             // Inherited from CCFile
-protected:               
-	
+protected:
+
 	iostream* 	IOFile;                 	// Underlying implementation is an iostream
-	GZipFile*	GZFile;						// the gz file class we might use 
-	GZipStream*	GZStream;					// the gz stream class we might use 
-	INT32			ModeOfFile;					// file mode we are currently using, use ios flags	
-	    
-public:  
+	GZipFile*	GZFile;						// the gz file class we might use
+	GZipStream*	GZStream;					// the gz stream class we might use
+	INT32			ModeOfFile;					// file mode we are currently using, use ios flags
+
+public:
     										// Constructor
     CCStreamFile(iostream* pstream,
 				 UINT32 bufferSize = CCFILE_DEFAULTSIZE,
      		     BOOL ErrorReporting = TRUE,
      		     BOOL ExceptionThrowing = FALSE);
-										 
+
                                         	// Constructor that opens stream
-	CCStreamFile(const char* pcszPath, INT32 fileMode, 
+	CCStreamFile(const char* pcszPath, INT32 fileMode,
 				 INT32 fileAccess  = 0,
 			     UINT32 bufferSize = CCFILE_DEFAULTSIZE,
 			     BOOL ErrorReporting = TRUE,
 			     BOOL ExceptionThrowing = FALSE);
-	                                   
+
 	virtual ~CCStreamFile();
-	
+
 	// As at present the contructors have errors in them due to memory claims rather
 	// than doing these in a init function, we will introduce a flag to say whether
-	// things have gone well so that if errors are supressed then a user can check. 
+	// things have gone well so that if errors are supressed then a user can check.
 	BOOL IsInited();
 
 	// Call this to change the iostream this classes uses.
@@ -606,7 +607,7 @@ public:
 	virtual CCFile&  read(void* buf, UINT32 length = 1);
 	virtual CCFile&  read(StringBase *buf);
 	virtual CCFile&  read(char& buf);
-	                                
+
 	// Write functions.
 	virtual CCFile&  write(const void* buf, UINT32 length = 1);
 	virtual CCFile&  write(const StringBase& buf, UINT32 length = 0);
@@ -693,7 +694,7 @@ protected:
 	// always return TRASH !!!!!  Only solution was to make NOT inline ....
 
 	// see more notes in ccfile.cpp (search on "causes it to throw a wobobley") ....
-	
+
 	//inline costream& GetCoStream() { return (costream&) *IOFile; }
 	//inline const costream& GetCoStream() const { return (const costream&) *IOFile; }
 
@@ -749,7 +750,7 @@ public:
 >	class CCDiskFile : public CCStreamFile
 
 	Author:		Mario_Shamtani (Xara Group Ltd) <camelotdev@xara.com>
-	Created:	31/8/1993          
+	Created:	31/8/1993
 	Purpose:	Represents a file class that can offer buffered disk file I/O in both
 				text and binary modes.
 				Derived from the CCLexFile class so you can use lexical analysis
@@ -757,12 +758,12 @@ public:
 ********************************************************************************************/
 
 class CCAPI CCDiskFile : public CCStreamFile
-{                             
+{
 private:
 
 	CC_DECLARE_DYNAMIC(CCDiskFile);
 
-protected:               
+protected:
 
     PathName    filePath;					// PathName of File
 
@@ -770,9 +771,9 @@ protected:
 	// of a plain ol' iostream.
 	inline fstream& GetFileStream() { return (fstream&) *IOFile; }
 	inline const fstream& GetFileStream() const { return (const fstream&) *IOFile; }
-    
+
 public:
-    
+
     // Creation & destruction.
 	CCDiskFile(UINT32 bufferSize = CCFILE_DEFAULTSIZE,
      		   BOOL ErrorReporting = TRUE,
@@ -783,16 +784,16 @@ public:
      		   BOOL ErrorReporting = TRUE,
      		   BOOL ExceptionThrowing = FALSE);
 
-                                        
-	CCDiskFile(PathName fPath, INT32 fileMode, 
+
+	CCDiskFile(PathName fPath, INT32 fileMode,
 			   INT32 fileAccess  = 0,
 			   UINT32 bufferSize = CCFILE_DEFAULTSIZE,
 			   BOOL ErrorReporting = TRUE,
 			   BOOL ExceptionThrowing = FALSE);
-	                                   
-	                                      
+
+
 	CCDiskFile(fstream * pfstream,
-		       PathName fPath, INT32 fileMode, 
+		       PathName fPath, INT32 fileMode,
 			   INT32 fileAccess  = 0,
 			   UINT32 bufferSize = CCFILE_DEFAULTSIZE,
 			   BOOL ErrorReporting = TRUE,
@@ -829,7 +830,7 @@ public:
 >	class CCMemFile : public CCLexFile
 
 	Author:		Mario_Shamtani (Xara Group Ltd) <camelotdev@xara.com>
-	Created:	6/9/1993          
+	Created:	6/9/1993
 	Purpose:	Represents a memory IO file - IO is in byte units.
 	Errors:		None.
 
@@ -839,7 +840,7 @@ class CCAPI CCMemFile : public CCLexFile
 {
 CC_DECLARE_DYNAMIC(CCMemFile);
 protected:
-	
+
     MHANDLE MemHandle;
 	BYTE	*MemFile;
 	size_t 	FileSize;
@@ -847,29 +848,29 @@ protected:
 	BOOL	IsOpen;
 	UINT32	FileProt;
 	BOOL	WasError;									// TRUE if error occurred
-	
-	BOOL GrowMemFile();                           
+
+	BOOL GrowMemFile();
 
 	// A flag to tell when the disk file has been initialised ok.
 	BOOL 		MemFileInitialised;
 
 public:
 	CCMemFile(BOOL ErrorReporting = TRUE, BOOL ExceptionThrowing = FALSE);
-	
+
 	CCMemFile(void* pFile, UINT32 size, FileAccess fProt = CCMemRead,
 	          BOOL ErrorReporting = TRUE, BOOL ExceptionThrowing = FALSE);
-	
-	~CCMemFile();  
-	
+
+	~CCMemFile();
+
 	// As at present the contructors have errors in them due to memory claims rather
 	// than doing these in a init function, we will introduce a flag to say whether
-	// things have gone well so that if errors are supressed then a user can check. 
+	// things have gone well so that if errors are supressed then a user can check.
 	BOOL IsMemFileInited();
 
 	BOOL GetBuffer(BYTE** ppBuffer, UINT32* pSize);
 
 	BOOL open(void* pFile, UINT32 size, FileAccess fProt = CCMemRead);
-    
+
 	// Switch between text and binary modes.
 	virtual BOOL  setMode(INT32 fileMode = 0);
 
@@ -878,7 +879,7 @@ public:
 
 	// File pointer access/control.
 	virtual CCFile&	 seekIn(FilePos);
-	virtual CCFile&	 seekIn(INT32 Offset, 
+	virtual CCFile&	 seekIn(INT32 Offset,
 							ios::seekdir Dir);
 	virtual FilePos  tellIn();
 	virtual CCFile&  seek(FilePos pos);
@@ -888,7 +889,7 @@ public:
 	virtual CCFile&  read(void *buf, UINT32 length = 1);
 	virtual CCFile&  read(StringBase *buf);
 	virtual CCFile&  read(char& buf);
-	                                
+
 	// Write functions.
 	virtual CCFile&  write(const void *buf, UINT32 length = 1);
 	virtual CCFile&  write(const StringBase& buf, UINT32 length = 0);
@@ -934,7 +935,7 @@ public:
 >	class CCMemTextFile : public CCMemFile
 
 	Author:		Mario_Shamtani (Xara Group Ltd) <camelotdev@xara.com>
-	Created:	8/9/1993          
+	Created:	8/9/1993
 	Purpose:	Represents a character memory IO file which can cope with unicode.
 	Errors:		None.
 
@@ -943,23 +944,23 @@ public:
 class CCAPI CCMemTextFile : public CCMemFile
 {
 CC_DECLARE_DYNAMIC(CCMemTextFile);
-	
+
 public:
 	CCMemTextFile(BOOL ErrorReporting = TRUE, BOOL ExceptionThrowing = FALSE);
-	
+
 	CCMemTextFile(char* pFile, UINT32 size, FileAccess fProt = CCMemRead,
 				  BOOL ErrorReporting = TRUE,
 				  BOOL ExceptionThrowing = FALSE);
-	
+
 	~CCMemTextFile();
-	
+
 	BOOL open(char* pFile, UINT32 size, FileAccess fProt = CCMemRead);
-    
+
 	// Read functions.
 	//virtual CCFile&  read(void *buf, UINT32 length = 1);
 	virtual CCFile&  read(StringBase *buf);
 	virtual	CCFile&  read(char& buf);
-	                                
+
 	// Write functions.
 	//virtual CCFile&  write(const void *buf, UINT32 length = 1);
 	virtual CCFile&  write(const StringBase& buf, UINT32 length = 0);
@@ -981,13 +982,13 @@ public:
 	CAUTION: this won't work if sizeof(INT32) != sizeof(iostream*) !!
 
 	Some wobbly code to show the general idea:-
-		
+
 		// Some C++ code that sets up and calls ...
 		fstream fs("c:\\in.txt", ios::in);
 		costream cs("c:\\out.txt", ios::out | costream::convert | costream::transacted);
 		INT32 fd_fs = fake_filedesc(fs);
 		INT32 fd_os = fake_filedesc(cs);
-		
+
 		// ... some C code that does I/O with C++ streams.
 		char buf[256];
 		INT32 n = stream_read(fd_fs, buf, sizeof(buf));
@@ -1011,5 +1012,3 @@ extern "C"
 }
 
 #endif
-
-
