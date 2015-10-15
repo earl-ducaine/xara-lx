@@ -1,7 +1,7 @@
 // $Id: sglfills.cpp 1282 2006-06-09 09:46:49Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
- 
+
                Xara LX, a vector drawing and manipulation program.
                     Copyright (C) 1993-2006 Xara Group Ltd.
        Copyright on certain contributions may be held in joint with their
@@ -32,7 +32,7 @@ ADDITIONAL RIGHTS
 
 Conditional upon your continuing compliance with the GNU General Public
 License described above, Xara Group Ltd grants to you certain additional
-rights. 
+rights.
 
 The additional rights are to use, modify, and distribute the software
 together with the wxWidgets library, the wxXtra library, and the "CDraw"
@@ -193,7 +193,7 @@ BOOL LibFillsSGallery::QuietStatus = FALSE;
 /********************************************************************************************
 
 >	LibFillsSGallery::LibFillsSGallery()
-												 
+
 	Author:		Richard_Millican (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	23/3/95
 	Purpose:	LibFillsSGallery default constructor
@@ -207,7 +207,7 @@ LibFillsSGallery::LibFillsSGallery()
 	// Default gallery size
 	CSize Size(((333 * 2) - 32) - 32, 256);
 	SetGallerySize(Size);
-} 
+}
 
 
 
@@ -321,12 +321,12 @@ BOOL LibFillsSGallery::PreCreate(void)
 	Author:		Richard_Millican (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	2/5/95
 
-	Inputs:		
+	Inputs:
 	Returns:
 
 	Purpose:	Sorts the contents of the gallery in an alphabetical fashion, whilst keeping
 				the old sort key status...
-	Notes:		
+	Notes:
 	SeeAlso:
 
 ********************************************************************************************/
@@ -343,7 +343,7 @@ void LibFillsSGallery::SortGallery(void)
 	Author:		Richard_Millican (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	2/5/95
 
-	Inputs:		
+	Inputs:
 	Returns:	TRUE if the gallery has new stuff in it (FALSE if cancel clicked, etc)...
 
 	Purpose:	Pops up the browse box and lets a new location be set for the data
@@ -421,7 +421,7 @@ BOOL LibFillsSGallery::GetDefaults(String_256 *DefaultIndex, String_256 *IndexDe
 
 BOOL LibFillsSGallery::GetLibraryDirectoryName(String_256 *LibDirName)
 {
-	LibDirName->MakeMsg(_R(IDS_LIBRARIES_FILLS_DIRNAME));	
+	LibDirName->MakeMsg(_R(IDS_LIBRARIES_FILLS_DIRNAME));
 	return TRUE;
 }
 
@@ -452,7 +452,7 @@ BOOL LibFillsSGallery::GetQuietStatus(void)
 	Purpose:	Set the Quiet status of the gallery
 
 ********************************************************************************************/
-		
+
 void LibFillsSGallery::SetQuietStatus(BOOL Status)
 {
 	LibFillsSGallery::QuietStatus = Status;
@@ -511,7 +511,7 @@ BOOL LibFillsSGallery::ScanForLocation(SGLibType Type, StringBase *Result)
 					GetLibraryDirectoryName(&LibDirName);
 					LibFillsSGallery::DefaultLibraryPath += LibDirName;
 				}
-			
+
 				if(Result)
 					*Result = LibFillsSGallery::DefaultLibraryPath;
 
@@ -586,7 +586,7 @@ BOOL LibFillsSGallery::ApplyAction(SGActionType Action)
 
 			if(!FillUsingFillGallerySelection(ApplyToObject))
 				return FALSE;
-		
+
 			break;
 
 		case SGACTION_SETOPTIONS:	// Set values in the options dialogue as it is opened
@@ -609,7 +609,7 @@ BOOL LibFillsSGallery::ApplyAction(SGActionType Action)
 				CurrentSortDlg->AddSortKeyName(_R(IDS_SORTBY_MEMORY));
 				CurrentSortDlg->AddSortKeyName(_R(IDS_SORTBY_NAMELENGTH));
 				CurrentSortDlg->AddSortKeyName(_R(IDS_SORTBY_FILETYPE));
-			}									
+			}
 			break;
 
 
@@ -619,7 +619,7 @@ BOOL LibFillsSGallery::ApplyAction(SGActionType Action)
 			InvalidateCachedFormat();
 			ReformatAndRedrawIfNecessary();
   			break;
-	
+
 		default:
 			return(SuperGallery::ApplyAction(Action));
 			break;
@@ -712,7 +712,7 @@ MsgResult LibFillsSGallery::Message(Msg* Message)
 						if(Document::GetSelected() != NULL)
 							FillUsingFillGallerySelection(AddToPage);
 						break;
-					
+
 					case _R(IDC_LIBGAL_IMPORT):
 						FillUsingFillGallerySelection(AddToPage);
 						break;
@@ -733,7 +733,7 @@ MsgResult LibFillsSGallery::Message(Msg* Message)
 						if(Document::GetSelected() != NULL)
 							if(!FillUsingFillGallerySelection(ApplyToObjectAsTransp))
 							{
-								return(SuperGallery::Message(Message));					
+								return(SuperGallery::Message(Message));
 							}
 						break;
 
@@ -741,12 +741,12 @@ MsgResult LibFillsSGallery::Message(Msg* Message)
 						if(Document::GetSelected() != NULL)
 							if(!FillUsingFillGallerySelection(SetBackground))
 							{
-								return(SuperGallery::Message(Message));					
+								return(SuperGallery::Message(Message));
 							}
 						break;
 
 					case _R(IDC_BMPGAL_SAVE):
-#ifdef _DEBUG		
+#ifdef _DEBUG
 						{
 							SGDisplayNode *Item = DisplayTree->FindNextSelectedItem(NULL);
 							if(Item != NULL && Item->IsKindOf(CC_RUNTIME_CLASS(SGLibDisplayItem)))
@@ -771,9 +771,9 @@ MsgResult LibFillsSGallery::Message(Msg* Message)
 					case _R(IDC_GALLERY_HELP):		// Show help page
 						HelpUserTopic(_R(IDS_HELPPATH_Gallery_Fill));
 						break;
-	
 
-					
+
+
 					default:
 						break;
 				}
@@ -815,7 +815,7 @@ MsgResult LibFillsSGallery::Message(Msg* Message)
 	}
 
 	return(LibraryGallery::Message(Message));
-}    
+}
 
 
  /********************************************************************************************
@@ -855,7 +855,7 @@ void LibFillsSGallery::SelectionHasChanged(void)
 	BOOL bEnable = Count == 1 && Documents;
 
 	// Import button
-	strCommand = SGCmd_Import; 
+	strCommand = SGCmd_Import;
 	EnableGadget(_R(IDC_LIBGAL_IMPORT),		bEnable && !((GetCommandState(&strCommand, &strDummy)).Greyed));
 
 	// Fill button
@@ -867,7 +867,7 @@ void LibFillsSGallery::SelectionHasChanged(void)
 	EnableGadget(_R(IDC_BMPGAL_TEXTURE),	bEnable && !((GetCommandState(&strCommand, &strDummy)).Greyed));
 
 	// Background button
-	strCommand = SGCmd_SetBackground; 
+	strCommand = SGCmd_SetBackground;
 	EnableGadget(_R(IDC_BMPGAL_BACKGROUND),	bEnable && !((GetCommandState(&strCommand, &strDummy)).Greyed));
 
 	EnableGadget(_R(IDC_LIBGAL_ADD_FILLS),	TRUE);
@@ -921,8 +921,8 @@ void LibFillsSGallery::DoShadeGallery(BOOL ShadeIt)
 
 bool LibFillsSGallery::FillUsingFillGallerySelection(FillTypeEnum FillType)
 {
-	PathName FileName;		
-	
+	PathName FileName;
+
 	UINT32 TagObjectToFill = 0;	// used for ApplyToObject and ApplyToObjectAsTransp
 								// when downloading a fill
 
@@ -1086,10 +1086,10 @@ bool LibFillsSGallery::FillUsingFillGallerySelection(FillTypeEnum FillType)
 
 	Returns:	NULL, or a pointer to the created item
 
-	Purpose:	Called by the Library class to create a display item for every item in 
+	Purpose:	Called by the Library class to create a display item for every item in
 				a newly-scanned library file. It is essentially a callback to the gallery
 				which requested that the library be scanned.
-				
+
 	Notes:		This method MUST BE OVERRIDDEN by the derived gallery that opens the library,
 				in order to create appropriate SGDisplayItem-derived nodes for the things
 				in the library (e.g. a Fills library gallery will have to create items
@@ -1140,7 +1140,7 @@ SGDisplayItem *LibFillsSGallery::AddLibraryItem(SGDisplayGroup *LibraryGroup,
 
 	Purpose:	Used to determine if this type of gallery supports keyword searching.
 				This one does
-				
+
 ********************************************************************************************/
 
 BOOL LibFillsSGallery::CanSearchKeywords(void)
@@ -1201,7 +1201,7 @@ void LibFillsSGallery::WorkOutSectionName(String_256 *Section)
 /********************************************************************************************
 
 >	virtual BOOL LibFillsSGallery::InitMenuCommands(void)
-												 
+
 	Author:		Jason_Williams (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	18/9/95
 
@@ -1269,7 +1269,7 @@ BOOL LibFillsSGallery::InitMenuCommands(void)
 	Returns:	TRUE if it succeeded
 
 	Purpose:	To build a menu of commands to be popped up over the gallery.
-	
+
 	Notes:		Override this method to stop the default menus being built
 
 ********************************************************************************************/
@@ -1330,7 +1330,7 @@ BOOL LibFillsSGallery::BuildCommandMenu(GalleryContextMenu *TheMenu, SGMenuID Me
 
 	Purpose:	To determine the state of a given menu item. This method is an exact
 				parallel to an Op's GetState method (in fact, it is called by an Op's GetState)
-	
+
 	Notes:		Override this method to provide state info for your special commands
 				Call the base class for unknown commands to allow it to handle them for you
 
@@ -1349,7 +1349,7 @@ OpState LibFillsSGallery::GetCommandState(StringBase *CommandID, String_256 *Sha
 	OpState State;
 
 	if (*CommandID == SGCmd_Add)									// --- Add (always available)
-	{	
+	{
 		return(State);
 	}
 	else if (*CommandID == SGCmd_EmptyFillsCache)
@@ -1359,7 +1359,7 @@ OpState LibFillsSGallery::GetCommandState(StringBase *CommandID, String_256 *Sha
 		return (State);
 	}
 	else if (*CommandID == SGCmd_Fill || *CommandID == SGCmd_Transp || // --- Fill/Transp/Set Background/Import
-			 *CommandID == SGCmd_SetBackground || *CommandID == SGCmd_Import)		
+			 *CommandID == SGCmd_SetBackground || *CommandID == SGCmd_Import)
 	{
 		if (GetSelectedItemCount() != 1)
 		{
@@ -1393,7 +1393,7 @@ OpState LibFillsSGallery::GetCommandState(StringBase *CommandID, String_256 *Sha
 	Inputs:		CommandID - The String ID of the command
 
 	Purpose:	To apply a given command when it is chosen from the menu.
-	
+
 	Notes:		Override this method to provide handling for your special commands.
 				Call the base class if you don't recognise the command, so that it can
 				handle standard commands.
@@ -1493,7 +1493,7 @@ SGDisplayGroup *LibFillsSGallery::AddLibraryGroup(Library *LibraryToDisplay, INT
 
 /********************************************************************************************
 
->	virtual SGDisplayItem *LibFillsSGallery::CopyDisplayItem(SGDisplayItem *SourceItem, 
+>	virtual SGDisplayItem *LibFillsSGallery::CopyDisplayItem(SGDisplayItem *SourceItem,
 													SGDisplayGroup *DestGroup,
 													SGDisplayItem *TargetPosition = NULL)
 	Author:		Richard_Millican (Xara Group Ltd) <camelotdev@xara.com>
@@ -1509,9 +1509,9 @@ SGDisplayGroup *LibFillsSGallery::AddLibraryGroup(Library *LibraryToDisplay, INT
 	Returns:	NULL (failed) or a pointer to the new (copied) display item
 
 	Purpose:	"Copies" the existing node in the tree in an appropriate fashion.
-				
+
 				This method is normally called when a gallery-organising drag completes,
-				and it is discovered that the dragged item(s) have been dragged to a 
+				and it is discovered that the dragged item(s) have been dragged to a
 				different display group.
 
 	Notes:		This method should be overridden by derived galleries to provide
@@ -1530,7 +1530,7 @@ SGDisplayGroup *LibFillsSGallery::AddLibraryGroup(Library *LibraryToDisplay, INT
 
 ********************************************************************************************/
 
-SGDisplayItem *LibFillsSGallery::CopyDisplayItem(SGDisplayItem *SourceItem, 
+SGDisplayItem *LibFillsSGallery::CopyDisplayItem(SGDisplayItem *SourceItem,
 								SGDisplayGroup *DestGroup, SGDisplayItem *TargetPosition)
 {
 	if(SourceItem == NULL || DestGroup == NULL)
@@ -1563,11 +1563,11 @@ SGDisplayItem *LibFillsSGallery::CopyDisplayItem(SGDisplayItem *SourceItem,
 	Created:	23/3/95
 	Inputs:		-
 	Outputs:	-
-	Returns:	TRUE if the operation could be successfully initialised 
-				FALSE if no more memory could be allocated 
-				
+	Returns:	TRUE if the operation could be successfully initialised
+				FALSE if no more memory could be allocated
+
 	Purpose:	OpDisplayLibFillsGallery initialiser method
-	Errors:		ERROR will be called if there was insufficient memory to allocate the 
+	Errors:		ERROR will be called if there was insufficient memory to allocate the
 				operation.
 	SeeAlso:	-
 
@@ -1589,7 +1589,7 @@ BOOL OpDisplayLibFillsGallery::Init()
 	 							0,	/* help ID */
 	 							_R(IDBBL_DISPLAY_FILLS_GALLERY),
 	 							0	/* bitmap ID */));
-}               
+}
 
 /********************************************************************************************
 
@@ -1600,7 +1600,7 @@ BOOL OpDisplayLibFillsGallery::Init()
 	Inputs:		-
 	Outputs:	-
 	Returns:	The state of the OpDisplayLibFillsGallery operation
-	Purpose:	For finding the OpDisplayLibFillsGallery's state. 
+	Purpose:	For finding the OpDisplayLibFillsGallery's state.
 	Errors:		-
 	SeeAlso:	-
 
@@ -1608,7 +1608,7 @@ BOOL OpDisplayLibFillsGallery::Init()
 
 OpState	OpDisplayLibFillsGallery::GetState(String_256* UIDescription, OpDescriptor*)
 {
-	OpState OpSt;  
+	OpState OpSt;
 
 	// If the gallery is currenty open, then the menu item should be ticked
 	DialogBarOp* pDialogBarOp = FindGallery();
@@ -1616,7 +1616,7 @@ OpState	OpDisplayLibFillsGallery::GetState(String_256* UIDescription, OpDescript
 		OpSt.Ticked = pDialogBarOp->IsVisible();
 
 //	OpSt.Greyed = (Document::GetSelected() == NULL);
- 	return(OpSt);   
+ 	return(OpSt);
 }
 
 
@@ -1663,7 +1663,7 @@ void OpDisplayLibFillsGallery::Do(OpDescriptor*)
 				// Free memory, etc...
 				LibFillsSGallery::ThisGallery->GalleryAboutToClose();
 			}
-			
+
 		}
 	}
 
@@ -1719,7 +1719,7 @@ DialogBarOp *OpDisplayLibFillsGallery::FindGallery(void)
 
 	Inputs:		MiscInfo - Contains a few useful bits of info that may be
 				needed for all event types.
-	Outputs:	
+	Outputs:
 	Returns:	The display mode type to use (position of text, and size of thumb)
 
 	Purpose:	Return the display type to use - Fills gallery override
@@ -1754,7 +1754,7 @@ LibDisplayType SGFillsItem::GetDisplayType(SGMiscInfo *MiscInfo)
 	Author:		Richard_Millican (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	23/3/95
 	Inputs:		LibraryIndex - Offset into index file which describes this item
-	Outputs:	
+	Outputs:
 	Returns:
 	Purpose:	Creates and initialises a new item for the Fills gallery
 	Notes:
@@ -1840,7 +1840,7 @@ BOOL SGFillsItem::HandleEvent(SGEventType EventType, void *EventInfo, SGMiscInfo
 			SGMouseInfo *Mouse = GetMouseInfo(EventType, EventInfo);
 
 			if (Mouse != NULL && FormatRect.ContainsCoord(Mouse->Position))
-			{					
+			{
 				INT32 XSize=0, YSize=0;
 				if(SGLibDisplayItem::StartDrag(EventType, EventInfo, MiscInfo, &XSize, &YSize))
 				{
@@ -1861,15 +1861,15 @@ BOOL SGFillsItem::HandleEvent(SGEventType EventType, void *EventInfo, SGMiscInfo
 			}
 		}
 	}
-	
+
 	return(SGLibDisplayItem::HandleEvent(EventType, EventInfo, MiscInfo));
 }
 
 
 /********************************************************************************************
 
->	SGFillsDragTarget::SGFillsDragTarget(DialogOp *TheDialog, CGadgetID TheGadget = NULL)
-	 
+>	SGFillsDragTarget::SGFillsDragTarget(DialogOp *TheDialog, CGadgetID TheGadget = 0)
+
 	Author:		Will_Cowling (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	25/3/95
 	Inputs:		TheDialog - The kernel dialog in which the target exists
@@ -1955,12 +1955,12 @@ BOOL SGFillsDragTarget::ProcessEvent(DragEventType Event, DragInformation *pDrag
 							SGDisplayNode *SourceGroup = DraggedNode->GetParent();
 
 							if(DestGroup != NULL && SourceGroup != NULL)
-							{	
+							{
 								// We're dragging within a group - that's ok
 								if(SourceGroup == DestGroup)
 									return(DetermineCursorShape(ParentGallery, DraggedNode, pMousePos));
 							}
-						}		
+						}
 					}
 				}
 
@@ -1976,10 +1976,10 @@ BOOL SGFillsDragTarget::ProcessEvent(DragEventType Event, DragInformation *pDrag
 
 /********************************************************************************************
 
->	void GalleryFillsDragInfo::GalleryFillsDragInfo() 
-	 
+>	void GalleryFillsDragInfo::GalleryFillsDragInfo()
+
 	Author:		Will_Cowling (Xara Group Ltd) <camelotdev@xara.com>
-	Created:	19/3/95		  
+	Created:	19/3/95
 
 	Purpose:	Default constructor - do not call this constructor
 
@@ -1987,15 +1987,15 @@ BOOL SGFillsDragTarget::ProcessEvent(DragEventType Event, DragInformation *pDrag
 
 GalleryFillsDragInfo::GalleryFillsDragInfo()
 {
-	ERROR3("Default GalleryFillsDragInfo constructor called");	
+	ERROR3("Default GalleryFillsDragInfo constructor called");
 }
 
 /********************************************************************************************
 
->	void GalleryFillsDragInfo::~GalleryFillsDragInfo() 
-	 
+>	void GalleryFillsDragInfo::~GalleryFillsDragInfo()
+
 	Author:		Richard_Millican (Xara Group Ltd) <camelotdev@xara.com>
-	Created:	27/4/95		  
+	Created:	27/4/95
 
 	Purpose:	Destructor - reclaim temporary bitmap memory
 
@@ -2016,9 +2016,9 @@ GalleryFillsDragInfo::~GalleryFillsDragInfo()
 >	GalleryFillsDragInfo::GalleryFillsDragInfo(SGFillsItem *pSourceItem,
 												SGMouseInfo *pMouseInfo, SGMiscInfo *pMiscInfo,
  												BOOL IsAdjust = FALSE, INT32 XSize = 0, INT32 YSize = 0)
-	 
+
 	Author:		Will_Cowling (Xara Group Ltd) <camelotdev@xara.com>
-	Created:	19/3/95		  
+	Created:	19/3/95
 
 	Inputs:		pSourceItem - The gallery item from which the drag originated
 				pMouseInfo	- The mouse info which made the item start the drag
@@ -2047,14 +2047,14 @@ GalleryFillsDragInfo::GalleryFillsDragInfo(SGFillsItem *pSourceItem,
 
 /********************************************************************************************
 
->	void GalleryFillsDragInfo::OnClick(INT32 Flags,POINT Point) 
-	 
+>	void GalleryFillsDragInfo::OnClick(INT32 Flags,POINT Point)
+
 	Author:		Will_Cowling (Xara Group Ltd) <camelotdev@xara.com>
-	Created:	19/3/95		  
+	Created:	19/3/95
 	Inputs:		-
 	Outputs:	-
 	Returns:	-
-	Purpose:	This is called if a drag was attempted but never started because it was a 
+	Purpose:	This is called if a drag was attempted but never started because it was a
 				click all along. It calls back the SourceItem SGDisplayBitmap, to get it
 				to handle the click.
 	Errors:		-
@@ -2096,7 +2096,7 @@ UINT32 GalleryFillsDragInfo::GetCursorID(DragTarget* pDragTarget)
 		if (pObjectHit && _taccess(fillPath.GetPath(), 0) == -1)
 			return _R(IDC_CANTDROP);
 */
-		// We can't apply a fill to a NodeBitmap 
+		// We can't apply a fill to a NodeBitmap
 		if (pObjectHit && pObjectHit->IS_KIND_OF(NodeBitmap))
 			TargetHit = NO_TARGET;				// Ignore NodeBitmap objects
 
@@ -2141,7 +2141,7 @@ UINT32 GalleryFillsDragInfo::GetCursorID(DragTarget* pDragTarget)
 	Created:	25/3/95
 	Returns:	Whether String is valid
 	Purpose:	provide status line text for this target
-   
+
 ********************************************************************************************/
 
 BOOL GalleryFillsDragInfo::GetStatusLineText(String_256 * TheText, DragTarget* pDragTarget)
@@ -2233,16 +2233,16 @@ BOOL GalleryFillsDragInfo::GetStatusLineText(String_256 * TheText, DragTarget* p
 	}
 
  	*TheText = DragString;
- 	
+
 	return TRUE;
 }
 
 /********************************************************************************************
 
 >	BOOL GalleryFillsDragInfo::OnPageDrop(ViewDragTarget* pDragTarget)
- 
+
 	Author:		Will_Cowling (Xara Group Ltd) <camelotdev@xara.com>
-	Created:	19/3/95		  
+	Created:	19/3/95
 	Inputs:		pDragTarget, the ViewDragTarget that we were dropped onto.
 	Returns:	TRUE, if we handled the drop.
 	Purpose:	Called when a Fill is dropped onto the page.
@@ -2259,7 +2259,7 @@ BOOL GalleryFillsDragInfo::OnPageDrop(ViewDragTarget* pDragTarget)
 	((ViewDragTarget*)pDragTarget)->GetDropInfo(&ThePageDropInfo);
 	NodeRenderableInk* pObjectHit = ThePageDropInfo.pObjectHit;
 
-	PathName FileName;		
+	PathName FileName;
 	SGLibDisplayItem *FillItem = SourceItem;
 
 	if (!FillItem->GetFileName(&FileName))

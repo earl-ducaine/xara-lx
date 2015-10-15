@@ -1,7 +1,7 @@
 // $Id: sglcart.cpp 1282 2006-06-09 09:46:49Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
- 
+
                Xara LX, a vector drawing and manipulation program.
                     Copyright (C) 1993-2006 Xara Group Ltd.
        Copyright on certain contributions may be held in joint with their
@@ -32,7 +32,7 @@ ADDITIONAL RIGHTS
 
 Conditional upon your continuing compliance with the GNU General Public
 License described above, Xara Group Ltd grants to you certain additional
-rights. 
+rights.
 
 The additional rights are to use, modify, and distribute the software
 together with the wxWidgets library, the wxXtra library, and the "CDraw"
@@ -239,7 +239,7 @@ BOOL LibClipartSGallery::QuietStatus = FALSE;
 /********************************************************************************************
 
 >	LibClipartSGallery::LibClipartSGallery()
-												 
+
 	Author:		Jason_Williams (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	27/1/95 (base generated in sgbase.cpp)
 	Purpose:	LibClipartSGallery default constructor
@@ -313,7 +313,7 @@ BOOL LibClipartSGallery::Init(void)
 {
 	TRACEUSER( "Matt", _T("Init clipart gallery\n"));
 #ifdef _BATCHING
-	    
+
 	GetApplication()->DeclareSection(TEXT("Batching"), 6);
 	GetApplication()->DeclarePref(TEXT("Batching"), TEXT("OutputDirectory"), &LibClipartSGallery::BatchSaveLocation);
 
@@ -439,12 +439,12 @@ BOOL LibClipartSGallery::PreCreate(void)
 	Author:		Richard_Millican (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	2/5/95
 
-	Inputs:		
+	Inputs:
 	Returns:
 
 	Purpose:	Sorts the contents of the gallery in an alphabetical fashion, whilst keeping
 				the old sort key status...
-	Notes:		
+	Notes:
 	SeeAlso:
 
 ********************************************************************************************/
@@ -500,7 +500,7 @@ BOOL LibClipartSGallery::ApplyAction(SGActionType Action)
 		case SGACTION_APPLY:
 			ImportClipart(TRUE, this);
 			break;
-		
+
 /*		case SGACTION_APPLYADJUST:
 			ImportClipart(FALSE);
 			break;*/
@@ -517,7 +517,7 @@ BOOL LibClipartSGallery::ApplyAction(SGActionType Action)
 			{
 				if (CurrentOptionsDlg == NULL)
 					return(FALSE);
-			
+
 				CurrentOptionsDlg->AddDisplayModeName(_R(IDS_GALLERYDM_LARGE));		// 0
 				CurrentOptionsDlg->AddDisplayModeName(_R(IDS_GALLERYDM_FULLINFO));	// 1
 				CurrentOptionsDlg->AddDisplayModeName(_R(IDS_GALLERYDM_SMALL));		// 2
@@ -534,7 +534,7 @@ BOOL LibClipartSGallery::ApplyAction(SGActionType Action)
 				CurrentSortDlg->AddSortKeyName(_R(IDS_SORTBY_NAMELENGTH));
 				CurrentSortDlg->AddSortKeyName(_R(IDS_SORTBY_FILETYPE));
 			}
-									
+
 			break;
 
 
@@ -545,7 +545,7 @@ BOOL LibClipartSGallery::ApplyAction(SGActionType Action)
 			ReformatAndRedrawIfNecessary();
 			//ForceRedrawOfList();
 			break;
-	
+
 		default:
 			return(SuperGallery::ApplyAction(Action));
 			break;
@@ -629,7 +629,7 @@ MsgResult LibClipartSGallery::Message(Msg* Message)
 				BROADCAST_TO_CLASS(ThumbMessage(ThumbMessage::ThumbState::KILLCACHE, SGLib_Bitmap), DialogOp);
 
 				GalleryAboutToClose();
-				
+
 				break;
 
 			case DIM_LFT_BN_CLICKED:
@@ -645,11 +645,11 @@ MsgResult LibClipartSGallery::Message(Msg* Message)
 
 
 					case _R(IDC_LIBGAL_UPDATE):
-#ifdef _BATCHING     
+#ifdef _BATCHING
 						LoadAndSave();
 #endif
 						break;
-					
+
 					case _R(IDC_LIBGAL_IMPORT):
 						ImportClipart(FALSE, this);
 						break;
@@ -686,7 +686,7 @@ MsgResult LibClipartSGallery::Message(Msg* Message)
 						}
 #endif
 						break;
-					
+
 					default:
 						break;
 				}
@@ -737,7 +737,7 @@ MsgResult LibClipartSGallery::Message(Msg* Message)
 	}
 
 	return(LibraryGallery::Message(Message));
-}    
+}
 
 
 
@@ -750,7 +750,7 @@ MsgResult LibClipartSGallery::Message(Msg* Message)
 	Author:		Richard_Millican (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	2/5/95
 
-	Inputs:		
+	Inputs:
 	Returns:	TRUE if the gallery has new stuff in it (FALSE if cancel clicked, etc)...
 
 	Purpose:	Pops up the browse box and lets a new location be set for the clipart
@@ -801,7 +801,7 @@ BOOL LibClipartSGallery::CanCreateIndexes(void)
 				IndexDesc		- Description of the index / gallery (Clipart)
 				Type			- Default library type associated with this gallery
 
-	Returns:	TRUE if this was overridden successfully 
+	Returns:	TRUE if this was overridden successfully
 
 	Purpose:	To determine various library gallery default properties
 
@@ -892,7 +892,7 @@ BOOL LibClipartSGallery::CheckForIndexMatch(StringBase *Txt)
 
 	// Artwork, and Bitmaps...
 	if(((Txt->Sub(String_8("A"))!=-1) || (Txt->Sub(String_8("a"))!=-1)) ) Match = TRUE;
-	if(((Txt->Sub(String_8("B"))!=-1) || (Txt->Sub(String_8("b"))!=-1)) ) Match = TRUE;				
+	if(((Txt->Sub(String_8("B"))!=-1) || (Txt->Sub(String_8("b"))!=-1)) ) Match = TRUE;
 
 	return Match;
 }
@@ -925,7 +925,7 @@ BOOL LibClipartSGallery::GetQuietStatus(void)
 	Purpose:	Set the Quiet status of the gallery
 
 ********************************************************************************************/
-		
+
 void LibClipartSGallery::SetQuietStatus(BOOL Status)
 {
 	LibClipartSGallery::QuietStatus = Status;
@@ -1059,7 +1059,7 @@ void LibClipartSGallery::ProfileRedraw(ReDrawInfoType *Param)
 	Outputs:
 	Returns:	TRUE if things went OK, false otherwise
 
-	Purpose:	To load/import all the selected clipart items one by one into camelot.				
+	Purpose:	To load/import all the selected clipart items one by one into camelot.
 	Notes:
 	SeeAlso:
 
@@ -1078,7 +1078,7 @@ BOOL LibClipartSGallery::ImportClipart(BOOL NewDocument, LibraryGallery* pSource
 	{
 		return FALSE;
 	}
-									  
+
 	BOOL ok = TRUE;
 
 
@@ -1095,9 +1095,9 @@ BOOL LibClipartSGallery::ImportClipart(BOOL NewDocument, LibraryGallery* pSource
 
 			if(Item->Flags.Selected)
 			{
-				PathName FileName;		
+				PathName FileName;
 				SGLibDisplayItem *ClipItem = (SGLibDisplayItem *) Item;
-			
+
 				//if (Lib != NULL)
 				ok = ClipItem->GetFileName(&FileName);
 
@@ -1137,16 +1137,16 @@ BOOL LibClipartSGallery::ImportClipart(BOOL NewDocument, LibraryGallery* pSource
 					BOOL bIsLocalFile;
 					if (!pLibrary->IsWebLibrary())
 						bIsLocalFile = TRUE;
-					else 
+					else
 						bIsLocalFile = (_access((TCHAR*) FilePath, 0) != -1);
-						
+
 					if(NewDocument)
 					{
 						if (bIsLocalFile)
 						{
 							CWinApp* pApp = AfxGetApp();
 							BaseFileDialog::SelectedFilter = 0;
-			
+
 							// Open a document
 							CCamDoc* pDoc = (CCamDoc*) pApp->OpenDocumentFile((TCHAR *)FilePath);
 
@@ -1235,7 +1235,7 @@ ASYNCH_IMPORT:
 
 	Purpose:	To load all the selected clipart items one by one into camelot and then
 				to save them out again - useful for updating documents.
-				
+
 	Notes:		Code for this should only be compiled in DEBUG, and calling this is
 				not guaranteed to leave XS in a stable state on exit.
 	SeeAlso:
@@ -1276,11 +1276,11 @@ BOOL LibClipartSGallery::LoadAndSave(void)
 			// Update selected ones, or all after first selected ?
 			if(Item->Flags.Selected || TRUE)
 			{
-				PathName FileName;		
+				PathName FileName;
 				SGLibDisplayItem *ClipItem = (SGLibDisplayItem *) Item;
 
 				BOOL ok = TRUE;
-			
+
 				//if (Lib != NULL)
 				ok = ClipItem->GetFileName(&FileName);
 
@@ -1300,10 +1300,10 @@ BOOL LibClipartSGallery::LoadAndSave(void)
 					}
 
 					String_256 Path(FileName.GetPath());
-					
+
 					// Batching system will use this directory to put its output in
 					String_256 OutputPath(LibClipartSGallery::BatchSaveLocation);
-					
+
 					// Unless it == "" of course...
 					if(OutputPath.Length() == 0)
 						OutputPath = Path;
@@ -1319,11 +1319,11 @@ BOOL LibClipartSGallery::LoadAndSave(void)
 					String_256 SavePath(OutputPathART.GetPath());
 
 		 			Error::ClearError();
-	
+
 					// Only do it if there isn't an art file there already...
 				//	if(!SGLibOil::FileExists(&OutputPathART))
-				//	{			
-				
+				//	{
+
 						MonotonicTime Time;
 						INT32 OpenTime = Time.Sample();
 						INT32 InitialSize = SGLibOil::FileSize(&FileName);
@@ -1359,11 +1359,11 @@ BOOL LibClipartSGallery::LoadAndSave(void)
 						{
 				 			Error::ClearError();
 							// Close a document
-				 		 	((CCamDoc *) (((CMDIFrameWnd *)                                      
+				 		 	((CCamDoc *) (((CMDIFrameWnd *)
 				 				((AfxGetApp())->m_pMainWnd))->MDIGetActive()	//Get Active Child Window
 			 					)->GetActiveDocument()							//Get Active Document
 								)->OnFileClose();								//Close Active Document
-						}	
+						}
 			 			Error::ClearError();
 
 #else
@@ -1381,7 +1381,7 @@ BOOL LibClipartSGallery::LoadAndSave(void)
 #if 0
 								Document* OurDocument = pDoc->GetKernelDoc();
 								Spread* OurSpread = OurDocument->FindFirstSpread();
-								Page* CurrentPage = OurSpread->FindFirstPageInSpread(); 
+								Page* CurrentPage = OurSpread->FindFirstPageInSpread();
 
 								if(OurDocument == NULL || OurSpread == NULL || CurrentPage == NULL)
 								{
@@ -1434,7 +1434,7 @@ BOOL LibClipartSGallery::LoadAndSave(void)
 									/**************************************/
 
 									// Sort the page orientation out, centre the clipart and zoom to it
-		
+
 									DocRect	OurItemRect = OurSpread->GetBoundingRect();
 									DocRect OurPageRect = CurrentPage->GetPageRect();
 
@@ -1446,7 +1446,7 @@ BOOL LibClipartSGallery::LoadAndSave(void)
 										AppPrefsDlg::pPageSizesList->GetSizeFromPageId(PageChosen, &Width, &Height);
 
 										// Bodge it to landscape / portrait...
-										if(    ((OurItemRect.Width() > OurItemRect.Height()) && (OurPageRect.Width() < OurPageRect.Height())) 
+										if(    ((OurItemRect.Width() > OurItemRect.Height()) && (OurPageRect.Width() < OurPageRect.Height()))
 											|| ((OurItemRect.Width() < OurItemRect.Height()) && (OurPageRect.Width() > OurPageRect.Height())) )
 										{
 											MILLIPOINT Tmp = Width;
@@ -1456,7 +1456,7 @@ BOOL LibClipartSGallery::LoadAndSave(void)
 
 										TRACEUSER( "Richard", _T("width %d height %d in MP\n"),Width,Height);
 
-										// Set up the parameters which we require to do the page resizing operation 
+										// Set up the parameters which we require to do the page resizing operation
 										PageResizeInfo Param;
 
 										// Set up the new page parameters that we want
@@ -1472,7 +1472,7 @@ BOOL LibClipartSGallery::LoadAndSave(void)
 										Param.Portrait = (Width < Height); //Portrait;
 										Param.Dps = FALSE; //Dps;
 										Param.ShowDropShadow = TRUE; //DropShadow;
-										// Set up the new default grid settings that we want 
+										// Set up the new default grid settings that we want
 										//Param.GridSpacing = CM_MP_VAL;
 										//Param.GridSubDivisions = 2;
 										//Param.GridUnits = CENTIMETRES;
@@ -1500,7 +1500,7 @@ BOOL LibClipartSGallery::LoadAndSave(void)
 
 							/*Document**/ OurDocument = pDoc->GetKernelDoc();
 							/*Spread**/ OurSpread = OurDocument->FindFirstSpread();
-							/*Page* */ CurrentPage = OurSpread->FindFirstPageInSpread(); 
+							/*Page* */ CurrentPage = OurSpread->FindFirstPageInSpread();
 
 							DocRect	OurItemRect = OurSpread->GetBoundingRect();
 							DocRect OurPageRect = CurrentPage->GetPageRect();
@@ -1540,7 +1540,7 @@ BOOL LibClipartSGallery::LoadAndSave(void)
 
 									Ptr = ParentList->GetUndeletedNext(Ptr);
 								}
-	
+
 								KillList[KillIndex] = NULL;		// NULL terminate the list
 
 								// Delete (hide, with undo actually) the given colours
@@ -1568,7 +1568,7 @@ BOOL LibClipartSGallery::LoadAndSave(void)
 									{
 										ClipartImportParam Param;
 
-										// Set up the parameters which we require to do the page resizing operation 
+										// Set up the parameters which we require to do the page resizing operation
 										Param.File = &FileName;
 										Param.Import = TRUE;
 										Param.Result = TRUE;
@@ -1588,7 +1588,7 @@ BOOL LibClipartSGallery::LoadAndSave(void)
 
 								/*******************/
 							}
-	
+
 #endif
 							INT32 CloseTime = Time.Sample();
 
@@ -1678,7 +1678,7 @@ PORTNOTE("spread", "Multi-spread warning!")
 							{
 								Bounds = Bounds.Union(pLayer->GetBoundingRect());
 								pLayer = pLayer->FindNextLayer();
-							}		
+							}
 
 							INT32 d = Bounds.Width();
 							if (Bounds.Height() > d)
@@ -1690,7 +1690,7 @@ PORTNOTE("spread", "Multi-spread warning!")
 								pCCamDoc->ScaleContents(5.0,5.0);
 							}
 
-							
+
 							String_256 ThumbPathStr = path.GetLocation();
 							ThumbPathStr += String_16(_R(IDS_LIBRARIES_XARAINFO_DIRNAME));
 							ThumbPathStr += TEXT("\\");
@@ -1708,11 +1708,11 @@ PORTNOTE("spread", "Multi-spread warning!")
 
 							// Close a document
 							if(Worked)
-					 		 	((CCamDoc *) (((CMDIFrameWnd *)                                      
+					 		 	((CCamDoc *) (((CMDIFrameWnd *)
 					 				((AfxGetApp())->m_pMainWnd))->MDIGetActive()	//Get Active Child Window
 				 					)->GetActiveDocument()							//Get Active Document
 									)->OnFileClose();								//Close Active Document
-	
+
 				 			Error::ClearError();
 							//ERROR3IF(!Worked, "Ok, so it didn't work...");
 
@@ -1786,10 +1786,10 @@ PORTNOTE("spread", "Multi-spread warning!")
 
 	Returns:	NULL, or a pointer to the created item
 
-	Purpose:	Called by the Library class to create a display item for every item in 
+	Purpose:	Called by the Library class to create a display item for every item in
 				a newly-scanned library file. It is essentially a callback to the gallery
 				which requested that the library be scanned.
-				
+
 	Notes:		This method MUST BE OVERRIDDEN by the derived gallery that opens the library,
 				in order to create appropriate SGDisplayItem-derived nodes for the things
 				in the library (e.g. a clipart library gallery will have to create items
@@ -1995,7 +1995,7 @@ void LibClipartSGallery::DoShadeGallery(BOOL ShadeIt)
 
 	Purpose:	Used to determine if this type of gallery supports keyword searching.
 				This one does
-				
+
 ********************************************************************************************/
 
 BOOL LibClipartSGallery::CanSearchKeywords(void)
@@ -2063,7 +2063,7 @@ SGDisplayGroup *LibClipartSGallery::AddLibraryGroup(Library *LibraryToDisplay, I
 
 		if (TheGroup == NULL)				// Failed!
 			return(NULL);
-		
+
 		// And add it to our display tree
 		if (((GetClipTheme() == 0) && (LibraryToDisplay->Type == SGLib_ClipArt_WebThemes)) || ((GetClipTheme() == 1) && (LibraryToDisplay->Type == SGLib_ClipArt)))
 		{
@@ -2092,7 +2092,7 @@ SGDisplayGroup *LibClipartSGallery::AddLibraryGroup(Library *LibraryToDisplay, I
 
 /********************************************************************************************
 
->	virtual SGDisplayItem *LibClipartSGallery::CopyDisplayItem(SGDisplayItem *SourceItem, 
+>	virtual SGDisplayItem *LibClipartSGallery::CopyDisplayItem(SGDisplayItem *SourceItem,
 													SGDisplayGroup *DestGroup,
 													SGDisplayItem *TargetPosition = NULL)
 	Author:		Richard_Millican (Xara Group Ltd) <camelotdev@xara.com>
@@ -2108,9 +2108,9 @@ SGDisplayGroup *LibClipartSGallery::AddLibraryGroup(Library *LibraryToDisplay, I
 	Returns:	NULL (failed) or a pointer to the new (copied) display item
 
 	Purpose:	"Copies" the existing node in the tree in an appropriate fashion.
-				
+
 				This method is normally called when a gallery-organising drag completes,
-				and it is discovered that the dragged item(s) have been dragged to a 
+				and it is discovered that the dragged item(s) have been dragged to a
 				different display group.
 
 	Notes:		This method should be overridden by derived galleries to provide
@@ -2129,7 +2129,7 @@ SGDisplayGroup *LibClipartSGallery::AddLibraryGroup(Library *LibraryToDisplay, I
 
 ********************************************************************************************/
 
-SGDisplayItem *LibClipartSGallery::CopyDisplayItem(SGDisplayItem *SourceItem, 
+SGDisplayItem *LibClipartSGallery::CopyDisplayItem(SGDisplayItem *SourceItem,
 								SGDisplayGroup *DestGroup, SGDisplayItem *TargetPosition)
 {
 	TRACEUSER( "Matt", _T("Copy display item called in clipart gallery\n"));
@@ -2159,7 +2159,7 @@ SGDisplayItem *LibClipartSGallery::CopyDisplayItem(SGDisplayItem *SourceItem,
 /********************************************************************************************
 
 >	virtual BOOL LibClipartSGallery::InitMenuCommands(void)
-												 
+
 	Author:		Jason_Williams (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	18/9/95
 
@@ -2226,7 +2226,7 @@ BOOL LibClipartSGallery::InitMenuCommands(void)
 	Returns:	TRUE if it succeeded
 
 	Purpose:	To build a menu of commands to be popped up over the gallery.
-	
+
 	Notes:		Override this method to stop the default menus being built
 
 ********************************************************************************************/
@@ -2238,7 +2238,7 @@ BOOL LibClipartSGallery::BuildCommandMenu(GalleryContextMenu *TheMenu, SGMenuID 
 	if (MenuID == SGMENU_OPTIONS)
 	{
 		// Options menu
-		ok = ok && AddCommand(TheMenu, (StringBase *) &SGCmd_Add);	
+		ok = ok && AddCommand(TheMenu, (StringBase *) &SGCmd_Add);
 		ok = ok && AddCommand(TheMenu, (StringBase *) &SGCmd_EmptyClipartCache, TRUE);
 
 		ok = ok && AddCommand(TheMenu, (StringBase *) &SGCmd_Find);
@@ -2282,7 +2282,7 @@ BOOL LibClipartSGallery::BuildCommandMenu(GalleryContextMenu *TheMenu, SGMenuID 
 
 	Purpose:	To determine the state of a given menu item. This method is an exact
 				parallel to an Op's GetState method (in fact, it is called by an Op's GetState)
-	
+
 	Notes:		Override this method to provide state info for your special commands
 				Call the base class for unknown commands to allow it to handle them for you
 
@@ -2349,7 +2349,7 @@ OpState LibClipartSGallery::GetCommandState(StringBase *CommandID, String_256 *S
 	Inputs:		CommandID - The String ID of the command
 
 	Purpose:	To apply a given command when it is chosen from the menu.
-	
+
 	Notes:		Override this method to provide handling for your special commands.
 				Call the base class if you don't recognise the command, so that it can
 				handle standard commands.
@@ -2428,11 +2428,11 @@ INT32 LibClipartSGallery::SetClipTheme(INT32 nNewIndex)
 	Created:	9/2/95 (base generated in sgbase.cpp)
 	Inputs:		-
 	Outputs:	-
-	Returns:	TRUE if the operation could be successfully initialised 
-				FALSE if no more memory could be allocated 
-				
+	Returns:	TRUE if the operation could be successfully initialised
+				FALSE if no more memory could be allocated
+
 	Purpose:	OpDisplayLibClipartGallery initialiser method
-	Errors:		ERROR will be called if there was insufficient memory to allocate the 
+	Errors:		ERROR will be called if there was insufficient memory to allocate the
 				operation.
 	SeeAlso:	-
 
@@ -2452,7 +2452,7 @@ BOOL OpDisplayLibClipartGallery::Init()
 	 							0,	/* help ID */
 	 							_R(IDBBL_DISPLAY_CLIPART_GALLERY),
 	 							0	/* bitmap ID */));
-}               
+}
 
 /********************************************************************************************
 
@@ -2463,7 +2463,7 @@ BOOL OpDisplayLibClipartGallery::Init()
 	Inputs:		-
 	Outputs:	-
 	Returns:	The state of the OpDisplayLibClipartGallery operation
-	Purpose:	For finding the OpDisplayLibClipartGallery's state. 
+	Purpose:	For finding the OpDisplayLibClipartGallery's state.
 	Errors:		-
 	SeeAlso:	-
 
@@ -2471,7 +2471,7 @@ BOOL OpDisplayLibClipartGallery::Init()
 
 OpState	OpDisplayLibClipartGallery::GetState(String_256* UIDescription, OpDescriptor*)
 {
-	OpState OpSt;  
+	OpState OpSt;
 
 	// If the gallery is currenty open, then the menu item should be ticked
 	DialogBarOp* pDialogBarOp = FindGallery();
@@ -2479,7 +2479,7 @@ OpState	OpDisplayLibClipartGallery::GetState(String_256* UIDescription, OpDescri
 		OpSt.Ticked = pDialogBarOp->IsVisible();
 
 //	OpSt.Greyed = (Document::GetSelected() == NULL);
- 	return(OpSt);   
+ 	return(OpSt);
 }
 
 
@@ -2595,7 +2595,7 @@ DialogBarOp *OpDisplayLibClipartGallery::FindGallery(void)
 
 	Inputs:		MiscInfo - Contains a few useful bits of info that may be
 				needed for all event types.
-	Outputs:	
+	Outputs:
 	Returns:	The display mode type to use (position of text, and size of thumb)
 
 	Purpose:	Return the display type to use - clipart gallery override
@@ -2630,7 +2630,7 @@ LibDisplayType SGClipartItem::GetDisplayType(SGMiscInfo *MiscInfo)
 	Author:		Richard_Millican (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	16/3/95
 	Inputs:		LibraryIndex - Offset into index file which describes this item
-	Outputs:	
+	Outputs:
 	Returns:
 	Purpose:	Creates and initialises a new item for the clipart gallery
 	Notes:
@@ -2716,7 +2716,7 @@ BOOL SGClipartItem::HandleEvent(SGEventType EventType, void *EventInfo, SGMiscIn
 			SGMouseInfo *Mouse = GetMouseInfo(EventType, EventInfo);
 
 			if (Mouse != NULL && FormatRect.ContainsCoord(Mouse->Position))
-			{	
+			{
 				if(LibClipartSGallery::DoSounds)
 				{
 					Library *Lib = GetParentLibrary();
@@ -2755,15 +2755,15 @@ BOOL SGClipartItem::HandleEvent(SGEventType EventType, void *EventInfo, SGMiscIn
 			}
 		}
 	}
-	
+
 	return(SGLibDisplayItem::HandleEvent(EventType, EventInfo, MiscInfo));
 }
 
 
 /********************************************************************************************
 
->	SGClipartDragTarget::SGClipartDragTarget(DialogOp *TheDialog, CGadgetID TheGadget = NULL)
-	 
+>	SGClipartDragTarget::SGClipartDragTarget(DialogOp *TheDialog, CGadgetID TheGadget = 0)
+
 	Author:		Will_Cowling (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	25/3/95
 	Inputs:		TheDialog - The kernel dialog in which the target exists
@@ -2848,12 +2848,12 @@ BOOL SGClipartDragTarget::ProcessEvent(DragEventType Event, DragInformation *pDr
 							SGDisplayNode *SourceGroup = DraggedNode->GetParent();
 
 							if(DestGroup != NULL && SourceGroup != NULL)
-							{	
+							{
 								// We're dragging within a group - that's ok
 								if(SourceGroup == DestGroup)
 									return(DetermineCursorShape(ParentGallery, DraggedNode, pMousePos));
 							}
-						}		
+						}
 					}
 				}
 
@@ -2869,10 +2869,10 @@ BOOL SGClipartDragTarget::ProcessEvent(DragEventType Event, DragInformation *pDr
 
 /********************************************************************************************
 
->	void GalleryClipartDragInfo::GalleryClipartDragInfo() 
-	 
+>	void GalleryClipartDragInfo::GalleryClipartDragInfo()
+
 	Author:		Will_Cowling (Xara Group Ltd) <camelotdev@xara.com>
-	Created:	19/3/95		  
+	Created:	19/3/95
 
 	Purpose:	Default constructor - do not call this constructor
 
@@ -2880,16 +2880,16 @@ BOOL SGClipartDragTarget::ProcessEvent(DragEventType Event, DragInformation *pDr
 
 GalleryClipartDragInfo::GalleryClipartDragInfo()
 {
-	ERROR3("Default GalleryClipartDragInfo constructor called");	
+	ERROR3("Default GalleryClipartDragInfo constructor called");
 }
 
 
 /********************************************************************************************
 
->	void GalleryClipartDragInfo::~GalleryClipartDragInfo() 
-	 
+>	void GalleryClipartDragInfo::~GalleryClipartDragInfo()
+
 	Author:		Richard_Millican (Xara Group Ltd) <camelotdev@xara.com>
-	Created:	27/4/95		  
+	Created:	27/4/95
 
 	Purpose:	Destructor - need to unlock thumbnail
 
@@ -2912,9 +2912,9 @@ GalleryClipartDragInfo::~GalleryClipartDragInfo()
 											SGMouseInfo *pMouseInfo, SGMiscInfo *pMiscInfo,
  											BOOL IsAdjust = FALSE,
  											INT32 XSize = 0, INT32 YSize = 0)
-	 
+
 	Author:		Will_Cowling (Xara Group Ltd) <camelotdev@xara.com>
-	Created:	19/3/95		  
+	Created:	19/3/95
 
 	Inputs:		pSourceItem - The gallery item from which the drag originated
 				pMouseInfo	- The mouse info which made the item start the drag
@@ -2943,14 +2943,14 @@ GalleryClipartDragInfo::GalleryClipartDragInfo(SGClipartItem *pSourceItem,
 
 /********************************************************************************************
 
->	void GalleryClipartDragInfo::OnClick(INT32 Flags,POINT Point) 
-	 
+>	void GalleryClipartDragInfo::OnClick(INT32 Flags,POINT Point)
+
 	Author:		Will_Cowling (Xara Group Ltd) <camelotdev@xara.com>
-	Created:	19/3/95		  
+	Created:	19/3/95
 	Inputs:		-
 	Outputs:	-
 	Returns:	-
-	Purpose:	This is called if a drag was attempted but never started because it was a 
+	Purpose:	This is called if a drag was attempted but never started because it was a
 				click all along. It calls back the SourceItem SGDisplayBitmap, to get it
 				to handle the click.
 	Errors:		-
@@ -3009,7 +3009,7 @@ UINT32 GalleryClipartDragInfo::GetCursorID(DragTarget* pDragTarget)
 	Created:	25/3/95
 	Returns:	Whether String is valid
 	Purpose:	provide status line text for this target
-   
+
 ********************************************************************************************/
 
 BOOL GalleryClipartDragInfo::GetStatusLineText(String_256 * TheText, DragTarget* pDragTarget)
@@ -3053,7 +3053,7 @@ BOOL GalleryClipartDragInfo::GetStatusLineText(String_256 * TheText, DragTarget*
 	 	*TheText = DragString;
 		return TRUE;
 	}
- 	
+
  	*TheText = DragString;
 	return TRUE;
 }
@@ -3063,7 +3063,7 @@ BOOL GalleryClipartDragInfo::GetStatusLineText(String_256 * TheText, DragTarget*
 >	BOOL GalleryClipartDragInfo::OnPageDrop(ViewDragTarget* pDragTarget)
 
 	Author:		Will_Cowling (Xara Group Ltd) <camelotdev@xara.com>
-	Created:	19/3/95		  
+	Created:	19/3/95
 	Inputs:		pDragTarget, the ViewDragTarget that we were dropped onto.
 	Returns:	TRUE, if we handled the drop.
 	Purpose:	Called when Clipart is dropped onto the page.
@@ -3076,7 +3076,7 @@ BOOL GalleryClipartDragInfo::OnPageDrop(ViewDragTarget* pDragTarget)
 	PageDropInfo PageDropInfo;
 	((ViewDragTarget*)pDragTarget)->GetDropInfo(&PageDropInfo);
 
-	PathName FileName;		
+	PathName FileName;
 	SGLibDisplayItem *ClipItem = SourceItem;
 
 	BOOL ok = ClipItem->GetFileName(&FileName);
@@ -3128,11 +3128,11 @@ BOOL GalleryClipartDragInfo::OnPageDrop(ViewDragTarget* pDragTarget)
 		BOOL bIsLocalFile;
 		if (!pLibrary->IsWebLibrary())
 			bIsLocalFile = TRUE;
-		else 
+		else
 			bIsLocalFile = (_access((TCHAR*) FilePath, 0) != -1);
 
-		
-		
+
+
 		if (bIsLocalFile) // local file, do a normal import Op
 		{
 			OpDescriptor* pOpDesc =	OpDescriptor::FindOpDescriptor(CC_RUNTIME_CLASS(OpClipartImport));
@@ -3200,7 +3200,7 @@ BOOL GalleryClipartDragInfo::OnPageDrop(ViewDragTarget* pDragTarget)
 >	BOOL GalleryClipartDragInfo::OnMainFrameDrop(DragTarget* pDragTarget)
 
 	Author:		Richard_Millican (Xara Group Ltd) <camelotdev@xara.com>
-	Created:	13/12/95		  
+	Created:	13/12/95
 	Inputs:		pDragTarget, the Target that this drag finished over.
 	Returns:	TRUE, if we handled the drop.
 				FALSE, if we want to let the target handle it.
@@ -3217,8 +3217,8 @@ BOOL GalleryClipartDragInfo::OnMainFrameDrop(DragTarget* pDragTarget)
 	if (ClipItem->IsKindOf(CC_RUNTIME_CLASS(SGClipartItem)))
 	{
 		ClipItem->GetNameText(&ItemText);
-		PathName FileName;		
-	
+		PathName FileName;
+
 		//if (Lib != NULL)
 		BOOL ok = ClipItem->GetFileName(&FileName);
 
@@ -3258,9 +3258,9 @@ BOOL GalleryClipartDragInfo::OnMainFrameDrop(DragTarget* pDragTarget)
 			BOOL bIsLocalFile;
 			if (!pLibrary->IsWebLibrary())
 				bIsLocalFile = TRUE;
-			else 
+			else
 				bIsLocalFile = (_access((TCHAR*) FilePath, 0) != -1);
-				
+
 			if (bIsLocalFile)
 			{
 				CWinApp* pApp = AfxGetApp();
@@ -3297,7 +3297,7 @@ BOOL GalleryClipartDragInfo::OnMainFrameDrop(DragTarget* pDragTarget)
 			}
 		}
 		return TRUE;
-	}	
+	}
 	return FALSE;
 }
 
@@ -3310,7 +3310,7 @@ BOOL GalleryClipartDragInfo::OnMainFrameDrop(DragTarget* pDragTarget)
 >	SGOilClipartDragTarget::SGOilClipartDragTarget(HWND TheWindow, CRect *ClientArea = NULL)
 
 	Author:		Richard_Millican (Xara Group Ltd) <camelotdev@xara.com>
-	Created:	13/12/95		  
+	Created:	13/12/95
 	Inputs:		TheWindow 	- Window to use for drag target
 				ClientArea 	- Rectangle in window to use for drag target
 
@@ -3322,13 +3322,13 @@ SGOilClipartDragTarget::SGOilClipartDragTarget(HWND TheWindow, CRect *ClientArea
 					: WinoilDragTarget(TheWindow, ClientArea)
 {
 }
-	
+
 /********************************************************************************************
 
 >	UINT32 SGOilClipartDragTarget::GetCursorID()
 
 	Author:		Richard_Millican (Xara Group Ltd) <camelotdev@xara.com>
-	Created:	13/12/95		  
+	Created:	13/12/95
 	Returns:	Cursor ID for clipart drags over the mainframe
 	Purpose:	Get cursor ID
 
@@ -3344,7 +3344,7 @@ UINT32 SGOilClipartDragTarget::GetCursorID()
 >	BOOL SGOilClipartDragTarget::GetStatusLineText(String_256 * TheText)
 
 	Author:		Richard_Millican (Xara Group Ltd) <camelotdev@xara.com>
-	Created:	13/12/95		  
+	Created:	13/12/95
 	Outputs:	Text for status line
 	Returns:	TRUE if we extracted a wee tad of status line text
 	Purpose:	Obtains status line text for when we're dragging an item of clipart over the
@@ -3380,7 +3380,7 @@ BOOL SGOilClipartDragTarget::GetStatusLineText(String_256 * TheText)
 			DragInformation *pDragInfo, CPoint *pMousePos, KeyPress* pKeyPress)
 
 	Author:		Richard_Millican (Xara Group Ltd) <camelotdev@xara.com>
-	Created:	13/12/95		  
+	Created:	13/12/95
 	Inputs:		Standard drag target stuff...
 	Returns:	TRUE if we processed our event ok...
 	Purpose:	Process an event such as a completed drag...
@@ -3441,7 +3441,7 @@ BOOL SGOilClipartDragTarget::ProcessEvent(DragEventType Event,
 				 CCRuntimeClass* Op,				// pointer to the Op's runtime class
 				 TCHAR* tok,						// pointer to the token string
 				 pfnGetState gs,					// pointer to the GetState function
-				 UINT32 helpId = 0,					// help identifier 
+				 UINT32 helpId = 0,					// help identifier
 				 UINT32 bubbleID = 0,					// string resource for bubble help
 				 UINT32 resourceID = 0,				// bitmap ("icon") or resource ID
 				 UINT32 controlID =0,					// control ID
@@ -3455,7 +3455,7 @@ BOOL SGOilClipartDragTarget::ProcessEvent(DragEventType Event,
 				 									// for 1 open instance dialogs.
 				 UINT32 AutoStateFlags = 0			// Flags which indicate conditions when
 				 									// the operation should automatically be
-													// greyed/ticked etc..(This cuts down the 
+													// greyed/ticked etc..(This cuts down the
 													// number of tests that need to be made
 													// in the GetState function).
 */
@@ -3575,8 +3575,8 @@ void OpLibGalClipTheme::UpdateGadgets()
 	{
 		// Iterate over each control in the list.
 		INT32 nVal = LibClipartSGallery::Instance()->GetClipTheme();
-		for (GadgetListItem* pgli = (GadgetListItem*) theGadgets.GetHead(); 
-			 pgli != 0; 
+		for (GadgetListItem* pgli = (GadgetListItem*) theGadgets.GetHead();
+			 pgli != 0;
 			 pgli = (GadgetListItem*) theGadgets.GetNext(pgli))
 		{
 			// Set each control to display the text.
@@ -3586,7 +3586,7 @@ void OpLibGalClipTheme::UpdateGadgets()
 		// Tidy up.
 		theGadgets.DeleteAll();
 	}
-} 
+}
 
 
 
@@ -3624,7 +3624,7 @@ BOOL LibClipartSGallery::OnGetButtonClicked()
 		ModeHasChanged();
 		SelectionHasChanged();
 		ReformatAndRedrawIfNecessary();
-		
+
 
 		return TRUE;
 	}
@@ -3704,7 +3704,7 @@ BOOL LibClipartSGallery::OnGetButtonClicked()
 	Created:	20/09/2000
 
 	Inputs:		type - one of 	SGLib_ClipArt,	SGLib_Font,	SGLib_Fractal
-	Returns:	TRUE if the folders are removed, FALSE otherwise 
+	Returns:	TRUE if the folders are removed, FALSE otherwise
 
 	Purpose:	Reclaims space taken up by downloaded files of a certain type
 						on the local machine

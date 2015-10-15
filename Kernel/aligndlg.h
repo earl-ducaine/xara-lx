@@ -1,7 +1,7 @@
 // $Id: aligndlg.h 751 2006-03-31 15:43:49Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
- 
+
                Xara LX, a vector drawing and manipulation program.
                     Copyright (C) 1993-2006 Xara Group Ltd.
        Copyright on certain contributions may be held in joint with their
@@ -32,7 +32,7 @@ ADDITIONAL RIGHTS
 
 Conditional upon your continuing compliance with the GNU General Public
 License described above, Xara Group Ltd grants to you certain additional
-rights. 
+rights.
 
 The additional rights are to use, modify, and distribute the software
 together with the wxWidgets library, the wxXtra library, and the "CDraw"
@@ -99,11 +99,11 @@ service marks of Xara Group Ltd. All rights in these marks are reserved.
 #ifndef INC_ALIGNDLG
 #define INC_ALIGNDLG
 
-#include "rnddlgs.h" 
-#include "transop.h" 
+#include "rnddlgs.h"
+#include "transop.h"
 
-#define OPTOKEN_ALIGNDLG _T("ArrangeAlignment")    
-#define OPTOKEN_OPALIGN  _T("OpAlign")    
+#define OPTOKEN_ALIGNDLG _T("ArrangeAlignment")
+#define OPTOKEN_OPALIGN  _T("OpAlign")
 
 // enumeration of all possible alignments on each axis
 enum AlignType
@@ -116,7 +116,7 @@ enum AlignType
 	DistributeCentre=5,
 	DistributeHigh	=6,		// ie right or top
 	DistributeEqui	=7
-};	
+};
 
 // enumeration of possible target areas
 enum TargetType
@@ -124,7 +124,7 @@ enum TargetType
 	ToSelection=0,
 	ToPage     =1,
 	ToSpread   =2
-};	
+};
 
 // struct for passing params to OpAlign::DoWithParam()
 struct AlignParam
@@ -134,7 +134,7 @@ struct AlignParam
 	TargetType target;
 };
 
-// struct to cache x or y info about object to be affected 
+// struct to cache x or y info about object to be affected
 struct ObjInfo
 {
 	INT32 i;		// cross-ref to pre-sorted state
@@ -161,13 +161,13 @@ const INT32 DiagRects=4;
 ****************************************************************************/
 
 class ArrangeAlignment: public DialogOp
-{         
-	CC_DECLARE_DYNCREATE( ArrangeAlignment )  
+{
+	CC_DECLARE_DYNCREATE( ArrangeAlignment )
 public:
-	ArrangeAlignment();	
-	void				Do(OpDescriptor*);	     
-	static  BOOL		Init();                        
-	static  OpState		GetState(String_256*, OpDescriptor*);	
+	ArrangeAlignment();
+	void				Do(OpDescriptor*);
+	static  BOOL		Init();
+	static  OpState		GetState(String_256*, OpDescriptor*);
  	static  void 		CalcDiagramRectsOneAxis(
  							LineData x[8][DiagRects],
  							const INT32 width[DiagRects],
@@ -181,7 +181,7 @@ public:
 	static LineData DiagRectX[8][DiagRects];
 	static LineData DiagRectY[8][DiagRects];
 
-	static const	UINT32 IDD;     
+	static const	UINT32 IDD;
 	static const	CDlgMode Mode;
 
 private:
@@ -191,10 +191,10 @@ private:
 	void      DiagramClicked(ReDrawInfoType* ExtraInfo);
 	void	  BuildIDSDropList(const CGadgetID DropListID, const INT32* IDSList, INT32 Default);
 	void	  SetRadioGroup( const CGadgetID* IDCList, const CGadgetID IDC);
-	CGadgetID ReadRadioGroup(const CGadgetID* IDCList, const CGadgetID IDCDefault=NULL);
+	CGadgetID ReadRadioGroup(const CGadgetID* IDCList, const CGadgetID IDCDefault = 0);
 
 	static AlignParam Align;
-}; 
+};
 
 /****************************************************************************
 >	class OpAlign: public SelOperation
@@ -205,18 +205,18 @@ private:
 ****************************************************************************/
 
 class OpAlign: public TransOperation
-{         
+{
 	CC_DECLARE_DYNCREATE(OpAlign)
 
 public:
-	OpAlign();	
-	void	DoWithParam(OpDescriptor* pOp, OpParam* pAlignParam);	     
-	static	BOOL Init();                        
+	OpAlign();
+	void	DoWithParam(OpDescriptor* pOp, OpParam* pAlignParam);
+	static	BOOL Init();
 	static	OpState GetState(String_256*, OpDescriptor*);
 
 private:
 	void AlignOneAxis(AlignType Align, INT32 NumObjs, XLONG SumObjWidths,
 							   INT32 SelRectLow, INT32 SelRectHigh, ObjInfo* x, INT32* dx);
-}; 
+};
 
 #endif

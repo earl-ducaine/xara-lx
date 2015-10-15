@@ -1,7 +1,7 @@
 // $Id: aligndlg.cpp 1282 2006-06-09 09:46:49Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
- 
+
                Xara LX, a vector drawing and manipulation program.
                     Copyright (C) 1993-2006 Xara Group Ltd.
        Copyright on certain contributions may be held in joint with their
@@ -32,7 +32,7 @@ ADDITIONAL RIGHTS
 
 Conditional upon your continuing compliance with the GNU General Public
 License described above, Xara Group Ltd grants to you certain additional
-rights. 
+rights.
 
 The additional rights are to use, modify, and distribute the software
 together with the wxWidgets library, the wxXtra library, and the "CDraw"
@@ -105,7 +105,7 @@ DECLARE_SOURCE("$Revision: 1282 $");
 
 #include "camelot.h"
 //#include "dlgtypes.h"  - in camtypes.h [AUTOMATICALLY REMOVED]
-#include "aligndlg.h" 
+#include "aligndlg.h"
 //#include "mario.h"
 //#include "ed.h"
 //#include "eddlg.h"
@@ -129,8 +129,8 @@ DECLARE_SOURCE("$Revision: 1282 $");
 #include "bubbleid.h"
 #include "ophist.h"
 
-CC_IMPLEMENT_DYNCREATE(ArrangeAlignment, DialogOp)   
-CC_IMPLEMENT_DYNCREATE(OpAlign, TransOperation)   
+CC_IMPLEMENT_DYNCREATE(ArrangeAlignment, DialogOp)
+CC_IMPLEMENT_DYNCREATE(OpAlign, TransOperation)
 #define new CAM_DEBUG_NEW
 
 const CDlgMode ArrangeAlignment::Mode=MODELESS;
@@ -138,14 +138,14 @@ const UINT32     ArrangeAlignment::IDD =_R(IDD_ALIGNDIALOG);
 
 // lists of grouped radio buttons
 const CGadgetID TargetArea[]={_R(IDC_ALIGNDIALOG_TOSELECTION),	// default
-							  _R(IDC_ALIGNDIALOG_TOPAGE),		
+							  _R(IDC_ALIGNDIALOG_TOPAGE),
 					//	WEBSTER-ranbirr-13/11/96
 					#ifndef WEBSTER
-							  _R(IDC_ALIGNDIALOG_TOSPREAD),		
+							  _R(IDC_ALIGNDIALOG_TOSPREAD),
 					#endif //webster
 							  0};
 
-// string ID lists for combo boxes (null terminated) 
+// string ID lists for combo boxes (null terminated)
 // >>>> NB. must be in same order as AlignType enum <<<<
 const INT32 HAlignIDS[]={_R(IDS_HALIGNNONE),
 						_R(IDS_HALIGNLEFT),
@@ -180,10 +180,10 @@ LineData   ArrangeAlignment::DiagRectY[8][DiagRects];
 
 // initial state of dialog
 AlignParam ArrangeAlignment::Align={AlignNone,AlignNone,ToSelection};
-			  
+
 /******************************************************************************
 >	ArrangeAlignment::ArrangeAlignment() :
-		DialogOp(ArrangeAlignment::IDD, ArrangeAlignment::Mode) 
+		DialogOp(ArrangeAlignment::IDD, ArrangeAlignment::Mode)
 
 	Author:		Ed_Cornes (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	29/9/94
@@ -191,9 +191,9 @@ AlignParam ArrangeAlignment::Align={AlignNone,AlignNone,ToSelection};
 ******************************************************************************/
 
 ArrangeAlignment::ArrangeAlignment():
-	DialogOp(ArrangeAlignment::IDD, ArrangeAlignment::Mode) 
+	DialogOp(ArrangeAlignment::IDD, ArrangeAlignment::Mode)
 {
-}       	   
+}
 
 /******************************************************************************
 >	BOOL ArrangeAlignment::Init()
@@ -230,7 +230,7 @@ BOOL ArrangeAlignment::Init()
 		_R(IDS_ARRANGEALIGNMENT_ONE),			// String for one copy only
 		(DONT_GREY_WHEN_SELECT_INSIDE | GREY_WHEN_NO_CURRENT_DOC) // Auto state flags
 	);
-}   
+}
 
 /******************************************************************************
 >	void	ArrangeAlignment::CalcDiagramRectsOneAxis(
@@ -248,7 +248,7 @@ BOOL ArrangeAlignment::Init()
 
 void ArrangeAlignment::CalcDiagramRectsOneAxis(
 	LineData x[8][DiagRects],
-	const INT32 width[DiagRects], 
+	const INT32 width[DiagRects],
 	const INT32 order[DiagRects],
 	const INT32 gap[DiagRects-1],
 	const INT32 DiagWidth
@@ -320,7 +320,7 @@ OpState	ArrangeAlignment::GetState(String_256* pHelpString, OpDescriptor*)
 >	void ArrangeAlignment::Do(OpDescriptor*)
 
 	Author:		Ed_Cornes (Xara Group Ltd) <camelotdev@xara.com>
-	Created:	29/9/94 
+	Created:	29/9/94
 	Purpose:	Creates and shows a ArrangeAlignment dialog
 ******************************************************************************/
 
@@ -335,7 +335,7 @@ void ArrangeAlignment::Do(OpDescriptor*)
 
 	Author:		Ed_Cornes (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	29/9/94
-	Purpose:	Handles all the ArrangeAlignment dialog's messages 
+	Purpose:	Handles all the ArrangeAlignment dialog's messages
 ******************************************************************************/
 
 MsgResult ArrangeAlignment::Message(Msg* Message)
@@ -389,8 +389,8 @@ MsgResult ArrangeAlignment::Message(Msg* Message)
 	}
 
 	// Pass all unhandled messages to base class for default processing!
-	return DialogOp::Message(Message);  
-}  
+	return DialogOp::Message(Message);
+}
 
 /******************************************************************************
 >	void ArrangeAlignment::DiagramClicked(ReDrawInfoType *Info)
@@ -479,7 +479,7 @@ void ArrangeAlignment::RedrawDiagram(ReDrawInfoType* ExtraInfo)
 		pRender->DrawRect(&VirtRendRect);
 
 		// declared at this scope else RestoreContext() dies!
-		RadialFillAttribute Fill;		
+		RadialFillAttribute Fill;
 
 		// set up some defaults used by all objects
 		Fill.MakeElliptical();
@@ -610,7 +610,7 @@ void ArrangeAlignment::UpdateState()
 	// read alignments from horizontal and vertical combo boxes
 	Align.h = (AlignType)GetSelectedValueIndex(_R(IDC_ALIGNDIALOG_HORIZONTAL));
 	Align.v = (AlignType)GetSelectedValueIndex(_R(IDC_ALIGNDIALOG_VERTICAL));
-	
+
 	// force the diagram to redraw
 	InvalidateGadget(_R(IDC_ALIGNDIALOG_DIAGRAM));
 
@@ -652,7 +652,7 @@ void ArrangeAlignment::DialogOKed()
 
 	Author:		Ed_Cornes (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	7th November 1994
-	Purpose:	Builds a drop down list for a combo box from a null terminated 
+	Purpose:	Builds a drop down list for a combo box from a null terminated
 				list of string IDs, selecting a default value
 	Errors:		IF LIST NOT NULL TERMINATED => same prob as non-term strings!
 ******************************************************************************/
@@ -686,7 +686,7 @@ void ArrangeAlignment::BuildIDSDropList(const CGadgetID DropListID,
 /******************************************************************************
 >	CGadgetID	ArrangeAlignment::ReadRadioGroup(
 					const CGadgetID* IDCList,
-					const CGadgetID IDCDefault=NULL
+					const CGadgetID IDCDefault = 0
 				)
 
 	Author:		Ed_Cornes (Xara Group Ltd) <camelotdev@xara.com>
@@ -719,7 +719,7 @@ CGadgetID ArrangeAlignment::ReadRadioGroup(const CGadgetID* IDCList,
 
 	Author:		Ed_Cornes (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	13th October 1994
-	Purpose:	Sets the specified radio button in a group specified in	a null 
+	Purpose:	Sets the specified radio button in a group specified in	a null
 				terminated list (irespective of whether or not it is greyed)
 				resetting all others in the group.
 				If IDC is not in list, none are set.
@@ -746,9 +746,9 @@ void ArrangeAlignment::SetRadioGroup(const CGadgetID* IDCList, const CGadgetID I
 	Purpose:	OpAlign constructor
 ******************************************************************************/
 
-OpAlign::OpAlign() : TransOperation() 
+OpAlign::OpAlign() : TransOperation()
 {
-}       
+}
 
 /******************************************************************************
 >	BOOL OpAlign::Init()
@@ -760,7 +760,7 @@ OpAlign::OpAlign() : TransOperation()
 ******************************************************************************/
 
 BOOL OpAlign::Init()
-{  
+{
 	return RegisterOpDescriptor(
 		0,							// Tool ID
  		_R(IDS_OPALIGN),				// String resource ID
@@ -773,7 +773,7 @@ BOOL OpAlign::Init()
 		0							// Control ID
 //	needs	'GREY_WHEN_NO_CURRENT_DOC'
 	);
-}   
+}
 
 /******************************************************************************
 >	OpState	OpAlign::GetState(String_256* pString, OpDescriptor* pOpDesc)
@@ -792,13 +792,13 @@ OpState	OpAlign::GetState(String_256* pString, OpDescriptor* pOpDesc)
 >	void OpAlign::DoWithParam(OpDescriptor* pOp, OpParam* pAlignParam)
 
 	Author:		Ed_Cornes (Xara Group Ltd) <camelotdev@xara.com>
-	Created:	29/9/94 
+	Created:	29/9/94
 	Purpose:	performs the desired align operation
 ******************************************************************************/
 
 void OpAlign::DoWithParam(OpDescriptor* pOp, OpParam* pAlignParam)
 {
-	// DMc alterations so that this works with compound nodes	
+	// DMc alterations so that this works with compound nodes
 	SelRange   Selection(*(GetApplication()->FindSelection()));
 
 	RangeControl rg = Selection.GetRangeControlFlags();
@@ -966,7 +966,7 @@ extern "C" INT32 CompareObjInfoCentre(const void* elem1, const void* elem2)
 	)
 
 	Author:		Ed_Cornes (Xara Group Ltd) <camelotdev@xara.com>
-	Created:	29/9/94 
+	Created:	29/9/94
 	Purpose:	aligns the object in one axis at a time, in the specified way
 				(written as though for x, but same algorithm applies to y)
 				distributing a single object leaves it unchanged.
@@ -990,7 +990,7 @@ void OpAlign::AlignOneAxis(AlignType Align, INT32 NumObjs, XLONG SumObjWidths,
 				INT32 gap=(RectWidth-LastObjWidth)/(NumObjs-1);
 				INT32 pos=RectLow;
 				for (i=0; i<NumObjs; i++)
-				{															                                      
+				{
 					dx[x[i].i]=pos-x[i].lo;
 					pos+=gap;
 				}
@@ -1050,7 +1050,7 @@ void OpAlign::AlignOneAxis(AlignType Align, INT32 NumObjs, XLONG SumObjWidths,
 				}
 			}
 			break;
-		 
+
 		case AlignLow:
 			for (i=0; i<NumObjs; i++)
 				dx[i]=RectLow-x[i].lo;
