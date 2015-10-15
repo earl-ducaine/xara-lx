@@ -1,7 +1,7 @@
 // $Id: node.h 1708 2006-08-17 17:13:38Z gerry $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
- 
+
                Xara LX, a vector drawing and manipulation program.
                     Copyright (C) 1993-2006 Xara Group Ltd.
        Copyright on certain contributions may be held in joint with their
@@ -32,7 +32,7 @@ ADDITIONAL RIGHTS
 
 Conditional upon your continuing compliance with the GNU General Public
 License described above, Xara Group Ltd grants to you certain additional
-rights. 
+rights.
 
 The additional rights are to use, modify, and distribute the software
 together with the wxWidgets library, the wxXtra library, and the "CDraw"
@@ -98,21 +98,21 @@ service marks of Xara Group Ltd. All rights in these marks are reserved.
 
 // Declaration of the following classes:
 /*
- 	Node                           (Implementation in node.cpp)    
- 	
+ 	Node                           (Implementation in node.cpp)
+
 		NodeRenderable             (Implementation in noderend.cpp)
 			NodeRenderableInk
-			NodeRenderablePaper     
+			NodeRenderablePaper
 		NodeHidden
 		NodeGroup
-*/ 
+*/
 
 
 // Check in comments
 /*
-*/    
-      
-      
+*/
+
+
 #ifndef INC_NODE
 #define INC_NODE
 
@@ -123,7 +123,7 @@ service marks of Xara Group Ltd. All rights in these marks are reserved.
 
 class CCAPI NodeRenderablePaper;
 class NodeRenderableInk;
-class CCAPI Chapter;  
+class CCAPI Chapter;
 class CCAPI Layer;
 class RenderRegion;
 class NodeAttribute;
@@ -156,8 +156,8 @@ class NodeCompound;
 
 
 // The AttachNode direction type specifies a direction in which one node is to be attached
-// to another. 
-enum AttachNodeDirection { PREV, NEXT, FIRSTCHILD, LASTCHILD }; 
+// to another.
+enum AttachNodeDirection { PREV, NEXT, FIRSTCHILD, LASTCHILD };
 
 // A set of flags used to determine which nodes should be rendered.
 // See Find{First,Next}ForClippedInkRender functions.
@@ -181,7 +181,7 @@ typedef struct
 
 ***********************************************************************************************/
 
-typedef enum ChangeCode
+enum ChangeCode
 {
 	CC_OK,
 	CC_NORECORD,
@@ -200,7 +200,7 @@ typedef enum ChangeCode
 				(Return values for the RenderSubtree function and stored in SubRenderContext)
 
 ***********************************************************************************************/
-typedef enum SubtreeRenderState
+enum SubtreeRenderState
 {
 	SUBTREE_NORENDER = 0,
 	SUBTREE_ROOTONLY,
@@ -246,22 +246,22 @@ enum OpPermissionState 	{ 	PERMISSION_UNDEFINED,
 				is used by nodes which cannot exist on their own. It may be necessary for
 				them to return a tree of nodes when one node is asked to be copied.	This type
 				is specifically used for complex group objects
-				
+
 ***********************************************************************************************/
 
-typedef enum CopyType
-{ 
-	SIMPLECOPY, 
+enum CopyType
+{
+	SIMPLECOPY,
 	COMPLEXCOPY
 };
 
-typedef enum CopyStage
-{ 
-	COPYOBJECT, 
-	COPYFINISHED 
+enum CopyStage
+{
+	COPYOBJECT,
+	COPYFINISHED
 };
 
-typedef enum CopyControlFlags
+enum CopyControlFlags
 {
 	ccALL,
 	ccLOCKED,
@@ -287,7 +287,7 @@ class AttrTypeItem: public ListItem
 class AttrTypeItem: public ListItem
 {
 public:
-	CCRuntimeClass* AttributeType; 	
+	CCRuntimeClass* AttributeType;
 };
 
 /********************************************************************************************
@@ -304,20 +304,20 @@ public:
 class AttrTypeSet: public List
 {
 public:
-	
+
 	// A function to return a copy of the AppliedAttrSet
 	AttrTypeSet* CopySet();
-	
+
 	// A simple function to add attr types to the AppliedAttrSet (Chiecks for duplicates)
 	virtual BOOL AddToSet(CCRuntimeClass* AttrType);
 
 	virtual BOOL AddToSet(List& AttributeList);
-						   
+
 	// A function to determine if AttrType is in the set
 	BOOL InSet(CCRuntimeClass* AttrType);
-	
+
 	~AttrTypeSet() { DeleteAll(); };
-  		  
+
 };
 
 
@@ -328,35 +328,35 @@ public:
 
      Author:       Simon_Maneggio (Xara Group Ltd) <camelotdev@xara.com>
      Date:         19/4/93
-     Base Classes: CCObject       
-     
+     Base Classes: CCObject
+
      Purpose:      This abstract class describes the fundamental type of object which can
 			  	   be linked into a camelot tree. All other objects which are linked into
-			   	   the tree are derived from this class.   
-			   
-				   IMPORTANT: When producing derived classes of Node, the virtual functions 
-				   SimpleCopy and ShowDebugTreeDetails() must be redefined.  
+			   	   the tree are derived from this class.
+
+				   IMPORTANT: When producing derived classes of Node, the virtual functions
+				   SimpleCopy and ShowDebugTreeDetails() must be redefined.
 
      SeeAlso:      CCObject
 
 ***********************************************************************************************/
-						
+
 class CCAPI Node: public CCObject
-{                    
-	CC_DECLARE_DYNAMIC( Node ) 
-	
-public:                       
+{
+	CC_DECLARE_DYNAMIC( Node )
+
+public:
 
 	// Node Constructors
 	Node();
-	Node(Node* ContextNode,  
-		 AttachNodeDirection Direction, 
-		 BOOL Locked=FALSE, 
-		 BOOL Mangled=FALSE,  
-		 BOOL Marked=FALSE, 
-		 BOOL Selected=FALSE, 
-		 BOOL Renderable=FALSE); 
-              
+	Node(Node* ContextNode,
+		 AttachNodeDirection Direction,
+		 BOOL Locked=FALSE,
+		 BOOL Mangled=FALSE,
+		 BOOL Marked=FALSE,
+		 BOOL Selected=FALSE,
+		 BOOL Renderable=FALSE);
+
     // Destructor
     virtual ~Node();
 
@@ -364,8 +364,8 @@ public:
 	void RenderTreeAtomic(RenderRegion* pRender);
 
 	virtual BOOL NeedsToRender(RenderRegion* pRender);
-	virtual void PreExportRender( RenderRegion* pRender ); 
-	virtual BOOL ExportRender( RenderRegion* pRender ); 
+	virtual void PreExportRender( RenderRegion* pRender );
+	virtual BOOL ExportRender( RenderRegion* pRender );
 	virtual BOOL NeedsToExport(RenderRegion* pRender, BOOL VisibleLayersOnly = FALSE,
 							   BOOL CheckSelected = FALSE);
 	virtual String Describe(BOOL Plural, BOOL Verbose = TRUE);
@@ -411,40 +411,40 @@ public:
 	virtual	BOOL AreYouSafeToRender();
 
 	// Node copy and move methods
-	BOOL CopyNode(Node* DestinationNode, 
+	BOOL CopyNode(Node* DestinationNode,
 				  AttachNodeDirection Direction);
 	virtual BOOL NodeCopy(Node** ppNodeCopy);
 	virtual BOOL CloneNode(Node** ppNoeCopy, BOOL bLightweight);
 	BOOL CopyComplexRange(Range& RangeToCopy);
-	
-	BOOL CopyChildrenTo(Node* DestinationNode, CopyControlFlags CopyFlags=ccALL); 
 
-	void MoveNode(Node* DestinationNode, 
+	BOOL CopyChildrenTo(Node* DestinationNode, CopyControlFlags CopyFlags=ccALL);
+
+	void MoveNode(Node* DestinationNode,
 				  AttachNodeDirection Direction);
-				   
-	void AttachNode(Node* ContextNode, 
+
+	void AttachNode(Node* ContextNode,
 					AttachNodeDirection Direction,
 					BOOL fCheckTransparent = TRUE,
 					BOOL InvalidateChildren = TRUE);
 
 	// function to insert a chain of siblings, but does little more than alter pointers
     void InsertChainSimple(Node* ContextNode, AttachNodeDirection Direction);
-	
+
 	virtual BOOL PostImport();			// function called after import
 	virtual BOOL PostDuplicate(UndoableOperation* pOp);		// function called after node has been copied.
 
-	UINT32 GetTag() const;     
-    
+	UINT32 GetTag() const;
+
     virtual UINT32 GetNodeSize() const; 			// Returns size of node in bytes
 	virtual CopyType GetCopyType();
-   	UINT32 GetSubtreeSize(); 					// Returns size of subtree in bytes 
+   	UINT32 GetSubtreeSize(); 					// Returns size of subtree in bytes
 	BOOL IsUnder(Node* pTestNode, BOOL bFirstCall = TRUE) const;		// Find whether this is under the test node in render order
 
-    
+
     // Query flag's status methods
-	BOOL IsLocked() const;  
-	BOOL IsMangled() const; 
-	BOOL IsMarked() const;  
+	BOOL IsLocked() const;
+	BOOL IsMangled() const;
+	BOOL IsMarked() const;
 	BOOL IsRenderable() const;
 	BOOL IsParentOfSelected() const;
 	BOOL IsSelected() const;
@@ -481,8 +481,8 @@ public:
 	virtual BOOL IsDragged() const {return FALSE; }
 	virtual BOOL IsController() { return FALSE;}
 	virtual BOOL IsABlend () { return FALSE; }
-	virtual BOOL IsCompound() const {return FALSE;} 
-	virtual BOOL IsCompoundClass() const {return FALSE;} 
+	virtual BOOL IsCompound() const {return FALSE;}
+	virtual BOOL IsCompoundClass() const {return FALSE;}
 	virtual BOOL IsAVisibleTextNode() const {return FALSE;}
 	virtual BOOL IsAnAbstractTextChar() const {return FALSE;}
 	virtual BOOL IsATextChar() const {return FALSE;}
@@ -491,13 +491,13 @@ public:
 	virtual BOOL IsAnObjectName() const {return FALSE;}
 	virtual BOOL IsUserAttribute() const {return FALSE;}
 	virtual BOOL IsSetCandidate() const {return FALSE;}
-	virtual BOOL IsCacheCompound() const { return FALSE; } 
-	virtual BOOL IsABevel() const { return FALSE; } 
-	virtual BOOL IsABevelController() const { return FALSE; } 
-	virtual BOOL IsAContour() const { return FALSE; } 
-	virtual BOOL IsAContourController() const { return FALSE; } 
-	virtual BOOL IsAShadow() const { return FALSE; } 
-	virtual BOOL IsAShadowController() const { return FALSE; } 
+	virtual BOOL IsCacheCompound() const { return FALSE; }
+	virtual BOOL IsABevel() const { return FALSE; }
+	virtual BOOL IsABevelController() const { return FALSE; }
+	virtual BOOL IsAContour() const { return FALSE; }
+	virtual BOOL IsAContourController() const { return FALSE; }
+	virtual BOOL IsAShadow() const { return FALSE; }
+	virtual BOOL IsAShadowController() const { return FALSE; }
 	virtual BOOL IsABrush() const {return FALSE;}
 	virtual BOOL IsEffect() const {return FALSE;}
 	virtual BOOL IsBitmapEffect() const {return FALSE;}
@@ -524,9 +524,9 @@ public:
 	virtual BOOL SupportsClipboardFormat(InternalClipboardFormat *Format) const;
 
 	// This virtual was added because we need to know about nodes which can discard their child
-	// attributes, an example is the CaretNode. If an attribute gets applied to such a node 
+	// attributes, an example is the CaretNode. If an attribute gets applied to such a node
 	// then no undo info can be generated, the base class function returns FALSE
-	virtual BOOL DiscardsAttributeChildren() const; 
+	virtual BOOL DiscardsAttributeChildren() const;
 
 	// Function to allow nodes to provide flexible edit surfaces.
 	virtual Node* HasEditableChild(CCRuntimeClass* ChildClass, Node* pPrevNode);
@@ -542,12 +542,12 @@ public:
 
 	// Find out the optoken of the default operation for this node. (See EditSelectionOp and Return hotkey.)
 	virtual TCHAR* GetDefaultOpToken() {return NULL;}
-		
+
 	// Set Flag's status methods
-	void SetLocked(BOOL Status);       
+	void SetLocked(BOOL Status);
 	void SetMangled(BOOL Status);
-	void SetMarker(BOOL Status); 
-	virtual void SetSelected(BOOL Status); 
+	void SetMarker(BOOL Status);
+	virtual void SetSelected(BOOL Status);
 	void SetRender(BOOL Status, BOOL bAndChildren=FALSE);
 	void SetParentOfSelected(BOOL Status);
 
@@ -562,17 +562,17 @@ public:
 	// transparency.
 	BOOL ChildrenNeedTransparency();
 
-    // Find Node pointer methods   
+    // Find Node pointer methods
     // These routines should be made inline as they are called oodles of times during rendering.
 	Node* FindNext(void) const;
 	Node* FindPrevious(void) const;
-	Node* FindParent(void) const;        
+	Node* FindParent(void) const;
 	Node* FindFirstChild(void) const;
-	Node* FindLastChild(BOOL ExcludeInsertionNode = FALSE) const;  
+	Node* FindLastChild(BOOL ExcludeInsertionNode = FALSE) const;
 
 	Node* FindParent(CCRuntimeClass* ParentClass) const;
-	Node* FindNext(CCRuntimeClass* Class) const; 
-	Node* FindPrevious(CCRuntimeClass* Class) const; 
+	Node* FindNext(CCRuntimeClass* Class) const;
+	Node* FindPrevious(CCRuntimeClass* Class) const;
 	Node* FindFirstChild(CCRuntimeClass* Class) const;
 	Node* FindLastChild(CCRuntimeClass* Class) const;
 
@@ -589,23 +589,23 @@ public:
 
 	// These functions have a very special purpose. They are very Dangerous to use. So don't use it them unless
 	// you are very sure what you are doing.
-	void SetParentDangerous(Node* NewParent); 
+	void SetParentDangerous(Node* NewParent);
 	void SetNextDangerous(Node* NewNext);
 	void SetPreviousDangerous(Node* NewPrev);
 	void SetChildDangerous(Node* NewChild);
 
-	// The following routines are provided to access the nodes in the tree without being 
+	// The following routines are provided to access the nodes in the tree without being
 	// passed back pointers to hidden nodes. They are slower that the Node pointer methods
 	// and should therefore only be used where neccesary.
 
-	Node* FindNextNonHidden(void) const; 
-	Node* FindPrevNonHidden(void) const; 
+	Node* FindNextNonHidden(void) const;
+	Node* FindPrevNonHidden(void) const;
 
 	// Tree traversal methods.
 
 	Spread* FindParentSpread();
 
-	// These are the old FindFirstDepthFirst and FindNextDepthFirst routines 
+	// These are the old FindFirstDepthFirst and FindNextDepthFirst routines
     static Node* DocFindFirstDepthFirst(BaseDocument *pDocToSearch);
     Node* DocFindNextDepthFirst(void);
 
@@ -615,7 +615,7 @@ public:
 	Node* FindNextPreorder(Node* pRoot = NULL, BOOL bSkipSubtree = FALSE);
 
 	static Chapter* FindFirstChapter(BaseDocument* pDocToSearch);
-	Chapter* FindNextChapter(void); 
+	Chapter* FindNextChapter(void);
 
     NodeRenderablePaper* FindNextForClippedPaperRender(void);
 
@@ -630,8 +630,8 @@ public:
     								   BOOL ExcludeLockedLayers = FALSE,
 									   Node* pStopNode = NULL);
 
-	Node* FindNextForClippedInkRender(DocRect* pClipRect, 
-									  RenderRegion *pRender, 
+	Node* FindNextForClippedInkRender(DocRect* pClipRect,
+									  RenderRegion *pRender,
 									  BOOL ExcludeLockedLayers = FALSE,
 									  Node* pStopNode = NULL);
 
@@ -640,7 +640,7 @@ public:
 	// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 	// ---------------------------------------------------------------------
 
-	Chapter* FindEnclosingChapter(DocCoord* ChapterPos, XLONG* ChapterDepth); 
+	Chapter* FindEnclosingChapter(DocCoord* ChapterPos, XLONG* ChapterDepth);
 
 	// Ilan - Support the new extensions to the attribute system (ie geometry linked attributes)
 	NodeAttribute* FindFirstGeometryLinkedAttr();
@@ -653,7 +653,7 @@ public:
 	virtual NodeCompound* GetParentController() const {return NULL;}	// Implement if your node was created by a PostProcessor of some sort
 
 	// These two functions are used to convert to shapes, and are implemented in mkshapes.cpp
-	virtual BOOL CanBecomeA(BecomeA* pBecomeA); 
+	virtual BOOL CanBecomeA(BecomeA* pBecomeA);
 	virtual BOOL DoBecomeA(BecomeA* pBecomeA);
 
 #ifdef _DEBUG
@@ -668,28 +668,28 @@ public:
 
 	virtual BOOL AllowSelectInside() const { return TRUE; }
 
-	// The ShowDebugTree method is only required in the debug version                  
+	// The ShowDebugTree method is only required in the debug version
 #if !_RELEASE
 	#ifdef _DEBUG
-	
-	void ShowDebugTree() const;  
-	virtual void ShowDebugTreeDetails() const; 
-	
-	#endif    
-	
+
+	void ShowDebugTree() const;
+	virtual void ShowDebugTreeDetails() const;
+
+	#endif
+
 	virtual void GetDebugDetails(StringBase* Str);   // This is used by the Debug Tree dialog
 													 // It will probably be deleted when we ship !.
 #endif
 
-	// Methods to increment and decrement the Hidden node refference count 												 
-	void IncHiddenCnt(void); 
-	void DecHiddenCnt(void); 
+	// Methods to increment and decrement the Hidden node refference count
+	void IncHiddenCnt(void);
+	void DecHiddenCnt(void);
 
 	UINT32 GetHiddenCnt(void);
 
 	#ifdef _DEBUG
 		const TCHAR* Name() const;
-	#endif 
+	#endif
 
 	BOOL OptimiseAttributes();
 
@@ -719,13 +719,13 @@ public:
 	virtual BOOL AreChildAttrsIdentical(Node* pOtherNode);
 	virtual BOOL HasThisChildAttr(NodeAttribute* pAttr);
 	virtual BOOL CopyChildAttrs(Node* pDestNode);
-	
+
 	// DMc - returns TRUE if the given node is in the subtree of this node
 	virtual BOOL IsNodeInSubtree(Node * pNode);
 
 	// DMc 11/5/99
 	// Selection & regeneration functions
-	
+
 	// causes the node to regenerate itself (in an undoable way given an undoable operation)
 	// bCacheRender is FALSE if the node is to regenerate itself now, or TRUE if it is to
 	// regenerate itself on the next render click
@@ -733,7 +733,7 @@ public:
 	virtual BOOL RegenerateNode(UndoableOperation * pOp = NULL,
 								BOOL bCacheRender = FALSE,
 								BOOL bInformParents = TRUE) { return FALSE; }
-	
+
 	// when the user clicks on a child node, this tells the hit testing code
 	// whether to promote the hit test to this node
 	virtual BOOL PromoteHitTestOnChildrenToMe() const { return TRUE; }
@@ -746,15 +746,15 @@ public:
 
 	// indicates whether this node should be ignored by marquee select
 	virtual BOOL MarqueeSelectNode() const { return TRUE; }
-	
+
 	// calls the protected function SimpleCopy
-	virtual Node* PublicCopy(); 
+	virtual Node* PublicCopy();
 
 	void RemoveAttrTypeFromSubtree(CCRuntimeClass* AttrType, Node* pExceptThis = NULL);
 
-protected:    
+protected:
 
-	// The NodeFlags type is used to hold the status of a Node                
+	// The NodeFlags type is used to hold the status of a Node
 	struct CCAPI NodeFlags
 	{
 		BOOL Locked: 1;       // Not used currently
@@ -769,29 +769,29 @@ protected:
 		BOOL OpPermission1: 1;		// These two flags are used together to encode the node's tri-state
 		BOOL OpPermission2: 1;		// op permission value.  Values are defined by enum OpPermissionState.
 	};
-   
+
 	UINT32 Tag;         // Unique node identifier
-	NodeFlags Flags;   // Flags indicating the objects status    
-	
+	NodeFlags Flags;   // Flags indicating the objects status
+
 	 // Links to other nodes
 	Node *Previous;    // Node's previous sibling
 	Node *Next;        // Node's next sibling
 	Node *Child;       // Node's first child
-	Node *Parent;      // Node's parent   
+	Node *Parent;      // Node's parent
 
 
 
 	UINT32 HiddenRefCnt; // Reference count of the number of NodeHidden nodes which hide the node
 
-	virtual Node* SimpleCopy(); 
+	virtual Node* SimpleCopy();
 	virtual INT32 ComplexCopy(CopyStage Stage, Range& RangeToCopy, Node** pOutput);
-	void CopyNodeContents(Node* nodeCopy);      
+	void CopyNodeContents(Node* nodeCopy);
 
 	// Size of pixel in document coords
-	static MILLIPOINT PixelWidth; 
+	static MILLIPOINT PixelWidth;
 	static MILLIPOINT PixelHeight;
 
-	Node *FindChildToRender(DocRect *const pClipRect, RenderRegion *const pRender, 
+	Node *FindChildToRender(DocRect *const pClipRect, RenderRegion *const pRender,
 							BOOL ExcludeLockedLayers,
 							Node* pStopNode = NULL);
 
@@ -799,10 +799,10 @@ protected:
 
 private:
 	// Support functions to attach a node to a context node
-	void AttachAsPreviousNode(Node* ContextNode); 
-	void AttachAsNextNode(Node* ContextNode);                                 
-	void AttachAsFirstChildNode(Node* ContextNode);       
-	void AttachAsLastChildNode(Node* ContextNode); 
+	void AttachAsPreviousNode(Node* ContextNode);
+	void AttachAsNextNode(Node* ContextNode);
+	void AttachAsFirstChildNode(Node* ContextNode);
+	void AttachAsLastChildNode(Node* ContextNode);
 
 	void SetTags(BaseDocument *pOwnerDoc);
 
@@ -815,18 +815,18 @@ private:
 public:
 	static void StartHourglass() { HourglassOn = TRUE; };
 	static void StopHourglass() { HourglassOn = FALSE; };
-	static BOOL ShowHourglass() { return HourglassOn;} 
+	static BOOL ShowHourglass() { return HourglassOn;}
 
 protected:
-	BOOL CopyChildren(Node* FirstChild, 
+	BOOL CopyChildren(Node* FirstChild,
 					  Node* NewParent,
 					  CopyControlFlags = ccALL);
 
-private:	
+private:
 	// Support function for ShowDebugTree method
 #ifdef _DEBUG
-	void ShowDebugTreeHelper(const Node* const Root, 
-						     INT32 TreeLevel, 
+	void ShowDebugTreeHelper(const Node* const Root,
+						     INT32 TreeLevel,
 							 BYTE* IndentString) const;
 #endif
 
@@ -876,19 +876,19 @@ public:
 	Created:	30/4/93
 	Inputs:		-
 	Outputs:	-
-	Returns:	Tag field of the node 
+	Returns:	Tag field of the node
 	Purpose:    For finding a nodes TAG, which is a unique identifier for each node stored
-				within a document. 
+				within a document.
 	Errors:		-
 
 ***********************************************************************************************/
-       
+
 inline UINT32 Node::GetTag() const
-{ 
-	return Tag; 
-}       
- 
- 
+{
+	return Tag;
+}
+
+
 /*********************************************************************************************
 
 >    BOOL Node::IsLocked(void) const
@@ -897,16 +897,16 @@ inline UINT32 Node::GetTag() const
      Created:   19/4/93
      Inputs:    -
      Outputs:   -
-     Returns:   TRUE if the node is locked, and FALSE if the node is not locked.  
+     Returns:   TRUE if the node is locked, and FALSE if the node is not locked.
      Purpose:   For finding the status of the nodes locked flag
-     Errors:    
+     Errors:
 
 **********************************************************************************************/
-       
-inline BOOL Node::IsLocked(void) const 
-{ 
-	return Flags.Locked; 
-} 
+
+inline BOOL Node::IsLocked(void) const
+{
+	return Flags.Locked;
+}
 
 
 /*********************************************************************************************
@@ -917,16 +917,16 @@ inline BOOL Node::IsLocked(void) const
      Created:   19/4/93
      Inputs:    -
      Outputs:   -
-     Returns:   TRUE if the node is mangled, and FALSE if the node is not mangled.  
+     Returns:   TRUE if the node is mangled, and FALSE if the node is not mangled.
      Purpose:   For finding the status of the nodes mangled flag
-     Errors:    
+     Errors:
 
 **********************************************************************************************/
-       
-inline BOOL Node::IsMangled(void) const                
-{ 
-	return Flags.Mangled; 
-} 
+
+inline BOOL Node::IsMangled(void) const
+{
+	return Flags.Mangled;
+}
 
 
 /*********************************************************************************************
@@ -937,16 +937,16 @@ inline BOOL Node::IsMangled(void) const
      Created:   19/4/93
      Inputs:    -
      Outputs:   -
-     Returns:   TRUE if the node is marked, and FALSE if the node is not marked.  
+     Returns:   TRUE if the node is marked, and FALSE if the node is not marked.
      Purpose:   For finding the status of the nodes marked flag
-     Errors:    
+     Errors:
 
 **********************************************************************************************/
-       
-inline BOOL Node::IsMarked(void) const         
-{ 
-	return Flags.Marked; 
-} 
+
+inline BOOL Node::IsMarked(void) const
+{
+	return Flags.Marked;
+}
 
 
 /*********************************************************************************************
@@ -957,15 +957,15 @@ inline BOOL Node::IsMarked(void) const
      Created:   19/4/93
      Inputs:    -
      Outputs:   -
-     Returns:   TRUE if the node is renderable, and FALSE if the node is not renderable.  
+     Returns:   TRUE if the node is renderable, and FALSE if the node is not renderable.
      Purpose:   For finding the status of the nodes renderable flag
-     Errors:    
+     Errors:
 
 **********************************************************************************************/
-       
+
 inline BOOL Node::IsRenderable() const
-{ 
-	return Flags.Renderable; 
+{
+	return Flags.Renderable;
 }
 
 
@@ -977,16 +977,16 @@ inline BOOL Node::IsRenderable() const
      Created:   19/4/93
      Inputs:    -
      Outputs:   -
-     Returns:   TRUE if the node is selected, and FALSE if the node is not selected.  
+     Returns:   TRUE if the node is selected, and FALSE if the node is not selected.
      Purpose:   For finding the status of the nodes selected flag
-     Errors:    
+     Errors:
 
 **********************************************************************************************/
-       
-inline BOOL Node::IsSelected() const           
-{ 
-	return Flags.Selected; 
-}  
+
+inline BOOL Node::IsSelected() const
+{
+	return Flags.Selected;
+}
 
 
 /*********************************************************************************************
@@ -1002,14 +1002,14 @@ inline BOOL Node::IsSelected() const
      Purpose:   For finding the status of the nodes SelectedChildren flag
 	 			Note: When this function returns TRUE it is not guaranteed that there will be
 				selected children - there may be none!
-     Errors:    
+     Errors:
 
 **********************************************************************************************/
-       
-inline BOOL Node::IsParentOfSelected() const           
-{ 
-	return Flags.SelectedChildren; 
-}  
+
+inline BOOL Node::IsParentOfSelected() const
+{
+	return Flags.SelectedChildren;
+}
 
 
 /*********************************************************************************************
@@ -1025,13 +1025,13 @@ inline BOOL Node::IsParentOfSelected() const
      Errors:    -
 
 **********************************************************************************************/
-       
-inline void Node::SetLocked( BOOL Status )        
-{ 
-	Flags.Locked = Status; 
-}    
- 
-			     
+
+inline void Node::SetLocked( BOOL Status )
+{
+	Flags.Locked = Status;
+}
+
+
 /*********************************************************************************************
 
 >    void Node::SetMangled(BOOL Status) const
@@ -1045,14 +1045,14 @@ inline void Node::SetLocked( BOOL Status )
      Errors:    -
 
 **********************************************************************************************/
-      
- 
-inline void Node::SetMangled( BOOL Status )  
-{ 
-	Flags.Mangled = Status; 
-}  
-     
-     
+
+
+inline void Node::SetMangled( BOOL Status )
+{
+	Flags.Mangled = Status;
+}
+
+
 /*********************************************************************************************
 
 >    void Node::SetMarker(BOOL Status) const
@@ -1066,46 +1066,46 @@ inline void Node::SetMangled( BOOL Status )
      Errors:    -
 
 **********************************************************************************************/
-       
 
-inline void Node::SetMarker( BOOL Status )  
+
+inline void Node::SetMarker( BOOL Status )
 {
-	Flags.Marked = Status; 
-}  
-  
-  			     
+	Flags.Marked = Status;
+}
+
+
 /********************************************************************************************
 
 >    Node* Node::FindNext(void) const
 
      Author:    Simon_Maneggio (Xara Group Ltd) <camelotdev@xara.com>
      Created:   19/4/93
-     Returns:   Pointer to the node's next sibling node 
+     Returns:   Pointer to the node's next sibling node
      Purpose:   For finding the next sibling of a node
 
 ********************************************************************************************/
-				   
-					     
-inline Node* Node::FindNext(void) const     
+
+
+inline Node* Node::FindNext(void) const
 {
 	return(Next);
-}  
-			      
-	  
+}
+
+
 /********************************************************************************************
 
 >   Node* Node::FindPrevious(void) const
 
      Author:    Simon_Maneggio (Xara Group Ltd) <camelotdev@xara.com>
      Created:   19/4/93
-     Returns:   Pointer to the node's previous sibling node 
+     Returns:   Pointer to the node's previous sibling node
      Purpose:   For finding the previous sibling of a node
 
 ********************************************************************************************/
-	
-			   
+
+
 inline Node* Node::FindPrevious(void) const
-{                 
+{
 	return(Previous);
 }
 
@@ -1116,13 +1116,13 @@ inline Node* Node::FindPrevious(void) const
 
      Author:    Simon_Maneggio (Xara Group Ltd) <camelotdev@xara.com>
      Created:   19/4/93
-     Returns:   Pointer to the node's parent node 
-     Purpose:   For finding the parent of a node        
+     Returns:   Pointer to the node's parent node
+     Purpose:   For finding the parent of a node
 
 ********************************************************************************************/
-	
+
 inline Node* Node::FindParent(void) const
-{         
+{
 	return(Parent);
 }
 
@@ -1133,15 +1133,15 @@ inline Node* Node::FindParent(void) const
 
      Author:    Simon_Maneggio (Xara Group Ltd) <camelotdev@xara.com>
      Created:   19/4/93
-     Returns:   Pointer to the node's first child  
+     Returns:   Pointer to the node's first child
      Purpose:   For finding the first child of a node
 
 ********************************************************************************************/
-       
+
 inline Node* Node::FindFirstChild(void) const
-{                  
-	return(Child); 
-}                      
+{
+	return(Child);
+}
 
 
 /*********************************************************************************************
@@ -1149,7 +1149,7 @@ inline Node* Node::FindFirstChild(void) const
 >    void Node::SetParentOfSelected(BOOL Status) const
 
      Author:    Phil_Martin (Xara Group Ltd) <camelotdev@xara.com>
-     Created:   07/10/94                                                                                                                       
+     Created:   07/10/94
      Inputs:    Status: Required setting of nodes SelectedChildren flag
      Outputs:   -
      Returns:   -
@@ -1158,15 +1158,15 @@ inline Node* Node::FindFirstChild(void) const
      Errors:    -
 
 **********************************************************************************************/
-  
-inline void Node::SetParentOfSelected( BOOL Status )       
+
+inline void Node::SetParentOfSelected( BOOL Status )
 {
-	Flags.SelectedChildren = Status;  
+	Flags.SelectedChildren = Status;
 //	Camelot.UpdateSelection();			// This line not required because the function
 											// does not itself modify the selection!
-}     
+}
 
-			     
+
 /*********************************************************************************************
 
 >    void Node::ClearSelection(BOOL AndChildren=FALSE)
@@ -1181,16 +1181,16 @@ inline void Node::SetParentOfSelected( BOOL Status )
      Errors:    -
 
 **********************************************************************************************/
-       
+
 inline void Node::ClearSelection(BOOL AndChildren)
 {
 	Flags.Selected 			= FALSE;
 	Flags.SelectedChildren 	= FALSE;
 	if (AndChildren)
 		DeSelectSubtree();
-}  
-  
-			     
+}
+
+
 /////////////////////////////////////////////////////////////////////////////////////////////
 //
 //  End of Inline versions of Node functions.
@@ -1212,21 +1212,21 @@ inline void Node::ClearSelection(BOOL AndChildren)
 ********************************************************************************************/
 
 class NodeRenderable : public Node
-{       
+{
  	CC_DECLARE_DYNAMIC(NodeRenderable)
- 
+
 public:
 	// Constructors
 	NodeRenderable();
-	
-	// Node renderable initialisation 
-	NodeRenderable(Node* ContextNode,  
-					AttachNodeDirection Direction,    
-					BOOL Locked=FALSE, 
-					BOOL Mangled=FALSE,  
-					BOOL Marked=FALSE, 
-					BOOL Selected=FALSE); 
-	
+
+	// Node renderable initialisation
+	NodeRenderable(Node* ContextNode,
+					AttachNodeDirection Direction,
+					BOOL Locked=FALSE,
+					BOOL Mangled=FALSE,
+					BOOL Marked=FALSE,
+					BOOL Selected=FALSE);
+
 	// Transformation functions
 	virtual BOOL CanTransform();
 	virtual void Transform(TransformBase&);
@@ -1257,7 +1257,7 @@ public:
 	virtual void Select(BOOL ReDraw);
 	virtual void DeSelect(BOOL ReDraw, BOOL bDeselectChildren = FALSE);
 
-	virtual BOOL CopyComponentData(BaseDocument* SrcDoc, BaseDocument* NodesDoc); 
+	virtual BOOL CopyComponentData(BaseDocument* SrcDoc, BaseDocument* NodesDoc);
 
 	// All renderable node can have blob bounding rects (though they may be empty)
 	virtual DocRect GetBlobBoundingRect();
@@ -1277,8 +1277,8 @@ public:
 	// this base-class implementation returns origin coordinates - override to add function.
 	virtual DocCoord FindExtendCentre() { return DocCoord(0, 0); }
 
-	virtual Node* SimpleCopy(); 
-    void CopyNodeContents(NodeRenderable* NodeCopy); 
+	virtual Node* SimpleCopy();
+    void CopyNodeContents(NodeRenderable* NodeCopy);
 
 	// Karim 13/09/2000
 	// Test whether this node is see-through, ie if you can still see some of the background
@@ -1296,7 +1296,7 @@ protected:
 	// Flag indicating the currently dragged state of this node
 	BOOL	Dragged;
 
-};                 
+};
 
 
 
@@ -1308,7 +1308,7 @@ protected:
 	Author:		Tim_Browse (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	14/04/94
 	Purpose:	As NodeRenderable, but with a bounding box describing the area this object
-				occupies.  This class also includes functions for use with attribute 
+				occupies.  This class also includes functions for use with attribute
 				optimisation.
 	SeeAlso:	NodeRendereable
 
@@ -1316,24 +1316,24 @@ protected:
 
 class NodeRenderableBounded : public NodeRenderable
 {
-	CC_DECLARE_DYNAMIC( NodeRenderableBounded )  
- 
+	CC_DECLARE_DYNAMIC( NodeRenderableBounded )
+
 public:
 	// Constructors
 	NodeRenderableBounded();
-	
-	// Node renderable bounded initialisation 
-	NodeRenderableBounded(Node* ContextNode,  
-						  AttachNodeDirection Direction,    
-						  BOOL Locked=FALSE, 
-						  BOOL Mangled=FALSE,  
-						  BOOL Marked=FALSE, 
-						  BOOL Selected=FALSE); 
+
+	// Node renderable bounded initialisation
+	NodeRenderableBounded(Node* ContextNode,
+						  AttachNodeDirection Direction,
+						  BOOL Locked=FALSE,
+						  BOOL Mangled=FALSE,
+						  BOOL Marked=FALSE,
+						  BOOL Selected=FALSE);
 
 	~NodeRenderableBounded();
 
 	// Virtual functions
-	virtual void GetDebugDetails(StringBase* Str);	
+	virtual void GetDebugDetails(StringBase* Str);
 	virtual SubtreeRenderState RenderSubtree(RenderRegion* pRender, Node** ppNextNode = NULL, BOOL bClip = TRUE);
 	virtual void Transform(TransformBase&);
 	virtual void TransformChildren(TransformBase&);
@@ -1350,7 +1350,7 @@ private:
 public:
 	virtual DocRect	GetBoundingRect(BOOL DontUseAttrs=FALSE, BOOL HitTest=FALSE);
 	virtual DocRect GetUnionBlobBoundingRect(BOOL bIncludeEffects = TRUE);
-	
+
 	// gets the bounding rect to use in Eor dragging this node
 	virtual DocRect GetEorDragBoundingRect() { return GetBoundingRect(TRUE, FALSE); }
 
@@ -1416,8 +1416,8 @@ protected:
 
 protected:
 	// Node copying functions.
-	virtual Node* SimpleCopy(); 
-    void CopyNodeContents(NodeRenderableBounded* NodeCopy); 
+	virtual Node* SimpleCopy();
+    void CopyNodeContents(NodeRenderableBounded* NodeCopy);
 
 // Karim 1/12/1999
 public:
@@ -1450,7 +1450,7 @@ public:
 	static BOOL bShowCacheBlobs;			// Show special markers when cached groups are selected
 
 };
- 
+
 
 
 
@@ -1463,26 +1463,26 @@ public:
 
 	Author:		Simon_Maneggio (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	13/9/93
-	Purpose:	Nodes are generally never deleted from the tree, instead they are hidden. 
+	Purpose:	Nodes are generally never deleted from the tree, instead they are hidden.
 				To hide a node a NodeHidden is inserted into the tree at the old position of
 				the hidden node, the HiddenNode holds a pointer to the hidden node. The static
-				ShowNode function of NodeHidden will delete the NodeHidden and relink the 
-				hidden node into the tree. 
+				ShowNode function of NodeHidden will delete the NodeHidden and relink the
+				hidden node into the tree.
 	SeeAlso:	-
 
 ********************************************************************************************/
 
 class NodeHidden: public Node
-{       
-public: 
-	CC_DECLARE_DYNAMIC( NodeHidden ) 
-	NodeHidden(Node* HiddenNode); 
-	Node* ShowNode(); 
-	Node* HiddenNd; //Pointer to the hidden node	
+{
+public:
+	CC_DECLARE_DYNAMIC( NodeHidden )
+	NodeHidden(Node* HiddenNode);
+	Node* ShowNode();
+	Node* HiddenNd; //Pointer to the hidden node
 
-	// The simple copy method of a NodeHidden should never be called. Therefore the method causes 
-	// an ENSURE failure if executed. 
-	virtual Node* SimpleCopy();  
+	// The simple copy method of a NodeHidden should never be called. Therefore the method causes
+	// an ENSURE failure if executed.
+	virtual Node* SimpleCopy();
     virtual UINT32 GetNodeSize() const; 			// Returns size of node in bytes
 
 	virtual BOOL IsNodeHidden() const;
@@ -1502,7 +1502,7 @@ public:
 				return DocRect(INT32_MAX, INT32_MAX, INT32_MAX, INT32_MAX);
 			}
 	virtual void Extend(const ExtendParams& ExtParams) {}
-}; 
+};
 
 
 #endif

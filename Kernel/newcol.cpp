@@ -1,7 +1,7 @@
 // $Id: newcol.cpp 1282 2006-06-09 09:46:49Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
- 
+
                Xara LX, a vector drawing and manipulation program.
                     Copyright (C) 1993-2006 Xara Group Ltd.
        Copyright on certain contributions may be held in joint with their
@@ -32,7 +32,7 @@ ADDITIONAL RIGHTS
 
 Conditional upon your continuing compliance with the GNU General Public
 License described above, Xara Group Ltd grants to you certain additional
-rights. 
+rights.
 
 The additional rights are to use, modify, and distribute the software
 together with the wxWidgets library, the wxXtra library, and the "CDraw"
@@ -129,7 +129,7 @@ BOOL NewColourDlg::MakeShade = FALSE;
 
 /********************************************************************************************
 
->	NewColourDlg::NewColourDlg(): DialogOp(NewColourDlg::IDD, NewColourDlg::Mode) 
+>	NewColourDlg::NewColourDlg(): DialogOp(NewColourDlg::IDD, NewColourDlg::Mode)
 
 
 	Author:		Jason_Williams (Xara Group Ltd) <camelotdev@xara.com>
@@ -139,10 +139,10 @@ BOOL NewColourDlg::MakeShade = FALSE;
 
 ********************************************************************************************/
 
-NewColourDlg::NewColourDlg() : DialogOp(NewColourDlg::IDD, NewColourDlg::Mode) 
+NewColourDlg::NewColourDlg() : DialogOp(NewColourDlg::IDD, NewColourDlg::Mode)
 {
 	ParentDropDown = NULL;
-}        
+}
 
 
 
@@ -162,7 +162,7 @@ NewColourDlg::~NewColourDlg()
 {
 	if (ParentDropDown != NULL)
 		delete ParentDropDown;
-}        
+}
 
 
 
@@ -175,7 +175,7 @@ NewColourDlg::~NewColourDlg()
 	Inputs:		-
 	Outputs:	-
 	Returns:	-
-	Purpose:	Handles all the scale dialog's messages 
+	Purpose:	Handles all the scale dialog's messages
 	Errors:		-
 	SeeAlso:	-
 
@@ -201,7 +201,7 @@ MsgResult NewColourDlg::Message(Msg* Message)
 					if (ParentDropDown != NULL && ParentDropDown->Init(WindowID, _R(IDC_NEWCOL_COLLIST)))
 					{
 						IndexedColour *ParentColour = Info->TheColour->FindLastLinkedParent();
-						
+
 						// Make sure the parent colour we're setting is legal (not deleted)
 						if (ParentColour != NULL && ParentColour->IsDeleted())
 							ParentColour = NULL;
@@ -221,7 +221,7 @@ MsgResult NewColourDlg::Message(Msg* Message)
 				}
 				break;
 
-				
+
 			case DIM_COMMIT:
 			case DIM_SOFT_COMMIT:
 				CommitDetails();
@@ -286,11 +286,11 @@ MsgResult NewColourDlg::Message(Msg* Message)
 				break;
 		}
 
-		return (DLG_EAT_IF_HUNGRY(Msg)); 
+		return (DLG_EAT_IF_HUNGRY(Msg));
 	}
 
-	return OK; 
-}  
+	return OK;
+}
 
 
 
@@ -343,7 +343,7 @@ void NewColourDlg::SetNameText(void)
 	String_256 CurrentText;
 
 	CurrentText = GetStringGadgetValue(_R(IDC_NEWCOL_NAME));
-	
+
 	// Only change the text if it is blank or if the user has not changed it
 	if (CurrentText.IsEmpty() || CurrentText == AutoName)
 	{
@@ -564,13 +564,13 @@ void NewColourDlg::CommitDetails(BOOL Force, BOOL ForceMakeShade)
 ********************************************************************************************/
 
 OpState	NewColourDlg::GetState(String_256*, OpDescriptor*)
-{    
+{
 	OpState OpSt;
 	return(OpSt);
 }
 
 
-		 
+
 /********************************************************************************************
 
 >	BOOL NewColourDlg::Init(void)
@@ -583,7 +583,7 @@ OpState	NewColourDlg::GetState(String_256*, OpDescriptor*)
 ********************************************************************************************/
 
 BOOL NewColourDlg::Init(void)
-{  
+{
 	return (RegisterOpDescriptor(
 								0,
 								_R(IDS_NEWCOLOURDLG),
@@ -593,9 +593,9 @@ BOOL NewColourDlg::Init(void)
 								0,	// help ID
 								0   // bubble ID
 								)
-			); 
-}   
- 
+			);
+}
+
 
 
 /********************************************************************************************
@@ -605,7 +605,7 @@ BOOL NewColourDlg::Init(void)
 	Authofosr:		Jason_Williams (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	28/9/95
 	Returns:	TRUE if successful, else FALSE
-	Purpose:	NewColourDlg create method 
+	Purpose:	NewColourDlg create method
 
 ********************************************************************************************/
 
@@ -624,7 +624,7 @@ BOOL NewColourDlg::Create()
 	Created:	28/9/95
 	Inputs:		pOpParam = ptr to a NewColourParam struct
 
-	Purpose:	Creates then opens the dialog 
+	Purpose:	Creates then opens the dialog
 
 ********************************************************************************************/
 
@@ -722,7 +722,7 @@ void NewColourDlg::DoWithParam(OpDescriptor*, OpParam* pOpParam)
 				FALSE if it failed or the user hit Cancel - in this case, you should delete
 				your SourceAndResult colour.
 
-	Purpose:	Opens the new colour dialogue on screen, elicits a response, 
+	Purpose:	Opens the new colour dialogue on screen, elicits a response,
 				and returns having set up the new colour according to the users instructions.
 				This is a MODAL dlg.
 
@@ -743,4 +743,3 @@ BOOL NewColourDlg::InvokeDialog(ColourList *ParentList, IndexedColour *Result,
 
 	return(Info.Result);
 }
-
