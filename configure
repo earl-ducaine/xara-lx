@@ -640,8 +640,6 @@ FILTERS_ENABLE_FALSE
 FILTERS_ENABLE_TRUE
 XARLIB_ENABLE_FALSE
 XARLIB_ENABLE_TRUE
-SVNVERSION_ENABLE_FALSE
-SVNVERSION_ENABLE_TRUE
 INTERNATIONAL_ENABLE_FALSE
 INTERNATIONAL_ENABLE_TRUE
 DARWIN_LINK_FALSE
@@ -788,7 +786,6 @@ enable_dependency_tracking
 enable_debug
 enable_static_exec
 enable_international
-enable_svnversion
 enable_xarlib
 enable_filters
 with_wx_config
@@ -1451,7 +1448,6 @@ Optional Features:
   --enable-debug          Enable debug information and checks
   --enable-static-exec    Enable build of a static executable
   --disable-international Disable building of international resources
-  --disable-svnversion    Disable svn versioning
   --enable-xarlib         Enable build of the xarlib filter library
   --enable-filters        Enable build of the filters
   --disable-nls           do not use Native Language Support
@@ -4397,13 +4393,10 @@ else
 fi
 
 
-# Check whether --enable-svnversion was given.
-if test "${enable_svnversion+set}" = set; then :
-  enableval=$enable_svnversion; SvnVersionEnable="$enableval"
-else
-  SvnVersionEnable="yes"
-fi
-
+# AC_ARG_ENABLE(svnversion,
+#              AS_HELP_STRING([--disable-svnversion],
+#                             [Disable svn versioning]),
+#              SvnVersionEnable="$enableval", SvnVersionEnable="yes")
 
 # Check whether --enable-xarlib was given.
 if test "${enable_xarlib+set}" = set; then :
@@ -8036,9 +8029,9 @@ $as_echo "#define HAVE_DCGETTEXT 1" >>confdefs.h
 	BUILDRESFLAGS="-i $BUILDRESFLAGS"
 fi
 
-if test "$SvnVersionEnable" = "yes" ; then
-	BUILDRESFLAGS="-s $BUILDRESFLAGS"
-fi
+#if test "$SvnVersionEnable" = "yes" ; then
+#	BUILDRESFLAGS="-s $BUILDRESFLAGS"
+#fi
 
 # Force XarLibEnable on if we are to build the filters
 if test "$FiltersEnable" = "yes"; then
@@ -8091,14 +8084,7 @@ else
   INTERNATIONAL_ENABLE_FALSE=
 fi
 
- if test "$SvnVersionEnable" = "yes"; then
-  SVNVERSION_ENABLE_TRUE=
-  SVNVERSION_ENABLE_FALSE='#'
-else
-  SVNVERSION_ENABLE_TRUE='#'
-  SVNVERSION_ENABLE_FALSE=
-fi
-
+#AM_CONDITIONAL(SVNVERSION_ENABLE, [test "$SvnVersionEnable" = "yes"])
  if test "$XarLibEnable" = "yes"; then
   XARLIB_ENABLE_TRUE=
   XARLIB_ENABLE_FALSE='#'
@@ -8322,10 +8308,6 @@ Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 if test -z "${INTERNATIONAL_ENABLE_TRUE}" && test -z "${INTERNATIONAL_ENABLE_FALSE}"; then
   as_fn_error $? "conditional \"INTERNATIONAL_ENABLE\" was never defined.
-Usually this means the macro was only invoked conditionally." "$LINENO" 5
-fi
-if test -z "${SVNVERSION_ENABLE_TRUE}" && test -z "${SVNVERSION_ENABLE_FALSE}"; then
-  as_fn_error $? "conditional \"SVNVERSION_ENABLE\" was never defined.
 Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 if test -z "${XARLIB_ENABLE_TRUE}" && test -z "${XARLIB_ENABLE_FALSE}"; then

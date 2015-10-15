@@ -30,10 +30,10 @@ AC_ARG_ENABLE(international,
                              [Disable building of international resources]),
               InternationalEnable="$enableval", InternationalEnable="yes")
 
-AC_ARG_ENABLE(svnversion,
-              AS_HELP_STRING([--disable-svnversion],
-                             [Disable svn versioning]),
-              SvnVersionEnable="$enableval", SvnVersionEnable="yes")
+# AC_ARG_ENABLE(svnversion,
+#              AS_HELP_STRING([--disable-svnversion],
+#                             [Disable svn versioning]),
+#              SvnVersionEnable="$enableval", SvnVersionEnable="yes")
 
 AC_ARG_ENABLE(xarlib,
               AS_HELP_STRING([--enable-xarlib],
@@ -158,7 +158,7 @@ AC_ARG_WITH(language,
 RESOURCE_DIR_DEFINE=
 AC_ARG_WITH(resource-dir,
 [[  --with-resource-dir=DIR The absoulte path to root of resource directory
-                            structure; defaults to using binreloc before 
+                            structure; defaults to using binreloc before
                             falling back to /usr/share/xaralx]],
 [
     if test "$withval" != "yes" -a "$withval" != ""; then
@@ -198,7 +198,7 @@ if test -n "$vers" && test "$vers" -ge 2006003; then
 	# See if we are running on GTK
 	WX_GTK="no"
 	AC_MSG_CHECKING([wxWidgets GTK usage])
-	if echo $WX_CPPFLAGS | grep -q '__WXGTK__' ; then 
+	if echo $WX_CPPFLAGS | grep -q '__WXGTK__' ; then
 		WX_GTK="yes"
 		AC_MSG_RESULT([found])
 		PKG_CHECK_MODULES(GTK, [gtk+-2.0])
@@ -209,7 +209,7 @@ if test -n "$vers" && test "$vers" -ge 2006003; then
 	if test "$InternationalEnable" = "yes"; then
 		AC_MSG_CHECKING([wxWidgets wxrc utility])
 		WXRC="`$WXCONFIG --utility=wxrc`"
-	
+
 		if test "$WXRC" = "" ; then
 			AC_MSG_RESULT([not found, disabling international build])
 			HAVE_WXRC="no"
@@ -234,7 +234,7 @@ AC_ARG_WITH(xml2-config,
         XML2CONFIG=$withval
     fi
 ])
- 
+
 xml2version=0
 
 AC_DEFUN([XML2TEST],
@@ -327,9 +327,9 @@ if test "$StaticEnable" = "yes"; then
 	WX_LIBS="`echo $WX_LIBS | sed -e 's/-lXrandr/-Wl,-Bstatic -lXrandr -Wl,-Bdynamic/g'`"
 	WX_LIBS="`echo $WX_LIBS | sed -e 's/-lXext/-Wl,-Bstatic -lXext -Wl,-Bdynamic/g'`"
 	WX_LIBS="`echo $WX_LIBS | sed -e 's/-lXinerama/-Wl,-Bstatic -lXinerama -Wl,-Bdynamic/g'`"
-	WX_LIBS="`echo $WX_LIBS | sed -e 's/-lXxf86vm/-Wl,-Bstatic -lXxf86vm -Wl,-Bdynamic/g'`"	
-	WX_LIBS="`echo $WX_LIBS | sed -e 's/-lXrender/-Wl,-Bstatic -lXrender -Wl,-Bdynamic/g'`"	
-	WX_LIBS="`echo $WX_LIBS | sed -e 's/-lXfixes/-Wl,-Bstatic -lXfixes -Wl,-Bdynamic/g'`"	
+	WX_LIBS="`echo $WX_LIBS | sed -e 's/-lXxf86vm/-Wl,-Bstatic -lXxf86vm -Wl,-Bdynamic/g'`"
+	WX_LIBS="`echo $WX_LIBS | sed -e 's/-lXrender/-Wl,-Bstatic -lXrender -Wl,-Bdynamic/g'`"
+	WX_LIBS="`echo $WX_LIBS | sed -e 's/-lXfixes/-Wl,-Bstatic -lXfixes -Wl,-Bdynamic/g'`"
 	WX_LIBS="`echo $WX_LIBS | sed -e 's/-lexpat/-Wl,-Bstatic -lexpat -Wl,-Bdynamic/g'`"
 	WX_LIBS="`echo $WX_LIBS | sed -e 's/-ljpeg/-Wl,-Bstatic -ljpeg -Wl,-Bdynamic/g'`"
 	WX_LIBS="`echo $WX_LIBS | sed -e 's/-lpng/-Wl,-Bstatic -lpng -Wl,-Bdynamic/g'`"
@@ -389,9 +389,9 @@ AM_GNU_GETTEXT_VERSION([0.14.3])
 	BUILDRESFLAGS="-i $BUILDRESFLAGS"
 fi
 
-if test "$SvnVersionEnable" = "yes" ; then
-	BUILDRESFLAGS="-s $BUILDRESFLAGS"
-fi
+#if test "$SvnVersionEnable" = "yes" ; then
+#	BUILDRESFLAGS="-s $BUILDRESFLAGS"
+#fi
 
 # Force XarLibEnable on if we are to build the filters
 if test "$FiltersEnable" = "yes"; then
@@ -413,7 +413,7 @@ AM_CONDITIONAL(PRECOMPILE_ENABLE, [test "$PrecompileEnable" = "yes"])
 AM_CONDITIONAL(STATIC_ENABLE, [test "$StaticEnable" = "yes"])
 AM_CONDITIONAL(DARWIN_LINK, [test "$DarwinLink" = "yes"])
 AM_CONDITIONAL(INTERNATIONAL_ENABLE, [test "$InternationalEnable" = "yes"])
-AM_CONDITIONAL(SVNVERSION_ENABLE, [test "$SvnVersionEnable" = "yes"])
+#AM_CONDITIONAL(SVNVERSION_ENABLE, [test "$SvnVersionEnable" = "yes"])
 AM_CONDITIONAL(XARLIB_ENABLE, [test "$XarLibEnable" = "yes"])
 AM_CONDITIONAL(FILTERS_ENABLE, [test "$FiltersEnable" = "yes"])
 
