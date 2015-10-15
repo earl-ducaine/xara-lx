@@ -1,7 +1,7 @@
 // $Id: dragtrgt.h 1272 2006-06-08 17:01:06Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
- 
+
                Xara LX, a vector drawing and manipulation program.
                     Copyright (C) 1993-2006 Xara Group Ltd.
        Copyright on certain contributions may be held in joint with their
@@ -32,7 +32,7 @@ ADDITIONAL RIGHTS
 
 Conditional upon your continuing compliance with the GNU General Public
 License described above, Xara Group Ltd grants to you certain additional
-rights. 
+rights.
 
 The additional rights are to use, modify, and distribute the software
 together with the wxWidgets library, the wxXtra library, and the "CDraw"
@@ -175,7 +175,7 @@ typedef enum
 
 	Author:		Jason_Williams (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	2/1/95
-	Purpose:	An instantiation of this class is created by each entity which wishes to 
+	Purpose:	An instantiation of this class is created by each entity which wishes to
 				provide a 'destination' to which the mouse can go to complete a drag.
 
 	Notes:		IMPORTANT! The DragTarget class is the abstract base from which
@@ -245,7 +245,7 @@ protected:
 	Author:		Jason_Williams (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	2/3/95
 
-		
+
 
 	Purpose:	To determine if a given dragtarget wants events to be passed to it if the
 				mouse pointer is outside the target area - This is only necessary for
@@ -254,7 +254,7 @@ protected:
 				regardless of the pointer position.
 
 	Notes:		Targets which wish to recieve these events (e.g. scroll drags in galleries
-				like to continue scrolling even if the pointer moves out of the window - 
+				like to continue scrolling even if the pointer moves out of the window -
 				the drag is used to "capture" the mouse) should set their member variable
 				"IWantAllEvents" in their constructors.
 
@@ -280,7 +280,7 @@ BOOL DragTarget::WantsAllEvents(void)
 	Author:		Jason_Williams (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	2/1/95
 
-	Purpose:	An instantiation of this class is created by each entity which wishes to 
+	Purpose:	An instantiation of this class is created by each entity which wishes to
 				provide a 'destination' to which the mouse can go to complete a drag.
 				KernelDragTargets are used as a base class from which to derive drag targets
 				for KERNEL entities (usually a DialogOp and optional Gadget ID)
@@ -290,7 +290,7 @@ BOOL DragTarget::WantsAllEvents(void)
 
 				To remove a drag target at any time, destruct it - it automatically deregisters
 				and cleans up.
-				
+
 	SeeAlso:	DragManagerOp::StartDrag; DragInformation; DragTarget
 
 	Documentation:	Docs\Specs\DragMan.doc
@@ -305,7 +305,7 @@ friend class DragManagerOp;					// Only DragManagerOp can call event handlers
 
 
 public:			// Construction/destruction
-	KernelDragTarget(DialogOp *TheDialog, CGadgetID TheGadget = NULL);
+	KernelDragTarget(DialogOp *TheDialog, CGadgetID TheGadget = 0);
 
 
 public:			// Public interface
@@ -338,7 +338,7 @@ protected:		// Internal data
 	Author:		Jason_Williams (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	2/1/95
 
-	Purpose:	An instantiation of this class is created by each entity which wishes to 
+	Purpose:	An instantiation of this class is created by each entity which wishes to
 				provide a 'destination' to which the mouse can go to complete a drag.
 				OilDragTargets are used as a base class from which to derive drag targets
 				for WINOIL entities (an optional HWND)
@@ -348,7 +348,7 @@ protected:		// Internal data
 
 				To remove a drag target at any time, destruct it - it automatically deregisters
 				and cleans up.
-				
+
 	SeeAlso:	DragManagerOp::StartDrag; DragInformation; DragTarget
 
 	Documentation:	Docs\Specs\DragMan.doc
@@ -364,7 +364,7 @@ friend class DragManagerOp;					// Only DragManagerOp can call event handlers
 
 public:			// Construction/destruction
 	OilDragTarget(wxWindow *TheWindow, wxRect *ClientArea = NULL);
-		
+
 
 public:			// Public interface
 		// Returns TRUE (this is a kernel object) - DO NOT OVERRIDE (derive from WinoilDT instead)
@@ -386,6 +386,4 @@ protected:		// Internal data
 	wxRect		TargetClientArea;
 };
 
-
 #endif
-

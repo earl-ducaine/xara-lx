@@ -1,7 +1,7 @@
 // $Id: dragmgr.h 1282 2006-06-09 09:46:49Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
- 
+
                Xara LX, a vector drawing and manipulation program.
                     Copyright (C) 1993-2006 Xara Group Ltd.
        Copyright on certain contributions may be held in joint with their
@@ -32,7 +32,7 @@ ADDITIONAL RIGHTS
 
 Conditional upon your continuing compliance with the GNU General Public
 License described above, Xara Group Ltd grants to you certain additional
-rights. 
+rights.
 
 The additional rights are to use, modify, and distribute the software
 together with the wxWidgets library, the wxXtra library, and the "CDraw"
@@ -117,7 +117,7 @@ enum ObjectDragTarget;
 	Author:		Gerry_Iles (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	13/01/95
 	Purpose:	An event handler to centralise the mouse handling during a drag
-	SeeAlso:	
+	SeeAlso:
 
 ********************************************************************************************/
 
@@ -125,7 +125,7 @@ class CaptureHandler : public wxEvtHandler
 {
 	DECLARE_DYNAMIC_CLASS(CaptureHandler)
 
-	friend class DragManagerOp;	
+	friend class DragManagerOp;
 	friend class DragInformation;
 
 public:
@@ -155,13 +155,13 @@ protected:
 	wxScreenDC* m_pDisplayDC;
 
 	wxBitmap* m_pBackBitmap;
-	wxRect m_DragRect;	
+	wxRect m_DragRect;
 
 	// Some things for semi-transparent drags
 	wxBitmap* m_pMaskBitmap;
 
 	DECLARE_EVENT_TABLE()
-};                                                                                                                                                         
+};
 
 
 
@@ -226,7 +226,7 @@ public:			// External drag management methods
 	static void SetDragActive(BOOL State){DragActive = State;}
 
 	static void RedrawStarting(void);
-	static void RedrawStarting(CWindowID TheWindow, CGadgetID TheGadget, DocRect *TheArea = NULL);
+	static void RedrawStarting(CWindowID TheWindow, CGadgetID TheGadget, DocRect *TheArea = 0);
 	static void RedrawFinished(void);
 		// Call to tell the drag manager that a redraw is occurring, during a drag.
 		// This allows the drag manager to ensure all drag blobs are removed from screen during the redraw
@@ -246,7 +246,7 @@ protected:		// Methods for use only by friend classes
 		// Sets the cursor shape. If nobody tries to set the shape during an event processing
 		// pass, then it will be set back to the default. Repeated calls with the same shape
 		// have no effect (except to stop the pointer reverting)
-	
+
 	static void SetStatusLineText();
 		// writes status line text
 
@@ -256,10 +256,10 @@ private:		// Internal methods
 
 	void CleanUpAfterDrag(void);
 		// Deletes all of our memory claims
-  
+
 private:		// private data
 	static DragManagerOp *CurrentManager;	// ptr to the currently active Drag Manager
-											 
+
 	static DragInformation *CurrentDragInfo;// Points to descriptor of current drag
 
 	static DragTarget * CurrentDragTarget;  // Points to the current drag target
@@ -274,15 +274,15 @@ private:		// private data
 	KeyPress	*CurrentKeypress;			// NULL, or last keypress info
 
 	wxPoint		InitialMousePos;			// Contains first winoily screen mouse position
-	wxPoint		CurrentMousePos;			// Contains last winoily screen mouse position	
+	wxPoint		CurrentMousePos;			// Contains last winoily screen mouse position
 	wxPoint		LastMousePos;				// Last position the mouse was at
 
-	DragEventType LastEvent;				// Type of the last Drag Event processed	
+	DragEventType LastEvent;				// Type of the last Drag Event processed
 
 	static CaptureHandler * TheCaptureHandler;	// The event handler we use to centralised mouse handling
 
-	static BOOL DragPending;				// Drag pending flag ie. this may be a click !		
-	
+	static BOOL DragPending;				// Drag pending flag ie. this may be a click !
+
 	static BOOL DragEnded;
 
 	static MonotonicTime DragStartTimer;
@@ -292,7 +292,7 @@ private:		// private data
 	static UINT32 DragDelay;					// millisecond delay before drag starts
 
 	static wxRect DragStartRect;
-	
+
 	static wxRect StillClickRect;			// initial area for drag start - if pointer
 											// leaves this area we start a drag.
 
@@ -301,6 +301,4 @@ private:		// private data
 	static BOOL RedrawInProgress;			// An external redraw is occurring
 };
 
-
 #endif
-
