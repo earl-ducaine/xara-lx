@@ -1,5 +1,6 @@
-AC_INIT(svgfilter.cpp)
-AM_INIT_AUTOMAKE(SVGFilter, 0.4)
+AC_INIT([SVGFilter], [0.4])
+AC_CONFIG_SRCDIR([svgfilter.cpp])
+AM_INIT_AUTOMAKE
 
 DEBUG_FLAGS=""
 OPT_FLAGS="-O3"
@@ -136,7 +137,7 @@ LDFLAGS="$LDFLAGS $WX_LIBS"
 if test "$LocalXarLibEnable" != "yes"; then
 	PKG_CHECK_MODULES(XARLIB, [Xar])
 else
-	# stops CPPFLAGS etc being set twice which upsets static link it seems, also drop 
+	# stops CPPFLAGS etc being set twice which upsets static link it seems, also drop
 	XARLIB_CFLAGS="$CXXFLAGS"
 	XARLIB_LIBS="$WX_LIBS"
 	unset CPPFLAGS
@@ -170,7 +171,7 @@ AC_ARG_WITH(xml2-config,
         XML2CONFIG=$withval
     fi
 ])
- 
+
 xml2version=0
 
 AC_DEFUN([XML2TEST],
@@ -204,14 +205,14 @@ if test "$StaticEnable" = "yes"; then
         CPPFLAGS="$CPPFLAGS -ffunction-sections -fdata-sections"
         CXXFLAGS="$CXXFLAGS -ffunction-sections -fdata-sections"
         XARLIB_LIBS="$XARLIB_LIBS --gc-sections"
-	
+
 	# Force as much as possible to be statically linked
 	XARLIB_LIBS="`echo $XARLIB_LIBS | sed -e 's/-lXrandr/-Wl,-Bstatic -lXrandr -Wl,-Bdynamic/g'`"
 	XARLIB_LIBS="`echo $XARLIB_LIBS | sed -e 's/-lXext/-Wl,-Bstatic -lXext -Wl,-Bdynamic/g'`"
 	XARLIB_LIBS="`echo $XARLIB_LIBS | sed -e 's/-lXinerama/-Wl,-Bstatic -lXinerama -Wl,-Bdynamic/g'`"
-	XARLIB_LIBS="`echo $XARLIB_LIBS | sed -e 's/-lXxf86vm/-Wl,-Bstatic -lXxf86vm -Wl,-Bdynamic/g'`"	
-	XARLIB_LIBS="`echo $XARLIB_LIBS | sed -e 's/-lXrender/-Wl,-Bstatic -lXrender -Wl,-Bdynamic/g'`"	
-	XARLIB_LIBS="`echo $XARLIB_LIBS | sed -e 's/-lXfixes/-Wl,-Bstatic -lXfixes -Wl,-Bdynamic/g'`"	
+	XARLIB_LIBS="`echo $XARLIB_LIBS | sed -e 's/-lXxf86vm/-Wl,-Bstatic -lXxf86vm -Wl,-Bdynamic/g'`"
+	XARLIB_LIBS="`echo $XARLIB_LIBS | sed -e 's/-lXrender/-Wl,-Bstatic -lXrender -Wl,-Bdynamic/g'`"
+	XARLIB_LIBS="`echo $XARLIB_LIBS | sed -e 's/-lXfixes/-Wl,-Bstatic -lXfixes -Wl,-Bdynamic/g'`"
 	XARLIB_LIBS="`echo $XARLIB_LIBS | sed -e 's/-lexpat/-Wl,-Bstatic -lexpat -Wl,-Bdynamic/g'`"
 	XARLIB_LIBS="`echo $XARLIB_LIBS | sed -e 's/-ljpeg/-Wl,-Bstatic -ljpeg -Wl,-Bdynamic/g'`"
 	XARLIB_LIBS="`echo $XARLIB_LIBS | sed -e 's/-lpng/-Wl,-Bstatic -lpng -Wl,-Bdynamic/g'`"
