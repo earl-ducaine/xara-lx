@@ -80,6 +80,61 @@ XARLIBCPP = \
 	../xarlib/ensure.cpp \
 	../xarlib/xarlib.cpp
 
+
+INSTCPP = \
+	ccfile.cpp \
+	ccmaths.cpp \
+	ccpanose.cpp \
+	coord.cpp \
+	cxfile.cpp \
+	cxfmap.cpp \
+	cxfrec.cpp \
+	cxfrech.cpp \
+	doccoord.cpp \
+	docrect.cpp \
+	f16spec.cpp \
+	fixed16.cpp \
+	fixed.cpp \
+	fttyplis.cpp \
+	list.cpp \
+	listitem.cpp \
+	matrix.cpp \
+	pathproc.cpp \
+	paths.cpp \
+	pathutil.cpp \
+	rechcomp.cpp \
+	vector.cpp \
+	xlong.cpp \
+	zdeflate.cpp \
+	zdftrees.cpp \
+	ziftrees.cpp \
+	zinflate.cpp \
+	zstream.cpp \
+	basestr.cpp \
+	camresource.cpp \
+	ccobject.cpp \
+	errors.cpp \
+	filehndl.cpp \
+	filesize.cpp \
+	fixmem.cpp \
+	fixst128.cpp \
+	fixst256.cpp \
+	fixstr16.cpp \
+	fixstr32.cpp \
+	fixstr64.cpp \
+	fixstr8.cpp \
+	handles.cpp \
+	makemsg.cpp \
+	memblk.cpp \
+	cammemory.cpp \
+	pathname.cpp \
+	unicdman.cpp \
+	varstr.cpp \
+	camelot.cpp \
+	ensure.cpp \
+	xarlib.cpp
+
+
 # Ensure these all begin with "../<directory>/" even if in the current directory
 XARLIBHEADERS = \
 	../PreComp/camtypes.h \
@@ -150,11 +205,79 @@ XARLIBHEADERS = \
 	../xarlib/ensure.h \
 	../xarlib/xarlib.h
 
+INSTHEADERS = \
+	include/xarlib/camtypes.h \
+	include/xarlib/basestr.h \
+	include/xarlib/camresource.h \
+	include/xarlib/camstring.h \
+	include/xarlib/ccobject.h \
+	include/xarlib/compatdef.h \
+	include/xarlib/errors.h \
+	include/xarlib/exception.h \
+	include/xarlib/fixmem.h \
+	include/xarlib/fixst128.h \
+	include/xarlib/fixst256.h \
+	include/xarlib/fixstr16.h \
+	include/xarlib/fixstr32.h \
+	include/xarlib/fixstr64.h \
+	include/xarlib/fixstr8.h \
+	include/xarlib/handles.h \
+	include/xarlib/hardwaremanager.h \
+	include/xarlib/memblk.h \
+	include/xarlib/memdebug.h \
+	include/xarlib/cammemory.h \
+	include/xarlib/mfccontainer.h \
+	include/xarlib/pathname.h \
+	include/xarlib/stdwx.h \
+	include/xarlib/svnversion.h \
+	include/xarlib/unicdman.h \
+	include/xarlib/varstr.h \
+	include/xarlib/gconsts.h \
+	include/xarlib/attr.h \
+	include/xarlib/ccfile.h \
+	include/xarlib/ccmaths.h \
+	include/xarlib/ccpanose.h \
+	include/xarlib/coord.h \
+	include/xarlib/cxfarrow.h \
+	include/xarlib/cxfcols.h \
+	include/xarlib/cxfdash.h \
+	include/xarlib/cxfdefs.h \
+	include/xarlib/cxfile.h \
+	include/xarlib/cxfmap.h \
+	include/xarlib/cxfrec.h \
+	include/xarlib/cxfrech.h \
+	include/xarlib/cxftags.h \
+	include/xarlib/doccoord.h \
+	include/xarlib/docrect.h \
+	include/xarlib/f16spec.h \
+	include/xarlib/fixed16.h \
+	include/xarlib/fixed.h \
+	include/xarlib/fttyplis.h \
+	include/xarlib/list.h \
+	include/xarlib/listitem.h \
+	include/xarlib/macros.h \
+	include/xarlib/matrix.h \
+	include/xarlib/pathproc.h \
+	include/xarlib/paths.h \
+	include/xarlib/pathtype.h \
+	include/xarlib/pathutil.h \
+	include/xarlib/rechcomp.h \
+	include/xarlib/taglists.h \
+	include/xarlib/vector.h \
+	include/xarlib/xlong.h \
+	include/xarlib/zdeflate.h \
+	include/xarlib/zinflate.h \
+	include/xarlib/zlib.h \
+	include/xarlib/zstream.h \
+	include/xarlib/zutil.h \
+	include/xarlib/camelot.h \
+	include/xarlib/ensure.h \
+	include/xarlib/xarlib.h
+
 # These ones not got from TOPDIR
 BUILTXARLIBHEADERS = ../wxOil/svnversion.h
 
-INSTHEADERS = $(addprefix include/xarlib/, $(notdir $(XARLIBHEADERS)) )
-INSTCPP = $(notdir $(XARLIBCPP) )
+# INSTCPP = $(notdir $(XARLIBCPP) )
 
 libXar_a_SOURCES = $(XARLIBCPP) $(INSTHEADERS)
 # Only build the static library until we have an API/ABI nailed down
@@ -179,7 +302,7 @@ $(INSTHEADERS) : $(XARLIBHEADERS)
 	j=xarlib/$(filter %/$(notdir $@), $(XARLIBHEADERS) ) && \
 	s="$(if $(filter %/$(notdir $@),$(BUILTXARLIBHEADERS)),../$$j,$(TOPDIR)/$$j)" && \
 	echo "Building xarlib header $@ from $$s" && \
-	perl -pe 's,^[ \t]*#include[ \t]+\",#include \"xarlib/,' <$$s >$@ 
+	perl -pe 's,^[ \t]*#include[ \t]+\",#include \"xarlib/,' <$$s >$@
 
 # We need svnversion.h in the output directory
 svnversion.h : $(INSTHEADERS)
@@ -187,11 +310,11 @@ svnversion.h : $(INSTHEADERS)
 
 # Generate a directory of includes which has "xarlib/" in the include path
 # We have to muck around with the prefixes here to avoid partial matches (coord.cpp matching doccoord.cpp etc.)
-$(INSTCPP) : $(XARLIBCPP)
-	@j=$(filter %/$(notdir $@), $(addprefix xarlib/, $(XARLIBCPP)) ) && \
-	echo "Building xarlib CPP file $@ from $(TOPDIR)/$$j" && \
-	ls -la $(TOPDIR)/$$j && \
-	#perl -pe 's,^[ \t]*#include[ \t]+\",#include \"xarlib/,' <$(TOPDIR)/$$j >$@ 
+# $(INSTCPP) : $(XARLIBCPP)
+# 	@j=$(filter %/$(notdir $@), $(addprefix xarlib/, $(XARLIBCPP)) ) && \
+# 	echo "Building xarlib CPP file $@ from $(TOPDIR)/$$j" && \
+# 	ls -la $(TOPDIR)/$$j && \
+# 	#perl -pe 's,^[ \t]*#include[ \t]+\",#include \"xarlib/,' <$(TOPDIR)/$$j >$@
 
 
 pkgconfigdir = $(libdir)/pkgconfig

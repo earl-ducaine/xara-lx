@@ -50,8 +50,10 @@ AM_CXXFLAGS = $(XARAFLAGS)
 XARALANGUAGE = @XARALANGUAGE@
 
 # Ensure wxrc is set to something. If wxconfig can't find it, it becomes an empty string which will upset build-resources.pl
-WXRC := ${if @WXRC@,@WXRC@,echo}
+# WXRC := ${if @WXRC@,@WXRC@,echo}
 
-RESOURCEDUMMY := ${if ${strip ${shell $(TOPDIR)/Scripts/build-resources.pl @BUILDRESFLAGS@ -t $(TOPDIR) -o . --version $(VERSION) -x $(XARALANGUAGE) -u $(USER) --wxrc "$(WXRC)" } }, ,${error "Resource build failed"}}
+# RESOURCEDUMMY := ${if ${strip ${shell $(TOPDIR)/Scripts/build-resources.pl @BUILDRESFLAGS@ -t $(TOPDIR) -o . --version $(VERSION) -x $(XARALANGUAGE) -u $(USER) --wxrc "$(WXRC)" } }, ,${error "Resource build failed"}}
 
 
+resources.h svnversion.h:
+	../Scripts/build-resources.pl -i  -t $(TOPDIR) -o . --version $(VERSION) -x $(XARALANGUAGE) -u $(USER) --wxrc "$(WXRC)"

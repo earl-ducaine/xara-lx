@@ -27,5 +27,5 @@ function build_wx {
 function build_xoamorph {
     ./autogen.sh
     ./configure
-    make
+    make -j 4
 }
