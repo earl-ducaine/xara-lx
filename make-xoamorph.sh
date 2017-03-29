@@ -25,7 +25,6 @@ function build_wx {
 }
 
 function build_xoamorph {
-    cd xoamorph
     ./autogen.sh
     ./configure
     make
