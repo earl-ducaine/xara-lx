@@ -150,10 +150,78 @@ XARLIBHEADERS = \
 	../xarlib/ensure.h \
 	../xarlib/xarlib.h
 
+INSTHEADERS = \
+	include/xarlib/camtypes.h \
+	include/xarlib/basestr.h \
+	include/xarlib/camresource.h \
+	include/xarlib/camstring.h \
+	include/xarlib/ccobject.h \
+	include/xarlib/compatdef.h \
+	include/xarlib/errors.h \
+	include/xarlib/exception.h \
+	include/xarlib/fixmem.h \
+	include/xarlib/fixst128.h \
+	include/xarlib/fixst256.h \
+	include/xarlib/fixstr16.h \
+	include/xarlib/fixstr32.h \
+	include/xarlib/fixstr64.h \
+	include/xarlib/fixstr8.h \
+	include/xarlib/handles.h \
+	include/xarlib/hardwaremanager.h \
+	include/xarlib/memblk.h \
+	include/xarlib/memdebug.h \
+	include/xarlib/cammemory.h \
+	include/xarlib/mfccontainer.h \
+	include/xarlib/pathname.h \
+	include/xarlib/stdwx.h \
+	include/xarlib/svnversion.h \
+	include/xarlib/unicdman.h \
+	include/xarlib/varstr.h \
+	include/xarlib/gconsts.h \
+	include/xarlib/attr.h \
+	include/xarlib/ccfile.h \
+	include/xarlib/ccmaths.h \
+	include/xarlib/ccpanose.h \
+	include/xarlib/coord.h \
+	include/xarlib/cxfarrow.h \
+	include/xarlib/cxfcols.h \
+	include/xarlib/cxfdash.h \
+	include/xarlib/cxfdefs.h \
+	include/xarlib/cxfile.h \
+	include/xarlib/cxfmap.h \
+	include/xarlib/cxfrec.h \
+	include/xarlib/cxfrech.h \
+	include/xarlib/cxftags.h \
+	include/xarlib/doccoord.h \
+	include/xarlib/docrect.h \
+	include/xarlib/f16spec.h \
+	include/xarlib/fixed16.h \
+	include/xarlib/fixed.h \
+	include/xarlib/fttyplis.h \
+	include/xarlib/list.h \
+	include/xarlib/listitem.h \
+	include/xarlib/macros.h \
+	include/xarlib/matrix.h \
+	include/xarlib/pathproc.h \
+	include/xarlib/paths.h \
+	include/xarlib/pathtype.h \
+	include/xarlib/pathutil.h \
+	include/xarlib/rechcomp.h \
+	include/xarlib/taglists.h \
+	include/xarlib/vector.h \
+	include/xarlib/xlong.h \
+	include/xarlib/zdeflate.h \
+	include/xarlib/zinflate.h \
+	include/xarlib/zlib.h \
+	include/xarlib/zstream.h \
+	include/xarlib/zutil.h \
+	include/xarlib/camelot.h \
+	include/xarlib/ensure.h \
+	include/xarlib/xarlib.h
+
 # These ones not got from TOPDIR
 BUILTXARLIBHEADERS = ../wxOil/svnversion.h
 
-INSTHEADERS = $(addprefix include/xarlib/, $(notdir $(XARLIBHEADERS)) )
 INSTCPP = $(notdir $(XARLIBCPP) )
 
 libXar_a_SOURCES = $(XARLIBCPP) $(INSTHEADERS)
@@ -179,7 +247,7 @@ $(INSTHEADERS) : $(XARLIBHEADERS)
 	j=xarlib/$(filter %/$(notdir $@), $(XARLIBHEADERS) ) && \
 	s="$(if $(filter %/$(notdir $@),$(BUILTXARLIBHEADERS)),../$$j,$(TOPDIR)/$$j)" && \
 	echo "Building xarlib header $@ from $$s" && \
-	perl -pe 's,^[ \t]*#include[ \t]+\",#include \"xarlib/,' <$$s >$@ 
+	perl -pe 's,^[ \t]*#include[ \t]+\",#include \"xarlib/,' <$$s >$@
 
 # We need svnversion.h in the output directory
 svnversion.h : $(INSTHEADERS)
@@ -191,7 +259,7 @@ $(INSTCPP) : $(XARLIBCPP)
 	@j=$(filter %/$(notdir $@), $(addprefix xarlib/, $(XARLIBCPP)) ) && \
 	echo "Building xarlib CPP file $@ from $(TOPDIR)/$$j" && \
 	ls -la $(TOPDIR)/$$j && \
-	#perl -pe 's,^[ \t]*#include[ \t]+\",#include \"xarlib/,' <$(TOPDIR)/$$j >$@ 
+	#perl -pe 's,^[ \t]*#include[ \t]+\",#include \"xarlib/,' <$(TOPDIR)/$$j >$@
 
 
 pkgconfigdir = $(libdir)/pkgconfig
