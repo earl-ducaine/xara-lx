@@ -1,7 +1,7 @@
 // $Id: camtypes.h 1688 2006-08-10 12:05:20Z gerry $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
- 
+
                Xara LX, a vector drawing and manipulation program.
                     Copyright (C) 1993-2006 Xara Group Ltd.
        Copyright on certain contributions may be held in joint with their
@@ -32,7 +32,7 @@ ADDITIONAL RIGHTS
 
 Conditional upon your continuing compliance with the GNU General Public
 License described above, Xara Group Ltd grants to you certain additional
-rights. 
+rights.
 
 The additional rights are to use, modify, and distribute the software
 together with the wxWidgets library, the wxXtra library, and the "CDraw"
@@ -114,7 +114,10 @@ service marks of Xara Group Ltd. All rights in these marks are reserved.
 // nmake depend will not work) - markn & neville 4-8-97
 
 // Include machine-specific types
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-local-typedefs"
 #include "stdwx.h"
+#pragma GCC diagnostic pop
 
 // This has been placed here to ensure that min and max are available
 // if ccfile.h is not included (via document.h below)
@@ -124,7 +127,7 @@ using namespace std;
 // note it does include other stuff, but only after it has defined _R()
 #include "camresource.h"
 
-// ADDR is a general pointer type. Using void* would mean casts of every use so it is a 
+// ADDR is a general pointer type. Using void* would mean casts of every use so it is a
 // pointer to BYTE, to make address calculation marginally easier.
 typedef BYTE* ADDR;
 
@@ -195,7 +198,7 @@ typedef UINT32 	TAG;
 //-----------------------------------------------------------------------------------------//
 // Some globally useful coordinate values...
 
-// The following two values define the boundaries within which all physical coords must exist. 
+// The following two values define the boundaries within which all physical coords must exist.
 // No data structure should EVER hold these values - they just represent the limits.
 // They are measured in millipoints.
 
