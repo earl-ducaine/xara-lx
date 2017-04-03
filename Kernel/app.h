@@ -1,7 +1,7 @@
 // $Id: app.h 1461 2006-07-18 09:50:40Z luke $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
- 
+
                Xara LX, a vector drawing and manipulation program.
                     Copyright (C) 1993-2006 Xara Group Ltd.
        Copyright on certain contributions may be held in joint with their
@@ -32,7 +32,7 @@ ADDITIONAL RIGHTS
 
 Conditional upon your continuing compliance with the GNU General Public
 License described above, Xara Group Ltd grants to you certain additional
-rights. 
+rights.
 
 The additional rights are to use, modify, and distribute the software
 together with the wxWidgets library, the wxXtra library, and the "CDraw"
@@ -149,70 +149,70 @@ class CTemplateManager;
 	Created:	20/5/1993
 	Base Class:	None
 	Purpose:	Represents an instance of the Camelot application.
-	
+
 				\b General \b0
-				
+
 				There is only one Application object; it is a global, and it is called
 				Camelot.
-				
+
 				The data member 'Documents' is a list of 'Document' objects associated
 				with this instance of the application.  Any documents left in this list
 				are deleted by the Application's destructor.
-				
+
 				The data member 'RenderRegions' is a RenderRegionList object, and is the
 				list of RenderRegions outstanding for this instance of the application.
 
 				The data member 'Selection' is a SelRange object which caches information
-				about the current selection for quick access. NOTE: There is only one 
-				Selection object and it is used by all documents because the selection 
-				follows the input focus - when the user selects something in a document 
+				about the current selection for quick access. NOTE: There is only one
+				Selection object and it is used by all documents because the selection
+				follows the input focus - when the user selects something in a document
 				any existing selection in any other document is cleared.
-				So that the inline functions get fast access to the SelRange object the 
+				So that the inline functions get fast access to the SelRange object the
 				Application class is a friend of the SelRange class.
-                
+
                 \b User Preferences \b0
 
-				The Camelot object is responsible for controlling the application 
+				The Camelot object is responsible for controlling the application
 				preferences.
-				
+
 				When a client wishes to use a preference, they should allocate some space to
 				hold its value, and then use DeclarePref to inform the preferences system
 				of its existence.
-				
+
 				e.g.
 				MonoOn
 					INT32 AutoSaveDelay;
 					Camelot.DeclarePref("Global", "AutoSaveDelay", &AutoSaveDelay);
 				MonoOff
-				
+
 				This will inform the preferences system that there is a preference called
-				\b AutoSaveDelay \b0 in the section called \b Global \b0 (the names of the 
+				\b AutoSaveDelay \b0 in the section called \b Global \b0 (the names of the
 				sections and preferences are always case-insensitive).  The \b DeclarePref \b0
-				call will also attempt to read this preference from the application's 
-				preference file - if it exists, it will read the value and store it in the 
+				call will also attempt to read this preference from the application's
+				preference file - if it exists, it will read the value and store it in the
 				\i AutoSaveDelay \i0 variable. The \b DeclarePref \b0 function is currently
 				overloaded for INTs, UINTs,	doubles, and Camelot String objects.
-				
-				\b NB! You should NOT pass the address of an \i auto \i0 variable to 
+
+				\b NB! You should NOT pass the address of an \i auto \i0 variable to
 				DeclarePref, because this will obviously be invalid as soon as your function
 				exits, and will cause interesting values to be written to the .ini file - hence
 				all preference variables should be declared as \i static \i0 . \b0
 				(This should be fairly obvious though, because actually using a preference
 				variable that isn't static wouldn't really work all that well.)
-				
+
 				Another effect of declaring a preference is that when the application saves
 				the preferences out (e.g. on normal application close-down), the preference
 				is automatically saved out under its correct name and section, using the
-				value contained in (assuming the above example) \i AutoSaveDelay \i0 when the 
+				value contained in (assuming the above example) \i AutoSaveDelay \i0 when the
 				save occurs.
-				
+
 				Note that before a preference can be declared, its parent section \i must \i0
 				have been declared via a call to \b DeclareSection \b0:
-				
+
 				MonoOn
 					Application::DeclareSection("Global", 100);
 				MonoOff
-				
+
 				The value of 100 indicates that the caller expects there to about 100
 				preferences stored in this section - this is used as a guideline by the
 				preferences system when allocating memory for preferences.  This is not an
@@ -220,17 +220,17 @@ class CTemplateManager;
 				the more accurate the initial estimate, the more efficient the memory
 				usage will be.  Obviously for some sections, the accuracy is limited - for
 				example, it may depend on how many tools the user loads/uses.
-                
-                
+
+
 	Errors:		None.
-				
+
 *********************************************************************************************/
 
 class CCAPI Application : public CC_CLASS_MEMDUMP
 {
 	CC_DECLARE_MEMDUMP(Application);
-	
-public:       
+
+public:
 
 	Application();
 	~Application();
@@ -238,16 +238,16 @@ public:
 	BOOL Init();
 	BOOL LateInit();
 	void Deinit();
-	
+
 	List Documents;
 
 	BOOL CreateDragTargets(DragInformation * DragInfo);
 
 	void AddRenderRegion(RenderRegion *);
 	BOOL DeleteRenderRegion(RenderRegion *);
-	void DeleteRenderRegions(Document *pDoc) 
+	void DeleteRenderRegions(Document *pDoc)
 		{ RenderList.Remove(pDoc); };
-	void DeleteRenderRegions(View *pView) 
+	void DeleteRenderRegions(View *pView)
 		{ RenderList.Remove(pView); };
 	RenderRegionList* GetRegionList();
 	// CGS:  used by the brush system.
@@ -298,7 +298,7 @@ public:
 
 	// And one for the one & only Camelot Filter Manager
 	FilterManager* GetFilterManager() const { return TheFilterManager; }
-	
+
 	// Function to gain access to the plugin API host object
 	APIObject* GetAPIObject() const { return TheAPIObject; }
 
@@ -336,11 +336,11 @@ public:
 
 	// Keith may not be needed now we have the Message handler class
 	// Keith is Camelot's main sentry operation. His job is to hang out on the live
-	// operation's list waiting for messages. When he receives a message he informs 
-	// all interested subsystems. 
+	// operation's list waiting for messages. When he receives a message he informs
+	// all interested subsystems.
 	/*
-	SentryOperation Keith; 
-	*/						 
+	SentryOperation Keith;
+	*/
 
 	BOOL OnKeyPress(KeyPress* pKeyPress);
 	BOOL OnIdle(BOOL IdleRedraw);
@@ -353,8 +353,8 @@ public:
 	void DumpLastOp(Document* pDoc);			// Dumps last operation
 	void DumpTree(BaseDocument* pDoc);				// Dumps document tree
 	void DumpAllOps() {DumpAllOps(NULL);}			// The stupid QuickWatch window dosent allow default params!
-	void DumpLastOp() {DumpLastOp(NULL);}			
-	void DumpTree()   {DumpTree(NULL);}			
+	void DumpLastOp() {DumpLastOp(NULL);}
+	void DumpTree()   {DumpTree(NULL);}
 
 protected:
 	BOOL InitFilterManager();
@@ -373,7 +373,7 @@ private:
 	RenderRegionList RenderList;
 	BOOL ImmediateRenderPending;
 
-	Preferences *CamelotPrefs;							
+	Preferences *CamelotPrefs;
 
 	// The Colour System Manager. Call him Bob.
 	ColourManager *TheColourManager;
@@ -448,7 +448,7 @@ private:
 	// Temporary
 	StatusLine* m_pStatusLine;
 
-	std::auto_ptr<CTemplateManager>	m_pTemplateManager;
+	std::unique_ptr<CTemplateManager> m_pTemplateManager;
 
 public:
 	// Public access to the template manager
@@ -474,16 +474,16 @@ public:
 
 	BOOL DeclareSection(LPTCHAR Section, UINT32 InitialSize)
 		{ return CamelotPrefs->DeclareSection(Section, InitialSize); };
-	
-	BOOL DeclarePref(LPTCHAR Section, LPTCHAR Pref, 
+
+	BOOL DeclarePref(LPTCHAR Section, LPTCHAR Pref,
 					 INT32 *PrefVar, INT32 Min = INT_MIN, INT32 Max = INT_MAX)
 		{ return CamelotPrefs->DeclarePref(Section, Pref, PrefVar, Min, Max); };
 
-	BOOL DeclarePref(LPTCHAR Section, LPTCHAR Pref, 
+	BOOL DeclarePref(LPTCHAR Section, LPTCHAR Pref,
 					 UINT32 *PrefVar, UINT32 Min = 0, UINT32 Max = UINT_MAX)
 		{ return CamelotPrefs->DeclarePref(Section, Pref, PrefVar, Min, Max); };
 
-	BOOL DeclarePref(LPTCHAR Section, LPTCHAR Pref, 
+	BOOL DeclarePref(LPTCHAR Section, LPTCHAR Pref,
 					 double *PrefVar, double Min = DBL_MIN, double Max = DBL_MAX)
 		{ return CamelotPrefs->DeclarePref(Section, Pref, PrefVar, Min, Max); };
 
@@ -542,7 +542,7 @@ public:
 
 	// Used to test if camelot is in the process of shutting itself down
 	BOOL CamelotIsDying()	{ return CamelotShuttingDown; }
-	
+
 	// Called in CCamApp::SaveAllModified to indicate that Camelot is shutting down.
 	void ShuttingDown(BOOL fState = TRUE) { CamelotShuttingDown = fState; }
 
@@ -552,10 +552,10 @@ public:
 // StatusBar/StatusLine ...
 public:
 	BOOL UpdateStatusBarText(String_256* text, BOOL PrefixSelDesc=TRUE);
-	
+
 	BOOL LockOutControlHelp ();				// status-line overide - no control help please
 	BOOL UnlockControlHelp ();				// status-line overide - control help please
-	
+
 	CCStatusBar* GetpCCStatusBar();
 	StatusLine*  GetpStatusLine();
 
@@ -576,7 +576,7 @@ private:
 	Inputs:		-
 	Outputs:	-
 	Returns:	TRUE if camelot is in the process of shutting down
-	Purpose:	To determine if we are currently shutting down Camelot. 
+	Purpose:	To determine if we are currently shutting down Camelot.
 	Errors:		-
 
 ********************************************************************************************/
@@ -599,4 +599,3 @@ const INT32 IDLEPRIORITY_LOW = 2;
 
 
 #endif
-													   
