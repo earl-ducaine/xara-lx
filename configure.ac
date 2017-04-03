@@ -2,7 +2,7 @@ AC_INIT([XaraLX], [0.7])
 AC_CONFIG_SRCDIR([wxOil/camelot.cpp])
 AC_CANONICAL_TARGET
 AM_INIT_AUTOMAKE([subdir-objects])
-
+AC_DEFUN([AC_DATAROOTDIR_CHECKED])
 
 # AC_INIT(wxOil/camelot.cpp)
 # AM_INIT_AUTOMAKE(XaraLX, 0.7)
