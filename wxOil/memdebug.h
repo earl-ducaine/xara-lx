@@ -1,7 +1,7 @@
 // $Id: memdebug.h 751 2006-03-31 15:43:49Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
- 
+
                Xara LX, a vector drawing and manipulation program.
                     Copyright (C) 1993-2006 Xara Group Ltd.
        Copyright on certain contributions may be held in joint with their
@@ -32,7 +32,7 @@ ADDITIONAL RIGHTS
 
 Conditional upon your continuing compliance with the GNU General Public
 License described above, Xara Group Ltd grants to you certain additional
-rights. 
+rights.
 
 The additional rights are to use, modify, and distribute the software
 together with the wxWidgets library, the wxXtra library, and the "CDraw"
@@ -102,17 +102,17 @@ service marks of Xara Group Ltd. All rights in these marks are reserved.
 // TODO reporting macros
 #define __STR2__(x) #x
 #define __STR1__(x) __STR2__(x)
-#define __LOCMSG__ __FILE__ "("__STR1__(__LINE__)") : Port Message: "
-#define __LOCWRN__ __FILE__ "("__STR1__(__LINE__)") : Warning: "
+#define __LOCMSG__ __FILE__ "(" __STR1__(__LINE__) ") : Port Message: "
+#define __LOCWRN__ __FILE__ "(" __STR1__(__LINE__) ") : Warning: "
 
-#define THIS_FILE		__FILE__
+#define THIS_FILE __FILE__
 
 #if defined(__WXMSW__)
 
 #include <crtdbg.h>
 
 //  The debug memory tracking system (see afxmem.cpp for derivation of windows code)
-// Don't complain that this is using malloc/free so opening, so does MFC! 
+// Don't complain that this is using malloc/free so opening, so does MFC!
 #if defined(_DEBUG)
 inline void *operator new( size_t nSize, LPCSTR pszFile, INT32 nLine )
 {
