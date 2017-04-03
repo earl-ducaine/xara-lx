@@ -1,7 +1,7 @@
 // $Id: rect.h 751 2006-03-31 15:43:49Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
- 
+
                Xara LX, a vector drawing and manipulation program.
                     Copyright (C) 1993-2006 Xara Group Ltd.
        Copyright on certain contributions may be held in joint with their
@@ -32,7 +32,7 @@ ADDITIONAL RIGHTS
 
 Conditional upon your continuing compliance with the GNU General Public
 License described above, Xara Group Ltd grants to you certain additional
-rights. 
+rights.
 
 The additional rights are to use, modify, and distribute the software
 together with the wxWidgets library, the wxXtra library, and the "CDraw"
@@ -96,7 +96,7 @@ service marks of Xara Group Ltd. All rights in these marks are reserved.
 =================================XARAHEADEREND============================
  */
 
-      
+
 #ifndef INC_RECT
 #define INC_RECT
 
@@ -108,23 +108,23 @@ service marks of Xara Group Ltd. All rights in these marks are reserved.
 
      Author:       Simon_Maneggio (Xara Group Ltd) <camelotdev@xara.com>
      Date:    	   11/5/93
-     
+
      Purpose:      This class is used to represent a rectangular region.  It uses a union to
      			   enable the client to access the rectangle as two Coords (lo and hi) or as
      			   four INT32s (lox, loy, hix, hiy).  An anonymous union is used, which is a
      			   defined C++ feature and so portable.
 
      			   The lo coordinates are inclusive, whilst the hi coordinates are exclusive.
-     			   In the document space, lo.y <= hi.y and lo.x <= hi.x (the inequalities are 
+     			   In the document space, lo.y <= hi.y and lo.x <= hi.x (the inequalities are
      			   not strict because rectangles can have zero width and/or height - such
-     			   rectangles are considered perfectly valid). 
-     			   
+     			   rectangles are considered perfectly valid).
+
      			   The inclusivity can be explained as follows:
-     			   
+
      			   A point at (lo.x, lo.y) is inside the rectangle
      			   A point at (hi.x, hi.y) is outside the rectangle
-     			   
-     			   Any rectangle that does not obey the inequalites lo.y <= hi.y and 
+
+     			   Any rectangle that does not obey the inequalites lo.y <= hi.y and
      			   lo.x <= hi.x is deemed to be 'invalid'.  Invalid rectangles have special
      			   properties.  They will cause errors when used in some operations, but not
      			   in others.  The general rule is that if the rectangle is used as an entity,
@@ -132,19 +132,19 @@ service marks of Xara Group Ltd. All rights in these marks are reserved.
      			   the rectangle).  If, however, the actual coordinates of the invalid
      			   rectangle must be used/changed in the operation, then an error (usually an
      			   assertion failure) will occur.
-     			   
-     			   For example, using invalid rectangles in Unions and Intersections is ok, 
+
+     			   For example, using invalid rectangles in Unions and Intersections is ok,
      			   because the invalid rectangle is ignored, and the 'other' rectangle is
      			   returned as the result.  This means that if both rectangles are invalid,
      			   then an invalid rectangle is returned.
-     			   
+
      			   Conversely, trying to use operations like Translate(), Inflate(), Width()
      			   or Height() on invalid rectangles is considered to be an error, and will
      			   cause an assertion failure.
-     			   
+
      			   See the individual function descriptions for more details.
-     			   
-     			   
+
+
      Errors:	   -
 
      SeeAlso:	   Coord
@@ -153,38 +153,38 @@ service marks of Xara Group Ltd. All rights in these marks are reserved.
      SeeAlso:	   DocRect
      SeeAlso:	   WorkRect
      SeeAlso:	   OSRect
-     			    
+
 ***********************************************************************************************/
 
 class CAMAPI Rect
-{   
+{
 public:
 
 	Coord				lo;
 	Coord				hi;
-	                        
+
 	// Rect constructors
-	                    
-	Rect();              
 
-	Rect(INT32 LowX, INT32 LowY, INT32 HighX, INT32 HighY); 
+	Rect();
 
-	Rect(const Coord& Low, UINT32 Width, UINT32 Height); 
+	Rect(INT32 LowX, INT32 LowY, INT32 HighX, INT32 HighY);
 
-	Rect(const Coord& Low, const Coord& High);   
-			 		 
+	Rect(const Coord& Low, UINT32 Width, UINT32 Height);
+
+	Rect(const Coord& Low, const Coord& High);
+
 	Rect(const Rect& Rect); // Copy constructor
 
 	Rect& operator=(const Rect& Rect);// Assignment operator
-			 		 
+
 	INT32 Width() const;
-	INT32 Height() const; 
-	
+	INT32 Height() const;
+
 	Coord LowCorner() const;
-	Coord HighCorner() const;  
+	Coord HighCorner() const;
 
 	Coord Centre() const;
-	
+
 	// General operations type stuff
 	BOOL IsIntersectedWith(const Rect&) const;
 	Rect Intersection(const Rect&) const;
@@ -197,24 +197,24 @@ public:
 	BOOL IsAdjacent(const Rect&, MILLIPOINT Fuzzy) const;
 
 	void MakeEmpty();
-		
-	BOOL IsEmpty() const;	
-	BOOL IsValid() const;	
+
+	BOOL IsEmpty() const;
+	BOOL IsValid() const;
 
 	void Inflate(INT32 XInc, INT32 YInc);
 	void Inflate(INT32 XInc);
 	void Translate(INT32 XOfs, INT32 YOfs);
 	void IncludePoint(const Coord&);
-	
+
 	// Overloaded operators
 	INT32 operator==(const Rect&) const;
 	INT32 operator!=(const Rect&) const;
 
 
-};                                            
+};
 
 
-  
+
 /*********************************************************************************************
 
 >    void Rect::Translate(INT32 XOfs, INT32 YOfs)
@@ -222,24 +222,24 @@ public:
      Author: 	Tim_Browse (Xara Group Ltd) <camelotdev@xara.com>
      Created:   17/5/93
      Inputs:	(XOfs, YOfs) - the offset to translate the rectangle by.
-     Outputs:   - 
-     
+     Outputs:   -
+
      Returns:   N/A.
-     			
+
      Purpose:	Translate a rectangle by given offset.
 
      Errors:	An assertion failure if the rectangle is invalid.
 
-**********************************************************************************************/  
+**********************************************************************************************/
 
 inline void Rect::Translate(INT32 XOfs, INT32 YOfs)
 {
     // Detect an invalid rectangle
-	ENSURE(IsValid(), "Rect::Translate() was called on an \ninvalid rectangle.");  
+	ENSURE(IsValid(), "Rect::Translate() was called on an \ninvalid rectangle.");
 
 	lo.x += XOfs;
 	lo.y += YOfs;
-    
+
 	hi.x += XOfs;
 	hi.y += YOfs;
 }
@@ -253,28 +253,28 @@ inline void Rect::Translate(INT32 XOfs, INT32 YOfs)
      Author: 	Tim_Browse (Xara Group Ltd) <camelotdev@xara.com>
      Created:   17/5/93
      Inputs:	R - the rectangle to compare against.
-     Outputs:   - 
-     
+     Outputs:   -
+
      Returns:   TRUE if R is describes the same rectangle as the object.
-     			
+
      Purpose:	Test for equality of two rectangles.  As all invalid rectangles have the
      			same results when used for Union/Intersection, any two invalid rectangles
      			are considered equal.
 
 	 Friend:    Rect
-	 
+
      Errors:	None.
 
-**********************************************************************************************/  
+**********************************************************************************************/
 
 inline INT32 Rect::operator==(const Rect& R) const
 {
 	// Invalid rectangles are equal
 	if ((!IsValid()) && (!R.IsValid()))
 		return TRUE;
-		
+
 	// Could use structure compare? Would it be portable? Probably not...
-	
+
  	return ((lo.x == R.lo.x) && (lo.y == R.lo.y) &&
  	        (hi.x == R.hi.x) && (hi.y == R.hi.y));
 }
@@ -288,26 +288,26 @@ inline INT32 Rect::operator==(const Rect& R) const
      Author: 	Tim_Browse (Xara Group Ltd) <camelotdev@xara.com>
      Created:   17/5/93
      Inputs:	R - the rectangle to compare against.
-     Outputs:   - 
-     
+     Outputs:   -
+
      Returns:   TRUE if R does not describe the same rectangle as the object.
-     			
+
      Purpose:	Test for inequality of two rectangles.  As all invalid rectangles have the
      			same results when used for Union/Intersection, any two invalid rectangles
      			are considered equal.
 
 	 Friend:    Rect
-	 
+
      Errors:	None.
 
-**********************************************************************************************/  
+**********************************************************************************************/
 
 inline INT32 Rect::operator!=(const Rect& R) const
 {
 	// Invalid rectangles are equal
 	if ((!IsValid()) && (!R.IsValid()))
 		return FALSE;
-		
+
  	return ((lo.x != R.lo.x) || (lo.y != R.lo.y) ||
  	        (hi.x != R.hi.x) || (hi.y != R.hi.y));
 }
@@ -321,25 +321,25 @@ inline INT32 Rect::operator!=(const Rect& R) const
      Author: 	Tim_Browse (Xara Group Ltd) <camelotdev@xara.com>
      Created:   17/5/93
      Inputs:	XInc, YInc - the amount to inflate (or deflate) the rectangle by.
-     Outputs:   - 
-     
+     Outputs:   -
+
      Returns:   N/A.
-     			
+
      Purpose:	Inflate a rectangle by given amounts.  Negative values will deflate the
      			rectangle.
 
      Errors:	An assertion failure if the rectangle is invalid.
 
-**********************************************************************************************/  
+**********************************************************************************************/
 
 inline void Rect::Inflate(INT32 XInc, INT32 YInc)
 {
     // Detect an invalid rectangle
-	ENSURE(IsValid(), "Rect::Inflate(INT32, INT32) was called on an \ninvalid rectangle.");  
+	ENSURE(IsValid(), "Rect::Inflate(INT32, INT32) was called on an \ninvalid rectangle.");
 
 	lo.x -= XInc;
 	lo.y -= YInc;
-    
+
 	hi.x += XInc;
 	hi.y += YInc;
 }
@@ -353,25 +353,25 @@ inline void Rect::Inflate(INT32 XInc, INT32 YInc)
      Author: 	Tim_Browse (Xara Group Ltd) <camelotdev@xara.com>
      Created:   17/5/93
      Inputs:	Inc - the amount to inflate (or deflate) the rectangle by.
-     Outputs:   - 
-     
+     Outputs:   -
+
      Returns:   N/A.
-     			
+
      Purpose:	Inflate a rectangle by given amount.  Negative values will deflate the
      			rectangle.
 
      Errors:	An assertion failure if the rectangle is invalid.
 
-**********************************************************************************************/  
+**********************************************************************************************/
 
 inline void Rect::Inflate(INT32 Inc)
 {
     // Detect an invalid rectangle
-	ENSURE(IsValid(), "Rect::Inflate(INT32) was called on an \ninvalid rectangle.");  
+	ENSURE(IsValid(), "Rect::Inflate(INT32) was called on an \ninvalid rectangle.");
 
 	lo.x -= Inc;
 	lo.y -= Inc;
-    
+
 	hi.x += Inc;
 	hi.y += Inc;
 }
@@ -380,141 +380,141 @@ inline void Rect::Inflate(INT32 Inc)
 
 /*********************************************************************************************
 
->    Rect::Rect() 
+>    Rect::Rect()
 
      Author: 	Simon_Maneggio (Xara Group Ltd) <camelotdev@xara.com>
      Created:   13/5/93
      Inputs:	None
      Outputs:   -
-     Returns:   - 
-     			
+     Returns:   -
+
      Purpose:	To construct an empty Rect.
-     			
 
-     Errors:	
 
-**********************************************************************************************/  
+     Errors:
+
+**********************************************************************************************/
 
 inline Rect::Rect()
 {
 	// An empty rectangle
 	hi.x = hi.y = lo.x = lo.y = 0;
 }
-     
-	            
+
+
 
 /*********************************************************************************************
-           
+
 >    Rect::Rect(INT32 LowX, INT32 LowY, INT32 HighX, INT32 HighY)
 
      Author: 	Simon_Maneggio (Xara Group Ltd) <camelotdev@xara.com>
      Created:   13/5/93
      Inputs:	LowX : Lower X coord of rectangle (inclusive)
-     			HighX: Higher X coord of rectangle (exclusive) 
+     			HighX: Higher X coord of rectangle (exclusive)
      			LowY : Lower Y coord of rectangle (inclusive)
      			HighY: Higher Y coord of rectangle (exclusive)
-     			
+
      Outputs:   -
-     Returns:   - 
-     			
-     Purpose:	To construct a Rect with an inclusive lower left hand corner 
-     			position of (Left, Lower) and an exclusive upper right hand corner 
-     			position of (Right, Upper).  
+     Returns:   -
+
+     Purpose:	To construct a Rect with an inclusive lower left hand corner
+     			position of (Left, Lower) and an exclusive upper right hand corner
+     			position of (Right, Upper).
 
      Errors:	An assertion failure will occur if the lower left hand coordinates
-     			are not lower than and to the left of the upper right coordinate. 
+     			are not lower than and to the left of the upper right coordinate.
 
-**********************************************************************************************/  
-                      
+**********************************************************************************************/
+
 inline Rect::Rect(INT32 LowX, INT32 LowY, INT32 HighX, INT32 HighY)
-{                               
+{
     // Defensive programming, detect an invalid rectangle
 	ENSURE((LowX <= HighX) && (LowY <= HighY),
-	       "Rect::Rect(INT32, INT32, INT32, INT32) was\n passed invalid coordinates");  
-	
+	       "Rect::Rect(INT32, INT32, INT32, INT32) was\n passed invalid coordinates");
+
 	lo.x = LowX;
-	lo.y = LowY; 
-	
-	hi.x = HighX; 
-	hi.y = HighY; 	
-} 
+	lo.y = LowY;
+
+	hi.x = HighX;
+	hi.y = HighY;
+}
 
 
 
 /*********************************************************************************************
-           
->    Rect::Rect(const Coord& Low, const Coord& High) 
+
+>    Rect::Rect(const Coord& Low, const Coord& High)
 
      Author: 	Simon_Maneggio (Xara Group Ltd) <camelotdev@xara.com>
      Created:   13/5/93
-     Inputs:	Low : Coordinates of the lower left hand corner (inclusive) 
+     Inputs:	Low : Coordinates of the lower left hand corner (inclusive)
      			High: Coordinates of the upper right hand corner (exclusive)
      Outputs:   -
-     Returns:   - 
-     			
-     Purpose:	To construct a rectangle with an inclusive lower left hand corner 
+     Returns:   -
+
+     Purpose:	To construct a rectangle with an inclusive lower left hand corner
      			position of Low and an exclusive upper right hand corner
      			position of High.
 
      Errors:	An assertion failure will occur if the lower left hand coordinates
-     			are not lower than and to the left of the upper right coordinates. 
+     			are not lower than and to the left of the upper right coordinates.
 
-**********************************************************************************************/  
+**********************************************************************************************/
 
 inline Rect::Rect(const Coord& Low, const Coord& High)
-{         
+{
     // Defensive programming, detect an invalid rectangle
 	ENSURE((Low.x <= High.x) && (Low.y <= High.y),
-	       "Rect::Rect(Coord, Coord) was\n passed invalid coordinates");  
-    
+	       "Rect::Rect(Coord, Coord) was\n passed invalid coordinates");
+
 	lo = Low;
 	hi = High;
-}       
-    
+}
+
 
 
 /*********************************************************************************************
-           
->    Rect::Rect(const Coord& Low, UINT32 Width, UINT32 Height) 
+
+>    Rect::Rect(const Coord& Low, UINT32 Width, UINT32 Height)
 
      Author: 	Tim_Browse (Xara Group Ltd) <camelotdev@xara.com>
      Created:   17/5/93
      Inputs:	Low: Coordinates of the inclusive lower left hand corner.
      			Width, Height  : Desired dimensions of the rectangle.
      Outputs:   -
-     Returns:   - 
-     			
-     Purpose:	To construct a rectangle with an inclusive lower left hand corner 
+     Returns:   -
+
+     Purpose:	To construct a rectangle with an inclusive lower left hand corner
      			position of Low and a width and height as specified.
 
      Errors:	None.
-     
-**********************************************************************************************/  
 
-inline Rect::Rect(const Coord& Low, UINT32 Width, UINT32 Height) 
-{         
+**********************************************************************************************/
+
+inline Rect::Rect(const Coord& Low, UINT32 Width, UINT32 Height)
+{
 	lo = Low;
-	
+
 	hi.x = lo.x + Width;
 	hi.y = lo.y + Height;
-}       
-   
-   
-    
-       
+}
+
+
+
+
 /*********************************************************************************************
-           
->    Rect::Rect(const Rect& R) 
+
+>    Rect::Rect(const Rect& R)
 
      Author: 	Simon_Maneggio (Xara Group Ltd) <camelotdev@xara.com>
      Created:   13/5/93
-     Inputs:	R: The copy of the Rect 
+     Inputs:	R: The copy of the Rect
      Outputs:   -
-     Returns:   - 
-     			
-     Purpose:	Copy constructor 
+     Returns:   -
 
-**********************************************************************************************/  
+     Purpose:	Copy constructor
+
+**********************************************************************************************/
 
 inline Rect::Rect(const Rect& R)
 {
@@ -525,152 +525,152 @@ inline Rect::Rect(const Rect& R)
 
 
 /*********************************************************************************************
-           
+
 >    Rect& Rect::operator=(const Rect& Rect)
 
      Author: 	Simon_Maneggio (Xara Group Ltd) <camelotdev@xara.com>
      Created:   13/5/93
-     Inputs:	Rect: Rect to copy 
+     Inputs:	Rect: Rect to copy
      Outputs:   -
-     Returns:   Reference to this Rect 
-     			
-     Purpose:	Equals operator 
+     Returns:   Reference to this Rect
 
-**********************************************************************************************/  
+     Purpose:	Equals operator
+
+**********************************************************************************************/
 
 inline Rect& Rect::operator=(const Rect& Rect)
-{                                                    
-    lo = Rect.lo; 
+{
+    lo = Rect.lo;
     hi = Rect.hi;
-    
-	return *this; 
+
+	return *this;
 }
 
 
 
 /*********************************************************************************************
-           
+
 >    INT32 Rect::Width() const
 
      Author: 	Simon_Maneggio (Xara Group Ltd) <camelotdev@xara.com>
      Created:   13/5/93
-     Inputs:	- 
+     Inputs:	-
      Outputs:   -
-     Returns:   The width of the Rect 
-     			
-     Purpose:	To find the width of the Rect 
+     Returns:   The width of the Rect
 
-**********************************************************************************************/  
-			 		 
+     Purpose:	To find the width of the Rect
+
+**********************************************************************************************/
+
 inline INT32 Rect::Width() const
 {
     // Detect an invalid rectangle
-	ENSURE(IsValid(), "Rect::Width() was called on\nan invalid rectangle.");  
+	ENSURE(IsValid(), "Rect::Width() was called on\nan invalid rectangle.");
 
-	return (hi.x - lo.x); 	
-}       
+	return (hi.x - lo.x);
+}
 
 
 
 /*********************************************************************************************
-           
+
 >    INT32 Rect::Height() const
 
      Author: 	Simon_Maneggio (Xara Group Ltd) <camelotdev@xara.com>
      Created:   13/5/93
-     Inputs:	- 
+     Inputs:	-
      Outputs:   -
-     Returns:   The height of the Rect 
-     			
-     Purpose:	To find the height of the Rect 
+     Returns:   The height of the Rect
 
-**********************************************************************************************/  
+     Purpose:	To find the height of the Rect
 
-inline INT32 Rect::Height() const 
-{                      
+**********************************************************************************************/
+
+inline INT32 Rect::Height() const
+{
     // Detect an invalid rectangle
-	ENSURE(IsValid(), "Rect::Height() was called on\nan invalid rectangle.");  
+	ENSURE(IsValid(), "Rect::Height() was called on\nan invalid rectangle.");
 
-	return(hi.y - lo.y); 
+	return(hi.y - lo.y);
 }
-	                 
+
 
 
 /*********************************************************************************************
-           
+
 >    Coord Rect::LowCorner() const
      Author: 	Simon_Maneggio (Xara Group Ltd) <camelotdev@xara.com>
      Created:   13/5/93
-     Inputs:	- 
+     Inputs:	-
      Outputs:   -
      Returns:   The inclusive lower left hand coordinates of the Rect
-     			
+
      Purpose:	To find the lower left hand coordinates of the Rect
-     
+
      Errors:	Assertion failure if the rectangle is invalid.
 
-**********************************************************************************************/  
-	                 
-inline Coord Rect::LowCorner() const
-{     
-    // Detect an invalid rectangle
-	ENSURE(IsValid(), "Rect::LowCorner() was called on\nan invalid rectangle.");  
+**********************************************************************************************/
 
-	return(lo); 
-}        
+inline Coord Rect::LowCorner() const
+{
+    // Detect an invalid rectangle
+	ENSURE(IsValid(), "Rect::LowCorner() was called on\nan invalid rectangle.");
+
+	return(lo);
+}
 
 
 
 /*********************************************************************************************
-           
->    Coord Rect::HighCorner() const  
+
+>    Coord Rect::HighCorner() const
 
      Author: 	Simon_Maneggio (Xara Group Ltd) <camelotdev@xara.com>
      Created:   13/5/93
-     Inputs:	- 
+     Inputs:	-
      Outputs:   -
-     Returns:   The exclusive upper right hand coordinates of the Rect 
-     			
+     Returns:   The exclusive upper right hand coordinates of the Rect
+
      Purpose:	To find the upper right hand coordinates of the Rect
 
      Errors:	Assertion failure if the rectangle is invalid.
 
-**********************************************************************************************/  
+**********************************************************************************************/
 
-inline Coord Rect::HighCorner() const  
-{      
+inline Coord Rect::HighCorner() const
+{
     // Detect an invalid rectangle
-	ENSURE(IsValid(), "Rect::HighCorner() was called on\nan invalid rectangle.");  
+	ENSURE(IsValid(), "Rect::HighCorner() was called on\nan invalid rectangle.");
 
-	return(hi); 
-}                  
+	return(hi);
+}
 
 
 
 /*********************************************************************************************
-           
+
 >    Coord Rect::Centre() const
 
      Author: 	Mark_Neves (Xara Group Ltd) <camelotdev@xara.com>
      Created:   19/5/99
-     Inputs:	- 
+     Inputs:	-
      Outputs:   -
      Returns:   The centre coord of this Rect
-     			
+
      Purpose:	To find the centre of the Rect
 				It calculates Coord(lox+(width/2),loy+(height/2))
-     
+
      Errors:	Assertion failure if the rectangle is invalid.
 
-**********************************************************************************************/  
-	                 
-inline Coord Rect::Centre() const
-{     
-    // Detect an invalid rectangle
-	ENSURE(IsValid(), "Rect::Centre() was called on\nan invalid rectangle.");  
+**********************************************************************************************/
 
-	return Coord(lo.x + Width() / 2, lo.y + Height() / 2); 
-}        
+inline Coord Rect::Centre() const
+{
+    // Detect an invalid rectangle
+	ENSURE(IsValid(), "Rect::Centre() was called on\nan invalid rectangle.");
+
+	return Coord(lo.x + Width() / 2, lo.y + Height() / 2);
+}
 
 
 
@@ -680,25 +680,23 @@ inline Coord Rect::Centre() const
 
      Author: 	Tim_Browse (Xara Group Ltd) <camelotdev@xara.com>
      Created:   17/5/93
-     Inputs:	-  
-     Outputs:   - 
-     
+     Inputs:	-
+     Outputs:   -
+
      Returns:   TRUE if the rectangles intersect, FALSE otherwise.
-     			
-     Purpose:	To check for rectangle intersection 
 
-     Errors:	
+     Purpose:	To check for rectangle intersection
 
-**********************************************************************************************/  
+     Errors:
 
-inline BOOL Rect::IsIntersectedWith(const Rect& R) const
-{
-    // Detect an invalid rectangle
-    if ((!IsValid()) || (!R.IsValid()))
-    	return FALSE;
-    	
-	return ((hi.x > R.lo.x) && (lo.x < R.hi.x) &&
-			(hi.y > R.lo.y) && (lo.y < R.hi.y));
+**********************************************************************************************/
+
+inline BOOL Rect::IsIntersectedWith(const Rect& R) const {
+  // Detect an invalid rectangle
+  if ((!IsValid()) || (!R.IsValid()))
+    return FALSE;
+  return ((hi.x > R.lo.x) && (lo.x < R.hi.x) &&
+	  (hi.y > R.lo.y) && (lo.y < R.hi.y));
 }
 
 
@@ -709,33 +707,28 @@ inline BOOL Rect::IsIntersectedWith(const Rect& R) const
 
      Author: 	Tim_Browse (Xara Group Ltd) <camelotdev@xara.com>
      Created:   17/5/93
-     Inputs:	-  
-     Outputs:   - 
-     
+     Inputs:	-
+     Outputs:   -
+
      Returns:   TRUE if the coordinate is within the rectangle, FALSE otherwise.
-     			
+
      Purpose:	To check for coordinate containment.
 
      Errors:	Assertion failure if the rectangle is invalid.
 
      SeeAlso:	ContainsRectCoord; ContainsRect
 
-**********************************************************************************************/  
+**********************************************************************************************/
 
-inline BOOL Rect::ContainsCoord(const Coord& Point) const
-{
-	// Check for an an empty rectangle
-	if (IsEmpty())
-		return FALSE;
-
-    // Detect an invalid rectangle
-	ENSURE(IsValid(), "Rect::ContainsCoord() was called on\nan invalid rectangle.");  
-
-	return ((Point.x >= lo.x) && (Point.x < hi.x) &&
-	        (Point.y >= lo.y) && (Point.y < hi.y));
+inline BOOL Rect::ContainsCoord(const Coord& Point) const {
+  // Check for an an empty rectangle
+  if (IsEmpty())
+    return FALSE;
+  // Detect an invalid rectangle
+  ENSURE(IsValid(), "Rect::ContainsCoord() was called on\nan invalid rectangle.");
+  return ((Point.x >= lo.x) && (Point.x < hi.x) &&
+	  (Point.y >= lo.y) && (Point.y < hi.y));
 }
-
-
 
 /*********************************************************************************************
 
@@ -743,11 +736,11 @@ inline BOOL Rect::ContainsCoord(const Coord& Point) const
 
      Author: 	Tim_Browse (Xara Group Ltd) <camelotdev@xara.com>
      Created:   17/5/93
-     Inputs:	-  
-     Outputs:   - 
-     
+     Inputs:	-
+     Outputs:   -
+
      Returns:   TRUE if the coordinate is within the rectangle, FALSE otherwise.
-     			
+
      Purpose:	To check for coordinate containment.  This will work for coordinates which
      			have been extracted from other rectangles (i.e. the top right corner is
      			considered inclusive for this operation, not exclusive).
@@ -756,7 +749,7 @@ inline BOOL Rect::ContainsCoord(const Coord& Point) const
 
      SeeAlso:	ContainsCoord; ContainsRect
 
-**********************************************************************************************/  
+**********************************************************************************************/
 
 inline BOOL Rect::ContainsRectCoord(const Coord& Point) const
 {
@@ -765,7 +758,7 @@ inline BOOL Rect::ContainsRectCoord(const Coord& Point) const
 		return FALSE;
 
     // Detect an invalid rectangle
-	ENSURE(IsValid(), "Rect::ContainsRectCoord() was called on\nan invalid rectangle.");  
+	ENSURE(IsValid(), "Rect::ContainsRectCoord() was called on\nan invalid rectangle.");
 
 	return ((Point.x >= lo.x) && (Point.x <= hi.x) &&
 	        (Point.y >= lo.y) && (Point.y <= hi.y));
@@ -779,18 +772,18 @@ inline BOOL Rect::ContainsRectCoord(const Coord& Point) const
 
      Author: 	Tim_Browse (Xara Group Ltd) <camelotdev@xara.com>
      Created:   17/5/93
-     Inputs:	-  
-     Outputs:   - 
-     
+     Inputs:	-
+     Outputs:   -
+
      Returns:   TRUE if the rectangle 'Rect' is within the rectangle, FALSE otherwise.
-     			
+
      Purpose:	To check for rectangle containment.
 
      Errors:	Assertion failure if the rectangle is invalid.
 
      SeeAlso:	ContainsRectCoord; ContainsCoord
 
-**********************************************************************************************/  
+**********************************************************************************************/
 
 inline BOOL Rect::ContainsRect(const Rect& Rect) const
 {
@@ -799,7 +792,7 @@ inline BOOL Rect::ContainsRect(const Rect& Rect) const
 		return FALSE;
 
     // Detect an invalid rectangle
-	ENSURE(IsValid(), "Rect::ContainsRect() was called on\nan invalid rectangle.");  
+	ENSURE(IsValid(), "Rect::ContainsRect() was called on\nan invalid rectangle.");
 
 	return ((Rect.lo.x >= lo.x) && (Rect.hi.x <= hi.x) &&
 	        (Rect.lo.y >= lo.y) && (Rect.hi.y <= hi.y));
@@ -831,16 +824,16 @@ inline void Rect::MakeEmpty()
 
      Author: 	Tim_Browse (Xara Group Ltd) <camelotdev@xara.com>
      Created:   17/5/93
-     Inputs:	-  
-     Outputs:   - 
-     
+     Inputs:	-
+     Outputs:   -
+
      Returns:   TRUE if the rectangle is empty.
-     			
+
      Purpose:	To check for empty rectangle.
 
-     Errors:	
+     Errors:
 
-**********************************************************************************************/  
+**********************************************************************************************/
 
 inline BOOL Rect::IsEmpty() const
 {
@@ -855,16 +848,16 @@ inline BOOL Rect::IsEmpty() const
 
      Author: 	Tim_Browse (Xara Group Ltd) <camelotdev@xara.com>
      Created:   9/6/93
-     Inputs:	-  
-     Outputs:   - 
-     
+     Inputs:	-
+     Outputs:   -
+
      Returns:   TRUE if the rectangle is valid.
-     			
+
      Purpose:	To check for a valid rectangle.
 
-     Errors:	
+     Errors:
 
-**********************************************************************************************/  
+**********************************************************************************************/
 
 inline BOOL Rect::IsValid() const
 {
@@ -872,4 +865,3 @@ inline BOOL Rect::IsValid() const
 }
 
 #endif
-
