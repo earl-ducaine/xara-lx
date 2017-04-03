@@ -55,5 +55,5 @@ XARALANGUAGE = @XARALANGUAGE@
 # RESOURCEDUMMY := ${if ${strip ${shell $(TOPDIR)/Scripts/build-resources.pl @BUILDRESFLAGS@ -t $(TOPDIR) -o . --version $(VERSION) -x $(XARALANGUAGE) -u $(USER) --wxrc "$(WXRC)" } }, ,${error "Resource build failed"}}
 
 
-svnversion.h:
+resources.h svnversion.h:
 	../Scripts/build-resources.pl -i  -t $(TOPDIR) -o . --version $(VERSION) -x $(XARALANGUAGE) -u $(USER) --wxrc "$(WXRC)"

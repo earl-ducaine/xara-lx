@@ -80,6 +80,61 @@ XARLIBCPP = \
 	../xarlib/ensure.cpp \
 	../xarlib/xarlib.cpp
 
+
+INSTCPP = \
+	ccfile.cpp \
+	ccmaths.cpp \
+	ccpanose.cpp \
+	coord.cpp \
+	cxfile.cpp \
+	cxfmap.cpp \
+	cxfrec.cpp \
+	cxfrech.cpp \
+	doccoord.cpp \
+	docrect.cpp \
+	f16spec.cpp \
+	fixed16.cpp \
+	fixed.cpp \
+	fttyplis.cpp \
+	list.cpp \
+	listitem.cpp \
+	matrix.cpp \
+	pathproc.cpp \
+	paths.cpp \
+	pathutil.cpp \
+	rechcomp.cpp \
+	vector.cpp \
+	xlong.cpp \
+	zdeflate.cpp \
+	zdftrees.cpp \
+	ziftrees.cpp \
+	zinflate.cpp \
+	zstream.cpp \
+	basestr.cpp \
+	camresource.cpp \
+	ccobject.cpp \
+	errors.cpp \
+	filehndl.cpp \
+	filesize.cpp \
+	fixmem.cpp \
+	fixst128.cpp \
+	fixst256.cpp \
+	fixstr16.cpp \
+	fixstr32.cpp \
+	fixstr64.cpp \
+	fixstr8.cpp \
+	handles.cpp \
+	makemsg.cpp \
+	memblk.cpp \
+	cammemory.cpp \
+	pathname.cpp \
+	unicdman.cpp \
+	varstr.cpp \
+	camelot.cpp \
+	ensure.cpp \
+	xarlib.cpp
+
+
 # Ensure these all begin with "../<directory>/" even if in the current directory
 XARLIBHEADERS = \
 	../PreComp/camtypes.h \
@@ -222,7 +277,7 @@ INSTHEADERS = \
 # These ones not got from TOPDIR
 BUILTXARLIBHEADERS = ../wxOil/svnversion.h
 
-INSTCPP = $(notdir $(XARLIBCPP) )
+# INSTCPP = $(notdir $(XARLIBCPP) )
 
 libXar_a_SOURCES = $(XARLIBCPP) $(INSTHEADERS)
 # Only build the static library until we have an API/ABI nailed down
@@ -255,11 +310,11 @@ svnversion.h : $(INSTHEADERS)
 
 # Generate a directory of includes which has "xarlib/" in the include path
 # We have to muck around with the prefixes here to avoid partial matches (coord.cpp matching doccoord.cpp etc.)
-$(INSTCPP) : $(XARLIBCPP)
-	@j=$(filter %/$(notdir $@), $(addprefix xarlib/, $(XARLIBCPP)) ) && \
-	echo "Building xarlib CPP file $@ from $(TOPDIR)/$$j" && \
-	ls -la $(TOPDIR)/$$j && \
-	#perl -pe 's,^[ \t]*#include[ \t]+\",#include \"xarlib/,' <$(TOPDIR)/$$j >$@
+# $(INSTCPP) : $(XARLIBCPP)
+# 	@j=$(filter %/$(notdir $@), $(addprefix xarlib/, $(XARLIBCPP)) ) && \
+# 	echo "Building xarlib CPP file $@ from $(TOPDIR)/$$j" && \
+# 	ls -la $(TOPDIR)/$$j && \
+# 	#perl -pe 's,^[ \t]*#include[ \t]+\",#include \"xarlib/,' <$(TOPDIR)/$$j >$@
 
 
 pkgconfigdir = $(libdir)/pkgconfig
