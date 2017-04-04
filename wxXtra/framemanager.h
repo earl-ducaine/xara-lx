@@ -16,7 +16,13 @@
 // headers
 // ----------------------------------------------------------------------------
 
+
+// To avoid the -Wunused-local-typedefs warning in GCC
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-local-typedefs"
 #include <wx/wx.h>
+#pragma GCC diagnostic pop
+
 
 #if wxUSE_AUI
 #undef wxXTRA_AUI
@@ -152,7 +158,7 @@ public:
     }
 
     ~wxAuiPaneInfo() {}
-    
+
 #ifndef SWIG
     wxAuiPaneInfo(const wxAuiPaneInfo& c)
     {
@@ -328,7 +334,7 @@ public:
 #ifdef SWIG
     %typemap(out) wxAuiPaneInfo& ;
 #endif
-    
+
 public:
 
     enum wxAuiPaneState
@@ -419,7 +425,7 @@ public:
 
     bool AddPane(wxWindow* window,
                  const wxAuiPaneInfo& pane_info);
-                 
+
     bool AddPane(wxWindow* window,
                  const wxAuiPaneInfo& pane_info,
                  const wxPoint& drop_pos);
@@ -457,14 +463,14 @@ public:
 
     // deprecated -- please use SetManagedWindow() and
     // and GetManagedWindow() instead
-    
+
     wxDEPRECATED( void SetFrame(wxFrame* frame) );
     wxDEPRECATED( wxFrame* GetFrame() const );
-    
+
 protected:
 
 
-    
+
     void DoFrameLayout();
 
     void LayoutAddPane(wxSizer* container,
@@ -605,16 +611,16 @@ public:
     void SetPane(wxAuiPaneInfo* p) { pane = p; }
     void SetButton(int b) { button = b; }
     void SetDC(wxDC* pdc) { dc = pdc; }
- 
+
     wxAuiPaneInfo* GetPane() { return pane; }
     int GetButton() { return button; }
     wxDC* GetDC() { return dc; }
-    
+
     void Veto(bool veto = true) { veto_flag = veto; }
     bool GetVeto() const { return veto_flag; }
     void SetCanVeto(bool can_veto) { canveto_flag = can_veto; }
     bool CanVeto() const { return  canveto_flag && veto_flag; }
-    
+
 public:
     wxAuiPaneInfo* pane;
     int button;
@@ -768,4 +774,3 @@ typedef void (wxEvtHandler::*wxAuiManagerEventFunction)(wxAuiManagerEvent&);
 
 #endif // wxUSE_AUI
 #endif //_WX_FRAMEMANAGER_H_
-
