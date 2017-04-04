@@ -95,7 +95,7 @@ wxWindow* wxChildWindowFromPoint(wxWindow* win, const wxPoint& pt, bool hidden /
     }
 
     wxRect rect(pos, sz);
-    if (rect.Inside(pt))
+    if (rect.Contains(pt))
         return win;
     else
         return NULL;
@@ -119,5 +119,3 @@ wxWindow* wxChildWindowFromPoint(const wxPoint& pt, bool hidden /* =true */, int
     }
     return NULL;
 }
-
-
