@@ -1,7 +1,7 @@
 // $Id: dlgevt.h 1569 2006-07-27 13:48:14Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
- 
+
                Xara LX, a vector drawing and manipulation program.
                     Copyright (C) 1993-2006 Xara Group Ltd.
        Copyright on certain contributions may be held in joint with their
@@ -32,7 +32,7 @@ ADDITIONAL RIGHTS
 
 Conditional upon your continuing compliance with the GNU General Public
 License described above, Xara Group Ltd grants to you certain additional
-rights. 
+rights.
 
 The additional rights are to use, modify, and distribute the software
 together with the wxWidgets library, the wxXtra library, and the "CDraw"
@@ -121,7 +121,7 @@ class DlgEvtTimer : public KernelTimer
 	CC_DECLARE_DYNAMIC(DlgEvtTimer);
 friend class DialogEventHandler;
 public:
-	DlgEvtTimer(DialogEventHandler * pEvtHandler=NULL, DialogOp * pDialogOp=NULL, UINT32 IDEvent=NULL,
+	DlgEvtTimer(DialogEventHandler * pEvtHandler=NULL, DialogOp * pDialogOp=NULL, UINT32 IDEvent = 0,
 				void (* lpfnTimer)(void *) = NULL, void * Param=NULL) :
 				m_pEvtHandler(pEvtHandler),
 				m_pDialogOp(pDialogOp),
@@ -151,7 +151,7 @@ class wxCamDialogEvent;
 	Created:	19/12/2005
 	Purpose:	A derived event handler to wire up wxDialog derived classes to DialogManager
 	Notes:		In the OIL
-	See Also:	
+	See Also:
 
 ********************************************************************************************/
 
@@ -219,7 +219,7 @@ private:
 	Created:	19/12/2005
 	Purpose:	A derived event to allow for postprocessing of dialog events
 	Notes:		In the OIL
-	See Also:	
+	See Also:
 
 ********************************************************************************************/
 
@@ -255,4 +255,3 @@ END_DECLARE_EVENT_TYPES()
 	(wxObjectEventFunction)(wxEventFunction)(wxCamDialogEventFunction) &fn, (wxObject *) NULL),
 
 #endif
-

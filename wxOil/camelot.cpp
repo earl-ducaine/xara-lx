@@ -1,7 +1,7 @@
 // $Id: camelot.cpp 1771 2007-06-17 20:14:43Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
- 
+
                Xara LX, a vector drawing and manipulation program.
                     Copyright (C) 1993-2006 Xara Group Ltd.
        Copyright on certain contributions may be held in joint with their
@@ -32,7 +32,7 @@ ADDITIONAL RIGHTS
 
 Conditional upon your continuing compliance with the GNU General Public
 License described above, Xara Group Ltd grants to you certain additional
-rights. 
+rights.
 
 The additional rights are to use, modify, and distribute the software
 together with the wxWidgets library, the wxXtra library, and the "CDraw"
@@ -255,13 +255,13 @@ CCamApp::CCamApp()
 	Purpose:	This function is used to collect the key press information for handling by
 				applictaion. It passes event unmolested for controls that are allowed focus and
 				controls within modal dialogs. It also has code to make sure that key events
-				that are passed on aren't checked again, based on the event timestamp. All other 
+				that are passed on aren't checked again, based on the event timestamp. All other
 				keys are passed into application keypress handling code.
 	Errors:		-
 	Scope:	    Protected
 	SeeAlso:	The focus handling document
 
-**********************************************************************************************/ 
+**********************************************************************************************/
 
 int /*TYPENOTE: Correct*/ CCamApp::FilterEvent( wxEvent& event )
 {
@@ -282,7 +282,7 @@ int /*TYPENOTE: Correct*/ CCamApp::FilterEvent( wxEvent& event )
 		if (event.IsKindOf(CLASSINFO(wxPaintEvent)))
 		{
 			if (!pEventObject->IsKindOf(CLASSINFO(wxCamArtControl)))
-			{	
+			{
 				// TRACEUSER("amb", _T("CCamApp::FilterEvent caught paint for %s"), pEventObject->GetClassInfo()->GetClassName());
 				return false;
 			}
@@ -308,7 +308,7 @@ int /*TYPENOTE: Correct*/ CCamApp::FilterEvent( wxEvent& event )
 
 			GiveActiveCanvasFocus();
 			return 1;				// Don't let the recipent know it was activated
-		} 
+		}
 	}
 
 // useful code to see where focus events originate from. Set a breakpoint below and look
@@ -326,7 +326,7 @@ int /*TYPENOTE: Correct*/ CCamApp::FilterEvent( wxEvent& event )
 	{
 #if defined(_DEBUG)
 		wxFocusEvent&	FocusEvent = (wxFocusEvent&)event;
-		TRACEUSER( "luke", _T("CCamApp::FilterEvent kill focus to %016x from 0x%016x"), FocusEvent.GetWindow(), 
+		TRACEUSER( "luke", _T("CCamApp::FilterEvent kill focus to %016x from 0x%016x"), FocusEvent.GetWindow(),
 				FocusEvent.GetEventObject() );
 #endif
 
@@ -342,7 +342,7 @@ int /*TYPENOTE: Correct*/ CCamApp::FilterEvent( wxEvent& event )
 		)
 	{
 		// a top level window is about to be created. End the splash screen if it is up as it may obscure it
-		CamResource::DoneInit(FALSE);	
+		CamResource::DoneInit(FALSE);
 	}
 
 #if defined(_DEBUG)
@@ -368,7 +368,7 @@ int /*TYPENOTE: Correct*/ CCamApp::FilterEvent( wxEvent& event )
 		TRACEUSER( "jlh92", _T("KeyEvent 4 %s %s\n"),
 			((wxWindow*)pEventObject)->GetClassInfo()->GetClassName(),
 			event.GetEventType() == wxEVT_KEY_DOWN ? _T("KD") : _T("KU") );
-		
+
 		// Is the object allowed to recieve keys? We have to go done the object hierarchy
 		// since some control (notably Combos) will produce temporary windows which can get
 		// key events.
@@ -382,7 +382,7 @@ int /*TYPENOTE: Correct*/ CCamApp::FilterEvent( wxEvent& event )
 				while( NULL != pTmpInfo )
 				{
 					TRACEUSER( "jlh92", _T("Class %s\n"), PCTSTR(pTmpInfo->GetClassName()) );
-		
+
 					PCTSTR	pszName = pTmpInfo->GetBaseClassName1();
 					pTmpInfo = NULL == pszName ? NULL : wxClassInfo::FindClass( pszName );
 				}
@@ -457,7 +457,7 @@ int /*TYPENOTE: Correct*/ CCamApp::FilterEvent( wxEvent& event )
 		if (wd)
 			delete wd;
 	}
-	
+
 	return -1;
 }
 
@@ -484,7 +484,7 @@ static bool GiveFocusToFocusableOffspring( wxWindow* pWnd )
 
 		pNode = pNode->GetNext();
 	}
-	
+
 	return false;
 }
 
@@ -572,7 +572,7 @@ static const wxCmdLineEntryDesc cmdLineDesc[] =
 	{ wxCMD_LINE_SWITCH, _T("v"), _T("version"),	_T("Display the version information") },
 	{ wxCMD_LINE_OPTION, _T("r"), _T("resource"),	_T("resource directory") },
 	{ wxCMD_LINE_SWITCH, _T("x"), _T("xrccheckgen"), _T("generate xrc.check file") },
-	{ wxCMD_LINE_PARAM, NULL, NULL, _T("input file"), wxCMD_LINE_VAL_STRING, 
+	{ wxCMD_LINE_PARAM, NULL, NULL, _T("input file"), wxCMD_LINE_VAL_STRING,
 										wxCMD_LINE_PARAM_OPTIONAL|wxCMD_LINE_PARAM_MULTIPLE },
 	{ wxCMD_LINE_NONE }
 };
@@ -632,7 +632,7 @@ bool CCamApp::OnInit()
 		wxString			strMessage;
 
 #if defined(__WXMSW__)
-		strMessage = wxString::Format( wxT("Xara Xtreme\nVersion: %s\nCDraw Version: %d.%03d\n"), 
+		strMessage = wxString::Format( wxT("Xara Xtreme\nVersion: %s\nCDraw Version: %d.%03d\n"),
 			g_pszAppVersion, HIWORD(GDraw_GetVersion()), LOWORD(GDraw_GetVersion()) );
 #else
 #if FALSE == wxUSE_UNICODE
@@ -641,15 +641,15 @@ bool CCamApp::OnInit()
 		TCHAR			pszCDrawVer[32];
 		camMbstowcs( pszCDrawVer, GDraw_GetSvnVersion(), 31 );
 #endif
-		strMessage = wxString::Format( wxT("Xara Xtreme\nVersion: %s (%s)\nCDraw Version: %d.%03d (%s)\nBuild date: %s\n"), 
+		strMessage = wxString::Format( wxT("Xara Xtreme\nVersion: %s (%s)\nCDraw Version: %d.%03d (%s)\nBuild date: %s\n"),
 			g_pszAppVersion, g_pszSvnVersion, HIWORD(GDraw_GetVersion()), LOWORD(GDraw_GetVersion()), pszCDrawVer, CAMELOT_BUILD_DATE );
 #endif
 
 		camPrintf( strMessage.c_str() );
-		
+
 		return FALSE;
 	}
-	
+
 #if defined(_DEBUG)
 	if (parser.Found(_T("m"))) SimpleCCObject::CheckMemoryFlag=1;
 
@@ -710,22 +710,22 @@ bool CCamApp::OnInit()
 		{
 			ERROR2(FALSE, "Failed to create single instance checker");
 		}
-	
+
 		// Now see if another is running
 		if (m_pSingleInstanceChecker->IsAnotherRunning())
 		{
 			wxClient Client;
 			wxConnectionBase * Connection = Client.MakeConnection(wxEmptyString, IPCname, camIPC_START);
-	
+
 			// If there is no connection, perhaps the other end is dead. We will start up anyway.
 			if (Connection)
 			{
 				INT32 len=1; // terminating null
 				INT32 i;
-	
+
 				wxArrayString docs;
 				INT32 doccount = parser.GetParamCount()+1; // add one for the dummy
-	
+
 				// Add all docs with a dummy argv[0]
 				for ( i=0 ; i<doccount; i++ )
 				{
@@ -744,14 +744,14 @@ bool CCamApp::OnInit()
 					len+=docname.length()+1; // include the trailing zero
 					docs.Add(docname);
 				}
-	
+
 				wxChar * Data = new wxChar[len];
 				if (!Data)
 				{
 					ERROR2(FALSE, "Failed to create single instance checker data");
 				}
-	
-				// Copy the 
+
+				// Copy the
 				wxChar * p = Data;
 				for (i = 0; i < doccount; i++)
 				{
@@ -759,21 +759,21 @@ bool CCamApp::OnInit()
 					p+=docs[i].length()+1; // move past string and terminating NULL
 				}
 				*p = _T('\0'); // add a final terminating NULL
-	
+
 				// Now send the data over the connection
 				if (Connection->Execute (Data, len*sizeof(wxChar)))
 				{
 					delete [] Data;
 					delete Connection;
-	
+
 					//.Free up the single instance checker
 					delete m_pSingleInstanceChecker;
 					m_pSingleInstanceChecker = NULL;
-	
+
 					// We're out of here...
 					return FALSE;
 				}
-	
+
 				// Hmmmm, it didn't want to execute it. perhaps the other process is stuck. We'll run anyway
 				delete [] Data;
 				delete Connection;
@@ -794,7 +794,7 @@ bool CCamApp::OnInit()
 	// fails safe)
 	BrInitError	error;
 	br_init( &error );
-	
+
 	// Useful debug tracing enablers, left here for next debug session...
 //	wxLog::AddTraceMask( _T("focus") );
 //	wxLog::AddTraceMask( _T("keyevent") );
@@ -828,9 +828,11 @@ bool CCamApp::OnInit()
 
 	// --------------------------------------------------------------------------
 	// Detect first-time run and make Open File dialog default to Examples folder
-	if (Camelot.DeclareSection(TEXT("Preferences"), 10))
+	wchar_t preferences[] = TEXT("Preferences");
+	if (Camelot.DeclareSection(preferences, 10))
 	{
-		Camelot.DeclarePref(NULL, TEXT("FirstRun"), &bFirstRun, 0, 1);
+	  	wchar_t first_run[] = TEXT("FirstRun");
+		Camelot.DeclarePref(NULL, first_run, &bFirstRun, 0, 1);
 	}
 
 	// Check the resource dir exists
@@ -867,7 +869,7 @@ bool CCamApp::OnInit()
 	Camelot.DeclarePref( NULL, TEXT("MediaApplication"), &m_strMediaApplication );
 
 	TRACET(_T("CCamApp::Calling InitKernel"));
-	// then initialise the kernel (and almost everything else)	
+	// then initialise the kernel (and almost everything else)
 	if( !InitKernel() )
 		return false;
 
@@ -887,18 +889,18 @@ bool CCamApp::OnInit()
 	}
 
 	TRACET(_T("CCamApp::Making Doc Manager"));
-	
+
 	// Create the document manager and register our doc template
 	m_docManager = std::auto_ptr<wxDocManager>( new wxDocManager() );
 
 	wxDocTemplate	   *pDocTemplate;
 	pDocTemplate = new CCamDocTemplate(
-		m_docManager.get(), wxT("Xara"), wxT("*.xar;*.web"), wxT(""), wxT("xar"), wxT("Xara document"), 
+		m_docManager.get(), wxT("Xara"), wxT("*.xar;*.web"), wxT(""), wxT("xar"), wxT("Xara document"),
 		wxT("Text View"),
 		CLASSINFO(CCamDoc),
 		CLASSINFO(CCamView) );
 //	pDocTemplate = new CCamDocTemplate(
-//		m_docManager.get(), wxT("Xara"), wxT("*.web"), wxT(""), wxT("web"), wxT("Xara document"), 
+//		m_docManager.get(), wxT("Xara"), wxT("*.web"), wxT(""), wxT("web"), wxT("Xara document"),
 //		wxT("Text View"),
 //		CLASSINFO(CCamDoc),
 //		CLASSINFO(ScreenCamView) );
@@ -913,7 +915,7 @@ bool CCamApp::OnInit()
 
 		String_256		strFileName;
 		Camelot.GetPrefDirect( _T("Recent File list"), pszTag, &strFileName );
-		
+
 		if( strFileName != _T("") )
 			pFileHist->AddFileToHistory( PCTSTR(strFileName) );
 	}
@@ -938,7 +940,7 @@ bool CCamApp::OnInit()
 	// --------------------------------------------------------------------------
 
 	// Set idles to only get sent to windows that want them
-	wxIdleEvent::SetMode(wxIDLE_PROCESS_SPECIFIED); 
+	wxIdleEvent::SetMode(wxIDLE_PROCESS_SPECIFIED);
 
 	// Create the Frame window
 	//
@@ -974,7 +976,7 @@ bool CCamApp::OnInit()
 	}
 
 	TRACET(_T("CCamApp::Making Frame Window"));
-	m_pMainFrame = new CCamFrame( m_docManager.get(), (wxFrame *)NULL, wxT("Xara Xtreme"), 
+	m_pMainFrame = new CCamFrame( m_docManager.get(), (wxFrame *)NULL, wxT("Xara Xtreme"),
 		WndRect.GetPosition(), WndRect.GetSize(), wxDEFAULT_FRAME_STYLE);
 
 	m_pMainFrame->Show(FALSE); // Don't show it yet
@@ -1112,13 +1114,13 @@ bool CCamApp::OnInit()
 			m_pSingleInstanceChecker = NULL;
 			ERROR2(FALSE, "Failed to create IPC server");
 		}
-	
+
 		// and initialize it
 		if (!(m_pServer->Create(IPCname)))
 		{
 			delete m_pServer;
 			m_pServer = NULL;
-	
+
 			delete (m_pSingleInstanceChecker);
 			m_pSingleInstanceChecker = NULL;
 			ERROR2(FALSE, "Failed to init IPC server");
@@ -1128,7 +1130,7 @@ bool CCamApp::OnInit()
 	// Give focus to any child that will take it, parent can't have it since
 	// it's a frame (see gtk_widget_grab_focus)
 	GiveFocusToFocusableOffspring( m_pMainFrame );
-	
+
 	// Create timer used for background rendering.
 //	m_Timer.SetOwner(this,CAM_TIMER_ID);
 //	m_Timer.Start(CAM_TIMER_FREQUENCY);
@@ -1237,12 +1239,12 @@ PORTNOTE("other","Removed GDI+, filelist and profilename support")
 	SimpleCCObject::MemoryDump();
 	DumpCCMallocTrace();
 #endif
-	
+
 PORTNOTE("other","Removed 3D, Extras and UserHelp support")
 #ifndef EXCLUDE_FROM_XARALX
 	// For fabby 3D
 	if (Is3dWanted())
-		pCtl3dUnregister(AfxGetInstanceHandle()); 
+		pCtl3dUnregister(AfxGetInstanceHandle());
 
 	OILModule::DeinitExtras();							// free all DLLs (e.g. ctl3d)
 
@@ -1270,16 +1272,16 @@ void CCamApp::OnFilePrintSetup()
 		// Inform the user if we have switched to using the default printer on the system
 		// before opening the print setup dlg.
 		CCPrintDialog::InformResetToDefaultPrinter(FALSE);
-	
+
 		// This no longer calls the base class OnFilePrint() function.
 		// Instead, we involke the print dlg ourselves so that we can update our
 		// printer settings when the dlg is closed via the user clicking on OK
 		// (7/4/95 - Markn)
 
 		CCPrintInfo printinfo(pDoc, pDocView->GetConnectionToOilView());
-		printinfo.OnPreparePrinting(TRUE);			
+		printinfo.OnPreparePrinting(TRUE);
 	}
-	
+
 #endif
 }
 #endif
@@ -1292,14 +1294,14 @@ PORTNOTE("other","Removed multi-instance flag stuff")
 	// the camelot that set it!
 
 	HWND mainWindow = m_pMainWnd->m_hWnd;
-	
+
 	if (mainWindow)
 	{
 		BOOL* ret = (BOOL*) RemoveProp (m_pMainWnd->m_hWnd, "Xara X sfs");
 
 		if (ret) delete (ret);
 	}
-#endif	
+#endif
 
 	// Now close the main frame
 	m_pMainFrame->Close();
@@ -1355,8 +1357,8 @@ void CCamApp::OnFileOpen()
 	// Set up the dialog
 	OpenFileDialog OpenDialog(pFilters);
 	OpenDialog.NativeFilterPos = NativeFilterPos;
-	OpenDialog.PrepareDialog();		
-	
+	OpenDialog.PrepareDialog();
+
 	// Display the dialog and get the filename we require
 	BOOL Result = OpenDialog.OpenAndGetFileName();
 
@@ -1413,11 +1415,11 @@ PORTNOTE( "other" ,"Removed open preview clean-up" )
 	{
 		// Make sure that the files name is sensible
 		MakeDocumentNative(pDoc, &Path);
-		
+
 		// add it to the recent file list
 		AddToRecentFileList( PCTSTR(Str) );
 
-		// ... and set the path as the "original" path to the doc.  This will be used to 
+		// ... and set the path as the "original" path to the doc.  This will be used to
 		// "restore" the doc when we next run, if it was open when we shut down.
 		((CCamDoc*) pDoc)->SetOriginalPath(Str);
 	}
@@ -1515,7 +1517,7 @@ wxDocument* CCamApp::OpenDocumentFile( PCTSTR lpcszFileName )
 			// Get the first view.
 			wxView*		pView = (wxView*)pNode->GetData();
 			wxMDIChildFrame* pFrame = (wxMDIChildFrame*)pView->GetFrame();
-			
+
 			// Now deal with the view window.
 			if (pFrame != NULL)
 			{
@@ -1581,7 +1583,7 @@ wxDocument* CCamApp::OpenDocumentFile( PCTSTR lpcszFileName )
 							TRACEUSER("JustinF", _T("Couldn't load doc to detach!\n") );
 							pFrame->Activate();
 						}
-					#endif						
+					#endif
 						return NULL;
 					}
 
@@ -1731,7 +1733,7 @@ bool CCamApp::OnRecentFile(INT32 RecentFileNumber)
 	}
 
 	// Failed to find an entry for this item
-	return false;	
+	return false;
 }
 
 
@@ -1765,7 +1767,7 @@ bool CCamApp::GetRecentFileText(INT32 Index, String_256* pszText)
 	}
 
 	// Failed to find an entry for this item
-	return false;	
+	return false;
 }
 
 
@@ -1774,7 +1776,7 @@ void CCamApp::DoAboutBox()
 	wxString			strMessage;
 
 #if defined(__WXMSW__)
-	strMessage = wxString::Format( wxT("Xara Xtreme\nVersion: %s\nCDraw Version: %d.%03d\nUsage: XaraLX.exe [xar-file...]"), 
+	strMessage = wxString::Format( wxT("Xara Xtreme\nVersion: %s\nCDraw Version: %d.%03d\nUsage: XaraLX.exe [xar-file...]"),
 		g_pszAppVersion, HIWORD(GDraw_GetVersion()), LOWORD(GDraw_GetVersion()) );
 #else
 #if FALSE == wxUSE_UNICODE
@@ -1783,7 +1785,7 @@ void CCamApp::DoAboutBox()
 	TCHAR			pszCDrawVer[32];
 	camMbstowcs( pszCDrawVer, GDraw_GetSvnVersion(), 31 );
 #endif
-	strMessage = wxString::Format( wxT("Xara Xtreme\nVersion: %s (%s)\nBuild date: %s\nBuilt against: " wxVERSION_STRING "\n" /*"wxWidgets linked to %s\n" */ "Usage: xaralx [xar-file...]"), 
+	strMessage = wxString::Format( wxT("Xara Xtreme\nVersion: %s (%s)\nBuild date: %s\nBuilt against: " wxVERSION_STRING "\n" /*"wxWidgets linked to %s\n" */ "Usage: xaralx [xar-file...]"),
 		g_pszAppVersion, g_pszSvnVersion, CAMELOT_BUILD_DATE /*,_T("Unknown")*/ );
 #endif
 
@@ -1820,13 +1822,13 @@ public :
 	{ }
 
     virtual bool Destroy()
-	{ 
+	{
 #if defined(FILELIST)
 		wxDocManager* pDocMan = wxGetApp().GetDocumentManager();
 		if ( pDocMan && GetMenuBar() && GetMenuBar()->GetMenu(0) )
 			pDocMan->FileHistoryRemoveMenu(GetMenuBar()->GetMenu(0));
 #endif
-		return wxDocMDIChildFrame::Destroy(); 
+		return wxDocMDIChildFrame::Destroy();
 	}
 };
 
@@ -1839,8 +1841,8 @@ public :
 wxMDIChildFrame *CCamApp::CreateChildFrame(wxDocument *doc, wxView *view)
 {
 	//// Make a child frame
-	CCamDocMDIChildFrame *subframe = 
-		new CCamDocMDIChildFrame(doc, view, GetMainFrame(), wxID_ANY, _T("Child Frame"), 
+	CCamDocMDIChildFrame *subframe =
+		new CCamDocMDIChildFrame(doc, view, GetMainFrame(), wxID_ANY, _T("Child Frame"),
 			wxPoint(10, 10), wxSize(600, 450),
 			wxDEFAULT_FRAME_STYLE |
 			wxNO_FULL_REPAINT_ON_RESIZE);
@@ -1993,13 +1995,13 @@ wxMDIChildFrame *CCamApp::CreateChildFrame(wxDocument *doc, wxView *view)
 	SeeAlso:	-
 
 ********************************************************************************************/
-            
+
 DialogManager *CCamApp::GetDlgManager()
 {
-	return( &m_DlgMgr ); 
+	return( &m_DlgMgr );
 }
 
-// Functions to Enable/Disable system functionality 
+// Functions to Enable/Disable system functionality
 
 /********************************************************************************************
 
@@ -2010,8 +2012,8 @@ DialogManager *CCamApp::GetDlgManager()
 	Inputs:		-
 	Outputs:	-
 	Returns:	-
-	Purpose:	This function sets a flag which disables all rendering and processing of user 
-				messages in the system.  
+	Purpose:	This function sets a flag which disables all rendering and processing of user
+				messages in the system.
 	Errors:		-
 	SeeAlso:	-
 
@@ -2024,9 +2026,9 @@ void CCamApp::DisableSystem(CWindowID WindowID /*=NULL*/)
 	return;
 #endif
 
-	// Disable camelot's main window. This disables the menu bar, button bar etc. 
-	// It does not disable the tool bar however. This will be disabled in the tool bar code 
-	// by testing the DisableSystem flag. 
+	// Disable camelot's main window. This disables the menu bar, button bar etc.
+	// It does not disable the tool bar however. This will be disabled in the tool bar code
+	// by testing the DisableSystem flag.
 	wxApp			   *pWinApp;
 	wxWindow		   *pWnd;
 
@@ -2036,32 +2038,32 @@ void CCamApp::DisableSystem(CWindowID WindowID /*=NULL*/)
 		if ( (( pWnd = pWinApp->GetTopWindow() ) !=NULL ) && (pWnd != WindowID))
 			pWnd->Enable(FALSE);					// Only perform operation if no pointers are NULL
 	s_bIsDisabled = true; // The flags value will be tested in the rendering and tool bar
-						  // code etc. When TRUE functionality will be disabled.  	
+						  // code etc. When TRUE functionality will be disabled.
 }
 
 /********************************************************************************************
 
->	void CCamApp::EnableSystem(void)  
+>	void CCamApp::EnableSystem(void)
 
 	Author:		Simon_Maneggio (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	28/10/93
 	Inputs:		-
 	Outputs:	-
 	Returns:	-
-	Purpose:	This function restores system functionality. 
-	Errors:		An ENSURE failure will occur if the DisableSys flag was not set when this 
-				function was called. 
+	Purpose:	This function restores system functionality.
+	Errors:		An ENSURE failure will occur if the DisableSys flag was not set when this
+				function was called.
 	SeeAlso:	CCamApp::DisableSystem
 
 ********************************************************************************************/
 
-void CCamApp::EnableSystem()  
+void CCamApp::EnableSystem()
 {
 	wxApp			   *pWinApp;
 	wxWindow		   *pWnd;
 
 	ENSURE( s_bIsDisabled, "Trying to enable system which is already enabled" );
-	// Enable Camelot's main window. 
+	// Enable Camelot's main window.
 	if ( ( pWinApp = &AfxGetApp() ) != NULL )		// Note assignment using = not == on both lines
 		if ( ( pWnd = pWinApp->GetTopWindow() ) !=NULL )
 			pWnd->Enable(TRUE);						// Only perform operation if no pointers are NULL
@@ -2133,7 +2135,7 @@ void CCamApp::OnHelpIndex()
 	if ( -1 != ordSep )
 		strLocale = strLocale.Left( ordSep );
 	TRACEUSER( "jlh92", _T("Locale = %s\n"), PCTSTR(strLocale) );
-	
+
 	// Locale C is considered a synonym for en
 	if( strLocale == _T("C") )
 		strLocale = _T("en");
@@ -2286,9 +2288,9 @@ BOOL CCamApp::LaunchBrowserApp(const wxString& strAppName, wxString strCommand)
 //
 // The accelerators of menu strings are decoded and accelerators are
 // automatically built from them. This works well most of the time
-// but numeric keypad accelerators must be added in a rather ugly 
+// but numeric keypad accelerators must be added in a rather ugly
 // format such as "Ctrl+KP_ADD". This code enables them to be included
-// in a format such as "Ctrl+Num +", ie Num (and Numpad) are used as 
+// in a format such as "Ctrl+Num +", ie Num (and Numpad) are used as
 // modifiers in the same way as Shift, Ctrl and Alt.
 //
 // Could probably do with further improvement.
@@ -2553,14 +2555,14 @@ static inline bool CompareAccelString(const wxString& str, const wxChar *accel)
 	Scope:	    Public
 	SeeAlso:	-
 
-**********************************************************************************************/ 
+**********************************************************************************************/
 
 void CCamApp::OnFatalException()
 {
 	static INT32 recursionguard = 0;
 
 	if (recursionguard)
-	{	
+	{
 		// Oh dear, an error occurred whilst we had our box up. Exit immediately
 		if (recursionguard++ > 1)
 		{
@@ -2625,14 +2627,14 @@ void CCamApp::OnFatalException()
 #endif
 
 		DisableSystem();
-	
+
 		Progress::Smash(TRUE); // smash the progress bar
-		
+
 		// Relase the mouse if captured
 		wxWindow *pCapture=wxWindow::GetCapture();
 		if (pCapture)
 			pCapture->ReleaseMouse();
-	
+
 		if (Error::ErrorBoxRecurse)
 		{
 			INT32 result=wxYES;
@@ -2654,7 +2656,7 @@ void CCamApp::OnFatalException()
 				String_256 TitleOfDoom(_R(IDS_DOOMTITLE));
 				result = ::wxMessageBox(wxString((TCHAR *)PortentOfDoom), wxString((TCHAR *)TitleOfDoom), wxICON_ERROR | wxYES_NO);
 			}
-		
+
 			if (InInitOrDeInit || (result != wxYES))
 			{
 				recursionguard--;
@@ -2682,28 +2684,28 @@ void CCamApp::OnFatalException()
 			}
 		}
 
-	
+
 		if ( Error::IsInRenderThread() )
 		{
 			TRACE( _T("In RenderThread so clearing up system"));
 			Error::RenderThreadReset();
 			CamProfile::AtBase(CAMPROFILE_OTHER);
 		}
-	
+
 		GBrush::ResetOnFatalError(); // this clears an annoying ensure
-	
+
 		if (IsDisabled()) // Error box routines can enable it
 			EnableSystem();
 
 		recursionguard--;
-	
+
 		// Zap out main loop pointer
 #if !defined(__WXMAC__)
 		m_mainLoop=NULL;
 #endif
 
 	} while(0);
-	
+
 	// We'd like to jump back into the main loop. We can't throw() as allegedly this doesn't work through
 	// gtk's stack frames (being C not C++) on some compilers sometimes. And destroying things might
 	// be bad. We don't do setjmp/longjmp as that would leave objects on the stack in a state where they
@@ -2731,7 +2733,7 @@ We assume that app initialization has already been done, or we wouldn't have bee
 as the exception handler. So we don't do it again. Note we return from this (so the OnExit()
 stuff gets called), but that the caller should then exit() immediately.
 
-**********************************************************************************************/ 
+**********************************************************************************************/
 
 static inline void Use(void *) {}
 
@@ -2764,7 +2766,7 @@ INT32 CCamApp::RunFalseMainLoop()
 
 
 /**
- * CMediaReplayDetect - Class which checks to see if a command is available 
+ * CMediaReplayDetect - Class which checks to see if a command is available
  * on the path
  **/
 
@@ -2862,7 +2864,7 @@ static void FillMediaAppMap( SelMediaDlgParam::CMediaAppList* pMapMediaApp )
 	SelMediaDlgParam::CMediaAppListIter	iter( pMapMediaApp->begin() );
 	for( ; iter != end; )
 	{
-		SelMediaDlgParam::CMediaAppListIter	iterCur( iter++ ); 
+		SelMediaDlgParam::CMediaAppListIter	iterCur( iter++ );
 		if( !Detect.IsAppPresent( iterCur->first ) )
 		{
 			TRACEUSER( "luke", _T("%s is not present"), (PCTSTR)iterCur->first );
@@ -2877,11 +2879,11 @@ static void FillMediaAppMap( SelMediaDlgParam::CMediaAppList* pMapMediaApp )
 
 	Author:		Luke_Hart (Xara Group Ltd) <camelotdev@xara.com> <luke.hartΩxara.com>
 	Created:	23/08/06
-	Inputs:		strUrl - The path to the file conbtaining the movie to play (could even be 
+	Inputs:		strUrl - The path to the file conbtaining the movie to play (could even be
 							web address)
 	Outputs:	-
 	Returns:	true if player launched successfully
-	Purpose:	This function attempts to replay a movie using configured player (or ask user 
+	Purpose:	This function attempts to replay a movie using configured player (or ask user
 				to specify one if not already setup)
 	Errors:		-
 	Scope:	    Public
@@ -2902,11 +2904,11 @@ bool CCamApp::LaunchMediaApp( const wxString& strUrl )
 		// Setup param and open replay app selection dialog
 		SelMediaDlgParam	Param;
 		Param.m_pAppList = &mapMediaApp;
-		OpDescriptor* pOpDesc = OpDescriptor::FindOpDescriptor( CC_RUNTIME_CLASS(SelMediaDlg) ); 
+		OpDescriptor* pOpDesc = OpDescriptor::FindOpDescriptor( CC_RUNTIME_CLASS(SelMediaDlg) );
 		if( NULL != pOpDesc )
 		{
 			pOpDesc->Invoke( &Param );
-		
+
 			if( Param.m_fValid )
 				m_strMediaApplication = Param.m_strSel;
 		}
@@ -2965,7 +2967,7 @@ bool CCamApp::LaunchMediaApp( const wxString& strUrl )
 	Scope:	    Public
 	SeeAlso:	-
 
- **********************************************************************************************/ 
+ **********************************************************************************************/
 
 bool CCamApp::SelectMediaApp()
 {
@@ -2980,11 +2982,11 @@ bool CCamApp::SelectMediaApp()
 	SelMediaDlgParam	Param;
 	Param.m_pAppList = &mapMediaApp;
 	Param.m_strSel	 = m_strMediaApplication;
-	OpDescriptor* pOpDesc = OpDescriptor::FindOpDescriptor( CC_RUNTIME_CLASS(SelMediaDlg) ); 
+	OpDescriptor* pOpDesc = OpDescriptor::FindOpDescriptor( CC_RUNTIME_CLASS(SelMediaDlg) );
 	if( NULL != pOpDesc )
 	{
 		pOpDesc->Invoke( &Param );
-	
+
 		if( Param.m_fValid )
 			m_strMediaApplication = Param.m_strSel;
 	}
@@ -2992,4 +2994,3 @@ bool CCamApp::SelectMediaApp()
 	// User canceled, bomb out
 	return Param.m_fValid;
 }
-
