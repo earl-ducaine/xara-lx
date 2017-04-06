@@ -3,16 +3,16 @@
 	<object class="wxMenuBar" name="IDR_MAINFRAME">
 		<object class="wxMenu" name="IDR_MAINFRAME_POPUP1">
 			<label>&amp;File</label>
-			<object class="wxMenuItem" name="ID_FILE_NEW">
+			<object class="wxMenuItem" name="ID_FILE_NEW2">
 			<label>&amp;New\tCtrl+N</label>
 			<help>Create a new document</help>
 			</object>
-			<object class="wxMenuItem" name="wxID_OPEN">
+			<object class="wxMenuItem" name="wxID_OPEN2">
 			<label>&amp;Open...\tCtrl+O</label>
 			<help>Open an existing document</help>
 			</object>
 			<object class="separator"/>
-			<object class="wxMenuItem" name="wxID_PRINT_SETUP">
+			<object class="wxMenuItem" name="wxID_PRINT_SETUP2">
 			<label>P&amp;rint Setup...</label>
 			<help>Change the printer and printing options</help>
 			</object>
@@ -58,36 +58,36 @@
 	<object class="wxMenuBar" name="IDR_CAMTYPE">
 		<object class="wxMenu" name="IDR_CAMTYPE_POPUP1">
 			<label>&amp;File</label>
-			<object class="wxMenuItem" name="ID_FILE_NEW">
+			<object class="wxMenuItem" name="ID_FILE_NEW3">
 			<label>&amp;New\tCtrl+N</label>
 			<help>Create a new document</help>
 			</object>
-			<object class="wxMenuItem" name="wxID_OPEN">
+			<object class="wxMenuItem" name="wxID_OPEN2">
 			<label>&amp;Open...\tCtrl+O</label>
 			<help>Open an existing document</help>
 			</object>
-			<object class="wxMenuItem" name="wxID_CLOSE">
+			<object class="wxMenuItem" name="wxID_CLOSE2">
 			<label>&amp;Close</label>
 			<help>Close the current document</help>
 			</object>
-			<object class="wxMenuItem" name="wxID_SAVE">
+			<object class="wxMenuItem" name="wxID_SAVE2">
 			<label>&amp;Save\tCtrl+S</label>
 			<help>Save the current document</help>
 			</object>
-			<object class="wxMenuItem" name="wxID_SAVEAS">
+			<object class="wxMenuItem" name="wxID_SAVEAS2">
 			<label>Save &amp;As...</label>
 			<help>Save the current document with a new name</help>
 			</object>
 			<object class="separator"/>
-			<object class="wxMenuItem" name="wxID_PRINT">
+			<object class="wxMenuItem" name="wxID_PRINT2">
 			<label>&amp;Print...\tCtrl+P</label>
 			<help>Print the current document</help>
 			</object>
-			<object class="wxMenuItem" name="wxID_PREVIEW">
+			<object class="wxMenuItem" name="wxID_PREVIEW2">
 			<label>Print Pre&amp;view</label>
 			<help>Display full pages</help>
 			</object>
-			<object class="wxMenuItem" name="wxID_PRINT_SETUP">
+			<object class="wxMenuItem" name="wxID_PRINT_SETUP2">
 			<label>P&amp;rint Setup...</label>
 			<help>Change the printer and printing options</help>
 			</object>
