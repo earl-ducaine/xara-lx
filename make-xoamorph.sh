@@ -29,3 +29,9 @@ function build_xoamorph {
     ./configure
     make -j 4
 }
+
+
+
+function make_tags {
+    find . -name "*.c" -o -name "*.cpp" -o -name "*.h" -print | xargs etags -a
+}
