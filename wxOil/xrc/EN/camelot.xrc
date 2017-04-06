@@ -17,7 +17,7 @@
 			<help>Change the printer and printing options</help>
 			</object>
 			<object class="separator"/>
-			<object class="wxMenuItem" name="ID_FILE_MRU_FILE3">
+			<object class="wxMenuItem" name="ID_FILE_MRU_FILE4">
 			<label>Recent File</label>
 			<help>Open this document</help>
 			</object>
@@ -92,19 +92,19 @@
 			<help>Change the printer and printing options</help>
 			</object>
 			<object class="separator"/>
-			<object class="wxMenuItem" name="ID_FILE_MRU_FILE1">
+			<object class="wxMenuItem" name="ID_FILE_MRU_FILE2">
 			<label>Recent File</label>
 			<help>Open this document</help>
 			</object>
 			<object class="separator"/>
-			<object class="wxMenuItem" name="wxID_EXIT">
+			<object class="wxMenuItem" name="wxID_EXIT1">
 			<label>E&amp;xit</label>
 			<help>Quit the application; prompts to save documents</help>
 			</object>
 			</object>
 		<object class="wxMenu" name="IDR_CAMTYPE_POPUP2">
 			<label>&amp;Edit</label>
-			<object class="wxMenuItem" name="wxID_UNDO">
+			<object class="wxMenuItem" name="wxID_UNDO1">
 			<label>&amp;Undo\tCtrl+Z</label>
 			<help>Undo the last action</help>
 			</object>
