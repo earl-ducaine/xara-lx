@@ -6,7 +6,7 @@
 			<orient>wxVERTICAL</orient>
 			<object class="sizeritem">
 				<flag>wxALIGN_LEFT|wxALL|wxADJUST_MINSIZE</flag>
-				<object class="wxStaticText" name="IDC_LIBPATH_HELP_BUTTON">
+				<object class="wxStaticText" name="IDC_LIBPATH_HELP_BUTTON1">
 					<label>&amp;Help</label>
 				</object>
 			</object>
