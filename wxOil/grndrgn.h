@@ -1,7 +1,7 @@
 // $Id: grndrgn.h 1361 2006-06-25 16:43:38Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
- 
+
                Xara LX, a vector drawing and manipulation program.
                     Copyright (C) 1993-2006 Xara Group Ltd.
        Copyright on certain contributions may be held in joint with their
@@ -32,7 +32,7 @@ ADDITIONAL RIGHTS
 
 Conditional upon your continuing compliance with the GNU General Public
 License described above, Xara Group Ltd grants to you certain additional
-rights. 
+rights.
 
 The additional rights are to use, modify, and distribute the software
 together with the wxWidgets library, the wxXtra library, and the "CDraw"
@@ -145,7 +145,7 @@ typedef CMapPtrToPtr ClipRectMap;
 	Created:	11/5/93
 	Purpose:	Encapsulates rendering using Gavins routines (ie. into a bitmap).
 				This object is created when something needs rendering using Gavins routines
-				eg. When anti-aliasing.  
+				eg. When anti-aliasing.
 				See RenderRegion notes for more general details of this class. This is an
 				abstract class - see GRenderDIB or GRenderDDB for implementations.
 
@@ -174,7 +174,7 @@ public:
 	virtual BOOL CopyRenderInfo( const RenderRegion &Other);
 	virtual BOOL AttachDevice(View*, wxDC *, Spread* = NULL, bool fOwned = false );
 	virtual BOOL InitDevice();
-		
+
 	BOOL StartRender();
 	BOOL StopRender();
 	virtual void SetClean(BOOL bResetChangedBounds, BOOL FillWhite);
@@ -189,9 +189,9 @@ public:
 	void DrawCross(const DocCoord &Point, const UINT32 Size);
 
 	void DrawBitmap(const DocCoord &Point, KernelBitmap* pBitmap);
-	void DrawBitmap(const DocCoord &Point, UINT32 BitmapID, UINT32 ToolID = NULL);
+	void DrawBitmap(const DocCoord &Point, UINT32 BitmapID, UINT32 ToolID = 0);
 	void DrawBitmap(const DocRect& rect, KernelBitmap* pBitmap);
-	
+
 	void DrawBitmapBlob(const DocCoord &Point, KernelBitmap* BlobShape) {}
 	void DrawBitmapBlob(const DocCoord &Point, ResourceID resID ) {}
 
@@ -234,7 +234,7 @@ public:
 			TRACEUSER( "Gerry", _T("******** Trying to set a NULL GDrawContext\n") );
 			pContext = pRealGD;
 		}
-		
+
 		GDrawContext* pOldCon = GD;
 		GD = pContext;
 //		TRACEUSER( "Gerry", _T("GDraw context set to 0x%08x (prev = 0x%08x)\n"), GD, pOldCon);
@@ -318,7 +318,7 @@ public:
 	// Function to draw a bitmap into the render region using a mask, and
 	// and equivalent function to do the same, only colour separating it as it goes
 	// The Separated version is called by this one if colour seps are enabled
-	virtual SlowJobResult DrawMaskedBitmap(const DocRect &Rect, KernelBitmap* pBitmap, 
+	virtual SlowJobResult DrawMaskedBitmap(const DocRect &Rect, KernelBitmap* pBitmap,
 								  		   MaskedRenderRegion* pMask, ProgressDisplay *Progress);
 protected:
 	BOOL GetTransparencyFill(TranspGradTable*, DWORD*);
@@ -338,7 +338,7 @@ protected:
 	virtual LPBITMAPINFO GetLPBits( INT32 Width, INT32 Height, INT32 Depth, LPBYTE*) = 0;
 	virtual void FreeLPBits( LPBITMAPINFO, LPBYTE ) = 0;
 	virtual BOOL DisplayBits(LPBITMAPINFO lpDisplayBitmapInfo = NULL, LPBYTE lpDisplayBits = NULL) = 0;
-	
+
 	// this isn't pure, but is needed by some inherited classes
 	virtual void InitBmpBits();					// added by Ilan.
 	virtual BOOL StartRenderAfter(GMATRIX*);
@@ -365,7 +365,7 @@ protected:
 
 	double PixelsPerInch;								// resolution of bitmap
 	double dScaledPixelWidth;							// accurate size of pixel with view zoom factored in
- 
+
 	wxPalette* hPalette;								// palette used to render (or NULL)
 	wxPalette* hPrevPalette;							// original (previous) palette
 
@@ -493,7 +493,7 @@ public:
 	{
 		return((LPLOGPALETTE)&ErrorDiffPalette);
 	};
-	
+
 	static void SetViewDither(INT32 dither){ViewDither = dither;};
 
 	static DWORD GetMaxBitmapWidth(void);
@@ -638,7 +638,7 @@ public:
 	void Do(OpDescriptor*);
 
 	static BOOL Init();
-	static OpState GetState(String_256*, OpDescriptor*);	
+	static OpState GetState(String_256*, OpDescriptor*);
 };
 
 #define	OPTOKEN_GDRAW		_T("GDrawToggle")
