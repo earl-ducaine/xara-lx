@@ -17,7 +17,7 @@
 			<help>Change the printer and printing options</help>
 			</object>
 			<object class="separator"/>
-			<object class="wxMenuItem" name="ID_FILE_MRU_FILE2">
+			<object class="wxMenuItem" name="ID_FILE_MRU_FILE5">
 			<label>Recent File</label>
 			<help>Open this document</help>
 			</object>
@@ -33,23 +33,23 @@
 			<label>&amp;Toolbar</label>
 			<help>Show or hide the toolbar</help>
 			</object>
-			<object class="wxMenuItem" name="ID_VIEW_STATUS_BAR">
+			<object class="wxMenuItem" name="ID_VIEW_STATUS_BAR1">
 			<label>&amp;Status Bar</label>
 			<help>Show or hide the Status Line</help>
 			</object>
 			</object>
 		<object class="wxMenu" name="IDR_MAINFRAME_POPUP3">
 			<label>&amp;Help</label>
-			<object class="wxMenuItem" name="ID_HELP_INDEX">
+			<object class="wxMenuItem" name="ID_HELP_INDEX1">
 			<label>&amp;Contents</label>
 			<help>Online help contents</help>
 			</object>
-			<object class="wxMenuItem" name="ID_HELP_USING">
+			<object class="wxMenuItem" name="ID_HELP_USING1">
 			<label>&amp;Using Help</label>
 			<help>Display instructions about how to use help</help>
 			</object>
 			<object class="separator"/>
-			<object class="wxMenuItem" name="wxID_ABOUT">
+			<object class="wxMenuItem" name="wxID_ABOUT1">
 			<label>&amp;About Xara Xtreme...</label>
 			<help>Display program information, version number and copyright</help>
 			</object>
@@ -92,95 +92,95 @@
 			<help>Change the printer and printing options</help>
 			</object>
 			<object class="separator"/>
-			<object class="wxMenuItem" name="ID_FILE_MRU_FILE1">
+			<object class="wxMenuItem" name="ID_FILE_MRU_FILE5">
 			<label>Recent File</label>
 			<help>Open this document</help>
 			</object>
 			<object class="separator"/>
-			<object class="wxMenuItem" name="wxID_EXIT">
+			<object class="wxMenuItem" name="wxID_EXIT1">
 			<label>E&amp;xit</label>
 			<help>Quit the application; prompts to save documents</help>
 			</object>
 			</object>
 		<object class="wxMenu" name="IDR_CAMTYPE_POPUP2">
 			<label>&amp;Edit</label>
-			<object class="wxMenuItem" name="wxID_UNDO">
+			<object class="wxMenuItem" name="wxID_UNDO1">
 			<label>&amp;Undo\tCtrl+Z</label>
 			<help>Undo the last action</help>
 			</object>
 			<object class="separator"/>
-			<object class="wxMenuItem" name="wxID_CUT">
+			<object class="wxMenuItem" name="wxID_CUT1">
 			<label>Cu&amp;t\tCtrl+X</label>
 			<help>Cut the selection and put it on the Clipboard</help>
 			</object>
-			<object class="wxMenuItem" name="wxID_COPY">
+			<object class="wxMenuItem" name="wxID_COPY1">
 			<label>&amp;Copy\tCtrl+C</label>
 			<help>Copy the selection and put it on the Clipboard</help>
 			</object>
-			<object class="wxMenuItem" name="wxID_PASTE">
+			<object class="wxMenuItem" name="wxID_PASTE1">
 			<label>&amp;Paste\tCtrl+V</label>
 			<help>Insert Clipboard contents</help>
 			</object>
-			<object class="wxMenuItem" name="ID_EDIT_PASTE_LINK">
+			<object class="wxMenuItem" name="ID_EDIT_PASTE_LINK1">
 			<label>Paste &amp;Link</label>
 			<help>Insert Clipboard contents and a link to its source</help>
 			</object>
 			<object class="separator"/>
-			<object class="wxMenuItem" name="ID_OLE_INSERT_NEW">
+			<object class="wxMenuItem" name="ID_OLE_INSERT_NEW1">
 			<label>Insert &amp;New Object...</label>
 			<help>Insert new embedded object</help>
 			</object>
-			<object class="wxMenuItem" name="ID_OLE_EDIT_LINKS">
+			<object class="wxMenuItem" name="ID_OLE_EDIT_LINKS1">
 			<label>Lin&amp;ks...</label>
 			<help>Edit linked objects</help>
 			</object>
-			<object class="wxMenuItem" name="ID_OLE_VERB_FIRST">
+			<object class="wxMenuItem" name="ID_OLE_VERB_FIRST1">
 			<label>&lt;&lt;OLE VERBS GO HERE&gt;&gt;</label>
 			<help>Activate embedded or linked object</help>
 			</object>
 			</object>
 		<object class="wxMenu" name="IDR_CAMTYPE_POPUP3">
 			<label>&amp;View</label>
-			<object class="wxMenuItem" name="ID_VIEW_TOOLBAR">
+			<object class="wxMenuItem" name="ID_VIEW_TOOLBAR1">
 			<label>&amp;Toolbar</label>
 			<help>Show or hide the toolbar</help>
 			</object>
-			<object class="wxMenuItem" name="ID_VIEW_STATUS_BAR">
+			<object class="wxMenuItem" name="ID_VIEW_STATUS_BAR2">
 			<label>&amp;Status Line</label>
 			<help>Show or hide the Status Line</help>
 			</object>
 			</object>
 		<object class="wxMenu" name="IDR_CAMTYPE_POPUP4">
 			<label>&amp;Window</label>
-			<object class="wxMenuItem" name="ID_WINDOW_NEW">
+			<object class="wxMenuItem" name="ID_WINDOW_NEW3">
 			<label>&amp;New Window</label>
 			<help>Open another window on the current document</help>
 			</object>
-			<object class="wxMenuItem" name="ID_WINDOW_CASCADE">
+			<object class="wxMenuItem" name="ID_WINDOW_CASCADE1">
 			<label>&amp;Cascade</label>
 			<help>Arrange windows so they overlap</help>
 			</object>
-			<object class="wxMenuItem" name="ID_WINDOW_TILE_HORZ">
+			<object class="wxMenuItem" name="ID_WINDOW_TILE_HORZ1">
 			<label>&amp;Tile</label>
 			<help>Arrange windows as non-overlapping tiles</help>
 			</object>
-			<object class="wxMenuItem" name="ID_WINDOW_ARRANGE">
+			<object class="wxMenuItem" name="ID_WINDOW_ARRANGE1">
 			<label>&amp;Arrange Icons</label>
 			<help>Arrange icons at the bottom of the window</help>
 			</object>
 			</object>
 		<object class="wxMenu" name="IDR_CAMTYPE_POPUP5">
 			<label>&amp;Help</label>
-			<object class="wxMenuItem" name="ID_HELP_INDEX">
+			<object class="wxMenuItem" name="ID_HELP_INDEX1">
 			<label>&amp;Contents</label>
 			<help>Online help contents</help>
 			</object>
-			<object class="wxMenuItem" name="ID_HELP_USING">
+			<object class="wxMenuItem" name="ID_HELP_USING1">
 			<label>&amp;Using Help</label>
 			<help>Display instructions about how to use help</help>
 			</object>
 			<object class="separator"/>
-			<object class="wxMenuItem" name="wxID_ABOUT">
+			<object class="wxMenuItem" name="wxID_ABOUT1">
 			<label>&amp;About Xara Xtreme...</label>
 			<help>Display program information, version number and copyright</help>
 			</object>
