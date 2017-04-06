@@ -92,7 +92,7 @@
 			<help>Change the printer and printing options</help>
 			</object>
 			<object class="separator"/>
-			<object class="wxMenuItem" name="ID_FILE_MRU_FILE3">
+			<object class="wxMenuItem" name="ID_FILE_MRU_FILE4">
 			<label>Recent File</label>
 			<help>Open this document</help>
 			</object>
@@ -117,24 +117,24 @@
 			<label>&amp;Copy\tCtrl+C</label>
 			<help>Copy the selection and put it on the Clipboard</help>
 			</object>
-			<object class="wxMenuItem" name="wxID_PASTE">
+			<object class="wxMenuItem" name="wxID_PASTE1">
 			<label>&amp;Paste\tCtrl+V</label>
 			<help>Insert Clipboard contents</help>
 			</object>
-			<object class="wxMenuItem" name="ID_EDIT_PASTE_LINK">
+			<object class="wxMenuItem" name="ID_EDIT_PASTE_LINK1">
 			<label>Paste &amp;Link</label>
 			<help>Insert Clipboard contents and a link to its source</help>
 			</object>
 			<object class="separator"/>
-			<object class="wxMenuItem" name="ID_OLE_INSERT_NEW">
+			<object class="wxMenuItem" name="ID_OLE_INSERT_NEW1">
 			<label>Insert &amp;New Object...</label>
 			<help>Insert new embedded object</help>
 			</object>
-			<object class="wxMenuItem" name="ID_OLE_EDIT_LINKS">
+			<object class="wxMenuItem" name="ID_OLE_EDIT_LINKS1">
 			<label>Lin&amp;ks...</label>
 			<help>Edit linked objects</help>
 			</object>
-			<object class="wxMenuItem" name="ID_OLE_VERB_FIRST">
+			<object class="wxMenuItem" name="ID_OLE_VERB_FIRST1">
 			<label>&lt;&lt;OLE VERBS GO HERE&gt;&gt;</label>
 			<help>Activate embedded or linked object</help>
 			</object>
