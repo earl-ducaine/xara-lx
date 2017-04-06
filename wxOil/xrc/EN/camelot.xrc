@@ -7,12 +7,12 @@
 			<label>&amp;New\tCtrl+N</label>
 			<help>Create a new document</help>
 			</object>
-			<object class="wxMenuItem" name="wxID_OPEN">
+			<object class="wxMenuItem" name="wxID_OPEN2">
 			<label>&amp;Open...\tCtrl+O</label>
 			<help>Open an existing document</help>
 			</object>
 			<object class="separator"/>
-			<object class="wxMenuItem" name="wxID_PRINT_SETUP">
+			<object class="wxMenuItem" name="wxID_PRINT_SETUP2">
 			<label>P&amp;rint Setup...</label>
 			<help>Change the printer and printing options</help>
 			</object>
