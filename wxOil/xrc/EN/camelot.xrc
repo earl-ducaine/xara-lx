@@ -3,7 +3,7 @@
 	<object class="wxMenuBar" name="IDR_MAINFRAME">
 		<object class="wxMenu" name="IDR_MAINFRAME_POPUP1">
 			<label>&amp;File</label>
-			<object class="wxMenuItem" name="ID_FILE_NEW">
+			<object class="wxMenuItem" name="ID_FILE_NEW2">
 			<label>&amp;New\tCtrl+N</label>
 			<help>Create a new document</help>
 			</object>
@@ -58,7 +58,7 @@
 	<object class="wxMenuBar" name="IDR_CAMTYPE">
 		<object class="wxMenu" name="IDR_CAMTYPE_POPUP1">
 			<label>&amp;File</label>
-			<object class="wxMenuItem" name="ID_FILE_NEW2">
+			<object class="wxMenuItem" name="ID_FILE_NEW3">
 			<label>&amp;New\tCtrl+N</label>
 			<help>Create a new document</help>
 			</object>
