@@ -1,7 +1,7 @@
 // $Id: prefs.h 930 2006-05-02 12:25:56Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
- 
+
                Xara LX, a vector drawing and manipulation program.
                     Copyright (C) 1993-2006 Xara Group Ltd.
        Copyright on certain contributions may be held in joint with their
@@ -32,7 +32,7 @@ ADDITIONAL RIGHTS
 
 Conditional upon your continuing compliance with the GNU General Public
 License described above, Xara Group Ltd grants to you certain additional
-rights. 
+rights.
 
 The additional rights are to use, modify, and distribute the software
 together with the wxWidgets library, the wxXtra library, and the "CDraw"
@@ -136,13 +136,13 @@ typedef enum
 	Created:	17/8/93
 	Purpose:	Maintains a list of PreferenceSection objects, and allows clients to declare
 				new sections, and add new preferences to the sections.
-				
+
 				For details of how to declare/use preferences, see the Application class.
-				
-				
+
+
 				When the application wants to save the preferences, the Write() function
 				of this class should be used.
-				
+
 	SeeAlso:	-
 
 ********************************************************************************************/
@@ -151,31 +151,31 @@ typedef enum
 class CCAPI Preferences : public List
 {
 	CC_DECLARE_MEMDUMP(Preferences)
-	
+
 public:
 	Preferences();
 	~Preferences();
-	
+
 	BOOL Init();
 	void Deinit();
-	
+
 	void Write();
 
 	void WipePreferenceFile();
 	void WipeDangerousPrefs();
-	
+
 	BOOL DeclareSection(TCHAR *Section, UINT32 InitialSize);
-	
-	BOOL DeclarePref(TCHAR *Section, TCHAR *Pref, 
+
+	BOOL DeclarePref(TCHAR *Section, const TCHAR *Pref,
 					 INT32 *PrefVar, INT32 Min = INT_MIN, INT32 Max = INT_MAX);
-					 
-	BOOL DeclarePref(TCHAR *Section, TCHAR *Pref, 
+
+	BOOL DeclarePref(TCHAR *Section, const TCHAR *Pref,
 					 UINT32 *PrefVar, UINT32 Min = 0, UINT32 Max = UINT_MAX);
-					 
-	BOOL DeclarePref(TCHAR *Section, TCHAR *Pref, 
+
+	BOOL DeclarePref(TCHAR *Section, const TCHAR *Pref,
 					 double *PrefVar, double Min = DBL_MIN, double Max = DBL_MAX);
-	
-	BOOL DeclarePref(TCHAR *Section, TCHAR *Pref, StringBase *PrefVar);
+
+	BOOL DeclarePref(TCHAR *Section, const TCHAR *Pref, StringBase *PrefVar);
 
 	// These next functions allow the preferences to be read/written by other
 	// people than the owner e.g. the application options dialog box
@@ -204,7 +204,7 @@ private:
 	// Used to cache the section object when declaring preferences.
 	PreferenceSection *CurrentSection;
 	PreferenceSection *GetSection(TCHAR *SectionName);
-	
+
 	// Link to the OIL layer
 	OILPreferences *OILPrefs;
 

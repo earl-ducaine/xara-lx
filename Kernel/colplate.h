@@ -1,7 +1,7 @@
 // $Id: colplate.h 1282 2006-06-09 09:46:49Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
- 
+
                Xara LX, a vector drawing and manipulation program.
                     Copyright (C) 1993-2006 Xara Group Ltd.
        Copyright on certain contributions may be held in joint with their
@@ -32,7 +32,7 @@ ADDITIONAL RIGHTS
 
 Conditional upon your continuing compliance with the GNU General Public
 License described above, Xara Group Ltd grants to you certain additional
-rights. 
+rights.
 
 The additional rights are to use, modify, and distribute the software
 together with the wxWidgets library, the wxXtra library, and the "CDraw"
@@ -133,7 +133,7 @@ typedef enum
 
 ********************************************************************************************/
 
-typedef enum ScreenType
+enum ScreenType
 {
 	SCRTYPE_NONE,
 	SCRTYPE_SPOT1,
@@ -150,7 +150,7 @@ typedef enum ScreenType
 
 
 /********************************************************************************************
- 
+
 >	class ColourPlate : public ListItem
 
 	Author:		Jason_Williams (Xara Group Ltd) <camelotdev@xara.com>
@@ -166,7 +166,7 @@ typedef enum ScreenType
 				A flag is available, Negate, which controls if a normal or "photographic
 				negative" plate is required.
 
-	Notes:		You can't change a colour plate "on the fly", as you must attach a new 
+	Notes:		You can't change a colour plate "on the fly", as you must attach a new
 				one to a colour context in order to make caching of colours work
 				correctly. Thus, to change the plate, you must build a new one.
 
@@ -207,12 +207,12 @@ public:		// Retrieving current settings
 
 	IndexedColour  *GetSpotColour(void)		// Gets the spot colour (if any) which this spot plate contains
 	{
-		return(Spot.FindParentIndexedColour()); 
+		return(Spot.FindParentIndexedColour());
 	};
-	
+
 	BOOL IsMonochrome(void)				{ return(Monochrome); };
 			// Returns TRUE if this plate should contain only monochromatic values
-	
+
 	BOOL IsNegative(void) 				{ return(Negate); };
 			// Returns TRUE if this plate is a photographic negative
 
@@ -224,7 +224,7 @@ public:		// Retrieving current settings
 
 	ScreenType GetScreenFunction(void)	{ return(ScreenFunction); };
 			// Returns the screen function
-	
+
 	BOOL ActiveScreening(void)			{ return(ActiveScreens); };
 			// Returns TRUE if this plate uses screening
 
@@ -250,7 +250,7 @@ public:		// Changing current settings - use as infrequently as possible
 
 	void SetScreenInfo(double Angle, double Frequency);
 			// Sets screen angle/frequency for this plate
-	
+
 	void SetScreenFunction(ScreenType func);
 			// Sets screen type for this plate
 
@@ -299,5 +299,3 @@ protected:	// Internal data
 };
 
 #endif			// INC_COLPLATE
-
-
