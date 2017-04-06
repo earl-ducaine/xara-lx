@@ -487,7 +487,7 @@ public:
 					 double *PrefVar, double Min = DBL_MIN, double Max = DBL_MAX)
 		{ return CamelotPrefs->DeclarePref(Section, Pref, PrefVar, Min, Max); };
 
-	BOOL DeclarePref(LPTCHAR Section, const LPTCHAR Pref, StringBase *PrefVar)
+	BOOL DeclarePref(LPTCHAR Section, const LPTCHAR Pref, const StringBase *PrefVar)
 		{ return CamelotPrefs->DeclarePref(Section, Pref, PrefVar); };
 
 	// Used by the application options/preferences dialog box

@@ -1385,7 +1385,7 @@ BOOL Preferences::DeclarePref(LPTCHAR Section, const LPTCHAR Pref,
 
 ********************************************************************************************/
 
-BOOL Preferences::DeclarePref(LPTCHAR Section, const LPTCHAR Pref, StringBase *PrefVar)
+BOOL Preferences::DeclarePref(LPTCHAR Section, const LPTCHAR Pref, const StringBase *PrefVar)
 {
 #if !defined(EXCLUDE_FROM_RALPH)
 	// Find the right section
