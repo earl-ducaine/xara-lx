@@ -26,10 +26,10 @@
 			 <pos>180,30d</pos> <size>37,12d</size>
 			<label>R*C*P</label>
 		</object>
-		<object class="wxStaticBitmap" name="IDC_ERRORBOX_ICON">
-			 <pos>11,7d</pos> <size>18,20d</size>
-			<bitmap>.png</bitmap>
-		</object>
+		<!-- <object class="wxStaticBitmap" name="IDC_ERRORBOX_ICON"> -->
+		<!-- 	 <pos>11,7d</pos> <size>18,20d</size> -->
+		<!-- 	<bitmap>.png</bitmap> -->
+		<!-- </object> -->
 		<title>Xara Xtreme</title>
 		<label>Xara Xtreme</label>
 	</object>
