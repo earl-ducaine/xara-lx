@@ -1174,7 +1174,7 @@ BOOL Preferences::DeclareSection(LPTCHAR Section, UINT32 InitialSize)
 
 ********************************************************************************************/
 
-BOOL Preferences::DeclarePref(LPTCHAR Section, const LPTCHAR Pref,
+BOOL Preferences::DeclarePref(const LPTCHAR Section, const LPTCHAR Pref,
 							  INT32 *PrefVar, INT32 Min, INT32 Max)
 {
 #if !defined(EXCLUDE_FROM_RALPH)
@@ -1245,7 +1245,7 @@ BOOL Preferences::DeclarePref(LPTCHAR Section, const LPTCHAR Pref,
 
 ********************************************************************************************/
 
-BOOL Preferences::DeclarePref(LPTCHAR Section, const LPTCHAR Pref,
+BOOL Preferences::DeclarePref(const LPTCHAR Section, const LPTCHAR Pref,
 							  UINT32 *PrefVar, UINT32 Min, UINT32 Max)
 {
 #if !defined(EXCLUDE_FROM_RALPH)
@@ -1321,7 +1321,7 @@ BOOL Preferences::DeclarePref(LPTCHAR Section, const LPTCHAR Pref,
 
 ********************************************************************************************/
 
-BOOL Preferences::DeclarePref(LPTCHAR Section, const LPTCHAR Pref,
+BOOL Preferences::DeclarePref(const LPTCHAR Section, const LPTCHAR Pref,
 							  double *PrefVar, double Min, double Max)
 {
 #if !defined(EXCLUDE_FROM_RALPH)
@@ -1385,7 +1385,7 @@ BOOL Preferences::DeclarePref(LPTCHAR Section, const LPTCHAR Pref,
 
 ********************************************************************************************/
 
-BOOL Preferences::DeclarePref(LPTCHAR Section, const LPTCHAR Pref, const StringBase *PrefVar)
+BOOL Preferences::DeclarePref(const LPTCHAR Section, const LPTCHAR Pref, const StringBase *PrefVar)
 {
 #if !defined(EXCLUDE_FROM_RALPH)
 	// Find the right section

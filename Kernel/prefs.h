@@ -166,16 +166,16 @@ public:
 
 	BOOL DeclareSection(TCHAR *Section, UINT32 InitialSize);
 
-	BOOL DeclarePref(TCHAR *Section, const TCHAR *Pref,
+	BOOL DeclarePref(const TCHAR *Section, const TCHAR *Pref,
 					 INT32 *PrefVar, INT32 Min = INT_MIN, INT32 Max = INT_MAX);
 
-	BOOL DeclarePref(TCHAR *Section, const TCHAR *Pref,
+	BOOL DeclarePref(const TCHAR *Section, const TCHAR *Pref,
 					 UINT32 *PrefVar, UINT32 Min = 0, UINT32 Max = UINT_MAX);
 
-	BOOL DeclarePref(TCHAR *Section, const TCHAR *Pref,
+	BOOL DeclarePref(const TCHAR *Section, const TCHAR *Pref,
 					 double *PrefVar, double Min = DBL_MIN, double Max = DBL_MAX);
 
-	BOOL DeclarePref(TCHAR *Section, const TCHAR *Pref, const StringBase *PrefVar);
+	BOOL DeclarePref(const TCHAR *Section, const TCHAR *Pref, const StringBase *PrefVar);
 
 	// These next functions allow the preferences to be read/written by other
 	// people than the owner e.g. the application options dialog box

@@ -475,19 +475,19 @@ public:
 	BOOL DeclareSection(LPTCHAR Section, UINT32 InitialSize)
 		{ return CamelotPrefs->DeclareSection(Section, InitialSize); };
 
-	BOOL DeclarePref(LPTCHAR Section, const LPTCHAR Pref,
+	BOOL DeclarePref(const LPTCHAR Section, const LPTCHAR Pref,
 					 INT32 *PrefVar, INT32 Min = INT_MIN, INT32 Max = INT_MAX)
 		{ return CamelotPrefs->DeclarePref(Section, Pref, PrefVar, Min, Max); };
 
-	BOOL DeclarePref(LPTCHAR Section, const LPTCHAR Pref,
+	BOOL DeclarePref(const LPTCHAR Section, const LPTCHAR Pref,
 					 UINT32 *PrefVar, UINT32 Min = 0, UINT32 Max = UINT_MAX)
 		{ return CamelotPrefs->DeclarePref(Section, Pref, PrefVar, Min, Max); };
 
-	BOOL DeclarePref(LPTCHAR Section, const LPTCHAR Pref,
+	BOOL DeclarePref(const LPTCHAR Section, const LPTCHAR Pref,
 					 double *PrefVar, double Min = DBL_MIN, double Max = DBL_MAX)
 		{ return CamelotPrefs->DeclarePref(Section, Pref, PrefVar, Min, Max); };
 
-	BOOL DeclarePref(LPTCHAR Section, const LPTCHAR Pref, const StringBase *PrefVar)
+	BOOL DeclarePref(const LPTCHAR Section, const LPTCHAR Pref, const StringBase *PrefVar)
 		{ return CamelotPrefs->DeclarePref(Section, Pref, PrefVar); };
 
 	// Used by the application options/preferences dialog box
