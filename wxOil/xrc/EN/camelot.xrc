@@ -17,19 +17,19 @@
 			<help>Change the printer and printing options</help>
 			</object>
 			<object class="separator"/>
-			<object class="wxMenuItem" name="ID_FILE_MRU_FILE1">
+			<object class="wxMenuItem" name="ID_FILE_MRU_FILE2">
 			<label>Recent File</label>
 			<help>Open this document</help>
 			</object>
 			<object class="separator"/>
-			<object class="wxMenuItem" name="wxID_EXIT">
+			<object class="wxMenuItem" name="wxID_EXI1">
 			<label>E&amp;xit</label>
 			<help>Quit the application; prompts to save documents</help>
 			</object>
 			</object>
 		<object class="wxMenu" name="IDR_MAINFRAME_POPUP2">
 			<label>&amp;View</label>
-			<object class="wxMenuItem" name="ID_VIEW_TOOLBAR">
+			<object class="wxMenuItem" name="ID_VIEW_TOOLBAR1">
 			<label>&amp;Toolbar</label>
 			<help>Show or hide the toolbar</help>
 			</object>
