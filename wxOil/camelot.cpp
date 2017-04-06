@@ -831,7 +831,8 @@ bool CCamApp::OnInit()
 	wchar_t preferences[] = TEXT("Preferences");
 	if (Camelot.DeclareSection(preferences, 10))
 	{
-		Camelot.DeclarePref(NULL, TEXT("FirstRun"), &bFirstRun, 0, 1);
+	  	wchar_t first_run[] = TEXT("FirstRun");
+		Camelot.DeclarePref(NULL, first_run, &bFirstRun, 0, 1);
 	}
 
 	// Check the resource dir exists

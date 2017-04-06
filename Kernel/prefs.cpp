@@ -1,7 +1,7 @@
 // $Id: prefs.cpp 1464 2006-07-18 12:32:26Z gerry $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
- 
+
                Xara LX, a vector drawing and manipulation program.
                     Copyright (C) 1993-2006 Xara Group Ltd.
        Copyright on certain contributions may be held in joint with their
@@ -32,7 +32,7 @@ ADDITIONAL RIGHTS
 
 Conditional upon your continuing compliance with the GNU General Public
 License described above, Xara Group Ltd grants to you certain additional
-rights. 
+rights.
 
 The additional rights are to use, modify, and distribute the software
 together with the wxWidgets library, the wxXtra library, and the "CDraw"
@@ -140,11 +140,11 @@ class PreferenceEntry : public CC_CLASS_MEMDUMP
 
 public:
 	// No constructor or destructor needed - simple public structure.
-	
+
 	LPTCHAR 		Name;		// Pointer to the name of the preference.
 	PrefData		Data;		// Pointer to the variable that holds the preference value.
 	PreferenceType	Type;		// Type of the preference - INT32, STRING, etc.
-	
+
 };
 
 
@@ -169,20 +169,20 @@ class PreferenceChunk : public ListItem
 public:
 	PreferenceChunk(UINT32 InitialSize);
 	~PreferenceChunk();
-	
+
 	void Write(OILPreferences* OILPrefs, LPTCHAR Section);
-	
+
 	// Adds a preference to the chunk.  Returns FALSE if there is not enough room to do
 	// this (and so the caller should create a new chunk for it).
 	BOOL AddPref(LPTCHAR Name, PrefData EntryData, PreferenceType Type);
-	
+
 private:
 	UINT32 NumEntries;			// Number of entries in the chunk.
 	UINT32 NumEntriesUsed;		// Number of entries in the chunk that have been used.
 
-	PreferenceEntry *pEntries; 	// Pointer to the array of PreferenceEntry objects 
+	PreferenceEntry *pEntries; 	// Pointer to the array of PreferenceEntry objects
 								// for this chunk.
-public:								
+public:
 	BOOL Valid; 				// Indicates that this is a valid chunk (i.e. it
 								// initialised ok).
 
@@ -219,15 +219,15 @@ class PreferenceSection : public ListItem
 public:
 	PreferenceSection(LPTCHAR SectionName, UINT32 InitialSize);
 	~PreferenceSection();
-	
+
 	void Write(OILPreferences* OILPrefs);
-	
+
 	BOOL AddPref(OILPreferences* OILPrefs, LPTCHAR Pref,
 				 PreferenceType Type, PrefData PrefVar);
 
 	LPTCHAR Section;
 	BOOL  Valid;
-	
+
 	List ChunkList;
 
 	BOOL GetPrefValue(OILPreferences* OILPrefs, LPTCHAR Pref,
@@ -260,20 +260,20 @@ CC_IMPLEMENT_MEMDUMP(PreferenceSection, ListItem)
 PreferenceChunk::PreferenceChunk(UINT32 InitialSize)
 {
 	Valid = FALSE;
-	
+
 	// Sanity check
 	ENSURE(InitialSize > 0, "Attempt to create a PreferenceChunk object of zero size");
 
 	// Allocate the memory for this chunk.
 	pEntries = new PreferenceEntry[InitialSize];
-	
+
 	if (pEntries == NULL)
 	{
 		// Not enough memory
 		NumEntries = 0;
 		NumEntriesUsed = 0;
 	}
-	
+
 	// Set the entries fields correctly and tell the caller it worked
 	NumEntries = InitialSize;
 	NumEntriesUsed = 0;
@@ -299,7 +299,7 @@ PreferenceChunk::PreferenceChunk(UINT32 InitialSize)
 PreferenceChunk::~PreferenceChunk()
 {
 	PreferenceEntry *pEntry = pEntries;
-	
+
 	for (UINT32 i = 0; i < NumEntriesUsed; i++)
 	{
 		if (pEntry->Name)
@@ -308,13 +308,13 @@ PreferenceChunk::~PreferenceChunk()
 			pEntry->Name=NULL;
 		}
 		pEntry++;
-	}	
-	
+	}
+
 	if (pEntries != NULL)
 		delete [] pEntries;
 }
 
-	
+
 /********************************************************************************************
 
 >	BOOL PreferenceChunk::AddPref(LPTCHAR Name, PrefData EntryData, PreferenceType Type)
@@ -340,10 +340,10 @@ BOOL PreferenceChunk::AddPref(LPTCHAR Name, PrefData EntryData, PreferenceType T
 	// Is there enough space left to do this?
 	if ((!Valid) || (NumEntriesUsed >= NumEntries))
 		return FALSE;
-	
+
 	// Fill in the entry (NB. obscure pointer arithmetic)
 	PreferenceEntry *pEntry = pEntries + NumEntriesUsed;
-	
+
 	// Alex put in something to make a copy of the name
 	UINT32 memsize = (camStrlen(Name) + 1) * sizeof(TCHAR);
 	pEntry->Name = (LPTCHAR) CCMalloc( memsize );
@@ -353,10 +353,10 @@ BOOL PreferenceChunk::AddPref(LPTCHAR Name, PrefData EntryData, PreferenceType T
 
 	pEntry->Data 	= EntryData;
 	pEntry->Type 	= Type;
-	
+
 	// Update chunk information
 	NumEntriesUsed++;
-	
+
 	// Return success
 	return TRUE;
 }
@@ -382,7 +382,7 @@ void PreferenceChunk::Write(OILPreferences* OILPrefs, LPTCHAR Section)
 	// Write out each preference in this chunk
 
 	PreferenceEntry *pEntry = pEntries;
-	
+
 	for (UINT32 i = 0; i < NumEntriesUsed; i++)
 	{
 		// Write this preference
@@ -421,7 +421,7 @@ void PreferenceChunk::Write(OILPreferences* OILPrefs, LPTCHAR Section)
 BOOL PreferenceChunk::GetPrefValue(LPTCHAR Pref, PrefData EntryData, PreferenceType Type)
 {
 	PreferenceEntry *pEntry = pEntries;
-	
+
 	for (UINT32 i = 0; i < NumEntriesUsed; i++)
 	{
 		if (camStricmp(Pref, pEntry->Name) == 0)
@@ -430,7 +430,7 @@ BOOL PreferenceChunk::GetPrefValue(LPTCHAR Pref, PrefData EntryData, PreferenceT
 			// Check that the type corresponds to the correct one
 			if (pEntry->Type == Type)
 			{
-				// Preference exits and is of the correct type so return it	by writing 
+				// Preference exits and is of the correct type so return it	by writing
 				// the value pointed to by the preference into the value pointed to by
 				// the preference structure passed in.
 				switch (Type)
@@ -461,7 +461,7 @@ BOOL PreferenceChunk::GetPrefValue(LPTCHAR Pref, PrefData EntryData, PreferenceT
 		// Move on to the next preference
 		pEntry++;
 	}
-	
+
 	// Not found
 	return FALSE;
 }
@@ -489,7 +489,7 @@ BOOL PreferenceChunk::GetPrefValue(LPTCHAR Pref, PrefData EntryData, PreferenceT
 BOOL PreferenceChunk::SetPrefValue(LPTCHAR Pref, PrefData EntryData, PreferenceType Type)
 {
 	PreferenceEntry *pEntry = pEntries;
-	
+
 	for (UINT32 i = 0; i < NumEntriesUsed; i++)
 	{
 		if (camStricmp(Pref, pEntry->Name) == 0)
@@ -498,7 +498,7 @@ BOOL PreferenceChunk::SetPrefValue(LPTCHAR Pref, PrefData EntryData, PreferenceT
 			// Check that the type corresponds to the correct one
 			if (pEntry->Type == Type)
 			{
-				// Preference exits and is of the correct type so return it	by writing 
+				// Preference exits and is of the correct type so return it	by writing
 				// the value pointed to by the preference into the value pointed to by
 				// the preference structure passed in.
 				switch (Type)
@@ -529,7 +529,7 @@ BOOL PreferenceChunk::SetPrefValue(LPTCHAR Pref, PrefData EntryData, PreferenceT
 		// Move on to the next preference
 		pEntry++;
 	}
-	
+
 	// Not found
 	return FALSE;
 }
@@ -552,21 +552,21 @@ BOOL PreferenceChunk::SetPrefValue(LPTCHAR Pref, PrefData EntryData, PreferenceT
 ********************************************************************************************/
 
 #ifdef _DEBUG
-                                                
+
 BOOL PreferenceChunk::PrefExists(LPTCHAR Pref)
 {
 	PreferenceEntry *pEntry = pEntries;
-	
+
 	for (UINT32 i = 0; i < NumEntriesUsed; i++)
 	{
 		if (camStricmp(Pref, pEntry->Name) == 0)
 			// Found it so it does exist
 			return TRUE;
-		
+
 		// Move on to the next preference
 		pEntry++;
 	}
-	
+
 	// Not found
 	return FALSE;
 }
@@ -596,7 +596,7 @@ BOOL PreferenceChunk::PrefExists(LPTCHAR Pref)
 PreferenceSection::PreferenceSection(LPTCHAR SectionName, UINT32 InitialSize)
 {
 	Valid = FALSE;
-	
+
 	// Remember the name of this section (note that it uses the original - it does not
 	// take a copy).
 	Section = SectionName;
@@ -604,16 +604,16 @@ PreferenceSection::PreferenceSection(LPTCHAR SectionName, UINT32 InitialSize)
 	// Get a preference chunk for this section, using the size recommended
 	// by the caller
 	PreferenceChunk *pChunk = new PreferenceChunk(InitialSize);
-	
+
 	if ((pChunk == NULL) || (!pChunk->Valid))
 	{
 		delete pChunk;
 		return; // Section is invalid
 	}
-		
+
 	// Got a chunk ok, so add it to the head of the (empty) list.
 	ChunkList.AddHead(pChunk);
-	
+
 	// Success
 	Valid = TRUE;
 }
@@ -636,7 +636,7 @@ PreferenceSection::PreferenceSection(LPTCHAR SectionName, UINT32 InitialSize)
 PreferenceSection::~PreferenceSection()
 {
 	PreferenceChunk *pChunk;
-	
+
 	// Delete all the chunks for this section
 	do
 	{
@@ -645,10 +645,10 @@ PreferenceSection::~PreferenceSection()
 
 		// It doesn't matter if pChunk is NULL - delete handles it
 		delete pChunk;
-		
+
 	} while (pChunk != NULL);
 }
-	
+
 /********************************************************************************************
 
 >	BOOL PreferenceSection::AddPref(OILPreferences* OILPrefs,
@@ -661,7 +661,7 @@ PreferenceSection::~PreferenceSection()
 				PrefVar  - pointer to the memory that holds this preference's data.
 				OILPrefs - the object to use to read the preference from the file.
 	Outputs:	-
-	Returns:	TRUE if the preference was added to the preference system successfully, 
+	Returns:	TRUE if the preference was added to the preference system successfully,
 				FALSE otherwise.
 	Purpose:	Adds a preference to this PreferenceSection object.  If a new PreferenceChunk
 				is needed to do this, it is allocated automatically, and added to this
@@ -689,23 +689,23 @@ BOOL PreferenceSection::AddPref(OILPreferences* OILPrefs,
 
 	// In debug builds, check that this preference has not already been declared.
 	// This check ensures that two preferences with the same name are not used.
-	
+
 #ifdef _DEBUG
 	pChunk = (PreferenceChunk *) ChunkList.GetHead();
-	
+
 	while (pChunk != NULL)
 	{
 		ERROR3IF_PF((pChunk->PrefExists(Pref) != FALSE), ( "Preference '%s' in section '%s' declared more than once", Pref, Section ) );
 
 		pChunk = (PreferenceChunk *) ChunkList.GetNext(pChunk);
 	}
-	
+
 #endif
 
 	// New chunks are added to the head of the list, so the partially unused one
 	// is always the first in the list.
 	pChunk = (PreferenceChunk *) ChunkList.GetHead();
-	
+
 	// Try to add the preference to this chunk.
 	if (!pChunk->AddPref(Pref, PrefVar, Type))
 	{
@@ -713,16 +713,16 @@ BOOL PreferenceSection::AddPref(OILPreferences* OILPrefs,
 		// The extension chunk is big enough to hold another 10 preferences (this is pretty
 		// arbitrary).
 		pChunk = new PreferenceChunk(10);
-		
+
 		if ((pChunk == NULL) || (!pChunk->Valid))
 		{
 			delete pChunk;
 			return FALSE; // Failure - no memory left.
 		}
-			
+
 		// Got a chunk ok, so add it to the head of the list.
 		ChunkList.AddHead(pChunk);
-		
+
 		// Add the preference to it ('guaranteed' to work)
 		pChunk->AddPref(Pref, PrefVar, Type);
 	}
@@ -730,7 +730,7 @@ BOOL PreferenceSection::AddPref(OILPreferences* OILPrefs,
 	// Try to read the preference
 	if (OILPrefs != NULL)
 		OILPrefs->Read(Section, Pref, Type, PrefVar);
-	
+
 	return TRUE;
 }
 
@@ -746,7 +746,7 @@ BOOL PreferenceSection::AddPref(OILPreferences* OILPrefs,
 				PrefVar  - pointer to the memory that holds this preference's data.
 				OILPrefs - the object to use to read the preference from the file.
 	Outputs:	-
-	Returns:	TRUE if the preference was read from the preference system successfully, 
+	Returns:	TRUE if the preference was read from the preference system successfully,
 				FALSE otherwise.
 	Purpose:	Reads a preference value from this PreferenceSection object by looking
 				through all the chunks in this section for the named preference.
@@ -766,14 +766,14 @@ BOOL PreferenceSection::GetPrefValue(OILPreferences* OILPrefs,
 	// New chunks are added to the head of the list, so the partially unused one
 	// is always the first in the list.
 	pChunk = (PreferenceChunk *) ChunkList.GetHead();
-	
+
 	while (pChunk != NULL )
 	{
 		// Try to read the preference value from this chunk.
 		if (pChunk->GetPrefValue(Pref, PrefVar, Type))
 			return TRUE;		// The read went ok so return that value to the caller
 
-		// Preference not in that chunk so move onto next chunk in list 
+		// Preference not in that chunk so move onto next chunk in list
 		pChunk = (PreferenceChunk *) ChunkList.GetNext(pChunk);
 	}
 #endif
@@ -814,14 +814,14 @@ BOOL PreferenceSection::SetPrefValue(OILPreferences* OILPrefs,
 	// New chunks are added to the head of the list, so the partially unused one
 	// is always the first in the list.
 	pChunk = (PreferenceChunk *) ChunkList.GetHead();
-	
+
 	while (pChunk != NULL )
 	{
 		// Try to read the preference value from this chunk.
 		if (pChunk->SetPrefValue(Pref, PrefVar, Type))
 			return TRUE;		// The read went ok so return that value to the caller
 
-		// Preference not in that chunk so move onto next chunk in list 
+		// Preference not in that chunk so move onto next chunk in list
 		pChunk = (PreferenceChunk *) ChunkList.GetNext(pChunk);
 	}
 #endif
@@ -850,12 +850,12 @@ void PreferenceSection::Write(OILPreferences* OILPrefs)
 {
 	// Write out each chunk in this section
 	PreferenceChunk *pChunk = (PreferenceChunk *) ChunkList.GetHead();
-	
+
 	while (pChunk != NULL)
 	{
 		// Write out this chunk and move on to the next
 		pChunk->Write(OILPrefs, Section);
-		pChunk = (PreferenceChunk *) ChunkList.GetNext(pChunk);	
+		pChunk = (PreferenceChunk *) ChunkList.GetNext(pChunk);
 	}
 }
 
@@ -907,9 +907,9 @@ Preferences::~Preferences()
 		OILPrefs->CloseInput();
 		delete OILPrefs;
 	}
-		
+
 	PreferenceSection *pSection;
-	
+
 	// Delete all the sections for this preferences object
 	do
 	{
@@ -918,12 +918,12 @@ Preferences::~Preferences()
 
 		// It doesn't matter if pSection is NULL - delete handles it
 		delete pSection;
-		
+
 	} while (pSection != NULL);
 #endif
 }
 
-	
+
 /********************************************************************************************
 
 >	void Preferences::Write()
@@ -953,12 +953,12 @@ void Preferences::Write()
 
 		// Write out all the sections for this preferences object
 		PreferenceSection *pSection = (PreferenceSection *) this->GetHead();
-	
+
 		while (pSection != NULL)
 		{
 			// Write out this section and move on to the next
 			pSection->Write(OILPrefs);
-			pSection = (PreferenceSection *) this->GetNext(pSection);	
+			pSection = (PreferenceSection *) this->GetNext(pSection);
 		}
 
 		// Perform any platform-deppy clean-up required after writing the preferences
@@ -966,7 +966,7 @@ void Preferences::Write()
 	}
 #endif
 }
-	
+
 /********************************************************************************************
 
 >	BOOL Preferences::Init()
@@ -988,7 +988,7 @@ BOOL Preferences::Init()
 #if !defined(EXCLUDE_FROM_RALPH)
 	// Create a link to the OIL
 	OILPrefs = OILPreferences::Init();
-	
+
 	// Flag error if it failed
 	if (OILPrefs == NULL)
 		return FALSE;
@@ -1115,7 +1115,7 @@ BOOL Preferences::DeclareSection(LPTCHAR Section, UINT32 InitialSize)
 		CurrentSection = pSection;
 		return TRUE; // Should this be an error condition?
 	}
-		
+
 	// Add a new section
 	pSection = new PreferenceSection(Section, InitialSize);
 	if ((pSection == NULL) || (!pSection->Valid))
@@ -1124,7 +1124,7 @@ BOOL Preferences::DeclareSection(LPTCHAR Section, UINT32 InitialSize)
 		delete pSection;
 		return FALSE;
 	}
-	
+
 	// It all worked, so add this section to the list, remember it for future use,
 	// and return success.
 	this->AddHead(pSection);
@@ -1135,17 +1135,17 @@ BOOL Preferences::DeclareSection(LPTCHAR Section, UINT32 InitialSize)
 	return TRUE;
 #endif
 }
-	
+
 /********************************************************************************************
 
->	BOOL Preferences::DeclarePref(LPTCHAR Section, LPTCHAR Pref, 
+>	BOOL Preferences::DeclarePref(LPTCHAR Section, LPTCHAR Pref,
 								  INT32 *PrefVar, INT32 Min, INT32 Max)
 
 	Author:		Tim_Browse (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	17/8/93
 	Inputs:		Section - the case-insensitive name of the section in which this preference
 						  should be placed, (e.g. "Printing").
-				Pref	- the case-insensitive name of this preference 
+				Pref	- the case-insensitive name of this preference
 						  (e.g. "AutoSaveInterval").
 				PrefVar - pointer to the integer variable that holds this preference's value.
 				Min,Max - Legal range for this value - if the preferences file holds a value
@@ -1157,13 +1157,13 @@ BOOL Preferences::DeclareSection(LPTCHAR Section, UINT32 InitialSize)
 	Returns:	TRUE if the preference was added to the preference system successfully,
 				FALSE otherwise.
 	Purpose:	Declares a preference to the preference system.
-	
+
 				This has two effects:
-				
+
 					+ When this function returns, if this preference was found in the
 					  preference file that was read on start-up, then the PrefVar variable
 					  is filled in with the value from this file.
-					  
+
 					+ Whenever the preferences are saved (via Preferences::Write(), which
 					  would happen on application exit, or when the user chooses "Save
 					  Preferences"), this named preference is saved into the named section,
@@ -1174,7 +1174,7 @@ BOOL Preferences::DeclareSection(LPTCHAR Section, UINT32 InitialSize)
 
 ********************************************************************************************/
 
-BOOL Preferences::DeclarePref(LPTCHAR Section, LPTCHAR Pref, 
+BOOL Preferences::DeclarePref(LPTCHAR Section, const LPTCHAR Pref,
 							  INT32 *PrefVar, INT32 Min, INT32 Max)
 {
 #if !defined(EXCLUDE_FROM_RALPH)
@@ -1182,13 +1182,13 @@ BOOL Preferences::DeclarePref(LPTCHAR Section, LPTCHAR Pref,
 	PreferenceSection *pSection = GetSection(Section);
 	ERRORIF(!pSection, _R(IDE_BAD_INI_FILE), FALSE);
 
-	// Add the preference to the right section		
+	// Add the preference to the right section
 	PrefData Data;
 	Data.pInt = PrefVar;
-	
+
 	// Remember default value
 	INT32 Default = *PrefVar;
-	
+
 	if (!pSection->AddPref(OILPrefs, Pref, PREF_INT, Data))
 	{
 		*PrefVar = Default;
@@ -1196,28 +1196,28 @@ BOOL Preferences::DeclarePref(LPTCHAR Section, LPTCHAR Pref,
 		return FALSE; 						// Something went wrong
 	}
 
-	// Ensure value is within specified range	
+	// Ensure value is within specified range
 	if (*PrefVar < Min)
 		*PrefVar = Min;
 	if (*PrefVar > Max)
 		*PrefVar = Max;
 #endif
-	
+
 	return TRUE;
 }
 
 /********************************************************************************************
 
->	BOOL Preferences::DeclarePref(LPTCHAR Section, LPTCHAR Pref, 
+>	BOOL Preferences::DeclarePref(LPTCHAR Section, LPTCHAR Pref,
 								  UINT32 *PrefVar, UINT32 Min, UINT32 Max)
 
 	Author:		Tim_Browse (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	17/8/93
 	Inputs:		Section - the case-insensitive name of the section in which this preference
 						  should be placed, (e.g. "Printing").
-				Pref	- the case-insensitive name of this preference 
+				Pref	- the case-insensitive name of this preference
 						  (e.g. "AutoSaveInterval").
-				PrefVar - pointer to the unsigned integer variable that holds this 
+				PrefVar - pointer to the unsigned integer variable that holds this
 						  preference's value.
 				Min,Max - Legal range for this value - if the preferences file holds a value
 						  outside this range, it is ignored and the default value is used
@@ -1228,13 +1228,13 @@ BOOL Preferences::DeclarePref(LPTCHAR Section, LPTCHAR Pref,
 	Returns:	TRUE if the preference was added to the preference system successfully,
 				FALSE otherwise.
 	Purpose:	Declares a preference to the preference system.
-	
+
 				This has two effects:
-				
+
 					+ When this function returns, if this preference was found in the
 					  preference file that was read on start-up, then the PrefVar variable
 					  is filled in with the value from this file.
-					  
+
 					+ Whenever the preferences are saved (via Preferences::Write(), which
 					  would happen on application exit, or when the user chooses "Save
 					  Preferences"), this named preference is saved into the named section,
@@ -1245,7 +1245,7 @@ BOOL Preferences::DeclarePref(LPTCHAR Section, LPTCHAR Pref,
 
 ********************************************************************************************/
 
-BOOL Preferences::DeclarePref(LPTCHAR Section, LPTCHAR Pref, 
+BOOL Preferences::DeclarePref(LPTCHAR Section, const LPTCHAR Pref,
 							  UINT32 *PrefVar, UINT32 Min, UINT32 Max)
 {
 #if !defined(EXCLUDE_FROM_RALPH)
@@ -1253,13 +1253,13 @@ BOOL Preferences::DeclarePref(LPTCHAR Section, LPTCHAR Pref,
 	PreferenceSection *pSection = GetSection(Section);
 	ERRORIF(!pSection, _R(IDE_BAD_INI_FILE), FALSE);
 
-	// Add the preference to the right section		
+	// Add the preference to the right section
 	PrefData Data;
 	Data.pUInt = PrefVar;
-	
+
 	// Remember default value
 	UINT32 Default = *PrefVar;
-	
+
 	if (!pSection->AddPref(OILPrefs, Pref, PREF_UINT, Data))
 	{
 		*PrefVar = Default;
@@ -1267,12 +1267,12 @@ BOOL Preferences::DeclarePref(LPTCHAR Section, LPTCHAR Pref,
 		return FALSE; // Something went wrong
 	}
 
-	// Ensure value is within specified range	
+	// Ensure value is within specified range
 	if (*PrefVar < Min)
 		*PrefVar = Min;
 	if (*PrefVar > Max)
 		*PrefVar = Max;
-#endif		
+#endif
 	return TRUE;
 }
 
@@ -1284,7 +1284,7 @@ BOOL Preferences::DeclarePref(LPTCHAR Section, LPTCHAR Pref,
 	Created:	17/8/93
 	Inputs:		Section - the case-insensitive name of the section in which this preference
 						  should be placed, (e.g. "Printing").
-				Pref	- the case-insensitive name of this preference 
+				Pref	- the case-insensitive name of this preference
 						  (e.g. "AutoSaveInterval").
 				PrefVar - pointer to the floating point variable that holds this preference's
 						  value.
@@ -1297,31 +1297,31 @@ BOOL Preferences::DeclarePref(LPTCHAR Section, LPTCHAR Pref,
 	Returns:	TRUE if the preference was added to the preference system successfully,
 				FALSE otherwise.
 	Purpose:	Declares a preference to the preference system.
-	
+
 				This has two effects:
-				
+
 					+ When this function returns, if this preference was found in the
 					  preference file that was read on start-up, then the PrefVar variable
 					  is filled in with the value from this file.
-					  
+
 					+ Whenever the preferences are saved (via Preferences::Write(), which
 					  would happen on application exit, or when the user chooses "Save
 					  Preferences"), this named preference is saved into the named section,
 					  using whatever value the PrefVar points to *when the preferences
 					  are saved*.
-					  
+
 				Note that doubles are stored to 20 decimal places in the preference file.
 				Of course, how many of these are accurate depends on the value, e.g.
-				
+
 				 2372645745823.3476354716324 would not be stored completely accurately
 				 whereas 23.3245345646 probably would.
-				 
+
 	Errors:		-
 	SeeAlso:	-
 
 ********************************************************************************************/
 
-BOOL Preferences::DeclarePref(LPTCHAR Section, LPTCHAR Pref, 
+BOOL Preferences::DeclarePref(LPTCHAR Section, const LPTCHAR Pref,
 							  double *PrefVar, double Min, double Max)
 {
 #if !defined(EXCLUDE_FROM_RALPH)
@@ -1329,25 +1329,25 @@ BOOL Preferences::DeclarePref(LPTCHAR Section, LPTCHAR Pref,
 	PreferenceSection *pSection = GetSection(Section);
 	ERRORIF(!pSection, _R(IDE_BAD_INI_FILE), FALSE);
 
-	// Add the preference to the right section		
+	// Add the preference to the right section
 	PrefData Data;
 	Data.pDouble = PrefVar;
-	
+
 	// Remember default value
 	double Default = *PrefVar;
-	
+
 	if (!pSection->AddPref(OILPrefs, Pref, PREF_DOUBLE, Data))
 	{
 		*PrefVar = Default;
 		ERROR(_R(IDE_BAD_INI_FILE), FALSE);		// Something went wrong
 	}
 
-	// Ensure value is within specified range	
+	// Ensure value is within specified range
 	if (*PrefVar < Min)
 		*PrefVar = Min;
 	if (*PrefVar > Max)
 		*PrefVar = Max;
-#endif		
+#endif
 	return TRUE;
 }
 
@@ -1359,7 +1359,7 @@ BOOL Preferences::DeclarePref(LPTCHAR Section, LPTCHAR Pref,
 	Created:	17/8/93
 	Inputs:		Section - the case-insensitive name of the section in which this preference
 						  should be placed, (e.g. "Printing").
-				Pref	- the case-insensitive name of this preference 
+				Pref	- the case-insensitive name of this preference
 						  (e.g. "AutoSaveInterval").
 				PrefVar - pointer to the character buffer that holds this preference's value.
 	Outputs:	PrefVar - contains the value found in the preference file for this
@@ -1368,13 +1368,13 @@ BOOL Preferences::DeclarePref(LPTCHAR Section, LPTCHAR Pref,
 	Returns:	TRUE if the preference was added to the preference system successfully,
 				FALSE otherwise.
 	Purpose:	Declares a preference to the preference system.
-	
+
 				This has two effects:
-				
+
 					+ When this function returns, if this preference was found in the
 					  preference file that was read on start-up, then the PrefVar variable
 					  is filled in with the value from this file.
-					  
+
 					+ Whenever the preferences are saved (via Preferences::Write(), which
 					  would happen on application exit, or when the user chooses "Save
 					  Preferences"), this named preference is saved into the named section,
@@ -1385,7 +1385,7 @@ BOOL Preferences::DeclarePref(LPTCHAR Section, LPTCHAR Pref,
 
 ********************************************************************************************/
 
-BOOL Preferences::DeclarePref(LPTCHAR Section, LPTCHAR Pref, StringBase *PrefVar)
+BOOL Preferences::DeclarePref(LPTCHAR Section, const LPTCHAR Pref, StringBase *PrefVar)
 {
 #if !defined(EXCLUDE_FROM_RALPH)
 	// Find the right section
@@ -1432,10 +1432,10 @@ PreferenceSection *Preferences::GetSection(LPTCHAR SectionName)
 #endif
 
 	// Check that somebody is not trying to use a null section name when there
-	// is no current section set up 
+	// is no current section set up
 	ERROR2IF((CurrentSection == NULL)
 	 		  && (SectionName == NULL), NULL, _R(IDN_BAD_CURRENT_SECTION));
-	
+
 	// A null section name means use the MRU section.
 	if (SectionName == NULL)
 		return CurrentSection;
@@ -1445,17 +1445,17 @@ PreferenceSection *Preferences::GetSection(LPTCHAR SectionName)
 	// case check above is removed.
 	ERROR2IF(((SectionName != NULL) &&
 			 (camStrclen(SectionName) <= 1)), NULL, _R(IDN_BAD_CURRENT_SECTION));
-		
+
 	// Do a quick check to see if it is the cached section.
-	if ((CurrentSection != NULL) && 
+	if ((CurrentSection != NULL) &&
 		(camStricmp(SectionName, CurrentSection->Section) == 0))
 		// It's the same one as we tried last time.
 		return CurrentSection;
-		
+
 	// Search the list for the right section
 
 	PreferenceSection *pSection = (PreferenceSection *) this->GetHead();
-	
+
 	while (pSection != NULL)
 	{
 		if (camStricmp(SectionName, pSection->Section) == 0)
@@ -1464,12 +1464,12 @@ PreferenceSection *Preferences::GetSection(LPTCHAR SectionName)
 			CurrentSection = pSection;
 			return pSection;
 		}
-			
+
 		// Try the next one in the list
 		pSection = (PreferenceSection *) this->GetNext(pSection);
 	}
 #endif
-	
+
 	// Didn't find it...
 	return NULL;
 }
@@ -1485,7 +1485,7 @@ PreferenceSection *Preferences::GetSection(LPTCHAR SectionName)
 	Created:	17/10/94
 	Inputs:		Section - the case-insensitive name of the section in which this preference
 						  should be placed, (e.g. "Printing").
-				Pref	- the case-insensitive name of this preference 
+				Pref	- the case-insensitive name of this preference
 						  (e.g. "AutoSaveInterval").
 				PrefVar - pointer to the integer variable that holds this preference's value.
 	Outputs:	PrefVar - contains the value found in the preference file for this
@@ -1494,10 +1494,10 @@ PreferenceSection *Preferences::GetSection(LPTCHAR SectionName)
 	Returns:	TRUE if the preference was found in the preference system successfully,
 				FALSE otherwise.
 	Purpose:	Finds the value of the specified preference which should already be defined in
-				the preference system and returns it in the variable PrefVar. 
+				the preference system and returns it in the variable PrefVar.
 				This is used by interested parties other than the owner of that preference
 				value e.g. the application options dialog box.
-	
+
 	Errors:		-
 	SeeAlso:	Preferences::SetPrefValue
 
@@ -1510,21 +1510,21 @@ BOOL Preferences::GetPrefValue(LPTCHAR Section, LPTCHAR Pref, INT32 *PrefVar)
 	PreferenceSection *pSection = GetSection(Section);
 	ERRORIF(!pSection, _R(IDE_BAD_INI_FILE), FALSE);
 
-	// Set up the data structure required to read the preference value		
+	// Set up the data structure required to read the preference value
 	PrefData Data;
 	Data.pInt = PrefVar;
-	
+
 	// Remember default value
 	INT32 Default = *PrefVar;
-	
+
 	if (!pSection->GetPrefValue(OILPrefs, Pref, PREF_INT, Data))
 	{
 		*PrefVar = Default;
 		ERROR(_R(IDE_BAD_INI_FILE), FALSE);
 		return FALSE; 						// Something went wrong
 	}
-	
-	// Value found should have been placed in PrefVar 
+
+	// Value found should have been placed in PrefVar
 
 	*PrefVar = *Data.pInt;
 #endif
@@ -1539,7 +1539,7 @@ BOOL Preferences::GetPrefValue(LPTCHAR Section, LPTCHAR Pref, INT32 *PrefVar)
 	Created:	17/10/94
 	Inputs:		Section - the case-insensitive name of the section in which this preference
 						  should be placed, (e.g. "Printing").
-				Pref	- the case-insensitive name of this preference 
+				Pref	- the case-insensitive name of this preference
 						  (e.g. "AutoSaveInterval").
 				PrefVar - pointer to the unsigned integer variable that holds this
 						  preference's value.
@@ -1549,10 +1549,10 @@ BOOL Preferences::GetPrefValue(LPTCHAR Section, LPTCHAR Pref, INT32 *PrefVar)
 	Returns:	TRUE if the preference was found in the preference system successfully,
 				FALSE otherwise.
 	Purpose:	Finds the value of the specified preference which should already be defined in
-				the preference system and returns it in the variable PrefVar. 
+				the preference system and returns it in the variable PrefVar.
 				This is used by interested parties other than the owner of that preference
 				value e.g. the application options dialog box.
-	
+
 	Errors:		-
 	SeeAlso:	Preferences::SetPrefValue
 
@@ -1565,21 +1565,21 @@ BOOL Preferences::GetPrefValue(LPTCHAR Section, LPTCHAR Pref, UINT32 *PrefVar)
 	PreferenceSection *pSection = GetSection(Section);
 	ERRORIF(!pSection, _R(IDE_BAD_INI_FILE), FALSE);
 
-	// Set up the data structure required to read the preference value		
+	// Set up the data structure required to read the preference value
 	PrefData Data;
 	Data.pUInt = PrefVar;
-	
+
 	// Remember default value
 	UINT32 Default = *PrefVar;
-	
+
 	if (!pSection->GetPrefValue(OILPrefs, Pref, PREF_UINT, Data))
 	{
 		*PrefVar = Default;
 		ERROR(_R(IDE_BAD_INI_FILE), FALSE);
 		return FALSE; 						// Something went wrong
 	}
-	
-	// Value found should have been placed in PrefVar 
+
+	// Value found should have been placed in PrefVar
 
 	*PrefVar = *Data.pUInt;
 #endif
@@ -1594,7 +1594,7 @@ BOOL Preferences::GetPrefValue(LPTCHAR Section, LPTCHAR Pref, UINT32 *PrefVar)
 	Created:	17/10/94
 	Inputs:		Section - the case-insensitive name of the section in which this preference
 						  should be placed, (e.g. "Printing").
-				Pref	- the case-insensitive name of this preference 
+				Pref	- the case-insensitive name of this preference
 						  (e.g. "AutoSaveInterval").
 				PrefVar - pointer to the double variable that holds this preference's value.
 	Outputs:	PrefVar - contains the value found in the preference file for this
@@ -1603,10 +1603,10 @@ BOOL Preferences::GetPrefValue(LPTCHAR Section, LPTCHAR Pref, UINT32 *PrefVar)
 	Returns:	TRUE if the preference was found in the preference system successfully,
 				FALSE otherwise.
 	Purpose:	Finds the value of the specified preference which should already be defined in
-				the preference system and returns it in the variable PrefVar. 
+				the preference system and returns it in the variable PrefVar.
 				This is used by interested parties other than the owner of that preference
 				value e.g. the application options dialog box.
-	
+
 	Errors:		-
 	SeeAlso:	Preferences::SetPrefValue
 
@@ -1619,21 +1619,21 @@ BOOL Preferences::GetPrefValue(LPTCHAR Section, LPTCHAR Pref, double *PrefVar)
 	PreferenceSection *pSection = GetSection(Section);
 	ERRORIF(!pSection, _R(IDE_BAD_INI_FILE), FALSE);
 
-	// Set up the data structure required to read the preference value		
+	// Set up the data structure required to read the preference value
 	PrefData Data;
 	Data.pDouble = PrefVar;
-	
+
 	// Remember default value
 	double Default = *PrefVar;
-	
+
 	if (!pSection->GetPrefValue(OILPrefs, Pref, PREF_DOUBLE, Data))
 	{
 		*PrefVar = Default;
 		ERROR(_R(IDE_BAD_INI_FILE), FALSE);
 		return FALSE; 						// Something went wrong
 	}
-	
-	// Value found should have been placed in PrefVar 
+
+	// Value found should have been placed in PrefVar
 
 	*PrefVar = *Data.pDouble;
 #endif
@@ -1648,7 +1648,7 @@ BOOL Preferences::GetPrefValue(LPTCHAR Section, LPTCHAR Pref, double *PrefVar)
 	Created:	17/10/94
 	Inputs:		Section - the case-insensitive name of the section in which this preference
 						  should be placed, (e.g. "Printing").
-				Pref	- the case-insensitive name of this preference 
+				Pref	- the case-insensitive name of this preference
 						  (e.g. "AutoSaveInterval").
 				PrefVar - pointer to the integer variable that holds this preference's value.
 	Outputs:	PrefVar - contains the value found in the preference file for this
@@ -1657,11 +1657,11 @@ BOOL Preferences::GetPrefValue(LPTCHAR Section, LPTCHAR Pref, double *PrefVar)
 	Returns:	TRUE if the preference was found in the preference system successfully,
 				FALSE otherwise.
 	Purpose:	Finds the value of the specified preference which should already be defined in
-				the preference system and then writes the new value specified into that 
+				the preference system and then writes the new value specified into that
 				variable.
 				This is used by interested parties other than the owner of that preference
 				value e.g. the application options dialog box.
-	
+
 	Errors:		-
 	SeeAlso:	Preferences::GetPrefValue
 
@@ -1675,16 +1675,16 @@ BOOL Preferences::SetPrefValue(LPTCHAR Section, LPTCHAR Pref, INT32 *PrefVar)
 	ERRORIF(!pSection, _R(IDE_BAD_INI_FILE), FALSE);
 
 	// Set up the data structure required to pass the new preference value
-	// in with		
+	// in with
 	PrefData Data;
 	Data.pInt = PrefVar;
-	
+
 	if (!pSection->SetPrefValue(OILPrefs, Pref, PREF_INT, Data))
 	{
 		ERROR(_R(IDE_BAD_INI_FILE), FALSE);
 		return FALSE; 						// Something went wrong
 	}
-#endif	
+#endif
 	return TRUE;
 }
 
@@ -1696,7 +1696,7 @@ BOOL Preferences::SetPrefValue(LPTCHAR Section, LPTCHAR Pref, INT32 *PrefVar)
 	Created:	17/10/94
 	Inputs:		Section - the case-insensitive name of the section in which this preference
 						  should be placed, (e.g. "Printing").
-				Pref	- the case-insensitive name of this preference 
+				Pref	- the case-insensitive name of this preference
 						  (e.g. "AutoSaveInterval").
 				PrefVar - pointer to the unsigned integer variable that holds this
 						  preference's value.
@@ -1706,11 +1706,11 @@ BOOL Preferences::SetPrefValue(LPTCHAR Section, LPTCHAR Pref, INT32 *PrefVar)
 	Returns:	TRUE if the preference was found in the preference system successfully,
 				FALSE otherwise.
 	Purpose:	Finds the value of the specified preference which should already be defined in
-				the preference system and then writes the new value specified into that 
+				the preference system and then writes the new value specified into that
 				variable.
 				This is used by interested parties other than the owner of that preference
 				value e.g. the application options dialog box.
-	
+
 	Errors:		-
 	SeeAlso:	Preferences::GetPrefValue
 
@@ -1724,16 +1724,16 @@ BOOL Preferences::SetPrefValue(LPTCHAR Section, LPTCHAR Pref, UINT32 *PrefVar)
 	ERRORIF(!pSection, _R(IDE_BAD_INI_FILE), FALSE);
 
 	// Set up the data structure required to pass the new preference value
-	// in with		
+	// in with
 	PrefData Data;
 	Data.pUInt = PrefVar;
-	
+
 	if (!pSection->SetPrefValue(OILPrefs, Pref, PREF_UINT, Data))
 	{
 		ERROR(_R(IDE_BAD_INI_FILE), FALSE);
 		return FALSE; 						// Something went wrong
 	}
-#endif	
+#endif
 	return TRUE;
 }
 /********************************************************************************************
@@ -1744,7 +1744,7 @@ BOOL Preferences::SetPrefValue(LPTCHAR Section, LPTCHAR Pref, UINT32 *PrefVar)
 	Created:	17/10/94
 	Inputs:		Section - the case-insensitive name of the section in which this preference
 						  should be placed, (e.g. "Printing").
-				Pref	- the case-insensitive name of this preference 
+				Pref	- the case-insensitive name of this preference
 						  (e.g. "AutoSaveInterval").
 				PrefVar - pointer to the double variable that holds this preference's value.
 	Outputs:	PrefVar - contains the value found in the preference file for this
@@ -1753,11 +1753,11 @@ BOOL Preferences::SetPrefValue(LPTCHAR Section, LPTCHAR Pref, UINT32 *PrefVar)
 	Returns:	TRUE if the preference was found in the preference system successfully,
 				FALSE otherwise.
 	Purpose:	Finds the value of the specified preference which should already be defined in
-				the preference system and then writes the new value specified into that 
+				the preference system and then writes the new value specified into that
 				variable.
 				This is used by interested parties other than the owner of that preference
 				value e.g. the application options dialog box.
-	
+
 	Errors:		-
 	SeeAlso:	Preferences::GetPrefValue
 
@@ -1771,16 +1771,16 @@ BOOL Preferences::SetPrefValue(LPTCHAR Section, LPTCHAR Pref, double *PrefVar)
 	ERRORIF(!pSection, _R(IDE_BAD_INI_FILE), FALSE);
 
 	// Set up the data structure required to pass the new preference value
-	// in with		
+	// in with
 	PrefData Data;
 	Data.pDouble = PrefVar;
-	
+
 	if (!pSection->SetPrefValue(OILPrefs, Pref, PREF_DOUBLE, Data))
 	{
 		ERROR(_R(IDE_BAD_INI_FILE), FALSE);
 		return FALSE; 						// Something went wrong
 	}
-#endif	
+#endif
 	return TRUE;
 }
 
@@ -1798,7 +1798,7 @@ BOOL Preferences::SetPrefValue(LPTCHAR Section, LPTCHAR Pref, double *PrefVar)
 	Returns:	TRUE if written ok;
 				FALSE if not.
 	Purpose:	Write a preference to the preference file directly, without 'declaring'
-				an associated preference.  This can be used just to ensure that a 
+				an associated preference.  This can be used just to ensure that a
 				default value for the preference is in the file - if Force is FALSE, then
 				if the preference already exists it is not changed.
 	SeeAlso:	Preferences::GetPrefDirect
@@ -1859,7 +1859,7 @@ BOOL Preferences::SetPrefDirect(LPTCHAR Section, LPTCHAR Pref, const TCHAR *pVal
 	Returns:	TRUE if written ok;
 				FALSE if not.
 	Purpose:	Write a preference to the preference file directly, without 'declaring'
-				an associated preference.  This can be used just to ensure that a 
+				an associated preference.  This can be used just to ensure that a
 				default value for the preference is in the file.
 	SeeAlso:	Preferences::GetPrefDirect
 
@@ -1901,7 +1901,7 @@ BOOL Preferences::SetPrefDirect(LPTCHAR Section, LPTCHAR Pref, PreferenceType Ty
 	Returns:	TRUE if written ok;
 				FALSE if not.
 	Purpose:	Write a preference to the preference file directly, without 'declaring'
-				an associated preference.  This can be used just to ensure that a 
+				an associated preference.  This can be used just to ensure that a
 				default value for the preference is in the file.
 	SeeAlso:	Preferences::GetPrefDirect
 
@@ -1925,7 +1925,7 @@ BOOL Preferences::SetPrefDirect(LPTCHAR Section, LPTCHAR Pref, INT32 *pValue)
 	Returns:	TRUE if written ok;
 				FALSE if not.
 	Purpose:	Write a preference to the preference file directly, without 'declaring'
-				an associated preference.  This can be used just to ensure that a 
+				an associated preference.  This can be used just to ensure that a
 				default value for the preference is in the file.
 	SeeAlso:	Preferences::GetPrefDirect
 
@@ -1949,7 +1949,7 @@ BOOL Preferences::SetPrefDirect(LPTCHAR Section, LPTCHAR Pref, UINT32 *pValue)
 	Returns:	TRUE if written ok;
 				FALSE if not.
 	Purpose:	Write a preference to the preference file directly, without 'declaring'
-				an associated preference.  This can be used just to ensure that a 
+				an associated preference.  This can be used just to ensure that a
 				default value for the preference is in the file.
 	SeeAlso:	Preferences::GetPrefDirect
 
@@ -2101,4 +2101,3 @@ BOOL Preferences::GetPrefDirect(LPTCHAR Section, LPTCHAR Pref, double *pValue)
 	Data.pDouble = pValue;
 	return GetPrefDirect(Section, Pref, PREF_DOUBLE, Data);
 }
-
