@@ -175,7 +175,7 @@ public:
 	BOOL DeclarePref(TCHAR *Section, const TCHAR *Pref,
 					 double *PrefVar, double Min = DBL_MIN, double Max = DBL_MAX);
 
-	BOOL DeclarePref(TCHAR *Section, const TCHAR *Pref, StringBase *PrefVar);
+	BOOL DeclarePref(TCHAR *Section, const TCHAR *Pref, const StringBase *PrefVar);
 
 	// These next functions allow the preferences to be read/written by other
 	// people than the owner e.g. the application options dialog box
