@@ -1,7 +1,7 @@
 // $Id: zoomops.h 1771 2007-06-17 20:14:43Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
- 
+
                Xara LX, a vector drawing and manipulation program.
                     Copyright (C) 1993-2006 Xara Group Ltd.
        Copyright on certain contributions may be held in joint with their
@@ -32,7 +32,7 @@ ADDITIONAL RIGHTS
 
 Conditional upon your continuing compliance with the GNU General Public
 License described above, Xara Group Ltd grants to you certain additional
-rights. 
+rights.
 
 The additional rights are to use, modify, and distribute the software
 together with the wxWidgets library, the wxXtra library, and the "CDraw"
@@ -186,7 +186,7 @@ public:
 	BOOL DoDrag(Spread* pStartSpread, const DocCoord& dcStartPos, ClickModifiers cmods);
 	virtual BOOL SnappingDrag()				{ return FALSE; }
 
-	// Zoom in or out by the next scale factor in the ZoomTable table (also zoom direct to 100%).  
+	// Zoom in or out by the next scale factor in the ZoomTable table (also zoom direct to 100%).
 	// These are normally called on click events by the OpZoom user.
 	void ZoomOut(const WorkCoord& wcZoom, BOOL fEndOp = TRUE);
 	void ZoomOut(Spread* pZoomSpread, const DocCoord& dcZoomPos, BOOL fEndOp = TRUE);
@@ -200,7 +200,7 @@ public:
 	// current view's view-port.
 	void ZoomInOnRect(const WorkRect& wrZoom, BOOL fEndOp = TRUE);
 	void ZoomInOnRect(Spread* pZoomSpread, const DocRect& dcZoomRect, BOOL fEndOp = TRUE);
-		
+
 	// Zoom in or out to show the given point in the current view at the given scale factor.
 	void ZoomAtPoint(const WorkCoord& wcZoom, FIXED16 fxNewScaleFactor, BOOL fEndOp = TRUE);
 	void ZoomAtPoint(Spread* pZoomSpread, const DocCoord& dcZoomPos, FIXED16 fxNewScaleFactor,
@@ -235,7 +235,7 @@ private:
 	BOOL	  m_fStatusTextShown;					// flag to remind us to update text
 
 	// Preset zoom factor percentages.
-	static INT32 ZoomTable[cZoomTableSize];			
+	static INT32 ZoomTable[cZoomTableSize];
 
 	// Preferences.
 	static BOOL m_fRadialZoomDragBox;				// do drag from centre to corner
@@ -419,7 +419,7 @@ public:
 	virtual MsgResult Message(Msg* pMsg);
 	virtual BOOL IsAvailable();
 
-	static void FakeInvoke(TCHAR* pszToken);
+	static void FakeInvoke(LPCTCHAR pszToken);
 	static void FakeZoomToRect(const DocRect& rect);
 
 	virtual BOOL DoZoom(OpZoom * pZoomOp);
@@ -531,7 +531,7 @@ class OpZoomPrevZoomDescriptor : public OpZoomDescriptor
 {
 public:
 	OpZoomPrevZoomDescriptor();
-	
+
 	static void SaveZoom(DocView* pDocView);
 
 	virtual BOOL DoZoom(OpZoom * pZoomOp);
@@ -555,7 +555,7 @@ class OpZoomComboDescriptor : public OpZoomDescriptor
 {
 public:
 	OpZoomComboDescriptor();
-	
+
 	virtual MsgResult Message(Msg* pMsg);
 	static BOOL Update(BOOL fRefreshList = FALSE);
 
@@ -563,7 +563,7 @@ private:
 	MsgResult HandleCreateMsg(DialogOp* popdlgThis, CGadgetID gidThis);
 	MsgResult HandleViewChangeMsg(DocView* pSelectedDocView);
 	void OnSelectionChange(OpDescControlMsg* pCtrlMsg, List* pGadgetList);
-	
+
 	BOOL RefreshList();
 	BOOL UpdateAllCombos(String_256* pStr);
 	BOOL UpdateComboWithViewScale(DocView* pDocView);
@@ -593,7 +593,7 @@ public:
 	MsgResult Message(Msg* pMsg);
 
 };
-	
+
 
 /********************************************************************************************
 >	class ZoomInfoBarOpCreate : public BarCreate

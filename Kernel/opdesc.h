@@ -1,7 +1,7 @@
 // $Id: opdesc.h 1261 2006-06-06 11:58:26Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
- 
+
                Xara LX, a vector drawing and manipulation program.
                     Copyright (C) 1993-2006 Xara Group Ltd.
        Copyright on certain contributions may be held in joint with their
@@ -32,7 +32,7 @@ ADDITIONAL RIGHTS
 
 Conditional upon your continuing compliance with the GNU General Public
 License described above, Xara Group Ltd grants to you certain additional
-rights. 
+rights.
 
 The additional rights are to use, modify, and distribute the software
 together with the wxWidgets library, the wxXtra library, and the "CDraw"
@@ -95,7 +95,7 @@ service marks of Xara Group Ltd. All rights in these marks are reserved.
 
 =================================XARAHEADEREND============================
  */
-// OpDescriptor allows camelot to maintain a list of all the operations 
+// OpDescriptor allows camelot to maintain a list of all the operations
 // which can be performed
 
 
@@ -145,9 +145,9 @@ class OpParam;
 				call to RegisterOpDescriptor. Each use of this macro replaces the following
 				code;
 				BOOL Blobby = RegisterOpDescriptor(
-												  	0, 
+												  	0,
 												  	_R(IDS_FILEOPEN),
-												  	CC_RUNTIME_CLASS(DocOps), 
+												  	CC_RUNTIME_CLASS(DocOps),
 												  	OPTOKEN_FILEOPEN,
 												  	DocOps::GetState,
 												  	HID_FILEOPEN,
@@ -170,7 +170,7 @@ class OpParam;
 				}
 				Note: 	This macro uses new format IDs. Don't use the REGOP macro in
 						menuops.cpp because it uses old format IDs.
-				
+
 	SeeAlso:	CTRLOP
 
 ******************************************************************************************/
@@ -221,9 +221,9 @@ class OpParam;
 				call to RegisterOpDescriptor. Each use of this macro replaces the following
 				code;
 				BOOL Blobby = RegisterOpDescriptor(
-												  	0, 
+												  	0,
 												  	_R(IDS_FILEOPEN),
-												  	CC_RUNTIME_CLASS(DocOps), 
+												  	CC_RUNTIME_CLASS(DocOps),
 												  	OPTOKEN_FILEOPEN,
 												  	DocOps::GetState,
 												  	HID_FILEOPEN,
@@ -240,7 +240,7 @@ class OpParam;
 				made from Operation::Init functions.
 				Note: 	This macro uses new format IDs. Don't use the REGOP macro in
 						menuops.cpp because it uses old format IDs.
-				
+
 	SeeAlso:	BTNOP
 
 ******************************************************************************************/
@@ -267,7 +267,7 @@ class OpParam;
 
 
 // Forward declarations...
-class DialogOp; 
+class DialogOp;
 
 
 
@@ -276,7 +276,7 @@ class DialogOp;
 
 >	class OpState
 
-Purpose:	The Opstate class contains flags describing the state of an operation at any 
+Purpose:	The Opstate class contains flags describing the state of an operation at any
 			particular time. This state will be used by the Menu system to tick and grey
 			menus (and do corresponding things to buttons where necessary).
 SeeAlso:	OpDescriptor; Operation
@@ -290,12 +290,12 @@ public:
 	BOOL Ticked : 1;
 	BOOL Greyed : 1;
 	BOOL RemoveFromMenu : 1;
-	
+
 	// Constructor to allow default values to be supplied
 	OpState( BOOL tick = FALSE, BOOL grey = FALSE, BOOL Remove = FALSE );
-	
+
 };
- 
+
 
 // Operation Ability Flags
 /*
@@ -304,7 +304,7 @@ Goodbye
 #define OP_SIMPLE			0x0002
 #define OP_NOTFORMACRO	 	0x0004
 #define OP_NEEDSDOC			0x0008
-#define OP_SPECIALITEM		0x0010  
+#define OP_SPECIALITEM		0x0010
 */
 
 
@@ -353,8 +353,8 @@ public:
 	UINT32	ControlID;		// ID of control within that resource
 	UINT32	ToolID;			// Tool (and thus module) in which resource is found
 
-	BarControlInfo& operator=(BarControlInfo& other) 
-	{ 
+	BarControlInfo& operator=(BarControlInfo& other)
+	{
 		ResourceID = other.ResourceID;
 		ControlID  = other.ControlID;
 		ToolID     = other.ToolID;
@@ -369,8 +369,8 @@ public:
 	Author:		Phil_Martin (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	13/04/94
 	Purpose:	BarControlInfo constructor which fills in the member data fields.
-				The caller MUST specify the resource ID but the control ID and tool ID may 
-				be ommitted. Their default values are 0 which for the tool ID means that 
+				The caller MUST specify the resource ID but the control ID and tool ID may
+				be ommitted. Their default values are 0 which for the tool ID means that
 				the resource will be found in the kernel resources.
 
 ********************************************************************************************/
@@ -388,9 +388,9 @@ public:
 
 	Author:		Simon_Maneggio (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	22/3/94
-	Purpose:	The reason we need to store OpDescriptors in OpListItems is that 
+	Purpose:	The reason we need to store OpDescriptors in OpListItems is that
 				OpDescriptors are MessageHandler objects and so are already potentially
-				stored on a list. 
+				stored on a list.
 	SeeAlso:	-
 
 ********************************************************************************************/
@@ -399,13 +399,13 @@ class OpListItem: public ListItem
 {
 	CC_DECLARE_MEMDUMP(OpListItem)
 
-public:	
-	OpDescriptor* pOpDesc; 
+public:
+	OpDescriptor* pOpDesc;
 };
 
 // The OpFlgs structure holds info about the type of an operation
 struct CCAPI OpFlgs
-{						
+{
 	BOOL Clean : 1;			 // Op does not "modify" document
 	BOOL Smart : 1;			 // Op can be smart duplicated
 
@@ -420,7 +420,7 @@ struct CCAPI OpFlgs
 
 	Author:		Peter_Arnold (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	05/10/94
-	Purpose:	To enable storage of pointers to operations on lists. 
+	Purpose:	To enable storage of pointers to operations on lists.
 	SeeAlso:	-
 
 ********************************************************************************************/
@@ -429,8 +429,8 @@ class ListItemOpPtr: public ListItem
 {
 	CC_DECLARE_MEMDUMP(ListItemOpPtr)
 
-public:	
-	Operation* pOp; 
+public:
+	Operation* pOp;
 };
 
 
@@ -442,7 +442,7 @@ public:
 	Author:		Rik_Heywood (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	30/6/93
 	Purpose:	The OpDescriptor class describes a particular operation. It contains
-				pointers to the literal token describing the operation (used by the 
+				pointers to the literal token describing the operation (used by the
 				macro language, among other things) and pointers to some static member
 				functions of the operation which allow dynamic creation of the operation.
 	SeeAlso:	operation
@@ -455,17 +455,17 @@ class OpDescControlMsg;
 class CCAPI OpDescriptor : public MessageHandler
 {
 	CC_DECLARE_DYNAMIC( OpDescriptor )
-	
+
 protected:
-	
-	DWORD			ModuleID;	
+
+	DWORD			ModuleID;
     UINT32 			TextID;
 	UINT32			HelpID;
 	UINT32			BubbleID;
 	BarControlInfo	BarCtrlInfo;
 //	UINT32			BitmapID;
 	CCRuntimeClass* OpClass;
-	OpFlgs			Flags; 	
+	OpFlgs			Flags;
 
 	BOOL			m_bHotKeyEnabled;
 	// This set of member vars looks after the aliased state of the op descriptor
@@ -475,38 +475,38 @@ protected:
 	UINT32			OldAutoStateFlags;	// The AutoStateFlags before aliasing
 	UINT32			OldTextID;			// The ID of the text string
 	UINT32			OldBubbleID;		// The ID of the bubble help string
-	
+
 	// When not 0 only one live instance
 	// of the operation is permitted, and
 	// OneInstID is the string resource
 	// ID describing why.This will be useful
-	// for 1 open instance dialogs.	
+	// for 1 open instance dialogs.
 	UINT32 OneInstID;
 	UINT32 AutoStateFlgs;   // Flags which indicate conditions when
 				 		   // the operation should automatically be
-						   // greyed/ticked etc..(This cuts down the 
-						   // number of tests that need to be made in the 
+						   // greyed/ticked etc..(This cuts down the
+						   // number of tests that need to be made in the
 						   // GetState function).
 
-private: 
+private:
 	pfnGetState GetState;				// pointer to the GetState function in the operation
 
 protected:
 	pfnGetParamState GetParamState;		// pointer to the GetParamState function in the operation
-	
+
 public:
 	// Public Member variable so people can actually get at the name of the Op.
 	String Token;			// literal token - does not need to be internationalised
 
-	// Calls GetState fn 
+	// Calls GetState fn
 	virtual OpState GetOpsState(String_256*, OpParam* pOpParam = NULL);
 
 public:
-	
+
 	// Invokes the operation associated with the OpDescriptor calling either the Operations
 	// Do or DoWithParam virtual fns.
 	void Invoke(OpParam* pOpParam = NULL, BOOL fWithUndo = TRUE);
-	
+
 	// Constructor for creating an instance, which also links
 	// the object into the linked list.
 	// This constructor takes in a resource ID and control ID.
@@ -522,7 +522,7 @@ public:
 				 CCRuntimeClass* Op,				// pointer to the Op's runtime class object
 				 TCHAR* tok,						// pointer to the token string
 				 pfnGetState gs,					// pointer to the GetState function
-				 UINT32 helpId = 0,					// help identifier 
+				 UINT32 helpId = 0,					// help identifier
 				 UINT32 bubbleID = 0,					// string resource for bubble help
 				 UINT32 resourceID = 0,				// bitmap ("icon") or resource ID
 				 UINT32 controlID =0,					// control ID
@@ -536,8 +536,8 @@ public:
 				 									// for 1 open instance dialogs.
 				 UINT32 AutoStateFlags = 0,			// Flags which indicate conditions when
 				 									// the operation should automatically be
-													// greyed/ticked etc..(This cuts down the 
-													// number of tests that need to be made in the 
+													// greyed/ticked etc..(This cuts down the
+													// number of tests that need to be made in the
 													// GetState function).
 				 BOOL fCheckable = FALSE
 				);
@@ -549,16 +549,16 @@ public:
 
 
 	void SetBarControlInfo(BarControlInfo ThisInfo){ BarCtrlInfo = ThisInfo;};
-						
+
 	// a search function that returns a pointer to the OpDescriptor that contains token
-	static OpDescriptor* FindOpDescriptor(TCHAR* Token);
-	
+	static OpDescriptor* FindOpDescriptor(LPCTCHAR Token);
+
 	// a search function that returns a pointer to the OpDescriptor that describes operation
 	static OpDescriptor* FindOpDescriptor(CCRuntimeClass* Op);
 
 	// a search function that returns a pointer to the OpDescriptor searching by ResourceID
 	static OpDescriptor* FindOpDescriptor(ResourceID res);
-	
+
 	// Need a method of killing off all the Descriptors at program end
 	static void DestroyAll();
 
@@ -583,11 +583,11 @@ public:
 	void	DisableHotKey();
 	void	EnableHotKey();
 
-	// This will use the TextID to obtain a string resource text description of the 
-	// operation. 
+	// This will use the TextID to obtain a string resource text description of the
+	// operation.
 	virtual BOOL GetText(String_256* Description, OpTextFlags WhichText);
 
-	// The Default Message function 
+	// The Default Message function
 	virtual MsgResult Message(Msg* Msg);
 
 	// This iterates through all the controls in the application, adding to the given
@@ -599,19 +599,19 @@ public:
 	// OpDescriptor On message handlers
 	// These get called by the default OpDescriptor Message handler
 
-	// This function gets called by the OpDescriptors default Message handler whenever the 
-	// control associated with an OpDescriptor is created. This base class function does 
-	// nothing. 
+	// This function gets called by the OpDescriptors default Message handler whenever the
+	// control associated with an OpDescriptor is created. This base class function does
+	// nothing.
 	virtual void OnControlCreate(OpDescControlCreateMsg* CreateMsg);
 
-	// This function gets called whenever the user selects an item from a list or combo 
+	// This function gets called whenever the user selects an item from a list or combo
 	// control associated with an OpDescriptor
 	virtual void OnSelectionChange(OpDescControlMsg* SelChangedMsg, List* GadgetList);
 
 	// This function is called whenever a slider control associated with the opdescriptor
 	// changes to a new position.
 	virtual void OnSliderChanging(OpDescControlMsg* SliderChangingMsg);
-	
+
 	// This function is called whenever a slider control associated with the opdescriptor
 	// changes to a new position.
 	virtual void OnSliderSet(OpDescControlMsg* SelChangedMsg);
@@ -631,7 +631,7 @@ public:
 
 private:
 
-	static List OpList; 
+	static List OpList;
 
 protected:
 	TCHAR* GetDescription(TCHAR* pDesc, OpTextFlags WhichText);
@@ -647,13 +647,13 @@ public:
 	Purpose:	returns the first OpListItem in the list
 
 ********************************************************************************************/
-	static OpListItem* GetFirstDescriptor()	
-	{ 
-		return ((OpListItem*)(OpList.GetHead()));  
+	static OpListItem* GetFirstDescriptor()
+	{
+		return ((OpListItem*)(OpList.GetHead()));
 	}
 
 
-	
+
 /********************************************************************************************
 
 >	static OpListItem* OpDescriptor::GetNextDescriptor( OpListItem* CurrOp )
@@ -666,8 +666,8 @@ public:
 ********************************************************************************************/
 
 	static OpListItem* GetNextDescriptor( OpListItem* CurrOp )
-	{  
-		return ((OpListItem*)OpList.GetNext(CurrOp));  
+	{
+		return ((OpListItem*)OpList.GetNext(CurrOp));
 	}
 
 	static void LinkDescriptor( OpDescriptor* ThisOp );
@@ -682,10 +682,10 @@ public:
 
 	Author:		Simon_Maneggio (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	16/8/93
-	Purpose:	All undoable operations should be registered using an UndoableOpDescriptor. 
+	Purpose:	All undoable operations should be registered using an UndoableOpDescriptor.
 				The only difference between an UndoableOpDescriptor and an OpDescriptor
-				is that the Operation Flags are set to different default values. 
-				
+				is that the Operation Flags are set to different default values.
+
 	SeeAlso:	operation
 
 ********************************************************************************************/
@@ -693,7 +693,7 @@ public:
 class CCAPI UndoableOpDescriptor : public OpDescriptor
 {
 	CC_DECLARE_DYNAMIC( UndoableOpDescriptor )
-	
+
 public:
 
 	// Constructor for creating an instance. The params are all the same as for OpDescriptor
@@ -704,12 +704,12 @@ public:
 						 CCRuntimeClass* Op,				// pointer to the Op's runtime class object
 						 TCHAR* tok,						// pointer to the token string
 						 pfnGetState gs,					// pointer to the GetState function
-						 UINT32 helpId = 0,					// help identifier 
+						 UINT32 helpId = 0,					// help identifier
 						 UINT32 bubbleID = 0,					// string resource for bubble help
 						 UINT32 resourceID = 0,				// resource ID
 						 UINT32 controlID = 0,				// control ID within resource
-						 BOOL ReceiveMessages = FALSE, 		
-						 BOOL Smart = FALSE, 
+						 BOOL ReceiveMessages = FALSE,
+						 BOOL Smart = FALSE,
 						 BOOL Clean = FALSE,
 						 UINT32 OneOpenInstID = 0,	// When not 0 only one live instance
 				 									// of the operation is permitted, and
@@ -718,8 +718,8 @@ public:
 				 									// for 1 open instance dialogs.
 				 		 UINT32 AutoStateFlags = 0,	// Flags which indicate conditions when
 				 									// the operation should automatically be
-													// greyed/ticked etc..(This cuts down the 
-													// number of tests that need to be made in the 
+													// greyed/ticked etc..(This cuts down the
+													// number of tests that need to be made in the
 													// GetState function).
 						 BOOL fCheckable = FALSE
 				);
@@ -738,7 +738,7 @@ public:
 	Author:		Mario_Shamtani (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	16/8/93
 	Purpose:	The ToolOpDescriptor class describes a Tool Selection operation. It contains
-				pointers to the literal token describing the operation (used by the 
+				pointers to the literal token describing the operation (used by the
 				macro language, among other things) and pointers to some static member
 				functions of the operation which allow dynamic creation of the operation.
 	SeeAlso:	operation
@@ -748,29 +748,29 @@ public:
 class CCAPI ToolOpDescriptor : public OpDescriptor
 {
 	CC_DECLARE_DYNAMIC( ToolOpDescriptor )
-	
+
 public:
 
-	ToolOpDescriptor(	
+	ToolOpDescriptor(
 				 		UINT32 toolID,                    // Tool (Module) Identifier
 				 		UINT32 txID,                      // String Resource ID
 //				 		UINT32 toolId,					// Tool Identifier
 				 		CCRuntimeClass* Op,				// pointer to the runtime class of
 														// appropriate Operation object
-				 		TCHAR* tok = NULL,				// pointer to the token string 
+				 		TCHAR* tok = NULL,				// pointer to the token string
 				 		pfnGetState gs = NULL,			// pointer to the GetState function
 						UINT32 hlpID = 0,					// help file "jump" ID
 						UINT32 bubID = 0,					// bubble-help string resource ID
 						UINT32 resID = 0, 				// resource ID of this OpDesc.
 						UINT32 ctlID = 0,					// control of this OpDesc
-		 				BOOL ReceiveMessages = TRUE, 		
-		 				BOOL Smart = FALSE, 
+		 				BOOL ReceiveMessages = TRUE,
+		 				BOOL Smart = FALSE,
 						BOOL Clean = FALSE,
-						BOOL fCheckable = FALSE ); 
+						BOOL fCheckable = FALSE );
 
 private:
 	// Set to TRUE if this is the selected tool
-	BOOL CurrentTool; 
+	BOOL CurrentTool;
 
 public:
 	void SetCurrentTool(BOOL State) { CurrentTool = State; }
@@ -823,7 +823,7 @@ public:
 
 
 // ------------------------------------------------------------------------------------------
-// OpDescriptor messages	
+// OpDescriptor messages
 
 
 /********************************************************************************************
@@ -835,7 +835,7 @@ public:
 	Inputs:		-
 	Outputs:	-
 	Returns:	-
-	Purpose:	Base class for all OpDescriptor messages  
+	Purpose:	Base class for all OpDescriptor messages
 	Errors:		-
 	SeeAlso:	OpDescControlDestroy
 	SeeAlso:	OpDescControlCreate
@@ -845,23 +845,23 @@ public:
 class OpDescMsg: public Msg
 {
 	CC_DECLARE_DYNAMIC(OpDescMsg);
-	
+
 public:
 	OpDescriptor* OpDesc; // The OpDescriptor the message is meant for
-	
+
 	CGadgetID GadgetID;	   // This is the resource gadget ID
 
-	CGadgetID SetGadgetID; // You should use this GadgetID whenever you are sending a message 
+	CGadgetID SetGadgetID; // You should use this GadgetID whenever you are sending a message
 						   // to the gadget, eg. if you are using any of the DialogOp set
-						   // functions. It is a unique gadget ID for the bar.  
+						   // functions. It is a unique gadget ID for the bar.
 
-	DialogOp* pDlgOp;  	  // A pointer to the DialogOp 
+	DialogOp* pDlgOp;  	  // A pointer to the DialogOp
 
-	
+
 	OpDescMsg(OpDescriptor* OpD, CGadgetID GadID, CGadgetID SetGadget, DialogOp* pDialogOp)
 	{
-		OpDesc = OpD; 
-		GadgetID = GadID; 
+		OpDesc = OpD;
+		GadgetID = GadID;
 		pDlgOp = pDialogOp;
 		SetGadgetID = SetGadget;
 	};
@@ -877,8 +877,8 @@ public:
 	Inputs:		-
 	Outputs:	-
 	Returns:	-
-	Purpose:	This message is sent to an OpDescriptor after its controls have 
-				been created. It gives you a chance to perform control initialisation. 
+	Purpose:	This message is sent to an OpDescriptor after its controls have
+				been created. It gives you a chance to perform control initialisation.
 				eg. Set scrollbar ranges, fill listboxes ...
 	Errors:		-
 	SeeAlso:	OpDescControlDestroy
@@ -886,14 +886,14 @@ public:
 ********************************************************************************************/
 
 class OpDescControlCreateMsg: public OpDescMsg
-{	
+{
 	CC_DECLARE_DYNAMIC(OpDescControlCreateMsg);
-	OpDescControlCreateMsg(OpDescriptor* OpD, 
+	OpDescControlCreateMsg(OpDescriptor* OpD,
 			  			   CGadgetID GadID, CGadgetID SetGadget, DialogOp* pDialogOp):
 		OpDescMsg(OpD,  GadID, SetGadget, pDialogOp)
 	{
-	}; 
-}; 
+	};
+};
 
 /********************************************************************************************
 
@@ -904,8 +904,8 @@ class OpDescControlCreateMsg: public OpDescMsg
 	Inputs:		-
 	Outputs:	-
 	Returns:	-
-	Purpose:	This message is sent to an OpDescriptor after its controls have 
-				been destroyed, It gives the OpDescriptor a chance to cleanup 
+	Purpose:	This message is sent to an OpDescriptor after its controls have
+				been destroyed, It gives the OpDescriptor a chance to cleanup
 
 	Errors:		-
 	SeeAlso:	OpDescControlCreateMsg
@@ -915,12 +915,12 @@ class OpDescControlCreateMsg: public OpDescMsg
 
 class OpDescControlDestroyMsg: public OpDescMsg
 {
-	CC_DECLARE_DYNAMIC(OpDescControlDestroyMsg); 
+	CC_DECLARE_DYNAMIC(OpDescControlDestroyMsg);
 	OpDescControlDestroyMsg(OpDescriptor* OpD,
 			  			   CGadgetID GadID, CGadgetID SetGadget, DialogOp* pDialogOp):
 		OpDescMsg(OpD, GadID, SetGadget, pDialogOp)
 	{
-	}; 
+	};
 };
 
 /********************************************************************************************
@@ -932,7 +932,7 @@ class OpDescControlDestroyMsg: public OpDescMsg
 	Inputs:		-
 	Outputs:	-
 	Returns:	-
-	Purpose:	This message is the OpDescriptor equivelant of a DialogMsg. It is sent 
+	Purpose:	This message is the OpDescriptor equivelant of a DialogMsg. It is sent
 				when an OpDescriptor's control sends a message.
 	Errors:		-
 	SeeAlso:	-
@@ -941,19 +941,19 @@ class OpDescControlDestroyMsg: public OpDescMsg
 
 class OpDescControlMsg: public OpDescMsg
 {
-	CC_DECLARE_DYNAMIC(OpDescControlMsg); 
-	
+	CC_DECLARE_DYNAMIC(OpDescControlMsg);
+
 	public:
-	
+
 	CDlgMessage DlgMsg;
 
-	OpDescControlMsg(OpDescriptor* OpD, CDlgMessage DlgM, CGadgetID GadID, 
+	OpDescControlMsg(OpDescriptor* OpD, CDlgMessage DlgM, CGadgetID GadID,
 					 CGadgetID SetGadget, DialogOp* pDialogOp):
 		OpDescMsg(OpD, GadID, SetGadget, pDialogOp)
 	{
-		DlgMsg = DlgM; 
+		DlgMsg = DlgM;
 	};
- 
+
 };
 
 
