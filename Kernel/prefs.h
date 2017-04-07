@@ -176,6 +176,7 @@ public:
 					 double *PrefVar, double Min = DBL_MIN, double Max = DBL_MAX);
 
 	BOOL DeclarePref(const TCHAR *Section, const TCHAR *Pref, const StringBase *PrefVar);
+	BOOL DeclarePref2( TCHAR const *Section, const TCHAR *Pref, const StringBase *PrefVar);
 
 	// These next functions allow the preferences to be read/written by other
 	// people than the owner e.g. the application options dialog box

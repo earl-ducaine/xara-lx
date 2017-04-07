@@ -836,6 +836,7 @@ bool CCamApp::OnInit()
 	}
 
 	// Check the resource dir exists
+	Camelot.DeclarePref2( NULL, TEXT("ResourceDirOverride"), &m_strResourceDirPathOverride );
 	Camelot.DeclarePref( NULL, TEXT("ResourceDirOverride"), &m_strResourceDirPathOverride );
 	m_strResourceDirPath = m_strResourceDirPathOverride; // this way, the path we find never gets put within the preferences
 	if( /*bFirstRun ||*/ m_strResourceDirPath == _T("") || !wxDir::Exists( (PCTSTR)m_strResourceDirPath ) ) // AB: don't need to do this on first run especially

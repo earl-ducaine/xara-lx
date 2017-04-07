@@ -1400,6 +1400,21 @@ BOOL Preferences::DeclarePref(const LPTCHAR Section, const LPTCHAR Pref, const S
 	return TRUE;
 }
 
+BOOL Preferences::DeclarePref2(LPCTCHAR Section, LPCTCHAR Pref, const StringBase *PrefVar)
+{
+#if !defined(EXCLUDE_FROM_RALPH)
+	// Find the right section
+	PreferenceSection *pSection = GetSection(Section);
+	ERRORIF(!pSection, _R(IDE_BAD_INI_FILE), FALSE);
+
+	// Add the preference to the right section
+	PrefData Data;
+	Data.pString = PrefVar;
+	ERRORIF(!pSection->AddPref(OILPrefs, Pref, PREF_STRING, Data), _R(IDE_BAD_INI_FILE), FALSE);
+#endif
+	return TRUE;
+}
+
 /********************************************************************************************
 
 >	PreferenceSection *Preferences::GetSection(LPTCHAR SectionName)

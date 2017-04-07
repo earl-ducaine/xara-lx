@@ -490,6 +490,9 @@ public:
 	BOOL DeclarePref(const LPTCHAR Section, const LPTCHAR Pref, const StringBase *PrefVar)
 		{ return CamelotPrefs->DeclarePref(Section, Pref, PrefVar); };
 
+	BOOL DeclarePref2(LPCTCHAR Section, LPCTCHAR Pref, StringBase *PrefVar)
+	{ return CamelotPrefs->DeclarePref2(Section, Pref, PrefVar); };
+
 	// Used by the application options/preferences dialog box
 	BOOL GetPrefValue(LPTCHAR Section, LPTCHAR Pref, INT32 *PrefVar)
 		{ return CamelotPrefs->GetPrefValue(Section, Pref, PrefVar); };
