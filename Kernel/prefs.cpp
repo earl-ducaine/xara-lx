@@ -1400,21 +1400,6 @@ BOOL Preferences::DeclarePref(const LPTCHAR Section, const LPTCHAR Pref, const S
 	return TRUE;
 }
 
-BOOL Preferences::DeclarePref2(LPCTCHAR Section, LPCTCHAR Pref, const StringBase *PrefVar)
-{
-#if !defined(EXCLUDE_FROM_RALPH)
-	// Find the right section
-	PreferenceSection *pSection = GetSection(Section);
-	ERRORIF(!pSection, _R(IDE_BAD_INI_FILE), FALSE);
-
-	// Add the preference to the right section
-	PrefData Data;
-	Data.pString = PrefVar;
-	ERRORIF(!pSection->AddPref(OILPrefs, Pref, PREF_STRING, Data), _R(IDE_BAD_INI_FILE), FALSE);
-#endif
-	return TRUE;
-}
-
 /********************************************************************************************
 
 >	PreferenceSection *Preferences::GetSection(LPTCHAR SectionName)
@@ -1820,7 +1805,7 @@ BOOL Preferences::SetPrefValue(LPTCHAR Section, LPTCHAR Pref, double *PrefVar)
 
 ********************************************************************************************/
 
-BOOL Preferences::SetPrefDirect(LPTCHAR Section, LPTCHAR Pref, const TCHAR *pValue, BOOL Force)
+BOOL Preferences::SetPrefDirect(LPCTCHAR Section, LPTCHAR Pref, const TCHAR *pValue, BOOL Force)
 {
 #if !defined(EXCLUDE_FROM_RALPH)
 	// First check if there is a valid OILPrefs, as if there was a problem on start up such as
@@ -1880,7 +1865,7 @@ BOOL Preferences::SetPrefDirect(LPTCHAR Section, LPTCHAR Pref, const TCHAR *pVal
 
 ********************************************************************************************/
 
-BOOL Preferences::SetPrefDirect(LPTCHAR Section, LPTCHAR Pref, PreferenceType Type, PrefData Data)
+BOOL Preferences::SetPrefDirect(LPCTCHAR Section, LPTCHAR Pref, PreferenceType Type, PrefData Data)
 {
 #if !defined(EXCLUDE_FROM_RALPH)
 	// First check if there is a valid OILPrefs, as if there was a problem on start up such as
@@ -1922,7 +1907,7 @@ BOOL Preferences::SetPrefDirect(LPTCHAR Section, LPTCHAR Pref, PreferenceType Ty
 
 ********************************************************************************************/
 
-BOOL Preferences::SetPrefDirect(LPTCHAR Section, LPTCHAR Pref, INT32 *pValue)
+BOOL Preferences::SetPrefDirect(LPCTCHAR Section, LPTCHAR Pref, INT32 *pValue)
 {
 	PrefData Data;
 	Data.pInt = pValue;
@@ -1946,7 +1931,7 @@ BOOL Preferences::SetPrefDirect(LPTCHAR Section, LPTCHAR Pref, INT32 *pValue)
 
 ********************************************************************************************/
 
-BOOL Preferences::SetPrefDirect(LPTCHAR Section, LPTCHAR Pref, UINT32 *pValue)
+BOOL Preferences::SetPrefDirect(LPCTCHAR Section, LPTCHAR Pref, UINT32 *pValue)
 {
 	PrefData Data;
 	Data.pUInt = pValue;
@@ -1970,7 +1955,7 @@ BOOL Preferences::SetPrefDirect(LPTCHAR Section, LPTCHAR Pref, UINT32 *pValue)
 
 ********************************************************************************************/
 
-BOOL Preferences::SetPrefDirect(LPTCHAR Section, LPTCHAR Pref, double *pValue)
+BOOL Preferences::SetPrefDirect(LPCTCHAR Section, LPTCHAR Pref, double *pValue)
 {
 	PrefData Data;
 	Data.pDouble = pValue;

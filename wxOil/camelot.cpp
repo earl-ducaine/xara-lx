@@ -836,7 +836,6 @@ bool CCamApp::OnInit()
 	}
 
 	// Check the resource dir exists
-	Camelot.DeclarePref2( NULL, TEXT("ResourceDirOverride"), &m_strResourceDirPathOverride );
 	Camelot.DeclarePref( NULL, TEXT("ResourceDirOverride"), &m_strResourceDirPathOverride );
 	m_strResourceDirPath = m_strResourceDirPathOverride; // this way, the path we find never gets put within the preferences
 	if( /*bFirstRun ||*/ m_strResourceDirPath == _T("") || !wxDir::Exists( (PCTSTR)m_strResourceDirPath ) ) // AB: don't need to do this on first run especially
@@ -894,12 +893,16 @@ bool CCamApp::OnInit()
 	// Create the document manager and register our doc template
 	m_docManager = std::auto_ptr<wxDocManager>( new wxDocManager() );
 
-	wxDocTemplate	   *pDocTemplate;
-	pDocTemplate = new CCamDocTemplate(
-		m_docManager.get(), wxT("Xara"), wxT("*.xar;*.web"), wxT(""), wxT("xar"), wxT("Xara document"),
-		wxT("Text View"),
-		CLASSINFO(CCamDoc),
-		CLASSINFO(CCamView) );
+	TODO(Determine purpose of CCamDocTemplate)
+	// wxDocTemplate* pDocTemplate =
+	//   new CCamDocTemplate(m_docManager.get(),
+	// 		      wxT("Xara"),
+	// 		      wxT("*.xar;*.web"),
+	// 		      wxT(""), wxT("xar"),
+	// 		      wxT("Xara document"),
+	// 		      wxT("Text View"),
+	// 		      CLASSINFO(CCamDoc),
+	// 		      CLASSINFO(CCamView) );
 //	pDocTemplate = new CCamDocTemplate(
 //		m_docManager.get(), wxT("Xara"), wxT("*.web"), wxT(""), wxT("web"), wxT("Xara document"),
 //		wxT("Text View"),

@@ -332,5 +332,7 @@ struct LogicalCoord
 //#include "xlong.h"
 //#include "xmatrix.h"
 
+#define DO_PRAGMA(x) _Pragma (#x)
+#define TODO(x) DO_PRAGMA(message ("TODO - " #x))
 
 #endif		// !INC_CAMTYPES
