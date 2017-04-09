@@ -475,7 +475,7 @@ public:
 	BOOL DeclareSection(LPTCHAR Section, UINT32 InitialSize)
 		{ return CamelotPrefs->DeclareSection(Section, InitialSize); };
 
-	BOOL DeclarePref(LPTCHAR Section, const LPTCHAR Pref,
+	BOOL DeclarePref(LPCTCHAR Section, const LPCTCHAR Pref,
 					 INT32 *PrefVar, INT32 Min = INT_MIN, INT32 Max = INT_MAX)
 		{ return CamelotPrefs->DeclarePref(Section, Pref, PrefVar, Min, Max); };
 

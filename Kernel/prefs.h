@@ -166,7 +166,7 @@ public:
 
 	BOOL DeclareSection(TCHAR *Section, UINT32 InitialSize);
 
-	BOOL DeclarePref(TCHAR *Section, TCHAR *Pref,
+	BOOL DeclarePref(LPCTCHAR Section, LPCTCHAR Pref,
 					 INT32 *PrefVar, INT32 Min = INT_MIN, INT32 Max = INT_MAX);
 
 	BOOL DeclarePref(TCHAR *Section, TCHAR *Pref,
