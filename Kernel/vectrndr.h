@@ -1,7 +1,7 @@
 // $Id: vectrndr.h 751 2006-03-31 15:43:49Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
- 
+
                Xara LX, a vector drawing and manipulation program.
                     Copyright (C) 1993-2006 Xara Group Ltd.
        Copyright on certain contributions may be held in joint with their
@@ -32,7 +32,7 @@ ADDITIONAL RIGHTS
 
 Conditional upon your continuing compliance with the GNU General Public
 License described above, Xara Group Ltd grants to you certain additional
-rights. 
+rights.
 
 The additional rights are to use, modify, and distribute the software
 together with the wxWidgets library, the wxXtra library, and the "CDraw"
@@ -129,7 +129,7 @@ public:
 
 	// Start and stop rendering.
 	virtual BOOL StartRender( void );
-	virtual BOOL StopRender( void );		
+	virtual BOOL StopRender( void );
 
 	// These functions are never called, but are included to over-ride pure virtuals in the
 	// base class.
@@ -145,8 +145,8 @@ public:
 	void DrawBitmap( const DocCoord	&Point,
 					  KernelBitmap*		pBitmap );
 	void DrawBitmap( const DocCoord	&Point,
-					  UINT32				BitmapID,
-					  UINT32				ToolID = NULL );
+					  UINT32 BitmapID,
+					  UINT32 ToolID = 0);
 	void DrawBitmapBlob( const DocCoord	&Point,
 						  KernelBitmap*		BlobShape );
 	void DrawBitmapBlob( const DocCoord	&Point, ResourceID resID );

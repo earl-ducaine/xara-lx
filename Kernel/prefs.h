@@ -164,46 +164,46 @@ public:
 	void WipePreferenceFile();
 	void WipeDangerousPrefs();
 
-	BOOL DeclareSection(TCHAR *Section, UINT32 InitialSize);
+	BOOL DeclareSection(LPCTCHAR Section, UINT32 InitialSize);
 
-	BOOL DeclarePref(TCHAR *Section, TCHAR *Pref,
+	BOOL DeclarePref(LPCTCHAR Section, LPCTCHAR Pref,
 					 INT32 *PrefVar, INT32 Min = INT_MIN, INT32 Max = INT_MAX);
 
-	BOOL DeclarePref(TCHAR *Section, TCHAR *Pref,
+	BOOL DeclarePref(LPCTCHAR Section, LPCTCHAR Pref,
 					 UINT32 *PrefVar, UINT32 Min = 0, UINT32 Max = UINT_MAX);
 
-	BOOL DeclarePref(TCHAR *Section, TCHAR *Pref,
+	BOOL DeclarePref(LPCTCHAR Section, LPCTCHAR Pref,
 					 double *PrefVar, double Min = DBL_MIN, double Max = DBL_MAX);
 
-	BOOL DeclarePref(TCHAR *Section, TCHAR *Pref, StringBase *PrefVar);
+	BOOL DeclarePref(LPCTCHAR Section, LPCTCHAR Pref, StringBase *PrefVar);
 
 	// These next functions allow the preferences to be read/written by other
 	// people than the owner e.g. the application options dialog box
 
-	BOOL GetPrefValue(TCHAR *Section, TCHAR *Pref, INT32 *PrefVar);
-	BOOL GetPrefValue(TCHAR *Section, TCHAR *Pref, UINT32 *PrefVar);
-	BOOL GetPrefValue(TCHAR *Section, TCHAR *Pref, double *PrefVar);
+	BOOL GetPrefValue(LPCTCHAR Section, LPCTCHAR Pref, INT32 *PrefVar);
+	BOOL GetPrefValue(LPCTCHAR Section, LPCTCHAR Pref, UINT32 *PrefVar);
+	BOOL GetPrefValue(LPCTCHAR Section, LPCTCHAR Pref, double *PrefVar);
 
-	BOOL SetPrefValue(TCHAR *Section, TCHAR *Pref, INT32 *PrefVar);
-	BOOL SetPrefValue(TCHAR *Section, TCHAR *Pref, UINT32 *PrefVar);
-	BOOL SetPrefValue(TCHAR *Section, TCHAR *Pref, double *PrefVar);
+	BOOL SetPrefValue(LPCTCHAR Section, LPCTCHAR Pref, INT32 *PrefVar);
+	BOOL SetPrefValue(LPCTCHAR Section, LPCTCHAR Pref, UINT32 *PrefVar);
+	BOOL SetPrefValue(LPCTCHAR Section, LPCTCHAR Pref, double *PrefVar);
 
-	BOOL SetPrefDirect(TCHAR *Section, TCHAR *Pref, const TCHAR *pValue, BOOL Force = FALSE);
-	BOOL SetPrefDirect(TCHAR *Section, TCHAR *Pref, PreferenceType Type, PrefData Data);
-	BOOL SetPrefDirect(TCHAR *Section, TCHAR *Pref, INT32 *pValue);
-	BOOL SetPrefDirect(TCHAR *Section, TCHAR *Pref, UINT32 *pValue);
-	BOOL SetPrefDirect(TCHAR *Section, TCHAR *Pref, double *pValue);
+	BOOL SetPrefDirect(LPCTCHAR Section, LPCTCHAR Pref, const TCHAR *pValue, BOOL Force = FALSE);
+	BOOL SetPrefDirect(LPCTCHAR Section, LPCTCHAR Pref, PreferenceType Type, PrefData Data);
+	BOOL SetPrefDirect(LPCTCHAR Section, LPCTCHAR Pref, INT32 *pValue);
+	BOOL SetPrefDirect(LPCTCHAR Section, LPCTCHAR Pref, UINT32 *pValue);
+	BOOL SetPrefDirect(LPCTCHAR Section, LPCTCHAR Pref, double *pValue);
 
-	BOOL GetPrefDirect(TCHAR *Section, TCHAR *Pref, StringBase *pValue);
-	BOOL GetPrefDirect(TCHAR *Section, TCHAR *Pref, PreferenceType Type, PrefData Data);
-	BOOL GetPrefDirect(TCHAR *Section, TCHAR *Pref, INT32 *pValue);
-	BOOL GetPrefDirect(TCHAR *Section, TCHAR *Pref, UINT32 *pValue);
-	BOOL GetPrefDirect(TCHAR *Section, TCHAR *Pref, double *pValue);
+	BOOL GetPrefDirect(LPCTCHAR Section, LPCTCHAR Pref, StringBase *pValue);
+	BOOL GetPrefDirect(LPCTCHAR Section, LPCTCHAR Pref, PreferenceType Type, PrefData Data);
+	BOOL GetPrefDirect(LPCTCHAR Section, LPCTCHAR Pref, INT32 *pValue);
+	BOOL GetPrefDirect(LPCTCHAR Section, LPCTCHAR Pref, UINT32 *pValue);
+	BOOL GetPrefDirect(LPCTCHAR Section, LPCTCHAR Pref, double *pValue);
 
 private:
 	// Used to cache the section object when declaring preferences.
 	PreferenceSection *CurrentSection;
-	PreferenceSection *GetSection(TCHAR *SectionName);
+	PreferenceSection *GetSection(LPCTCHAR SectionName);
 
 	// Link to the OIL layer
 	OILPreferences *OILPrefs;

@@ -893,8 +893,16 @@ bool CCamApp::OnInit()
 	// Create the document manager and register our doc template
 	m_docManager = std::auto_ptr<wxDocManager>( new wxDocManager() );
 
-	wxDocTemplate	   *pDocTemplate;
-	pDocTemplate = new CCamDocTemplate(
+
+	// #define TODO(x) __pragma(message("TODO: "_STR(x) " :: " __FILE__ "@" STR(__LINE__)))
+
+
+//in code somewhere
+#define DO_PRAGMA(x) _Pragma (#x)
+#define TODO(x) DO_PRAGMA(message ("TODO - " #x))
+	TODO("Creating a new CCamDocTemplate seems to do nothing.")
+
+	new CCamDocTemplate(
 		m_docManager.get(), wxT("Xara"), wxT("*.xar;*.web"), wxT(""), wxT("xar"), wxT("Xara document"),
 		wxT("Text View"),
 		CLASSINFO(CCamDoc),

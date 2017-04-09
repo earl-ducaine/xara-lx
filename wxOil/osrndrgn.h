@@ -1,7 +1,7 @@
 // $Id: osrndrgn.h 1282 2006-06-09 09:46:49Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
- 
+
                Xara LX, a vector drawing and manipulation program.
                     Copyright (C) 1993-2006 Xara Group Ltd.
        Copyright on certain contributions may be held in joint with their
@@ -32,7 +32,7 @@ ADDITIONAL RIGHTS
 
 Conditional upon your continuing compliance with the GNU General Public
 License described above, Xara Group Ltd grants to you certain additional
-rights. 
+rights.
 
 The additional rights are to use, modify, and distribute the software
 together with the wxWidgets library, the wxXtra library, and the "CDraw"
@@ -173,7 +173,7 @@ public:
 				See RenderRegion notes for more general details of this class.
 
 ********************************************************************************************/
-        
+
 class CCAPI OSRenderRegion : public RenderRegion
 {
 	CC_DECLARE_DYNAMIC(OSRenderRegion)
@@ -181,8 +181,8 @@ class CCAPI OSRenderRegion : public RenderRegion
 public:
 	// Construction and creation
 	// This should always be used to create OSRenderRegions
-	static RenderRegion* Create(DocRect ClipRegion, 
-								Matrix ConvertMatrix, 
+	static RenderRegion* Create(DocRect ClipRegion,
+								Matrix ConvertMatrix,
 								FIXED16 ViewScale,
 								RenderType rType,
 								View* pView = NULL,
@@ -197,7 +197,7 @@ public:
 
 	virtual BOOL AttachDevice(View*, wxDC*, Spread* SpreadToAttach = NULL, bool fOwned = false );
 	virtual BOOL InitDevice();
-	
+
 	// Functions called as rendering starts and stops
 	BOOL StartRender();
 	BOOL StopRender();
@@ -217,7 +217,7 @@ public:
 	void DrawBlob(DocCoord p, BlobType type);
 
 	void DrawBitmap(const DocCoord &Point, KernelBitmap* pBitmap);
-	void DrawBitmap(const DocCoord &Point, UINT32 BitmapID, UINT32 ToolID = NULL);
+	void DrawBitmap(const DocCoord &Point, UINT32 BitmapID, UINT32 ToolID = 0);
 	BOOL DrawTransformedBitmap(NodeBitmap *pNodeBitmap);
 
 	void DrawBitmapBlob(const DocCoord &Point, KernelBitmap* BlobShape);
@@ -228,10 +228,10 @@ public:
 	// Function to draw a bitmap into the render region using a mask, and
 	// and equivalent function to do the same, only colour separating it as it goes
 	// The Separated version is called by this one if colour seps are enabled
-	virtual SlowJobResult DrawMaskedBitmap(const DocRect &Rect, KernelBitmap* pBitmap, 
+	virtual SlowJobResult DrawMaskedBitmap(const DocRect &Rect, KernelBitmap* pBitmap,
 								  		   MaskedRenderRegion* pMask, ProgressDisplay *Progress);
 protected:
-	virtual SlowJobResult DrawSeparatedMaskedBitmap(const DocRect &Rect, KernelBitmap* pBitmap, 
+	virtual SlowJobResult DrawSeparatedMaskedBitmap(const DocRect &Rect, KernelBitmap* pBitmap,
 								  		   MaskedRenderRegion* pMask, ProgressDisplay *Progress);
 
 public:
@@ -247,7 +247,7 @@ public:
 	virtual BOOL RenderChar(WCHAR ch, Matrix* pMatrix);
 
 	// Conversion functions
-	static WinRect DocRectToWin( View *pView, const Matrix& RenderMatrix, 
+	static WinRect DocRectToWin( View *pView, const Matrix& RenderMatrix,
 								 const DocRect& docrect,
 				  				 INT32 leftshift, INT32 topshift, INT32 rightshift, INT32 bottomshift,
 				  				 BOOL MightClip = FALSE);
@@ -281,14 +281,14 @@ public:
 	virtual void GetRenderRegionCaps(RRCaps* pCaps);
 
 protected:
-	
+
 	static INT32 HitTestRadius;				// how close a click must be to hit-detect
 
 	// Constructor (protected as you should use Create() )
 	OSRenderRegion(DocRect ClipRegion, Matrix ConvertMatrix, FIXED16 ViewScale = 1);
 
 	// Various startup and shutdown functions
-	
+
 	void InitClipping();
 	void DeInitClipping();
 
@@ -306,7 +306,7 @@ protected:
 	WinCoord DocCoordToWin(const DocCoord& DocPoint);
 	WinRect DocRectToWin( const DocRect& docrect, INT32 leftshift, INT32 topshift,
 						  INT32 rightshift, INT32 bottomshift, BOOL MightClip = FALSE)
-						{ return DocRectToWin(RenderView, RenderMatrix, docrect, 
+						{ return DocRectToWin(RenderView, RenderMatrix, docrect,
 											  leftshift, topshift,
 											  rightshift, bottomshift, MightClip ); }
 
@@ -332,7 +332,7 @@ protected:
 	void CreateNewBrush();
 	void SelectNewBrush();
 
-	BOOL SelectNewFont(WORD Typeface, BOOL Bold, BOOL Italic, 
+	BOOL SelectNewFont(WORD Typeface, BOOL Bold, BOOL Italic,
 					   MILLIPOINT Width, MILLIPOINT Height, ANGLE Rotation);
 
 	void MakeDashType(DashRec&, DashType*);
@@ -394,7 +394,7 @@ protected:
 
 	// cache for EOR colour
 	static EORCacheClass EORCache;
-	
+
 	INT32 InsertPos;
 
 	// The size of a pixel

@@ -1,7 +1,7 @@
 // $Id: camview.h 1688 2006-08-10 12:05:20Z gerry $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
- 
+
                Xara LX, a vector drawing and manipulation program.
                     Copyright (C) 1993-2006 Xara Group Ltd.
        Copyright on certain contributions may be held in joint with their
@@ -32,7 +32,7 @@ ADDITIONAL RIGHTS
 
 Conditional upon your continuing compliance with the GNU General Public
 License described above, Xara Group Ltd grants to you certain additional
-rights. 
+rights.
 
 The additional rights are to use, modify, and distribute the software
 together with the wxWidgets library, the wxXtra library, and the "CDraw"
@@ -144,7 +144,7 @@ enum MouseOverRulerHit
 				system.  It is derived from the wx class wxView, which
 				provides comprehensive methods for managing the client area
 				of a window.
-				
+
 				On creation, a CCamView asks its Document to provide a pointer
 				to the DocView that is to be associated with this object.
 				Once that link has been made, any changes in the state of the
@@ -204,7 +204,7 @@ public:
 	virtual void AllocateDC() const;
 	virtual void DoneWithDC() const;
 	void GetClientSize(/* TYPENOTE: Correct */ int * width, /*TYPENOTE: Correct */ int * height) const;
-	
+
 	virtual void OnDraw( wxDC *pDc );
 PORTNOTE("printing", "Disabled CCamView::OnPreparePrinting")
 #ifndef EXCLUDE_FROM_XARALX
@@ -259,7 +259,7 @@ public:
 	void SetWorkAreaExtent(const WorkRect& area, BOOL redraw = TRUE);
 	void GetScrollOffset(WorkCoord* pOffset) const;
 	void SetScrollOffset(const WorkCoord& pos, BOOL redraw = TRUE);
-	void ShowScrollers(BOOL Show); 
+	void ShowScrollers(BOOL Show);
 	void ShowRulers(BOOL Show);
 	WorkRect GetMaxScrollRect() const;
 
@@ -308,7 +308,7 @@ public:
 
 	// This sets the output parameter to the current mouse position within this
 	// ScreenView.  If the cursor isn't within the view it returns FALSE.
-	BOOL GetCurrentMousePos(OilCoord* pMousePos) const;
+	BOOL GetCurrentMousePos(OilCoord* pMousePos);
 
 	BOOL CreateDragTarget(DragInformation * DragInfo);
 
@@ -380,7 +380,7 @@ protected:
 
 	BOOL DragKeepAccuracy;				// Used to control drag responsiveness
 
-	BOOL AutoScrollExcludeRulers;		// Flag used to extend the autoscroll region to 
+	BOOL AutoScrollExcludeRulers;		// Flag used to extend the autoscroll region to
 										// include rulers - allows guidelines to be deleted
 
 	ClickType		LastClickType;		// click type of last START_DRAG
@@ -434,7 +434,7 @@ protected:
 
 	static BOOL DefaultScrollersState;
 	static BOOL DefaultRulersState;
-	static BOOL UseVisibleDefaults; 
+	static BOOL UseVisibleDefaults;
 
 	static INT32 DragLatency;			// mouse must move >= this for a drag, except:
 	static INT32 DragDelay;				// delay before we start a drag anyway, even if
@@ -470,7 +470,7 @@ public:
 	Spread* 	pSpread;
 	DocCoord 	DropPos;
 
-	ObjectDragTarget 	TargetHit; 
+	ObjectDragTarget 	TargetHit;
 	NodeRenderableInk* 	pObjectHit;
 };
 
@@ -481,7 +481,7 @@ public:
 	Author:		Chris_Snook (Xara Group Ltd) <camelotdev@xara.com>.
 	Created:	2/1/95
 
-	Purpose:	An instantiation of this class is created by each entity which wishes to 
+	Purpose:	An instantiation of this class is created by each entity which wishes to
 				provide a 'destination' to which the mouse can go to complete a drag.
 				WinoilDragTargets are used as a base class from which to derive drag targets
 				for WINOIL entities (an optional HWND)
@@ -491,7 +491,7 @@ public:
 
 				To remove a drag target at any time, destruct it - it automatically deregisters
 				and cleans up.
-				
+
 	SeeAlso:	DragManagerOp::StartDrag; DragInformation; DragTarget
 
 	Documentation:	Docs\Specs\DragMan.doc
@@ -501,21 +501,21 @@ class ViewDragTarget : public OilDragTarget
 {
 friend class DragManagerOp;
 friend class ColourDragInformation;
-	
+
 CC_DECLARE_DYNAMIC(ViewDragTarget)
 
 
 public:	// Public interface
-	
+
 	ViewDragTarget( wxWindow *TheWindow, wxRect *ClientArea = NULL, DragInformation* pDragInfo = NULL);
-	
+
 	virtual UINT32 GetCursorID();
 	virtual BOOL GetStatusLineText(String_256 * TheText);
 
 	virtual BOOL GetDropInfo(PageDropInfo*);
 
 protected:
-	
+
 	// Process a drag-related event
 	BOOL ProcessEvent(DragEventType Event,
 						DragInformation *pDragInfo,

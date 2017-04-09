@@ -472,22 +472,22 @@ public:
 	void WipeDangerousPrefs()
 		{ CamelotPrefs->WipeDangerousPrefs (); };
 
-	BOOL DeclareSection(LPTCHAR Section, UINT32 InitialSize)
+	BOOL DeclareSection(LPCTCHAR Section, UINT32 InitialSize)
 		{ return CamelotPrefs->DeclareSection(Section, InitialSize); };
 
-	BOOL DeclarePref(LPTCHAR Section, const LPTCHAR Pref,
+	BOOL DeclarePref(LPCTCHAR Section, const LPCTCHAR Pref,
 					 INT32 *PrefVar, INT32 Min = INT_MIN, INT32 Max = INT_MAX)
 		{ return CamelotPrefs->DeclarePref(Section, Pref, PrefVar, Min, Max); };
 
-	BOOL DeclarePref(LPTCHAR Section, const LPTCHAR Pref,
+	BOOL DeclarePref(LPCTCHAR Section, const LPCTCHAR Pref,
 					 UINT32 *PrefVar, UINT32 Min = 0, UINT32 Max = UINT_MAX)
 		{ return CamelotPrefs->DeclarePref(Section, Pref, PrefVar, Min, Max); };
 
-	BOOL DeclarePref(LPTCHAR Section, const LPTCHAR Pref,
+	BOOL DeclarePref(LPCTCHAR Section, const LPCTCHAR Pref,
 					 double *PrefVar, double Min = DBL_MIN, double Max = DBL_MAX)
 		{ return CamelotPrefs->DeclarePref(Section, Pref, PrefVar, Min, Max); };
 
-	BOOL DeclarePref(LPTCHAR Section, const LPTCHAR Pref, StringBase *PrefVar)
+	BOOL DeclarePref(LPCTCHAR Section, const LPCTCHAR Pref, StringBase *PrefVar)
 		{ return CamelotPrefs->DeclarePref(Section, Pref, PrefVar); };
 
 	// Used by the application options/preferences dialog box
@@ -507,22 +507,22 @@ public:
 
 	// Used for direct partying on the preference file - mainly used for 'dynamic'
 	// preferences that are interrogated on the fly as and when required.
-	BOOL SetPrefDirect(LPTCHAR Section, LPTCHAR Pref, const TCHAR *pValue, BOOL Force = FALSE)
+	BOOL SetPrefDirect(LPCTCHAR Section, LPCTCHAR Pref, const TCHAR *pValue, BOOL Force = FALSE)
 		{ return CamelotPrefs->SetPrefDirect(Section, Pref, pValue, Force); }
-	BOOL SetPrefDirect(LPTCHAR Section, LPTCHAR Pref, INT32 *pValue)
+	BOOL SetPrefDirect(LPCTCHAR Section, LPCTCHAR Pref, INT32 *pValue)
 		{ return CamelotPrefs->SetPrefDirect(Section, Pref, pValue); }
-	BOOL SetPrefDirect(LPTCHAR Section, LPTCHAR Pref, UINT32 *pValue)
+	BOOL SetPrefDirect(LPCTCHAR Section, LPCTCHAR Pref, UINT32 *pValue)
 		{ return CamelotPrefs->SetPrefDirect(Section, Pref, pValue); }
-	BOOL SetPrefDirect(LPTCHAR Section, LPTCHAR Pref, double *pValue)
+	BOOL SetPrefDirect(LPCTCHAR Section, LPCTCHAR Pref, double *pValue)
 		{ return CamelotPrefs->SetPrefDirect(Section, Pref, pValue); }
 
-	BOOL GetPrefDirect(LPTCHAR Section, LPTCHAR Pref,StringBase *pValue)
+	BOOL GetPrefDirect(LPCTCHAR Section, LPCTCHAR Pref,StringBase *pValue)
 		{ return CamelotPrefs->GetPrefDirect(Section, Pref, pValue); }
-	BOOL GetPrefDirect(LPTCHAR Section, LPTCHAR Pref,INT32 *pValue)
+	BOOL GetPrefDirect(LPCTCHAR Section, LPCTCHAR Pref,INT32 *pValue)
 		{ return CamelotPrefs->GetPrefDirect(Section, Pref, pValue); }
-	BOOL GetPrefDirect(LPTCHAR Section, LPTCHAR Pref,UINT32 *pValue)
+	BOOL GetPrefDirect(LPCTCHAR Section, LPCTCHAR Pref,UINT32 *pValue)
 		{ return CamelotPrefs->GetPrefDirect(Section, Pref, pValue); }
-	BOOL GetPrefDirect(LPTCHAR Section, LPTCHAR Pref,double *pValue)
+	BOOL GetPrefDirect(LPCTCHAR Section, LPCTCHAR Pref,double *pValue)
 		{ return CamelotPrefs->GetPrefDirect(Section, Pref, pValue); }
 
 	BOOL GetConvertToEditableShapesDPI (INT32* pValue);
