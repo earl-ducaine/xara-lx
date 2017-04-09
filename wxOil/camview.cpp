@@ -1,7 +1,7 @@
 // $Id: camview.cpp 1743 2006-09-06 09:32:51Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
- 
+
                Xara LX, a vector drawing and manipulation program.
                     Copyright (C) 1993-2006 Xara Group Ltd.
        Copyright on certain contributions may be held in joint with their
@@ -32,7 +32,7 @@ ADDITIONAL RIGHTS
 
 Conditional upon your continuing compliance with the GNU General Public
 License described above, Xara Group Ltd grants to you certain additional
-rights. 
+rights.
 
 The additional rights are to use, modify, and distribute the software
 together with the wxWidgets library, the wxXtra library, and the "CDraw"
@@ -179,12 +179,12 @@ END_EVENT_TABLE()
 				handler.
 
 				Updates the CCamView population counter. Called from somewhere deep
-				inside MFC.				
+				inside MFC.
 	Errors:		-
 	Scope:	    Protected.
 	SeeAlso:    CCamView::OnCreate(); CCamView::~CCamView()
 
-**********************************************************************************************/ 
+**********************************************************************************************/
 
 CCamView::CCamView()
 {
@@ -224,7 +224,7 @@ CCamView::CCamView()
 	FirstClickButton = 0;
 	DragKeepAccuracy = TRUE;
 	AutoScrollExcludeRulers = FALSE;
-	
+
 	// Bump the population.
 	PopCount++;
 
@@ -268,7 +268,7 @@ CCamView::CCamView()
 	Scope:		Public
 	SeeAlso:	CCamView::CCamView()
 
-**********************************************************************************************/ 
+**********************************************************************************************/
 
 CCamView::~CCamView()
 {
@@ -278,7 +278,7 @@ CCamView::~CCamView()
 
 	if(pDocView != NULL)
 		delete pDocView;
-	
+
 	if(Status != NULL)
 		delete Status;
 
@@ -313,10 +313,10 @@ PORTNOTE("other","ScreenCamView::OnCreate - Removed scroller corner usage")
 	VRuler = new OILVerticalRuler;
 	OGadget = new OriginGadget;
 	if (!RenderWindow
-		|| !HScrollBar 
-		|| !VScrollBar 
+		|| !HScrollBar
+		|| !VScrollBar
 #ifndef EXCLUDE_FROM_XARALX
-		|| !Corner 
+		|| !Corner
 #endif // EX_LX
 		|| !HRuler ||!VRuler	||!OGadget
 		)
@@ -324,7 +324,7 @@ PORTNOTE("other","ScreenCamView::OnCreate - Removed scroller corner usage")
 		Error::SetError(_R(IDE_CREATE_VIEW_FAILED), 0);
 		InformError();
 		return false;
-	} 
+	}
 
     m_pFrame = wxGetApp().CreateChildFrame( pDoc, this );
     m_pFrame->SetTitle(_T("DrawingView"));
@@ -362,7 +362,7 @@ PORTNOTE("other","ScreenCamView::OnCreate - Removed scroller corner usage")
 	VRuler->LinkToKernel(pRulers->GetpVerticalRuler());
 	ENSURE(pDocView != 0, "CCamView::ScreenView can't get a new DocView!");
 	pDocView->ConnectToOilView(this);
-	
+
 	// find the last view so we can use some of it's settings to create the new
 //	DocView * LastView = DocView::GetSelected();
 
@@ -370,7 +370,7 @@ PORTNOTE("other","ScreenCamView::OnCreate - Removed scroller corner usage")
 	pDocView->SetViewState(Status);
 
 ////////////////////////////////////////////////////////////////////////////////
-	
+
 	wxScreenDC dc;
 	wxSize pixsize=OSRenderRegion::GetFixedDCPPI(dc);
 
@@ -392,12 +392,12 @@ PORTNOTE("other","ScreenCamView::OnCreate - Removed scroller corner usage")
 	GetFrame()->SetScrollbar(wxHORIZONTAL,0,x1,Status->WorkAreaExtent.hi.x-Status->WorkAreaExtent.lo.x,false);
 	GetFrame()->SetScrollbar(  wxVERTICAL,0,x2,Status->WorkAreaExtent.hi.y-Status->WorkAreaExtent.lo.y,false);
 */
- 	
+
  	ShowScrollers(DefaultScrollersState);
 	ShowRulers(DefaultRulersState);
 
 ///////////////////////////////////////////////////////////////////////////////
-	
+
 	// Register for WM_DROPFILES messages
 //	DragAcceptFiles(TRUE);
 
@@ -413,11 +413,11 @@ PORTNOTE("other","ScreenCamView::OnCreate - Removed scroller corner usage")
     m_pFrame->Show(true);
 
 	// This has been removed as it causes the problem where loaded documents
-	// don't render correctly if a wxYield happens before the document has 
-	// finished loading.  It may be possible to rewrite the handling in this 
-	// class so that the order of activation and OnInitialUpdate is not important 
+	// don't render correctly if a wxYield happens before the document has
+	// finished loading.  It may be possible to rewrite the handling in this
+	// class so that the order of activation and OnInitialUpdate is not important
 	// but efforts so far have been in vain.
-	// The view seems to be activated correctly in any case so hopefully it 
+	// The view seems to be activated correctly in any case so hopefully it
 	// should not be necessary
 //	Activate(true);
 
@@ -435,16 +435,16 @@ bool CCamView::OnClose( bool fDeleteWindow /*= TRUE*/ )
 
 	if( !GetDocument()->Close() )
 		return false;
-	
+
 	SetFrame( (wxFrame *)NULL );
-	
+
 	Activate( false );
 
 	if( fDeleteWindow )
 	{
 		TRACEUSER("Gerry", _T("CCamView::OnClose deleting frame at 0x%08x\n"), m_pFrame);
 		m_pFrame->Show( false );
-		
+
 		delete m_pFrame;
 		m_pFrame = NULL;
 
@@ -529,11 +529,11 @@ BOOL CCamView::ReadViewPrefs()
 				a CCamDoc.
 	Scope:		Public
 	SeeAlso:	class CCamDoc; DocView::GetDocument
-**********************************************************************************************/ 
+**********************************************************************************************/
 
 CCamDoc* CCamView::GetDocument() const
 {
-	ENSURE(	m_viewDocument->IsKindOf( CLASSINFO(CCamDoc) ), 
+	ENSURE(	m_viewDocument->IsKindOf( CLASSINFO(CCamDoc) ),
 			"CCamView::GetDocument: Document is not a Camelot document");
 	return (CCamDoc *)m_viewDocument;
 }
@@ -548,14 +548,14 @@ CCamDoc* CCamView::GetDocument() const
 	Inputs:		-
 	Outputs:	-
 	Returns:	Success/Fail
-	Purpose:	Creates a new attached DocView - overridden in RalphView 
+	Purpose:	Creates a new attached DocView - overridden in RalphView
 				to avoid the no Document problem.
-	
-**********************************************************************************************/ 
+
+**********************************************************************************************/
 
 BOOL CCamView::CreateNewDocView()
 {
-	
+
 	Document* KernelDoc = GetDocument()->GetKernelDoc();
 	pDocView = KernelDoc->GetNewDocView();
 	return TRUE;
@@ -611,7 +611,7 @@ ViewState* CCamView::SetViewState(ViewState* pvs)
 	Created:	15/6/96
 	Inputs:		-
 	Purpose:	Set the  View and Document current
-	SeeAlso:	
+	SeeAlso:
 ********************************************************************************************/
 
 void CCamView::SetCurrentStates()
@@ -698,7 +698,7 @@ void CCamView::AllocateDC() const
 	Scope:		Public
 	SeeAlso:	class CRendWnd
 
-**********************************************************************************************/ 
+**********************************************************************************************/
 
 void CCamView::GetClientSize(int * pWidth, int * pHeight) const /* TYPENOTE: Correct */
 {
@@ -740,7 +740,7 @@ void DumpRect( wxDC *pDC, WinRect *lpRect, TCHAR *type )
 
 	if (type)
 	{
-		TRACE( _T("%s (%ld, %ld) [%ld, %ld]"), type, lpRect->GetLeft(), lpRect->GetTop(), 
+		TRACE( _T("%s (%ld, %ld) [%ld, %ld]"), type, lpRect->GetLeft(), lpRect->GetTop(),
 			lpRect->GetWidth(), lpRect->GetHeight() );
 	}
 }
@@ -765,7 +765,7 @@ void DumpRect( wxDC *pDC, WinRect *lpRect, TCHAR *type )
 	Scope:		Public
 	SeeAlso:	CView::OnPrepareDC(); CCamView::OnRenderView(); DocView::OnDraw()
 
-**********************************************************************************************/ 
+**********************************************************************************************/
 
 void CCamView::OnDraw( wxDC* pDC )
 {
@@ -773,7 +773,7 @@ void CCamView::OnDraw( wxDC* pDC )
 
 	if (pDocView==NULL)
 		return;
-		
+
 	// Set the current DocView, ie. the DocView being worked upon. (and the Doc!)
 	pDocView->SetCurrent();
 	(pDocView->GetDoc())->SetCurrent();
@@ -819,7 +819,7 @@ void CCamView::OnDraw( wxDC* pDC )
 
 			OilRect oRect = clip.ToOil( pDocView );
 //			TRACEUSER("Gerry", _T("OilRect = (%d, %d) - (%d, %d)\n"), oRect.lo.x, oRect.lo.y, oRect.hi.x, oRect.hi.y);
-			
+
 			pDocView->OnDraw( pDC, oRect );
 
 			upd ++ ;
@@ -847,7 +847,7 @@ void CCamView::OnDraw( wxDC* pDC )
 	Scope:		Protected
 	SeeAlso:	class CRendWnd; CRenderWnd::OnPaint(); ScreenCamView::OnDraw();
 
-**********************************************************************************************/ 
+**********************************************************************************************/
 
 LRESULT CCamView::OnRenderView( WPARAM, LPARAM lp )
 {
@@ -985,7 +985,7 @@ void CCamView::OnFilePrint()
 	// must be set (did you remember to call DoPreparePrinting?)
 
 	// Let's see if we can start printing...
-	if ((!pPrintInfo->GetDC()) || 
+	if ((!pPrintInfo->GetDC()) ||
 		!PrintMonitor::StartPrintJob(pPrintInfo->GetDC()))
 	{
 		TRACEUSER( USERNAME, _T("StartPrintJob() screwed up\n"));
@@ -1121,7 +1121,7 @@ PORTNOTE("printing", "Disable banding call");
 	{
 		BOOL BandInfoSupported = FALSE;
 		WORD wEscape = BANDINFO;
-		if (!DoPostScript && 
+		if (!DoPostScript &&
 			PrintMonitor::PrintWithDriverBands &&
 			dcPrint.Escape(QUERYESCSUPPORT, sizeof(WORD), (LPCSTR) &wEscape, NULL) > 0)
 		{
@@ -1135,18 +1135,18 @@ PORTNOTE("printing", "Disable banding call");
 	// MRH 11/9/00 - Major rewrite of the below david code. Fixed major logic problem and
 	// cut out the regeneratenodes function as this is not required!
 	BevelTools::GetAllNodesUnderNode(pSpread, &CompoundNodeList, CC_RUNTIME_CLASS(NodeCompound));
-	
+
 	dpi = OSRenderRegion::GetFixedDCPPI(*pPrintInfo->GetDC()).GetWidth();
 
 	if (pPrintControl)
 		dpi = (double)pPrintControl->GetDotsPerInch();
-	
+
 	pItem = (NodeListItem *)CompoundNodeList.GetHead();
-	
+
 	while (pItem)
 	{
 		pCompound = (NodeCompound *)pItem->pNode;
-		
+
 		if (pCompound)
 		{
 			if (pCompound->RegenerateForPrinting())
@@ -1155,10 +1155,10 @@ PORTNOTE("printing", "Disable banding call");
 				pCompound->SetPrinting(TRUE);
 			}
 		}
-		
+
 		pItem = (NodeListItem *)CompoundNodeList.GetNext(pItem);
 	}
-	
+
 	TRACEUSER( "DavidM", _T("Beginning print dpi %d\n"), dpi);
 
 	// Loop around for each physical page ("paper") we have to print. Note that now we may print out
@@ -1194,7 +1194,7 @@ PORTNOTE("printing", "Disable banding call");
 			}
 			goto ExitPrint;
 		}
-		
+
 		// Loop around for each logical plate we have to print - this generates a piece of physical
 		// paper out of the printer on each pass.
 		while (pPrintInfo->MorePlates())
@@ -1213,7 +1213,7 @@ PORTNOTE("printing", "Disable banding call");
 			}
 
 			// Now, prepare this paper (plate/page) for printing
-			TRACEUSER( USERNAME, _T("Starting physical page\n"));			
+			TRACEUSER( USERNAME, _T("Starting physical page\n"));
 //			OnPrepareDC(pPrintInfo->GetDC(), pPrintInfo);
 
 			// check for end of print
@@ -1232,7 +1232,7 @@ PORTNOTE("printing", "Disable banding call");
 				Error::SetError(_R(IDE_PRINT_ERROR_SYSTEM));
 				pPrintInfo->EndPlatePrinting(pPrintView);
 				goto ExitPrint;
-			}				  
+			}
 
 			// Is it a PostScript printer?
 			if (DoPostScript)
@@ -1320,7 +1320,7 @@ PORTNOTE("printing", "Disable banding call");
 			}
 
 			TRACEUSER( USERNAME, _T("Ending physical page\n"));
-			
+
 			// End of page clean up.
 			// Note that we don't check for an error from EndPage() because due to
 			// a bug (in Windows/GDI) it returns -1 when using banding.
@@ -1333,14 +1333,14 @@ PORTNOTE("printing", "Disable banding call");
 				pPrintInfo->EndPlatePrinting(pPrintView);
 				goto ExitPrint;
 			}
-		
+
 			// Any more plates to print?, if so we need to print the plate as a complete new page.
 			// We set ReprintPaper so that the next pass tries to print the same "paper" (document page)
 			// again, but we've moved it on to the next plate (in SetNextPlate, above), so we'll actually
 			// be rendering a different plate the next time around.
 			if (pPrintInfo->MorePlates())
 				pPrintControl->ReprintPaper();
-		}	
+		}
 
 		// End the plate printing function
 		pPrintInfo->EndPlatePrinting(pPrintView);
@@ -1425,24 +1425,24 @@ PORTNOTE("printing", "Remove DOCINFO stuff");
 
 	// DMc restore the compound nodes dpi's
 	pItem = (NodeListItem *)CompoundNodeList.GetHead();
-	
+
 	while (pItem)
 	{
 		pCompound = (NodeCompound *)pItem->pNode;
-		
+
 		if (pCompound)
 		{
 			if (pCompound->RegenerateForPrinting())
 			{
 				pCompound->SetDPI(96.0);
 				pCompound->SetPrinting(FALSE);
-			
+
 				pCompound->RegenerateNode(NULL, FALSE);
 			}
 		}
-		
+
 		pItem = (NodeListItem *)CompoundNodeList.GetNext(pItem);
-	}	
+	}
 
 	CompoundNodeList.DeleteAll();
 
@@ -1465,7 +1465,7 @@ PORTNOTE("printing", "Remove DOCINFO stuff");
 
 /********************************************************************************************
 
->	BOOL ScreenCamView::PrintPaper(CDC *pPrintDC, 
+>	BOOL ScreenCamView::PrintPaper(CDC *pPrintDC,
 								   CCPrintInfo *pPrintInfo,
 								   PrintControl *pPrintControl)
 
@@ -1485,8 +1485,8 @@ PORTNOTE("printing", "Remove DOCINFO stuff");
 ********************************************************************************************/
 //	WEBSTER-ranbirr-12/11/96
 #ifndef WEBSTER
-BOOL CCamView::PrintPaper(CNativeDC *pPrintDC, 
-							CCPrintInfo *pPrintInfo, 
+BOOL CCamView::PrintPaper(CNativeDC *pPrintDC,
+							CCPrintInfo *pPrintInfo,
 							PrintControl *pPrintControl)
 {
 //	TRACEUSER( "Tim", _T("PrintPaper() started\n"));
@@ -1624,7 +1624,7 @@ BOOL CCamView::PrintPaper(CNativeDC *pPrintDC,
 						   patch on the DC.
 				pPrintInfo - the print info object, which specifies the window onto the
 							 page/DC that we can print into.
-	Returns:	The intersection of the area of the current patch (as held in 
+	Returns:	The intersection of the area of the current patch (as held in
 				ScreenCamView::pPrintView->PatchInfo) and the printable area of the DC,
 				in WinCoords.
 	Purpose:	Works out which area of the paper to print on, given the current patch
@@ -1690,11 +1690,11 @@ WinRect CCamView::GetPrintClipRect(CNativeDC *pPrintDC, CCPrintInfo *pPrintInfo)
 	Created:	14/09/96
 	Inputs:		pPrintInfo - the print info object, which specifies the window onto the
 							 page/DC that we can print into.
-	Returns:	
+	Returns:
 	Purpose:	In order to locate crop marks / registration marks etc correctly, we need
 				to work out the bounds of all patches printed on a single sheet of paper.
 				This routine does just that.
-				
+
 ********************************************************************************************/
 //	WEBSTER-ranbirr-12/11/96
 #ifndef WEBSTER
@@ -1740,12 +1740,12 @@ void CCamView::EnumeratePagePatches(CCPrintInfo *pPrintInfo)
 			pMarksMan->AddPageRect(cliprect);
 		}
 	}
-	
+
 	// Get the marks manager to update its imagesetting rect
 	pMarksMan->SetImagesettingRect();
 	pMarksMan->SetBleed(bleed);
 	pMarksMan->SetEmulsionDown(emuldwn);
-	
+
 	// reprint this piece of paper so we dont upset the print system
 	pPrintInfo->ReprintPaper();
 
@@ -1771,7 +1771,7 @@ PORTNOTE("printing", "Disabled lots of printing code")
 	Scope:		Public
 	SeeAlso:	CView::DoPreparePrinting()
 
-**********************************************************************************************/ 
+**********************************************************************************************/
 
 BOOL CCamView::OnPreparePrinting(CPrintInfo* pInfo)
 {
@@ -1840,7 +1840,7 @@ BOOL CCamView::OnPreparePrinting(CPrintInfo* pInfo)
 	Scope:		Public
 	SeeAlso:	CView::OnFilePrintPreview(); CCamView::OnFilePrint()
 
-**********************************************************************************************/ 
+**********************************************************************************************/
 
 void CCamView::OnFilePrintPreview()
 {
@@ -1871,7 +1871,7 @@ void CCamView::OnFilePrintPreview()
 	Scope:		Public
 	SeeAlso:	class CRendWnd; CCamView::OnDraw()
 
-**********************************************************************************************/ 
+**********************************************************************************************/
 
 void CCamView::InvalidateView(const OilRect* pRect, BOOL updatenow)
 {
@@ -1882,7 +1882,7 @@ void CCamView::InvalidateView(const OilRect* pRect, BOOL updatenow)
 		// rectangle, after scaling and rounding, is invalidated.
 		WinRect	r = pRect->ToWin( pDocView );
 //		r.width++;
-//		r.height++;		
+//		r.height++;
        	GetRenderWindow()->Refresh( true, &r );
     }
 	else
@@ -1893,7 +1893,7 @@ void CCamView::InvalidateView(const OilRect* pRect, BOOL updatenow)
 		GetRenderWindow()->Refresh( true );
 		GetScrollOffset(&OldOffset);
 	}
-	
+
 	if (updatenow) GetRenderWindow()->Update();
 }
 
@@ -1915,13 +1915,13 @@ void CCamView::InvalidateView(const OilRect* pRect, BOOL updatenow)
 	Errors:	    ASSERTion failure if the ScreenView is already dragging.
 	Scope:		Public
 	SeeAlso:	CCamView::EndDrag(); CCamView::HandleDragEvent();
-                          
-**********************************************************************************************/ 
+
+**********************************************************************************************/
 
 BOOL CCamView::StartDrag(Operation* pOp, DragType type, BOOL KeepAccuracy)
 {
 	ENSURE(	pCurrentDragOp == 0, "CCamView::StartDrag: pCurrentDragOp is not zero");
-	
+
 	// This has been commented out as some screen drivers can not handle the mouse drifting
 	// off the top of the screen.
 	// Unbound mouse from the screen and set the current drag operation.  Note that under
@@ -1955,11 +1955,11 @@ BOOL CCamView::StartDrag(Operation* pOp, DragType type, BOOL KeepAccuracy)
 				restores the previous mouse cursor clipping rectangle (generally the screen).
 				Sets internal variables to indicate that ScreenView is not in "drag mode".
 				Kills the timer set in StartDrag().
-	Errors:		ASSERTion failure if ScreenView was not already in "drag mode".	
+	Errors:		ASSERTion failure if ScreenView was not already in "drag mode".
 	Scope:		Public
 	SeeAlso:	CCamView::StartDrag(); CCamView::HandleDragEvent()
 
-**********************************************************************************************/ 
+**********************************************************************************************/
 
 BOOL CCamView::EndDrag(Operation*)
 {
@@ -1989,7 +1989,7 @@ BOOL CCamView::EndDrag(Operation*)
 
 	// Kill the timer started in HandleDragEvent().
 	m_DragIdleTimer.Stop();
-	
+
 	return TRUE;
 }
 
@@ -2008,7 +2008,7 @@ BOOL CCamView::EndDrag(Operation*)
 	SeeAlso:	-
 ********************************************************************************************/
 
-BOOL CCamView::GetCurrentMousePos(OilCoord* pMousePos) const
+BOOL CCamView::GetCurrentMousePos(OilCoord* pMousePos)
 {
 	// Get the Windows screen coordinates of the mouse cursor.
 	// Convert from screen to window coordinates.
@@ -2045,7 +2045,7 @@ BOOL CCamView::GetCurrentMousePos(OilCoord* pMousePos) const
 	SeeAlso:	CCamView::GetWorkAreaExtent(); CScroller::SetPageSize();
 				CScroller::SetScrollRange(); class CRendWnd
 
-**********************************************************************************************/ 
+**********************************************************************************************/
 
 void CCamView::SetWorkAreaExtent(const WorkRect& area, BOOL redraw)
 {
@@ -2061,7 +2061,7 @@ void CCamView::SetWorkAreaExtent(const WorkRect& area, BOOL redraw)
 
 	// Should really do something about the redraw param here
 	// E.g. call the function that causes an immediate repaint of invalid areas
-	// However, until I see some obvious sign that this is ever necessary I'll 
+	// However, until I see some obvious sign that this is ever necessary I'll
 	// leave it commented out
 //	if (redraw)
 //	{
@@ -2084,10 +2084,10 @@ void CCamView::SetWorkAreaExtent(const WorkRect& area, BOOL redraw)
 	Scope:		Public
 	SeeAlso:	CCamView::SetScrollOffset(); CScroller::GetScrollPos()
 
-**********************************************************************************************/ 
+**********************************************************************************************/
 
 void CCamView::GetScrollOffset(WorkCoord* pOffset) const
-{	
+{
 //	TRACEUSER("Gerry", _T("CV::GetScrollOffset\n"));
 
 	FIXED16 PixelWidth,PixelHeight;
@@ -2123,7 +2123,7 @@ void CCamView::GetScrollOffset(WorkCoord* pOffset) const
 	Scope:		Public
 	SeeAlso:	CCamView::GetScrollOffset; CCamView::OnScrollerEvent()
 
-**********************************************************************************************/ 
+**********************************************************************************************/
 
 void CCamView::SetScrollOffset(const WorkCoord& pos, BOOL redraw)
 {
@@ -2183,7 +2183,7 @@ void CCamView::SetScrollOffset(const WorkCoord& pos, BOOL redraw)
 	Scope:		Protected
 	SeeAlso:	CCamView::SetThisFromViewState; CCamView::SetViewStateFromThis;
 				DocView::ViewStateChanged
-**********************************************************************************************/ 
+**********************************************************************************************/
 
 void CCamView::OnUpdate(wxView* sender, wxObject* hint)
 {
@@ -2231,7 +2231,7 @@ void CCamView::OnInitialUpdate()
 		pdv->ViewFlags.LogicalView 	   = pReadyMadeViewState->_LogicalView;
 		pdv->ViewFlags.GuidesSnap 	   = pReadyMadeViewState->_GuidesSnap;
 		pdv->ViewFlags.GuidesShow 	   = pReadyMadeViewState->_GuidesShow;
-		
+
 		// Make sure we set this view from the view-state, not the other way around.
 		pReadyMadeViewState = NULL;
 		Status->IsNewView = FALSE;
@@ -2362,7 +2362,7 @@ PORTNOTE("other","CCamView::OnInitialUpdate - code removed")
 		pDocView->SetPrevZoomOffset(wcPrev);
 	}
 
-#endif 
+#endif
 }
 
 
@@ -2374,7 +2374,7 @@ PORTNOTE("other","CCamView::OnInitialUpdate - code removed")
 	Created:	ages ago
 	Inputs:		A boolean which if TRUE means that this view is being activated, if FALSE
 				that this view is being deactivated; two pointers to the CView objects which
-				are being activated/deactivated. 
+				are being activated/deactivated.
 	Outputs:	Possibly changes the pointed-to views.
 	Returns:	-
 	Purpose:	Called by MFC when a view gains or loses the input focus, either due to the
@@ -2387,7 +2387,7 @@ PORTNOTE("other","CCamView::OnInitialUpdate - code removed")
 	Scope:		Protected
 	SeeAlso:	Pretty unique, this one, so I can't think of anything to put here.
 
-**********************************************************************************************/ 
+**********************************************************************************************/
 
 void CCamView::OnActivateView( bool bActivate, wxView* pActiveView, wxView* pDeactiveView )
 {
@@ -2401,7 +2401,7 @@ void CCamView::OnActivateView( bool bActivate, wxView* pActiveView, wxView* pDea
 
 	if (bActivate) SetCurrentStates();
 
-	Document* KernelDoc = NULL; 
+	Document* KernelDoc = NULL;
 	if (pDocView) KernelDoc = pDocView->GetDoc();
 
 	// MFC does some hidden stuff here . . .
@@ -2413,7 +2413,7 @@ void CCamView::OnActivateView( bool bActivate, wxView* pActiveView, wxView* pDea
 		// make sure the global preference reflects the current state
 		SetDefaultRulersState(Status->RulersVisible);
 		SetDefaultScrollersState(Status->ScrollersVisible);
-		
+
 		// Update our records of who is top-most and set the keyboard input focus to
 		// the rendering child window.
 		GetRenderWindow()->SetFocus();
@@ -2457,7 +2457,7 @@ void CCamView::OnActivateView( bool bActivate, wxView* pActiveView, wxView* pDea
 	SeeAlso:	CCamView::OnInitialUpdate; CCamView::SetThisFromViewState();
 				DocView::ViewStateChanged(); class ViewState
 
-**********************************************************************************************/ 
+**********************************************************************************************/
 
 void CCamView::SetViewStateFromThis() const
 {
@@ -2473,7 +2473,7 @@ void CCamView::SetViewStateFromThis() const
 	// Make sure the scale factor is accurate.
 	FIXED16 scale = pDocView->GetViewScale();
 	if (scale != Status->ViewScale) Status->ViewScale = scale;
-	
+
 	// Record the current scroller position.
 	WorkCoord temp;
 	GetScrollOffset(&temp);
@@ -2507,7 +2507,7 @@ PORTNOTE("other","Removed WM_TOPMOSTENQUIRY usage - is this really needed?")
 	Scope:	    Private
 	SeeAlso:	CCamView::SetViewStateFromThis(); CCamView::OnInitialUpdate()
 
-**********************************************************************************************/ 
+**********************************************************************************************/
 
 void CCamView::SetThisFromViewState()
 {
@@ -2644,8 +2644,8 @@ void CCamView::UpdateViewPosition() const
 	// client area of its parent.
 	WINDOWPLACEMENT wp;
 	wp.length = sizeof(wp);
-	
-	
+
+
 	//ENSURE(pframewnd != NULL, "Found a ScreenView without a frame window?!?");
 	if(pframewnd)
 		pframewnd->GetWindowPlacement(&wp);
@@ -2697,7 +2697,7 @@ void CCamView::ShowScrollers(BOOL Show)
 	HScrollBar->Show(bShow);
 	Status->ScrollersVisible = Show;
 
-	// call OnSize directly to force new layout	
+	// call OnSize directly to force new layout
 	wxSize Size;
 	m_pFrame->GetSize(&Size.x, &Size.y);
 	TRACEUSER("Gerry", _T("Force an OnSize here (%d, %d)\n"), Size.x, Size.y);
@@ -2721,7 +2721,7 @@ void CCamView::ShowScrollers(BOOL Show)
 	SeeAlso:	-
 ********************************************************************************************/
 
-void CCamView::ShowRulers(BOOL Show) 
+void CCamView::ShowRulers(BOOL Show)
 {
 // WEBSTER - markn 15/1/97
 // No rulers in Webster
@@ -2742,7 +2742,7 @@ void CCamView::ShowRulers(BOOL Show)
 
 	Status->RulersVisible = Show;
 
-	// call OnSize directly to force new layout	
+	// call OnSize directly to force new layout
 	wxSize Size=wxDefaultSize;
 	m_pFrame->GetSize(&Size.x, &Size.y);
 	wxSizeEvent evSize(Size, 0);
@@ -2756,7 +2756,7 @@ void CCamView::ShowRulers(BOOL Show)
 /*********************************************************************************************
 >	BOOL CCamView::AreRulersVisible()
 
-	Author:		Chris_Snook (Xara Group Ltd) <camelotdev@xara.com> 
+	Author:		Chris_Snook (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	ages ago
 	Inputs:	    -
 	Outputs:    -
@@ -2765,7 +2765,7 @@ void CCamView::ShowRulers(BOOL Show)
 	Errors:		-
 	Scope:		Public
 
-**********************************************************************************************/ 
+**********************************************************************************************/
 
 BOOL CCamView::AreRulersVisible()
 {
@@ -2773,13 +2773,13 @@ BOOL CCamView::AreRulersVisible()
  	if(Status)
  		return Status->RulersVisible;
 #endif
- 	return FALSE;		
+ 	return FALSE;
 };
-		
+
 /*********************************************************************************************
 >	BOOL CCamView::AreScrollersVisible()
 
-	Author:		Chris_Snook (Xara Group Ltd) <camelotdev@xara.com> 
+	Author:		Chris_Snook (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	ages ago
 	Inputs:	    -
 	Outputs:    -
@@ -2788,20 +2788,20 @@ BOOL CCamView::AreRulersVisible()
 	Errors:		-
 	Scope:		Public
 
-**********************************************************************************************/ 
+**********************************************************************************************/
 
 BOOL CCamView::AreScrollersVisible()
-{ 
+{
 	if(Status)
  		return Status->ScrollersVisible;
- 	return FALSE;		
+ 	return FALSE;
 }
 
 
 /*********************************************************************************************
 >	BOOL CCamView::IsMouseOverRuler()
 
-	Author:		Chris_Snook (Xara Group Ltd) <camelotdev@xara.com> 
+	Author:		Chris_Snook (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	1/10/95
 	Inputs:	    -
 	Outputs:    -
@@ -2813,10 +2813,10 @@ BOOL CCamView::AreScrollersVisible()
 	Errors:		-
 	Scope:		Public
 
-**********************************************************************************************/ 
+**********************************************************************************************/
 
 MouseOverRulerHit CCamView::IsMouseOverRuler()
-{ 
+{
 #if !defined(EXCLUDE_FROM_RALPH)
 	// check that we have some rulers
 	if (!HRuler||!VRuler||!OGadget)
@@ -2834,7 +2834,7 @@ MouseOverRulerHit CCamView::IsMouseOverRuler()
 		return OVER_ORIGIN_GADGET;
 #endif
 
-	return OVER_NO_RULERS;		
+	return OVER_NO_RULERS;
  };
 
 
@@ -2857,7 +2857,7 @@ MouseOverRulerHit CCamView::IsMouseOverRuler()
 	Scope:	    Protected
 	SeeAlso:	class CRendWnd; CCamView::HandleDragEvent()
 
-**********************************************************************************************/ 
+**********************************************************************************************/
 
 void CCamView::OnLButtonDown( wxMouseEvent &event )
 {
@@ -2890,7 +2890,7 @@ void CCamView::OnLButtonDown( wxMouseEvent &event )
 						LastDoubleClickPos.y - LocalEnvironment::GetYMouseDoubleClickMove(),
 						LocalEnvironment::GetXMouseDoubleClickMove() * 2,
 						LocalEnvironment::GetYMouseDoubleClickMove() * 2 );
-	
+
 	MonotonicTime ThisClickTime( event.GetTimestamp() );
 	MonotonicTime ClickGap(LocalEnvironment::GetMouseDoubleClickDelay());
 
@@ -2924,7 +2924,7 @@ void CCamView::OnLButtonDown( wxMouseEvent &event )
 	Scope:	    Protected
 	SeeAlso:	class CRendWnd; CCamView::HandleDragEvent()
 
-**********************************************************************************************/ 
+**********************************************************************************************/
 
 void CCamView::OnMButtonDown( wxMouseEvent &event )
 {
@@ -2966,7 +2966,7 @@ void CCamView::OnMButtonDown( wxMouseEvent &event )
 	Scope:		Protected
 	SeeAlso:	class CRendWnd; CCamView::HandleDragEvent(); CCamView::OnLButtonDown()
 
-**********************************************************************************************/ 
+**********************************************************************************************/
 
 void CCamView::OnRButtonDown( wxMouseEvent &event )
 {
@@ -3010,7 +3010,7 @@ void CCamView::OnRButtonDown( wxMouseEvent &event )
 	SeeAlso:    class CRendWnd; CCamView::OnLButtonDown(); CCamView::GetClickMods();
 				DocView::DragFinished(); CCamView::HandleButtonUp()
 
-**********************************************************************************************/ 
+**********************************************************************************************/
 
 void CCamView::OnLButtonUp(wxMouseEvent &event)
 {
@@ -3046,7 +3046,7 @@ void CCamView::OnLButtonUp(wxMouseEvent &event)
 	SeeAlso:    class CRendWnd; CCamView::OnMButtonDown(); CCamView::GetClickMods();
 				DocView::DragFinished(); CCamView::HandleButtonUp()
 
-**********************************************************************************************/ 
+**********************************************************************************************/
 
 void CCamView::OnMButtonUp(wxMouseEvent &event)
 {
@@ -3081,10 +3081,10 @@ void CCamView::OnMButtonUp(wxMouseEvent &event)
 	SeeAlso:	class CRendWnd; CCamView::OnRButtonDown(); CCamView::GetClickMods();
 				DocView::DragFinished(); CCamView::HandleButtonUp()
 
-**********************************************************************************************/ 
+**********************************************************************************************/
 
 void CCamView::OnRButtonUp( wxMouseEvent &event )
-{	
+{
 	DontSkipNextMouse();
 	// If the event is not from the RenderWindow then skip it
 	INT32 nID = event.GetId();
@@ -3096,7 +3096,7 @@ void CCamView::OnRButtonUp( wxMouseEvent &event )
 	}
 
 	HandleButtonUp(MK_RBUTTON, event);
-} 
+}
 
 
 
@@ -3115,7 +3115,7 @@ void CCamView::OnRButtonUp( wxMouseEvent &event )
 	Scope:		Protected
 	SeeAlso:	class CRendWnd; CCamView::HandleDragEvent()
 
-**********************************************************************************************/ 
+**********************************************************************************************/
 
 void CCamView::OnLButtonDblClk(wxMouseEvent &event)
 {
@@ -3169,7 +3169,7 @@ void CCamView::OnLButtonDblClk(wxMouseEvent &event)
 	Scope:		Protected
 	SeeAlso:	class CRendWnd; CCamView::HandleDragEvent()
 
-**********************************************************************************************/ 
+**********************************************************************************************/
 
 void CCamView::OnMButtonDblClk(wxMouseEvent &event)
 {
@@ -3206,7 +3206,7 @@ void CCamView::OnMButtonDblClk(wxMouseEvent &event)
 	Scope:		Protected
 	SeeAlso:	class CRendWnd; CCamView::OnLButtonDblClk()
 
-**********************************************************************************************/ 
+**********************************************************************************************/
 
 void CCamView::OnRButtonDblClk( wxMouseEvent &event )
 {
@@ -3232,10 +3232,10 @@ void CCamView::OnRButtonDblClk( wxMouseEvent &event )
 
 	Author:		Priestley (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	25/10/2000
-	Purpose:	
+	Purpose:
 	Scope:		Protected
 
-**********************************************************************************************/ 
+**********************************************************************************************/
 
 void CCamView::OnMouseWheel( wxMouseEvent &event )
 {
@@ -3263,7 +3263,7 @@ void CCamView::OnMouseWheel( wxMouseEvent &event )
 	SeeAlso:	class CRendWnd; CCamView::HandleDragEvent(); DocView::DragPointerMove();
 				CCamView::GetClickMods(); CCamView::HandleDragScrolling();
 				DocView::OnMouseMove()
-**********************************************************************************************/ 
+**********************************************************************************************/
 
 void CCamView::OnMouseMove( wxMouseEvent &event )
 {
@@ -3273,13 +3273,13 @@ void CCamView::OnMouseMove( wxMouseEvent &event )
 
 //TRACEUSER("Phil", _T("OnMouseMove %d %d %x\n"), event.LeftIsDown(), event.ShiftDown(), pCurrentDragOp);
 	wxPoint point = event.GetPosition();
-	
+
 	// Only respond to real mouse move messages
 	if (point == CurrentMousePos)
 		return;
 
 	UINT32 nFlags = ClickModifiers::SynthesizeMouseEventFlags(event);
-	
+
 	// Ignore mouse moves if we're not the foreground window.
 	if (pDocView != DocView::GetSelected())
 	{
@@ -3384,11 +3384,11 @@ PORTNOTE("other","Remove PeekMessage related code")
 
 		for(;;)
 		{
-			// We have to test that the window handles match because of a bug in PeekMessage (we 
+			// We have to test that the window handles match because of a bug in PeekMessage (we
 			// get messages which aren't for the window we specified, strangely).
 
 			if (::PeekMessage(&Msg, m_hWnd, WM_MOUSEFIRST, WM_MOUSELAST, PM_NOREMOVE) &&
-				(m_hWnd == Msg.hwnd) && 
+				(m_hWnd == Msg.hwnd) &&
 				(Msg.message == WM_MOUSEMOVE))
 			{
 				// Found a mouse move message on the queue...
@@ -3421,18 +3421,18 @@ PORTNOTE("other","Remove PeekMessage related code")
 			point.x = (INT8) LOWORD(Msg.lParam);
 			point.y = (INT8) HIWORD(Msg.lParam);
 
-		
+
 		}
 	}
-	
+
 	// Slow mouse reponse due to key auto-repeat msgs?
 	//
 	// We could be experiencing delayed mouse move messages due to the message
 	// queue getting flooded with key auto-repeat msgs.
 	//
-	// To overcome this, we remove all mouse move messages, keeping only the most 
+	// To overcome this, we remove all mouse move messages, keeping only the most
 	// recent msg's coords & flags.
-	// 
+	//
 	// Stripping the message cue in this way means we get less mouse moves to drag handlers, hence less accurate
 	// mouse move data.  But, as we only do this if we get an auto-repeated key stroke, accuracy should not be
 	// a problem, even for the freehand tool.  Freehand drags have two key modifiers (Alt for straught line and
@@ -3455,7 +3455,7 @@ PORTNOTE("other","Remove PeekMessage related code")
 				// Is the mouse msg a mouse move msgs?
 				if (Msg.message == WM_MOUSEMOVE)
 				{
-					// Found a mouse move message on the queue so remember it 
+					// Found a mouse move message on the queue so remember it
 					nFlags = (UINT32) Msg.wParam;
 
 					// Have to cast to INT8 so we get correct sign-extension.
@@ -3470,7 +3470,7 @@ PORTNOTE("other","Remove PeekMessage related code")
 					// We have got a mouse msg that's not a mouse move msg, so break out of 'while' loop
 					// This could be a button-up msg, in which case we should stop looking for
 					// mouse moves as they may be irrelevent to the current drag
-					break;	
+					break;
 				}
 			}
 		}
@@ -3527,9 +3527,9 @@ PORTNOTE("other","Remove PeekMessage related code")
 		else
 		{
 			WinCoord wpoint(point.x, point.y);
-			// We are not dragging, just moving the mouse around, so pass the position 
+			// We are not dragging, just moving the mouse around, so pass the position
 			// of the mouse to the tool, giving it an opportunity to set the cursor etc.
-			pDocView->OnMouseMove( wpoint.ToOil(pDocView, TRUE), LastClickMods);		
+			pDocView->OnMouseMove( wpoint.ToOil(pDocView, TRUE), LastClickMods);
 		}
 	}
 
@@ -3559,13 +3559,13 @@ PORTNOTE("other","Remove PeekMessage related code")
 	Inputs:	    The event.
 	Outputs:	-
 	Returns:	-
-	Purpose:	Eat the cursor update requests to stop anyone else playing with them, this is 
+	Purpose:	Eat the cursor update requests to stop anyone else playing with them, this is
 				needed on MSW or the cursor reverts to the normal arrow.
 	Errors:		-
 	Scope:		Protected
-	SeeAlso:	
+	SeeAlso:
 
-**********************************************************************************************/ 
+**********************************************************************************************/
 
 void CCamView::OnSetCursor( wxSetCursorEvent& event )
 {
@@ -3582,7 +3582,7 @@ void CCamView::OnSetCursor( wxSetCursorEvent& event )
 		SetCurrentStates();
 
 		Cursor* pCursor = NULL;
-		
+
 		if (IsTopmost() ||
 			CursorStack::GIsActive(Cursor::Busy) ||
 			CursorStack::GIsActive(Cursor::Progress))
@@ -3598,7 +3598,7 @@ void CCamView::OnSetCursor( wxSetCursorEvent& event )
 //			TRACEUSER("Gerry", _T("Setting Cursor::Arrow"));
 			pCursor = Cursor::Arrow;
 		}
-	
+
 		if( NULL != pCursor )
 		{
 //			TRACEUSER("Gerry", _T("Setting event cursor to 0x%08x"), pCursor->Handle());
@@ -3624,10 +3624,10 @@ void CCamView::OnSetCursor( wxSetCursorEvent& event )
 	Returns:	-
 	Purpose:	Handles all the scroll events.
 	Errors:	    -
-	SeeAlso:	
+	SeeAlso:
 
 
-**********************************************************************************************/ 
+**********************************************************************************************/
 
 void CCamView::OnScroll(wxScrollEvent &event)
 {
@@ -3704,7 +3704,7 @@ void CCamView::OnScroll(wxScrollEvent &event)
 				struct ViewState; DocView::ViewStateChanged()
 
 
-**********************************************************************************************/ 
+**********************************************************************************************/
 
 void CCamView::OnSize( wxSizeEvent &event )
 {
@@ -3740,10 +3740,10 @@ void CCamView::OnSize( wxSizeEvent &event )
 	 	HRuler->CalcPosFromParentClient(&hRect);
 		HRuler->SetSize(hRect);
 		HRuler->PositionLegend();
-		
+
 		RenderRect.y += hRect.GetHeight();
 		RenderRect.height -= hRect.GetHeight();
-			
+
 	 	VRuler->CalcPosFromParentClient(&vRect);
 		VRuler->SetSize(vRect);
 
@@ -3802,7 +3802,7 @@ void CCamView::OnSize( wxSizeEvent &event )
 //	XLONG x2 = CurrentSize.GetHeight() * PixelHeight;
 //	HScrollBar->SetPageSize(x1);
 //	VScrollBar->SetPageSize(x2);
-//	HScrollBar->SetLineSize(x1 / xlong(10) + xlong(1));	
+//	HScrollBar->SetLineSize(x1 / xlong(10) + xlong(1));
 //	VScrollBar->SetLineSize(x2 / xlong(10) + xlong(1));
 
 	SetWorkAreaExtent(Status->WorkAreaExtent, FALSE);
@@ -3844,7 +3844,7 @@ void CCamView::OnSize( wxSizeEvent &event )
 	SeeAlso:	CCamView::HandleDragEvent(); DocView::DragPointerMove();
 				CCamView::GetClickMods();
 
-**********************************************************************************************/ 
+**********************************************************************************************/
 
 void CCamView::OnDragIdle(wxTimerEvent& event)
 {
@@ -3865,7 +3865,7 @@ void CCamView::OnDragIdle(wxTimerEvent& event)
 
 	if (pCurrentDragOp == NULL)
 	{
-		// We are not dragging at the moment, so check for a time-out condition to 
+		// We are not dragging at the moment, so check for a time-out condition to
 		// start a drag:
 		// If a mouse button is down, and the timer has expired, then start a drag.
 		if (LastClickType!=CLICKTYPE_NONE
@@ -3949,7 +3949,7 @@ void CCamView::OnDragIdle(wxTimerEvent& event)
 	Scope:	    Private
 	SeeAlso:	CCamView::SetScrollPos()
 
-**********************************************************************************************/ 
+**********************************************************************************************/
 
 void CCamView::ScrollTo(const WorkCoord& offset)
 {
@@ -3966,7 +3966,7 @@ void CCamView::ScrollTo(const WorkCoord& offset)
 //		TRACEUSER("Gerry", _T("No change\n"));
 		return;
 	}
-	
+
 	// Scroll part of, or redraw the whole of, the client area.
 	if (Abs(dx) >= CurrentSize.GetRight() || Abs(dy) >= CurrentSize.GetBottom() )
 	{
@@ -3978,7 +3978,7 @@ void CCamView::ScrollTo(const WorkCoord& offset)
 //		TRACEUSER("Gerry", _T("ScrollWindow(%d, %d)\n"), -dx, -dy);
 		GetRenderWindow()->ScrollWindow(-dx, -dy);
 	}
-	
+
 #if !defined(EXCLUDE_FROM_RALPH)
 	if (Status->RulersVisible)
 	{
@@ -4109,15 +4109,15 @@ void CCamView::Rect2wxRect(const Rect& krect, wxRect* prect)
 	Returns:    -
 	Purpose:    Gathers together Windows information about a mouse event and passes it on to
 				the kernel, by calling DocView::OnClick()
-				HandleDragEvent needs to be called from OnTimer code so rather than 
-				synthesizing a wxMouseEvent object this function has been left taking 
+				HandleDragEvent needs to be called from OnTimer code so rather than
+				synthesizing a wxMouseEvent object this function has been left taking
 				non-wx params
 	Errors:		-
 	Scope:		Private
 	SeeAlso:	CCamView::GetClickMods(); CCamView::OnLButtonDown(); CCamView::OnRButtonDown()
 				DocView::OnClick()
 
-********************************************************************************************/ 
+********************************************************************************************/
 
 /********************************************************************************************
 
@@ -4134,7 +4134,7 @@ while preparing it goes and reads the mouse button state and meanwhile another b
 been pressed so we get a button down event with nFlags indicating more than one button
 is down.
 
-********************************************************************************************/ 
+********************************************************************************************/
 
 void CCamView::HandleDragEvent(UINT32 Button, UINT32 nFlags, wxPoint point, ClickType t)
 {
@@ -4162,9 +4162,9 @@ void CCamView::HandleDragEvent(UINT32 Button, ClickModifiers clickmods, wxPoint 
 			{
 				Document::SetSelectedViewAndSpread(pKDoc, pDocView, NULL);
 			}
-			
+
 		}
-		return;	
+		return;
 	}
 
 	SetCurrentStates();
@@ -4172,9 +4172,9 @@ void CCamView::HandleDragEvent(UINT32 Button, ClickModifiers clickmods, wxPoint 
 	// Find out which buttons etc are down.
 	LastClickMods = clickmods;
 
-	// If it's the first single click, then reset the drag delay timer, and ask for a 
+	// If it's the first single click, then reset the drag delay timer, and ask for a
 	// Windows timer.
-	if (((t == CLICKTYPE_SINGLE) || (t == CLICKTYPE_DOUBLE)) && 
+	if (((t == CLICKTYPE_SINGLE) || (t == CLICKTYPE_DOUBLE)) &&
 		(FirstClickButton == 0))
 	{
 		// Remember this event.
@@ -4221,7 +4221,7 @@ PORTNOTE("other","Removed reading of keyboard autorepeat rate")
 		WinCoord wpoint(point.x, point.y);
 		pDocView->OnClick( ( (WinCoord *)&point )->ToOil(pDocView, TRUE), t, LastClickMods);
 	}
-}                                                             
+}
 
 
 
@@ -4234,7 +4234,7 @@ PORTNOTE("other","Removed reading of keyboard autorepeat rate")
 	Inputs:		nFlags - The mouse flags
 				zDelta - movement of the mousewheel
 				pt - the coordinate of the mouse cursor
-********************************************************************************************/ 
+********************************************************************************************/
 
 BOOL CCamView::HandleMouseWheelEvent( wxMouseEvent &event )
 {
@@ -4300,9 +4300,9 @@ BOOL CCamView::HandleMouseWheelEvent( wxMouseEvent &event )
 				{
 					Document::SetSelectedViewAndSpread(pKDoc, pDocView, NULL);
 				}
-			
+
 			}
-			return FALSE;	
+			return FALSE;
 		}
 
 		SetCurrentStates();
@@ -4432,14 +4432,14 @@ BOOL CCamView::HandleMouseWheelEvent( wxMouseEvent &event )
 	SeeAlso:	CCamView::GetClickMods(); CCamView::OnLButtonDown(); CCamView::OnRButtonDown()
 				DocView::OnClick()
 
-**********************************************************************************************/ 
+**********************************************************************************************/
 
 void CCamView::HandleButtonUp(UINT32 Button, wxMouseEvent &event)
 {
 	//Graham 18/6/96: Changed the logical conditions of this function
 	//to support clicks with one mouse button while another button is
 	//dragging
-	
+
 	if (DocView::GetSelected() != pDocView)
 	{
 		ENSURE(pCurrentDragOp == NULL, "Drag operation in a view that isn't 'selected' !!");
@@ -4469,7 +4469,7 @@ void CCamView::HandleButtonUp(UINT32 Button, wxMouseEvent &event)
 			// DragFinished method below brings up a dialog box or something.
 			if (GetRenderWindow() && GetRenderWindow()->GetCapture()==GetRenderWindow())
 				GetRenderWindow()->ReleaseMouse();
-			pDocView->DragFinished(pCurrentDragOp, ((WinCoord*) &point)->ToOil(pDocView, TRUE), 
+			pDocView->DragFinished(pCurrentDragOp, ((WinCoord*) &point)->ToOil(pDocView, TRUE),
 							   LastClickMods, TRUE);
 
 
@@ -4547,7 +4547,7 @@ void CCamView::HandleButtonUp(UINT32 Button, wxMouseEvent &event)
 		else
 		{
 			// No there isn't.
-			// Kill the timer started in HandleDragEvent(), 
+			// Kill the timer started in HandleDragEvent(),
 			// as we don't want to wait for a drag anymore.
 			m_DragIdleTimer.Stop();
 
@@ -4574,7 +4574,7 @@ void CCamView::HandleButtonUp(UINT32 Button, wxMouseEvent &event)
 		//with the up-click message.
 		//The only problem that could occur is if we are in a button-up-drag. This
 		//is handled below.
-		
+
 	}
 
 	//Ensure there is not a button-up drag in progress
@@ -4592,7 +4592,7 @@ void CCamView::HandleButtonUp(UINT32 Button, wxMouseEvent &event)
 		return;
 	}
 
-	
+
 
 	// Are we currently running a drag operation.
 	if (pCurrentDragOp != NULL)
@@ -4601,7 +4601,7 @@ void CCamView::HandleButtonUp(UINT32 Button, wxMouseEvent &event)
 		// the mouse capture as soon as possible after a drag has finished, in case the
 		// DragFinished method below brings up a dialog box or something.
 		::ReleaseCapture();
-		pDocView->DragFinished(pCurrentDragOp, ((WinCoord*) &point)->ToOil(pDocView, TRUE), 
+		pDocView->DragFinished(pCurrentDragOp, ((WinCoord*) &point)->ToOil(pDocView, TRUE),
 							   LastClickMods, TRUE);
 	}
 	else
@@ -4659,8 +4659,8 @@ void CCamView::HandleButtonUp(UINT32 Button, wxMouseEvent &event)
 	Errors:	    -
 	Scope:		-
 	SeeAlso:	-
-                          
-**********************************************************************************************/ 
+
+**********************************************************************************************/
 /* 	Implementation notes:
 
 	It does this:
@@ -4744,14 +4744,14 @@ BOOL CCamView::ChangeDragType(DragType Type)
 				mode is AUTO_SCROLL (and the Scroll Lock key isn't latched!!).  The scrolling
 				itself is done by calling the routine in DocView, not ScreenView, so that the
 				kernel has fair warning to remove any blobbies before the blit is done.
-				
+
 				Called when ScreenView receives mouse-move messages and timer ("mouse-idle")
 				messages.  Also handles DEFERRED_SCROLLING.
 	Errors:		-
 	Scope:		Private
 	SeeAlso:	CCamView::OnMouseMove; CCamView::OnTimer
 
-**********************************************************************************************/ 
+**********************************************************************************************/
 
 void CCamView::HandleDragScrolling(wxPoint point)
 {
@@ -4771,7 +4771,7 @@ void CCamView::HandleDragScrolling(wxPoint point)
 	point = GetFrame()->ScreenToClient( point );
 
 //	TRACEUSER("Gerry", _T("AdjPoint = (%d, %d)\n"), point.x, point.y);
-	
+
 	// This is used to allow guidelines to be deleted by dropping on to the rulers - normally
 	// we would start to auto scroll at this point which is a little off putting..
 	if (AutoScrollExcludeRulers && CurrentDragType != DRAGTYPE_OLESCROLL)
@@ -4800,7 +4800,6 @@ void CCamView::HandleDragScrolling(wxPoint point)
 	INT32 dx = 0;
 	INT32 dy = 0;
 
-	WinRect Outer = wrSize;
 
 	// Set auto-scroll region to be one scrollbar width within the current view
 	// (as per The Windows Interface Guidelines Chapter 5).
@@ -4811,6 +4810,8 @@ void CCamView::HandleDragScrolling(wxPoint point)
 	{
 		BOOL bCalcDeltas = TRUE;
 #if !defined(EXCLUDE_FROM_XARALX)
+		WinRect Outer = wrSize;
+
 		if (CurrentDragType == DRAGTYPE_OLESCROLL)
 		{
 			if (Outer.Inside(point))		// and still inside visible window
@@ -4878,7 +4879,7 @@ void CCamView::HandleDragScrolling(wxPoint point)
 	Errors:	    -
 	Scope:	    Public
 	SeeAlso:    CCamView::HandleDragEvent()
-**********************************************************************************************/ 
+**********************************************************************************************/
 
 void CCamView::GetClickMods(wxMouseEvent &event, ClickModifiers* p)
 {
@@ -4903,7 +4904,7 @@ void CCamView::GetClickMods(wxMouseEvent &event, ClickModifiers* p)
 	Scope:		Protected
 	SeeAlso:	CCamView::HandleDragScrolling
 
-**********************************************************************************************/ 
+**********************************************************************************************/
 
 void CCamView::CalcScrollDeltas(wxPoint point, WinRect wrSize, INT32* dx, INT32* dy)
 {
@@ -4931,12 +4932,12 @@ void CCamView::CalcScrollDeltas(wxPoint point, WinRect wrSize, INT32* dx, INT32*
 	Inputs:		dx		The amount to scroll in the X axis.
 				dy		The amount to scroll in the Y axis.
 	Returns:    -
-	Purpose:	Scrolls the view by asking the DocView to do it so it can remove 
+	Purpose:	Scrolls the view by asking the DocView to do it so it can remove
 				and replace blobs.
 	Errors:		-
 	Scope:		Protected
 
-**********************************************************************************************/ 
+**********************************************************************************************/
 
 void CCamView::ScrollBy(INT32 dx, INT32 dy)
 {
@@ -5085,11 +5086,11 @@ DocView *CCamView::GetDocViewFromWindow(wxWindow *pWindow)
 				node = node->GetNext();
 			}
 		}
-	} 
+	}
 
 	// Couldn't find the handle, so return nothing.
 	return NULL;
-}	
+}
 
 
 /*********************************************************************************************
@@ -5102,7 +5103,7 @@ DocView *CCamView::GetDocViewFromWindow(wxWindow *pWindow)
 	Purpose:	will create drag targets for appropriate drags
 	Errors:		-
 
-**********************************************************************************************/ 
+**********************************************************************************************/
 
 BOOL CCamView::CreateDragTarget(DragInformation * DragInfo)
 {
@@ -5117,9 +5118,11 @@ BOOL CCamView::CreateDragTarget(DragInformation * DragInfo)
 
 	if (DragInfo->CanDropOnPage())
 	{
+
 		// If the drag can be dropped onto an object or the page, then we will accept it
-		ViewDragTarget * NewTarget;
-		NewTarget = new ViewDragTarget(RenderWindow,NULL,DragInfo);
+		// ViewDragTarget * NewTarget;
+		// NewTarget =
+	  new ViewDragTarget(RenderWindow, NULL, DragInfo);
 		return TRUE;
 	}
 #endif
@@ -5153,18 +5156,18 @@ DocView *CCamView::GetDocViewFromWindowID( CWindowID WindowID )
 	{
 
 		DocView * pDocView = pKernelDoc->GetFirstDocView();
-		
+
 		while (pDocView)
 		{
 			if ( pDocView->GetRenderWindow() == WindowID )
 				return pDocView;
 			pDocView = pKernelDoc->GetNextDocView(pDocView);
 		}
-	} 
+	}
 
 	// Couldn't find the handle, so return nothing.
 	return NULL;
-}	
+}
 
 
 bool CCamView::OnDropFiles(wxCoord x, wxCoord y, const wxArrayString& filenames)
@@ -5194,7 +5197,7 @@ bool CCamView::OnDropFiles(wxCoord x, wxCoord y, const wxArrayString& filenames)
 
 		if (TempStr[i] == 0)
 		{
-			// All the chars are bytes so try sticking them into a char array 
+			// All the chars are bytes so try sticking them into a char array
 			// and converting them with wxConvFileName
 			char* pBuf = (char*)CCMalloc(i + 1);
 			if (pBuf)
@@ -5230,10 +5233,10 @@ bool CCamView::OnDropFiles(wxCoord x, wxCoord y, const wxArrayString& filenames)
 
 /********************************************************************************************
 
->	void ViewDragTarget::ViewDragTarget() 
-	 
+>	void ViewDragTarget::ViewDragTarget()
+
 	Author:		Chris_Snook (Xara Group Ltd) <camelotdev@xara.com>
-	Created:	12/1/95		  
+	Created:	12/1/95
 	Inputs:		-
 	Outputs:	-
 	Returns:	-
@@ -5252,10 +5255,10 @@ ViewDragTarget::ViewDragTarget(wxWindow* TheWindow, wxRect *ClientArea, DragInfo
 	pCurrentDragInfo = pDragInfo;
 
 	DocView::GetCurrentMousePos(&pSpread, &DropPos);
-	
+
 	// Find out the Magnetic Line Radius preference from its owner
 	LineRad = NodeRenderableBounded::MagneticLineRadius;
-	
+
 	// Scale it according to the ScaleFactor.
 	if (pThisDoc!=NULL)
 	{
@@ -5296,7 +5299,7 @@ UINT32 ViewDragTarget::GetCursorID()
 	Created:	15/1/95
 	Returns:	Whether String is valid
 	Purpose:	provide status line text for this target
-   
+
 ********************************************************************************************/
 
 
@@ -5311,9 +5314,9 @@ BOOL ViewDragTarget::GetStatusLineText(String_256 * TheText)
 /********************************************************************************************
 
 >	BOOL ViewDragTarget::GetDropInfo(PageDropInfo* pDropInfo)
- 
+
 	Author:		Will_Cowling (Xara Group Ltd) <camelotdev@xara.com>
-	Created:	25/3/95		  
+	Created:	25/3/95
 	Inputs:		-
 	Outputs:	-
 	Returns:	-
@@ -5342,14 +5345,14 @@ BOOL ViewDragTarget::GetDropInfo(PageDropInfo* pDropInfo)
 
 >	void ViewDragTarget::ProcessEvent(DragEventType Event,
 						DragInformation *pDragInfo,
-						wxPoint *pMousePos, KeyPress* pKeyPress) 
-	 
+						wxPoint *pMousePos, KeyPress* pKeyPress)
+
 	Author:		Chris_Snook (Xara Group Ltd) <camelotdev@xara.com>
-	Created:	12/1/95		  
+	Created:	12/1/95
 	Inputs:		-
 	Outputs:	-
 	Returns:	-
-	Purpose:	Event Handler for View Drag target 
+	Purpose:	Event Handler for View Drag target
 	Errors:		-
 	SeeAlso:	-
 
@@ -5375,9 +5378,9 @@ BOOL ViewDragTarget::ProcessEvent(DragEventType Event,
 				OverNode = NULL;
 				DocView::GetCurrentMousePos(&pSpread, &DropPos);
 				OverTarget = pThisDoc->IsPointerOverNode(&OverNode,LineRad,FALSE,TRUE);
-	
+
 				if (!OverNode) OverTarget = NO_TARGET;
-	
+
 				// call doc dragfinished to do whatever is needed
 				return pThisDoc->DM_DragFinished(pDragInfo,this);
 				break;
@@ -5389,9 +5392,9 @@ BOOL ViewDragTarget::ProcessEvent(DragEventType Event,
 				OverNode = NULL;
 				DocView::GetCurrentMousePos(&pSpread, &DropPos);
 				OverTarget = pThisDoc->IsPointerOverNode(&OverNode,LineRad, TRUE, TRUE);
-	
+
 				if (!OverNode) OverTarget = NO_TARGET;
-	
+
 				return TRUE;
 				break;
 			}
@@ -5415,4 +5418,3 @@ bool CViewFileDropTarget::OnDropFiles(wxCoord x, wxCoord y, const wxArrayString&
 {
 	return(m_pView->OnDropFiles(x, y, filenames));
 }
-

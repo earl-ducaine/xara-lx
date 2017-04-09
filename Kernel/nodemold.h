@@ -1,7 +1,7 @@
 // $Id: nodemold.h 1282 2006-06-09 09:46:49Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
- 
+
                Xara LX, a vector drawing and manipulation program.
                     Copyright (C) 1993-2006 Xara Group Ltd.
        Copyright on certain contributions may be held in joint with their
@@ -32,7 +32,7 @@ ADDITIONAL RIGHTS
 
 Conditional upon your continuing compliance with the GNU General Public
 License described above, Xara Group Ltd grants to you certain additional
-rights. 
+rights.
 
 The additional rights are to use, modify, and distribute the software
 together with the wxWidgets library, the wxXtra library, and the "CDraw"
@@ -130,7 +130,7 @@ class BaseCamelotFilter;
 
 ***********************************************************************************************/
 
-typedef enum MouldSpace {
+enum MouldSpace {
 	MOULDSPACE_UNDEFINED,
 	MOULDSPACE_ENVELOPE,
 	MOULDSPACE_PERSPECTIVE,
@@ -152,7 +152,7 @@ typedef enum MouldSpace {
 	Author:		Mike_Kenny (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	1/12/94
 	Purpose:	This class defines the structure of a mould node object. This object is the
-				parent of a MouldGroup node and a Moulder node. Objects being moulded are 
+				parent of a MouldGroup node and a Moulder node. Objects being moulded are
 				placed inside MouldGroup and all resulting moulded objects are placed inside
 				the Moulder node.
 
@@ -162,24 +162,24 @@ class NodeMould: public NodeGroup
 {
 	friend class RecordChangeCodesAction;
 
-	CC_DECLARE_DYNAMIC( NodeMould );    
+	CC_DECLARE_DYNAMIC( NodeMould );
 
-public: 
-	NodeMould(); 
-	NodeMould(Node* ContextNode,  
-			  AttachNodeDirection Direction,    
-			  BOOL Locked=FALSE, 
-			  BOOL Mangled=FALSE,  
-			  BOOL Marked=FALSE, 
-			  BOOL Selected=FALSE    
-		     ); 
+public:
+	NodeMould();
+	NodeMould(Node* ContextNode,
+			  AttachNodeDirection Direction,
+			  BOOL Locked=FALSE,
+			  BOOL Mangled=FALSE,
+			  BOOL Marked=FALSE,
+			  BOOL Selected=FALSE
+		     );
 	~NodeMould();
 
 			void	InitialiseVars();
 
-	// Virtual rendering functions	     
-	virtual void 	PreExportRender( RenderRegion* pRender ); 
-	virtual BOOL	ExportRender( RenderRegion* pRender ); 
+	// Virtual rendering functions
+	virtual void 	PreExportRender( RenderRegion* pRender );
+	virtual BOOL	ExportRender( RenderRegion* pRender );
 	virtual BOOL	PostImport();
 
 	virtual void 	RenderObjectBlobs(RenderRegion* pRender);
@@ -188,8 +188,8 @@ public:
 	virtual void 	Transform( TransformBase& Trans );
 
 	// Other virtual functions
-	virtual String	Describe(BOOL Plural, BOOL Verbose); 
-	virtual Node*	SimpleCopy();  
+	virtual String	Describe(BOOL Plural, BOOL Verbose);
+	virtual Node*	SimpleCopy();
     virtual UINT32	GetNodeSize() const; 			// Returns size of node in bytes
 	virtual BOOL	IsANodeMould() const;
 
@@ -295,8 +295,8 @@ private:
 	BOOL 			OverMouldEndPoint(DocCoord coord, Spread* pSpread);
 	ChangeCode		RecordChangeCodes(UndoableOperation* pOp);
 	ChangeCode		ConvertCode(ActionCode Act);
-	
-	String_32		MouldName; // The name of the mould 
+
+	String_32		MouldName; // The name of the mould
 
 	MouldGeometry*	pMouldGeometry;
 	BOOL			DetachedGeometry;
@@ -318,7 +318,7 @@ private:
 	Author:		Mike_Kenny (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	16/01/95
 	Purpose:	This class records undo/redo information for the Perspective shape object.
-	
+
 ********************************************************************************************/
 
 class RecordChangeCodesAction : public Action

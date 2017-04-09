@@ -1,7 +1,7 @@
 // $Id: diagnost.cpp 1282 2006-06-09 09:46:49Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
- 
+
                Xara LX, a vector drawing and manipulation program.
                     Copyright (C) 1993-2006 Xara Group Ltd.
        Copyright on certain contributions may be held in joint with their
@@ -32,7 +32,7 @@ ADDITIONAL RIGHTS
 
 Conditional upon your continuing compliance with the GNU General Public
 License described above, Xara Group Ltd grants to you certain additional
-rights. 
+rights.
 
 The additional rights are to use, modify, and distribute the software
 together with the wxWidgets library, the wxXtra library, and the "CDraw"
@@ -121,7 +121,7 @@ static INT32 OutputDiagnostics = 0;
 
 BOOL InitDiagnosticPrefs()
 {
-	Camelot.DeclarePref(TEXT("DebugFlags"), TEXT("OutputDiagnostics"), 
+	Camelot.DeclarePref(TEXT("DebugFlags"), TEXT("OutputDiagnostics"),
 						&OutputDiagnostics, FALSE, TRUE);
 
 	return TRUE;
@@ -134,17 +134,17 @@ BOOL InitDiagnosticPrefs()
 
 	Author:		Simon_Maneggio (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	11/11/93
-	Inputs:		FunctionStr: (no space required at end, a space is inserted before being 
+	Inputs:		FunctionStr: (no space required at end, a space is inserted before being
 							  concatenated)
 	`			pszFormat: Format string (no \n required at end)
 				arguments
 	Outputs:	-
 	Returns:	-
-	Purpose:	This function is the same as Diagnostic except that it takes an additional 
-				function parameter which is concatenated with the format string. 
+	Purpose:	This function is the same as Diagnostic except that it takes an additional
+				function parameter which is concatenated with the format string.
 
-				*The idea of this function is to save space. The compiler settings will 
-				recognise multiple  uses of the same constant string. 
+				*The idea of this function is to save space. The compiler settings will
+				recognise multiple  uses of the same constant string.
 
 	Errors:		-
 	SeeAlso:	Diagnostic
@@ -153,7 +153,6 @@ BOOL InitDiagnosticPrefs()
 
 void CDECL DiagnosticFn(LPCTSTR FunctionStr, LPCTSTR pszFormat, ...)
 {
-	UINT32					nBuf;
 	TCHAR				szBuffer[512];
 	const TCHAR		   *pszLocalFormat;
 
@@ -162,8 +161,9 @@ void CDECL DiagnosticFn(LPCTSTR FunctionStr, LPCTSTR pszFormat, ...)
 	va_list args;
 	va_start(args, pszFormat);
 
+	UINT32 nBuf;
+	#define UNUSED(nBuf)
 	nBuf = camVsnprintf( szBuffer, 512, pszLocalFormat, args );
-	
 	ASSERT(nBuf < sizeof(szBuffer));
 
 #if 0
@@ -194,7 +194,7 @@ void CDECL DiagnosticFn(LPCTSTR FunctionStr, LPCTSTR pszFormat, ...)
 #endif
 
 	va_end(args);
-	
+
 }
 
 /********************************************************************************************
@@ -207,16 +207,16 @@ void CDECL DiagnosticFn(LPCTSTR FunctionStr, LPCTSTR pszFormat, ...)
 				arguments
 	Outputs:	-
 	Returns:	-
-	Purpose:	This function is used in a similar way to TRACE, but exists in retail builds 
-				also. It is designed to aid in technical support. It should be used when 
-				resources get low, for example, when it might say: "CreatePen failed" or 
+	Purpose:	This function is used in a similar way to TRACE, but exists in retail builds
+				also. It is designed to aid in technical support. It should be used when
+				resources get low, for example, when it might say: "CreatePen failed" or
 				"BitBlt failed", eg,
 
 				if (!SelectPen(blobby))
-					Diagnostic("SelectPen %d failed", PenIndex); 
+					Diagnostic("SelectPen %d failed", PenIndex);
 
-				The strings used will always be in English, must be short & sweet, and must 
-				never contain any words you would not say to your mother. 
+				The strings used will always be in English, must be short & sweet, and must
+				never contain any words you would not say to your mother.
 
 	Errors:		-
 	SeeAlso:	DiagnosticFn
@@ -266,4 +266,3 @@ void CDECL Diagnostic(LPCTSTR pszFormat, ...)
 	va_end(args);
 
 }
-

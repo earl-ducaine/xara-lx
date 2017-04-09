@@ -1,7 +1,7 @@
 // $Id: opdesc.cpp 1282 2006-06-09 09:46:49Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
- 
+
                Xara LX, a vector drawing and manipulation program.
                     Copyright (C) 1993-2006 Xara Group Ltd.
        Copyright on certain contributions may be held in joint with their
@@ -32,7 +32,7 @@ ADDITIONAL RIGHTS
 
 Conditional upon your continuing compliance with the GNU General Public
 License described above, Xara Group Ltd grants to you certain additional
-rights. 
+rights.
 
 The additional rights are to use, modify, and distribute the software
 together with the wxWidgets library, the wxXtra library, and the "CDraw"
@@ -95,7 +95,7 @@ service marks of Xara Group Ltd. All rights in these marks are reserved.
 
 =================================XARAHEADEREND============================
  */
-// OpDescriptor allows camelot to maintain a list of all the operations 
+// OpDescriptor allows camelot to maintain a list of all the operations
 // which can be performed
 
 /*
@@ -127,10 +127,10 @@ CC_IMPLEMENT_DYNAMIC(UndoableOpDescriptor, OpDescriptor)
 CC_IMPLEMENT_DYNAMIC(ParamOpDescriptor, OpDescriptor);
 
 // OpDescriptor messages
-CC_IMPLEMENT_DYNAMIC(OpDescMsg, MessageHandler) 
+CC_IMPLEMENT_DYNAMIC(OpDescMsg, MessageHandler)
 CC_IMPLEMENT_DYNAMIC(OpDescControlMsg, OpDescMsg)
-CC_IMPLEMENT_DYNAMIC(OpDescControlDestroyMsg, OpDescMsg) 
-CC_IMPLEMENT_DYNAMIC(OpDescControlCreateMsg, OpDescMsg) 
+CC_IMPLEMENT_DYNAMIC(OpDescControlDestroyMsg, OpDescMsg)
+CC_IMPLEMENT_DYNAMIC(OpDescControlCreateMsg, OpDescMsg)
 
 CC_IMPLEMENT_MEMDUMP(OpListItem, ListItem)
 CC_IMPLEMENT_MEMDUMP(ListItemOpPtr, ListItem)
@@ -142,7 +142,7 @@ CC_IMPLEMENT_MEMDUMP(GadgetListItem, ListItem)
 void FixFPControlRegister();
 
 /////////////////////////////////////////////////////////////////////////////////
-// Class OpState 
+// Class OpState
 
 /********************************************************************************************
 
@@ -154,7 +154,7 @@ void FixFPControlRegister();
 				grey - TRUE if the item is greyed
 	Purpose:	This is meant to supply default values to the OpState flags so that they
 				don't have random values when they are created. By default they are
-				both set to FALSE so if you want something different you will have to 
+				both set to FALSE so if you want something different you will have to
 				change them.
 
 ********************************************************************************************/
@@ -174,8 +174,8 @@ OpState::OpState( BOOL tick, BOOL grey, BOOL Remove )
 
 // Here is the static list that belongs to OpDescriptor
 List OpDescriptor::OpList;
-//OpFlgs	OpDescriptor::Flags; 	
- 
+//OpFlgs	OpDescriptor::Flags;
+
 /********************************************************************************************
 
 >	OpFlgs OpDescriptor::GetOpFlags()
@@ -194,14 +194,14 @@ List OpDescriptor::OpList;
 
 OpFlgs OpDescriptor::GetOpFlags()
 {
-	return Flags; 
-} 
+	return Flags;
+}
 
 
 
 /********************************************************************************************
 
->	OpDescriptor::OpDescriptor( 
+>	OpDescriptor::OpDescriptor(
 								UINT32 toolID,
 								UINT32 txID,
 								CCRuntimeClass *OpClass,
@@ -211,27 +211,27 @@ OpFlgs OpDescriptor::GetOpFlags()
 								UINT32 bubbleID = 0,
 								UINT32 resourceID = 0,
 								UINT32 controlID = 0,
-								BOOL ReceiveMessages = FALSE, 
-								BOOL Smart = FALSE, 
+								BOOL ReceiveMessages = FALSE,
+								BOOL Smart = FALSE,
 				 				BOOL Clean = TRUE,
 				 				UINT32 OneOpenInstID = 0,
-				 				UINT32 AutoStateFlags = 0				
- 
+				 				UINT32 AutoStateFlags = 0
+
 
 							  );
 
 	Author:		Mario_Shamtani (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	10/8/93
-	Inputs:		
+	Inputs:
 				toolID - Module resource Identifier
 				txID - Text description resource Identifier
 				tok - pointer to a static string that describe the operation
 				gs - pointer to the GetState function in your operation
 
-				The following flags specify the type of the operation. They have default 
-				values for a normal non-undoable operation. 
+				The following flags specify the type of the operation. They have default
+				values for a normal non-undoable operation.
 
-				ReceiveMessages - should the OpDescriptor receive system messages 
+				ReceiveMessages - should the OpDescriptor receive system messages
 				Smart - Smart Duplicate
 				Clean - does the operation change the document
 
@@ -240,18 +240,18 @@ OpFlgs OpDescriptor::GetOpFlags()
 				resourceID - resource identifier of the resource containing the control.
 				controlID - control identifier within that resource.
 
-				OneOpenInstID - When non 0 only one live instance of the operation is 
+				OneOpenInstID - When non 0 only one live instance of the operation is
 								permitted, and OneOpenInstID is the string resource
-								ID describing why.This is useful for 1 open instance 
+								ID describing why.This is useful for 1 open instance
 								dialogs.
 
-				AutoStateFlags - These flags are used to specify when the Operation should 
-								 automatically be greyed, ticked etc. they cut down the number 
+				AutoStateFlags - These flags are used to specify when the Operation should
+								 automatically be greyed, ticked etc. they cut down the number
 								 of tests that need to be made in the GetState fn. See the
 								 top of OpDesc.h for an uptodate list of these. The flags
-								 should be or'd	
-								 
-								 eg. GREY_WHEN_NO_CURRENT_DOC | GREY_WHEN_NO_SELECTION 
+								 should be or'd
+
+								 eg. GREY_WHEN_NO_CURRENT_DOC | GREY_WHEN_NO_SELECTION
 
 
 	Purpose:	Construct a new OpDescriptor object and link it into the list
@@ -269,16 +269,16 @@ OpFlgs OpDescriptor::GetOpFlags()
 ********************************************************************************************/
 
 OpDescriptor::OpDescriptor(
-						   UINT32 toolID,                      
+						   UINT32 toolID,
 						   UINT32 txID,
-						   CCRuntimeClass *Op,			
+						   CCRuntimeClass *Op,
 						   TCHAR* tok,
 						   pfnGetState gs,
 						   UINT32 helpID,
 						   UINT32 bubbleID,
 						   UINT32 resourceID,
 						   UINT32 controlID,
-						   BOOL ReceiveMessages,  
+						   BOOL ReceiveMessages,
      					   BOOL Smart,
 				 		   BOOL Clean,
 						   UINT32 OneOpenInstID,
@@ -286,7 +286,7 @@ OpDescriptor::OpDescriptor(
 						   BOOL fCheckable /*= FALSE*/
 )
   : MessageHandler(CC_RUNTIME_CLASS(OpDescriptor), ReceiveMessages),
-    ModuleID(Tool::GetModuleID(toolID)), 
+    ModuleID(Tool::GetModuleID(toolID)),
   	TextID(txID),
   	HelpID(helpID),
   	BubbleID(bubbleID),
@@ -305,10 +305,10 @@ OpDescriptor::OpDescriptor(
 	m_bHotKeyEnabled = TRUE;
 
 	GetParamState = NULL;
-		 
+
 	ENSURE( tok /*&& gs*/, "OpDescriptor: new OpDescriptor called with a NULL parameter" );
 
-	LinkDescriptor(this); 
+	LinkDescriptor(this);
 
 }
 
@@ -319,7 +319,7 @@ OpDescriptor::OpDescriptor(
 
 	Author:		Neville_Humphrys (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	16/12/96
-	Purpose:	Standard destructor 
+	Purpose:	Standard destructor
 
 **************************************************************************************/
 
@@ -349,8 +349,8 @@ void OpDescriptor::LinkDescriptor( OpDescriptor* ThisOp )
 {
 	OpListItem* OpItem = new OpListItem;	 // A bit naughty I know but its got to be called from
 											 // the constructor (during initialisation)
-	OpItem->pOpDesc = ThisOp; 
-	OpList.AddTail(OpItem); 
+	OpItem->pOpDesc = ThisOp;
+	OpList.AddTail(OpItem);
 }
 
 /********************************************************************************************
@@ -397,7 +397,7 @@ BOOL OpDescriptor::DelinkDescriptor( OpDescriptor* pThisOp )
 	Author:		Mario_Shamtani (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	10/8/93
 
-	Inputs:	
+	Inputs:
 				pOpParam:	  Optional operation parameters. If pOpParam is NULL then
 							  the operations Do function is called, if pOpParam is
 							  not NULL then DoWithParam is called.
@@ -410,14 +410,14 @@ BOOL OpDescriptor::DelinkDescriptor( OpDescriptor* pThisOp )
 				operation object and call its DO function.
 
 	Errors:		As a safeguard before the operation is invoked its GetState fn is invoked
-				to make sure that the Operation is executable. 
-				
-				If the Operation is not executable then an ENSURE failure will occur in a 
-				debug build. 
-				
+				to make sure that the Operation is executable.
+
+				If the Operation is not executable then an ENSURE failure will occur in a
+				debug build.
+
 				In a retail build DialogBarOp::UpdateStateOfAllBars is called and the
 				operation is not executed.
-	
+
 	SeeAlso:	OpDescriptor::OpDescriptor
 	SeeAlso:	OpParam
 	SeeAlso:	Operation::Do
@@ -428,15 +428,15 @@ BOOL OpDescriptor::DelinkDescriptor( OpDescriptor* pThisOp )
 void OpDescriptor::Invoke(OpParam* pOpParam, BOOL fWithUndo)
 {
 	// Before we invoke the operation we call the operation's GetState fn to make sure
-	// that it is executable. 
-	String_256 Dummy; 
-	OpState State = GetOpsState(&Dummy); 
+	// that it is executable.
+	String_256 Dummy;
+	OpState State = GetOpsState(&Dummy);
 	if (!State.Greyed)
 	{
 
 		Operation* Op;
 		CCRuntimeClass* TheOpClass;
-		
+
 		// Find out which operation this OpDesc should invoke, i.e. has it been aliased
 		if (Aliased)
 		{
@@ -449,21 +449,21 @@ void OpDescriptor::Invoke(OpParam* pOpParam, BOOL fWithUndo)
 			TheOpClass = OpClass;
 
 		// Use the TheOpClass pointer to a runtime class in order to generate an instance of
-		// the appropriate operation object 
+		// the appropriate operation object
 		Op = (Operation*) TheOpClass->CreateObject();
-	
+
 		if (Op)
 		{
 #if !defined(EXCLUDE_FROM_RALPH)
 			// Update the state of the bars
-			DialogBarOp::SetSystemStateChanged(TRUE); 
+			DialogBarOp::SetSystemStateChanged(TRUE);
 
 			// If the op has not got its own way of showing the progress
 			BOOL ShowProgressIndicator = !(Op->GetOpFlgs().HasOwnTimeIndicator);
 		    if (ShowProgressIndicator)
 			{
 				// Bring up the progress indicator (This has been made re-enterant)
-		    	BeginSlowJob(); 
+		    	BeginSlowJob();
 			}
 #endif
 			// On all but OpExit, send around an OpMsg::START.
@@ -489,7 +489,7 @@ void OpDescriptor::Invoke(OpParam* pOpParam, BOOL fWithUndo)
 	else
 	{
 #if !defined(EXCLUDE_FROM_RALPH)
-		// The operation is disabled. This means that DialogBarOp::UpdateStateOfAllBars 
+		// The operation is disabled. This means that DialogBarOp::UpdateStateOfAllBars
 		// was not called after a change in the state of the system.
 
 		// If ShouldUpdateBarState returns TRUE then the operation was probably invoked before
@@ -497,15 +497,15 @@ void OpDescriptor::Invoke(OpParam* pOpParam, BOOL fWithUndo)
 
 		// If this ENSURE goes bang it indicates  that SetSystemStateChanged was not called when it
 		// should have been.
-		ENSURE(DialogBarOp::ShouldUpdateBarState(), "Trying to execute operation which should be disabled"); 
+		ENSURE(DialogBarOp::ShouldUpdateBarState(), "Trying to execute operation which should be disabled");
 
 		// This ENSURE does not indicate a real error but I think its worth keeping it in as it indicates
 		// that the idle update processing may not be frequent enough.
-		//ENSURE(FALSE, "Trying to execute Operation before we have had a chance to disable it");  
+		//ENSURE(FALSE, "Trying to execute Operation before we have had a chance to disable it");
 
-		// Update the bar state and leave 
+		// Update the bar state and leave
 		DialogBarOp::SetSystemStateChanged();
-		DialogBarOp::UpdateStateOfAllBars(); 
+		DialogBarOp::UpdateStateOfAllBars();
 //		Beep(); // Just to annoy him !
 #endif
 	}
@@ -526,19 +526,19 @@ void OpDescriptor::Invoke(OpParam* pOpParam, BOOL fWithUndo)
 
 ********************************************************************************************/
 
-OpDescriptor* OpDescriptor::FindOpDescriptor(TCHAR* Token)
+OpDescriptor* OpDescriptor::FindOpDescriptor(LPCTCHAR Token)
 {
 	OpListItem* CurrentItem = GetFirstDescriptor();
-		
+
 	while (CurrentItem != NULL)
 	{
 		// if we have found a match, return a pointer to it
 		if (camStrcmp( CurrentItem -> pOpDesc -> Token, Token ) == 0)
 			return CurrentItem->pOpDesc;
-		
+
 		CurrentItem = GetNextDescriptor( CurrentItem );		// next item in the list
 	}
-	
+
 	return NULL;		// failed to find a match, so return null
 }
 
@@ -548,7 +548,7 @@ OpDescriptor* OpDescriptor::FindOpDescriptor(TCHAR* Token)
 
 	Author:		Mario_Shamtani (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	5/10/93
-	Inputs:		CCRuntimeClass - a pointer to a RuntimeClass 
+	Inputs:		CCRuntimeClass - a pointer to a RuntimeClass
 	Returns:	a pointer to the OpDescriptor that contains Token, or NULL if it
 				could not be found
 	Purpose:	To search the OpDescriptot list and find the OpDescriptor described
@@ -559,16 +559,16 @@ OpDescriptor* OpDescriptor::FindOpDescriptor(TCHAR* Token)
 OpDescriptor* OpDescriptor::FindOpDescriptor(CCRuntimeClass* Op)
 {
 	OpListItem* CurrentItem = GetFirstDescriptor();
-		
+
 	while (CurrentItem != NULL)
 	{
 		// if we have found a match, return a pointer to it
 		if ( CurrentItem -> pOpDesc -> OpClass == Op )
 			return CurrentItem -> pOpDesc;
-		
+
 		CurrentItem = GetNextDescriptor( CurrentItem );		// next item in the list
 	}
-	
+
 	return NULL;		// failed to find a match, so return null
 }
 
@@ -589,16 +589,16 @@ OpDescriptor* OpDescriptor::FindOpDescriptor(CCRuntimeClass* Op)
 OpDescriptor* OpDescriptor::FindOpDescriptor(ResourceID res)
 {
 	OpListItem* CurrentItem = GetFirstDescriptor();
-		
+
 	while (CurrentItem != NULL)
 	{
 		// if we have found a match, return a pointer to it
 		if ( CurrentItem -> pOpDesc -> BarCtrlInfo.ControlID == res )
 			return CurrentItem -> pOpDesc;
-		
+
 		CurrentItem = GetNextDescriptor( CurrentItem );		// next item in the list
 	}
-	
+
 	return NULL;		// failed to find a match, so return null
 }
 
@@ -647,7 +647,7 @@ OpDescriptor* OpDescriptor::FindOpDescriptor(ResourceID res)
 				with the user's perception of the op.
 
 				E.g. "Delete" has a menu item and button. When in the selector tool, he'd
-				expect Delete to delete the selected objects. When in the grid tool, he'd 
+				expect Delete to delete the selected objects. When in the grid tool, he'd
 				expect Delete to delete the selected grids.
 				However, the mechanisms of the two tools are very different. So the grid tool
 				needs to alias the Delete op descriptor, so an alternative operation is invoked
@@ -729,7 +729,7 @@ void OpDescriptor::RemoveAlias()
 	AutoStateFlgs	= OldAutoStateFlags;
 	TextID			= OldTextID;
 	BubbleID		= OldBubbleID;
-	
+
 	Aliased = FALSE;
 }
 
@@ -843,13 +843,13 @@ void OpDescriptor::EnableHotKey()
 void OpDescriptor::DestroyAll()
 {
 	ListItem* Item;
-	
+
 	while( (Item = OpList.RemoveHead()) != NULL )
 	{
 		delete ((OpListItem*)Item)->pOpDesc;
-		delete Item; 
+		delete Item;
 	}
-} 
+}
 
 
 /********************************************************************************************
@@ -863,7 +863,7 @@ void OpDescriptor::DestroyAll()
 				NULL otherwise.
 	Returns:	TRUE if successfully retrieves the string and FALSE othersise.
 	Purpose:	This function will use the TextID and ModuleID values to obtain a String
-				resource describing an operation. String resources may have one or more 
+				resource describing an operation. String resources may have one or more
 				text descriptions in them, therefore, a TextFlag can be used to identify the
 				the appropriate text required.
 	SeeAlso:	GetDescription
@@ -879,16 +879,16 @@ BOOL OpDescriptor::GetText(String_256* Description, OpTextFlags WhichText)
 
 	// Explicitly cast return value from GetDescription from a TCHAR* to a String_256
 	ok = GetDescription((TCHAR*) ResourceText, WhichText);
-	
+
 	// if description is found then return true else return false
-	if (ok)        
+	if (ok)
 	{
 		*Description = String_256(ok);
 		return TRUE;
 	}
 	else
 		return FALSE;
-} 
+}
 
 /********************************************************************************************
 
@@ -900,8 +900,8 @@ BOOL OpDescriptor::GetText(String_256* Description, OpTextFlags WhichText)
 
 ********************************************************************************************/
 UINT32 OpDescriptor::GetHelpId()
-{ 
-	return HelpID; 
+{
+	return HelpID;
 }
 
 /********************************************************************************************
@@ -914,7 +914,7 @@ UINT32 OpDescriptor::GetHelpId()
 
 ********************************************************************************************/
 UINT32 OpDescriptor::GetToolID()
-{ 
+{
 	return BarCtrlInfo.ToolID;
 }
 
@@ -928,8 +928,8 @@ UINT32 OpDescriptor::GetToolID()
 
 ********************************************************************************************/
 UINT32 OpDescriptor::GetBubbleId()
-{ 
-	return BubbleID; 
+{
+	return BubbleID;
 }
 
 /********************************************************************************************
@@ -944,7 +944,7 @@ UINT32 OpDescriptor::GetBubbleId()
 ********************************************************************************************/
 
 const BarControlInfo* OpDescriptor::GetBarControlInfo()
-{ 
+{
 	return (&BarCtrlInfo);
 }
 
@@ -957,7 +957,7 @@ const BarControlInfo* OpDescriptor::GetBarControlInfo()
 	Inputs:		Msg:	The message to handle
 	Outputs:	-
 	Returns:	-
-	Purpose:	The default OpDescriptor message handler 
+	Purpose:	The default OpDescriptor message handler
 	Errors:		-
 	SeeAlso:	-
 
@@ -974,7 +974,7 @@ MsgResult OpDescriptor::Message(Msg* Msg)
 			if (MESSAGE_IS_A(Msg,OpDescControlCreateMsg))
 			{
 				// The control associated with the OpDescriptor is being created
-				// call the virtual OnControlCreate	method to allow the control 
+				// call the virtual OnControlCreate	method to allow the control
 				// to be initialised.
 				OnControlCreate((OpDescControlCreateMsg*)Msg);
 			}
@@ -987,12 +987,12 @@ MsgResult OpDescriptor::Message(Msg* Msg)
 					case  DIM_LFT_BN_CLICKED:
 					{
 						// Invoke the Operation
-						Invoke(); 
+						Invoke();
 						break;
 					}
-					
+
 					case DIM_SELECTION_CHANGED:
-					//case DIM_SELECTION_CHANGED_COMMIT:  Removed by Simon cos Jason changed the 
+					//case DIM_SELECTION_CHANGED_COMMIT:  Removed by Simon cos Jason changed the
 					// 									  semantics of DIM_SELECTION_CHANGED_COMMIT for combos
 					{
 						// Combo and slider messages handled here
@@ -1032,7 +1032,7 @@ MsgResult OpDescriptor::Message(Msg* Msg)
 			return EAT_MSG;
 		}
 	}
-	return (MessageHandler::Message(Msg)); 
+	return (MessageHandler::Message(Msg));
 }
 
 
@@ -1072,7 +1072,7 @@ BOOL OpDescriptor::BuildGadgetList(List* pOutputList)
 	// Get a pointer to the list of DialogBarOps, if there is one.
 	List* pDialogBarOpList = MessageHandler::GetClassList(CC_RUNTIME_CLASS(DialogBarOp));
 	if (pDialogBarOpList == NULL) return FALSE;
-	
+
 	// Get the first item on the DialogBarOp list.
 	DialogBarOp* pDialogBarOp = (DialogBarOp*) pDialogBarOpList->GetHead();
 	while (pDialogBarOp != NULL)
@@ -1085,7 +1085,7 @@ BOOL OpDescriptor::BuildGadgetList(List* pOutputList)
 				if (pBarItem->IsKindOf(CC_RUNTIME_CLASS(BarControl)))
 				{
 					BarControl* pBarControl = (BarControl*) pBarItem;
-					BOOL bIsHorizontal = pDialogBarOp->IsHorizontal(); 
+					BOOL bIsHorizontal = pDialogBarOp->IsHorizontal();
 					if (pBarControl->GetOpDescriptor(bIsHorizontal)	== this)
 					{
 						// Found a control associated with this OpDescriptor, so add it
@@ -1120,10 +1120,10 @@ BOOL OpDescriptor::BuildGadgetList(List* pOutputList)
 	Created:	26/8/94
 	Inputs:		-
 	Outputs:	-
-	Returns:	Desc: A description of why the op is greyed. 
+	Returns:	Desc: A description of why the op is greyed.
 
-	Purpose:	This function will get called to determine the greyed/ticked state of the 
-				operation. It tests various conditions (based on the AutoStateFlgs) and 
+	Purpose:	This function will get called to determine the greyed/ticked state of the
+				operation. It tests various conditions (based on the AutoStateFlgs) and
 				then if the op survives this, calls the GetState fn which was registered
 			    with the operation.
 	Errors:		-
@@ -1132,7 +1132,7 @@ BOOL OpDescriptor::BuildGadgetList(List* pOutputList)
 ********************************************************************************************/
 
 OpState OpDescriptor::GetOpsState(String_256* Desc, OpParam* pOpParam)
-{  
+{
 	OpState OpSt;
 	String_256 DisableReason;
 
@@ -1149,25 +1149,25 @@ OpState OpDescriptor::GetOpsState(String_256* Desc, OpParam* pOpParam)
 
 			// Load reason why operation is disabled
 			DisableReason = String_256(_R(IDS_NO_DOC));
-		   	*Desc = DisableReason;	     
-		   	goto End;                                 
+		   	*Desc = DisableReason;
+		   	goto End;
 		}
 
 	}
 
 	if (AutoStateFlgs & GREY_WHEN_NO_SELECTION)
 	{
-		// Find the first node which is selected 
-		Node* FirstSelectedNode = GetApplication()->FindSelection()->FindFirst(); 
+		// Find the first node which is selected
+		Node* FirstSelectedNode = GetApplication()->FindSelection()->FindFirst();
 
 		if (FirstSelectedNode == NULL)
 		{
 			// No nodes are selected
-			OpSt.Greyed = TRUE; 
+			OpSt.Greyed = TRUE;
 			// Load reason why operation is disabled
 			DisableReason = String_256(_R(IDS_NO_OBJECTS_SELECTED));
-		   	*Desc = DisableReason;	
-		   	goto End;                                      
+		   	*Desc = DisableReason;
+		   	goto End;
 		}
 	}
 
@@ -1191,27 +1191,27 @@ OpState OpDescriptor::GetOpsState(String_256* Desc, OpParam* pOpParam)
 		RangeControl rg = Sel.GetRangeControlFlags();
 		rg.PromoteToParent = TRUE;
 		Sel.Range::SetRangeControl(rg);
-	
+
 		if ( Sel.ContainsSelectInside() )
 		{
 			// The selection contains selection inside
-			OpSt.Greyed = TRUE; 
+			OpSt.Greyed = TRUE;
 			// Load reason why operation is disabled
 			DisableReason = String_256(_R(IDS_GREY_WHEN_SELECT_INSIDE));
-		   	*Desc = DisableReason;	
-		   	goto End;                                      
+		   	*Desc = DisableReason;
+		   	goto End;
 		}
 	}
 
 	if (OneInstID != 0)
 	{
-		// Only one live instance of the operation is allowed. It's probably a dialog 
+		// Only one live instance of the operation is allowed. It's probably a dialog
 		if (MessageHandler::MessageHandlerExists(OpClass))
 		{
-			OpSt.Greyed = TRUE; 
-			*Desc = String_256(OneInstID); 
+			OpSt.Greyed = TRUE;
+			*Desc = String_256(OneInstID);
 			goto End;
-		} 
+		}
 	}
 
 	// The operation survived all auto tests, so call the GetState fn
@@ -1222,7 +1222,7 @@ OpState OpDescriptor::GetOpsState(String_256* Desc, OpParam* pOpParam)
 	}
 
 	// If that didn't do anything fall back to the older way of doing things
-	if (GetState != NULL)  
+	if (GetState != NULL)
 	{
 		return (GetState(Desc, this));
 	}
@@ -1231,12 +1231,12 @@ OpState OpDescriptor::GetOpsState(String_256* Desc, OpParam* pOpParam)
 		 // auto tick test's things will be a bit different cos an op could be
 		 // ticked and greyed (well its possible, but not very likely)
 
-	return OpSt; 
+	return OpSt;
 }
 
-	
+
 // -----------------------------------------------------------------------------------------
-// On Message handlers called from the default Message handler for the OpDescriptor 
+// On Message handlers called from the default Message handler for the OpDescriptor
 
 /********************************************************************************************
 >	virtual void OpDescriptor::OnControlCreate(OpDescControlCreateMsg* CreateMsg);
@@ -1244,14 +1244,14 @@ OpState OpDescriptor::GetOpsState(String_256* Desc, OpParam* pOpParam)
 	Author:		Simon_Maneggio (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	10/06/94
 	Inputs:		CreateMsg:
-	Returns:	
-	Purpose:	The OnControlCreate method is called by the OpDescriptor's default Message 
+	Returns:
+	Purpose:	The OnControlCreate method is called by the OpDescriptor's default Message
 				handler when a new control has just been created. You should override
 				this method to perform gadget initialisation.
 
 				This base class fn does nothing
 	Errors:		-
-	SeeAlso:	
+	SeeAlso:
 ********************************************************************************************/
 
 void OpDescriptor::OnControlCreate(OpDescControlCreateMsg* CreateMsg)
@@ -1268,27 +1268,27 @@ void OpDescriptor::OnControlCreate(OpDescControlCreateMsg* CreateMsg)
 	Author:		Simon_Maneggio (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	10/06/94
 	Inputs:		SelChangedMessage: The selection changed message
-				GadgetList:		   A list of all gadgets associated with this 
+				GadgetList:		   A list of all gadgets associated with this
 								   OpDescriptor
-	Returns:	
+	Returns:
 	Purpose:	The OnSelectionChange method is called whenever the user selects a new
-				value from the gadget .. (blah blah  
+				value from the gadget .. (blah blah
 
-				** Should Enter/Tab and selection handling be bundled ?????? - possibly 
+				** Should Enter/Tab and selection handling be bundled ?????? - possibly
 
 				Because there can be more than one control associated with an OpDescriptor
-				When the user makes a selection  all gadgets need to be updated. 
+				When the user makes a selection  all gadgets need to be updated.
 				The GadgetList parameter allows this ........
 
 				(Incomplete fn header)
 
 	Errors:		-
-	SeeAlso:	
+	SeeAlso:
 ********************************************************************************************/
 
 void OpDescriptor::OnSelectionChange(OpDescControlMsg* SelChangedMsg, List* GadgetList)
 {
-	// 
+	//
 }
 
 
@@ -1373,37 +1373,37 @@ void OpDescriptor::OnSliderCancelled(OpDescControlMsg* SliderChangingMsg)
 TCHAR* OpDescriptor::GetDescription(TCHAR* pDesc, OpTextFlags WhichText)
 {
 	/**** Has this man never heard of the switch statement ??? ****/
-	                                                               
+
 	// if Menu Text is required then return text string.
 	if (WhichText == OP_MENU_TEXT)
 		return ReadString(pDesc);
-	else 
+	else
 
 	// if Help Description is required then return text string
-	if (WhichText == OP_DESC_TEXT)      
+	if (WhichText == OP_DESC_TEXT)
 	{
 		SetStringPos(&pDesc, WhichText);
 		return ReadString(pDesc);
 	}
 	else
-        
+
 	// if Undo Text is required then return text string.
 	if (WhichText == OP_UNDO_TEXT)
 	{
 		SetStringPos(&pDesc, WhichText);
 		return ReadString(pDesc);
 	}
-			
+
 	// if Menu Name is required then return text string.
 	if (WhichText == OP_MENU_NAME)
     {
 		return GetMenuNameString(pDesc);
-    }                        
-    
+    }
+
 	// Add next string type here!!!
 	else
 		return NULL;
-}                                                    
+}
 
 /********************************************************************************************
 
@@ -1413,9 +1413,9 @@ TCHAR* OpDescriptor::GetDescription(TCHAR* pDesc, OpTextFlags WhichText)
 	Created:	6/10/93
 	Inputs:		WhichText - used to determine the position of the text to be obtained
 				Description - Operation description string.
-	Purpose:	
-		Scans through a string and sets the pDesc pointer to the appropriate text in the 
-		string resource. The text position is determined by the ordinal value of the 
+	Purpose:
+		Scans through a string and sets the pDesc pointer to the appropriate text in the
+		string resource. The text position is determined by the ordinal value of the
 		WhichText value
 
 ********************************************************************************************/
@@ -1423,26 +1423,26 @@ TCHAR* OpDescriptor::GetDescription(TCHAR* pDesc, OpTextFlags WhichText)
 void OpDescriptor::SetStringPos(TCHAR** pDesc, OpTextFlags WhichText)
 {
     UINT32 StringPos = 0;
-    
+
 	while (	(StringPos < (UINT32) WhichText) &&
-			(**pDesc != END_OF_STRING)) 
+			(**pDesc != END_OF_STRING))
 
 	{
 		// Read until next string delimeter is reached
-		while (	(**pDesc != END_OF_STRING) && 
+		while (	(**pDesc != END_OF_STRING) &&
 				(**pDesc != STRING_DELIMETER))
 		{
 			(*pDesc)++;
 		}
-   		
-		if	(**pDesc != END_OF_STRING) 
+
+		if	(**pDesc != END_OF_STRING)
 	  		// Move pointer to beginning of next string
-			(*pDesc)++;   
+			(*pDesc)++;
 
 		//Increment String position by 1
 		StringPos++;
-	}	
-}                   
+	}
+}
 
 /********************************************************************************************
 
@@ -1457,21 +1457,21 @@ void OpDescriptor::SetStringPos(TCHAR** pDesc, OpTextFlags WhichText)
 
 TCHAR * OpDescriptor::ReadString(TCHAR* pDesc)
 {
-	static TCHAR 	pText[MAX_TEXT_SIZE];	
+	static TCHAR 	pText[MAX_TEXT_SIZE];
 	UINT32 	pos = 0;
 
 	// Get Text String
-	while (	(*pDesc != END_OF_STRING) && 
-			(*pDesc != STRING_DELIMETER) && 
+	while (	(*pDesc != END_OF_STRING) &&
+			(*pDesc != STRING_DELIMETER) &&
 			(pos <= (MAX_TEXT_SIZE - 1)))
 	{
 		pText[pos++] = *pDesc;
 		pDesc++;
 	}
-	
+
 	// Set end of string
 	pText[pos] = END_OF_STRING;
-	
+
 	return pText;
 }
 
@@ -1482,7 +1482,7 @@ TCHAR * OpDescriptor::ReadString(TCHAR* pDesc)
 	Author:		Mario_Shamtani (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	18/10/93
 	Inputs:		Description - Operation description string.
-	Purpose:	
+	Purpose:
 		Reads the menu text in position one and removes any ampersands denoting an
 		accelerator.
 ********************************************************************************************/
@@ -1490,23 +1490,23 @@ TCHAR * OpDescriptor::ReadString(TCHAR* pDesc)
 TCHAR * OpDescriptor::GetMenuNameString(TCHAR* pDesc)
 {
 	const 	TCHAR ACCELERATOR_LETTER = '&';
-	
+
 	static TCHAR 	pText[MAX_TEXT_SIZE];
 	UINT32 	pos = 0;
 
 	// Get Text String
-	while (	(*pDesc != END_OF_STRING) && 
-			(*pDesc != STRING_DELIMETER) && 
+	while (	(*pDesc != END_OF_STRING) &&
+			(*pDesc != STRING_DELIMETER) &&
 			(pos <= (MAX_TEXT_SIZE - 1)))
 	{
 		if (*pDesc != ACCELERATOR_LETTER)
 			pText[pos++] = *pDesc;
 		pDesc++;
 	}
-	
+
 	// Set end of string
 	pText[pos] = END_OF_STRING;
-	
+
 	return pText;
 }
 
@@ -1520,8 +1520,8 @@ TCHAR * OpDescriptor::GetMenuNameString(TCHAR* pDesc)
 
 /********************************************************************************************
 
->	UndoableOpDescriptor::UndoableOpDescriptor( 
-												UINT32 toolID,                      
+>	UndoableOpDescriptor::UndoableOpDescriptor(
+												UINT32 toolID,
 												UINT32 txID,
 												CCRuntimeClass *OpClass,
 												TCHAR* token,
@@ -1530,26 +1530,26 @@ TCHAR * OpDescriptor::GetMenuNameString(TCHAR* pDesc)
 												UINT32 bubbleID = 0,
 												UINT32 resourceID = 0,
 												UINT32 controlID = 0,
-												BOOL ReceiveMessages = FALSE, 
-												BOOL Smart = FALSE, 
+												BOOL ReceiveMessages = FALSE,
+												BOOL Smart = FALSE,
 								 				BOOL Clean = TRUE,
-								 				UINT32 OneOpenInstID = 0,		
+								 				UINT32 OneOpenInstID = 0,
 				 								UINT32 AutoStateFlags = 0,
 												BOOL fCheckable = FALSE
 							  					);
 
 	Author:		Simon_Maneggio (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	10/8/93
-	Inputs:	
+	Inputs:
 				toolID - Tool Identifier defining which tool (0 for kernel) holds resource
 				txID - Text description resource Identifier
 				tok - pointer to a static string that describe the operation
 				gs - pointer to the GetState function in your operation
 
-				The following flags specify the type of the operation. They have default 
-				values for a normal undoable operation. 
+				The following flags specify the type of the operation. They have default
+				values for a normal undoable operation.
 
-				ReceiveMessages - Should the Opdescriptor receive messages 
+				ReceiveMessages - Should the Opdescriptor receive messages
 				Smart - Smart Duplicate
 				Clean - does the operation change the document
 
@@ -1567,27 +1567,27 @@ TCHAR * OpDescriptor::GetMenuNameString(TCHAR* pDesc)
 ********************************************************************************************/
 
 UndoableOpDescriptor::UndoableOpDescriptor(
-						   UINT32 toolID,                      
+						   UINT32 toolID,
 						   UINT32 txID,
-						   CCRuntimeClass *Op,			
+						   CCRuntimeClass *Op,
 						   TCHAR* tok,
 						   pfnGetState gs,
 						   UINT32 helpID,
 						   UINT32 bubbleID,
 						   UINT32 resourceID,
 						   UINT32 controlID,
-						   BOOL ReceiveMessages, 
+						   BOOL ReceiveMessages,
      					   BOOL Smart,
 				 		   BOOL Clean,
-				 		   UINT32 OneOpenInstID ,		
+				 		   UINT32 OneOpenInstID ,
 				 		   UINT32 AutoStateFlags,
 						   BOOL fCheckable /*= FALSE*/
 )
- 
-  :OpDescriptor( toolID,  txID, Op, tok, gs, helpID, bubbleID, resourceID, controlID, ReceiveMessages, 
-  				Smart, Clean, OneOpenInstID, AutoStateFlags, fCheckable) 
+
+  :OpDescriptor( toolID,  txID, Op, tok, gs, helpID, bubbleID, resourceID, controlID, ReceiveMessages,
+  				Smart, Clean, OneOpenInstID, AutoStateFlags, fCheckable)
 {
-	
+
 }
 
 /*******************************************************************************************
@@ -1597,25 +1597,25 @@ UndoableOpDescriptor::UndoableOpDescriptor(
 
 /********************************************************************************************
 
->	ToolOpDescriptor::ToolOpDescriptor(	
-										UINT32 toolID,                      
+>	ToolOpDescriptor::ToolOpDescriptor(
+										UINT32 toolID,
 										UINT32 txID,
-										CCRuntimeClass *OpClass,			
-										TCHAR* token,					
+										CCRuntimeClass *OpClass,
+										TCHAR* token,
 										pfnGetState gs,
 										UINT32 hlpID,
 										UINT32 bubID,
 										UINT32 resID,
 										UINT32 ctlID,
-										BOOL ReceiveMessages = FALSE, 
-										BOOL Smart = FALSE, 
+										BOOL ReceiveMessages = FALSE,
+										BOOL Smart = FALSE,
 						 				BOOL Clean = TRUE,
 										BOOL fCheckable = FALSE
 									);
 
 	Author:		Mario_Shamtani (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	16/8/93
-	Inputs:		
+	Inputs:
 				toolID - Identifier of tool in which resources can be found
 				txID - Text description resource Identifier
 				[ token - Operation Token string (???????????????????? eh Mario?????) ]
@@ -1625,32 +1625,32 @@ UndoableOpDescriptor::UndoableOpDescriptor(
 				bubID - bubble help string resource ID
 				resID - resource ID associated with this ToolOp
 				ctlID - control ID associated with this ToolOp
-				
+
 	Purpose:	Construct a new ToolOpDescriptor object and link it into the list
 				of all OpDescriptors
-	Errors:		
+	Errors:
 
 ********************************************************************************************/
 
-ToolOpDescriptor::ToolOpDescriptor( 
+ToolOpDescriptor::ToolOpDescriptor(
 									UINT32 toolID,
 									UINT32 txID,
-									CCRuntimeClass *Op,			
-									TCHAR* tok,					
+									CCRuntimeClass *Op,
+									TCHAR* tok,
 									pfnGetState gs,
 									UINT32 hlpID,
 									UINT32 bubID,
 									UINT32 resID,
 									UINT32 ctlID,
-									BOOL ReceiveMessages , 
-									BOOL Smart, 
+									BOOL ReceiveMessages ,
+									BOOL Smart,
 						 			BOOL Clean,
-									BOOL fCheckable /*= FALSE*/ 
+									BOOL fCheckable /*= FALSE*/
 								   )
  : OpDescriptor(toolID,  txID, Op, tok, gs, hlpID, bubID, resID, ctlID, ReceiveMessages,
   				Smart, Clean, fCheckable )
 {
-	CurrentTool = FALSE;		
+	CurrentTool = FALSE;
 }
 
 
@@ -1717,7 +1717,7 @@ ParamOpDescriptor::ParamOpDescriptor(const TCHAR* pcszToken,
 				pOpDesc		--- A pointer to the OpDescriptor whose state is being
 								queried.
 	Returns:	An OpState containing the flags that show what is valid.
-	Purpose:	Returns the state that this operation should appear in the menus 
+	Purpose:	Returns the state that this operation should appear in the menus
 				or as a buttom, for example - greyed out, or ticked.
 
 ********************************************************************************************/
@@ -1746,7 +1746,7 @@ OpState ParamOpDescriptor::GetState(String_256*, OpDescriptor* pOpDesc)
 				NULL otherwise.
 	Returns:	TRUE if successfully retrieves the string and FALSE othersise.
 	Purpose:	This function will use the TextID and ModuleID values to obtain a String
-				resource describing an operation. String resources may have one or more 
+				resource describing an operation. String resources may have one or more
 				text descriptions in them, therefore, a TextFlag can be used to identify the
 				the appropriate text required.
 	SeeAlso:	OpDescriptor::GetText
@@ -1763,8 +1763,4 @@ BOOL ParamOpDescriptor::GetText(String_256* Description, OpTextFlags WhichText)
 {
 	// Leave menu text alone
 	return TRUE;
-} 
-
-
-
-
+}

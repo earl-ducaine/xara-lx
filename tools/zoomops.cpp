@@ -1,7 +1,7 @@
 // $Id: zoomops.cpp 1771 2007-06-17 20:14:43Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
- 
+
                Xara LX, a vector drawing and manipulation program.
                     Copyright (C) 1993-2006 Xara Group Ltd.
        Copyright on certain contributions may be held in joint with their
@@ -32,7 +32,7 @@ ADDITIONAL RIGHTS
 
 Conditional upon your continuing compliance with the GNU General Public
 License described above, Xara Group Ltd grants to you certain additional
-rights. 
+rights.
 
 The additional rights are to use, modify, and distribute the software
 together with the wxWidgets library, the wxXtra library, and the "CDraw"
@@ -96,7 +96,7 @@ service marks of Xara Group Ltd. All rights in these marks are reserved.
 =================================XARAHEADEREND============================
  */
 /*
-	
+
 	zoomops.cpp
 
 	Zoom tool operations.
@@ -133,7 +133,7 @@ service marks of Xara Group Ltd. All rights in these marks are reserved.
 #include "rulers.h"
 #endif
 
-#ifdef _BATCHING   
+#ifdef _BATCHING
 //#include "sglcart.h"
 //#include "camdoc.h"
 #endif
@@ -208,7 +208,7 @@ BOOL OpZoom::m_fRadialZoomDragBox = FALSE;
 	Purpose:	Determines whether to flash a "zooming-in" or "zooming-out" cursor
 				when a zoom is being calculated, and a special drag cursor when dragging
 				in the zoom tool.
-				
+
 				Some people think this adds a groovy, polished feel to the program.
 				Others don't, which is why this preference is 0 by default (ie. no
 				special zoom cursors).
@@ -236,7 +236,7 @@ INT32 OpZoom::ZoomTable[cZoomTableSize] =
 	10,
 };
 
-                                      
+
 
 /********************************************************************************************
 >	OpZoom::OpZoom()
@@ -248,7 +248,7 @@ INT32 OpZoom::ZoomTable[cZoomTableSize] =
 
 OpZoom::OpZoom()
 	  :	m_csrZoomIn((Tool_v1*)NULL, _R(IDCSR_ZOOM_IN)),				// we only need these cursors when an OpZoom
-	 	m_csrZoomOut((Tool_v1*)NULL, _R(IDCSR_ZOOM_OUT)),			
+	 	m_csrZoomOut((Tool_v1*)NULL, _R(IDCSR_ZOOM_OUT)),
 		m_csrZoomDrag((Tool_v1*)NULL, _R(IDCSR_ZOOM_DRAG))			// is going to be run
 {
 //	ERROR3IF(!m_csrZoomIn.IsValid() || !m_csrZoomOut.IsValid() || !m_csrZoomDrag.IsValid(),
@@ -266,7 +266,7 @@ OpZoom::OpZoom()
 	SeeAlso:	OpZoomDescriptor::FakeInvoke;
 
 ********************************************************************************************/
-			
+
 void OpZoom::Do(OpDescriptor *pOpDesc)
 {
 	// Do what FakeInvoke does but call the DoZoom function instead of HandleButtonMsg for
@@ -341,7 +341,7 @@ void OpZoom::SpreadToWork(Spread* pspdIn, const DocRect& drIn, WorkRect* pwrOut)
 	Inputs:		nPreset			which preset zoom factor, with 0 the highest and
 								cZoomTableSize-1 the lowest.
 	Returns:	A standard preset zoom factor, as a percentage.
-	Purpose:	
+	Purpose:
 ********************************************************************************************/
 
 INT32 OpZoom::GetPresetZoomPercent(INT32 nPreset)
@@ -361,7 +361,7 @@ INT32 OpZoom::GetPresetZoomPercent(INT32 nPreset)
 	Inputs:		nPreset			which preset zoom factor, with 0 the highest and
 								cZoomTableSize-1 the lowest.
 	Returns:	A standard preset zoom factor, as a scale factor.
-	Purpose:	
+	Purpose:
 ********************************************************************************************/
 
 FIXED16 OpZoom::GetPresetZoomScale(INT32 nPreset)
@@ -446,10 +446,10 @@ BOOL OpZoom::OnPointerMoved(Spread*, const DocRect&, ClickModifiers)
 		// Set the status line text.  If we manage to do it then don't bother doing it
 		// again until another drag really begins.
 		String_256 str(_R(IDS_ZOOMOP_STATUSHELP));
-		m_fStatusTextShown = GetApplication()->UpdateStatusBarText(&str);	
+		m_fStatusTextShown = GetApplication()->UpdateStatusBarText(&str);
 	}
 #endif
-	
+
 	// All fine, continue dragging.
 	return TRUE;
 }
@@ -478,7 +478,7 @@ BOOL OpZoom::OnDragEnded(Spread*, const DocRect&, ClickModifiers, BOOL fDragOK)
 {
 	// Pop the cursor we possibly pushed in OnStartDrag.
 	if (m_nfShowZoomCursors) CursorStack::GPop(m_ncsrSaveDrag);
-	
+
 	// If the drag didn't happen we do nothing.  We don't want FailAndExecute() called
 	// though, so return TRUE.
 	if (!fDragOK) return TRUE;
@@ -511,7 +511,7 @@ BOOL OpZoom::OnDragEnded(Spread*, const DocRect&, ClickModifiers, BOOL fDragOK)
 		#undef  MAX
 		#define MIN(a,b) (((a)<(b))?(a):(b))
 		#define MAX(a,b) (((a)>(b))?(a):(b))
-		
+
 		wrZoom = WorkRect(MIN(m_wcStartPos.x, wcLast.x),
 			   			  MIN(m_wcStartPos.y, wcLast.y),
 			   			  MAX(m_wcStartPos.x, wcLast.x),
@@ -541,7 +541,7 @@ BOOL OpZoom::OnDragEnded(Spread*, const DocRect&, ClickModifiers, BOOL fDragOK)
 		// Do a proper mouse-drag zoom.
 		ZoomInOnRect(wrZoom, FALSE);					// OpDragBox will end this op
 	}
-	
+
 	// tell people things have changed on screen
 	TRACEUSER( "Diccon", _T("OnDragEnded\n"));
 	BROADCAST_TO_ALL(ScreenChangeMsg(TRUE));
@@ -661,7 +661,7 @@ void OpZoom::ZoomTo(const WorkCoord& wcZoom, INT32 nPercent, BOOL fEndOp)
 	// Find out the current view.
 	DocView* pDocView = DocView::GetCurrent();
 	ERROR3IF(pDocView == 0, "No current DocView in OpZoom::ZoomIn");
-	
+
 	if (pDocView)
 	{
 		// Do the zoom.  We will (optionally) end the operation.
@@ -690,7 +690,7 @@ void OpZoom::ZoomIn(const WorkCoord& wcZoom, BOOL fEndOp)
 	// Find out the current view.
 	DocView* pDocView = DocView::GetCurrent();
 	ERROR3IF(pDocView == 0, "No current DocView in OpZoom::ZoomIn");
-	
+
 	if (pDocView)
 	{
 		// Find the current view's scaling factor.  By converting this to a percentage
@@ -766,7 +766,7 @@ void OpZoom::ZoomInOnRect(const WorkRect& wrZoom, BOOL fEndOp)
 	// Get out now if view 0 otherwise we will access violate later on
 	if (pDocView == 0)
 		return;
-	
+
 	OpZoomPrevZoomDescriptor::SaveZoom(pDocView);
 
 	// Find out the size of the window and the given zoom rectangle in work coordinates.
@@ -793,7 +793,7 @@ void OpZoom::ZoomInOnRect(const WorkRect& wrZoom, BOOL fEndOp)
 											? &m_csrZoomIn
 											: &m_csrZoomOut);
 	}
-	
+
 	// Convert the new scale factor to a percentage and check that it's in bounds.  If it
 	// isn't adjust it to the lowest/highest zoom factors.
 	INT32 nZoomPercent = (INT32) (fpNewScaleFactor * 100);
@@ -811,7 +811,7 @@ void OpZoom::ZoomInOnRect(const WorkRect& wrZoom, BOOL fEndOp)
 	wcScrollOffset.x = (wrZoom.lo.x + wrZoom.hi.x) / 2;
 	wcScrollOffset.y = (wrZoom.lo.y + wrZoom.hi.y) / 2;
 
-	// Scale the value to the correct number of pixels. 
+	// Scale the value to the correct number of pixels.
 	double fpRatio = fpNewScaleFactor / fpOldScaleFactor;
 	wcScrollOffset.x = XLONG(wcScrollOffset.x*fpRatio);
 	wcScrollOffset.y = XLONG(wcScrollOffset.y*fpRatio);
@@ -955,9 +955,9 @@ void OpZoom::ZoomAtPoint(const WorkCoord& wcZoom, FIXED16 fxNewScaleFactor, BOOL
 	double fpPixRatio = fxNewScaleFactor.MakeDouble() / fxOldScaleFactor.MakeDouble();
 	wcNewTopCorner.x  = XLONG(fpPixRatio * wcNewTopCorner.x);
 	wcNewTopCorner.y  = XLONG(fpPixRatio * wcNewTopCorner.y);
-		
+
 	// Set the new scale factor in the view.
-	pDocView->SetViewScale(fxNewScaleFactor);	
+	pDocView->SetViewScale(fxNewScaleFactor);
 
 	// Make sure that the new scroll offset is within workspace bounds and set it.
 	if (wcNewTopCorner.x < 0) wcNewTopCorner.x = 0;
@@ -1014,7 +1014,7 @@ void OpZoom::ZoomAtPoint(Spread* pZoomSpread, const DocCoord& dcZoomPos,
 	Author:		Ed_Cornes (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	26/1/95
 	Inputs:		Spread*, DocCoord, ClickModifiers - not used
-	Outputs:	pText - 
+	Outputs:	pText -
 	Returns:	TRUE if returning valid text
 	Purpose:	get status line help for zoom drag op
 	Errors:		this==0
@@ -1142,9 +1142,9 @@ void OpZoom::MouseWheelZoomAtPoint(const WorkCoord& wcZoom, FIXED16 fxNewScaleFa
 	double fpPixRatio = fxNewScaleFactor.MakeDouble() / fxOldScaleFactor.MakeDouble();
 	wcNewTopCorner.x  = XLONG(fpPixRatio * wcNewTopCorner.x);
 	wcNewTopCorner.y  = XLONG(fpPixRatio * wcNewTopCorner.y);
-		
+
 	// Set the new scale factor in the view.
-	pDocView->SetViewScale(fxNewScaleFactor);	
+	pDocView->SetViewScale(fxNewScaleFactor);
 
 	// Make sure that the new scroll offset is within workspace bounds and set it.
 	if (wcNewTopCorner.x < 0) wcNewTopCorner.x = 0;
@@ -1176,9 +1176,9 @@ OpZoomTo100::OpZoomTo100()
 BOOL OpZoomTo100::Init()
 {
 	BOOL ok = RegisterOpDescriptor(
-									0, 
+									0,
 									_R(IDS_ZOOMTO100),
-									CC_RUNTIME_CLASS(OpZoomTo100), 
+									CC_RUNTIME_CLASS(OpZoomTo100),
 									OPTOKEN_ZOOMTO100,
 									OpZoomTo100::GetState,
 									0,					/* help ID */
@@ -1200,7 +1200,7 @@ BOOL OpZoomTo100::Init()
 	Returns:	An OpState object
 	Purpose:    Func for determining the usability of this op
 	SeeAlso:	-
-		
+
 ***********************************************************************************************/
 OpState OpZoomTo100::GetState(String_256* Description, OpDescriptor*)
 {
@@ -1243,9 +1243,9 @@ OpZoomTo200::OpZoomTo200()
 BOOL OpZoomTo200::Init()
 {
 	BOOL ok = RegisterOpDescriptor(
-									0, 
+									0,
 									_R(IDS_ZOOMTO200),
-									CC_RUNTIME_CLASS(OpZoomTo200), 
+									CC_RUNTIME_CLASS(OpZoomTo200),
 									OPTOKEN_ZOOMTO200,
 									OpZoomTo200::GetState,
 									0,					/* help ID */
@@ -1267,7 +1267,7 @@ BOOL OpZoomTo200::Init()
 	Returns:	An OpState object
 	Purpose:    Func for determining the usability of this op
 	SeeAlso:	-
-		
+
 ***********************************************************************************************/
 OpState OpZoomTo200::GetState(String_256* Description, OpDescriptor*)
 {
@@ -1310,9 +1310,9 @@ OpZoomTo300::OpZoomTo300()
 BOOL OpZoomTo300::Init()
 {
 	BOOL ok = RegisterOpDescriptor(
-									0, 
+									0,
 									_R(IDS_ZOOMTO300),
-									CC_RUNTIME_CLASS(OpZoomTo300), 
+									CC_RUNTIME_CLASS(OpZoomTo300),
 									OPTOKEN_ZOOMTO300,
 									OpZoomTo300::GetState,
 									0,					/* help ID */
@@ -1335,7 +1335,7 @@ BOOL OpZoomTo300::Init()
 	Returns:	An OpState object
 	Purpose:    Func for determining the usability of this op
 	SeeAlso:	-
-		
+
 ***********************************************************************************************/
 OpState OpZoomTo300::GetState(String_256* Description, OpDescriptor*)
 {
@@ -1378,9 +1378,9 @@ OpZoomTo400::OpZoomTo400()
 BOOL OpZoomTo400::Init()
 {
 	BOOL ok = RegisterOpDescriptor(
-									0, 
+									0,
 									_R(IDS_ZOOMTO400),
-									CC_RUNTIME_CLASS(OpZoomTo400), 
+									CC_RUNTIME_CLASS(OpZoomTo400),
 									OPTOKEN_ZOOMTO400,
 									OpZoomTo400::GetState,
 									0,					/* help ID */
@@ -1403,7 +1403,7 @@ BOOL OpZoomTo400::Init()
 	Returns:	An OpState object
 	Purpose:    Func for determining the usability of this op
 	SeeAlso:	-
-		
+
 ***********************************************************************************************/
 OpState OpZoomTo400::GetState(String_256* Description, OpDescriptor*)
 {
@@ -1447,9 +1447,9 @@ OpZoomIn::OpZoomIn()
 BOOL OpZoomIn::Init()
 {
 	BOOL ok = RegisterOpDescriptor(
-									0, 
+									0,
 									_R(IDS_ZOOMIN),
-									CC_RUNTIME_CLASS(OpZoomIn), 
+									CC_RUNTIME_CLASS(OpZoomIn),
 									OPTOKEN_ZOOMIN,
 									OpZoomIn::GetState,
 									0,  /* help ID */
@@ -1471,7 +1471,7 @@ BOOL OpZoomIn::Init()
 	Returns:	An OpState object
 	Purpose:    Func for determining the usability of this op
 	SeeAlso:	-
-		
+
 ***********************************************************************************************/
 OpState OpZoomIn::GetState(String_256* Description, OpDescriptor*)
 {
@@ -1514,9 +1514,9 @@ OpZoomOut::OpZoomOut()
 BOOL OpZoomOut::Init()
 {
 	BOOL ok = RegisterOpDescriptor(
-									0, 
+									0,
 									_R(IDS_ZOOMOUT),
-									CC_RUNTIME_CLASS(OpZoomOut), 
+									CC_RUNTIME_CLASS(OpZoomOut),
 									OPTOKEN_ZOOMOUT,
 									OpZoomOut::GetState,
 									0,  /* help ID */
@@ -1538,7 +1538,7 @@ BOOL OpZoomOut::Init()
 	Returns:	An OpState object
 	Purpose:    Func for determining the usability of this op
 	SeeAlso:	-
-		
+
 ***********************************************************************************************/
 OpState OpZoomOut::GetState(String_256* Description, OpDescriptor*)
 {
@@ -1623,7 +1623,7 @@ OpZoomDescriptor::OpZoomDescriptor(const TCHAR* pcszToken, UINT32 wStatusID,
 				pOpDesc		--- A pointer to the OpDescriptor whose state is being
 								queried.
 	Returns:	An OpState containing the flags that show what is valid.
-	Purpose:	Returns the state that this zoom operation should appear in the menus 
+	Purpose:	Returns the state that this zoom operation should appear in the menus
 				or as a buttom, for example - greyed out, or ticked.
 	SeeAlso:	OpZoomDescriptor::IsAvailable
 ********************************************************************************************/
@@ -1681,7 +1681,7 @@ BOOL OpZoomDescriptor::IsAvailable()
 	if (Empty)
 	{
 //		TRACEUSER( "JustinF", _T("\tEmpty rectangle in OpZoomDescriptor::IsAvailable\n"));
-	}																				  
+	}
 #endif
 
 	// Find the relevant zoom rectangle, if any.
@@ -1708,10 +1708,10 @@ MsgResult OpZoomDescriptor::Message(Msg* pMsg)
 {
 	// Check if the message is an OpDesc message.
 	if (!MESSAGE_IS_A(pMsg, OpDescMsg)) return OK;
-	
+
 	// Cast it into the correct type etc.
 	OpDescMsg* pOpDescMsg = (OpDescMsg*) pMsg;
-	
+
 	// Process the message . . .
 	if (pOpDescMsg->OpDesc == this && MESSAGE_IS_A(pOpDescMsg, OpDescControlMsg))
 	{
@@ -1767,7 +1767,7 @@ BOOL OpZoomDescriptor::DoZoom(OpZoom* pZoomOp)
 	ERROR3IF(pDocView == 0, "No current DocView in OpZoomDescriptor::HandleButtonMsg");
 	if (pDocView == 0)
 		return FAIL;
-		
+
 	// Find the relevant spread, if any.
 	Spread* pSpread = GetSpread(pDocView);
 	ERROR3IF(pSpread == 0, "No relevant spread - can't do zoom\n");
@@ -1784,7 +1784,7 @@ BOOL OpZoomDescriptor::DoZoom(OpZoom* pZoomOp)
 	// Do the zoom, the scaling factor of which will not appear in the zoom op's table.
     pZoomOp->ZoomInOnRect(pSpread, drBounds);
 
-	return TRUE;	
+	return TRUE;
 }
 
 
@@ -1913,11 +1913,11 @@ void OpZoomDescriptor::AdjustRect(DocRect* pRect) const
 	SeeAlso:	OpZoomComboDescriptor::OnSelectionChanged
 ********************************************************************************************/
 
-void OpZoomDescriptor::FakeInvoke(TCHAR* pszToken)
+void OpZoomDescriptor::FakeInvoke(LPCTCHAR pszToken)
 {
 	// Try to find the OpDescriptor.
 	OpZoomDescriptor* pZoomOpDesc = (OpZoomDescriptor*) FindOpDescriptor(pszToken);
-	
+
 	// If that worked then call its button handler.
 	if (pZoomOpDesc != 0 && pZoomOpDesc->IsAvailable())
 	{
@@ -1953,7 +1953,7 @@ void OpZoomDescriptor::FakeZoomToRect(const DocRect& rect)
 {
 	// Try to find the OpDescriptor.
 	OpZoomDescriptor* pZoomOpDesc = (OpZoomDescriptor*) FindOpDescriptor(OPTOKEN_ZOOMRECT);
-	
+
 	// If that worked then call its button handler.
 	if (pZoomOpDesc != 0)
 	{
@@ -2011,7 +2011,7 @@ DocRect OpZoomFitSpreadDescriptor::GetRect(Spread* pSpread)
 	{
 		static DocRect drOld = pSpread->GetPageBounds();
 		DocRect drNew = pSpread->GetPageBounds();
-		
+
 		if (drNew != drOld)
 		{
 			TRACE( _T("In OpZoomFitSpreadDesriptor - Spread::GetPageBounds has changed!\n")
@@ -2019,7 +2019,7 @@ DocRect OpZoomFitSpreadDescriptor::GetRect(Spread* pSpread)
 					(INT32) drOld.Width(), (INT32) drOld.Height(),
 					(INT32) drNew.Width(), (INT32) drNew.Height());
 		}
-				
+
 		return drOld = drNew;
 	}
 #endif
@@ -2205,7 +2205,7 @@ DocRect OpZoomFitSelectedDescriptor::GetRect(Spread* pSpread)
 				"Can't find a selected node in OpZoomFitSelectedDescriptor::GetRect");
 	ERROR3IF(pSpread != pSel->FindFirst()->FindParent(CC_RUNTIME_CLASS(Spread)),
 				"Spread pointer has changed between calls on SelRange");
-	
+
 	// We really need to call the equivalent of GetUnionBlobBoundingRect() for the SelRange,
 	// but this function doesn't exist, so we mimic its result here.
 	DocRect drSel = pSel->GetBlobBoundingRect().Union(pSel->GetBoundingRect());
@@ -2433,7 +2433,7 @@ BOOL OpZoomPrevZoomDescriptor::DoZoom(OpZoom* pZoomOp)
 	INT32 nIndex = pDocView->GetZoomTableIndex();
 	FIXED16 fxScale = pDocView->GetViewScale();
 	WorkCoord wcOffset = pDocView->GetScrollOffsets();
-	
+
 	// Restore the previous scale factor and scroll offsets.
 	pDocView->SetZoomTableIndex(pDocView->GetPrevZoomIndex());
     pDocView->SetViewScale(pDocView->GetPrevZoomScale());
@@ -2452,15 +2452,15 @@ BOOL OpZoomPrevZoomDescriptor::DoZoom(OpZoom* pZoomOp)
 
 	// Finally, force a redraw and return the success code.
 	pDocView->ForceRedraw(TRUE);
-	
+
 	// End the operation as we have finished
 	if (pZoomOp)
 		pZoomOp->End();
-	
+
 	// tell people things have changed on screen
 	TRACEUSER( "Diccon", _T("DoZoom\n"));
 	BROADCAST_TO_ALL(ScreenChangeMsg(TRUE));
-	return TRUE;	
+	return TRUE;
 }
 
 /********************************************************************************************
@@ -2508,7 +2508,7 @@ MsgResult OpZoomPrevZoomDescriptor::HandleButtonMsg(DialogOp*, CGadgetID)
 OpZoomComboDescriptor::OpZoomComboDescriptor()
   :	OpZoomDescriptor(OPTOKEN_ZOOMCOMBO, _R(IDS_ZOOMCOMBOSTATUSTEXT), 0, _R(IDBBL_ZOOM_COMBO), _R(IDCB_ZOOM_COMBO_BOX), _R(IDCB_ZOOM_COMBO_BOX))
 {
-	
+
 	// Empty.
 }
 
@@ -2600,13 +2600,13 @@ MsgResult OpZoomComboDescriptor::Message(Msg* pMsg)
 
 	// Check if the message is an OpDesc message.
 	if (!MESSAGE_IS_A(pMsg, OpDescMsg)) return OK;
-	
+
 	// Cast it into the correct type etc.
 	OpDescMsg* pOpDescMsg = (OpDescMsg*) pMsg;
-		
+
 	// Is it for us?
 	if (pOpDescMsg->OpDesc != this) return OK;
-	
+
 
 
 	// Process the message . . .
@@ -2639,7 +2639,7 @@ MsgResult OpZoomComboDescriptor::HandleViewChangeMsg(DocView* pSelectedDocView)
 #if !defined(EXCLUDE_FROM_RALPH)
 	ZoomTool::InvalidateStatusText();
 	String_256 dummy;
-	return (pSelectedDocView != 0 
+	return (pSelectedDocView != 0
 				// There is a new view, so set the combos to the scale factor.
 				? UpdateComboWithViewScale(pSelectedDocView)
 				// There is no view, so blank the zoom combos.
@@ -2679,7 +2679,7 @@ BOOL OpZoomComboDescriptor::UpdateAllCombos(String_256* pStr)
 	// See if the dialogue manager can remember where its controls live, or even
 	// what identifiers they possess . . .
 	if (BuildGadgetList(pGadgetList))
-	{	
+	{
 		// Success.  Walk the generated list
 		ListItem* pListItem = pGadgetList->GetHead();
 		while (pListItem != 0)
@@ -2695,7 +2695,7 @@ BOOL OpZoomComboDescriptor::UpdateAllCombos(String_256* pStr)
 			// This can be useful when bamboozled by the Operations system . . .
 /*			TRACEUSER( "JustinF", _T("\t\tUpdating zoom combo at 0x%lX (GID# %lX)\n"),
 						(UINT32) pGadgetItem, (UINT32) pGadgetItem->gidGadgetID);
-*/		
+*/
 			// Do the next control in the list, if any.
 			pListItem = pGadgetList->GetNext(pListItem);
 		}
@@ -2760,7 +2760,7 @@ BOOL OpZoomComboDescriptor::UpdateComboWithViewScale(DocView* pDocView)
 		{
 			nScalePercent = OpZoom::GetPresetZoomPercent(nTableIndex);
 		}
-	
+
 		// Convert the percentage to a formatted text string.
 		txt.MakeMsg(_R(IDS_ZOOM_INFO_FORMAT), nScalePercent);
 	}
@@ -2791,7 +2791,7 @@ BOOL OpZoomComboDescriptor::RefreshList()
 	// See if the dialogue manager can remember where its controls live, or even
 	// what identifiers they possess . . .
 	if (BuildGadgetList(pList))
-	{	
+	{
 		// Success.  Walk the generated list
 		ListItem* pListItem = pList->GetHead();
 		while (pListItem != 0)
@@ -2988,7 +2988,7 @@ void OpZoomComboDescriptor::OnSelectionChange(OpDescControlMsg* pCtrlMsg, List*)
 														 INT32_MIN, INT32_MAX,
 														 _R(IDE_INVALIDZOOMFACTOR),
 														 &bIsValid, StringToLong);
-	
+
     // Check if the input is valid.  If it isn't then reset the result.  The
     // GetStringGadgetValue will have reported the error if the input isn't valid.
 	if (!bIsValid)
@@ -3039,7 +3039,7 @@ void OpZoomComboDescriptor::OnSelectionChange(OpDescControlMsg* pCtrlMsg, List*)
 	WorkRect wrView = pDocView->GetViewRect();
 	WorkCoord wcMidView((wrView.lo.x + wrView.hi.x) / 2,
 						(wrView.lo.y + wrView.hi.y) / 2);
-	
+
 	// Ask the operation to zoom at this point.
 	pDocView->SetZoomTableIndex(nIndex);
 	pZoomOp->ZoomAtPoint(wcMidView, ((FIXED16) (INT32) nPercent) / 100);
@@ -3078,10 +3078,10 @@ BOOL OpZoomComboDescriptor::StringToLong(const StringBase& strIn, INT32* pnOut)
 
 	while (StringBase::IsSpace(*psczForward))
 		psczForward = camStrinc(psczForward);
-	
+
 	while (psczBack > psczForward && StringBase::IsSpace(*psczBack))
 		psczBack = camStrdec(psczStart, psczBack);
-	
+
 	if (psczForward >= psczBack) return FALSE;
 
 	// Check if the string ends with a '%' or an 'x'.  If it is an 'x' then the number
@@ -3114,13 +3114,13 @@ BOOL OpZoomComboDescriptor::StringToLong(const StringBase& strIn, INT32* pnOut)
 	// multipliers cannot be negative or zero (especially as multipliers are returned
 	// back as negative to distinguish them from percentages).
 	if (!Convert::StringToLong(strWork, pnOut) || *pnOut <= 0) return FALSE;
-	
+
 	// Make sure it's within allowed bounds.
 	INT32 nMaxPercent = OpZoom::GetPresetZoomPercent(0);
 	INT32 nMinPercent = OpZoom::GetPresetZoomPercent(cZoomTableSize - 1);
 
 	if (*pnOut > nMaxPercent) *pnOut = nMaxPercent;
-	if (*pnOut < nMinPercent && !bIsMultiplier) *pnOut = nMinPercent;    
+	if (*pnOut < nMinPercent && !bIsMultiplier) *pnOut = nMinPercent;
     if (bIsMultiplier) *pnOut = -(*pnOut);
 
 	return TRUE;
@@ -3167,7 +3167,7 @@ BOOL OpZoomComboDescriptor::Update(BOOL fRefreshList)
 	ERROR3IF(popd == 0, "Can't find OpZoomComboDescriptor in "
 						 "OpZoomFitSelectedDescriptor::HandleButtonMsg");
 	if (popd == 0) return FALSE;
-	
+
 	// Update it with values of the Selected DocView.
 	OpZoomComboDescriptor* pCombo = (OpZoomComboDescriptor*) popd;
 	if (fRefreshList && !pCombo->RefreshList()) return FALSE;

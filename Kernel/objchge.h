@@ -1,7 +1,7 @@
 // $Id: objchge.h 1282 2006-06-09 09:46:49Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
- 
+
                Xara LX, a vector drawing and manipulation program.
                     Copyright (C) 1993-2006 Xara Group Ltd.
        Copyright on certain contributions may be held in joint with their
@@ -32,7 +32,7 @@ ADDITIONAL RIGHTS
 
 Conditional upon your continuing compliance with the GNU General Public
 License described above, Xara Group Ltd grants to you certain additional
-rights. 
+rights.
 
 The additional rights are to use, modify, and distribute the software
 together with the wxWidgets library, the wxXtra library, and the "CDraw"
@@ -117,7 +117,7 @@ class Spread;
 	SeeAlso:	ObjChangeFlags, ObjChangeParam
 ***********************************************************************************************/
 
-typedef enum ObjChangeDirection
+enum ObjChangeDirection
 {
 	OBJCHANGE_CALLEDBYOP,
 	OBJCHANGE_CALLEDBYPARENT,
@@ -130,16 +130,16 @@ typedef enum ObjChangeDirection
 
 	Author:		Mike_Kenny (Xara Group Ltd) <camelotdev@xara.com>
 	Date:		09/01/95
-	Purpose:	Types of change one can generate on a child object. These types form the 
+	Purpose:	Types of change one can generate on a child object. These types form the
 				ObjChangeType field inside the following class ObjChangeParam.
 	SeeAlso:	ObjChangeFlags, ObjChangeParam
 ***********************************************************************************************/
 
-typedef enum ObjChangeType
+enum ObjChangeType
 {
 	OBJCHANGE_UNDEFINED,
 	OBJCHANGE_STARTING,				// the child object is about to undergo a change
-	OBJCHANGE_RENDERCURRENTBLOBS,	// during an interactive change ie a drag signal 'before' 
+	OBJCHANGE_RENDERCURRENTBLOBS,	// during an interactive change ie a drag signal 'before'
 	OBJCHANGE_RENDERCHANGEDBLOBS,	// during an interactive change signal 'after'
 	OBJCHANGE_FINISHED,				// having actually changed the tree child object inform the parent
 	OBJCHANGE_IGNORE,				// Ignore this ObjChangeParam message
@@ -152,10 +152,10 @@ typedef enum ObjChangeType
 
 	Author:		Mike_Kenny (Xara Group Ltd) <camelotdev@xara.com> (& Markn)
 	Date:		09/01/95
-	Purpose:	Defines physical changes which have occured on an object. These should be as 
+	Purpose:	Defines physical changes which have occured on an object. These should be as
 				high level as possible.
-  				If your object has changed in a subtle way, try and choose the field which best 
-  				matches the	change. Try not to invent a new field for your change as like as 
+  				If your object has changed in a subtle way, try and choose the field which best
+  				matches the	change. Try not to invent a new field for your change as like as
   				not no one will respond to it.
 	SeeAlso:	ObjChangeType, ObjChangeParam
 ***********************************************************************************************/
@@ -194,9 +194,9 @@ class ObjChangeFlags
 				is not defined here as this is used to allow nodes to actually set the mask.
 				All flags are initialised to FALSE and should be set by nodes to TRUE when they
 				want to receive a message. If any parent node requires a message then all will
-				get the message. 
+				get the message.
 				Note the mask is verified and corrected so that messages will be sent correctly
-				in sequence. 
+				in sequence.
 ***********************************************************************************************/
 
 class ObjChangeMask
@@ -209,7 +209,7 @@ class ObjChangeMask
 	public:
 		BYTE EorBlobs : 1;
 		BYTE Finished : 1;
-}; 
+};
 
 
 /***********************************************************************************************
@@ -217,7 +217,7 @@ class ObjChangeMask
 
 	Author:		Mike_Kenny (Xara Group Ltd) <camelotdev@xara.com>
 	Date:		09/01/95
-	Purpose:	Provides a derivable structure for passing to a nodes OnChildChange virtual 
+	Purpose:	Provides a derivable structure for passing to a nodes OnChildChange virtual
 				function. To create this class parameter simply call Define with the necessary
 				change variables.
 	SeeAlso:	ObjChangeType, ObjChangeFlags
@@ -281,7 +281,7 @@ class ObjChangeParam : public CCObject
 				ObjChangeParam apart from providing a path pointer, for use during eor drags,
 				to describe the current state of the dragged path. Obviously this cannot be
 				determined from the tree object until it has been updated when the drag finishes
-	SeeAlso:	
+	SeeAlso:
 
 ***********************************************************************************************/
 
@@ -293,7 +293,7 @@ class ObjChangePathEdit : public ObjChangeParam
 		 ObjChangePathEdit();
 		~ObjChangePathEdit();
 		 void Define(ObjChangeType,	ObjChangeFlags,	Node*, UndoableOperation*, Path*, Spread*);
-		 
+
 		 ChangeCode ObjChangeStarting(Node*,UndoableOperation*,Path*,Spread*,BOOL);
 		 ChangeCode RenderCurrentBlobs(Node*,UndoableOperation*,Path*,Spread*,BOOL);
 		 ChangeCode RenderChangedBlobs(Node*,UndoableOperation*,Path*,Spread*,BOOL);
@@ -335,4 +335,3 @@ class ObjChangeParamWithToken : public ObjChangeParam
 
 
 #endif
-

@@ -1,7 +1,7 @@
 // $Id: oilprefs.cpp 1466 2006-07-18 16:24:30Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
- 
+
                Xara LX, a vector drawing and manipulation program.
                     Copyright (C) 1993-2006 Xara Group Ltd.
        Copyright on certain contributions may be held in joint with their
@@ -32,7 +32,7 @@ ADDITIONAL RIGHTS
 
 Conditional upon your continuing compliance with the GNU General Public
 License described above, Xara Group Ltd grants to you certain additional
-rights. 
+rights.
 
 The additional rights are to use, modify, and distribute the software
 together with the wxWidgets library, the wxXtra library, and the "CDraw"
@@ -96,7 +96,7 @@ service marks of Xara Group Ltd. All rights in these marks are reserved.
 =================================XARAHEADEREND============================
  */
 
-// This code handles the interface between the kernel preference system, and 
+// This code handles the interface between the kernel preference system, and
 // the platform's own particular method of storing preferences.
 
 
@@ -143,7 +143,7 @@ OILPreferences* OILPreferences::Init()
 	OILPreferences* pPrefs = new OILPreferences(_T("xaralx"), _T("Xara"), strPath);
 
 	TRACEUSER( "jlh92", _T("OILPreferences::Init2 %s\n"), PCTSTR(strPath) );
-	
+
 	// Return the object we made or a NULL pointer if we failed
 	return pPrefs;
 }
@@ -180,7 +180,7 @@ void OILPreferences::WipeDangerousPrefs()
 	DeleteGroup(_T("Gallery"));
 	DeleteGroup(_T("Options/Templates"));
 	DeleteGroup(_T("Options/NewTemplates"));
-	
+
 //	DeleteRegKeyAndSubKeys (hAppStateRegKey, PRODUCT_REGISTRYKEY_GALLERY);
 //	HKEY optsKey = OpenRegKey(hAppStateRegKey, PRODUCT_REGISTRYKEY_OPTIONS);
 //	DeleteRegKeyAndSubKeys (optsKey, TEXT ("Templates"));
@@ -198,7 +198,7 @@ void OILPreferences::WipeDangerousPrefs()
 	Inputs:		Section  - Name of the section to write the preference into.
 				PrefName - Name of the preference itself.
 				Type     - Type of the preference (INT32, UINT32, etc.)
-				Data     - Union holding the pointer to the data to write out to the 
+				Data     - Union holding the pointer to the data to write out to the
 						   preference file.
 	Purpose:	This function writes a given preference out to the application's own
 				initialisation (profile/preference) file.
@@ -206,7 +206,7 @@ void OILPreferences::WipeDangerousPrefs()
 
 ********************************************************************************************/
 
-void OILPreferences::Write(LPTCHAR Section, LPTCHAR PrefName, PreferenceType Type,
+void OILPreferences::Write(LPCTCHAR Section, LPCTCHAR PrefName, PreferenceType Type,
 						   PrefData Data)
 {
 	wxString strKey = _T("/Options/") + wxString(Section) + _T("/") + wxString(PrefName);
@@ -221,7 +221,7 @@ void OILPreferences::Write(LPTCHAR Section, LPTCHAR PrefName, PreferenceType Typ
 			Worked = wxConfig::Write(strKey, l);
 			break;
 		}
-		
+
 		case PREF_UINT:
 		{
 			// Note that unsigned cast to signed here will appear to store the wrong value
@@ -237,12 +237,12 @@ void OILPreferences::Write(LPTCHAR Section, LPTCHAR PrefName, PreferenceType Typ
 		case PREF_DOUBLE:
 			Worked = wxConfig::Write(strKey, (double)*(Data.pDouble));
 			break;
-			
+
 		case PREF_STRING:
 			Worked = wxConfig::Write(strKey, wxString((TCHAR*)*(Data.pString)));
 //			Worked = wxConfig::Write(strKey, *(Data.pString));	// use this form when StringBase derived classes support direct conversion
 			break;
-			
+
 		default:
 			ENSURE(FALSE, "OILPreferences::Write() called with an illegal preference type");
 			break;
@@ -257,7 +257,7 @@ void OILPreferences::Write(LPTCHAR Section, LPTCHAR PrefName, PreferenceType Typ
 
 /********************************************************************************************
 
->	void OILPreferences::Read(LPTCHAR Section, LPTCHAR PrefName, 
+>	void OILPreferences::Read(LPTCHAR Section, LPTCHAR PrefName,
 							  PreferenceType Type, PrefData pData)
 
 	Author:		Tim_Browse (Xara Group Ltd) <camelotdev@xara.com>
@@ -291,16 +291,16 @@ and we're trying to avoid these in Camelot.  It uses the standard SDK function i
 
 ********************************************************************************************/
 
-void OILPreferences::Read(LPTCHAR Section, LPTCHAR PrefName,
+void OILPreferences::Read(LPCTCHAR Section, LPCTCHAR PrefName,
 						  PreferenceType Type, PrefData pData)
 {
 	wxString strKey = _T("/Options/") + wxString(Section) + _T("/") + wxString(PrefName);
-	
+
 	switch (Type)
 	{
 		case PREF_INT:
 		{
-			// Use the value already in pData->Int as the value to return if the 
+			// Use the value already in pData->Int as the value to return if the
 			// preference is not found.
 			/*TYPENOTE: Correct*/ long l;
 			if (wxConfig::Read(strKey, &l))
@@ -323,7 +323,7 @@ void OILPreferences::Read(LPTCHAR Section, LPTCHAR PrefName,
 			// default to null string
 			wxConfig::Read(strKey, (double*)(pData.pDouble));
 			break;
-		}	
+		}
 		case PREF_STRING:
 		{
 			// Just get the string - need to ask for the address of the String's
