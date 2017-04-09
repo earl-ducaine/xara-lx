@@ -1174,7 +1174,7 @@ BOOL Preferences::DeclareSection(LPTCHAR Section, UINT32 InitialSize)
 
 ********************************************************************************************/
 
-BOOL Preferences::DeclarePref(LPTCHAR Section, const LPTCHAR Pref,
+BOOL Preferences::DeclarePref(LPCTCHAR Section, const LPCTCHAR Pref,
 							  INT32 *PrefVar, INT32 Min, INT32 Max)
 {
 #if !defined(EXCLUDE_FROM_RALPH)
