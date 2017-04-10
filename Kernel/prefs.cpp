@@ -1245,7 +1245,7 @@ BOOL Preferences::DeclarePref(LPCTCHAR Section, const LPCTCHAR Pref,
 
 ********************************************************************************************/
 
-BOOL Preferences::DeclarePref(LPTCHAR Section, const LPTCHAR Pref,
+BOOL Preferences::DeclarePref(LPCTCHAR Section, LPCTCHAR Pref,
 							  UINT32 *PrefVar, UINT32 Min, UINT32 Max)
 {
 #if !defined(EXCLUDE_FROM_RALPH)
@@ -1321,7 +1321,7 @@ BOOL Preferences::DeclarePref(LPTCHAR Section, const LPTCHAR Pref,
 
 ********************************************************************************************/
 
-BOOL Preferences::DeclarePref(LPTCHAR Section, const LPTCHAR Pref,
+BOOL Preferences::DeclarePref(LPCTCHAR Section, LPCTCHAR Pref,
 							  double *PrefVar, double Min, double Max)
 {
 #if !defined(EXCLUDE_FROM_RALPH)
@@ -1385,7 +1385,7 @@ BOOL Preferences::DeclarePref(LPTCHAR Section, const LPTCHAR Pref,
 
 ********************************************************************************************/
 
-BOOL Preferences::DeclarePref(LPTCHAR Section, const LPTCHAR Pref, StringBase *PrefVar)
+BOOL Preferences::DeclarePref(LPCTCHAR Section, LPCTCHAR Pref, StringBase *PrefVar)
 {
 #if !defined(EXCLUDE_FROM_RALPH)
 	// Find the right section
