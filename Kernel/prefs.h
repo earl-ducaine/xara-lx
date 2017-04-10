@@ -164,7 +164,7 @@ public:
 	void WipePreferenceFile();
 	void WipeDangerousPrefs();
 
-	BOOL DeclareSection(TCHAR *Section, UINT32 InitialSize);
+	BOOL DeclareSection(LPCTCHAR Section, UINT32 InitialSize);
 
 	BOOL DeclarePref(LPCTCHAR Section, LPCTCHAR Pref,
 					 INT32 *PrefVar, INT32 Min = INT_MIN, INT32 Max = INT_MAX);
@@ -194,11 +194,11 @@ public:
 	BOOL SetPrefDirect(LPCTCHAR Section, LPCTCHAR Pref, UINT32 *pValue);
 	BOOL SetPrefDirect(LPCTCHAR Section, LPCTCHAR Pref, double *pValue);
 
-	BOOL GetPrefDirect(TCHAR *Section, TCHAR *Pref, StringBase *pValue);
-	BOOL GetPrefDirect(TCHAR *Section, TCHAR *Pref, PreferenceType Type, PrefData Data);
-	BOOL GetPrefDirect(TCHAR *Section, TCHAR *Pref, INT32 *pValue);
-	BOOL GetPrefDirect(TCHAR *Section, TCHAR *Pref, UINT32 *pValue);
-	BOOL GetPrefDirect(TCHAR *Section, TCHAR *Pref, double *pValue);
+	BOOL GetPrefDirect(LPCTCHAR Section, LPCTCHAR Pref, StringBase *pValue);
+	BOOL GetPrefDirect(LPCTCHAR Section, LPCTCHAR Pref, PreferenceType Type, PrefData Data);
+	BOOL GetPrefDirect(LPCTCHAR Section, LPCTCHAR Pref, INT32 *pValue);
+	BOOL GetPrefDirect(LPCTCHAR Section, LPCTCHAR Pref, UINT32 *pValue);
+	BOOL GetPrefDirect(LPCTCHAR Section, LPCTCHAR Pref, double *pValue);
 
 private:
 	// Used to cache the section object when declaring preferences.
