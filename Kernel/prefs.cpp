@@ -170,7 +170,7 @@ public:
 	PreferenceChunk(UINT32 InitialSize);
 	~PreferenceChunk();
 
-	void Write(OILPreferences* OILPrefs, LPTCHAR Section);
+	void Write(OILPreferences* OILPrefs, LPCTCHAR Section);
 
 	// Adds a preference to the chunk.  Returns FALSE if there is not enough room to do
 	// this (and so the caller should create a new chunk for it).
@@ -217,7 +217,7 @@ class PreferenceSection : public ListItem
 	CC_DECLARE_MEMDUMP(PreferenceSection)
 
 public:
-	PreferenceSection(LPTCHAR SectionName, UINT32 InitialSize);
+	PreferenceSection(LPCTCHAR SectionName, UINT32 InitialSize);
 	~PreferenceSection();
 
 	void Write(OILPreferences* OILPrefs);
@@ -225,7 +225,7 @@ public:
 	BOOL AddPref(OILPreferences* OILPrefs, LPCTCHAR Pref,
 				 PreferenceType Type, PrefData PrefVar);
 
-	LPTCHAR Section;
+	LPCTCHAR Section;
 	BOOL  Valid;
 
 	List ChunkList;
@@ -377,7 +377,7 @@ BOOL PreferenceChunk::AddPref(LPCTCHAR Name, PrefData EntryData, PreferenceType 
 
 ********************************************************************************************/
 
-void PreferenceChunk::Write(OILPreferences* OILPrefs, LPTCHAR Section)
+void PreferenceChunk::Write(OILPreferences* OILPrefs, LPCTCHAR Section)
 {
 	// Write out each preference in this chunk
 
@@ -593,7 +593,7 @@ BOOL PreferenceChunk::PrefExists(LPTCHAR Pref)
 
 ********************************************************************************************/
 
-PreferenceSection::PreferenceSection(LPTCHAR SectionName, UINT32 InitialSize)
+PreferenceSection::PreferenceSection(LPCTCHAR SectionName, UINT32 InitialSize)
 {
 	Valid = FALSE;
 
@@ -1098,7 +1098,7 @@ void Preferences::WipeDangerousPrefs()
 
 ********************************************************************************************/
 
-BOOL Preferences::DeclareSection(LPTCHAR Section, UINT32 InitialSize)
+BOOL Preferences::DeclareSection(LPCTCHAR Section, UINT32 InitialSize)
 {
 #if !defined(EXCLUDE_FROM_RALPH)
 	// Check that somebody is not trying to define a null section name or a zero length
@@ -1978,7 +1978,7 @@ BOOL Preferences::SetPrefDirect(LPCTCHAR Section, LPCTCHAR Pref, double *pValue)
 
 ********************************************************************************************/
 
-BOOL Preferences::GetPrefDirect(LPTCHAR Section, LPTCHAR Pref, PreferenceType Type, PrefData Data)
+BOOL Preferences::GetPrefDirect(LPCTCHAR Section, LPCTCHAR Pref, PreferenceType Type, PrefData Data)
 {
 #if !defined(EXCLUDE_FROM_RALPH)
 	// First check if there is a valid OILPrefs, as if there was a problem on start up such as
@@ -2021,7 +2021,7 @@ BOOL Preferences::GetPrefDirect(LPTCHAR Section, LPTCHAR Pref, PreferenceType Ty
 
 ********************************************************************************************/
 
-BOOL Preferences::GetPrefDirect(LPTCHAR Section, LPTCHAR Pref, StringBase *pValue)
+BOOL Preferences::GetPrefDirect(LPCTCHAR Section, LPCTCHAR Pref, StringBase *pValue)
 {
 	// core moved into common function above 25/3/97
 	PrefData Data;
@@ -2046,7 +2046,7 @@ BOOL Preferences::GetPrefDirect(LPTCHAR Section, LPTCHAR Pref, StringBase *pValu
 
 ********************************************************************************************/
 
-BOOL Preferences::GetPrefDirect(LPTCHAR Section, LPTCHAR Pref, INT32 *pValue)
+BOOL Preferences::GetPrefDirect(LPCTCHAR Section, LPCTCHAR Pref, INT32 *pValue)
 {
 	PrefData Data;
 	Data.pInt = pValue;
@@ -2070,7 +2070,7 @@ BOOL Preferences::GetPrefDirect(LPTCHAR Section, LPTCHAR Pref, INT32 *pValue)
 
 ********************************************************************************************/
 
-BOOL Preferences::GetPrefDirect(LPTCHAR Section, LPTCHAR Pref, UINT32 *pValue)
+BOOL Preferences::GetPrefDirect(LPCTCHAR Section, LPCTCHAR Pref, UINT32 *pValue)
 {
 	PrefData Data;
 	Data.pUInt = pValue;
@@ -2094,7 +2094,7 @@ BOOL Preferences::GetPrefDirect(LPTCHAR Section, LPTCHAR Pref, UINT32 *pValue)
 
 ********************************************************************************************/
 
-BOOL Preferences::GetPrefDirect(LPTCHAR Section, LPTCHAR Pref, double *pValue)
+BOOL Preferences::GetPrefDirect(LPCTCHAR Section, LPCTCHAR Pref, double *pValue)
 {
 	PrefData Data;
 	Data.pDouble = pValue;
