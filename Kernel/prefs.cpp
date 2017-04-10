@@ -188,8 +188,8 @@ public:
 
 	// Allows application options dialog box to read and write values already declared in the
 	// preference system.
-	BOOL GetPrefValue(LPTCHAR Pref, PrefData EntryData, PreferenceType Type);
- 	BOOL SetPrefValue(LPTCHAR Pref, PrefData EntryData, PreferenceType Type);
+	BOOL GetPrefValue(LPCTCHAR Pref, PrefData EntryData, PreferenceType Type);
+ 	BOOL SetPrefValue(LPCTCHAR Pref, PrefData EntryData, PreferenceType Type);
 
 #ifdef _DEBUG
 	BOOL PrefExists(LPTCHAR Pref);
@@ -230,9 +230,9 @@ public:
 
 	List ChunkList;
 
-	BOOL GetPrefValue(OILPreferences* OILPrefs, LPTCHAR Pref,
+	BOOL GetPrefValue(OILPreferences* OILPrefs, LPCTCHAR Pref,
 				 	  PreferenceType Type, PrefData PrefVar);
-	BOOL SetPrefValue(OILPreferences* OILPrefs, LPTCHAR Pref,
+	BOOL SetPrefValue(OILPreferences* OILPrefs, LPCTCHAR Pref,
 				 	  PreferenceType Type, PrefData PrefVar);
 };
 
@@ -418,7 +418,7 @@ void PreferenceChunk::Write(OILPreferences* OILPrefs, LPTCHAR Section)
 
 ********************************************************************************************/
 
-BOOL PreferenceChunk::GetPrefValue(LPTCHAR Pref, PrefData EntryData, PreferenceType Type)
+BOOL PreferenceChunk::GetPrefValue(LPCTCHAR Pref, PrefData EntryData, PreferenceType Type)
 {
 	PreferenceEntry *pEntry = pEntries;
 
@@ -486,7 +486,7 @@ BOOL PreferenceChunk::GetPrefValue(LPTCHAR Pref, PrefData EntryData, PreferenceT
 
 ********************************************************************************************/
 
-BOOL PreferenceChunk::SetPrefValue(LPTCHAR Pref, PrefData EntryData, PreferenceType Type)
+BOOL PreferenceChunk::SetPrefValue(LPCTCHAR Pref, PrefData EntryData, PreferenceType Type)
 {
 	PreferenceEntry *pEntry = pEntries;
 
@@ -756,7 +756,7 @@ BOOL PreferenceSection::AddPref(OILPreferences* OILPrefs,
 ********************************************************************************************/
 
 BOOL PreferenceSection::GetPrefValue(OILPreferences* OILPrefs,
-									 LPTCHAR Pref, PreferenceType Type, PrefData PrefVar)
+									 LPCTCHAR Pref, PreferenceType Type, PrefData PrefVar)
 {
 #if !defined(EXCLUDE_FROM_RALPH)
 	// Used for scanning the chunk list
@@ -803,8 +803,7 @@ BOOL PreferenceSection::GetPrefValue(OILPreferences* OILPrefs,
 
 ********************************************************************************************/
 
-BOOL PreferenceSection::SetPrefValue(OILPreferences* OILPrefs,
-									 LPTCHAR Pref, PreferenceType Type, PrefData PrefVar)
+BOOL PreferenceSection::SetPrefValue(OILPreferences* OILPrefs, LPCTCHAR Pref, PreferenceType Type, PrefData PrefVar)
 {
 #if !defined(EXCLUDE_FROM_RALPH)
 	// Used for scanning the chunk list
@@ -1503,7 +1502,7 @@ PreferenceSection *Preferences::GetSection(LPCTCHAR SectionName)
 
 ********************************************************************************************/
 
-BOOL Preferences::GetPrefValue(LPTCHAR Section, LPTCHAR Pref, INT32 *PrefVar)
+BOOL Preferences::GetPrefValue(LPCTCHAR Section, LPCTCHAR Pref, INT32 *PrefVar)
 {
 #if !defined(EXCLUDE_FROM_RALPH)
 	// Find the right section, error if not found and return FALSE
@@ -1558,7 +1557,7 @@ BOOL Preferences::GetPrefValue(LPTCHAR Section, LPTCHAR Pref, INT32 *PrefVar)
 
 ********************************************************************************************/
 
-BOOL Preferences::GetPrefValue(LPTCHAR Section, LPTCHAR Pref, UINT32 *PrefVar)
+BOOL Preferences::GetPrefValue(LPCTCHAR Section, LPCTCHAR Pref, UINT32 *PrefVar)
 {
 #if !defined(EXCLUDE_FROM_RALPH)
 	// Find the right section, error if not found and return FALSE
@@ -1612,7 +1611,7 @@ BOOL Preferences::GetPrefValue(LPTCHAR Section, LPTCHAR Pref, UINT32 *PrefVar)
 
 ********************************************************************************************/
 
-BOOL Preferences::GetPrefValue(LPTCHAR Section, LPTCHAR Pref, double *PrefVar)
+BOOL Preferences::GetPrefValue(LPCTCHAR Section, LPCTCHAR Pref, double *PrefVar)
 {
 #if !defined(EXCLUDE_FROM_RALPH)
 	// Find the right section, error if not found and return FALSE
@@ -1667,7 +1666,7 @@ BOOL Preferences::GetPrefValue(LPTCHAR Section, LPTCHAR Pref, double *PrefVar)
 
 ********************************************************************************************/
 
-BOOL Preferences::SetPrefValue(LPTCHAR Section, LPTCHAR Pref, INT32 *PrefVar)
+BOOL Preferences::SetPrefValue(LPCTCHAR Section, LPCTCHAR Pref, INT32 *PrefVar)
 {
 #if !defined(EXCLUDE_FROM_RALPH)
 	// Find the right section, error if not found and return FALSE
@@ -1716,7 +1715,7 @@ BOOL Preferences::SetPrefValue(LPTCHAR Section, LPTCHAR Pref, INT32 *PrefVar)
 
 ********************************************************************************************/
 
-BOOL Preferences::SetPrefValue(LPTCHAR Section, LPTCHAR Pref, UINT32 *PrefVar)
+BOOL Preferences::SetPrefValue(LPCTCHAR Section, LPCTCHAR Pref, UINT32 *PrefVar)
 {
 #if !defined(EXCLUDE_FROM_RALPH)
 	// Find the right section, error if not found and return FALSE
@@ -1763,7 +1762,7 @@ BOOL Preferences::SetPrefValue(LPTCHAR Section, LPTCHAR Pref, UINT32 *PrefVar)
 
 ********************************************************************************************/
 
-BOOL Preferences::SetPrefValue(LPTCHAR Section, LPTCHAR Pref, double *PrefVar)
+BOOL Preferences::SetPrefValue(LPCTCHAR Section, LPCTCHAR Pref, double *PrefVar)
 {
 #if !defined(EXCLUDE_FROM_RALPH)
 	// Find the right section, error if not found and return FALSE
@@ -1805,7 +1804,7 @@ BOOL Preferences::SetPrefValue(LPTCHAR Section, LPTCHAR Pref, double *PrefVar)
 
 ********************************************************************************************/
 
-BOOL Preferences::SetPrefDirect(LPTCHAR Section, LPTCHAR Pref, const TCHAR *pValue, BOOL Force)
+BOOL Preferences::SetPrefDirect(LPCTCHAR Section, LPCTCHAR Pref, const TCHAR *pValue, BOOL Force)
 {
 #if !defined(EXCLUDE_FROM_RALPH)
 	// First check if there is a valid OILPrefs, as if there was a problem on start up such as
@@ -1865,7 +1864,7 @@ BOOL Preferences::SetPrefDirect(LPTCHAR Section, LPTCHAR Pref, const TCHAR *pVal
 
 ********************************************************************************************/
 
-BOOL Preferences::SetPrefDirect(LPTCHAR Section, LPTCHAR Pref, PreferenceType Type, PrefData Data)
+BOOL Preferences::SetPrefDirect(LPCTCHAR Section, LPCTCHAR Pref, PreferenceType Type, PrefData Data)
 {
 #if !defined(EXCLUDE_FROM_RALPH)
 	// First check if there is a valid OILPrefs, as if there was a problem on start up such as
@@ -1907,7 +1906,7 @@ BOOL Preferences::SetPrefDirect(LPTCHAR Section, LPTCHAR Pref, PreferenceType Ty
 
 ********************************************************************************************/
 
-BOOL Preferences::SetPrefDirect(LPTCHAR Section, LPTCHAR Pref, INT32 *pValue)
+BOOL Preferences::SetPrefDirect(LPCTCHAR Section, LPCTCHAR Pref, INT32 *pValue)
 {
 	PrefData Data;
 	Data.pInt = pValue;
@@ -1931,7 +1930,7 @@ BOOL Preferences::SetPrefDirect(LPTCHAR Section, LPTCHAR Pref, INT32 *pValue)
 
 ********************************************************************************************/
 
-BOOL Preferences::SetPrefDirect(LPTCHAR Section, LPTCHAR Pref, UINT32 *pValue)
+BOOL Preferences::SetPrefDirect(LPCTCHAR Section, LPCTCHAR Pref, UINT32 *pValue)
 {
 	PrefData Data;
 	Data.pUInt = pValue;
@@ -1955,7 +1954,7 @@ BOOL Preferences::SetPrefDirect(LPTCHAR Section, LPTCHAR Pref, UINT32 *pValue)
 
 ********************************************************************************************/
 
-BOOL Preferences::SetPrefDirect(LPTCHAR Section, LPTCHAR Pref, double *pValue)
+BOOL Preferences::SetPrefDirect(LPCTCHAR Section, LPCTCHAR Pref, double *pValue)
 {
 	PrefData Data;
 	Data.pDouble = pValue;
