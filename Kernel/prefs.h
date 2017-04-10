@@ -203,7 +203,7 @@ public:
 private:
 	// Used to cache the section object when declaring preferences.
 	PreferenceSection *CurrentSection;
-	PreferenceSection *GetSection(TCHAR *SectionName);
+	PreferenceSection *GetSection(LPCTCHAR SectionName);
 
 	// Link to the OIL layer
 	OILPreferences *OILPrefs;
