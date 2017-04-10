@@ -1,7 +1,7 @@
 // $Id: oilprefs.h 1282 2006-06-09 09:46:49Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
- 
+
                Xara LX, a vector drawing and manipulation program.
                     Copyright (C) 1993-2006 Xara Group Ltd.
        Copyright on certain contributions may be held in joint with their
@@ -32,7 +32,7 @@ ADDITIONAL RIGHTS
 
 Conditional upon your continuing compliance with the GNU General Public
 License described above, Xara Group Ltd grants to you certain additional
-rights. 
+rights.
 
 The additional rights are to use, modify, and distribute the software
 together with the wxWidgets library, the wxXtra library, and the "CDraw"
@@ -134,9 +134,9 @@ public:
 
 	// Write a preference
 	void Write(LPTCHAR Section, LPTCHAR PrefName, PreferenceType Type, PrefData pData);
-		
+
 	// Read a preference
-	void Read(LPTCHAR Section, LPTCHAR PrefName, PreferenceType Type, PrefData pData);
+	void Read(LPCTCHAR Section, LPCTCHAR PrefName, PreferenceType Type, PrefData pData);
 
 	// Perform any platform-dependent initialisation/cleanup needed for reading preferences
 	BOOL OpenInput();
@@ -145,7 +145,7 @@ public:
 	// Perform any platform-dependent initialisation/cleanup needed for saving preferences
 	BOOL OpenOutput();
 	BOOL CloseOutput();
-	
+
 	// Clear all entries in a preference file
 	void WipePreferenceFile();
 	void WipeDangerousPrefs();

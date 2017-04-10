@@ -174,7 +174,7 @@ public:
 
 	// Adds a preference to the chunk.  Returns FALSE if there is not enough room to do
 	// this (and so the caller should create a new chunk for it).
-	BOOL AddPref(LPTCHAR Name, PrefData EntryData, PreferenceType Type);
+	BOOL AddPref(LPCTCHAR Name, PrefData EntryData, PreferenceType Type);
 
 private:
 	UINT32 NumEntries;			// Number of entries in the chunk.
@@ -222,7 +222,7 @@ public:
 
 	void Write(OILPreferences* OILPrefs);
 
-	BOOL AddPref(OILPreferences* OILPrefs, LPTCHAR Pref,
+	BOOL AddPref(OILPreferences* OILPrefs, LPCTCHAR Pref,
 				 PreferenceType Type, PrefData PrefVar);
 
 	LPTCHAR Section;
@@ -335,7 +335,7 @@ PreferenceChunk::~PreferenceChunk()
 
 ********************************************************************************************/
 
-BOOL PreferenceChunk::AddPref(LPTCHAR Name, PrefData EntryData, PreferenceType Type)
+BOOL PreferenceChunk::AddPref(LPCTCHAR Name, PrefData EntryData, PreferenceType Type)
 {
 	// Is there enough space left to do this?
 	if ((!Valid) || (NumEntriesUsed >= NumEntries))
@@ -672,7 +672,7 @@ PreferenceSection::~PreferenceSection()
 ********************************************************************************************/
 
 BOOL PreferenceSection::AddPref(OILPreferences* OILPrefs,
-								LPTCHAR Pref, PreferenceType Type, PrefData PrefVar)
+								LPCTCHAR Pref, PreferenceType Type, PrefData PrefVar)
 {
 #ifdef _DEBUG
 	if ((camStrnicmp(Pref, _T("blobby"), 7) == 0) ||
@@ -1417,7 +1417,7 @@ BOOL Preferences::DeclarePref(LPTCHAR Section, const LPTCHAR Pref, StringBase *P
 
 ********************************************************************************************/
 
-PreferenceSection *Preferences::GetSection(LPTCHAR SectionName)
+PreferenceSection *Preferences::GetSection(LPCTCHAR SectionName)
 {
 #if !defined(EXCLUDE_FROM_RALPH)
 #ifdef _DEBUG
