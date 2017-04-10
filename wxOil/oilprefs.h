@@ -133,7 +133,7 @@ public:
 		: wxConfig(appName, vendorName, localFilename, globalFilename, style, conv) {;}
 
 	// Write a preference
-	void Write(LPTCHAR Section, LPTCHAR PrefName, PreferenceType Type, PrefData pData);
+	void Write(LPCTCHAR Section, LPCTCHAR PrefName, PreferenceType Type, PrefData pData);
 
 	// Read a preference
 	void Read(LPCTCHAR Section, LPCTCHAR PrefName, PreferenceType Type, PrefData pData);

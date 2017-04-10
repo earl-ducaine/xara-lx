@@ -206,7 +206,7 @@ void OILPreferences::WipeDangerousPrefs()
 
 ********************************************************************************************/
 
-void OILPreferences::Write(LPTCHAR Section, LPTCHAR PrefName, PreferenceType Type,
+void OILPreferences::Write(LPCTCHAR Section, LPCTCHAR PrefName, PreferenceType Type,
 						   PrefData Data)
 {
 	wxString strKey = _T("/Options/") + wxString(Section) + _T("/") + wxString(PrefName);
