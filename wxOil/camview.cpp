@@ -4800,7 +4800,6 @@ void CCamView::HandleDragScrolling(wxPoint point)
 	INT32 dx = 0;
 	INT32 dy = 0;
 
-	WinRect Outer = wrSize;
 
 	// Set auto-scroll region to be one scrollbar width within the current view
 	// (as per The Windows Interface Guidelines Chapter 5).
@@ -4811,6 +4810,8 @@ void CCamView::HandleDragScrolling(wxPoint point)
 	{
 		BOOL bCalcDeltas = TRUE;
 #if !defined(EXCLUDE_FROM_XARALX)
+		WinRect Outer = wrSize;
+
 		if (CurrentDragType == DRAGTYPE_OLESCROLL)
 		{
 			if (Outer.Inside(point))		// and still inside visible window
@@ -5117,9 +5118,11 @@ BOOL CCamView::CreateDragTarget(DragInformation * DragInfo)
 
 	if (DragInfo->CanDropOnPage())
 	{
+
 		// If the drag can be dropped onto an object or the page, then we will accept it
-		ViewDragTarget * NewTarget;
-		NewTarget = new ViewDragTarget(RenderWindow,NULL,DragInfo);
+		// ViewDragTarget * NewTarget;
+		// NewTarget =
+	  new ViewDragTarget(RenderWindow, NULL, DragInfo);
 		return TRUE;
 	}
 #endif
