@@ -1,7 +1,7 @@
 // $Id: filtirr.h 1282 2006-06-09 09:46:49Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
- 
+
                Xara LX, a vector drawing and manipulation program.
                     Copyright (C) 1993-2006 Xara Group Ltd.
        Copyright on certain contributions may be held in joint with their
@@ -32,7 +32,7 @@ ADDITIONAL RIGHTS
 
 Conditional upon your continuing compliance with the GNU General Public
 License described above, Xara Group Ltd grants to you certain additional
-rights. 
+rights.
 
 The additional rights are to use, modify, and distribute the software
 together with the wxWidgets library, the wxXtra library, and the "CDraw"
@@ -119,7 +119,7 @@ class CCLexFile;
 				is a list of clickable areas.
 
 				The render region works as follows. The Imagemap starts
-				off empty. Then, whenever something is rendered into this 
+				off empty. Then, whenever something is rendered into this
 				render region and there is a current WebAddressAttribute with
 				a non-empty URL, a clickable area is added to the imagemap.
 
@@ -129,7 +129,7 @@ class CCLexFile;
 class ImagemapRenderRegion : public RenderRegion
 {
 	CC_DECLARE_DYNAMIC(ImagemapRenderRegion)
-	
+
 public:
 	ImagemapRenderRegion();
 	ImagemapRenderRegion(ImagemapFilterOptions ifoOptions);
@@ -153,7 +153,7 @@ public:
 	void DrawCross(const DocCoord &Point, const UINT32 Size);
 
 	void DrawBitmap(const DocCoord &Point, KernelBitmap* pBitmap) {}
-	void DrawBitmap(const DocCoord &Point, UINT32 BitmapID, UINT32 ToolID = NULL) {}
+	void DrawBitmap(const DocCoord &Point, UINT32 BitmapID, UINT32 ToolID = 0) {}
 
 	void DrawBitmapBlob(const DocCoord &Point, KernelBitmap* BlobShape) {}
 	void DrawBitmapBlob(const DocCoord &Point, ResourceID resID ) {}
@@ -189,7 +189,7 @@ protected:
 	//Member variables
 protected:
 	// A set of ImagemapFilterOptions
-	ImagemapFilterOptions m_Options;	
+	ImagemapFilterOptions m_Options;
 
 	//A list of clickable areas
 	Imagemap m_Imagemap;
@@ -199,4 +199,3 @@ protected:
 
 
 #endif // IMAGEMAPRENDERREGION
-
