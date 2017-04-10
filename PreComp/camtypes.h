@@ -116,6 +116,8 @@ service marks of Xara Group Ltd. All rights in these marks are reserved.
 // Include machine-specific types
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-local-typedefs"
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+
 #include "stdwx.h"
 #pragma GCC diagnostic pop
 
