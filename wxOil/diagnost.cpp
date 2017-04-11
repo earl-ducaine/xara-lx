@@ -161,8 +161,9 @@ void CDECL DiagnosticFn(LPCTSTR FunctionStr, LPCTSTR pszFormat, ...)
 	va_list args;
 	va_start(args, pszFormat);
 
+	UINT32 nBuf;
+	#define UNUSED(nBuf)
 	nBuf = camVsnprintf( szBuffer, 512, pszLocalFormat, args );
-
 	ASSERT(nBuf < sizeof(szBuffer));
 
 #if 0
