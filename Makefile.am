@@ -17,6 +17,9 @@ else
      XARLIB_DIR =
 endif
 
+XARLIB2_DIR = xarlib2
+
+
 if FILTERS_ENABLE
      FILTERS_DIRS = filters/SVGFilter
 else
