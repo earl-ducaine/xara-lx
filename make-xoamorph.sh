@@ -24,6 +24,20 @@ function build_wx {
     cd ..
 }
 
+function build_png {
+    if [ ! -d libpng-1.2.57 ]; then
+	if [ ! -f libpng-1.2.57.tar.gz ]; then
+	    curl -LO https://superb-sea2.dl.sourceforge.net/project/libpng/libpng12/1.2.57/libpng-1.2.57.tar.gz
+	fi
+	tar xf libpng-1.2.57.tar.gz
+    fi
+    cd libpng-1.2.57
+    ./configure
+    make -j 2
+    cd ..
+    cd ..
+}
+
 function build_xoamorph {
     ./autogen.sh
     ./configure
