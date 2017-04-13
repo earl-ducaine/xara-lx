@@ -57,7 +57,7 @@ XaraLX_LDFLAGS		= --debug -L$(srcdir)/$(CDRAW_LIB_DIR)  $(WX_LIBS) $(LIBS) $(LIB
 XaraLX_LD			?= $(CXX)
 
 XaraLX$(EXEEXT) : $(XaraLX_SOURCES)
-	$(XaraLX_LD) $(XaraLX_LDSOURCE) $(XaraLX_LDFLAGS) -o $@
+	$(XaraLX_LD) -no-pie $(XaraLX_LDSOURCE) $(XaraLX_LDFLAGS) -o $@
 
 UNZIP = unzip
 
