@@ -109,14 +109,14 @@ fi
 
 # Setup our build flags (if not set by user)
 if test -z "$CFLAGS"; then
-	CFLAGS="-Wall -Wno-unknown-pragmas -g -fexceptions $OPT_FLAGS $WARN_FLAGS $DEBUG_FLAGS"
+	CFLAGS="-Wall -fno-pie -Wno-unknown-pragmas -g -fexceptions $OPT_FLAGS $WARN_FLAGS $DEBUG_FLAGS"
 else
-	CFLAGS="-Wall -Wno-unknown-pragmas -g -fexceptions $OPT_FLAGS $WARN_FLAGS $DEBUG_FLAGS $CFLAGS"
+	CFLAGS="-Wall -fno-pie -Wno-unknown-pragmas -g -fexceptions $OPT_FLAGS $WARN_FLAGS $DEBUG_FLAGS $CFLAGS"
 fi
 if test -z "$CXXFLAGS"; then
-	CXXFLAGS="-Wall -Wno-unknown-pragmas -g -fexceptions $OPT_FLAGS $WARN_FLAGS $DEBUG_FLAGS"
+	CXXFLAGS="-Wall -fno-pie -Wno-unknown-pragmas -g -fexceptions $OPT_FLAGS $WARN_FLAGS $DEBUG_FLAGS"
 else
-	CXXFLAGS="-Wall -Wno-unknown-pragmas -g -fexceptions $OPT_FLAGS $WARN_FLAGS $DEBUG_FLAGS $CXXFLAGS"
+	CXXFLAGS="-Wall -fno-pie -Wno-unknown-pragmas -g -fexceptions $OPT_FLAGS $WARN_FLAGS $DEBUG_FLAGS $CXXFLAGS"
 fi
 
 # Set language - this should be taken from a configure option
@@ -351,10 +351,10 @@ if test "$StaticEnable" = "yes"; then
 	LIBXML2_LIBS="`echo $LIBXML2_LIBS | sed -e 's/-lz/-Wl,-Bstatic -lz -Wl,-Bdynamic/g'`"
 	LIBXML2_LIBS="`echo $LIBXML2_LIBS | sed -e 's/-lm/-Wl,-Bstatic -lm -Wl,-Bdynamic/g'`"
 fi
-
+-Ilibpng-1.2.57
 # pass the Pango, FreeType and GTK flags (required for wxGTK font rendering)
-CPPFLAGS="$CPPFLAGS $WX_CPPFLAGS $PANGO_CFLAGS $FT_CFLAGS $GTK_CFLAGS $LIBXML2_CFLAGS $RESOURCE_DIR_DEFINE"
-CXXFLAGS="$CXXFLAGS $WX_CPPFLAGS $PANGO_CFLAGS $FT_CFLAGS $GTK_CFLAGS $LIBXML2_CFLAGS $RESOURCE_DIR_DEFINE"
+CPPFLAGS="$CPPFLAGS  $WX_CPPFLAGS -I/home/rett/dev/xoamorph/xara-lx/libpng-1.2.57 $PANGO_CFLAGS $FT_CFLAGS $GTK_CFLAGS $LIBXML2_CFLAGS $RESOURCE_DIR_DEFINE"
+CXXFLAGS="$CXXFLAGS  $WX_CPPFLAGS -I/home/rett/dev/xoamorph/xara-lx/libpng-1.2.57 $PANGO_CFLAGS $FT_CFLAGS $GTK_CFLAGS $LIBXML2_CFLAGS $RESOURCE_DIR_DEFINE"
 
 AC_MSG_CHECKING([Linker])
 case $host in
