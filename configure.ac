@@ -62,7 +62,7 @@ if test "$DebugEnable" = "yes"; then
 	WARN_FLAGS=""
 else
 	DEBUG_FLAGS=""
-	OPT_FLAGS="-O3"
+	OPT_FLAGS="-O3 -fabi-version=9"
 	WARN_FLAGS=""
 fi
 

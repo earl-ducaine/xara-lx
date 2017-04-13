@@ -16,10 +16,11 @@ function build_wx {
     fi
     mkdir buildgtk
     cd buildgtk
-    ../configure --with-gtk --enable-unicode
+    ../configure --with-gtk --enable-unicode --with-libpng=no
     make -j 8
     sudo make install
     sudo ldconfig
+    cd ..
     cd ..
 }
 
