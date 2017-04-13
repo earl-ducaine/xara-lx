@@ -788,7 +788,7 @@ bool CCamApp::OnInit()
 	wxImage::AddHandler( new wxCURHandler );
 
 	// Register the image handler which loads PNGs (used for TBs)
-	wxImage::AddHandler( new wxPNGHandler );
+	//	wxImage::AddHandler( new wxPNGHandler );
 
 	// Init the BinReloc stuff (we don't really care if this fails, since it
 	// fails safe)
