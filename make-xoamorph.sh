@@ -21,7 +21,6 @@ function build_wx {
     sudo make install
     sudo ldconfig
     cd ..
-    cd ..
 }
 
 function build_png {
