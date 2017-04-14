@@ -16,7 +16,7 @@ function build_wx {
     fi
     mkdir buildgtk
     cd buildgtk
-    ../configure --with-gtk --enable-unicode --with-libpng=no
+    ../configure --with-gtk --enable-unicode --with-libpng=builtin
     make -j 8
     sudo make install
     sudo ldconfig
