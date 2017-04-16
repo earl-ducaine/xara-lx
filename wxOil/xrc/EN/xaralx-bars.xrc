@@ -1004,7 +1004,7 @@
                     <camartstyle>wxCACS_PUSHBUTTON|wxCACS_ALLOWHOVER</camartstyle>
                     <optoken>ZoomPrev</optoken>
                 </object>
-			</object>	
+			</object>
 			<object class="sizeritem">
                 <flag>wxALIGN_CENTER_VERTICAL|wxALL</flag>
                 <border>1</border>
@@ -1189,6 +1189,7 @@
             <object class="sizeritem">
                 <flag>wxALIGN_CENTER_HORIZONTAL|wxALL</flag>
                 <border>1</border>
+		<minsize>80,80</minsize>
                 <object class="wxCamArtControl" name="IDC_BTN_SELRTOOL">
                     <camartstyle>wxCACS_PUSHBUTTON|wxCACS_ALLOWHOVER|wxCACS_TOOLBACKGROUND|wxCACS_TOGGLEBUTTON</camartstyle>
                     <optoken>TOOL7</optoken>
@@ -1200,6 +1201,14 @@
                 <object class="wxCamArtControl" name="IDC_BTN_FHANDTOOL">
                     <camartstyle>wxCACS_PUSHBUTTON|wxCACS_ALLOWHOVER|wxCACS_TOOLBACKGROUND|wxCACS_TOGGLEBUTTON</camartstyle>
                     <optoken>TOOL6</optoken>
+                </object>
+            </object>
+            <object class="sizeritem">
+                <flag>wxALIGN_CENTER_HORIZONTAL|wxALL</flag>
+                <border>1</border>
+                <object class="wxCamArtControl" name="IDC_BTN_BEZTOOL">
+                    <camartstyle>wxCACS_PUSHBUTTON|wxCACS_ALLOWHOVER|wxCACS_TOOLBACKGROUND|wxCACS_TOGGLEBUTTON</camartstyle>
+                    <optoken>TOOL11</optoken>
                 </object>
             </object>
             <object class="sizeritem">
