@@ -22,6 +22,7 @@ function build_wx {
     sudo ldconfig
     cd ..
     cd ..
+
 }
 
 function build_png {
@@ -34,7 +35,6 @@ function build_png {
     cd libpng-1.2.57
     ./configure
     make -j 2
-    cd ..
     cd ..
 }
 
