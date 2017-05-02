@@ -1107,538 +1107,514 @@ BOOL DialogManager::BringToTop(CWindowID WindowID, DialogOp* pDlgOp)
 
 ********************************************************************************************/
 
-void DialogManager::Event (DialogEventHandler *pEvtHandler, wxEvent &event)
-{
-	WXTYPE EventType = event.GetEventType();
-//	CDlgMessage DIM = DIM_NONE;
-	ResourceID id = event.GetId();
-	UINT_PTR DlgMsgParam = 0;
-	INT32 PageID = 0;
-	BOOL HandleMessage=FALSE;
-	BOOL Defer=TRUE;
+void DialogManager::Event (DialogEventHandler *pEvtHandler, wxEvent &event) {
+  WXTYPE EventType = event.GetEventType();
+  //	CDlgMessage DIM = DIM_NONE;
+  ResourceID id = event.GetId();
+  UINT_PTR DlgMsgParam = 0;
+  INT32 PageID = 0;
+  BOOL HandleMessage=FALSE;
+  BOOL Defer=TRUE;
+  if (!pEvtHandler->pwxWindow || !pEvtHandler->pDialogOp) {
+    // We are in the process of destruction
+    event.Skip();
+    return;
+  }
+  // First handle events we previously asked to defer processing of
+  if (event.IsKindOf(CLASSINFO(wxCamDialogEvent)) &&
+      (EventType == wxEVT_CAMDIALOG_DEFERREDMSG)) {
+    // We posted this event and asked it to come back later, and it duly has
+    wxCamDialogEvent * pDialogEvent = (wxCamDialogEvent *)(&event);
+    // this ensures we are using a valid window pointer
+    pDialogEvent->msg.DlgWndID = pEvtHandler->pwxWindow; 
+    // Send it around
+    BROADCAST_TO_CLASS( DialogMsg(pDialogEvent->msg), DialogOp );
+    return;
+  }
+  wxWindow * pGadget = NULL;
+  if (id) {
+    pGadget = GetGadget(pEvtHandler->pwxWindow, id);
+  }
+  // We tend to get this second-hand from our child, we handle this differently
+  if( !pGadget && (event.GetEventObject() != pEvtHandler->pwxWindow)) {
+    pGadget = (wxWindow *)event.GetEventObject();
+    id = pGadget->GetId();
+  }
+  // Try and find-out whether our control is part of a tabbed dialog page
+  if( NULL != pGadget ) {
+    // pEvtHandler->pwxWindow maybe our immediate wxPanel\wxDialog, but won't
+    // be in case of tabbed dialog
+    wxWindow*	pDialog = pGadget->GetParent();
+    while( NULL != pDialog && !pDialog->IsKindOf( CLASSINFO(wxDialog) ) && 
+	   !pDialog->IsKindOf( CLASSINFO(wxPanel) ) )
+      {
+	pDialog = pDialog->GetParent();
+      }
+    // Could this be part of a tabbed dialog?
+    if( NULL != pDialog && pDialog->IsKindOf( CLASSINFO(wxPanel) ) ) {
+      // A parent of type wxBookCtrlBase would synch it
+      wxWindow *pDialogParent = pDialog->GetParent();
+      if( NULL != pDialogParent && pDialogParent->IsKindOf( CLASSINFO(wxBookCtrlBase) ) ) {
+	  
+	PageID = pDialog->GetId();
+      }
+    }
+  }
+  // Make up a default message
+  DialogMsg msg(pEvtHandler->pwxWindow, DIM_NONE, id, DlgMsgParam, PageID);
 
-	if (!pEvtHandler->pwxWindow || !pEvtHandler->pDialogOp)
+  if (!event.IsKindOf(CLASSINFO(wxMouseEvent))) // MouseEvents are too noisy
+    {
+      TRACEUSER("amb",_T("event %d(%s) received, ID=%d(%s), wxw=%llx"), EventType, DialogEventHandler::GetEventName(EventType), id,
+		CamResource::GetObjectName((ResourceID)id), pEvtHandler->pwxWindow);
+    }
+
+  if (
+      (EventType == wxEVT_LEFT_DCLICK) ||
+      (EventType == wxEVT_MIDDLE_DCLICK) ||
+      (EventType == wxEVT_RIGHT_DCLICK) ||
+      FALSE)
+    {
+      // OK, these are a bit deadly. We expected there to be TWO mouse up mouse downs. People
+      // don't seem to hang off double clicks themselves, but do their own double click handling
+      // (why oh why). So we generate an extra mouse down and mouse up, and sending them to
+      // ourselves. This may not be necessary on all platforms.
+      wxMouseEvent *MouseDown = (wxMouseEvent *)(event.Clone());
+      wxMouseEvent *MouseUp = (wxMouseEvent *)(event.Clone());
+      if (MouseDown && MouseUp)
 	{
-		// We are in the process of destruction
-		event.Skip();
-		return;
-	}
-
-	// First handle events we previously asked to defer processing of
-	if (event.IsKindOf(CLASSINFO(wxCamDialogEvent)) && (EventType == wxEVT_CAMDIALOG_DEFERREDMSG))
-	{
-		// We posted this event and asked it to come back later, and it duly has
-		wxCamDialogEvent * pDialogEvent = (wxCamDialogEvent *)(&event);
-		pDialogEvent->msg.DlgWndID = pEvtHandler->pwxWindow; // this ensures we are using a valid window pointer
-		// Send it around
-		BROADCAST_TO_CLASS( DialogMsg(pDialogEvent->msg), DialogOp );
-		return;
-	}
-
-	wxWindow * pGadget = NULL;
-	if (id) pGadget = GetGadget(pEvtHandler->pwxWindow, id);
-
-	// We tend to get this second-hand from our child, we handle this differently
-	if( !pGadget && (event.GetEventObject() != pEvtHandler->pwxWindow))
-	{
-		pGadget = (wxWindow *)event.GetEventObject();
-		id = pGadget->GetId();
-	}
-
-	// Try and find-out whether our control is part of a tabbed dialog page
-	if( NULL != pGadget )
-	{
-		// pEvtHandler->pwxWindow maybe our immediate wxPanel\wxDialog, but won't
-		// be in case of tabbed dialog
-		wxWindow*	pDialog = pGadget->GetParent();
-		while( NULL != pDialog && !pDialog->IsKindOf( CLASSINFO(wxDialog) ) && 
-			!pDialog->IsKindOf( CLASSINFO(wxPanel) ) )
-		{
-			pDialog = pDialog->GetParent();
-		}
-
-		// Could this be part of a tabbed dialog?
-		if( NULL != pDialog && pDialog->IsKindOf( CLASSINFO(wxPanel) ) )
-		{
-			// A parent of type wxBookCtrlBase would synch it
-			wxWindow *pDialogParent = pDialog->GetParent();
-			if( NULL != pDialogParent && pDialogParent->IsKindOf( CLASSINFO(wxBookCtrlBase) ) )
-				PageID = pDialog->GetId();
-		}
-	}
-
-	// Make up a default message
-	DialogMsg msg(pEvtHandler->pwxWindow, DIM_NONE, id, DlgMsgParam, PageID);
-
-	if (!event.IsKindOf(CLASSINFO(wxMouseEvent))) // MouseEvents are too noisy
-	{
-		TRACEUSER("amb",_T("event %d(%s) received, ID=%d(%s), wxw=%llx"), EventType, DialogEventHandler::GetEventName(EventType), id,
-					CamResource::GetObjectName((ResourceID)id), pEvtHandler->pwxWindow);
-	}
-
-	if (
-		(EventType == wxEVT_LEFT_DCLICK) ||
-		(EventType == wxEVT_MIDDLE_DCLICK) ||
-		(EventType == wxEVT_RIGHT_DCLICK) ||
-		FALSE)
-	{
-		// OK, these are a bit deadly. We expected there to be TWO mouse up mouse downs. People
-		// don't seem to hang off double clicks themselves, but do their own double click handling
-		// (why oh why). So we generate an extra mouse down and mouse up, and sending them to
-		// ourselves. This may not be necessary on all platforms.
-		wxMouseEvent *MouseDown = (wxMouseEvent *)(event.Clone());
-		wxMouseEvent *MouseUp = (wxMouseEvent *)(event.Clone());
-		if (MouseDown && MouseUp)
-		{
-			if (EventType == wxEVT_LEFT_DCLICK)
-			{
-				MouseDown->SetEventType(wxEVT_LEFT_DOWN);
-				MouseUp->SetEventType(wxEVT_LEFT_UP);
-			}
-			else if	(EventType == wxEVT_MIDDLE_DCLICK)
-			{
-				MouseDown->SetEventType(wxEVT_MIDDLE_DOWN);
-				MouseUp->SetEventType(wxEVT_MIDDLE_UP);
-			}
-			else
-			{
-				MouseDown->SetEventType(wxEVT_RIGHT_DOWN);
-				MouseUp->SetEventType(wxEVT_RIGHT_UP);
-			}
+	  if (EventType == wxEVT_LEFT_DCLICK)
+	    {
+	      MouseDown->SetEventType(wxEVT_LEFT_DOWN);
+	      MouseUp->SetEventType(wxEVT_LEFT_UP);
+	    }
+	  else if	(EventType == wxEVT_MIDDLE_DCLICK)
+	    {
+	      MouseDown->SetEventType(wxEVT_MIDDLE_DOWN);
+	      MouseUp->SetEventType(wxEVT_MIDDLE_UP);
+	    }
+	  else
+	    {
+	      MouseDown->SetEventType(wxEVT_RIGHT_DOWN);
+	      MouseUp->SetEventType(wxEVT_RIGHT_UP);
+	    }
 			
-			//MouseDown.SetEventObject(pEvtHandler->pwxWindow);
-			// MouseUp.SetEventObject(pEvtHandler->pwxWindow);
-			// set it for processing later
-			pEvtHandler->pwxWindow->GetEventHandler()->ProcessEvent(*MouseDown);
-			pEvtHandler->pwxWindow->GetEventHandler()->ProcessEvent(*MouseUp);
-		}
-		if (MouseDown) delete MouseDown;
-		if (MouseUp) delete MouseUp;
-	}	
+	  //MouseDown.SetEventObject(pEvtHandler->pwxWindow);
+	  // MouseUp.SetEventObject(pEvtHandler->pwxWindow);
+	  // set it for processing later
+	  pEvtHandler->pwxWindow->GetEventHandler()->ProcessEvent(*MouseDown);
+	  pEvtHandler->pwxWindow->GetEventHandler()->ProcessEvent(*MouseUp);
+	}
+      if (MouseDown) delete MouseDown;
+      if (MouseUp) delete MouseUp;
+    }	
 
-	/* Here is a list of possible command events
-	wxEVT_COMMAND_BUTTON_CLICKED
-	wxEVT_COMMAND_CHECKBOX_CLICKED
-	wxEVT_COMMAND_CHOICE_SELECTED
-	wxEVT_COMMAND_LISTBOX_SELECTED
-	wxEVT_COMMAND_LISTBOX_DOUBLECLICKED
-	wxEVT_COMMAND_CHECKLISTBOX_TOGGLED
-	wxEVT_COMMAND_TEXT_UPDATED	// only with WXWIN_COMPATIBILITY_EVENT_TYPES
-	wxEVT_COMMAND_TEXT_ENTER	// only with WXWIN_COMPATIBILITY_EVENT_TYPES
-	wxEVT_COMMAND_TEXT_URL		// only with WXWIN_COMPATIBILITY_EVENT_TYPES
-	wxEVT_COMMAND_TEXT_MAXLEN	// only with WXWIN_COMPATIBILITY_EVENT_TYPES
-	wxEVT_COMMAND_MENU_SELECTED
-	wxEVT_COMMAND_SLIDER_UPDATED
-	wxEVT_COMMAND_RADIOBOX_SELECTED
-	wxEVT_COMMAND_RADIOBUTTON_SELECTED
-	wxEVT_COMMAND_SCROLLBAR_UPDATED // Obselete - see wxWVT_SCROLL
-	wxEVT_COMMAND_VLBOX_SELECTED
-	wxEVT_COMMAND_COMBOBOX_SELECTED
-	wxEVT_COMMAND_TOOL_RCLICKED
-	wxEVT_COMMAND_TOOL_ENTER
-	wxEVT_COMMAND_SPINCTRL_UPDATED
+  /* Here is a list of possible command events
+     wxEVT_COMMAND_BUTTON_CLICKED
+     wxEVT_COMMAND_CHECKBOX_CLICKED
+     wxEVT_COMMAND_CHOICE_SELECTED
+     wxEVT_COMMAND_LISTBOX_SELECTED
+     wxEVT_COMMAND_LISTBOX_DOUBLECLICKED
+     wxEVT_COMMAND_CHECKLISTBOX_TOGGLED
+     wxEVT_COMMAND_TEXT_UPDATED	// only with WXWIN_COMPATIBILITY_EVENT_TYPES
+     wxEVT_COMMAND_TEXT_ENTER	// only with WXWIN_COMPATIBILITY_EVENT_TYPES
+     wxEVT_COMMAND_TEXT_URL		// only with WXWIN_COMPATIBILITY_EVENT_TYPES
+     wxEVT_COMMAND_TEXT_MAXLEN	// only with WXWIN_COMPATIBILITY_EVENT_TYPES
+     wxEVT_COMMAND_MENU_SELECTED
+     wxEVT_COMMAND_SLIDER_UPDATED
+     wxEVT_COMMAND_RADIOBOX_SELECTED
+     wxEVT_COMMAND_RADIOBUTTON_SELECTED
+     wxEVT_COMMAND_SCROLLBAR_UPDATED // Obselete - see wxWVT_SCROLL
+     wxEVT_COMMAND_VLBOX_SELECTED
+     wxEVT_COMMAND_COMBOBOX_SELECTED
+     wxEVT_COMMAND_TOOL_RCLICKED
+     wxEVT_COMMAND_TOOL_ENTER
+     wxEVT_COMMAND_SPINCTRL_UPDATED
 
-	We can't use switch on these - GRRR!
-	*/
+     We can't use switch on these - GRRR!
+  */
 
-	if (
-		(EventType == wxEVT_COMMAND_BUTTON_CLICKED) ||
-		FALSE)
+  if (
+      (EventType == wxEVT_COMMAND_BUTTON_CLICKED) ||
+      FALSE)
+    {
+      // We should cope with Right Button here
+      if ((ResourceID)id == _R(wxID_OK) )
 	{
-		// We should cope with Right Button here
-		if ((ResourceID)id == _R(wxID_OK) )
+	  msg.DlgMsg = DIM_COMMIT;
+	  HandleMessage = TRUE;
+	}
+      else if (id == _R(ID_CC_APPLY_NOW))
+	{
+	  // Clicking on the apply now button is the same as a soft commit
+	  msg.DlgMsg = DIM_SOFT_COMMIT;
+	  HandleMessage = TRUE;
+	}
+      else if (id == _R(wxID_CANCEL))
+	{
+	  msg.DlgMsg = DIM_CANCEL;
+	  // Do not defer processing of clicks on the close button because the default handler may destroy the window on
+	  // exit from this call
+	  Defer=FALSE; 
+	  HandleMessage = TRUE;
+	}
+      else if (id == _R(wxID_HELP))
+	{
+	  // Our clients expect this ID, so keep them happy
+	  msg.DlgMsg = DIM_LFT_BN_CLICKED;
+	  msg.GadgetID = _R(ID_HELP);
+	  HandleMessage = TRUE;
+	}
+      else
+	{
+	  msg.DlgMsg = DIM_LFT_BN_CLICKED;
+	  HandleMessage = TRUE;
+	}
+    }
+  else if (
+	   (EventType == wxEVT_COMMAND_CHOICE_SELECTED) ||
+	   (EventType == wxEVT_COMMAND_LISTBOX_SELECTED) ||
+	   (EventType == wxEVT_COMMAND_CHECKLISTBOX_TOGGLED) ||
+	   //		We skip this because it's generated when we change the text ourselves. We should probably do something more subtle
+	   //		(EventType == wxEVT_COMMAND_TEXT_UPDATED) ||	// only with WXWIN_COMPATIBILITY_EVENT_TYPES
+	   (EventType == wxEVT_COMMAND_TEXT_URL) ||		// only with WXWIN_COMPATIBILITY_EVENT_TYPES
+	   //		(EventType == wxEVT_COMMAND_TEXT_MAXLEN) ||		// only with WXWIN_COMPATIBILITY_EVENT_TYPES
+	   (EventType == wxEVT_COMMAND_MENU_SELECTED) ||
+	   //		(EventType == wxEVT_COMMAND_SLIDER_UPDATED) ||
+	   (EventType == wxEVT_COMMAND_RADIOBOX_SELECTED) ||
+	   (EventType == wxEVT_COMMAND_VLBOX_SELECTED) ||
+	   (EventType == wxEVT_COMMAND_COMBOBOX_SELECTED) ||
+	   (EventType == wxEVT_COMMAND_SPINCTRL_UPDATED) ||
+	   ((
+	     (EventType == wxEVT_SCROLL_CHANGED) || 
+	     (EventType == wxEVT_SCROLL_THUMBTRACK) || 
+	     (EventType == wxEVT_SCROLL_THUMBRELEASE) ||
+	     (EventType == wxEVT_SCROLL_LINEUP) ||
+	     (EventType == wxEVT_SCROLL_LINEDOWN) ||
+	     (EventType == wxEVT_SCROLL_PAGEUP) ||
+	     (EventType == wxEVT_SCROLL_PAGEDOWN)
+	     ) &&
+	    !(
+	      (pGadget && pGadget->IsKindOf(CLASSINFO(wxSlider))) ||
+	      (pGadget && pGadget->IsKindOf(CLASSINFO(wxSliderCombo)))
+	      )
+	    ) || // Don't handle slider scroll stuff here
+	   (EventType == wxEVT_COMMAND_TREE_SEL_CHANGED) ||
+	   FALSE)
+    {
+      msg.DlgMsg = DIM_SELECTION_CHANGED;
+      msg.DlgMsgParam = NO_COMMIT;
+      HandleMessage = TRUE;
+    }
+  else if( EventType == wxEVT_COMMAND_TEXT_UPDATED && 	// only with WXWIN_COMPATIBILITY_EVENT_TYPES
+	   pGadget == wxWindow::FindFocus() )
+    {
+      msg.DlgMsg = DIM_TEXT_CHANGED;
+      HandleMessage = TRUE;
+    }
+  else if(
+	  (EventType == wxEVT_COMMAND_TEXT_ENTER) ||
+	  FALSE)
+    {
+      msg.DlgMsg = DIM_SELECTION_CHANGED;
+      msg.DlgMsgParam = ENTER_COMMIT;
+      HandleMessage = TRUE;
+    }
+  else if(
+	  (( (EventType == wxEVT_SCROLL_THUMBTRACK) ||
+	     (EventType == wxEVT_SCROLL_LINEUP) ||
+	     (EventType == wxEVT_SCROLL_LINEDOWN) ||
+	     (EventType == wxEVT_SCROLL_PAGEUP) ||
+	     (EventType == wxEVT_SCROLL_PAGEDOWN)
+	     ) && (pGadget && ( pGadget->IsKindOf(CLASSINFO(wxSlider)) || pGadget->IsKindOf(CLASSINFO(wxSliderCombo)) ))) || 
+	  FALSE) // Handle slider movements - note SCROLL_CHANGED always comes later
+    {
+      msg.DlgMsg = DIM_SLIDER_POS_CHANGING;
+      HandleMessage = TRUE;
+    }
+  else if(
+	  // Do not handle THUMB_RELEASE because we get a SCROLL_CHANGED anyway, and having two means we generate two SETs which will generate 2 undo records
+	  // on (for instance) transparency and Bevel tools
+	  ((/*EventType == wxEVT_SCROLL_THUMBRELEASE ||*/ EventType == wxEVT_SCROLL_CHANGED) &&
+	   ( (pGadget && pGadget->IsKindOf(CLASSINFO(wxSlider))) || (pGadget && pGadget->IsKindOf(CLASSINFO(wxSliderCombo))) )
+	   ) || // Handle slider changes
+	  FALSE)
+    {
+      msg.DlgMsg = DIM_SLIDER_POS_SET;
+      HandleMessage = TRUE;
+    }
+  else if(
+	  (EventType == wxEVT_COMMAND_CHECKBOX_CLICKED) ||
+	  (EventType == wxEVT_COMMAND_RADIOBUTTON_SELECTED) ||
+	  FALSE)
+    {
+      msg.DlgMsg = DIM_LFT_BN_CLICKED; // apparently not a DIM_SELECTION_CHANGED - the click itself is eaten by the radio control - please do not change - AMB
+      HandleMessage = TRUE;
+    }
+  else if (
+	   (EventType == wxEVT_COMMAND_LISTBOX_DOUBLECLICKED) ||
+	   FALSE)
+    {
+      msg.DlgMsg = DIM_SELECTION_CHANGED_COMMIT;
+      HandleMessage = TRUE;
+    }
+  else if (
+	   (EventType == wxEVT_LEFT_DOWN) ||
+	   FALSE)
+    {
+      msg.DlgMsg = DIM_LFT_BN_DOWN;
+      HandleMessage = TRUE;
+    }	
+  else if (
+	   (EventType == wxEVT_LEFT_UP) ||
+	   FALSE)
+    {
+      msg.DlgMsg = DIM_LFT_BN_UP;
+      HandleMessage = TRUE;
+    }	
+  else if (
+	   (EventType == wxEVT_RIGHT_DOWN) ||
+	   FALSE)
+    {
+      msg.DlgMsg = DIM_RGT_BN_DOWN;
+      HandleMessage = TRUE;
+    }	
+  else if (
+	   (EventType == wxEVT_RIGHT_UP) ||
+	   FALSE)
+    {
+      msg.DlgMsg = DIM_RGT_BN_UP;
+      HandleMessage = TRUE;
+    }	
+  else if (
+	   (EventType == wxEVT_MIDDLE_DOWN) ||
+	   FALSE)
+    {
+      msg.DlgMsg = DIM_MID_BN_DOWN;
+      HandleMessage = TRUE;
+    }	
+  else if (
+	   (EventType == wxEVT_MIDDLE_UP) ||
+	   FALSE)
+    {
+      msg.DlgMsg = DIM_MID_BN_UP;
+      HandleMessage = TRUE;
+    }	
+  else if (
+	   (EventType == wxEVT_MOTION) ||
+	   FALSE)
+    {
+      msg.DlgMsg = ((wxMouseEvent *)&event)->Dragging()?DIM_MOUSE_DRAG:DIM_MOUSE_MOVE;
+      HandleMessage = TRUE;
+    }	
+  else if (
+	   (EventType == wxEVT_MOUSEWHEEL) ||
+	   FALSE)
+    {
+      msg.DlgMsg = (((wxMouseEvent *)&event)->GetWheelRotation()>0)?DIM_MOUSEWHEEL_UP:DIM_MOUSEWHEEL_DOWN;
+      HandleMessage = TRUE;
+    }	
+  else if (
+	   (EventType == wxEVT_MOVE) ||
+	   FALSE)
+    {
+      msg.DlgMsg = DIM_DLG_MOVED;
+      HandleMessage = TRUE;
+    }	
+  else if (
+	   (EventType == wxEVT_SIZE) ||
+	   FALSE)
+    {
+      if (event.GetEventObject() != pEvtHandler->pwxWindow)
+	{
+	  Defer = FALSE;
+	  msg.DlgMsg = DIM_CTRL_RESIZED;
+	  HandleMessage = TRUE;	
+	}
+      else
+	{
+	  msg.DlgMsg = DIM_DLG_RESIZED;
+	  HandleMessage = TRUE;
+	}
+    }
+  else if (
+	   (EventType == wxEVT_COMMAND_NOTEBOOK_PAGE_CHANGED) &&
+	   pGadget && pGadget->IsKindOf(CLASSINFO(wxBookCtrlBase)))
+    {
+      msg.DlgMsg = DIM_SET_ACTIVE;
+      wxWindow *pPage = ((wxBookCtrlBase*)pGadget)->GetCurrentPage();
+      msg.PageID = pPage?(pPage->GetId()):0;
+      HandleMessage = TRUE;
+    }
+  else if (
+	   ((EventType == wxEVT_CAMDIALOG_REDRAW) && (pGadget)) ||
+	   FALSE)
+    {
+      if (CCamApp::IsDisabled())
+	{
+	  TRACE( _T("kernel-rendered gadget repaint has been aborted: the system is disabled (due to an error/ensure?)\n"));
+	  HandleMessage = FALSE;
+	} else {
+	  // HDC hDC = pInfo->PaintInfo.hdc;
+	  // HPALETTE OldPalette = PaletteManager::StartPaintPalette(hDC);
+	  ReDrawInfoType ExtraInfo;
+	  // No mouse position info for redraw events
+	  ExtraInfo.pMousePos = NULL;
+	  // Build a CC dc out of it for rendering to the screen Get a
+	  // MFC CDC to put the DC in
+	  CCPaintDC MyDc(pGadget);
+	  ExtraInfo.pDC = &MyDc;
+	  // The devices DPI
+	  ExtraInfo.Dpi = OSRenderRegion::GetFixedDCPPI(MyDc).GetHeight();
+	  // How big the window is
+	  wxSize WindowSize = pGadget->GetClientSize();
+	  ExtraInfo.dx = (((INT32)WindowSize.GetWidth())*72000) / ExtraInfo.Dpi;
+	  ExtraInfo.dy = (((INT32)WindowSize.GetHeight())*72000) / ExtraInfo.Dpi;
+	  wxRegionIterator upd(pGadget->GetUpdateRegion()); // get the update rect list
+	  BOOL Stop = FALSE;
+	  while (upd && !Stop) {
+	      // Alternatively we can do this:
+	      wxRect ClipRect(upd.GetRect());
+	      // Should we clip this to the WindowSize here? For
+	      // reasons which are not entirely clear, setting the
+	      // ClipRect breaks GRenderRegions. But if we don't set
+	      // the clip rect, it breaks (at least some) code that
+	      // uses OSRenderRegion (sigh). Right now this is too
+	      // painful to debug, so instead we cop out, and ask the
+	      // control whether or not it would like a ClipRect
+	      // set. Those that say no will paint the entire area, so
+	      // we only give them one call
+	      BOOL UseClipRect = (pGadget->IsKindOf(CLASSINFO(wxCamDrawControl)))
+		&& (((wxCamDrawControl*)pGadget)->GetStyle() & wxCDCS_SETCLIPRECT);
+
+	      if (UseClipRect)
 		{
-			msg.DlgMsg = DIM_COMMIT;
-			HandleMessage = TRUE;
+		  MyDc.GetDC()->SetClippingRegion(ClipRect);
+		  ClipRect.Inflate(1,1); // work around wxRect problems.
 		}
-		else if (id == _R(ID_CC_APPLY_NOW))
+	      else
 		{
-			// Clicking on the apply now button is the same as a soft commit
-			msg.DlgMsg = DIM_SOFT_COMMIT;
-			HandleMessage = TRUE;
+		  ClipRect = wxRect(WindowSize);
+		  Stop = TRUE; // cease drawing after this one
 		}
-		else if (id == _R(wxID_CANCEL))
-		{
-			msg.DlgMsg = DIM_CANCEL;
-			// Do not defer processing of clicks on the close button because the default handler may destroy the window on
-			// exit from this call
-			Defer=FALSE; 
-			HandleMessage = TRUE;
-		}
-		else if (id == _R(wxID_HELP))
-		{
-			// Our clients expect this ID, so keep them happy
-			msg.DlgMsg = DIM_LFT_BN_CLICKED;
-			msg.GadgetID = _R(ID_HELP);
-			HandleMessage = TRUE;
-		}
-		else
-		{
-			msg.DlgMsg = DIM_LFT_BN_CLICKED;
-			HandleMessage = TRUE;
-		}
-	}
-	else if (
-		(EventType == wxEVT_COMMAND_CHOICE_SELECTED) ||
-		(EventType == wxEVT_COMMAND_LISTBOX_SELECTED) ||
-		(EventType == wxEVT_COMMAND_CHECKLISTBOX_TOGGLED) ||
-//		We skip this because it's generated when we change the text ourselves. We should probably do something more subtle
-//		(EventType == wxEVT_COMMAND_TEXT_UPDATED) ||	// only with WXWIN_COMPATIBILITY_EVENT_TYPES
-		(EventType == wxEVT_COMMAND_TEXT_URL) ||		// only with WXWIN_COMPATIBILITY_EVENT_TYPES
-//		(EventType == wxEVT_COMMAND_TEXT_MAXLEN) ||		// only with WXWIN_COMPATIBILITY_EVENT_TYPES
-		(EventType == wxEVT_COMMAND_MENU_SELECTED) ||
-//		(EventType == wxEVT_COMMAND_SLIDER_UPDATED) ||
-		(EventType == wxEVT_COMMAND_RADIOBOX_SELECTED) ||
-		(EventType == wxEVT_COMMAND_VLBOX_SELECTED) ||
-		(EventType == wxEVT_COMMAND_COMBOBOX_SELECTED) ||
-		(EventType == wxEVT_COMMAND_SPINCTRL_UPDATED) ||
-		((
-		(EventType == wxEVT_SCROLL_CHANGED) || 
-		(EventType == wxEVT_SCROLL_THUMBTRACK) || 
-		(EventType == wxEVT_SCROLL_THUMBRELEASE) ||
-		(EventType == wxEVT_SCROLL_LINEUP) ||
-		(EventType == wxEVT_SCROLL_LINEDOWN) ||
-		(EventType == wxEVT_SCROLL_PAGEUP) ||
-		(EventType == wxEVT_SCROLL_PAGEDOWN)
-		) &&
-		!(
-		  (pGadget && pGadget->IsKindOf(CLASSINFO(wxSlider))) ||
-		  (pGadget && pGadget->IsKindOf(CLASSINFO(wxSliderCombo)))
-		)
-		) || // Don't handle slider scroll stuff here
-		(EventType == wxEVT_COMMAND_TREE_SEL_CHANGED) ||
-		FALSE)
-	{
-		msg.DlgMsg = DIM_SELECTION_CHANGED;
-		msg.DlgMsgParam = NO_COMMIT;
-		HandleMessage = TRUE;
-	}
-	else if( EventType == wxEVT_COMMAND_TEXT_UPDATED && 	// only with WXWIN_COMPATIBILITY_EVENT_TYPES
-		pGadget == wxWindow::FindFocus() )
-	{
-		msg.DlgMsg = DIM_TEXT_CHANGED;
-		HandleMessage = TRUE;
-	}
-	else if(
-		(EventType == wxEVT_COMMAND_TEXT_ENTER) ||
-		FALSE)
-	{
-		msg.DlgMsg = DIM_SELECTION_CHANGED;
-		msg.DlgMsgParam = ENTER_COMMIT;
-		HandleMessage = TRUE;
-	}
-	else if(
-		(( (EventType == wxEVT_SCROLL_THUMBTRACK) ||
-		(EventType == wxEVT_SCROLL_LINEUP) ||
-		(EventType == wxEVT_SCROLL_LINEDOWN) ||
-		(EventType == wxEVT_SCROLL_PAGEUP) ||
-		(EventType == wxEVT_SCROLL_PAGEDOWN)
-		) && (pGadget && ( pGadget->IsKindOf(CLASSINFO(wxSlider)) || pGadget->IsKindOf(CLASSINFO(wxSliderCombo)) ))) || 
-		FALSE) // Handle slider movements - note SCROLL_CHANGED always comes later
-	{
-		msg.DlgMsg = DIM_SLIDER_POS_CHANGING;
-		HandleMessage = TRUE;
-	}
-	else if(
-		// Do not handle THUMB_RELEASE because we get a SCROLL_CHANGED anyway, and having two means we generate two SETs which will generate 2 undo records
-		// on (for instance) transparency and Bevel tools
-		((/*EventType == wxEVT_SCROLL_THUMBRELEASE ||*/ EventType == wxEVT_SCROLL_CHANGED) &&
-		 ( (pGadget && pGadget->IsKindOf(CLASSINFO(wxSlider))) || (pGadget && pGadget->IsKindOf(CLASSINFO(wxSliderCombo))) )
-		) || // Handle slider changes
-		FALSE)
-	{
-		msg.DlgMsg = DIM_SLIDER_POS_SET;
-		HandleMessage = TRUE;
-	}
-	else if(
-		(EventType == wxEVT_COMMAND_CHECKBOX_CLICKED) ||
-		(EventType == wxEVT_COMMAND_RADIOBUTTON_SELECTED) ||
-		FALSE)
-	{
-		msg.DlgMsg = DIM_LFT_BN_CLICKED; // apparently not a DIM_SELECTION_CHANGED - the click itself is eaten by the radio control - please do not change - AMB
-		HandleMessage = TRUE;
-	}
-	else if (
-		(EventType == wxEVT_COMMAND_LISTBOX_DOUBLECLICKED) ||
-		FALSE)
-	{
-		msg.DlgMsg = DIM_SELECTION_CHANGED_COMMIT;
-		HandleMessage = TRUE;
-	}
-	else if (
-		(EventType == wxEVT_LEFT_DOWN) ||
-		FALSE)
-	{
-		msg.DlgMsg = DIM_LFT_BN_DOWN;
-		HandleMessage = TRUE;
-	}	
-	else if (
-		(EventType == wxEVT_LEFT_UP) ||
-		FALSE)
-	{
-		msg.DlgMsg = DIM_LFT_BN_UP;
-		HandleMessage = TRUE;
-	}	
-	else if (
-		(EventType == wxEVT_RIGHT_DOWN) ||
-		FALSE)
-	{
-		msg.DlgMsg = DIM_RGT_BN_DOWN;
-		HandleMessage = TRUE;
-	}	
-	else if (
-		(EventType == wxEVT_RIGHT_UP) ||
-		FALSE)
-	{
-		msg.DlgMsg = DIM_RGT_BN_UP;
-		HandleMessage = TRUE;
-	}	
-	else if (
-		(EventType == wxEVT_MIDDLE_DOWN) ||
-		FALSE)
-	{
-		msg.DlgMsg = DIM_MID_BN_DOWN;
-		HandleMessage = TRUE;
-	}	
-	else if (
-		(EventType == wxEVT_MIDDLE_UP) ||
-		FALSE)
-	{
-		msg.DlgMsg = DIM_MID_BN_UP;
-		HandleMessage = TRUE;
-	}	
-	else if (
-		(EventType == wxEVT_MOTION) ||
-		FALSE)
-	{
-		msg.DlgMsg = ((wxMouseEvent *)&event)->Dragging()?DIM_MOUSE_DRAG:DIM_MOUSE_MOVE;
-		HandleMessage = TRUE;
-	}	
-	else if (
-		(EventType == wxEVT_MOUSEWHEEL) ||
-		FALSE)
-	{
-		msg.DlgMsg = (((wxMouseEvent *)&event)->GetWheelRotation()>0)?DIM_MOUSEWHEEL_UP:DIM_MOUSEWHEEL_DOWN;
-		HandleMessage = TRUE;
-	}	
-	else if (
-		(EventType == wxEVT_MOVE) ||
-		FALSE)
-	{
-		msg.DlgMsg = DIM_DLG_MOVED;
-		HandleMessage = TRUE;
-	}	
-	else if (
-		(EventType == wxEVT_SIZE) ||
-		FALSE)
-	{
-		if (event.GetEventObject() != pEvtHandler->pwxWindow)
-		{
-			Defer = FALSE;
-			msg.DlgMsg = DIM_CTRL_RESIZED;
-			HandleMessage = TRUE;	
-		}
-		else
-		{
-			msg.DlgMsg = DIM_DLG_RESIZED;
-			HandleMessage = TRUE;
-		}
-	}
-	else if (
-		(EventType == wxEVT_COMMAND_NOTEBOOK_PAGE_CHANGED) &&
-		pGadget && pGadget->IsKindOf(CLASSINFO(wxBookCtrlBase)))
-	{
-		msg.DlgMsg = DIM_SET_ACTIVE;
-		wxWindow *pPage = ((wxBookCtrlBase*)pGadget)->GetCurrentPage();
-		msg.PageID = pPage?(pPage->GetId()):0;
-		HandleMessage = TRUE;
-	}
-	else if (
-		((EventType == wxEVT_CAMDIALOG_REDRAW) && (pGadget)) ||
-		FALSE)
-	{
-		if (CCamApp::IsDisabled())
-		{
-			TRACE( _T("kernel-rendered gadget repaint has been aborted: the system is disabled (due to an error/ensure?)\n"));
-			HandleMessage = FALSE;
-		}
-		else
-		{
-			// HDC hDC = pInfo->PaintInfo.hdc;
-			// HPALETTE OldPalette = PaletteManager::StartPaintPalette(hDC);
-		
-			ReDrawInfoType ExtraInfo;
-		
-			ExtraInfo.pMousePos = NULL;		// No mouse position info for redraw events
-
-
-			// Build a CC dc out of it for rendering to the screen
-			// Get a MFC CDC to put the DC in
-			CCPaintDC MyDc(pGadget);
-
-			ExtraInfo.pDC = &MyDc;
-		
-			// The devices DPI
-			ExtraInfo.Dpi = OSRenderRegion::GetFixedDCPPI(MyDc).GetHeight();
-
-			// How big the window is
-			wxSize WindowSize = pGadget->GetClientSize();
-			ExtraInfo.dx = (((INT32)WindowSize.GetWidth())*72000) / ExtraInfo.Dpi;
-			ExtraInfo.dy = (((INT32)WindowSize.GetHeight())*72000) / ExtraInfo.Dpi;
-		
-			MyDc.GetDC()->BeginDrawing();
-
-			wxRegionIterator upd(pGadget->GetUpdateRegion()); // get the update rect list
-
-			BOOL Stop = FALSE;
-
-			while (upd && !Stop)
-			{
-				// Alternatively we can do this:
-				wxRect ClipRect(upd.GetRect());
-				// Should we clip this to the WindowSize here? For reasons which are not entirely clear, setting the
-				// ClipRect breaks GRenderRegions. But if we don't set the clip rect, it breaks (at least some)
-				// code that uses OSRenderRegion (sigh). Right now this is too painful to debug, so instead we
-				// cop out, and ask the control whether or not it would like a ClipRect set. Those that say no
-				// will paint the entire area, so we only give them one call
-
-				BOOL UseClipRect = (pGadget->IsKindOf(CLASSINFO(wxCamDrawControl)))
-									&& (((wxCamDrawControl*)pGadget)->GetStyle() & wxCDCS_SETCLIPRECT);
-
-				if (UseClipRect)
-				{
-					MyDc.GetDC()->SetClippingRegion(ClipRect);
-					ClipRect.Inflate(1,1); // work around wxRect problems.
-				}
-				else
-				{
-					ClipRect = wxRect(WindowSize);
-					Stop = TRUE; // cease drawing after this one
-				}
 				
-				DocRect DocClipRect;
+	      DocRect DocClipRect;
 			
-				// Convert to millipoints, Also need to flip the y coords to get a
-				// rectangle in with the origin in the bottom left.
-				DocClipRect.lo.x = (ClipRect.GetLeft() * 72000) / ExtraInfo.Dpi;
-				DocClipRect.lo.y = ExtraInfo.dy - ((ClipRect.GetBottom() * 72000) / ExtraInfo.Dpi);
+	      // Convert to millipoints, Also need to flip the y coords to get a
+	      // rectangle in with the origin in the bottom left.
+	      DocClipRect.lo.x = (ClipRect.GetLeft() * 72000) / ExtraInfo.Dpi;
+	      DocClipRect.lo.y = ExtraInfo.dy - ((ClipRect.GetBottom() * 72000) / ExtraInfo.Dpi);
 			
-				DocClipRect.hi.x = (ClipRect.GetRight() * 72000) / ExtraInfo.Dpi;
-				DocClipRect.hi.y = ExtraInfo.dy - ((ClipRect.GetTop() * 72000) / ExtraInfo.Dpi);
+	      DocClipRect.hi.x = (ClipRect.GetRight() * 72000) / ExtraInfo.Dpi;
+	      DocClipRect.hi.y = ExtraInfo.dy - ((ClipRect.GetTop() * 72000) / ExtraInfo.Dpi);
 			
-				// Set the pointer in the extra info structure
-				ExtraInfo.pClipRect = &DocClipRect;
+	      // Set the pointer in the extra info structure
+	      ExtraInfo.pClipRect = &DocClipRect;
 			
-				// Build the message and send it to the dialog op
-				// It is up to the dialog op to build a render region etc and attach the CCDC to it
-				// and to tidy the region up after it has finished drawing in it CDlgMessage
-				BROADCAST_TO_CLASS(DialogMsg(pEvtHandler->pwxWindow, DIM_REDRAW, id, (UINT_PTR)(void *)&ExtraInfo, PageID), DialogOp);
+	      // Build the message and send it to the dialog op
+	      // It is up to the dialog op to build a render region etc and attach the CCDC to it
+	      // and to tidy the region up after it has finished drawing in it CDlgMessage
+	      BROADCAST_TO_CLASS(DialogMsg(pEvtHandler->pwxWindow, DIM_REDRAW, id, (UINT_PTR)(void *)&ExtraInfo, PageID), DialogOp);
 				
-				upd ++ ;
-			}
-		
-			MyDc.GetDC()->EndDrawing();		
-		
-			// if (OldPalette)
-			//	PaletteManager::StopPaintPalette(hDC, OldPalette);
-		}
+	      upd ++ ;
+	    }
+	  // if (OldPalette)
+	  //	PaletteManager::StopPaintPalette(hDC, OldPalette);
 	}
+    }
 
-	//case	wxEVT_COMMAND_TOOL_RCLICKED:
-	//case	wxEVT_COMMAND_TOOL_ENTER:
+  //case	wxEVT_COMMAND_TOOL_RCLICKED:
+  //case	wxEVT_COMMAND_TOOL_ENTER:
 
 
-	// Handle filling in ExtraInfo on redraw events
-	if ((msg.DlgMsg != DIM_NONE) && pGadget && pGadget->IsKindOf(CLASSINFO(wxCamDrawControl)) && event.IsKindOf(CLASSINFO(wxMouseEvent)))
+  // Handle filling in ExtraInfo on redraw events
+  if ((msg.DlgMsg != DIM_NONE) && pGadget && pGadget->IsKindOf(CLASSINFO(wxCamDrawControl)) && event.IsKindOf(CLASSINFO(wxMouseEvent)))
+    {
+      switch (msg.DlgMsg)
 	{
-		switch (msg.DlgMsg)
-		{
-			case DIM_LFT_BN_DOWN:
-			case DIM_LFT_BN_UP:
-			case DIM_LFT_BN_CLICKED:
-			case DIM_RGT_BN_DOWN:
-			case DIM_RGT_BN_UP:
-			case DIM_RGT_BN_CLICKED:
-			case DIM_MID_BN_DOWN:
-			case DIM_MID_BN_UP:
-			case DIM_MID_BN_CLICKED:
-			case DIM_MOUSE_DRAG:
-			case DIM_MOUSE_MOVE:
-			case DIM_MOUSEWHEEL_UP:
-			case DIM_MOUSEWHEEL_DOWN:
-			{
+	case DIM_LFT_BN_DOWN:
+	case DIM_LFT_BN_UP:
+	case DIM_LFT_BN_CLICKED:
+	case DIM_RGT_BN_DOWN:
+	case DIM_RGT_BN_UP:
+	case DIM_RGT_BN_CLICKED:
+	case DIM_MID_BN_DOWN:
+	case DIM_MID_BN_UP:
+	case DIM_MID_BN_CLICKED:
+	case DIM_MOUSE_DRAG:
+	case DIM_MOUSE_MOVE:
+	case DIM_MOUSEWHEEL_UP:
+	case DIM_MOUSEWHEEL_DOWN:
+	  {
 
-				// HDC hDC = pInfo->PaintInfo.hdc;
-				// HPALETTE OldPalette = PaletteManager::StartPaintPalette(hDC);
+	    // HDC hDC = pInfo->PaintInfo.hdc;
+	    // HPALETTE OldPalette = PaletteManager::StartPaintPalette(hDC);
 			
-				ReDrawInfoType ExtraInfo;
+	    ReDrawInfoType ExtraInfo;
 			
-				ExtraInfo.pMousePos = NULL;		// No mouse position info for redraw events
+	    ExtraInfo.pMousePos = NULL;		// No mouse position info for redraw events
 		
 		
-				// Build a CC dc out of it for rendering to the screen
-				// Get a MFC CDC to put the DC in
-				CCPaintDC MyDc(pGadget);
+	    // Build a CC dc out of it for rendering to the screen
+	    // Get a MFC CDC to put the DC in
+	    CCPaintDC MyDc(pGadget);
 		
-				ExtraInfo.pDC = NULL;
+	    ExtraInfo.pDC = NULL;
 			
-				// The devices DPI
-				ExtraInfo.Dpi = OSRenderRegion::GetFixedDCPPI(MyDc).GetHeight();
+	    // The devices DPI
+	    ExtraInfo.Dpi = OSRenderRegion::GetFixedDCPPI(MyDc).GetHeight();
 		
-				// How big the window is
-				wxSize WindowSize = pGadget->GetClientSize();
-				ExtraInfo.dx = (((INT32)WindowSize.GetWidth())*72000) / ExtraInfo.Dpi;
-				ExtraInfo.dy = (((INT32)WindowSize.GetHeight())*72000) / ExtraInfo.Dpi;
+	    // How big the window is
+	    wxSize WindowSize = pGadget->GetClientSize();
+	    ExtraInfo.dx = (((INT32)WindowSize.GetWidth())*72000) / ExtraInfo.Dpi;
+	    ExtraInfo.dy = (((INT32)WindowSize.GetHeight())*72000) / ExtraInfo.Dpi;
 
-				// Work out the MILLIPOINT coordinates of the mouse position
-				// Note that the Y value is flipped, as the kernel-origin is at the bottom left
-				INT32 XPos = ((wxMouseEvent *)(&event))->GetX();
-				INT32 YPos = ((wxMouseEvent *)(&event))->GetY();
+	    // Work out the MILLIPOINT coordinates of the mouse position
+	    // Note that the Y value is flipped, as the kernel-origin is at the bottom left
+	    INT32 XPos = ((wxMouseEvent *)(&event))->GetX();
+	    INT32 YPos = ((wxMouseEvent *)(&event))->GetY();
 	
-				DocCoord MousePos;
-				MousePos.x = (XPos * 72000) / ExtraInfo.Dpi;
-				MousePos.y = ExtraInfo.dy - ((YPos * 72000) / ExtraInfo.Dpi);
-				ExtraInfo.pMousePos = &MousePos;
+	    DocCoord MousePos;
+	    MousePos.x = (XPos * 72000) / ExtraInfo.Dpi;
+	    MousePos.y = ExtraInfo.dy - ((YPos * 72000) / ExtraInfo.Dpi);
+	    ExtraInfo.pMousePos = &MousePos;
 
-				BROADCAST_TO_CLASS(DialogMsg(pEvtHandler->pwxWindow, msg.DlgMsg, id, (UINT_PTR)(void *)&ExtraInfo, PageID), DialogOp);
+	    BROADCAST_TO_CLASS(DialogMsg(pEvtHandler->pwxWindow, msg.DlgMsg, id, (UINT_PTR)(void *)&ExtraInfo, PageID), DialogOp);
 
-				msg.DlgMsg = DIM_NONE; // Stop further processing
-			}
+	    msg.DlgMsg = DIM_NONE; // Stop further processing
+	  }
 
-			default:
-				break;
-		}
+	default:
+	  break;
 	}
+    }
 
 
-	// If we have a message to send, then send it (or defer it for later)
-	if (msg.DlgMsg != DIM_NONE)
+  // If we have a message to send, then send it (or defer it for later)
+  if (msg.DlgMsg != DIM_NONE)
+    {
+      // Restore focus after selection change etc. if the dialog Op is non-modal
+      if (!(pEvtHandler->pDialogOp->IsModal()) && (( DIM_SELECTION_CHANGED == msg.DlgMsg ) || ( DIM_SLIDER_POS_SET == msg.DlgMsg )))
 	{
-		// Restore focus after selection change etc. if the dialog Op is non-modal
-		if (!(pEvtHandler->pDialogOp->IsModal()) && (( DIM_SELECTION_CHANGED == msg.DlgMsg ) || ( DIM_SLIDER_POS_SET == msg.DlgMsg )))
-		{
-			TRACEUSER( "luke", _T("Change focus") );
-			AfxGetApp().GiveActiveCanvasFocus();
-		}
-
-		if (Defer)
-		{
-			// We should send the message out later - we use the same ID
-			wxCamDialogEvent deferredevent (wxEVT_CAMDIALOG_DEFERREDMSG, event.GetId(), msg);
-			deferredevent.SetEventObject(pEvtHandler->pwxWindow);
-			// set it for processing later
-			pEvtHandler->pwxWindow->GetEventHandler()->AddPendingEvent(deferredevent);
-		}
-		else
-		{
-			BROADCAST_TO_CLASS( DialogMsg(msg), DialogOp );
-		}
+	  TRACEUSER( "luke", _T("Change focus") );
+	  AfxGetApp().GiveActiveCanvasFocus();
 	}
-	
-	// If we haven't marked this message as handled, call Skip() so that others can handle
-	// it
-	if (!HandleMessage) event.Skip(); // we didn't handle it
-	return;
+
+      if (Defer)
+	{
+	  // We should send the message out later - we use the same ID
+	  wxCamDialogEvent deferredevent (wxEVT_CAMDIALOG_DEFERREDMSG, event.GetId(), msg);
+	  deferredevent.SetEventObject(pEvtHandler->pwxWindow);
+	  // set it for processing later
+	  pEvtHandler->pwxWindow->GetEventHandler()->AddPendingEvent(deferredevent);
+	} else {
+	  BROADCAST_TO_CLASS( DialogMsg(msg), DialogOp );
+	}
+    }
+  // If we haven't marked this message as handled, call Skip() so that
+  // others can handle it
+  if (!HandleMessage) event.Skip(); // we didn't handle it
+  return;
 }
 
 
@@ -2523,81 +2499,67 @@ BOOL DialogManager::SetDimensionUnitGadgetValue(CWindowID WindowID,
 ********************************************************************************************/
 
 BOOL DialogManager::SetLongGadgetValue(CWindowID WindowID,
-									CGadgetID Gadget,
-									INT32 Value,
-									BOOL EndOfList,
-									INT32 ListPos)
-{
-	wxWindow * pGadget = GetGadget(WindowID, Gadget);
-	if (!pGadget) return FALSE;
-
-	if ( pGadget->IsKindOf(CLASSINFO(wxButton)) ||
-		pGadget->IsKindOf(CLASSINFO(wxBitmapButton)) )
-	{
-		// These bitmap buttons are meant to be tristate
-		PORTNOTETRACE("dialog","DialogManager::SetLongGadgetValue on BitmapButton - do nothing");
-		return FALSE;
-	}
-
-	// Oh if only virtual functions work here. Sadly, they don't, as SetValue is not in wxControl
-	if ( pGadget->IsKindOf(CLASSINFO(wxCheckBox)) )
-	{
-		((wxCheckBox *)(pGadget))->SetValue(Value !=0);
-		return TRUE;
-	}
-
-	if ( pGadget->IsKindOf(CLASSINFO(wxRadioButton)) )
-	{
-		((wxRadioButton *)(pGadget))->SetValue( Value != 0 );
-		return TRUE;
-	}
-
-	if ( pGadget->IsKindOf(CLASSINFO(wxScrollBar)) )
-	{
-		((wxScrollBar *)(pGadget))->SetThumbPosition(Value);
-		return TRUE;
-	}
-
-	if ( pGadget->IsKindOf(CLASSINFO(wxSlider)) )
-	{
-		((wxSlider *)(pGadget))->SetValue(Value);
-		return TRUE;
-	}
-
-	if ( pGadget->IsKindOf(CLASSINFO(wxSliderCombo)) )
-	{
-		((wxSliderCombo *)(pGadget))->SetSliderValue(Value);
-		return TRUE;
-	}
-
-	if ( pGadget->IsKindOf(CLASSINFO(wxGauge)) )
-	{
-		((wxGauge *)(pGadget))->SetValue(Value);
-		return TRUE;
-	}
-
-	if ( pGadget->IsKindOf(CLASSINFO(wxCamArtControl)) )
-	{
-		((wxCamArtControl *)(pGadget))->SetValue(Value);
-		return TRUE;
-	}
-
-
+				       CGadgetID Gadget,
+				       INT32 Value,
+				       BOOL EndOfList,
+				       INT32 ListPos) {
+  wxWindow * pGadget = GetGadget(WindowID, Gadget);
+  if (!pGadget) {
+    return FALSE;
+  }
+  if ( pGadget->IsKindOf(CLASSINFO(wxButton)) ||
+       pGadget->IsKindOf(CLASSINFO(wxBitmapButton)) ) {
+    // These bitmap buttons are meant to be tristate
+    PORTNOTETRACE("dialog",
+		  "DialogManager::SetLongGadgetValue on BitmapButton - do nothing");
+    return FALSE;
+  }
+  // Oh if only virtual functions work here. Sadly, they don't, as SetValue is not in wxControl
+  if ( pGadget->IsKindOf(CLASSINFO(wxCheckBox)) ) {
+    ((wxCheckBox *)(pGadget))->SetValue(Value !=0);
+    return TRUE;
+  }
+  if ( pGadget->IsKindOf(CLASSINFO(wxRadioButton)) ) {
+    ((wxRadioButton *)(pGadget))->SetValue( Value != 0 );
+    return TRUE;
+  }
+  if ( pGadget->IsKindOf(CLASSINFO(wxScrollBar)) ) {
+    ((wxScrollBar *)(pGadget))->SetThumbPosition(Value);
+    return TRUE;
+  }
+  if ( pGadget->IsKindOf(CLASSINFO(wxSlider)) ) {
+    ((wxSlider *)(pGadget))->SetValue(Value);
+    return TRUE;
+  }
+  if ( pGadget->IsKindOf(CLASSINFO(wxSliderCombo)) ) {
+    ((wxSliderCombo *)(pGadget))->SetSliderValue(Value);
+    return TRUE;
+  }
+  if ( pGadget->IsKindOf(CLASSINFO(wxGauge)) ) {
+    ((wxGauge *)(pGadget))->SetValue(Value);
+    return TRUE;
+  }
+  if ( pGadget->IsKindOf(CLASSINFO(wxCamArtControl)) ) {
+    ((wxCamArtControl *)(pGadget))->SetValue(Value);
+    return TRUE;
+  }
 #if 0
-	// it seems on an edit box we might be meant to set the garet, but it's difficult to know what's
-	// going on here
-	else if (ClassNameStr == String_16(TEXT("cc_CustomEdit")))//?
-	{
-		...
-	}
+  // it seems on an edit box we might be meant to set the garet, but
+  // it's difficult to know what's going on here
+  else if (ClassNameStr == String_16(TEXT("cc_CustomEdit")))//?
+    {
+      ...
+    }
 #endif
-
-	// Hmmm - no luck so far, let's try a string
-
-	String_256 StrValue;
-	// Convert Value to a string
-	Convert::LongToString(Value, &StrValue);
-	return(SetStringGadgetValue(WindowID, Gadget, StrValue, EndOfList, ListPos));
+  // Hmmm - no luck so far, let's try a string
+  String_256 StrValue;
+  // Convert Value to a string
+  Convert::LongToString(Value, &StrValue);
+  return(SetStringGadgetValue(WindowID,
+			      Gadget,
+			      StrValue,
+			      EndOfList,
+			      ListPos));
 }
 
 /********************************************************************************************
@@ -7724,83 +7686,72 @@ void DialogManager::RelayoutDialog( DialogTabOp* pDlgOp )
 
 ********************************************************************************************/
 
-BOOL DialogManager::CreateTabbedDialog(DialogTabOp* pTabDlgOp, CDlgMode Mode, INT32 OpeningPage,
-	CDlgResID mainDlgID )
-{
-	wxBookCtrlBase * pBook = GetBookControl(pTabDlgOp->WindowID);
-	if (!pBook)
-		return TRUE; // nothing to do
-
-	// Before we can create the property sheet we must add pages to it.
-	// Let's ask the op do do this for us
-	if (!(pTabDlgOp->RegisterYourPagesInOrderPlease()))
-	{
-		// We failed to add pages to the dialog so we must tidy-up and fail
-		return FALSE;
-	}
+BOOL DialogManager::CreateTabbedDialog(DialogTabOp* pTabDlgOp,
+				       CDlgMode Mode,
+				       INT32 OpeningPage,
+				       CDlgResID mainDlgID ) {
+  wxBookCtrlBase * pBook = GetBookControl(pTabDlgOp->WindowID);
+  if (!pBook) {
+    return TRUE; // nothing to do
+  }
+  // Before we can create the property sheet we must add pages to it.
+  // Let's ask the op do do this for us
+  if (!(pTabDlgOp->RegisterYourPagesInOrderPlease())) {
+    // We failed to add pages to the dialog so we must tidy-up and fail
+    return FALSE;
+  }
 #if 0
-	// Something very odd happens with the image list so we copy and reset it
-	if (pBook->GetImageList())
-	{
-		wxImageList temp=*pBook->GetImageList();
-		pBook->SetImageList(&temp);
-	}
+  // Something very odd happens with the image list so we copy and reset it
+  if (pBook->GetImageList())
+    {
+      wxImageList temp=*pBook->GetImageList();
+      pBook->SetImageList(&temp);
+    }
 #endif
 
-	// Get the dialog sized to fit
-	RelayoutDialog(pTabDlgOp);
+  // Get the dialog sized to fit
+  RelayoutDialog(pTabDlgOp);
 
-	// Scroll to start and end after yeild
-	::wxYield();
-	pBook->SetSelection(pBook->GetPageCount()-1);
-	pBook->SetSelection(0);
+  // Scroll to start and end after yeild
+  ::wxYield();
+  pBook->SetSelection(pBook->GetPageCount()-1);
+  pBook->SetSelection(0);
 
-	// First check if the OpeningPage parameter is not equal to -1, in which case this
-	// specifies the active page to be opened.
-	// Has to be an index as otherwise we have not specified the pages yet and so cannot
-	// convert the PageID into an index which is what the PropertySheets require.
-	UINT32 ActivePageIndex = 0;
-	if (OpeningPage != -1)
-	{
-		// Set the index of the page that is to be the active one to the one that has
-		// been specified.
-		ActivePageIndex = OpeningPage;
-	}
-	else
-	{
-		// Determine if this dialog has been created before
-		DialogPosition* pPosDetails = FindDialogPositionRecord( mainDlgID );
-		if (pPosDetails != NULL)
-		{
-			// The dialog has been created before so find out the index of the active page
-			ActivePageIndex = pPosDetails->ActivePageIndex;
-		}
-	}
-
-	// Now that the pages have been registered, check if the dialog has been opened
-	// before. If so force the new ActivePage to be specified rather than the old.
-	if (OpeningPage != -1)
-	{
-		// Determine if this dialog has been created before
-		DialogPosition* pPosDetails = FindDialogPositionRecord( mainDlgID );
-		if (pPosDetails != NULL)
-		{
-			// The dialog has been created before so check if the specified page was the
-			// last active one. If it was then everything should be ok.
-//			if (OpeningPage != pPosDetails->ActivePageIndex)
-//			{
-				ERROR3IF(pBook == NULL, "There is no current PropertySheet");
-				wxNotebookPage* pPage = (wxNotebookPage*)(pBook->GetPage(OpeningPage));
-				ERROR3IF(pPage == NULL, "There is no active page");
-				pPosDetails->ActivePage = pPage->GetId();
-TRACEUSER( "MarkH", _T("CreateTabbedDialog ActivePage = %d\n"),pPosDetails->ActivePage);
-//				pPosDetails->ActivePage = 27666;
-				pPosDetails->ActivePageIndex = OpeningPage;
-//			}
-		}
-	}
-
-	return TRUE;
+  // First check if the OpeningPage parameter is not equal to
+  // -1, in which case this specifies the active page to be
+  // opened.
+  // Has to be an index as otherwise we have not specified the
+  // pages yet and so cannot convert the PageID into an index
+  // which is what the PropertySheets require.
+  if (OpeningPage != -1) {
+    // Set the index of the page that is to be the active
+    // one to the one that has been specified.
+  } else {
+    // Determine if this dialog has been created before
+    DialogPosition* pPosDetails = FindDialogPositionRecord( mainDlgID );
+  }
+  // Now that the pages have been registered, check if the dialog has
+  // been opened before. If so force the new ActivePage to be
+  // specified rather than the old.
+  if (OpeningPage != -1) {
+    // Determine if this dialog has been created before
+    DialogPosition* pPosDetails = FindDialogPositionRecord( mainDlgID );
+    if (pPosDetails != NULL) {
+      // The dialog has been created before so check if the specified page was the
+      // last active one. If it was then everything should be ok.
+      // if (OpeningPage != pPosDetails->ActivePageIndex)
+      // {
+      ERROR3IF(pBook == NULL, "There is no current PropertySheet");
+      wxNotebookPage* pPage = (wxNotebookPage*)(pBook->GetPage(OpeningPage));
+      ERROR3IF(pPage == NULL, "There is no active page");
+      pPosDetails->ActivePage = pPage->GetId();
+      TRACEUSER( "MarkH", _T("CreateTabbedDialog ActivePage = %d\n"),pPosDetails->ActivePage);
+      // pPosDetails->ActivePage = 27666;
+      pPosDetails->ActivePageIndex = OpeningPage;
+      // }
+    }
+  }
+  return TRUE;
 }
 
 

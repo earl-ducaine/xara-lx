@@ -495,40 +495,38 @@ wxAuiPaneInfoArray& wxAuiManager::GetAllPanes()
     return m_panes;
 }
 
-// HitTest() is an internal function which determines
-// which UI item the specified coordinates are over
-// (x,y) specify a position in client coordinates
-wxAuiDockUIPart* wxAuiManager::HitTest(int x, int y)
-{
-    wxAuiDockUIPart* result = NULL;
-
-    int i, part_count;
-    for (i = 0, part_count = m_uiparts.GetCount(); i < part_count; ++i)
-    {
-        wxAuiDockUIPart* item = &m_uiparts.Item(i);
-
-        // we are not interested in typeDock, because this space
-        // isn't used to draw anything, just for measurements;
-        // besides, the entire dock area is covered with other
-        // rectangles, which we are interested in.
-        if (item->type == wxAuiDockUIPart::typeDock)
-            continue;
-
-        // if we already have a hit on a more specific item, we are not
-        // interested in a pane hit.  If, however, we don't already have
-        // a hit, returning a pane hit is necessary for some operations
-        if ((item->type == wxAuiDockUIPart::typePane ||
-            item->type == wxAuiDockUIPart::typePaneBorder) && result)
-            continue;
-
-        // if the point is inside the rectangle, we have a hit
-        if (item->rect.Inside(x,y))
-            result = item;
+// HitTest() is an internal function which determines which UI item
+// the specified coordinates are over (x,y) specify a position in
+// client coordinates
+wxAuiDockUIPart* wxAuiManager::HitTest(int x, int y) {
+  wxAuiDockUIPart* result = NULL;
+  int i, part_count;
+  for (i = 0, part_count = m_uiparts.GetCount(); i < part_count; ++i) {
+    wxAuiDockUIPart* item = &m_uiparts.Item(i);
+    // We are not interested in typeDock, because this space isn't
+    // used to draw anything, just for measurements; besides, the
+    // entire dock area is covered with other rectangles, which we are
+    // interested in.
+    if (item->type == wxAuiDockUIPart::typeDock) {
+      continue;
     }
-
-    return result;
+    // If we already have a hit on a more specific item, we are not
+    // interested in a pane hit.  If, however, we don't already have a
+    // hit, returning a pane hit is necessary for some operations
+    if ((item->type == wxAuiDockUIPart::typePane ||
+	 item->type == wxAuiDockUIPart::typePaneBorder) && result) {
+      continue;
+    }
+    // If the point is inside the rectangle, we have a hit
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+    if (item->rect.Inside(x,y)) {
+      result = item;
+    }
+#pragma GCC diagnostic pop
+  }
+  return result;
 }
-
 
 // SetFlags() and GetFlags() allow the owner to set various
 // options which are global to wxAuiManager

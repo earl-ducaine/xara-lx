@@ -270,51 +270,45 @@ void wxGenericComboControl::OnPaintEvent( wxPaintEvent& WXUNUSED(event) )
     }
 }
 
-void wxGenericComboControl::OnMouseEvent( wxMouseEvent& event )
-{
-    bool isOnButtonArea = m_btnArea.Inside(event.m_x,event.m_y);
-    int handlerFlags = isOnButtonArea ? wxCC_MF_ON_BUTTON : 0;
-
-    // Preprocessing fabricates double-clicks and prevents
-    // (it may also do other common things in future)
-    if ( PreprocessMouseEvent(event,handlerFlags) )
-        return;
-
+void wxGenericComboControl::OnMouseEvent( wxMouseEvent& event ) {
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+  bool isOnButtonArea = m_btnArea.Inside(event.m_x,event.m_y);
+#pragma GCC diagnostic pop
+  int handlerFlags = isOnButtonArea ? wxCC_MF_ON_BUTTON : 0;
+  // Preprocessing fabricates double-clicks and prevents
+  // (it may also do other common things in future)
+  if ( PreprocessMouseEvent(event,handlerFlags)) {
+    return;
+  }
 #ifdef __WXMSW__
-    const bool ctrlIsButton = true;
+  const bool ctrlIsButton = true;
 #else
-    const bool ctrlIsButton = false;
+  const bool ctrlIsButton = false;
 #endif
-
-    if ( ctrlIsButton &&
-         (m_windowStyle & (wxCC_SPECIAL_DCLICK|wxCB_READONLY)) == wxCB_READONLY )
-    {
-        // if no textctrl and no special double-click, then the entire control acts
-        // as a button
-        handlerFlags |= wxCC_MF_ON_BUTTON;
-        if ( HandleButtonMouseEvent(event,handlerFlags) )
-            return;
+  if ( ctrlIsButton &&
+       (m_windowStyle & (wxCC_SPECIAL_DCLICK|wxCB_READONLY)) == wxCB_READONLY ) {
+    // if no textctrl and no special double-click, then the entire
+    // control acts as a button
+    handlerFlags |= wxCC_MF_ON_BUTTON;
+    if ( HandleButtonMouseEvent(event,handlerFlags) ) {
+      return;
     }
-    else
-    {
-        if ( isOnButtonArea || HasCapture() )
-        {
-            if ( HandleButtonMouseEvent(event,handlerFlags) )
-                return;
-        }
-        else if ( m_btnState )
-        {
-            // otherwise need to clear the hover status
-            m_btnState = 0;
-            RefreshRect(m_btnArea);
-        }
+  } else {
+    if ( isOnButtonArea || HasCapture() ) {
+      if ( HandleButtonMouseEvent(event,handlerFlags) ) {
+	return;
+      }
+    } else if ( m_btnState ) {
+      // otherwise need to clear the hover status
+      m_btnState = 0;
+      RefreshRect(m_btnArea);
     }
-
-    //
-    // This will handle left_down and left_dclick events outside button in a Windows/GTK-like manner.
-    // See header file for further information on this method.
-    HandleNormalMouseEvent(event);
-
+  }
+  // This will handle left_down and left_dclick events outside button
+  // in a Windows/GTK-like manner.  See header file for further
+  // information on this method.
+  HandleNormalMouseEvent(event);
 }
 
 #ifdef __WXUNIVERSAL__

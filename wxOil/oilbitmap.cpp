@@ -1486,16 +1486,17 @@ RebuildXPEBitmap();
 	}
 
 	// Greyscale palette complete - output it as a hex string
-	pDC->OutputNewLine();
-	pDC->OutputToken(_T("<"));
-	pDC->OutputRawBinary(pCLUT, ClutSize);
-	pDC->OutputToken(_T(">"));
-	pDC->OutputNewLine();
 
+	pDC->OutputNewLine();
+	TCHAR langle[] =  _T("<");
+	pDC->OutputToken(langle);
+	pDC->OutputRawBinary(pCLUT, ClutSize);
+	TCHAR rangle[] =  _T(">");
+	pDC->OutputToken(rangle);
+	pDC->OutputNewLine();
 	// Ok, now do the colour palette.
 	// First, clear all entries to black
 	memset(pCLUT, 0, ClutSize * 3);
-
 	// BLOCK
 	{
 		PColourRGBT RGB;
@@ -1511,12 +1512,15 @@ RebuildXPEBitmap();
 		}
 	}
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
 	// RGB palette complete - output it as a hex string
 	pDC->OutputNewLine();
 	pDC->OutputToken(_T("<"));
 	pDC->OutputRawBinary(pCLUT, ClutSize * 3);
 	pDC->OutputToken(_T(">"));
 	pDC->OutputNewLine();
+#pragma GCC diagnostic pop
 
 	// Clean up
 	CCFree(pCLUT);
@@ -1580,9 +1584,12 @@ RebuildXPEBitmap();
 	// Not renderable (it's CamelotEPS), so we can output the bitmap as raw binary
 	KernelDC *pDC = (KernelDC *) CCDC::ConvertFromNativeDC(pRegion->GetRenderDC());
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
 	pDC->OutputToken(_T("%Camelot: Bitmap palette"));
+#pragma GCC diagnostic pop
 	pDC->OutputRawBinary((BYTE *) BMInfo->bmiColors, 
-						 BMInfo->bmiHeader.biClrUsed * sizeof(RGBQUAD));
+			     BMInfo->bmiHeader.biClrUsed * sizeof(RGBQUAD));
 	pDC->OutputNewLine();
 #endif
 	// If we got here, no errors occured.
@@ -1644,6 +1651,8 @@ RebuildXPEBitmap();
 	for (i = 0; i < 256; i++)
 		pCLUT[i] = i;
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
 	pDC->OutputNewLine();
 	pDC->OutputToken(_T("<"));
 	pDC->OutputRawBinary(pCLUT, 256);
@@ -1659,6 +1668,7 @@ RebuildXPEBitmap();
 	pDC->OutputRawBinary(pCLUT, 256 * 3);
 	pDC->OutputToken(_T(">"));
 	pDC->OutputNewLine();
+#pragma GCC diagnostic pop
 
 #endif
 	return(TRUE);
@@ -1786,8 +1796,12 @@ RebuildXPEBitmap();
 		}
 
 		// Export the bitmap pixel data itself.
-		if (!Renderable)
-			pDC->OutputToken(_T("%Camelot: Bitmap data"));
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+		if (!Renderable) {
+		  pDC->OutputToken(_T("%Camelot: Bitmap data"));
+		} 
+#pragma GCC diagnostic pop
 		pDC->OutputNewLine();
 		
 		// Do each scanline...
@@ -2023,8 +2037,12 @@ RebuildXPEBitmap();
 	}
 
 	// Export the bitmap pixel data itself.
-	if (!Renderable)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+	if (!Renderable) {
 		pDC->OutputToken(_T("%Camelot: Bitmap data"));
+	}
+#pragma GCC diagnostic pop
 	pDC->OutputNewLine();
 	
 	// Get some useful constants...

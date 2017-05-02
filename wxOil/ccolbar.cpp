@@ -1245,33 +1245,26 @@ PORTNOTE("other","Removed ColourSGallery usage")
 
 ********************************************************************************************/
 
-BOOL CColourBar::IsColourPickerOverStripRect (wxWindow* colourPicker, wxPoint mousePt)
-{
-	return((colourPicker == this) && StripRect.Inside(mousePt));
-
+BOOL CColourBar::IsColourPickerOverStripRect (wxWindow* colourPicker, wxPoint mousePt) {
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+  return((colourPicker == this) && StripRect.Inside(mousePt));
+#pragma GCC diagnostic pop
 #if FALSE
-	// firstly, lets check for obvious insanity
-	String_256 ClassNameStr;  // The control type
-
-	// Find out the class type of the gadget
-	GetClassName (colourPicker, (TCHAR*) ClassNameStr, 255);
-
-	//BOOL returnVal = FALSE;
-
-	if (ClassNameStr == String_8(TEXT("cc_colPicker")))
-	{
-		if (StripRect.PtInRect(mousePt))
-		{
-			return (TRUE);
-		}
-		else
-		{
-			return (FALSE);
-		}
-	}
-
-	ENSURE(FALSE, _T("IsColourPickerOverStripRect called for invalid colour picker control"));
-	return (FALSE);
+  // firstly, lets check for obvious insanity
+  String_256 ClassNameStr;  // The control type
+  // Find out the class type of the gadget
+  GetClassName (colourPicker, (TCHAR*) ClassNameStr, 255);
+  //BOOL returnVal = FALSE;
+  if (ClassNameStr == String_8(TEXT("cc_colPicker"))) {
+    if (StripRect.PtInRect(mousePt)) {
+      return (TRUE);
+    } else {
+      return (FALSE);
+    }
+  }
+  ENSURE(FALSE, _T("IsColourPickerOverStripRect called for invalid colour picker control"));
+  return (FALSE);
 #endif
 }
 
@@ -2876,118 +2869,97 @@ void CColourBar::ForceRedrawOfRect(const wxRect &RectToDraw)
 
 ********************************************************************************************/
 
-INT32 CColourBar::WhereIsMouse(wxPoint MousePos, wxRect *TheRectItIsIn, BOOL *ToLeft)
-{
-	if (ToLeft != NULL)		// Sensible default output
-		*ToLeft = TRUE;
-
-	if (StripRect.Inside(MousePos))		// Check ColourStrip - MUST be checked first!
-	{
-		if (TheRectItIsIn != NULL)
-			*TheRectItIsIn = StripRect;
-
-		// If necessary, determine if the pointer is in the left or right half of the colour cell
-		if (ToLeft != NULL)
-		{
-			if ( (MousePos.x - StripRect.x) % CellSize >= CellSize / 2)
-			{
-				// The pointer is in the right hand side of the cell, so return ToLeft=FALSE
-				*ToLeft = FALSE;
-			}
-		}
-
-		return((INT32) (((MousePos.x - StripRect.x) / CellSize) + LeftmostColour));
+INT32 CColourBar::WhereIsMouse(wxPoint MousePos, wxRect *TheRectItIsIn, BOOL *ToLeft) {
+  if (ToLeft != NULL){		// Sensible default output
+    *ToLeft = TRUE;
+  }
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+  if (StripRect.Inside(MousePos)) {	// Check ColourStrip - MUST be checked first!
+    if (TheRectItIsIn != NULL) {
+      *TheRectItIsIn = StripRect;
+    }
+    // If necessary, determine if the pointer is in the left or right half of the colour cell
+    if (ToLeft != NULL) {
+      if ( (MousePos.x - StripRect.x) % CellSize >= CellSize / 2) {
+	// The pointer is in the right hand side of the cell, so return ToLeft=FALSE
+	*ToLeft = FALSE;
+      }
+    }
+    return((INT32) (((MousePos.x - StripRect.x) / CellSize) + LeftmostColour));
+  }
+  if (IndicatorRect.Inside(MousePos)) {	// Check Indicator patch
+    if (TheRectItIsIn != NULL) {
+      *TheRectItIsIn = IndicatorRect;
+    }
+    return(CLICKED_INDICATORS);
+  }
+  if (EditButtonRect.Inside(MousePos)) {
+    if (TheRectItIsIn != NULL) {
+      *TheRectItIsIn = EditButtonRect;
+    }
+    return(CLICKED_EDITBUTTON);
+  }
+  /*
+    if (NewButtonRect.Inside(MousePos)) {
+    if (TheRectItIsIn != NULL)
+    *TheRectItIsIn = NewButtonRect;
+    return(CLICKED_NEWBUTTON);
+    }
+  */
+  wxRect TheRect;
+  if (!HasNoScrollBar(-1, -1)) {			// Check Scrollbar rectangle (if any)
+    if (ScrollHeight != 0 && ScrollBarRect.Inside(MousePos) &&
+	CalculateSausageRect(&TheRect)) {
+      if (TheRectItIsIn != NULL) {
+	*TheRectItIsIn = TheRect;
+      }
+      if (MousePos.x < TheRect.x) {	// Left of the sausage
+	if (TheRectItIsIn != NULL) {
+	  TheRectItIsIn->x = ScrollBarRect.x;
+	  TheRectItIsIn->width = (TheRect.x - 1 - TheRectItIsIn->x);
 	}
-
-	if (IndicatorRect.Inside(MousePos))	// Check Indicator patch
+	return(CLICKED_SCROLLBARLEFT);
+      }
+      if (MousePos.x > (TheRect.x + TheRect.width))	// Right of the sausage
 	{
-		if (TheRectItIsIn != NULL)
-			*TheRectItIsIn = IndicatorRect;
-		return(CLICKED_INDICATORS);
+	  if (TheRectItIsIn != NULL)
+	    {
+	      TheRectItIsIn->x = TheRect.x + TheRect.width + 1;
+	      TheRectItIsIn->width = ScrollBarRect.x + ScrollBarRect.x - TheRectItIsIn->x;
+	    }
+	  return(CLICKED_SCROLLBARRIGHT);
 	}
-
-	if (EditButtonRect.Inside(MousePos))
-	{
-		if (TheRectItIsIn != NULL)
-			*TheRectItIsIn = EditButtonRect;
-		return(CLICKED_EDITBUTTON);
-	}
-
-#if FALSE
-/*
-	if (NewButtonRect.Inside(MousePos))
-	{
-		if (TheRectItIsIn != NULL)
-			*TheRectItIsIn = NewButtonRect;
-		return(CLICKED_NEWBUTTON);
-	}
-*/
-#endif
-
-	wxRect TheRect;
-
-	if (!HasNoScrollBar(-1, -1))			// Check Scrollbar rectangle (if any)
-	{
-		if (ScrollHeight != 0 && ScrollBarRect.Inside(MousePos) &&
-			CalculateSausageRect(&TheRect))
-		{
-			if (TheRectItIsIn != NULL)
-				*TheRectItIsIn = TheRect;
-
-			if (MousePos.x < TheRect.x)	// Left of the sausage
-			{
-				if (TheRectItIsIn != NULL)
-				{
-					TheRectItIsIn->x = ScrollBarRect.x;
-					TheRectItIsIn->width = (TheRect.x - 1 - TheRectItIsIn->x);
-				}
-
-				return(CLICKED_SCROLLBARLEFT);
-			}
-
-			if (MousePos.x > (TheRect.x + TheRect.width))	// Right of the sausage
-			{
-				if (TheRectItIsIn != NULL)
-				{
-					TheRectItIsIn->x = TheRect.x + TheRect.width + 1;
-					TheRectItIsIn->width = ScrollBarRect.x + ScrollBarRect.x - TheRectItIsIn->x;
-				}
-				return(CLICKED_SCROLLBARRIGHT);
-			}
-
-			return(CLICKED_SCROLLBAR);	   	// Middle of the sausage
-		}
-
-		TheRect = ScrollBarRect;			// Check left scroll button
-		TheRect.x -= ButtonWidth;
-		TheRect.width = ButtonWidth;
-		if (TheRect.Inside(MousePos))
-		{
-			if (TheRectItIsIn != NULL)
-				*TheRectItIsIn = TheRect;
-			return(CLICKED_LEFTSCROLL);
-		}
-
-		TheRect = ScrollBarRect;		   	// Check right scroll button
-		TheRect.x += TheRect.width;
-		TheRect.width = ButtonWidth;
-		if (TheRect.Inside(MousePos))
-		{
-			if (TheRectItIsIn != NULL)
-				*TheRectItIsIn = TheRect;
-			return(CLICKED_RIGHTSCROLL);
-		}
-	}
-
-	CalculateNoColourCellRect(&TheRect);	// Check NoColour cell
-	if (TheRect.Inside(MousePos))
-	{
-		if (TheRectItIsIn != NULL)
-			*TheRectItIsIn = TheRect;
-		return(CLICKED_NOCOLOURCELL);
-	}
-
-	return(CLICKED_NOTHING);				// Not over anything important
+      return(CLICKED_SCROLLBAR);	   	// Middle of the sausage
+    }
+    TheRect = ScrollBarRect;			// Check left scroll button
+    TheRect.x -= ButtonWidth;
+    TheRect.width = ButtonWidth;
+    if (TheRect.Inside(MousePos))
+      {
+	if (TheRectItIsIn != NULL)
+	  *TheRectItIsIn = TheRect;
+	return(CLICKED_LEFTSCROLL);
+      }
+    TheRect = ScrollBarRect;		   	// Check right scroll button
+    TheRect.x += TheRect.width;
+    TheRect.width = ButtonWidth;
+    if (TheRect.Inside(MousePos))
+      {
+	if (TheRectItIsIn != NULL)
+	  *TheRectItIsIn = TheRect;
+	return(CLICKED_RIGHTSCROLL);
+      }
+  }
+  CalculateNoColourCellRect(&TheRect);	// Check NoColour cell
+  if (TheRect.Inside(MousePos))
+    {
+      if (TheRectItIsIn != NULL)
+	*TheRectItIsIn = TheRect;
+      return(CLICKED_NOCOLOURCELL);
+    }
+#pragma GCC diagnostic pop
+  return(CLICKED_NOTHING);				// Not over anything important
 }
 
 
@@ -4513,279 +4485,250 @@ inline BOOL ShiftIsDown(void)
 
 ********************************************************************************************/
 
-void CColourBar::OnAnyButtonDown(const wxPoint &point, INT32 Modifier)
-{
-	if (DragInfo.MouseCaptured)					// Ignore clicks during drags
-		return;
-
-	// Remove bubble help whenever the user clicks
-//	ControlHelper::BubbleHelpDisable();
-
-	if (m_pCurrentColourList == NULL)		// Ensure the current ColourList pointer is valid
-		m_pCurrentColourList = ColourManager::GetColourList();
-
-	if (m_pCurrentColourList == NULL)		// No DOCUMENT! No Colours! Exit immediately!
-		return;
-
-	wxRect RectMouseIsIn;
-	INT32 MousePos = WhereIsMouse(point, &RectMouseIsIn);
-
-	DragInfo.Adjust = (Modifier < 0);
-	DragInfo.LastMousePos = point;				// Remember last point mouse was at
-	DragInfo.DragItem = MousePos;				// and last item it was over
-
-
-	if (MousePos < CLICKED_NOTHING)
+void CColourBar::OnAnyButtonDown(const wxPoint &point, INT32 Modifier) {
+  if (DragInfo.MouseCaptured)					// Ignore clicks during drags
+    return;
+  // Remove bubble help whenever the user clicks
+  //	ControlHelper::BubbleHelpDisable();
+  if (m_pCurrentColourList == NULL)		// Ensure the current ColourList pointer is valid
+    m_pCurrentColourList = ColourManager::GetColourList();
+  if (m_pCurrentColourList == NULL)		// No DOCUMENT! No Colours! Exit immediately!
+    return;
+  wxRect RectMouseIsIn;
+  INT32 MousePos = WhereIsMouse(point, &RectMouseIsIn);
+  DragInfo.Adjust = (Modifier < 0);
+  DragInfo.LastMousePos = point;				// Remember last point mouse was at
+  DragInfo.DragItem = MousePos;				// and last item it was over
+  if (MousePos < CLICKED_NOTHING) {
+      BOOL ModifierKeyDown = GetModifierKeyState();
+      if (ModifierKeyDown) {
+	  // If Right ALT down, allow 'push tool' dragging mode on colourstrip
+	  CaptureTheMouse();
+	  DragInfo.DragItem = CLICKED_SCROLLSTRIP;
+	  // AnchorOffset is now the colour cell being dragged
+	  DragInfo.AnchorOffset = (INT32) (LeftmostColour +
+					   ((point.x - StripRect.x) / CellSize));
+	  return;
+	}
+      else
 	{
-		BOOL ModifierKeyDown = GetModifierKeyState();
-
-		if (ModifierKeyDown)
-		{
-			// If Right ALT down, allow 'push tool' dragging mode on colourstrip
-			CaptureTheMouse();
-			DragInfo.DragItem = CLICKED_SCROLLSTRIP;
-
-			// AnchorOffset is now the colour cell being dragged
-			DragInfo.AnchorOffset = (INT32) (LeftmostColour +
-									((point.x - StripRect.x) / CellSize));
-			return;
-		}
-		else
-		{
 #ifdef DISABLE_COLOUR_DRAGS
-		 	CellClicked(MousePos, (Modifier < 0));
+	  CellClicked(MousePos, (Modifier < 0));
 #else
-			// Find the clicked colour, and start a drag of it
-			IndexedColour *TheColour = NULL;
-			ColourDragInformation *DragCol = NULL;
-			// If the user has the preference set then include and hence show the document
-			// colours
-			if (ColourSGallery::ShowDocumentColours)
-				TheColour = FindColourByIndex(MousePos);
-
-			if (TheColour != NULL)
-			{
-				DragCol = new ColourDragInformation(TheColour, (Modifier < 0),
-														Document::GetSelected());
-			}
-			else
-			{
-PORTNOTE("other","Removed ColourSGallery usage")
+	  // Find the clicked colour, and start a drag of it
+	  IndexedColour *TheColour = NULL;
+	  ColourDragInformation *DragCol = NULL;
+	  // If the user has the preference set then include and hence show the document
+	  // colours
+	  if (ColourSGallery::ShowDocumentColours)
+	    TheColour = FindColourByIndex(MousePos);
+	  if (TheColour != NULL) {
+	      DragCol = new ColourDragInformation(TheColour, (Modifier < 0),
+						  Document::GetSelected());
+	    } else {
+	      PORTNOTE("other","Removed ColourSGallery usage")
 #if !defined(EXCLUDE_FROM_XARALX)
-				// FIXED COLOURS
-				// We didn't find the colour in the document colours section
-				// so check any library sections that may be present
-				SGDisplayLibColour *pLibColour = NULL;
-				DocColour * pTheDocColour = FindLibColourByIndex(MousePos, &pLibColour);
-				if (pTheDocColour && pLibColour)
-				{
-					// Start up a DocColour drag which should give us what we want
-					String_256 Buffer;
-					pLibColour->GetNameText(&Buffer);
-					DragCol = new ColourDragInformation(pTheDocColour, (Modifier < 0),
-														&Buffer, pLibColour->IsASpotColour());
-				}
-#endif
-			}
-
-			DragManagerOp::StartDrag(DragCol, this);
-#endif
-			return;
+		// FIXED COLOURS
+		// We didn't find the colour in the document colours section
+		// so check any library sections that may be present
+		SGDisplayLibColour *pLibColour = NULL;
+	      DocColour * pTheDocColour = FindLibColourByIndex(MousePos, &pLibColour);
+	      if (pTheDocColour && pLibColour)
+		{
+		  // Start up a DocColour drag which should give us what we want
+		  String_256 Buffer;
+		  pLibColour->GetNameText(&Buffer);
+		  DragCol = new ColourDragInformation(pTheDocColour, (Modifier < 0),
+						      &Buffer, pLibColour->IsASpotColour());
 		}
+#endif
+	    }
+	  DragManagerOp::StartDrag(DragCol, this);
+#endif
+	  return;
 	}
-
-	switch(MousePos)
-	{
-		case CLICKED_NOCOLOURCELL:				// Set 'no colour'
+    }
+  switch(MousePos) {
+    case CLICKED_NOCOLOURCELL:				// Set 'no colour'
 #ifdef DISABLE_COLOUR_DRAGS
-			CellClicked(MousePos, (Modifier < 0));
+      CellClicked(MousePos, (Modifier < 0));
 #else
-			// Create an attribute of the correct type
-
-			ColourDragInformation * DragCol;
-			DragCol = new ColourDragInformation(NULL, (Modifier < 0),
-												Document::GetSelected());
-			DragManagerOp::StartDrag(DragCol, this);
+      // Create an attribute of the correct type
+      ColourDragInformation * DragCol;
+      DragCol = new ColourDragInformation(NULL, (Modifier < 0),
+					  Document::GetSelected());
+      DragManagerOp::StartDrag(DragCol, this);
 #endif
-			break;
-
-		case CLICKED_INDICATORS:
+      break;
+    case CLICKED_INDICATORS:
 #ifndef DISABLE_COLOUR_DRAGS
-			{
-				// Have clicked the line/fill colour indicator, so drag them if possible
-				wxRect InnerRect(IndicatorRect);
-				INT32 DeflateBy = (abs(IndicatorRect.height) * 2) / 5;
-				if (DeflateBy < 4)
-					DeflateBy = 4;	// Line indicator is min. of 2 pixels wide
-				InnerRect.Inflate(-DeflateBy / 2, -DeflateBy / 2);
-
-				// Resort to dragging 'no colour' if a better colour can't be found
-				IndexedColour *IndexedColToDrag = NULL;
-
-				DocColour *LineColour;
-				DocColour *FillColour;
-				DocColour *EndColour;
-				ColourManager::GetCurrentLineAndFillColours(&LineColour, &FillColour, &EndColour);
-
-				DocColour *DocColourToUse = NULL;
-
-				if (InnerRect.Inside(point))
-				{
-					if (EndColour != NULL && point.y <= (InnerRect.y + (InnerRect.height / 2)))
-						DocColourToUse = EndColour;
-					else
-						DocColourToUse = FillColour;
-				}
-				else
-					DocColourToUse = LineColour;
-
-				// If we found a doc colour to be dragged, find its IndexedColour parent (or if necessary,
-				// create a new local colour to be dragged from the immediate-doccolour definition)
-				if (DocColourToUse != NULL)
-				{
-					IndexedColToDrag = DocColourToUse->FindParentIndexedColour();
-
-					// If the DocColour was an immediate colour (non-transparent, but
-					// with no parent IndexedColour) then we'll need to create a local IndexedColour
-					// to represent the colour to be dragged, or else it'll drag 'no colour'!
-					// This may return NULL, but we're quite happy with that.
-					if (IndexedColToDrag == NULL && !DocColourToUse->IsTransparent())
-					{
-						IndexedColToDrag = ColourManager::GenerateNewUnnamedColour(
-															m_pCurrentColourList, DocColourToUse);
-					}
-				}
-
-				ColourDragInformation *DragCol;
-				DragCol = new ColourDragInformation(IndexedColToDrag, (Modifier < 0),
-													Document::GetSelected());
-				DragManagerOp::StartDrag(DragCol, this);
-			}
-#endif
-			break;
-
-		case CLICKED_LEFTSCROLL:
-			ScrollTheStrip(-Modifier);			// Scroll once
-			CaptureTheMouse();					// And start an autorepeat 'drag'
-			SetATimer(TRUE);
-			break;
-
-		case CLICKED_RIGHTSCROLL:
-			ScrollTheStrip(Modifier);			// Scroll once
-			CaptureTheMouse();					// And start an autorepeat 'drag'
-			SetATimer(TRUE);
-			break;
-
-		case CLICKED_SCROLLBARLEFT:				// PageRight once
-			{
-				UINT32 NumDisplayedColours = StripRect.width / CellSize;
-				ScrollTheStrip((INT32) ((-Modifier) * NumDisplayedColours));
-				CaptureTheMouse();				// And start an autorepeat 'drag'
-				SetATimer(TRUE);
-			}
-			break;
-
-		case CLICKED_SCROLLBARRIGHT:			// PageLeft once
-			{
-				UINT32 NumDisplayedColours = StripRect.width / CellSize;
-				ScrollTheStrip((INT32) (Modifier * NumDisplayedColours));
-				CaptureTheMouse();				// And start an autorepeat 'drag'
-				SetATimer(TRUE);
-			}
-			break;
-
-		case CLICKED_SCROLLBAR:
-			CaptureTheMouse();					// Start drag (on MouseMoves, not Timers)
-
-			// AnchorOffset is now the distance (pixels) of the drag anchor from
-			// the center of the scroll sausage
-			DragInfo.AnchorOffset = point.x -
-									(RectMouseIsIn.x + (RectMouseIsIn.width / 2));
-			break;
-
-		case CLICKED_EDITBUTTON:
-			{
-				if (IndentedButton == CLICKED_NOTHING)		// Indent button while mouse down
-				{
-					TRACEUSER("Gerry", _T("Edit Clicked"));
-					IndentedButton = CLICKED_EDITBUTTON;
-					ForceRedrawOfRect(EditButtonRect);
-					Update();							// Force immediate redraw
-					CaptureMouse();							// And grab all mouse events
-				}											// until the button is released
-
-#if FALSE
-/*
-	// No longer needed - we want the editor to pop up in "local" mode.
-				DocColour *LineColour;
-				DocColour *FillColour;
-
-				ERROR3IF(m_pCurrentColourList == NULL,
-						_T("Unexpected NULL ColourList pointer in CColourBar::OnAnyButtonDown"));
-
-				ColourManager::GetCurrentLineAndFillColours(&LineColour, &FillColour);
-
-				// Edit the appropriate colour. If there is none, EditAColour just beeps
-				// and returns without getting upset
-
-				IndexedColour *ColToEdit = NULL;
-				if (Modifier < 0)
-				{
-					if (LineColour != NULL)
-						ColToEdit = LineColour->FindParentIndexedColour();
-				}
-				else
-				{
-					if (FillColour != NULL)
-						ColToEdit = FillColour->FindParentIndexedColour();
-				}
-
-				EditAColour(m_pCurrentColourList, ColToEdit);
-*/
-#else
-				EditAColour(NULL, NULL, (Modifier < 0));
-#endif
-			}
-			break;
-
-
-#if FALSE
-/*
-		case CLICKED_NEWBUTTON:
-			{
-				if (IndentedButton == CLICKED_NOTHING)		// Indent button while mouse down
-				{
-					IndentedButton = CLICKED_NEWBUTTON;
-					ForceRedrawOfRect(NewButtonRect);
-					UpdateWindow();							// Force immediate redraw
-					SetCapture();							// And grab all mouse events
-				}											// until the button is released
-
-				ERROR3IF(m_pCurrentColourList == NULL,
-						_T("Unexpected NULL ColourList pointer in CColourBar::OnAnyButtonDown"));
-
-				IndexedColour *NewCol = NULL;
-
-				// Create a new colour, in the current colour list, copied from the
-				// current attribute/selection if possible.
-				ColourList *CurrentDocColours = ColourManager::GetColourList();
-				ERROR3IF(CurrentDocColours == NULL, _T("No colour list present?!"));
-
-				if (CurrentDocColours != NULL)
-				{
-					NewCol = ColourManager::GenerateNewNamedColour(CurrentDocColours, NULL);
-
-					if (NewCol != NULL)
-					{
-						ApplyColour(NewCol, (Modifier < 0));	// Apply col to selection
-						EditAColour(m_pCurrentColourList, NewCol);	// And open editor
-					}
-				}
-			}
-			break;	
-*/
-#endif
+      {
+	// Have clicked the line/fill colour indicator, so drag them if possible
+	wxRect InnerRect(IndicatorRect);
+	INT32 DeflateBy = (abs(IndicatorRect.height) * 2) / 5;
+	if (DeflateBy < 4)
+	  DeflateBy = 4;	// Line indicator is min. of 2 pixels wide
+	InnerRect.Inflate(-DeflateBy / 2, -DeflateBy / 2);
+	// Resort to dragging 'no colour' if a better colour can't be found
+	IndexedColour *IndexedColToDrag = NULL;
+	DocColour *LineColour;
+	DocColour *FillColour;
+	DocColour *EndColour;
+	ColourManager::GetCurrentLineAndFillColours(&LineColour, &FillColour, &EndColour);
+	DocColour *DocColourToUse = NULL;
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+	if (InnerRect.Inside(point)) {
+	  if (EndColour != NULL && point.y <= (InnerRect.y + (InnerRect.height / 2)))
+	    DocColourToUse = EndColour;
+	  else
+	    DocColourToUse = FillColour;
+	} else {
+	  DocColourToUse = LineColour;
 	}
+#pragma GCC diagnostic pop
+	// If we found a doc colour to be dragged, find its
+	// IndexedColour parent (or if necessary, create a new local
+	// colour to be dragged from the immediate-doccolour
+	// definition)
+	if (DocColourToUse != NULL) {
+	    IndexedColToDrag = DocColourToUse->FindParentIndexedColour();
+	    // If the DocColour was an immediate colour (non-transparent, but
+	    // with no parent IndexedColour) then we'll need to create a local IndexedColour
+	    // to represent the colour to be dragged, or else it'll drag 'no colour'!
+	    // This may return NULL, but we're quite happy with that.
+	    if (IndexedColToDrag == NULL && !DocColourToUse->IsTransparent()) {
+		IndexedColToDrag =
+		  ColourManager::GenerateNewUnnamedColour(m_pCurrentColourList, DocColourToUse);
+	      }
+	  }
+	ColourDragInformation *DragCol;
+	DragCol = new ColourDragInformation(IndexedColToDrag, (Modifier < 0),
+					    Document::GetSelected());
+	DragManagerOp::StartDrag(DragCol, this);
+      }
+#endif
+      break;
+    case CLICKED_LEFTSCROLL:
+      ScrollTheStrip(-Modifier);			// Scroll once
+      CaptureTheMouse();					// And start an autorepeat 'drag'
+      SetATimer(TRUE);
+      break;
+    case CLICKED_RIGHTSCROLL:
+      ScrollTheStrip(Modifier);			// Scroll once
+      CaptureTheMouse();					// And start an autorepeat 'drag'
+      SetATimer(TRUE);
+      break;
+    case CLICKED_SCROLLBARLEFT:				// PageRight once
+      {
+	UINT32 NumDisplayedColours = StripRect.width / CellSize;
+	ScrollTheStrip((INT32) ((-Modifier) * NumDisplayedColours));
+	CaptureTheMouse();				// And start an autorepeat 'drag'
+	SetATimer(TRUE);
+      }
+      break;
+
+    case CLICKED_SCROLLBARRIGHT:			// PageLeft once
+      {
+	UINT32 NumDisplayedColours = StripRect.width / CellSize;
+	ScrollTheStrip((INT32) (Modifier * NumDisplayedColours));
+	CaptureTheMouse();				// And start an autorepeat 'drag'
+	SetATimer(TRUE);
+      }
+      break;
+
+    case CLICKED_SCROLLBAR:
+      CaptureTheMouse();					// Start drag (on MouseMoves, not Timers)
+
+      // AnchorOffset is now the distance (pixels) of the drag anchor from
+      // the center of the scroll sausage
+      DragInfo.AnchorOffset = point.x -
+	(RectMouseIsIn.x + (RectMouseIsIn.width / 2));
+      break;
+
+    case CLICKED_EDITBUTTON:
+      {
+	if (IndentedButton == CLICKED_NOTHING)		// Indent button while mouse down
+	  {
+	    TRACEUSER("Gerry", _T("Edit Clicked"));
+	    IndentedButton = CLICKED_EDITBUTTON;
+	    ForceRedrawOfRect(EditButtonRect);
+	    Update();							// Force immediate redraw
+	    CaptureMouse();							// And grab all mouse events
+	  }											// until the button is released
+
+#if FALSE
+	/*
+	// No longer needed - we want the editor to pop up in "local" mode.
+	DocColour *LineColour;
+	DocColour *FillColour;
+
+	ERROR3IF(m_pCurrentColourList == NULL,
+	_T("Unexpected NULL ColourList pointer in CColourBar::OnAnyButtonDown"));
+
+	ColourManager::GetCurrentLineAndFillColours(&LineColour, &FillColour);
+
+	// Edit the appropriate colour. If there is none, EditAColour just beeps
+	// and returns without getting upset
+
+	IndexedColour *ColToEdit = NULL;
+	if (Modifier < 0)
+	{
+	if (LineColour != NULL)
+	ColToEdit = LineColour->FindParentIndexedColour();
+	}
+	else
+	{
+	if (FillColour != NULL)
+	ColToEdit = FillColour->FindParentIndexedColour();
+	}
+
+	EditAColour(m_pCurrentColourList, ColToEdit);
+	*/
+#else
+	EditAColour(NULL, NULL, (Modifier < 0));
+#endif
+      }
+      break;
+
+
+#if FALSE
+      /*
+	case CLICKED_NEWBUTTON:
+	{
+	if (IndentedButton == CLICKED_NOTHING)		// Indent button while mouse down
+	{
+	IndentedButton = CLICKED_NEWBUTTON;
+	ForceRedrawOfRect(NewButtonRect);
+	UpdateWindow();							// Force immediate redraw
+	SetCapture();							// And grab all mouse events
+	}											// until the button is released
+
+	ERROR3IF(m_pCurrentColourList == NULL,
+	_T("Unexpected NULL ColourList pointer in CColourBar::OnAnyButtonDown"));
+
+	IndexedColour *NewCol = NULL;
+
+	// Create a new colour, in the current colour list, copied from the
+	// current attribute/selection if possible.
+	ColourList *CurrentDocColours = ColourManager::GetColourList();
+	ERROR3IF(CurrentDocColours == NULL, _T("No colour list present?!"));
+
+	if (CurrentDocColours != NULL)
+	{
+	NewCol = ColourManager::GenerateNewNamedColour(CurrentDocColours, NULL);
+
+	if (NewCol != NULL)
+	{
+	ApplyColour(NewCol, (Modifier < 0));	// Apply col to selection
+	EditAColour(m_pCurrentColourList, NewCol);	// And open editor
+	}
+	}
+	}
+	break;	
+      */
+#endif
+    }
 }
 
 
@@ -4974,117 +4917,90 @@ void CColourBar::OnRButtonDblClk(wxMouseEvent& event)
 
 ********************************************************************************************/
 
-void CColourBar::OnMouseMove(wxMouseEvent& event)
-{
-//	TRACEUSER("Gerry", _T("CColourBar::OnMouseMove"));
-
-	if (m_pCurrentColourList == NULL)		// Ensure the current ColourList pointer is valid
-		m_pCurrentColourList = ColourManager::GetColourList();
-
-	if (m_pCurrentColourList == NULL)		// No DOCUMENT! No Colours! Exit immediately!
-		return;
-
-	wxPoint point = event.GetPosition();
-	DragInfo.LastMousePos = point;	// Remember new mouse position for OnTimer code
-
-	// Check if the push-mode modifier key is down, and if so, swap to the push cursor
-	BOOL ModifierKeyDown = GetModifierKeyState();
-
-	if (StripRect.Inside(point) && ModifierKeyDown)
-	{
-		// Set the cursor to the push hand shape
-		if (!PushCursor)
-			PushCursor = new Cursor(_R(IDC_PUSHTOOLCURSOR));
-
-		if (PushCursor)
-			PushCursor->SetActive();
+void CColourBar::OnMouseMove(wxMouseEvent& event) {
+  //	TRACEUSER("Gerry", _T("CColourBar::OnMouseMove"));
+  if (m_pCurrentColourList == NULL) {		// Ensure the current ColourList pointer is valid
+    m_pCurrentColourList = ColourManager::GetColourList();
+  }
+  if (m_pCurrentColourList == NULL) {		// No DOCUMENT! No Colours! Exit immediately!
+    return;
+  }
+  wxPoint point = event.GetPosition();
+  DragInfo.LastMousePos = point;	// Remember new mouse position for OnTimer code
+  // Check if the push-mode modifier key is down, and if so, swap to the push cursor
+  BOOL ModifierKeyDown = GetModifierKeyState();
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+  if (StripRect.Inside(point) && ModifierKeyDown) {
+    // Set the cursor to the push hand shape
+    if (!PushCursor) {
+      PushCursor = new Cursor(_R(IDC_PUSHTOOLCURSOR));
+    }
+    if (PushCursor) {
+      PushCursor->SetActive();
+    }
+  } else {
+    Cursor::Arrow->SetActive();
+    if (PushCursor) {
+      delete PushCursor;
+      PushCursor = NULL;
+    }
+  }
+#pragma GCC diagnostic pop
+  if (DragInfo.MouseCaptured) {
+    // We are dragging something
+    if (DragInfo.DragItem == CLICKED_SCROLLBAR && ScrollHeight != 0) {
+      // We are dragging the scrollbar sausage
+      wxRect SausageRect;
+      if (CalculateSausageRect(&SausageRect)) {
+	// We want to scroll the AnchorOffset point under the mouse posn.
+	INT32 DistToScroll = point.x -
+	  ((SausageRect.x + (SausageRect.width / 2)) +
+	   DragInfo.AnchorOffset);
+	ENSURE(ScrollBarRect.width > 0,
+	       "Serious problem with the ColourBar's ScrollBarRect");
+	INT32 ColoursToScroll = ((INT32)TotalNumColours * DistToScroll) / ScrollBarRect.width;
+	ScrollTheStrip(ColoursToScroll);
+      }
+    } else if (DragInfo.DragItem == CLICKED_SCROLLSTRIP) {
+      ENSURE(StripRect.width > 0,
+	     "Serious problem with the ColourBar's StripRect");
+      INT32 NewAnchorCellIndex = (INT32) ((INT32)LeftmostColour +
+					  ((INT32)(point.x - StripRect.x) / (INT32)CellSize));
+      ScrollTheStrip((INT32) (DragInfo.AnchorOffset - NewAnchorCellIndex));
+    }
+  } else {
+    // Not dragging, so do Bubble & StatusBar Help on the thing under the mouse,
+    // but only if the colour bar is active (we have a colour display list)
+    if (ColourManager::GetColourList() != NULL) {
+      String_256 HelpText(_T(""));
+      if (GetStatusLineText(&HelpText)) {
+	StatusLine *pStatusLine = GetApplication()->GetpStatusLine();
+	if (pStatusLine){
+	  pStatusLine->UpdateText(&HelpText, STATUSLINE_SELDESC_COLBAR);
 	}
-	else
-	{
-		Cursor::Arrow->SetActive();
-		if (PushCursor)
-		{
-			delete PushCursor;
-			PushCursor = NULL;
-		}
-	}
-
-
-	if (DragInfo.MouseCaptured)
-	{
-		// We are dragging something
-		if (DragInfo.DragItem == CLICKED_SCROLLBAR && ScrollHeight != 0)
-		{
-			// We are dragging the scrollbar sausage
-			wxRect SausageRect;
-			if (CalculateSausageRect(&SausageRect))
-			{
-				// We want to scroll the AnchorOffset point under the mouse posn.
-				INT32 DistToScroll = point.x -
-									((SausageRect.x + (SausageRect.width / 2)) +
-									DragInfo.AnchorOffset);
-
-				ENSURE(ScrollBarRect.width > 0,
-						"Serious problem with the ColourBar's ScrollBarRect");
-
-				INT32 ColoursToScroll = ((INT32)TotalNumColours * DistToScroll) / ScrollBarRect.width;
-
-				ScrollTheStrip(ColoursToScroll);
-			}
-		}
-		else if (DragInfo.DragItem == CLICKED_SCROLLSTRIP)
-		{
-			ENSURE(StripRect.width > 0,
-					"Serious problem with the ColourBar's StripRect");
-
-			INT32 NewAnchorCellIndex = (INT32) ((INT32)LeftmostColour +
-									((INT32)(point.x - StripRect.x) / (INT32)CellSize));
-			ScrollTheStrip((INT32) (DragInfo.AnchorOffset - NewAnchorCellIndex));
-		}
-	}
-	else
-
-	{
-		// Not dragging, so do Bubble & StatusBar Help on the thing under the mouse,
-		// but only if the colour bar is active (we have a colour display list)
-		if (ColourManager::GetColourList() != NULL)
-		{
-			String_256 HelpText(_T(""));
-
-			if (GetStatusLineText(&HelpText))
-			{
-				StatusLine *pStatusLine = GetApplication()->GetpStatusLine();
-				if (pStatusLine)
-					pStatusLine->UpdateText(&HelpText, STATUSLINE_SELDESC_COLBAR);
-
-//				TRACEUSER("Gerry", _T("CColourBar updating status to '%s'"), (LPCTSTR)HelpText);
-			}
-
-			INT32 MousePos = WhereIsMouse(point);
-
-			// Do bubble help for the colour cells and assorted icons
-			if (MousePos == CLICKED_NOTHING)
-			{
-				// Remove bubble help, as they're over no man's land
-				// This should no longer completely disable bubble help over our window,
-				// but merely turn off the bubble while the pointer is not over anything
-				// of any interest.
-//				ControlHelper::BubbleHelpDisable();
-			}
-			else
-			{
-PORTNOTE("other","Removed ControlHelper bubblehelp usage")
+	//				TRACEUSER("Gerry", _T("CColourBar updating status to '%s'"), (LPCTSTR)HelpText);
+      }
+      INT32 MousePos = WhereIsMouse(point);
+      // Do bubble help for the colour cells and assorted icons
+      if (MousePos == CLICKED_NOTHING) {
+	// Remove bubble help, as they're over no man's land
+	// This should no longer completely disable bubble help over our window,
+	// but merely turn off the bubble while the pointer is not over anything
+	// of any interest.
+	//				ControlHelper::BubbleHelpDisable();
+      } else {
+	PORTNOTE("other","Removed ControlHelper bubblehelp usage")
 #if !defined(EXCLUDE_FROM_XARALX)
-				ControlHelper::DoBubbleHelpOn(m_hWnd, MousePos,
-												HelpCallbackHandler, this);
+	  ControlHelper::DoBubbleHelpOn(m_hWnd, MousePos,
+					HelpCallbackHandler, this);
 #endif
-			}
-		}
-//		else
-//			ControlHelper::BubbleHelpDisable();	// No colourstrip, so no help
-	}
-
-	event.Skip();
+      }
+    }
+    // else
+    // ControlHelper::BubbleHelpDisable();	// No colourstrip, so no help
+  }
+  event.Skip();
 }
 
 

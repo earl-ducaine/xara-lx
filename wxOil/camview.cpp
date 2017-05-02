@@ -2008,24 +2008,30 @@ BOOL CCamView::EndDrag(Operation*)
 	SeeAlso:	-
 ********************************************************************************************/
 
-BOOL CCamView::GetCurrentMousePos(OilCoord* pMousePos)
-{
-	// Get the Windows screen coordinates of the mouse cursor.
-	// Convert from screen to window coordinates.
-	WinCoord pt;
-	*(wxPoint *)&pt = GetRenderWindow()->ScreenToClient( ::wxGetMousePosition() );
 
-	// If the mouse is outside the view then we can do nothing more.
-	if (!CurrentSize.Inside(pt)) return FALSE;
+// Include machine-specific types
 
-	// Convert to OIL coordinates.
-	if (pMousePos!=NULL)
-		*pMousePos = pt.ToOil(pDocView, TRUE);
+BOOL CCamView::GetCurrentMousePos(OilCoord* pMousePos) {
+  // Get the Windows screen coordinates of the mouse cursor.
+  // Convert from screen to window coordinates.
+  WinCoord pt;
+  *(wxPoint *)&pt = GetRenderWindow()->ScreenToClient( ::wxGetMousePosition() );
 
-	// We stored something useful.
-	return TRUE;
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+  // If the mouse is outside the view then we can do nothing more.
+  if (!CurrentSize.Inside(pt)) {
+    return FALSE;
+  }
+#pragma GCC diagnostic pop
+
+  // Convert to OIL coordinates.
+  if (pMousePos!=NULL) {
+    *pMousePos = pt.ToOil(pDocView, TRUE);
+  }
+  // We stored something useful.
+  return TRUE;
 }
-
 
 /*********************************************************************************************
 >	void CCamView::SetWorkAreaExtent(const WorkRect& area, BOOL redraw)
@@ -2859,8 +2865,7 @@ MouseOverRulerHit CCamView::IsMouseOverRuler()
 
 **********************************************************************************************/
 
-void CCamView::OnLButtonDown( wxMouseEvent &event )
-{
+void CCamView::OnLButtonDown( wxMouseEvent &event ) {
 	DontSkipNextMouse();
 	// If the event is not from the RenderWindow then skip it
 //TRACEUSER("Phil", _T("OnLButtonDown\n"));
@@ -2871,10 +2876,8 @@ void CCamView::OnLButtonDown( wxMouseEvent &event )
 		event.Skip();
 		return;
 	}
-
 	wxPoint point = event.GetPosition();
 	UINT32 nFlags = ClickModifiers::SynthesizeMouseEventFlags(event);
-
 #if !defined(EXCLUDE_FROM_RALPH) && !defined(EXCLUDE_FROM_XARALX)
 // WEBSTER - markn 25/4/97
 // No pen stuff required in Webster
@@ -2884,26 +2887,25 @@ void CCamView::OnLButtonDown( wxMouseEvent &event )
 	(Camelot.GetPressurePen())->CheckMouseMessage(WM_LBUTTONDOWN, point);
 #endif // VECTOR_STROKING
 #endif
-
 	// Support triple clicks
 	wxRect ClickBounds(	LastDoubleClickPos.x - LocalEnvironment::GetXMouseDoubleClickMove(),
 						LastDoubleClickPos.y - LocalEnvironment::GetYMouseDoubleClickMove(),
 						LocalEnvironment::GetXMouseDoubleClickMove() * 2,
 						LocalEnvironment::GetYMouseDoubleClickMove() * 2 );
-
 	MonotonicTime ThisClickTime( event.GetTimestamp() );
 	MonotonicTime ClickGap(LocalEnvironment::GetMouseDoubleClickDelay());
-
 	// Is click within allowed movement rectangle and permitted time delay
 	INT32 TimeDelay = (ThisClickTime - TimeOfLastClick);
-	if( ClickBounds.Inside( point ) && ( TimeDelay <= (INT32)ClickGap ) )
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+	if( ClickBounds.Inside( point ) && ( TimeDelay <= (INT32)ClickGap ) ) {
 		ThisSingleIsTriple = TRUE;
-	else
+	} else {
 		ThisSingleIsTriple = FALSE;
-
+	}
+#pragma GCC diagnostic pop
 	// Deal with the click
 	HandleDragEvent( MK_LBUTTON, nFlags, point, CLICKTYPE_SINGLE );
-
 	TimeOfLastClick.Sample();
 }
 
@@ -3117,43 +3119,38 @@ void CCamView::OnRButtonUp( wxMouseEvent &event )
 
 **********************************************************************************************/
 
-void CCamView::OnLButtonDblClk(wxMouseEvent &event)
-{
-	DontSkipNextMouse();
-	// If the event is not from the RenderWindow then skip it
-	INT32 nID = event.GetId();
-	if (nID != WID_RENDERWINDOW)
-	{
-//		TRACEUSER("Gerry", _T("Ignoring mouse event in window %d\n"), nID);
-		event.Skip();
-		return;
-	}
-
-	wxPoint point = event.GetPosition();
-	UINT32 nFlags = ClickModifiers::SynthesizeMouseEventFlags(event);
-
-	// Support quad clicks
-	wxRect ClickBounds(	LastDoubleClickPos.x-LocalEnvironment::GetXMouseDoubleClickMove(),
-						LastDoubleClickPos.y-LocalEnvironment::GetYMouseDoubleClickMove(),
-						LastDoubleClickPos.x+LocalEnvironment::GetXMouseDoubleClickMove(),
-						LastDoubleClickPos.y+LocalEnvironment::GetYMouseDoubleClickMove());
-	MonotonicTime ThisClickTime( event.GetTimestamp() );
-	MonotonicTime ClickGap(LocalEnvironment::GetMouseDoubleClickDelay());
-	// Is click within allowed movement rectangle and permitted time delay
-	INT32 TimeDelay = (ThisClickTime - TimeOfLastClick);
-	if (ClickBounds.Inside( point ) && (TimeDelay <= (INT32)ClickGap))
-		ThisDoubleIsQuad = TRUE;
-	else
-		ThisDoubleIsQuad = FALSE;
-
-	HandleDragEvent(MK_LBUTTON, nFlags, point, CLICKTYPE_DOUBLE);
-
-	TimeOfLastClick.Sample();
-	LastDoubleClickPos = point;
+void CCamView::OnLButtonDblClk(wxMouseEvent &event) {
+  DontSkipNextMouse();
+  // If the event is not from the RenderWindow then skip it
+  INT32 nID = event.GetId();
+  if (nID != WID_RENDERWINDOW) {
+    //		TRACEUSER("Gerry", _T("Ignoring mouse event in window %d\n"), nID);
+    event.Skip();
+    return;
+  }
+  wxPoint point = event.GetPosition();
+  UINT32 nFlags = ClickModifiers::SynthesizeMouseEventFlags(event);
+  // Support quad clicks
+  wxRect ClickBounds(LastDoubleClickPos.x-LocalEnvironment::GetXMouseDoubleClickMove(),
+		     LastDoubleClickPos.y-LocalEnvironment::GetYMouseDoubleClickMove(),
+		     LastDoubleClickPos.x+LocalEnvironment::GetXMouseDoubleClickMove(),
+		     LastDoubleClickPos.y+LocalEnvironment::GetYMouseDoubleClickMove());
+  MonotonicTime ThisClickTime( event.GetTimestamp() );
+  MonotonicTime ClickGap(LocalEnvironment::GetMouseDoubleClickDelay());
+  // Is click within allowed movement rectangle and permitted time delay
+  INT32 TimeDelay = (ThisClickTime - TimeOfLastClick);
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+  if (ClickBounds.Inside( point ) && (TimeDelay <= (INT32)ClickGap)) {
+    ThisDoubleIsQuad = TRUE;
+  } else {
+    ThisDoubleIsQuad = FALSE;
+  }
+#pragma GCC diagnostic pop
+  HandleDragEvent(MK_LBUTTON, nFlags, point, CLICKTYPE_DOUBLE);
+  TimeOfLastClick.Sample();
+  LastDoubleClickPos = point;
 }
-
-
-
 
 /*********************************************************************************************
 >	afx_msg void CCamView::OnMButtonDblClk(UINT32 nFlags, wxPoint point)
@@ -3783,7 +3780,7 @@ void CCamView::OnSize( wxSizeEvent &event )
 		ScrollBarSize = max(VScrSize.x, HScrSize.y);
 	}
 
-	wxRect OldRect = RenderWindow->GetRect();
+	// wxRect OldRect = RenderWindow->GetRect();
 //	TRACEUSER("Gerry", _T("OldRect = (%d, %d) [%d, %d]\n"), OldRect.x, OldRect.y, OldRect.width, OldRect.height);
 
 	// Resize/reposition the rendering window.
@@ -4753,113 +4750,94 @@ BOOL CCamView::ChangeDragType(DragType Type)
 
 **********************************************************************************************/
 
-void CCamView::HandleDragScrolling(wxPoint point)
-{
-	// First we check for the type that does nothing and get out quick
-	if (CurrentDragType == DRAGTYPE_NOSCROLL)
-		return;
-
-	// Get the size of the view.  We may have to deflate the rectangle a little here, if the
-	// bottom-right edges of the view coincide with the bottom-right edges of the screen,
-	// otherwise it is not possible to auto-scroll to the right or down as the mouse never
-	// leaves the view window.
-
-	WinRect wrSize = CurrentSize;
-//	TRACEUSER("Gerry", _T("wrSize = (%d, %d) [%d, %d]\n"), wrSize.x, wrSize.y, wrSize.width, wrSize.height);
-//	TRACEUSER("Gerry", _T("Point = (%d, %d)\n"), point.x, point.y);
-	point = GetRenderWindow()->ClientToScreen( point );
-	point = GetFrame()->ScreenToClient( point );
-
-//	TRACEUSER("Gerry", _T("AdjPoint = (%d, %d)\n"), point.x, point.y);
-
-	// This is used to allow guidelines to be deleted by dropping on to the rulers - normally
-	// we would start to auto scroll at this point which is a little off putting..
-	if (AutoScrollExcludeRulers && CurrentDragType != DRAGTYPE_OLESCROLL)
-	{
-		UINT32 RulerWidth = OILRuler::GetWidth();
-//		wrSize.left -= RulerWidth;
-//		wrSize.top -= RulerWidth;
-		wrSize.SetLeft(wrSize.GetLeft()-RulerWidth);
-		wrSize.SetTop(wrSize.GetTop()-RulerWidth);
-	}
-
-	// Now check for deferred scrolling
-	if (CurrentDragType == DRAGTYPE_DEFERSCROLL)
-	{
-		// If the mouse is within the window, and we are performing deferred-scrolling
-		// then we can change over to auto-scrolling.
-		if (!wrSize.IsEmpty() && wrSize.Inside(point))
-		{
-			CurrentDragType = DRAGTYPE_AUTOSCROLL;
-		 	AutoScrollExcludeRulers = TRUE;
-		}
-		return;
-	}
-
-	// Initialise Deltas...
-	INT32 dx = 0;
-	INT32 dy = 0;
-
-
-	// Set auto-scroll region to be one scrollbar width within the current view
-	// (as per The Windows Interface Guidelines Chapter 5).
-	wrSize.Inflate(-ScrollBarSize,-ScrollBarSize);
-
-	// Has the mouse moved outside there bounds?
-	if (!wrSize.IsEmpty() && !wrSize.Inside(point))
-	{
-		BOOL bCalcDeltas = TRUE;
+void CCamView::HandleDragScrolling(wxPoint point) {
+  // First we check for the type that does nothing and get out quick
+  if (CurrentDragType == DRAGTYPE_NOSCROLL)
+    return;
+  // Get the size of the view.  We may have to deflate the rectangle a
+  // little here, if the bottom-right edges of the view coincide with
+  // the bottom-right edges of the screen, otherwise it is not
+  // possible to auto-scroll to the right or down as the mouse never
+  // leaves the view window.
+  WinRect wrSize = CurrentSize;
+  //	TRACEUSER("Gerry", _T("wrSize = (%d, %d) [%d, %d]\n"), wrSize.x, wrSize.y, wrSize.width, wrSize.height);
+  //	TRACEUSER("Gerry", _T("Point = (%d, %d)\n"), point.x, point.y);
+  point = GetRenderWindow()->ClientToScreen( point );
+  point = GetFrame()->ScreenToClient( point );
+  //	TRACEUSER("Gerry", _T("AdjPoint = (%d, %d)\n"), point.x, point.y);
+  // This is used to allow guidelines to be deleted by dropping on to
+  // the rulers - normally we would start to auto scroll at this point
+  // which is a little off putting..
+  if (AutoScrollExcludeRulers && CurrentDragType != DRAGTYPE_OLESCROLL) {
+    UINT32 RulerWidth = OILRuler::GetWidth();
+    //		wrSize.left -= RulerWidth;
+    //		wrSize.top -= RulerWidth;
+    wrSize.SetLeft(wrSize.GetLeft()-RulerWidth);
+    wrSize.SetTop(wrSize.GetTop()-RulerWidth);
+  }
+  // Now check for deferred scrolling
+  if (CurrentDragType == DRAGTYPE_DEFERSCROLL) {
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+    // If the mouse is within the window, and we are performing
+    // deferred-scrolling then we can change over to auto-scrolling.
+    if (!wrSize.IsEmpty() && wrSize.Inside(point)) {
+      CurrentDragType = DRAGTYPE_AUTOSCROLL;
+      AutoScrollExcludeRulers = TRUE;
+    }
+#pragma GCC diagnostic pop
+    return;
+  }
+  // Initialise Deltas...
+  INT32 dx = 0;
+  INT32 dy = 0;
+  // Set auto-scroll region to be one scrollbar width within the
+  // current view (as per The Windows Interface Guidelines Chapter 5).
+  wrSize.Inflate(-ScrollBarSize,-ScrollBarSize);
+  // Has the mouse moved outside there bounds?
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+  if (!wrSize.IsEmpty() && !wrSize.Inside(point)) {
+    BOOL bCalcDeltas = TRUE;
 #if !defined(EXCLUDE_FROM_XARALX)
-		WinRect Outer = wrSize;
-
-		if (CurrentDragType == DRAGTYPE_OLESCROLL)
-		{
-			if (Outer.Inside(point))		// and still inside visible window
-			{
-				// If we've not been in the OLE scroll region for long enough
-				if (!m_OLELastOutTime.Elapsed(100))
-				{
-					bCalcDeltas = FALSE;
-				}
-			}
-			else
-			{
-				// We've dragged beyond the OLE scroll area, so we can now convert the drag
-				// into an OLE export drag if we so desire.
-				HandleOleDragOutOfView(point);
-				bCalcDeltas = FALSE;
-			}
-		}
-#endif
-		if (bCalcDeltas)
-		{
-			// The mouse is outside the view, and we have to scroll the view
-			// proportionate to how far outside it is.
-			CalcScrollDeltas(point,wrSize,&dx,&dy);
-			TRACEUSER("Gerry", _T("ScrollDeltas = (%d, %d)\n"), dx, dy);
-		}
+    WinRect Outer = wrSize;
+    if (CurrentDragType == DRAGTYPE_OLESCROLL) {
+      if (Outer.Inside(point)) {		// and still inside visible window
+	// If we've not been in the OLE scroll region for long enough
+	if (!m_OLELastOutTime.Elapsed(100)) {
+	  bCalcDeltas = FALSE;
 	}
+      } else {
+	// We've dragged beyond the OLE scroll area, so we can now
+	// convert the drag into an OLE export drag if we so desire.
+	HandleOleDragOutOfView(point);
+	bCalcDeltas = FALSE;
+      }
+    }
+#endif
+    if (bCalcDeltas) {
+      // The mouse is outside the view, and we have to scroll the view
+      // proportionate to how far outside it is.
+      CalcScrollDeltas(point,wrSize,&dx,&dy);
+      TRACEUSER("Gerry", _T("ScrollDeltas = (%d, %d)\n"), dx, dy);
+    }
+  }
+#pragma GCC diagnostic pop
 #if !defined(EXCLUDE_FROM_XARALX)
-	else if (CurrentDragType == DRAGTYPE_OLESCROLL)
-	{
-		// We're not in the OLE scroll region so reset the timer
-		m_OLELastOutTime.Sample();
-	}
+  else if (CurrentDragType == DRAGTYPE_OLESCROLL) {
+    // We're not in the OLE scroll region so reset the timer
+    m_OLELastOutTime.Sample();
+  }
 #endif
-
-	//------------------------------------
-	// Now do the scroll if necessary...
-	// If dx<>0 or dy<>0 and scroll lock is disabled
-
-	// Test if the SCROLL LOCK key has been set.
-	if( !wxGetKeyState( CAMKEY(SCROLL) ) && !(dx==0 && dy==0))
-	{
-		// Set Current states...
-		SetCurrentStates();
-
-		// Do the scroll
-		ScrollBy(dx, dy);
-	}
+  // Now do the scroll if necessary...
+  // If dx<>0 or dy<>0 and scroll lock is disabled Test if the SCROLL
+  // LOCK key has been set.
+  if( !wxGetKeyState( CAMKEY(SCROLL) ) && !(dx==0 && dy==0)) {
+    // Set Current states...
+    SetCurrentStates();
+    // Do the scroll
+    ScrollBy(dx, dy);
+  }
 }
 
 

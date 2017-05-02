@@ -1755,54 +1755,48 @@ void wxComboCtrlBase::ShowPopup()
 
 }
 
-void wxComboCtrlBase::OnPopupDismiss()
-{
-    // Just in case, avoid double dismiss
-    if ( !m_isPopupShown )
-        return;
-
-    // *Must* set this before focus etc.
-    m_isPopupShown = false;
-
-    // Inform popup control itself
-    m_popupInterface->OnDismiss();
-
-    if ( m_popupExtraHandler )
-        ((wxComboPopupExtraEventHandler*)m_popupExtraHandler)->OnPopupDismiss();
-
+void wxComboCtrlBase::OnPopupDismiss() {
+  // Just in case, avoid double dismiss
+  if ( !m_isPopupShown ) {
+    return;
+  }
+  // *Must* set this before focus etc.
+  m_isPopupShown = false;
+  // Inform popup control itself
+  m_popupInterface->OnDismiss();
+  if ( m_popupExtraHandler ) {
+    ((wxComboPopupExtraEventHandler*)m_popupExtraHandler)->OnPopupDismiss();
+  }
 #if INSTALL_TOPLEV_HANDLER
-    // Remove top level window event handler
-    if ( m_toplevEvtHandler )
+  // Remove top level window event handler
+  if ( m_toplevEvtHandler )
     {
-        wxWindow* toplev = ::wxGetTopLevelParent( this );
-        if ( toplev )
-            toplev->RemoveEventHandler( m_toplevEvtHandler );
+      wxWindow* toplev = ::wxGetTopLevelParent( this );
+      if ( toplev )
+	toplev->RemoveEventHandler( m_toplevEvtHandler );
     }
 #endif
-
-    m_timeCanAcceptClick = ::wxGetLocalTimeMillis() + 150;
-
-    // If cursor not on dropdown button, then clear its state
-    // (technically not required by all ports, but do it for all just in case)
-    if ( !m_btnArea.Inside(ScreenToClient(::wxGetMousePosition())) )
-        m_btnState = 0;
-
-    // Return parent's tab traversal flag.
-    // See ShowPopup for notes.
-    if ( m_iFlags & wxCC_IFLAG_PARENT_TAB_TRAVERSAL )
-    {
-        wxWindow* parent = GetParent();
-        parent->SetWindowStyle( parent->GetWindowStyle() | wxTAB_TRAVERSAL );
-        m_iFlags &= ~(wxCC_IFLAG_PARENT_TAB_TRAVERSAL);
-    }
-
-    // refresh control (necessary even if m_text)
-    Refresh();
-
+  m_timeCanAcceptClick = ::wxGetLocalTimeMillis() + 150;
+  // If cursor not on dropdown button, then clear its state
+  // (technically not required by all ports, but do it for all just in case)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+  if ( !m_btnArea.Inside(ScreenToClient(::wxGetMousePosition())) ) {
+    m_btnState = 0;
+  }
+#pragma GCC diagnostic pop
+  // Return parent's tab traversal flag.
+  // See ShowPopup for notes.
+  if ( m_iFlags & wxCC_IFLAG_PARENT_TAB_TRAVERSAL ) {
+    wxWindow* parent = GetParent();
+    parent->SetWindowStyle( parent->GetWindowStyle() | wxTAB_TRAVERSAL );
+    m_iFlags &= ~(wxCC_IFLAG_PARENT_TAB_TRAVERSAL);
+  }
+  // refresh control (necessary even if m_text)
+  Refresh();
 #if !wxUSE_POPUPWIN
-    SetFocus();
+  SetFocus();
 #endif
-
 }
 
 void wxComboCtrlBase::HidePopup()
