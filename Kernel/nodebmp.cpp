@@ -693,6 +693,8 @@ BOOL NodeBitmap::ExportRender(RenderRegion* pRegion)
 				}
 
 				// Output dummy start colour here
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
 				if (StartCol.FindParentIndexedColour() == NULL)
 				{
 					// Unnamed colour
@@ -707,6 +709,7 @@ BOOL NodeBitmap::ExportRender(RenderRegion* pRegion)
 					pDC->OutputNamedColour(&StartCol);
 					pDC->OutputToken(_T("X"));
 				}
+#pragma GCC diagnostic pop
 
 				pDC->OutputNewLine();
 			}
@@ -722,6 +725,8 @@ BOOL NodeBitmap::ExportRender(RenderRegion* pRegion)
 														_R(IDS_BLACKNAME), &EndCol);
 				}
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
 				// Output dummy end colour here
 				if (EndCol.FindParentIndexedColour() == NULL)
 				{
@@ -737,6 +742,7 @@ BOOL NodeBitmap::ExportRender(RenderRegion* pRegion)
 					pDC->OutputNamedColour(&EndCol);
 					pDC->OutputToken(_T("x"));
 				}
+#pragma GCC diagnostic pop
 
 				pDC->OutputNewLine();
 			}
@@ -746,14 +752,17 @@ BOOL NodeBitmap::ExportRender(RenderRegion* pRegion)
 				pDC->OutputCoord(Coords[i]);
 
 			// ...then the bitmap object token.
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
 			pDC->OutputToken(_T("cbm"));
 			pDC->OutputNewLine();
+#pragma GCC diagnostic pop
 
 			// ...and then the bitmap data itself.
 			pDC->GetParentFilter()->ExportBitmap(*GetBitmap());
-		}
-		else
-		{
+		} else {
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
 			// It's not a contone bitmap.
 			// Oh bum. We've made a bit of a bo-bo with these.
 			// Since we don't save 'no-colour' we don't know that
@@ -772,7 +781,6 @@ BOOL NodeBitmap::ExportRender(RenderRegion* pRegion)
 			// So first we'll output a new eps object (which will be Ignored by
 			// the viewer), telling the main program that the following
 			// object is really a bitmap object
-						
 			pDC->OutputValue((INT32) EOTAG_BITMAPFLAGS);
 			pDC->OutputToken(_T("cso"));	// Start of new object type
 
@@ -812,8 +820,8 @@ BOOL NodeBitmap::ExportRender(RenderRegion* pRegion)
 			pDC->OutputNewLine();
 			pDC->OutputToken(_T("F"));	// Filled path
 			pDC->OutputNewLine();
-		}
-		
+#pragma GCC diagnostic pop
+		}		
 		// Now force the Fill Colour, Line Colour, and Line Width
 		// attribute to output themselves again, 'cus old versions
 		// (including the Viewer) will corrupt these attributes for 

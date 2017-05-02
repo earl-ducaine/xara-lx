@@ -891,74 +891,57 @@ BOOL DIBUtil::PlotDeepDIB( wxDC *pDC, LPBITMAPINFO lpBitmapInfo, LPBYTE lpBits, 
 // this code based on DecodeRle286 from rle.c from RLEAPP from the MSDN
 // it reads directly from the file. The variable names have been changed to protect the innocent
 
-static BOOL UnpackRle8( CCLexFile *File, const BITMAPINFOHEADER& Header, LPBYTE Bits )
-{
-	BYTE	Buffer[2];
-    BYTE    cnt;
-    BYTE    b;
-    WORD    x;
-    WORD    dx,dy;
-    DWORD    wWidthBytes;
-
-    wWidthBytes = Header.biWidth+3 & ~3;
-
-    x = 0;
-
-    for(;;)
-    {
-		if (File->read( Buffer, 2 ).bad())
-			return FALSE;
-		cnt = Buffer[0];
-		b   = Buffer[1];
-
-        if (cnt == RLE_ESCAPE)
-        {
-            switch (b)
-            {
-                case RLE_EOF:
-                    return TRUE;
-
-                case RLE_EOL:
-                    Bits += wWidthBytes - x;
-                    x = 0;
-                    break;
-
-                case RLE_JMP:
-					if (File->read( Buffer, 2 ).bad())
-						return FALSE;
-                    dx = (WORD)Buffer[0];
-                    dy = (WORD)Buffer[1];
-
-                    Bits += wWidthBytes * dy + dx;
-                    x  += dx;
-
-                    break;
-
-                default:
-                    cnt = b;
-                    x  += cnt;
-					if (File->read( Bits, cnt ).bad())
-						return FALSE;
-					Bits += cnt;
-
-                    if (b & 1)
-					{
-                        if (File->read( Buffer, 1).bad())				// pad read
-							return FALSE;
-					}
-
-                    break;
-            }
-        }
-        else
-        {
-            x += cnt;
-
-            while (cnt-- > 0)
-                *Bits++ = b;
-        }
+static BOOL UnpackRle8( CCLexFile *File, const BITMAPINFOHEADER& Header, LPBYTE Bits ) {
+  BYTE	Buffer[2];
+  BYTE    cnt;
+  BYTE    b;
+  WORD    x;
+  WORD    dx,dy;
+  DWORD    wWidthBytes;
+  wWidthBytes = (Header.biWidth + 3) & ~3;
+  x = 0;
+  for(;;) {
+    if (File->read( Buffer, 2 ).bad()) {
+      return FALSE;
     }
+    cnt = Buffer[0];
+    b   = Buffer[1];
+    if (cnt == RLE_ESCAPE) {
+      switch (b) {
+      case RLE_EOF:
 	return TRUE;
+      case RLE_EOL:
+	Bits += wWidthBytes - x;
+	x = 0;
+	break;
+      case RLE_JMP:
+	if (File->read( Buffer, 2 ).bad())
+	  return FALSE;
+	dx = (WORD)Buffer[0];
+	dy = (WORD)Buffer[1];
+	Bits += wWidthBytes * dy + dx;
+	x  += dx;
+	break;
+      default:
+	cnt = b;
+	x  += cnt;
+	if (File->read( Bits, cnt ).bad())
+	  return FALSE;
+	Bits += cnt;
+	if (b & 1) {
+	  if (File->read( Buffer, 1).bad())				// pad read
+	    return FALSE;
+	}
+	break;
+      }
+    } else {
+      x += cnt;
+      while (cnt-- > 0) {
+	*Bits++ = b;
+      }
+    }
+  }
+  return TRUE;
 }
 
 
@@ -1142,445 +1125,435 @@ TRACEUSER( "Neville", wxT("DIBUtil::CanReadFromFile Win 3.0+ type depth = %d\n")
 ********************************************************************************************/
 
 BOOL DIBUtil::ReadFromFile( CCLexFile *File, LPBITMAPINFO *Info, LPBYTE *Bits, BOOL ReadHeader,
-							String_64 *ProgressString, BaseCamelotFilter *pFilter )
-{
-	ERROR2IF(File == NULL,FALSE,"DIBUtil::ReadFromFile null File pointer");
-	ERROR2IF(Info == NULL,FALSE,"DIBUtil::ReadFromFile null Info pointer");
-	ERROR2IF(Bits == NULL,FALSE,"DIBUtil::ReadFromFile null Bits pointer");
+			    String_64 *ProgressString, BaseCamelotFilter *pFilter ) {
+  ERROR2IF(File == NULL,FALSE,"DIBUtil::ReadFromFile null File pointer");
+  ERROR2IF(Info == NULL,FALSE,"DIBUtil::ReadFromFile null Info pointer");
+  ERROR2IF(Bits == NULL,FALSE,"DIBUtil::ReadFromFile null Bits pointer");
+  BITMAPINFOHEADER InfoHeader;
+  UINT32 Depth;
+  DWORD BitsSize=0;
+  INT32 SizeOfHeader = 0;
+  *Info = NULL; // in case of early exit
+  *Bits = NULL;
+  // Must set the exception throwing flag to True and force reporting
+  // of errors to False.  This means that the caller must report an
+  // error if the function returns False.  Any calls to
+  // CCFile::GotError will now throw a file exception and should fall
+  // into the catch handler at the end of the function.  Replaces the
+  // goto's that handled this before.
+  BOOL OldThrowingState = File->SetThrowExceptions( TRUE );
+  BOOL OldReportingState = File->SetReportErrors( FALSE );
+  // If the caller has specified a string then assume they require a
+  // progress bar Start it up.
+  if (ProgressString != NULL) {
+    BeginSlowJob(100, FALSE, ProgressString);
+  }
+  try {
+    if (ReadHeader) {
+	  BITMAPFILEHEADER Header;
+	  File->read( &Header, sizeof(Header) );
+	  Header.bfType = LEtoNative(Header.bfType);
+	  Header.bfSize = LEtoNative(UINT32(Header.bfSize));
+	  Header.bfReserved1 = LEtoNative(Header.bfReserved1);
+	  Header.bfReserved2 = LEtoNative(Header.bfReserved2);
+	  Header.bfOffBits = LEtoNative(UINT32(Header.bfOffBits));
+	  if (File->bad())
+	    File->GotError( _R(IDE_FORMATNOTSUPPORTED) );
 
-	BITMAPINFOHEADER InfoHeader;
-	UINT32 Depth;
-	DWORD BitsSize=0;
-	INT32 SizeOfHeader = 0;
-
-	*Info = NULL;										// in case of early exit
-	*Bits = NULL;
-
-	// Must set the exception throwing flag to True and force reporting of errors to False.
-	// This means that the caller must report an error if the function returns False.
-	// Any calls to CCFile::GotError will now throw a file exception and should fall into
-	// the catch handler at the end of the function.
-	// Replaces the goto's that handled this before.
-	BOOL OldThrowingState = File->SetThrowExceptions( TRUE );
-	BOOL OldReportingState = File->SetReportErrors( FALSE );
-
-	// If the caller has specified a string then assume they require a progress bar
-	// Start it up.
-	if (ProgressString != NULL)
-	{
-		BeginSlowJob(100, FALSE, ProgressString);
+	  if (Header.bfType != 0x4D42)						// "BM" in little-endian format
+	    File->GotError( _R(IDE_BADFORMAT) );
 	}
 
-	try
+      // some BMPs (eg 256color.bmp) don't have one of these, they have the old OS2 sort
+      size_t SizeOfRGB=0;
+
+      File->read( &SizeOfHeader, sizeof(INT32) );
+      SizeOfHeader = LEtoNative(SizeOfHeader);
+      if ( SizeOfHeader==sizeof(InfoHeader) )
 	{
-		if (ReadHeader)
-		{
-			BITMAPFILEHEADER Header;
+	  // sensible BMP with normal BITMAPINFOHEADER structure
+	  SizeOfRGB = sizeof(RGBQUAD);
+	  File->read( &InfoHeader.biWidth, sizeof(InfoHeader)-sizeof(INT32) );
 
-			File->read( &Header, sizeof(Header) );
-			Header.bfType = LEtoNative(Header.bfType);
-			Header.bfSize = LEtoNative(UINT32(Header.bfSize));
-			Header.bfReserved1 = LEtoNative(Header.bfReserved1);
-			Header.bfReserved2 = LEtoNative(Header.bfReserved2);
-			Header.bfOffBits = LEtoNative(UINT32(Header.bfOffBits));
-			
-			if (File->bad())
-				File->GotError( _R(IDE_FORMATNOTSUPPORTED) );
+	  InfoHeader.biWidth			= LEtoNative(InfoHeader.biWidth);
+	  InfoHeader.biHeight			= LEtoNative(InfoHeader.biHeight);
+	  InfoHeader.biPlanes			= LEtoNative(InfoHeader.biPlanes);
+	  InfoHeader.biBitCount		= LEtoNative(InfoHeader.biBitCount);
+	  InfoHeader.biCompression	= LEtoNative(UINT32(InfoHeader.biCompression));
+	  InfoHeader.biSizeImage		= LEtoNative(UINT32(InfoHeader.biSizeImage));
+	  InfoHeader.biXPelsPerMeter	= LEtoNative(InfoHeader.biXPelsPerMeter);
+	  InfoHeader.biYPelsPerMeter	= LEtoNative(InfoHeader.biYPelsPerMeter);
+	  InfoHeader.biClrUsed		= LEtoNative(UINT32(InfoHeader.biClrUsed));
+	  InfoHeader.biClrImportant	= LEtoNative(UINT32(InfoHeader.biClrImportant));
+	}
+      else if ( SizeOfHeader==sizeof(BITMAPCOREHEADER) )
+	{
+	  // silly OS2 thing - read in and convert
+	  BITMAPCOREHEADER TempHeader;
+	  File->read( &TempHeader.bcWidth, sizeof(TempHeader)-sizeof(INT32) );
 
-			if (Header.bfType != 0x4D42)						// "BM" in little-endian format
-				File->GotError( _R(IDE_BADFORMAT) );
-		}
+	  TempHeader.bcWidth			= LEtoNative(TempHeader.bcWidth);
+	  TempHeader.bcHeight			= LEtoNative(TempHeader.bcHeight);
+	  TempHeader.bcPlanes			= LEtoNative(TempHeader.bcPlanes);
+	  TempHeader.bcBitCount		= LEtoNative(TempHeader.bcBitCount);
 
-		// some BMPs (eg 256color.bmp) don't have one of these, they have the old OS2 sort
-		size_t SizeOfRGB=0;
-
-		File->read( &SizeOfHeader, sizeof(INT32) );
-		SizeOfHeader = LEtoNative(SizeOfHeader);
-		if ( SizeOfHeader==sizeof(InfoHeader) )
-		{
-			// sensible BMP with normal BITMAPINFOHEADER structure
-			SizeOfRGB = sizeof(RGBQUAD);
-			File->read( &InfoHeader.biWidth, sizeof(InfoHeader)-sizeof(INT32) );
-
-			InfoHeader.biWidth			= LEtoNative(InfoHeader.biWidth);
-			InfoHeader.biHeight			= LEtoNative(InfoHeader.biHeight);
-			InfoHeader.biPlanes			= LEtoNative(InfoHeader.biPlanes);
-			InfoHeader.biBitCount		= LEtoNative(InfoHeader.biBitCount);
-			InfoHeader.biCompression	= LEtoNative(UINT32(InfoHeader.biCompression));
-			InfoHeader.biSizeImage		= LEtoNative(UINT32(InfoHeader.biSizeImage));
-			InfoHeader.biXPelsPerMeter	= LEtoNative(InfoHeader.biXPelsPerMeter);
-			InfoHeader.biYPelsPerMeter	= LEtoNative(InfoHeader.biYPelsPerMeter);
-			InfoHeader.biClrUsed		= LEtoNative(UINT32(InfoHeader.biClrUsed));
-			InfoHeader.biClrImportant	= LEtoNative(UINT32(InfoHeader.biClrImportant));
-		}
-		else if ( SizeOfHeader==sizeof(BITMAPCOREHEADER) )
-		{
-			// silly OS2 thing - read in and convert
-			BITMAPCOREHEADER TempHeader;
-			File->read( &TempHeader.bcWidth, sizeof(TempHeader)-sizeof(INT32) );
-
-			TempHeader.bcWidth			= LEtoNative(TempHeader.bcWidth);
-			TempHeader.bcHeight			= LEtoNative(TempHeader.bcHeight);
-			TempHeader.bcPlanes			= LEtoNative(TempHeader.bcPlanes);
-			TempHeader.bcBitCount		= LEtoNative(TempHeader.bcBitCount);
-
-			SizeOfRGB = sizeof(RGBTRIPLE);
-			InfoHeader.biWidth =	TempHeader.bcWidth;
-			InfoHeader.biHeight =	TempHeader.bcHeight;
-			InfoHeader.biPlanes =	TempHeader.bcPlanes;
-			InfoHeader.biBitCount = TempHeader.bcBitCount;
-			InfoHeader.biCompression = BI_RGB;
-			InfoHeader.biSizeImage = 0L;
-			InfoHeader.biXPelsPerMeter = 0L;
-			InfoHeader.biYPelsPerMeter = 0L;
-			InfoHeader.biClrImportant = 0;
-			if (InfoHeader.biBitCount < 24 )
-				InfoHeader.biClrUsed = 1<<InfoHeader.biBitCount;
-			else
-				InfoHeader.biClrUsed = 0;
-		}
-		else
-			File->GotError( _R(IDE_FORMATNOTSUPPORTED) );
+	  SizeOfRGB = sizeof(RGBTRIPLE);
+	  InfoHeader.biWidth =	TempHeader.bcWidth;
+	  InfoHeader.biHeight =	TempHeader.bcHeight;
+	  InfoHeader.biPlanes =	TempHeader.bcPlanes;
+	  InfoHeader.biBitCount = TempHeader.bcBitCount;
+	  InfoHeader.biCompression = BI_RGB;
+	  InfoHeader.biSizeImage = 0L;
+	  InfoHeader.biXPelsPerMeter = 0L;
+	  InfoHeader.biYPelsPerMeter = 0L;
+	  InfoHeader.biClrImportant = 0;
+	  if (InfoHeader.biBitCount < 24 )
+	    InfoHeader.biClrUsed = 1<<InfoHeader.biBitCount;
+	  else
+	    InfoHeader.biClrUsed = 0;
+	}
+      else
+	File->GotError( _R(IDE_FORMATNOTSUPPORTED) );
 
 
-		if (File->bad())
-			File->GotError( _R(IDE_FORMATNOTSUPPORTED) );
+      if (File->bad())
+	File->GotError( _R(IDE_FORMATNOTSUPPORTED) );
 
-		if (InfoHeader.biWidth == 0 || InfoHeader.biHeight == 0 )
-			File->GotError( _R(IDE_BADFORMAT) );
+      if (InfoHeader.biWidth == 0 || InfoHeader.biHeight == 0 )
+	File->GotError( _R(IDE_BADFORMAT) );
 
-		if (InfoHeader.biPlanes != 1)
-			File->GotError( _R(IDE_BADFORMAT) );
+      if (InfoHeader.biPlanes != 1)
+	File->GotError( _R(IDE_BADFORMAT) );
 
-		Depth = InfoHeader.biBitCount;
+      Depth = InfoHeader.biBitCount;
 
-		BOOL Convert16to24 = FALSE;
-		if (InfoHeader.biBitCount == 16 && InfoHeader.biCompression == BI_BITFIELDS)
-		{
-			// we will create a 24bpp bitmap and then convert the data on entry in 24bpp
-			Depth = 24;
-			Convert16to24 = TRUE;
-		}
+      BOOL Convert16to24 = FALSE;
+      if (InfoHeader.biBitCount == 16 && InfoHeader.biCompression == BI_BITFIELDS)
+	{
+	  // we will create a 24bpp bitmap and then convert the data on entry in 24bpp
+	  Depth = 24;
+	  Convert16to24 = TRUE;
+	}
 		
-		// temp kludge code for now - only copes with certain depth bitmaps
-		if ( (Depth != 1) && (Depth != 4) && (Depth != 8) && (Depth != 24) && (Depth != 32))
-			File->GotError( _R(IDE_FORMATNOTSUPPORTED) );
+      // temp kludge code for now - only copes with certain depth bitmaps
+      if ( (Depth != 1) && (Depth != 4) && (Depth != 8) && (Depth != 24) && (Depth != 32))
+	File->GotError( _R(IDE_FORMATNOTSUPPORTED) );
 
-		// we know what sort of bitmap we are - lets allocate a new LPBITMAPINFO and some bytes
-		*Info = AllocDIB( InfoHeader.biWidth, InfoHeader.biHeight, Depth,
-							Bits, NULL );
+      // we know what sort of bitmap we are - lets allocate a new LPBITMAPINFO and some bytes
+      *Info = AllocDIB( InfoHeader.biWidth, InfoHeader.biHeight, Depth,
+			Bits, NULL );
 
-		if (*Info == NULL)
-			File->GotError( _R(IDS_OUT_OF_MEMORY) );
+      if (*Info == NULL)
+	File->GotError( _R(IDS_OUT_OF_MEMORY) );
 
-		// Copy interesting info from the file to the memory DIB
+      // Copy interesting info from the file to the memory DIB
 
 		
-		// If PelsPerMeter is a dodgy value such as 39 (= very large pixels!)
-		// then use 0 which means that we will display it at screen resolution.
-TRACEUSER( "Neville", _T("DIBUtil::ReadFromFile XPelsPerMeter=%d\n"),InfoHeader.biXPelsPerMeter);
-TRACEUSER( "Neville", _T("DIBUtil::ReadFromFile YPelsPerMeter=%d\n"),InfoHeader.biYPelsPerMeter);
-		if (InfoHeader.biXPelsPerMeter > BaseBitmapFilter::MinPelsPerMeter)
+      // If PelsPerMeter is a dodgy value such as 39 (= very large pixels!)
+      // then use 0 which means that we will display it at screen resolution.
+      TRACEUSER( "Neville", _T("DIBUtil::ReadFromFile XPelsPerMeter=%d\n"),InfoHeader.biXPelsPerMeter);
+      TRACEUSER( "Neville", _T("DIBUtil::ReadFromFile YPelsPerMeter=%d\n"),InfoHeader.biYPelsPerMeter);
+      if (InfoHeader.biXPelsPerMeter > BaseBitmapFilter::MinPelsPerMeter)
+	{
+	  (*Info)->bmiHeader.biXPelsPerMeter = InfoHeader.biXPelsPerMeter;
+	  (*Info)->bmiHeader.biYPelsPerMeter = InfoHeader.biYPelsPerMeter;
+	}
+      else
+	{
+	  (*Info)->bmiHeader.biXPelsPerMeter = 0;
+	  (*Info)->bmiHeader.biYPelsPerMeter = 0;
+	}
+
+      // If the ClrUsed field is zero, put a sensible value in it
+      // The read in value of ClrUsed also determines the number of palette entries in
+      // the palette table.
+      UINT32 PalColours = 0;
+      if (Depth <= 8)
+	{
+	  PalColours = InfoHeader.biClrUsed;
+	  // If zero then assume maximum amount of colours
+	  // otherwise, copy the value across into the new header.
+	  if (InfoHeader.biClrUsed == 0)
+	    {
+	      (*Info)->bmiHeader.biClrUsed = 1<<Depth;
+	      PalColours = 1<<Depth;
+	    }
+	  else
+	    (*Info)->bmiHeader.biClrUsed = InfoHeader.biClrUsed;
+	}
+
+      // read any palette info
+      switch (Depth)
+	{
+	case 1:
+	case 4:
+	case 8:
+	  // read colour palette (Changed by Neville 14/10/97 to read biClrUsed)
+	  ReadPalette( File, PalColours, SizeOfRGB, (*Info)->bmiColors);
+	  break;
+
+	case 24:
+	case 32:
+	  // 24-bit files sometimes have a 'hint' palette (e.g country.bmp) which
+	  // we have to throw away (we can't load it cos the bitmap has no space alloced
+	  // for a colour table)
+	  if (InfoHeader.biClrUsed)
+	    File->seekIn( InfoHeader.biClrUsed * SizeOfRGB, ios::cur );
+	  break;
+
+	default:
+	  File->GotError( _R(IDE_FORMATNOTSUPPORTED) );
+	}
+
+      if (File->bad())
+	File->GotError( _R(IDE_FORMATNOTSUPPORTED) );
+
+      // now read the bitmap data
+
+      UINT32 RedColourMask	= 0;
+      UINT32 GreenColourMask	= 0;
+      UINT32 BlueColourMask	= 0;
+      switch (InfoHeader.biCompression)
+	{
+	case BI_RGB:
+	  BitsSize = (*Info)->bmiHeader.biSizeImage;			// uncompressed
+	  break;
+
+	case CC_BMPTYPE:
+	  if (Depth != 32)
+	    File->GotError( _R(IDE_FORMATNOTSUPPORTED) );
+	  BitsSize = (*Info)->bmiHeader.biSizeImage;			// uncompressed
+	  break;
+
+	case BI_RLE8:
+	  if (!UnpackRle8( File, InfoHeader, *Bits ))
+	    File->GotError( _R(IDE_BADFORMAT) );
+	  BitsSize = 0L;										// no more to read
+	  break;
+
+	case BI_BITFIELDS:
+	  // Read in the three special colour dword masks that follow the header
+	  BitsSize = (*Info)->bmiHeader.biSizeImage;			// uncompressed
+	  File->read( &RedColourMask,		sizeof(RedColourMask) );
+	  File->read( &GreenColourMask,	sizeof(GreenColourMask) );
+	  File->read( &BlueColourMask,	sizeof(BlueColourMask) );
+
+	  RedColourMask			= LEtoNative(RedColourMask);
+	  GreenColourMask			= LEtoNative(GreenColourMask);
+	  BlueColourMask			= LEtoNative(BlueColourMask);
+
+	  if (File->bad())
+	    File->GotError( _R(IDE_BADFORMAT) );
+	  TRACEUSER( "Neville", _T("DIBUtil::ReadFromFile BI_BITFIELDS RedColourMask = %d\n"),RedColourMask);
+	  TRACEUSER( "Neville", _T("DIBUtil::ReadFromFile BI_BITFIELDS GreenColourMask = %d\n"),GreenColourMask);
+	  TRACEUSER( "Neville", _T("DIBUtil::ReadFromFile BI_BITFIELDS BlueColourMask = %d\n"),BlueColourMask);
+	  // The 32bpp case is easy. With 16bpp we need to convert to 24bpp
+	  // We will take the Windows 95 in 32bpp mode such that it expects
+	  // The blue mask is 0x000000FF, the green mask is 0x0000FF00, and the red mask is 0x00FF0000.
+	  if (Depth == 32 && RedColourMask != 0xFF0000 && GreenColourMask != 0xFF00 && BlueColourMask != 0xFF)
+	    File->GotError( _R(IDE_FORMATNOTSUPPORTED) );
+	  else if (Depth != 24 && Depth != 32)
+	    File->GotError( _R(IDE_FORMATNOTSUPPORTED) );
+	  break;
+
+	default:
+	  File->GotError( _R(IDE_FORMATNOTSUPPORTED) );			// other compression not supported
+	}
+
+      if (Convert16to24 == TRUE && Depth == 24)
+	{
+	  // We need to read in a WORD and use the bitfield to convert this into 24 bit RGB data
+	  // and then put this in the 24bpp pixel
+	  // We take the Windows 95 route in that when the biCompression member is BI_BITFIELDS,
+	  // we only support the following 16bpp color masks:
+	  // A 5-5-5 16-bit image, where
+	  //	the blue mask is 0x001F, the green mask is 0x03E0, and the red mask is 0x7C00;
+	  // and a 5-6-5 16-bit image, where
+	  // the blue mask is 0x001F, the green mask is 0x07E0, and the red mask is 0xF800.
+	  WORD Pixel = 0;
+	  INT32 Bshift = 0; // Always 0
+	  if (BlueColourMask != 0x1F)	// Covers both 15bpp and 16bpp
+	    File->GotError( _R(IDE_FORMATNOTSUPPORTED) );
+
+	  INT32 Gshift = 0;
+	  if (GreenColourMask == 0x7e0 || GreenColourMask == 0x3e0)
+	    Gshift = 5;
+	  else
+	    File->GotError( _R(IDE_FORMATNOTSUPPORTED) );
+
+	  INT32 Rshift = 0;
+	  if (RedColourMask == 0x7c00)
+	    Rshift = 10;
+	  else if (RedColourMask == 0xf800)
+	    Rshift = 11;
+	  else
+	    File->GotError( _R(IDE_FORMATNOTSUPPORTED) );
+
+	  UINT32 ScanLineWidth = DIBUtil::ScanlineSize(InfoHeader.biWidth, Depth);
+	  LPBYTE pBits = *Bits;
+	  INT32 Height = InfoHeader.biHeight;
+	  INT32 Width = InfoHeader.biWidth;
+	  for (INT32 y = 0; y < Height; y++ )
+	    {
+	      for (INT32 x = 0; x < Width; x++ )
 		{
-			(*Info)->bmiHeader.biXPelsPerMeter = InfoHeader.biXPelsPerMeter;
-			(*Info)->bmiHeader.biYPelsPerMeter = InfoHeader.biYPelsPerMeter;
-		}
-		else
-		{
-			(*Info)->bmiHeader.biXPelsPerMeter = 0;
-			(*Info)->bmiHeader.biYPelsPerMeter = 0;
-		}
-
-		// If the ClrUsed field is zero, put a sensible value in it
-		// The read in value of ClrUsed also determines the number of palette entries in
-		// the palette table.
-		UINT32 PalColours = 0;
-		if (Depth <= 8)
-		{
-			PalColours = InfoHeader.biClrUsed;
-			// If zero then assume maximum amount of colours
-			// otherwise, copy the value across into the new header.
-			if (InfoHeader.biClrUsed == 0)
-			{
-				(*Info)->bmiHeader.biClrUsed = 1<<Depth;
-				PalColours = 1<<Depth;
-			}
-			else
-				(*Info)->bmiHeader.biClrUsed = InfoHeader.biClrUsed;
-		}
-
-		// read any palette info
-		switch (Depth)
-		{
-			case 1:
-			case 4:
-			case 8:
-				// read colour palette (Changed by Neville 14/10/97 to read biClrUsed)
-				ReadPalette( File, PalColours, SizeOfRGB, (*Info)->bmiColors);
-				break;
-
-			case 24:
-			case 32:
-				// 24-bit files sometimes have a 'hint' palette (e.g country.bmp) which
-				// we have to throw away (we can't load it cos the bitmap has no space alloced
-				// for a colour table)
-				if (InfoHeader.biClrUsed)
-					File->seekIn( InfoHeader.biClrUsed * SizeOfRGB, ios::cur );
-				break;
-
-			default:
-				File->GotError( _R(IDE_FORMATNOTSUPPORTED) );
-		}
-
-		if (File->bad())
-			File->GotError( _R(IDE_FORMATNOTSUPPORTED) );
-
-		// now read the bitmap data
-
-		UINT32 RedColourMask	= 0;
-		UINT32 GreenColourMask	= 0;
-		UINT32 BlueColourMask	= 0;
-		switch (InfoHeader.biCompression)
-		{
-			case BI_RGB:
-				BitsSize = (*Info)->bmiHeader.biSizeImage;			// uncompressed
-				break;
-
-			case CC_BMPTYPE:
-				if (Depth != 32)
-					File->GotError( _R(IDE_FORMATNOTSUPPORTED) );
-				BitsSize = (*Info)->bmiHeader.biSizeImage;			// uncompressed
-				break;
-
-			case BI_RLE8:
-				if (!UnpackRle8( File, InfoHeader, *Bits ))
-					File->GotError( _R(IDE_BADFORMAT) );
-				BitsSize = 0L;										// no more to read
-				break;
-
-			case BI_BITFIELDS:
-				// Read in the three special colour dword masks that follow the header
-				BitsSize = (*Info)->bmiHeader.biSizeImage;			// uncompressed
-				File->read( &RedColourMask,		sizeof(RedColourMask) );
-				File->read( &GreenColourMask,	sizeof(GreenColourMask) );
-				File->read( &BlueColourMask,	sizeof(BlueColourMask) );
-
-				RedColourMask			= LEtoNative(RedColourMask);
-				GreenColourMask			= LEtoNative(GreenColourMask);
-				BlueColourMask			= LEtoNative(BlueColourMask);
-
-				if (File->bad())
-					File->GotError( _R(IDE_BADFORMAT) );
-				TRACEUSER( "Neville", _T("DIBUtil::ReadFromFile BI_BITFIELDS RedColourMask = %d\n"),RedColourMask);
-				TRACEUSER( "Neville", _T("DIBUtil::ReadFromFile BI_BITFIELDS GreenColourMask = %d\n"),GreenColourMask);
-				TRACEUSER( "Neville", _T("DIBUtil::ReadFromFile BI_BITFIELDS BlueColourMask = %d\n"),BlueColourMask);
-				// The 32bpp case is easy. With 16bpp we need to convert to 24bpp
-				// We will take the Windows 95 in 32bpp mode such that it expects
-				// The blue mask is 0x000000FF, the green mask is 0x0000FF00, and the red mask is 0x00FF0000.
-				if (Depth == 32 && RedColourMask != 0xFF0000 && GreenColourMask != 0xFF00 && BlueColourMask != 0xFF)
-					File->GotError( _R(IDE_FORMATNOTSUPPORTED) );
-				else if (Depth != 24 && Depth != 32)
-					File->GotError( _R(IDE_FORMATNOTSUPPORTED) );
-				break;
-
-			default:
-				File->GotError( _R(IDE_FORMATNOTSUPPORTED) );			// other compression not supported
-		}
-
-		if (Convert16to24 == TRUE && Depth == 24)
-		{
-			// We need to read in a WORD and use the bitfield to convert this into 24 bit RGB data
-			// and then put this in the 24bpp pixel
-			// We take the Windows 95 route in that when the biCompression member is BI_BITFIELDS,
-			// we only support the following 16bpp color masks:
-			// A 5-5-5 16-bit image, where
-			//	the blue mask is 0x001F, the green mask is 0x03E0, and the red mask is 0x7C00;
-			// and a 5-6-5 16-bit image, where
-			// the blue mask is 0x001F, the green mask is 0x07E0, and the red mask is 0xF800.
-			WORD Pixel = 0;
-			INT32 Bshift = 0; // Always 0
-			if (BlueColourMask != 0x1F)	// Covers both 15bpp and 16bpp
-				File->GotError( _R(IDE_FORMATNOTSUPPORTED) );
-
-			INT32 Gshift = 0;
-			if (GreenColourMask == 0x7e0 || GreenColourMask == 0x3e0)
-				Gshift = 5;
-			else
-				File->GotError( _R(IDE_FORMATNOTSUPPORTED) );
-
-			INT32 Rshift = 0;
-			if (RedColourMask == 0x7c00)
-				Rshift = 10;
-			else if (RedColourMask == 0xf800)
-				Rshift = 11;
-			else
-				File->GotError( _R(IDE_FORMATNOTSUPPORTED) );
-
-			UINT32 ScanLineWidth = DIBUtil::ScanlineSize(InfoHeader.biWidth, Depth);
-			LPBYTE pBits = *Bits;
-			INT32 Height = InfoHeader.biHeight;
-			INT32 Width = InfoHeader.biWidth;
-			for (INT32 y = 0; y < Height; y++ )
-			{
-				for (INT32 x = 0; x < Width; x++ )
-				{
-					// read in the pixel
-					File->read( &Pixel,	sizeof(Pixel) );
+		  // read in the pixel
+		  File->read( &Pixel,	sizeof(Pixel) );
 					
-					Pixel = LEtoNative(Pixel);
+		  Pixel = LEtoNative(Pixel);
 					
-					if (File->bad())
-						File->GotError( _R(IDE_BADFORMAT) );
-					// Convert it into the B G and R components
-					UINT32 B = ((Pixel & BlueColourMask) >> Bshift);	// blue component
-					UINT32 G = ((Pixel & GreenColourMask) >> Gshift);	// green component
-					UINT32 R = ((Pixel & RedColourMask) >> Rshift);	// red component;
-					// Need to shift the components into the MSBs leaving gap at bottom
-					// then fill in the missing LSBs with the required number of MSBs
-					pBits[x * 3 + 0] = (B << 3) | (B >> 2);
-					if (GreenColourMask == 0x7e0) // 6 bit green
-						pBits[x * 3 + 1] = (G << 2) | (G >> 4);
-					else
-						pBits[x * 3 + 1] = (G << 3) | (G >> 2);
-					pBits[x * 3 + 2] = (R << 3) | (R >> 2);
-				}
+		  if (File->bad())
+		    File->GotError( _R(IDE_BADFORMAT) );
+		  // Convert it into the B G and R components
+		  UINT32 B = ((Pixel & BlueColourMask) >> Bshift);	// blue component
+		  UINT32 G = ((Pixel & GreenColourMask) >> Gshift);	// green component
+		  UINT32 R = ((Pixel & RedColourMask) >> Rshift);	// red component;
+		  // Need to shift the components into the MSBs leaving gap at bottom
+		  // then fill in the missing LSBs with the required number of MSBs
+		  pBits[x * 3 + 0] = (B << 3) | (B >> 2);
+		  if (GreenColourMask == 0x7e0) // 6 bit green
+		    pBits[x * 3 + 1] = (G << 2) | (G >> 4);
+		  else
+		    pBits[x * 3 + 1] = (G << 3) | (G >> 2);
+		  pBits[x * 3 + 2] = (R << 3) | (R >> 2);
+		}
 				
-				// Move onto the next line
-				pBits += ScanLineWidth;
-				// Updating the progress bar as we go
-				ContinueSlowJob((INT32)((100 * y)/Height));
-			}
-		}
-		// Read the actual bytes, used to do it in one go but we really require some
-		// progress bar indication so we will do it in chunks.
-		else if (BitsSize > 0)
-		{
-			// If pFilter is NULL and hence not native/web loading then do it in 
-			// chunks of bytes
-			if (pFilter == NULL)
-			{
-				if (BitsSize < 1024 || ProgressString == NULL)
-				{
-					// File very small or no progress bar required, so load in one go
-					File->read( *Bits, BitsSize );
-				}
-				else
-				{
-					// Load in chunks, for present split into 100 chunks
-					DWORD ChunkSize = BitsSize/100;
-					DWORD Position = 0;
-					LPBYTE pBitInfo = *Bits;
-					
-					while (Position < BitsSize)
-					{
-						if ( (BitsSize - Position) > ChunkSize)
-							File->read( pBitInfo, ChunkSize );
-						else
-						{
-							ChunkSize = BitsSize - Position;
-							File->read( pBitInfo, ChunkSize );
-						}
-								
-						// Increment our counters/pointers
-						Position += ChunkSize;
-						pBitInfo += ChunkSize;
-						ContinueSlowJob((INT32)(100*Position/BitsSize));
-					}
-				}
-			}
-			else
-			{
-				// Do the reading a scanline at a time
-				// This makes progress bar update easier for native/web files
-				LPBYTE pBitInfo = *Bits;
-				UINT32 ScanLineWidth = DIBUtil::ScanlineSize(InfoHeader.biWidth, Depth);
-				UINT32 height = InfoHeader.biHeight; 
-				// Ask the filter what the record size for this bitmap is and hence
-				// what the allocation we have for progress bar updates are.
-				// We will then have to update our progress bar by
-				//	current scanline/total number of scanlines * allocation
-				// so that we get update by a proportion of the value.
-				// We can assume no interlacing as in native/web files this is turned off.
-				UINT32 RecordSize = pFilter->GetCurrentRecordSize();
-				if (RecordSize == 0)
-					RecordSize = 1;
-				INT32 UpdateValue = RecordSize/height;
-				// For each scaline in the file, read it in and update the progress bar count
-				for (UINT32 i = 0; i < height; i++)
-				{
-					File->read( pBitInfo, ScanLineWidth );
-					pBitInfo += ScanLineWidth;
-					pFilter->IncProgressBarCount(UpdateValue);
-				}
-			}
-		}
-		
-		// This shouldn't be required any more as the CATCH handler should be invoked
-		// when problems happen.
-		if (File->bad())
-			File->GotError( _R(IDE_FORMATNOTSUPPORTED) );
-
-		if (FAKE_32_TRANS && (Depth==32) && (InfoHeader.biCompression!=CC_BMPTYPE) )
-		{
-			// put some fake transparency in on a scanline by scanline basis
-			LPRGBQUAD Data = (LPRGBQUAD)(*Bits);
-//			size_t size = BitsSize;
-			UINT32 Height = (*Info)->bmiHeader.biHeight;
-			UINT32 h = Height;
-			Height /= 2;
-
-			while (h--)
-			{
-				INT32 TValue = (INT32)h - (INT32)Height;
-				TValue = abs(TValue);
-				TValue = TValue * 0xFF / Height;
-
-				UINT32 w = (*Info)->bmiHeader.biWidth;
-				while (w--)
-				{
-					Data->rgbReserved = (BYTE)TValue;
-					Data++;
-				}
-				// 32-bit DIBs automatically DWORD aligned
-			}
-		}
-
-		// If started, then stop then progress bar
-		if (ProgressString != NULL)
-		{
-			EndSlowJob();
-		}
-
-		// Must set the exception throwing and reporting flags back to their entry states
-		File->SetThrowExceptions( OldThrowingState );
-		File->SetReportErrors( OldReportingState );
-
-		// er, we seem to have finished OK so say so
-		return TRUE;
+	      // Move onto the next line
+	      pBits += ScanLineWidth;
+	      // Updating the progress bar as we go
+	      ContinueSlowJob((INT32)((100 * y)/Height));
+	    }
 	}
-	catch( CFileException )
+      // Read the actual bytes, used to do it in one go but we really require some
+      // progress bar indication so we will do it in chunks.
+      else if (BitsSize > 0)
 	{
-		// catch our form of a file exception
-		TRACE( _T("DIBUtil::ReadFromFile CC catch handler\n"));
-
-		FreeDIB( *Info, *Bits );							// free any alloced memory
-		*Info = NULL;										// and NULL the pointers
-		*Bits = NULL;
-
-		// If started, then stop then progress bar
-		if (ProgressString != NULL)
+	  // If pFilter is NULL and hence not native/web loading then do it in 
+	  // chunks of bytes
+	  if (pFilter == NULL)
+	    {
+	      if (BitsSize < 1024 || ProgressString == NULL)
 		{
-			EndSlowJob();
+		  // File very small or no progress bar required, so load in one go
+		  File->read( *Bits, BitsSize );
 		}
+	      else
+		{
+		  // Load in chunks, for present split into 100 chunks
+		  DWORD ChunkSize = BitsSize/100;
+		  DWORD Position = 0;
+		  LPBYTE pBitInfo = *Bits;
+					
+		  while (Position < BitsSize)
+		    {
+		      if ( (BitsSize - Position) > ChunkSize)
+			File->read( pBitInfo, ChunkSize );
+		      else
+			{
+			  ChunkSize = BitsSize - Position;
+			  File->read( pBitInfo, ChunkSize );
+			}
+								
+		      // Increment our counters/pointers
+		      Position += ChunkSize;
+		      pBitInfo += ChunkSize;
+		      ContinueSlowJob((INT32)(100*Position/BitsSize));
+		    }
+		}
+	    }
+	  else
+	    {
+	      // Do the reading a scanline at a time
+	      // This makes progress bar update easier for native/web files
+	      LPBYTE pBitInfo = *Bits;
+	      UINT32 ScanLineWidth = DIBUtil::ScanlineSize(InfoHeader.biWidth, Depth);
+	      UINT32 height = InfoHeader.biHeight; 
+	      // Ask the filter what the record size for this bitmap is and hence
+	      // what the allocation we have for progress bar updates are.
+	      // We will then have to update our progress bar by
+	      //	current scanline/total number of scanlines * allocation
+	      // so that we get update by a proportion of the value.
+	      // We can assume no interlacing as in native/web files this is turned off.
+	      UINT32 RecordSize = pFilter->GetCurrentRecordSize();
+	      if (RecordSize == 0)
+		RecordSize = 1;
+	      INT32 UpdateValue = RecordSize/height;
+	      // For each scaline in the file, read it in and update the progress bar count
+	      for (UINT32 i = 0; i < height; i++)
+		{
+		  File->read( pBitInfo, ScanLineWidth );
+		  pBitInfo += ScanLineWidth;
+		  pFilter->IncProgressBarCount(UpdateValue);
+		}
+	    }
+	}
+		
+      // This shouldn't be required any more as the CATCH handler should be invoked
+      // when problems happen.
+      if (File->bad())
+	File->GotError( _R(IDE_FORMATNOTSUPPORTED) );
 
-		// Must set the exception throwing and reporting flags back to their entry states
-		File->SetThrowExceptions( OldThrowingState );
-		File->SetReportErrors( OldReportingState );
+      if (FAKE_32_TRANS && (Depth==32) && (InfoHeader.biCompression!=CC_BMPTYPE) )
+	{
+	  // put some fake transparency in on a scanline by scanline basis
+	  LPRGBQUAD Data = (LPRGBQUAD)(*Bits);
+	  //			size_t size = BitsSize;
+	  UINT32 Height = (*Info)->bmiHeader.biHeight;
+	  UINT32 h = Height;
+	  Height /= 2;
 
-		return FALSE;
+	  while (h--)
+	    {
+	      INT32 TValue = (INT32)h - (INT32)Height;
+	      TValue = abs(TValue);
+	      TValue = TValue * 0xFF / Height;
+
+	      UINT32 w = (*Info)->bmiHeader.biWidth;
+	      while (w--)
+		{
+		  Data->rgbReserved = (BYTE)TValue;
+		  Data++;
+		}
+	      // 32-bit DIBs automatically DWORD aligned
+	    }
 	}
 
-	ERROR2( FALSE, "Escaped exception clause somehow" );
+      // If started, then stop then progress bar
+      if (ProgressString != NULL)
+	{
+	  EndSlowJob();
+	}
+
+      // Must set the exception throwing and reporting flags back to their entry states
+      File->SetThrowExceptions( OldThrowingState );
+      File->SetReportErrors( OldReportingState );
+
+      // er, we seem to have finished OK so say so
+      return TRUE;
+    }
+  catch( CFileException )
+    {
+      // catch our form of a file exception
+      TRACE( _T("DIBUtil::ReadFromFile CC catch handler\n"));
+
+      FreeDIB( *Info, *Bits );							// free any alloced memory
+      *Info = NULL;										// and NULL the pointers
+      *Bits = NULL;
+
+      // If started, then stop then progress bar
+      if (ProgressString != NULL)
+	{
+	  EndSlowJob();
+	}
+
+      // Must set the exception throwing and reporting flags back to their entry states
+      File->SetThrowExceptions( OldThrowingState );
+      File->SetReportErrors( OldReportingState );
+
+      return FALSE;
+    }
+
+  ERROR2( FALSE, "Escaped exception clause somehow" );
 }
 
 /********************************************************************************************
@@ -2586,53 +2559,57 @@ o/p bitmap. A ReAlloc can be performed after this call. The rect is inclusive/ex
 
 
 BOOL DIBUtil::MakeBitmapSmaller(UINT32 OldWidth, UINT32 OldHeight, UINT32 BaseX, UINT32 BaseY, 
-									   UINT32 NewWidth, UINT32 NewHeight, UINT32 BPP, LPBYTE pBits)
-{
-	ERROR2IF(!pBits, FALSE, "DIBUtil::MakeBitmapSmaller would really appreciate a bitmap");
-	ERROR2IF((BPP!=8) && (BPP!=16) && (BPP!=32), FALSE, "DIBUtil::MakeBitmapSmaller passed invalid BPP");
-	ERROR2IF(OldWidth<NewWidth, FALSE, "DIBUtil::MakeBitmapSmaller thinks you are making the bitmap wider");
-	ERROR2IF(OldHeight<NewHeight, FALSE, "DIBUtil::MakeBitmapSmaller thinks you are making the bitmap taller");
-
-	ERROR2IF((BaseX>OldWidth) || (BaseY>OldHeight), FALSE, "DIBUtil::MakeBitmapSmaller passed bad Base");
-	ERROR2IF((BaseX+NewWidth>OldWidth) || (BaseY+NewHeight>OldHeight), FALSE, "DIBUtil::MakeBitmapSmaller passed bad rect");
-	// as these are unsighned all we have to do is check against zero
-	ERROR2IF(!OldWidth || !NewWidth || !OldHeight || !NewHeight, FALSE, "DIBUtil::MakeBitmapSmaller passed bad width/height");
-
-	UINT32 OldWidthR=OldWidth;
-	UINT32 NewWidthR=NewWidth; // with wastage values
-	UINT32 BPPShift=2;
-
- 	switch (BPP)
-	{
-		case 8:
-			OldWidthR=(OldWidth+3)&~3;
-			NewWidthR=(NewWidth+3)&~3;
-			BPPShift=0;
-			break;
-		case 16:
-			OldWidthR=(OldWidth+1)&~1;
-			NewWidthR=(NewWidth+1)&~1;
-			BPPShift=1;
-			break;
-		case 32:
-		default:
-			break;
-	}
-
-
- 	UINT32 NewByteW = DIBUtil::ScanlineSize(NewWidth, BPP);	
- 	UINT32 OldByteW = DIBUtil::ScanlineSize(OldWidth, BPP);	
-
-	LPBYTE pSrc=pBits+OldByteW*BaseY+(BaseX<<BPPShift);
-	LPBYTE pDest=pBits;
-	
-	for (UINT32 y=0; y<NewHeight; y++)
-	{
-		memcpy(pDest, pSrc, NewByteW);
-		pDest+=NewByteW;
-		pSrc+=OldByteW;	
-	}
-	return TRUE;
+				UINT32 NewWidth, UINT32 NewHeight, UINT32 BPP, LPBYTE pBits) {
+  ERROR2IF(!pBits,
+	   FALSE,
+	   "DIBUtil::MakeBitmapSmaller would really appreciate a bitmap");
+  ERROR2IF((BPP!=8) && (BPP!=16) && (BPP!=32),
+	   FALSE,
+	   "DIBUtil::MakeBitmapSmaller passed invalid BPP");
+  ERROR2IF(OldWidth<NewWidth,
+	   FALSE,
+	   "DIBUtil::MakeBitmapSmaller thinks you are making the bitmap wider");
+  ERROR2IF(OldHeight<NewHeight,
+	   FALSE,
+	   "DIBUtil::MakeBitmapSmaller thinks you are making the bitmap taller");
+  ERROR2IF((BaseX>OldWidth) || (BaseY>OldHeight),
+	   FALSE,
+	   "DIBUtil::MakeBitmapSmaller passed bad Base");
+  ERROR2IF((BaseX+NewWidth>OldWidth) || (BaseY+NewHeight>OldHeight),
+	   FALSE,
+	   "DIBUtil::MakeBitmapSmaller passed bad rect");
+  // as these are unsighned all we have to do is check against zero
+  ERROR2IF(!OldWidth || !NewWidth || !OldHeight || !NewHeight,
+	   FALSE,
+	   "DIBUtil::MakeBitmapSmaller passed bad width/height");
+  // UINT32 OldWidthR = OldWidth;
+  ///UINT32 NewWidthR = NewWidth; // with wastage values
+  UINT32 BPPShift = 2;
+  switch (BPP) {
+  case 8:
+    // OldWidthR=(OldWidth+3)&~3;
+    // NewWidthR=(NewWidth+3)&~3;
+    BPPShift=0;
+    break;
+  case 16:
+    // OldWidthR=(OldWidth+1)&~1;
+    // NewWidthR=(NewWidth+1)&~1;
+    BPPShift=1;
+    break;
+  case 32:
+  default:
+    break;
+  }
+  UINT32 NewByteW = DIBUtil::ScanlineSize(NewWidth, BPP);	
+  UINT32 OldByteW = DIBUtil::ScanlineSize(OldWidth, BPP);	
+  LPBYTE pSrc=pBits+OldByteW*BaseY+(BaseX<<BPPShift);
+  LPBYTE pDest=pBits;
+  for (UINT32 y=0; y<NewHeight; y++) {
+    memcpy(pDest, pSrc, NewByteW);
+    pDest+=NewByteW;
+    pSrc+=OldByteW;	
+  }
+  return TRUE;
 }
 
 /********************************************************************************************

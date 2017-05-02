@@ -1324,209 +1324,170 @@ DragManagerOp *DragManagerOp::GetCurrentManager(void)
 
 ********************************************************************************************/
 
-BOOL DragManagerOp::ProcessEvent(DragEventType Event)
-{
-	BOOL BroadcastToAll = FALSE;		// Determine if the event goes to everybody or
-									// only to target under the pointer
-	if (Event == DRAGEVENT_INITIALISE || Event == DRAGEVENT_DEINITIALISE)
-		BroadcastToAll = TRUE;
-
-	if(CurrentManager == NULL || (DragEnded && Event != DRAGEVENT_DEINITIALISE))
-		return FALSE;
-
-	LastEvent = Event;			// Remember the type of the last event we processed
-	
-	DragTarget *Ptr  = (DragTarget *) Targets.GetHead();
-	DragTarget *Next;
-
-	OilCoord KernelMousePos(0,0);
-	wxPoint   WinoilMousePos(CurrentMousePos);
-	CurrentDragTarget = NULL;
-	BOOL OverTarget = FALSE;
-
-//	TRACEUSER("Gerry", _T("ProcessEvent = (%d, %d)"), WinoilMousePos.x, WinoilMousePos.y);
-
-	while (Ptr != NULL)
-	{
-		// Copy the mouse position, as each iteration of the loop corrupts it
-		WinoilMousePos = CurrentMousePos;
-
-		// Allow things like targets de-registering during processing
-		Next = (DragTarget *) Targets.GetNext(Ptr);
-		BOOL GoAhead = TRUE;
-		
-		if (Ptr->IsAKernelObject())
-		{
-			KernelMousePos = OilCoord(0,0);
-
-			DialogOp  *pDialogOp;
-			CGadgetID GadgetID;
-			Ptr->GetTargetAreaInfo(&pDialogOp, &GadgetID);
-
-			if (pDialogOp != NULL)
-			{
-				wxWindow* TargetWindow = (wxWindow*)pDialogOp->WindowID;	// use whole window if no gadget specified
-
-				if (GadgetID != 0)
-					TargetWindow = TargetWindow->FindWindow((INT32)GadgetID);
-
-				// We want to do the following. But it doesn't work because GetRect() is relative to the
-				// parent window when TargetWindow is not a TLW. What we need is (consistently) screen
-				// coordinates
-
-//				TRACEUSER("Gerry", _T("KernelTargetWindow = %s"), TargetWindow->GetClassInfo()->GetClassName());
-				wxRect TargetRect = TargetWindow->GetRect();
-//				TRACEUSER("Gerry", _T("TargetRect = (%d, %d) [%d, %d]"), TargetRect.x, TargetRect.y, TargetRect.width, TargetRect.height);
-				if (TargetWindow->GetParent() && !TargetWindow->IsTopLevel())
-				{
-					TargetWindow->GetParent()->ClientToScreen(&TargetRect.x, &TargetRect.y);
-//					TRACEUSER("Gerry", _T("TargetRect = (%d, %d) [%d, %d]"), TargetRect.x, TargetRect.y, TargetRect.width, TargetRect.height);
-				}
-
-//				TRACEUSER("Gerry", _T("Point is %sinside"), TargetRect.Inside(WinoilMousePos) ? _T("") : _T("not "));
-
-				if (BroadcastToAll || Ptr->WantsAllEvents() ||
-					TargetRect.Inside(WinoilMousePos))
-				{
-					// Determine if the pointer is over the target window, or any of its children
-					wxWindow* WindowUnderPoint = wxChildWindowFromPoint(WinoilMousePos, false, -1);
-					BOOL AreOverTargetWnd = (WindowUnderPoint == TargetWindow);
-					
-					if (!AreOverTargetWnd)
-					{
-						// We're not immediately over the background of the window, but may be over
-						// a child-window of our window! The subtlety here is that wxChildWindowFromPoint may have
-						// failed because another window is on top (in the way). So we also check the child window
-						// of the target window which is under the mousepointer is also the window which is
-						// under the mouse pointner
-						wxWindow* ChildWindowUnderPoint = ::wxChildWindowFromPoint(TargetWindow, WinoilMousePos, false, -1);
-						AreOverTargetWnd = (ChildWindowUnderPoint != NULL &&
-												ChildWindowUnderPoint == WindowUnderPoint);
-					}
-
-					if (BroadcastToAll || Ptr->WantsAllEvents() || AreOverTargetWnd)
-					{
-						wxScreenDC dc;
-						wxSize ppi = OSRenderRegion::GetFixedDCPPI(dc);
-
-						KernelMousePos.x = ((WinoilMousePos.x - TargetRect.GetLeft()) * 72000) / ppi.GetWidth();
-// CHECKRECT: This may need to be the exclusive bottom coord
-						KernelMousePos.y = ((TargetRect.GetBottom() - WinoilMousePos.y) * 72000) / ppi.GetHeight();
-					}
-					else
-						GoAhead	= FALSE;
-				}
-				else
-					GoAhead = FALSE;
-			}
-
-//			TRACEUSER("Gerry", _T("%s"), GoAhead ? _T("Process") : _T("Skipping"));
-
-			if (GoAhead &&
-				Ptr->ProcessEvent(Event, CurrentDragInfo, &KernelMousePos, CurrentKeypress))
-			{
-			 	CurrentDragTarget = Ptr;
-				OverTarget = TRUE;	// This Target claimed the event, so return TRUE
-
-				if (!BroadcastToAll)
-					break;
-			}
-		}
-		else
-		{
-			wxWindow* TargetWindow;
-			wxRect TargetRect;
-			Ptr->GetTargetAreaInfo(&TargetWindow, &TargetRect);
-#if FALSE
-			if (TargetWindow)
-			{
-				TRACEUSER("Gerry", _T("OilTargetWindow = %s"), TargetWindow->GetClassInfo()->GetClassName());
-				TRACEUSER("Gerry", _T("TargetRect = (%d, %d) [%d, %d]"), TargetRect.x, TargetRect.y, TargetRect.width, TargetRect.height);
-			}
-			else
-			{
-				TRACEUSER("Gerry", _T("OilTargetWindow = <NONE>"));
-			}
-#endif
-			wxPoint ClientPoint;					// This will be screen coords, or will end up as 
-			ClientPoint.x = WinoilMousePos.x;	// client coords if we have a window... 
-			ClientPoint.y = WinoilMousePos.y;
-
-			if (TargetWindow != NULL)
-			{
-				// Get the mouse position in client coords
-				ClientPoint = TargetWindow->ScreenToClient(ClientPoint);
-
-				// Don't bother giving the event to targets which don't contain the pointer
-				if (BroadcastToAll || Ptr->WantsAllEvents() ||
-					TargetRect.Inside(ClientPoint))
-				{
-					// Don't give the event to oil targets unless the pointer is over the
-					// window (ie dont pass on events to overlapped windows) unless we want
-					// to broadcast to all, or this target really wants to know!
-
-					wxWindow* WindowUnderPoint = ::wxChildWindowFromPoint(WinoilMousePos, false, -1);
-//					TRACEUSER("Gerry", _T("WindowUnderPoint = 0x%08x (%s)"), WindowUnderPoint, WindowUnderPoint ? WindowUnderPoint->GetClassInfo()->GetClassName() : _T("null"));
-					if (WindowUnderPoint)
-					{
-//						TRACEUSER("Gerry", _T("Title = %s"), WindowUnderPoint->GetTitle().c_str());
-					}
-
-					BOOL AreOverTargetWnd = (WindowUnderPoint == TargetWindow);
-//					TRACEUSER("Gerry", _T("Point is %sover target window"), AreOverTargetWnd ? _T("") : _T("not "));
-
-					if (!AreOverTargetWnd)
-					{
-						// We're not immediately over the background of the window, but may be over
-						// a child-window of our window! The subtlety here is that wxChildWindowFromPoint may have
-						// failed because another window is on top (in the way). So we also check the child window
-						// of the target window which is under the mousepointer is also the window which is
-						// under the mouse pointner
-						wxWindow* ChildWindowUnderPoint = ::wxChildWindowFromPoint(TargetWindow, WinoilMousePos, false, -1);
-//						TRACEUSER("Gerry", _T("ChildFromPoint = 0x%08x (%s)"), ChildWindowUnderPoint, ChildWindowUnderPoint ? ChildWindowUnderPoint->GetClassInfo()->GetClassName() : _T("null"));
-						AreOverTargetWnd = (ChildWindowUnderPoint != NULL &&
-												ChildWindowUnderPoint == WindowUnderPoint);
-
-//						TRACEUSER("Gerry", _T("Point is %sover child of target window"), AreOverTargetWnd ? _T("") : _T("not "));
-					}
-
-					if (!BroadcastToAll && !Ptr->WantsAllEvents() && !AreOverTargetWnd)
-					{
-						GoAhead	= FALSE;
-					}
-				}
-				else
-					GoAhead = FALSE;
-			}
-
-//			TRACEUSER("Gerry", _T("%s"), GoAhead ? _T("Process") : _T("Skipping"));
-
-			// we are in a target area, or this is a broadcast-to-all, so send the event
-			if (GoAhead)
-			{
-				wxPoint PointInWindow(ClientPoint);	// "Cast" to wxPoint
-
-				if (Ptr->ProcessEvent(Event, CurrentDragInfo, &PointInWindow, CurrentKeypress))
-				{
-					CurrentDragTarget = Ptr;
-					OverTarget = TRUE;	// This Target claimed the event, so return TRUE
-
-					if (!BroadcastToAll)
-						break;
-				}
-			}
-		}
-
-		Ptr = Next;
+BOOL DragManagerOp::ProcessEvent(DragEventType Event) {
+  BOOL BroadcastToAll = FALSE;		// Determine if the event goes to everybody or
+  // only to target under the pointer
+  if (Event == DRAGEVENT_INITIALISE || Event == DRAGEVENT_DEINITIALISE) {
+    BroadcastToAll = TRUE;
+  }
+  if(CurrentManager == NULL || (DragEnded && Event != DRAGEVENT_DEINITIALISE)) {
+    return FALSE;
+  }
+  LastEvent = Event;			// Remember the type of the last event we processed
+  DragTarget *Ptr  = (DragTarget *) Targets.GetHead();
+  DragTarget *Next;
+  OilCoord KernelMousePos(0,0);
+  wxPoint   WinoilMousePos(CurrentMousePos);
+  CurrentDragTarget = NULL;
+  BOOL OverTarget = FALSE;
+  //	TRACEUSER("Gerry", _T("ProcessEvent = (%d, %d)"), WinoilMousePos.x, WinoilMousePos.y);
+  while (Ptr != NULL) {
+    // Copy the mouse position, as each iteration of the loop corrupts it
+    WinoilMousePos = CurrentMousePos;
+    // Allow things like targets de-registering during processing
+    Next = (DragTarget *) Targets.GetNext(Ptr);
+    BOOL GoAhead = TRUE;
+    if (Ptr->IsAKernelObject()) {
+      KernelMousePos = OilCoord(0,0);
+      DialogOp  *pDialogOp;
+      CGadgetID GadgetID;
+      Ptr->GetTargetAreaInfo(&pDialogOp, &GadgetID);
+      if (pDialogOp != NULL) {
+	wxWindow* TargetWindow = (wxWindow*)pDialogOp->WindowID;	// use whole window if no gadget specified
+	if (GadgetID != 0) {
+	  TargetWindow = TargetWindow->FindWindow((INT32)GadgetID);
 	}
-
-	if (!DragPending && Event != DRAGEVENT_COMPLETED)
-	{ 
-		SetStatusLineText();
-		SetCursor();
-	}	
-
-	return OverTarget;	// Return status to indicate wheteher or not the event was claimed
+	// We want to do the following. But it doesn't work because
+	// GetRect() is relative to the parent window when
+	// TargetWindow is not a TLW. What we need is (consistently)
+	// screen coordinates
+	
+	// TRACEUSER("Gerry", _T("KernelTargetWindow = %s"), TargetWindow->GetClassInfo()->GetClassName());
+	wxRect TargetRect = TargetWindow->GetRect();
+	// TRACEUSER("Gerry", _T("TargetRect = (%d, %d) [%d, %d]"), TargetRect.x, TargetRect.y, TargetRect.width, TargetRect.height);
+	if (TargetWindow->GetParent() && !TargetWindow->IsTopLevel()) {
+	  TargetWindow->GetParent()->ClientToScreen(&TargetRect.x, &TargetRect.y);
+	  // TRACEUSER("Gerry", _T("TargetRect = (%d, %d) [%d, %d]"), TargetRect.x, TargetRect.y, TargetRect.width, TargetRect.height);
+	}
+	// TRACEUSER("Gerry", _T("Point is %sinside"), TargetRect.Inside(WinoilMousePos) ? _T("") : _T("not "));
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+	if (BroadcastToAll || Ptr->WantsAllEvents() ||
+	    TargetRect.Inside(WinoilMousePos)) {
+	  // Determine if the pointer is over the target window, or any of its children
+	  wxWindow* WindowUnderPoint = wxChildWindowFromPoint(WinoilMousePos, false, -1);
+	  BOOL AreOverTargetWnd = (WindowUnderPoint == TargetWindow);
+	  if (!AreOverTargetWnd) {
+	    // We're not immediately over the background of the
+	    // window, but may be over a child-window of our window!
+	    // The subtlety here is that wxChildWindowFromPoint may
+	    // have failed because another window is on top (in the
+	    // way). So we also check the child window of the target
+	    // window which is under the mousepointer is also the
+	    // window which is under the mouse pointner
+	    wxWindow* ChildWindowUnderPoint = ::wxChildWindowFromPoint(TargetWindow, WinoilMousePos, false, -1);
+	    AreOverTargetWnd = (ChildWindowUnderPoint != NULL &&
+				ChildWindowUnderPoint == WindowUnderPoint);
+	  }
+	  if (BroadcastToAll || Ptr->WantsAllEvents() || AreOverTargetWnd) {
+	    wxScreenDC dc;
+	    wxSize ppi = OSRenderRegion::GetFixedDCPPI(dc);
+	    KernelMousePos.x = ((WinoilMousePos.x - TargetRect.GetLeft()) * 72000) / ppi.GetWidth();
+	    // CHECKRECT: This may need to be the exclusive bottom coord
+	    KernelMousePos.y = ((TargetRect.GetBottom() - WinoilMousePos.y) * 72000) / ppi.GetHeight();
+	  } else {
+	    GoAhead	= FALSE;
+	  }
+	} else {
+	  GoAhead = FALSE;
+	}
+#pragma GCC diagnostic pop				
+      }
+      // TRACEUSER("Gerry", _T("%s"), GoAhead ? _T("Process") : _T("Skipping"));
+      if (GoAhead &&
+	  Ptr->ProcessEvent(Event, CurrentDragInfo, &KernelMousePos, CurrentKeypress)) {
+	CurrentDragTarget = Ptr;
+	OverTarget = TRUE;	// This Target claimed the event, so return TRUE
+	if (!BroadcastToAll) {
+	  break;
+	}
+      }
+    } else {
+      wxWindow* TargetWindow;
+      wxRect TargetRect;
+      Ptr->GetTargetAreaInfo(&TargetWindow, &TargetRect);
+#if FALSE
+      if (TargetWindow) {
+	TRACEUSER("Gerry", _T("OilTargetWindow = %s"), TargetWindow->GetClassInfo()->GetClassName());
+	TRACEUSER("Gerry", _T("TargetRect = (%d, %d) [%d, %d]"), TargetRect.x, TargetRect.y, TargetRect.width, TargetRect.height);
+      } else {
+	TRACEUSER("Gerry", _T("OilTargetWindow = <NONE>"));
+      }
+#endif
+      wxPoint ClientPoint;					// This will be screen coords, or will end up as 
+      ClientPoint.x = WinoilMousePos.x;	// client coords if we have a window... 
+      ClientPoint.y = WinoilMousePos.y;
+      if (TargetWindow != NULL) {
+	// Get the mouse position in client coords
+	ClientPoint = TargetWindow->ScreenToClient(ClientPoint);
+	// Don't bother giving the event to targets which don't contain the pointer
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+	if (BroadcastToAll || Ptr->WantsAllEvents() ||
+	    TargetRect.Inside(ClientPoint)) {
+	  // Don't give the event to oil targets unless the pointer is over the
+	  // window (ie dont pass on events to overlapped windows) unless we want
+	  // to broadcast to all, or this target really wants to know!
+	  wxWindow* WindowUnderPoint = ::wxChildWindowFromPoint(WinoilMousePos, false, -1);
+	  //					TRACEUSER("Gerry", _T("WindowUnderPoint = 0x%08x (%s)"), WindowUnderPoint, WindowUnderPoint ? WindowUnderPoint->GetClassInfo()->GetClassName() : _T("null"));
+	  if (WindowUnderPoint) {
+	    // TRACEUSER("Gerry", _T("Title = %s"), WindowUnderPoint->GetTitle().c_str());
+	  }
+	  BOOL AreOverTargetWnd = (WindowUnderPoint == TargetWindow);
+	  //					TRACEUSER("Gerry", _T("Point is %sover target window"), AreOverTargetWnd ? _T("") : _T("not "));
+	  if (!AreOverTargetWnd) {
+	    // We're not immediately over the background of the
+	    // window, but may be over a child-window of our window!
+	    // The subtlety here is that wxChildWindowFromPoint may
+	    // have failed because another window is on top (in the
+	    // way). So we also check the child window of the target
+	    // window which is under the mousepointer is also the
+	    // window which is under the mouse pointner
+	    wxWindow* ChildWindowUnderPoint = ::wxChildWindowFromPoint(TargetWindow, WinoilMousePos, false, -1);
+	    // TRACEUSER("Gerry", _T("ChildFromPoint = 0x%08x (%s)"), ChildWindowUnderPoint, ChildWindowUnderPoint ? ChildWindowUnderPoint->GetClassInfo()->GetClassName() : _T("null"));
+	    AreOverTargetWnd = (ChildWindowUnderPoint != NULL &&
+				ChildWindowUnderPoint == WindowUnderPoint);
+	    // TRACEUSER("Gerry", _T("Point is %sover child of target window"), AreOverTargetWnd ? _T("") : _T("not "));
+	  }
+	  if (!BroadcastToAll && !Ptr->WantsAllEvents() && !AreOverTargetWnd) {
+	    GoAhead	= FALSE;
+	  }
+	} else {
+	  GoAhead = FALSE;
+	}
+#pragma GCC diagnostic pop
+      }
+      // TRACEUSER("Gerry", _T("%s"), GoAhead ? _T("Process") : _T("Skipping"));
+      // we are in a target area, or this is a broadcast-to-all, so
+      // send the event
+      if (GoAhead) {
+	wxPoint PointInWindow(ClientPoint);	// "Cast" to wxPoint
+	if (Ptr->ProcessEvent(Event, CurrentDragInfo, &PointInWindow, CurrentKeypress)) {
+	  CurrentDragTarget = Ptr;
+	  OverTarget = TRUE;	// This Target claimed the event, so return TRUE
+	  if (!BroadcastToAll) {
+	    break;
+	  }
+	}
+      }
+    }
+    Ptr = Next;
+  }
+  if (!DragPending && Event != DRAGEVENT_COMPLETED) { 
+    SetStatusLineText();
+    SetCursor();
+  }	
+  return OverTarget;	// Return status to indicate wheteher or not the event was claimed
 }
 
 		 
@@ -1548,100 +1509,73 @@ BOOL DragManagerOp::ProcessEvent(DragEventType Event)
 
 ********************************************************************************************/
 
-BOOL DragManagerOp::OnIdleEvent(void)
-{
-	LastMousePos = CurrentMousePos;
-	CurrentMousePos = wxGetMousePosition();
-
-	if(DragEnded)
-		return(FALSE);	// Done nothing, so let low-priority handlers have a go
-
-	BOOL JustStartedDrag = FALSE;
-
-	// We have received a start drag message but we are not sure whether this is the real 
-	// thing yet.
-	if (DragPending)
-	{
-		// We start a drag if DragDelay milliseconds have elapsed
-		// or the pointer has left DragStartRect
-		if (!DragStartTimer.Elapsed(DragDelay) &&
-			StillClickRect.Inside(CurrentMousePos))
-		{
-			// The drag is still pending
-			return(FALSE);	// Done nothing, so let low-priority handlers have a go
-		}
-
-		DragPending = FALSE;
-		JustStartedDrag = TRUE;	// Flag that we have "just turned on" the drag
-
-		TheCaptureHandler->SetUpSolidDrag(CurrentMousePos);
-	}
-
-	// Determine what event type to send around...
-	DragEventType Event = DRAGEVENT_MOUSEIDLE;
-	if (LastMousePos == CurrentMousePos)
-	{
-		if (LastEvent == DRAGEVENT_MOUSESTOPPED || LastEvent == DRAGEVENT_MOUSEIDLE)
-		{
-			// The mouse has not moved for a while, so send another idle
-			Event = DRAGEVENT_MOUSEIDLE;
-		}
-		else
-		{
-			// The mouse has only just stopped moving, so send a mouse-stopped
-			Event = DRAGEVENT_MOUSESTOPPED;
-		}
-	}
-	else
-	{
-		// The mouse has moved since we last checked, so send a mouse-moved
-		Event = DRAGEVENT_MOUSEMOVED;
-	}
-
-	// If the mouse moved, then we will not allow low-priority idle processors to have a go
-	// this time around, for maximum mouse-move interactiveness.
-	BOOL ClaimTheIdle = (Event == DRAGEVENT_MOUSEMOVED);
-
-// **** !!!! ToDo: This could be considered bodgy and nasty, mostly because it is.
-
-// ToDo: Somehow detect if the drag has ended? A bodge I know, but we wanna compile
-// this and see if it works!
-
-if (KeyPress::IsEscapePressed())	// If escape (or equivalent) pressed, abort the drag
-{
-	AbortDrag();
-	return(FALSE);	// Let low-priority handlers have a go
-}
-
-// **** 
-
-	ProcessEvent(Event);	// Pass the event around all registered DragTargets
-
+BOOL DragManagerOp::OnIdleEvent(void) {
+  LastMousePos = CurrentMousePos;
+  CurrentMousePos = wxGetMousePosition();
+  if(DragEnded) {
+    return(FALSE);	// Done nothing, so let low-priority handlers have a go
+  }
+  BOOL JustStartedDrag = FALSE;
+  // We have received a start drag message but we are not sure whether
+  // this is the real thing yet.
+  if (DragPending) {
+    // We start a drag if DragDelay milliseconds have elapsed or the
+    // pointer has left DragStartRect
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+    if (!DragStartTimer.Elapsed(DragDelay) &&
+	StillClickRect.Inside(CurrentMousePos)) {
+      // The drag is still pending
+      return(FALSE);	// Done nothing, so let low-priority handlers have a go
+    }
+#pragma GCC diagnostic pop
+    DragPending = FALSE;
+    JustStartedDrag = TRUE;	// Flag that we have "just turned on" the drag
+    TheCaptureHandler->SetUpSolidDrag(CurrentMousePos);
+  }
+  // Determine what event type to send around...
+  DragEventType Event = DRAGEVENT_MOUSEIDLE;
+  if (LastMousePos == CurrentMousePos) {
+    if (LastEvent == DRAGEVENT_MOUSESTOPPED || LastEvent == DRAGEVENT_MOUSEIDLE) {
+      // The mouse has not moved for a while, so send another idle
+      Event = DRAGEVENT_MOUSEIDLE;
+    } else {
+      // The mouse has only just stopped moving, so send a mouse-stopped
+      Event = DRAGEVENT_MOUSESTOPPED;
+    }
+  } else {
+    // The mouse has moved since we last checked, so send a mouse-moved
+    Event = DRAGEVENT_MOUSEMOVED;
+  }
+  // If the mouse moved, then we will not allow low-priority idle processors to have a go
+  // this time around, for maximum mouse-move interactiveness.
+  BOOL ClaimTheIdle = (Event == DRAGEVENT_MOUSEMOVED);
+  // **** !!!! ToDo: This could be considered bodgy and nasty, mostly because it is.
+  // ToDo: Somehow detect if the drag has ended? A bodge I know, but we wanna compile
+  // this and see if it works!
+  if (KeyPress::IsEscapePressed()) {	// If escape (or equivalent) pressed, abort the drag 
+    AbortDrag();
+    return(FALSE);	// Let low-priority handlers have a go
+  }
+  ProcessEvent(Event);	// Pass the event around all registered DragTargets
 #if FALSE
-/* On the first update, the mouse may not have moved, so we need to pop up the
-   solid drag stuff. Unfortunately, this doesn't work quite right and I don't
-   have time to deal with it right now.
-
-	if (!DragEnded && JustStartedDrag)
-	{
-		// The mouse may not have moved, but we have just 'turned on' the drag - we'd
-		// better ensure that the solid drag stuff is drawn onto screen for the fist time
-
-		if (TheCaptureWindow != NULL)
-		{
-			CPoint PointInCaptureWnd(CurrentMousePos);
-
-			// Convert the current mouse coordinate into capture window client coords,
-			// and call it to update the solid drag
-			TheCaptureWindow->ScreenToClient(&PointInCaptureWnd);
-			TheCaptureWindow->DrawSolidDrag(PointInCaptureWnd);
-		}
-	}
-*/
+  /* On the first update, the mouse may not have moved, so we need to pop up the
+     solid drag stuff. Unfortunately, this doesn't work quite right and I don't
+     have time to deal with it right now.
+     if (!DragEnded && JustStartedDrag) {
+     // The mouse may not have moved, but we have just 'turned on' the drag - we'd
+     // better ensure that the solid drag stuff is drawn onto screen for the fist time
+     if (TheCaptureWindow != NULL) {
+     CPoint PointInCaptureWnd(CurrentMousePos);
+     // Convert the current mouse coordinate into capture window client coords,
+     // and call it to update the solid drag
+     TheCaptureWindow->ScreenToClient(&PointInCaptureWnd);
+     TheCaptureWindow->DrawSolidDrag(PointInCaptureWnd);
+     }
+     } */
 #endif
-
-	return(ClaimTheIdle);	// Return, allowing or not-allowing low-priority handlers to have a go
-							// depending on whether the mouse moved or not.
+  return(ClaimTheIdle);	// Return, allowing or not-allowing low-priority handlers to have a go
+  // depending on whether the mouse moved or not.
 }
 
 

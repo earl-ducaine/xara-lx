@@ -3111,166 +3111,150 @@ BOOL ScreenView::IsWaitingMouseMove()
 
 **********************************************************************************************/ 
 
-void ScreenView::HandleDragScrolling(wxPoint point)
-{
-	// Get the size of the view.  We may have to deflate the rectangle a little here, if the
-	// bottom-right edges of the view coincide with the bottom-right edges of the screen,
-	// otherwise it is not possible to auto-scroll to the right or down as the mouse never
-	// leaves the view window.
-	WinRect wrSize = CurrentSize;
-	point = GetCanvas()->ClientToScreen( point );
-	point = GetFrame()->ScreenToClient( point );
-	
-// WEBSTER - markn 15/1/97
-// No rulers in Webster
+void ScreenView::HandleDragScrolling(wxPoint point) {
+  // Get the size of the view.  We may have to deflate the rectangle a little here, if the
+  // bottom-right edges of the view coincide with the bottom-right edges of the screen,
+  // otherwise it is not possible to auto-scroll to the right or down as the mouse never
+  // leaves the view window.
+  WinRect wrSize = CurrentSize;
+  point = GetCanvas()->ClientToScreen( point );
+  point = GetFrame()->ScreenToClient( point );
+  // WEBSTER - markn 15/1/97
+  // No rulers in Webster
 #ifndef WEBSTER
 #if !defined(EXCLUDE_FROM_RALPH) && !defined(EXCLUDE_FROM_XARALX)
-	// This is used to allow guidelines to be deleted by dropping on to the rulers - normally
-	// we would start to auto scroll at this point which is a little off putting..
-	if (AutoScrollExcludeRulers && CurrentDragType != DRAGTYPE_OLESCROLL)
-	{
-		UINT32 RulerWidth = OILRuler::GetWidth();
-		wrSize.left -= RulerWidth;
-		wrSize.top -= RulerWidth;	
-	}
+  // This is used to allow guidelines to be deleted by dropping on to the rulers - normally
+  // we would start to auto scroll at this point which is a little off putting..
+  if (AutoScrollExcludeRulers && CurrentDragType != DRAGTYPE_OLESCROLL)
+    {
+      UINT32 RulerWidth = OILRuler::GetWidth();
+      wrSize.left -= RulerWidth;
+      wrSize.top -= RulerWidth;	
+    }
 #endif
 #endif // WEBSTER
-
-PORTNOTE("other","Removed special handling for Zoomed and FullScreen")
+  PORTNOTE("other","Removed special handling for Zoomed and FullScreen")
 #ifndef EXCLUDE_FROM_XARALX
-	CCamFrame* pMainWnd = GetMainFrame();
-	if (pMainWnd != NULL && (pMainWnd->InFullScreenMode() || pMainWnd->IsZoomed()) &&
-		CurrentDragType != DRAGTYPE_OLESCROLL)
-	{
-//		TRACEUSER( "JustinF", _T("Deflating bounds for special auto-scroll handling\n"));
-		//const INT32 nMargin = (IsWin32c()) ? 4 : 8;
-		const INT32 nMargin = (CCamApp::IsNewWindowsUI()) ? 4 : 8;
-		wrSize.Inflate(-nMargin, -nMargin);
-	}
+    CCamFrame* pMainWnd = GetMainFrame();
+  if (pMainWnd != NULL && (pMainWnd->InFullScreenMode() || pMainWnd->IsZoomed()) &&
+      CurrentDragType != DRAGTYPE_OLESCROLL) {
+      // TRACEUSER( "JustinF", _T("Deflating bounds for special auto-scroll handling\n"));
+      // const INT32 nMargin = (IsWin32c()) ? 4 : 8;
+      const INT32 nMargin = (CCamApp::IsNewWindowsUI()) ? 4 : 8;
+      wrSize.Inflate(-nMargin, -nMargin);
+    }
 #endif
-
-	// Initialise Deltas...
-	INT32 dx = 0;
-	INT32 dy = 0;
-
-	// Depending on the type of the drag...
-	switch (CurrentDragType)
-	{
-	//-------------------------
-	case DRAGTYPE_NOSCROLL:
-		break;
-
-	//-------------------------
-	case DRAGTYPE_AUTOSCROLL:
-		{
-			// Has the mouse moved outside there bounds?
-			if (!wrSize.IsEmpty() && !wrSize.Inside(point))
-			{
-				// The mouse is outside the view, and we have to scroll the view
-				// proportionate to how far outside it is.
-				CalcScrollDeltas(point,wrSize,&dx,&dy);
-			}
-			break;
-		}
-
-	//-------------------------
-	case DRAGTYPE_OLESCROLL:
-		{
-PORTNOTE("other","Disable DRAGTYPE_OLESCROLL")
+  // Initialise Deltas...
+  INT32 dx = 0;
+  INT32 dy = 0;
+  // Depending on the type of the drag...
+  switch (CurrentDragType) {
+      //-------------------------
+    case DRAGTYPE_NOSCROLL:
+      break;
+      //-------------------------
+    case DRAGTYPE_AUTOSCROLL:
+      {
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+	// Has the mouse moved outside there bounds?
+	if (!wrSize.IsEmpty() && !wrSize.Inside(point))
+	  {
+	    // The mouse is outside the view, and we have to scroll the view
+	    // proportionate to how far outside it is.
+	    CalcScrollDeltas(point,wrSize,&dx,&dy);
+	  }
+#pragma GCC diagnostic pop
+	break;
+      }
+      //-------------------------
+    case DRAGTYPE_OLESCROLL:
+      {
+	PORTNOTE("other","Disable DRAGTYPE_OLESCROLL")
 #ifndef EXCLUDE_FROM_XARALX
-			WinRect Outer = wrSize;
-
-			// Set auto-scroll region to be one scrollbar width within the current
-			// view (as per The Windows Interface Guidelines Chapter 5).
-			INT32 ScrollbarSize = VScrollBar->GetScrollerSize();
-			wrSize.Inflate(-ScrollbarSize,-ScrollbarSize);
-
-			if (!wrSize.IsEmpty() && !Outer.IsEmpty()
-				&& !wrSize.Inside(point)		// Outside allowed scroll rectangle
-				)
-			{
-				if (Outer.Inside(point))		// and still inside visible window
-				{
-					// If we've been in the OLE scroll region for long enough
-					if (m_OLELastOutTime.Elapsed(100))
-					{
-						// NOTE: According to Windows Interface Guidelines Chapter 5 we should
-						// Test the "speed" of the mouse here but because we have already
-						// checked that the mouse has been in the region for longer than 100
-						// milliseconds it doesn't seem neccessary. (To be within the region
-						// for longer than 100 milliseconds is sort of a speed test anyway!)
-
-						// The mouse is in the scroll region, and we have to scroll the view
-						// proportionate to how far into the region it is.
-						CalcScrollDeltas(point,wrSize,&dx,&dy);
-					}
-				}
-				else
-				{
-					// We've dragged beyond the OLE scroll area, so we can now convert the drag
-					// into an OLE export drag if we so desire.
-					HandleOleDragOutOfView(point);
-				}
-			}
-			else
-			{
-				// We're not in the OLE scroll region so reset the timer
-				m_OLELastOutTime.Sample();
-			}
+	  WinRect Outer = wrSize;
+	// Set auto-scroll region to be one scrollbar width within the current
+	// view (as per The Windows Interface Guidelines Chapter 5).
+	INT32 ScrollbarSize = VScrollBar->GetScrollerSize();
+	wrSize.Inflate(-ScrollbarSize,-ScrollbarSize);
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+	if (!wrSize.IsEmpty() && !Outer.IsEmpty()
+	    && !wrSize.Inside(point)		// Outside allowed scroll rectangle
+	    ) {
+	  if (Outer.Inside(point)) {		// and still inside visible window
+		// If we've been in the OLE scroll region for long enough
+		if (m_OLELastOutTime.Elapsed(100)) {
+		    // NOTE: According to Windows Interface Guidelines Chapter 5 we should
+		    // Test the "speed" of the mouse here but because we have already
+		    // checked that the mouse has been in the region for longer than 100
+		    // milliseconds it doesn't seem neccessary. (To be within the region
+		    // for longer than 100 milliseconds is sort of a speed test anyway!)
+		    //
+		    // The mouse is in the scroll region, and we have to scroll the view
+		    // proportionate to how far into the region it is.
+		    CalcScrollDeltas(point,wrSize,&dx,&dy);
+		  }
+	      } else {
+		// We've dragged beyond the OLE scroll area, so we can now convert the drag
+		// into an OLE export drag if we so desire.
+		HandleOleDragOutOfView(point);
+	      }
+	  } else {
+	    // We're not in the OLE scroll region so reset the timer
+	    m_OLELastOutTime.Sample();
+	  }
+#pragma GCC diagnostic pop
 #endif
-			break;
-		}
+	break;
+      }
+      //-------------------------
+    case DRAGTYPE_DEFERSCROLL:
+      {
+	// If the mouse is within the window, and we are performing deferred-scrolling
+	// then we can change over to auto-scrolling.
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+	if (!wrSize.IsEmpty() && wrSize.Inside(point)) {
+	    CurrentDragType = DRAGTYPE_AUTOSCROLL;
+	    AutoScrollExcludeRulers = TRUE;
+	  }
+#pragma GCC diagnostic pop
+	break;
+      }
+    default:
+      ERROR3("Shouldn't ever get here!");
+      break;
+    }
+  //------------------------------------
+  // Now do the scroll if necessary...
+  // If dx<>0 or dy<>0 and scroll lock is disabled
+  // Test if the SCROLL LOCK key has been set.
+  if( !wxGetKeyState( CAMKEY(SCROLL) ) && !(dx==0 && dy==0))
+    {
+      // Set Current states...
+      SetCurrentStates();
 
-	//-------------------------
-	case DRAGTYPE_DEFERSCROLL:
-		{
-			// If the mouse is within the window, and we are performing deferred-scrolling
-			// then we can change over to auto-scrolling.
-			if (!wrSize.IsEmpty() && wrSize.Inside(point))
-			{
-				CurrentDragType = DRAGTYPE_AUTOSCROLL;
-		 		AutoScrollExcludeRulers = TRUE;
-			}
-			break;
-		}
-
-	default:
-		ERROR3("Shouldn't ever get here!");
-		break;
-	}
-
-	//------------------------------------
-	// Now do the scroll if necessary...
-	// If dx<>0 or dy<>0 and scroll lock is disabled
-
-	// Test if the SCROLL LOCK key has been set.
-	if( !wxGetKeyState( CAMKEY(SCROLL) ) && !(dx==0 && dy==0))
-	{
-		// Set Current states...
-		SetCurrentStates();
-
-		// Convert these pixel values into a WorkCoord offset, add to the
-		// scroll position and update the scroll bars etc.  Note that the
-		// y offset is subtracted as the y-axis is reversed compared to
-		// Windows . . .
-		WorkCoord offset;
-		GetScrollOffset(&offset);
-		FIXED16 PixelWidth, PixelHeight;
-		pDocView->GetPixelSize(&PixelWidth, &PixelHeight);
-		offset.x += dx * PixelWidth;
-		offset.y -= dy * PixelHeight;
-			
-		WorkRect wrScrollRect = GetMaxScrollRect();
-		if (offset.x < wrScrollRect.lo.x)	offset.x = wrScrollRect.lo.x;
-		if (offset.y < wrScrollRect.lo.y)	offset.y = wrScrollRect.lo.y;
-		if (offset.x > wrScrollRect.hi.x)	offset.x = wrScrollRect.hi.x;
-		if (offset.y > wrScrollRect.hi.y)	offset.y = wrScrollRect.hi.y;
-
-		// By calling DocView to do the scroll we give it a chance to remove
-		// any blobbies it might have put on the screen.  Note that the scrollers
-		// will prevent any overscroll.
-		pDocView->SetScrollOffsets(offset, TRUE);
-	}
+      // Convert these pixel values into a WorkCoord offset, add to the
+      // scroll position and update the scroll bars etc.  Note that the
+      // y offset is subtracted as the y-axis is reversed compared to
+      // Windows . . .
+      WorkCoord offset;
+      GetScrollOffset(&offset);
+      FIXED16 PixelWidth, PixelHeight;
+      pDocView->GetPixelSize(&PixelWidth, &PixelHeight);
+      offset.x += dx * PixelWidth;
+      offset.y -= dy * PixelHeight;
+      WorkRect wrScrollRect = GetMaxScrollRect();
+      if (offset.x < wrScrollRect.lo.x)	offset.x = wrScrollRect.lo.x;
+      if (offset.y < wrScrollRect.lo.y)	offset.y = wrScrollRect.lo.y;
+      if (offset.x > wrScrollRect.hi.x)	offset.x = wrScrollRect.hi.x;
+      if (offset.y > wrScrollRect.hi.y)	offset.y = wrScrollRect.hi.y;
+      // By calling DocView to do the scroll we give it a chance to remove
+      // any blobbies it might have put on the screen.  Note that the scrollers
+      // will prevent any overscroll.
+      pDocView->SetScrollOffsets(offset, TRUE);
+    }
 }
 
 
@@ -3386,11 +3370,13 @@ void ScreenView::OnLButtonDown( wxMouseEvent &event )
 
 	// Is click within allowed movement rectangle and permitted time delay
 	INT32 TimeDelay = (ThisClickTime - TimeOfLastClick);
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
 	if( ClickBounds.Inside( event.GetPosition() ) && ( TimeDelay <= (INT32)ClickGap ) )
 		ThisSingleIsTriple = TRUE;
 	else
 		ThisSingleIsTriple = FALSE;
-
+#pragma GCC diagnostic pop
 	// Deal with the click
 	HandleDragEvent( MK_LBUTTON, event, CLICKTYPE_SINGLE );
 
@@ -3736,7 +3722,12 @@ BOOL ScreenView::GetCurrentMousePos(OilCoord* pMousePos) const
 	*(wxPoint *)&pt = GetCanvas()->ScreenToClient( ::wxGetMousePosition() );
 
 	// If the mouse is outside the view then we can do nothing more.
-	if (!CurrentSize.Inside(pt)) return FALSE;
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+	if (!CurrentSize.Inside(pt)) {
+	  return FALSE;
+	}
+#pragma GCC diagnostic pop
 
 	// Convert to OIL coordinates.
 	if (pMousePos!=NULL)
@@ -4045,26 +4036,27 @@ void ScreenView::OnRButtonUp( wxMouseEvent &event )
 
 **********************************************************************************************/ 
 
-void ScreenView::OnLButtonDblClk(wxMouseEvent &event)
-{
-	// Support quad clicks
-	wxRect ClickBounds(	LastDoubleClickPos.x-LocalEnvironment::GetXMouseDoubleClickMove(),
-						LastDoubleClickPos.y-LocalEnvironment::GetYMouseDoubleClickMove(),
-						LastDoubleClickPos.x+LocalEnvironment::GetXMouseDoubleClickMove(),
-						LastDoubleClickPos.y+LocalEnvironment::GetYMouseDoubleClickMove());
-	MonotonicTime ThisClickTime( event.GetTimestamp() );
-	MonotonicTime ClickGap(LocalEnvironment::GetMouseDoubleClickDelay());
-	// Is click within allowed movement rectangle and permitted time delay
-	INT32 TimeDelay = (ThisClickTime - TimeOfLastClick);
-	if (ClickBounds.Inside( event.GetPosition() ) && (TimeDelay <= (INT32)ClickGap))
-		ThisDoubleIsQuad = TRUE;
-	else
-		ThisDoubleIsQuad = FALSE;
-
-	HandleDragEvent(MK_LBUTTON, event, CLICKTYPE_DOUBLE);
-
-	TimeOfLastClick.Sample();
-	LastDoubleClickPos = event.GetPosition();
+void ScreenView::OnLButtonDblClk(wxMouseEvent &event) {
+  // Support quad clicks
+  wxRect ClickBounds(	LastDoubleClickPos.x-LocalEnvironment::GetXMouseDoubleClickMove(),
+			LastDoubleClickPos.y-LocalEnvironment::GetYMouseDoubleClickMove(),
+			LastDoubleClickPos.x+LocalEnvironment::GetXMouseDoubleClickMove(),
+			LastDoubleClickPos.y+LocalEnvironment::GetYMouseDoubleClickMove());
+  MonotonicTime ThisClickTime( event.GetTimestamp() );
+  MonotonicTime ClickGap(LocalEnvironment::GetMouseDoubleClickDelay());
+  // Is click within allowed movement rectangle and permitted time delay
+  INT32 TimeDelay = (ThisClickTime - TimeOfLastClick);
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+  if (ClickBounds.Inside( event.GetPosition() ) && (TimeDelay <= (INT32)ClickGap)) {
+    ThisDoubleIsQuad = TRUE;
+  } else {
+    ThisDoubleIsQuad = FALSE;
+  }
+#pragma GCC diagnostic pop
+  HandleDragEvent(MK_LBUTTON, event, CLICKTYPE_DOUBLE);
+  TimeOfLastClick.Sample();
+  LastDoubleClickPos = event.GetPosition();
 }
 
 
