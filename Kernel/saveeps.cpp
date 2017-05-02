@@ -244,181 +244,142 @@ BOOL EPSRenderRegion::AttachDevice(View* pView, CNativeDC* pDC, Spread* pSpread,
 
 ********************************************************************************************/
 
-BOOL EPSRenderRegion::InitDevice ()
-{
-	// Call base class
-	if (!RenderRegion::InitDevice())
-		return FALSE;
-
-	// Set the render caps up
-	GetRenderRegionCaps(&Caps);
-
-	// Buffer used to build up the %%For and %%CreationDate comments.
-	TCHAR buf[300];
-
-	// Find out which document we're using
-	ENSURE(RenderView->GetDoc() != NULL, "View's document is NULL!");
-	Document *TheDocument = RenderView->GetDoc();
-
-	KernelDC *pDC = (KernelDC*)CCDC::ConvertFromNativeDC(RenderDC);
-
-	// Output the standard EPS header affair...
-	WriteEPSVersion ();
-
-	// Name of program that created this file.
-	pDC->OutputToken	( _T("%%Creator:") );
-	pDC->OutputToken	( CreatorString );
-	pDC->OutputNewLine	();
-	
-	// File version saving. In anything but Native format does nothing
-	WriteFileVersion ( pDC );
-
-	// Output the %%For comment
-	camSprintf(buf, _T("%%%%For: (%s) (%s)"), ReleaseInfo::GetLicensee(), ReleaseInfo::GetCompany());
-	pDC->OutputToken(buf);
-	pDC->OutputNewLine();
-
-	// The title of the picture
-   	String_256 DocumentTitle = TheDocument->GetTitle();
-	camSprintf(buf, _T("%%%%Title: (%s)"), (TCHAR *) DocumentTitle);
-	pDC->OutputToken(buf);
-	pDC->OutputNewLine();
-
-	// Date this file was created.
-	time_t Now;
-	time(&Now);
-	struct tm *pNow = localtime(&Now);
+BOOL EPSRenderRegion::InitDevice () {
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+  // Call base class
+  if (!RenderRegion::InitDevice())
+    return FALSE;
+  // Set the render caps up
+  GetRenderRegionCaps(&Caps);
+  // Buffer used to build up the %%For and %%CreationDate comments.
+  TCHAR buf[300];
+  // Find out which document we're using
+  ENSURE(RenderView->GetDoc() != NULL, "View's document is NULL!");
+  Document *TheDocument = RenderView->GetDoc();
+  KernelDC *pDC = (KernelDC*)CCDC::ConvertFromNativeDC(RenderDC);
+  // Output the standard EPS header affair...
+  WriteEPSVersion ();
+  // Name of program that created this file.
+  pDC->OutputToken	( _T("%%Creator:") );
+  pDC->OutputToken	( CreatorString );
+  pDC->OutputNewLine	();
+  // File version saving. In anything but Native format does nothing
+  WriteFileVersion ( pDC );
+  // Output the %%For comment
+  camSprintf(buf,
+	     _T("%%%%For: (%s) (%s)"),
+	     ReleaseInfo::GetLicensee(),
+	     ReleaseInfo::GetCompany());
+  pDC->OutputToken(buf);
+  pDC->OutputNewLine();
+  // The title of the picture
+  String_256 DocumentTitle = TheDocument->GetTitle();
+  camSprintf(buf, _T("%%%%Title: (%s)"), (TCHAR *) DocumentTitle);
+  pDC->OutputToken(buf);
+  pDC->OutputNewLine();
+  // Date this file was created.
+  time_t Now;
+  time(&Now);
+  struct tm *pNow = localtime(&Now);
 #if 1
-	char buf2[100];
-	strftime(buf2, 100, "%%%%CreationDate: (%d/%m/%y) (%I:%M %p)", pNow);
-	INT32 i=0;
-	char c;
-	do
-	{
-		c=buf2[i];
-		buf[i]=c; // 1:1 char/TCHAR conversion
-		i++;
-	} while (c);
-
+  char buf2[100];
+  strftime(buf2, 100, "%%%%CreationDate: (%d/%m/%y) (%I:%M %p)", pNow);
+  INT32 i=0;
+  char c;
+  do {
+      c=buf2[i];
+      buf[i]=c; // 1:1 char/TCHAR conversion
+      i++;
+    } while (c);
 #else
-	_tcsftime(buf, 100, "%%%%CreationDate: (%d/%m/%y) (%I:%M %p)", pNow);
+  _tcsftime(buf, 100, "%%%%CreationDate: (%d/%m/%y) (%I:%M %p)", pNow);
 #endif
-	pDC->OutputToken(buf);
-	pDC->OutputNewLine();
-
-	// Bounding box.
-	WriteEPSBoundingBox ();
-
-	// Get a handle to our filter
-	EPSExportDC *pExportDC = (EPSExportDC *) pDC;
-	EPSFilter *pFilter = (EPSFilter *) pExportDC->GetParentFilter();
-
-	// Write out the document's process colours. (Only for AIEPS.)
-	WriteEPSProcessColours ();
-
-	// Write out the Documents fonts
-	TheDocument->WriteEPSFonts ( pFilter );
-
-	// Write out the Documents resources
-	WriteEPSResources ( pFilter, TheDocument );
-
-	// Write out the Documents comments
-	TheDocument->WriteEPSComments ( pFilter );
-	
-	// We can say compress this file if native.
-	// We will leave the document comments in so that things like the clipart gallery
-	// can still easily access this useful information.  
-	//
-	// Compressed saving. In anything but Native format does nothing
-	WriteCompressionState ( pDC );
-
-	// Get all the document components to output their header comments (if any)
-	DocComponent *pComponent = TheDocument->EnumerateDocComponents ( NULL );
-
-	while (pComponent != NULL)
-	{
-		// Inform this document component that we are about to start an EPS export.
-		pComponent->WriteEPSComments(pFilter);
-
-		// Look for next doc component
-		pComponent = TheDocument->EnumerateDocComponents(pComponent);
-	}
-
-	// No more comments
-	pDC->OutputToken	( _T("%%EndComments") );
-	pDC->OutputNewLine	();
-
-	// Do the prolog...
-	pDC->OutputToken	( _T("%%BeginProlog") );
-	pDC->OutputNewLine	();
-
-	// Do the render region specific prolog.
-	WriteProlog ( pDC );
-
-	// Write out the document,s Prolog script.
-	WriteEPSProlog ( pFilter, TheDocument );
-
-	// and the doc components prolog
-	pComponent = TheDocument->EnumerateDocComponents(NULL);
-	while (pComponent != NULL)
-	{
-		// Get this document component to write its EPS prolog out to the file.
-		pComponent->WriteEPSProlog(pFilter);
-
-		// Look for next doc component
-		pComponent = TheDocument->EnumerateDocComponents(pComponent);
-	}
-
-	pDC->OutputToken(_T("%%EndProlog"));
-	pDC->OutputNewLine();
-
-	// Do the setup...
-	pDC->OutputToken(_T("%%BeginSetup"));
-	pDC->OutputNewLine();
-
-	// Do the render region specific setup.
-	WriteSetup ( pDC );
-
-	// Write out the font definition.
-	WriteDocumentSetup ( TheDocument, pFilter );
-
-	// and the components setup
-	pComponent = TheDocument->EnumerateDocComponents(NULL);
-	while (pComponent != NULL)
-	{
-		// Get this document component to write its EPS setup out to the file.
-		pComponent->WriteEPSSetup(pFilter);
-
-		// Look for next doc component
-		pComponent = TheDocument->EnumerateDocComponents(pComponent);
-	}
-
-	// Parse through the tree, locate the gradient fills, and write them out
-	// to the file.
-	WriteGradientFills ( TheDocument );
-
-	// Wrap up the header section
-	pDC->OutputToken(_T("%%EndSetup"));
-	pDC->OutputNewLine();
-
-	// We are into the main script of the EPS file here, so give the
-	// doc components one last chance to write something out
-	pComponent = TheDocument->EnumerateDocComponents(NULL);
-
-	while (pComponent != NULL)
-	{
-		// Get this document component to write its EPS Script data to the file
-		pComponent->WriteScript(pFilter);
-
-		// Look for next doc component
-		pComponent = TheDocument->EnumerateDocComponents(pComponent);
-	}
-
-	// Set up render region
-	InitClipping ();
-
-	// All ok
-	return TRUE;
+  pDC->OutputToken(buf);
+  pDC->OutputNewLine();
+  // Bounding box.
+  WriteEPSBoundingBox ();
+  // Get a handle to our filter
+  EPSExportDC *pExportDC = (EPSExportDC *) pDC;
+  EPSFilter *pFilter = (EPSFilter *) pExportDC->GetParentFilter();
+  // Write out the document's process colours. (Only for AIEPS.)
+  WriteEPSProcessColours ();
+  // Write out the Documents fonts
+  TheDocument->WriteEPSFonts ( pFilter );
+  // Write out the Documents resources
+  WriteEPSResources ( pFilter, TheDocument );
+  // Write out the Documents comments
+  TheDocument->WriteEPSComments ( pFilter );
+  // We can say compress this file if native.
+  // We will leave the document comments in so that things like the clipart gallery
+  // can still easily access this useful information.  
+  //
+  // Compressed saving. In anything but Native format does nothing
+  WriteCompressionState ( pDC );
+  // Get all the document components to output their header comments (if any)
+  DocComponent *pComponent = TheDocument->EnumerateDocComponents ( NULL );
+  while (pComponent != NULL) {
+    // Inform this document component that we are about to start an EPS export.
+    pComponent->WriteEPSComments(pFilter);
+    // Look for next doc component
+    pComponent = TheDocument->EnumerateDocComponents(pComponent);
+  }
+  // No more comments
+  pDC->OutputToken	( _T("%%EndComments") );
+  pDC->OutputNewLine	();
+  // Do the prolog...
+  pDC->OutputToken	( _T("%%BeginProlog") );
+  pDC->OutputNewLine	();
+  // Do the render region specific prolog.
+  WriteProlog ( pDC );
+  // Write out the document,s Prolog script.
+  WriteEPSProlog ( pFilter, TheDocument );
+  // and the doc components prolog
+  pComponent = TheDocument->EnumerateDocComponents(NULL);
+  while (pComponent != NULL) {
+    // Get this document component to write its EPS prolog out to the file.
+    pComponent->WriteEPSProlog(pFilter);
+    // Look for next doc component
+    pComponent = TheDocument->EnumerateDocComponents(pComponent);
+  }
+  pDC->OutputToken(_T("%%EndProlog"));
+  pDC->OutputNewLine();
+  // Do the setup...
+  pDC->OutputToken(_T("%%BeginSetup"));
+  pDC->OutputNewLine();
+  // Do the render region specific setup.
+  WriteSetup ( pDC );
+  // Write out the font definition.
+  WriteDocumentSetup ( TheDocument, pFilter );
+  // and the components setup
+  pComponent = TheDocument->EnumerateDocComponents(NULL);
+  while (pComponent != NULL)
+    {
+      // Get this document component to write its EPS setup out to the file.
+      pComponent->WriteEPSSetup(pFilter);
+      // Look for next doc component
+      pComponent = TheDocument->EnumerateDocComponents(pComponent);
+    }
+  // Parse through the tree, locate the gradient fills, and write them out
+  // to the file.
+  WriteGradientFills ( TheDocument );
+  // Wrap up the header section
+  pDC->OutputToken(_T("%%EndSetup"));
+  pDC->OutputNewLine();
+  // We are into the main script of the EPS file here, so give the
+  // doc components one last chance to write something out
+  pComponent = TheDocument->EnumerateDocComponents(NULL);
+  while (pComponent != NULL) {
+    // Get this document component to write its EPS Script data to the file
+    pComponent->WriteScript(pFilter);
+    // Look for next doc component
+    pComponent = TheDocument->EnumerateDocComponents(pComponent);
+  }
+  // Set up render region
+  InitClipping ();
+  // All ok
+  return TRUE;
+#pragma GCC diagnostic pop
 }
 
 /********************************************************************************************
@@ -751,38 +712,35 @@ void EPSRenderRegion::GetValidTextAttributes()
 
 ********************************************************************************************/
 
-void EPSRenderRegion::OutputTextRenderMode ()
-{
-	KernelDC *pDC = (KernelDC*)CCDC::ConvertFromNativeDC(RenderDC);
-
-	INT32 Style=0;
-
-	// Is there a currently active fill colour?
-	if (! (RR_FILLCOLOUR().IsTransparent()) )
-		Style+=1;
-
-	// Is there a currently active line colour?
-	if (! (RR_STROKECOLOUR().IsTransparent()) )
-		Style+=2;
-
-	switch (Style)
-	{
-		case 0: pDC->OutputToken(_T("3 Tr"));		// Invisible
-				pDC->OutputNewLine();
-				break;
-		case 1: pDC->OutputToken(_T("0 Tr"));		// filled only
-				pDC->OutputNewLine();
-				break;
-		case 2: pDC->OutputToken(_T("1 Tr"));		// stroked only
-				pDC->OutputNewLine();
-				break;
-		case 3: pDC->OutputToken(_T("2 Tr"));		// filled and stroked
-				pDC->OutputNewLine();
-				break;
-	}
+void EPSRenderRegion::OutputTextRenderMode () {
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+  KernelDC *pDC = (KernelDC*)CCDC::ConvertFromNativeDC(RenderDC);
+  INT32 Style=0;
+  // Is there a currently active fill colour?
+  if (! (RR_FILLCOLOUR().IsTransparent())) {
+    Style+=1;
+  }
+  // Is there a currently active line colour?
+  if (! (RR_STROKECOLOUR().IsTransparent())) {
+    Style+=2;
+  }
+  switch (Style) {
+  case 0: pDC->OutputToken(_T("3 Tr"));		// Invisible
+    pDC->OutputNewLine();
+    break;
+  case 1: pDC->OutputToken(_T("0 Tr"));		// filled only
+    pDC->OutputNewLine();
+    break;
+  case 2: pDC->OutputToken(_T("1 Tr"));		// stroked only
+    pDC->OutputNewLine();
+    break;
+  case 3: pDC->OutputToken(_T("2 Tr"));		// filled and stroked
+    pDC->OutputNewLine();
+    break;
+  }
+#pragma GCC diagnostic pop
 }
-
-
 
 /********************************************************************************************
 
@@ -799,7 +757,10 @@ void EPSRenderRegion::OutputTextAspectRatio ()
 	KernelDC *pDC = (KernelDC*)CCDC::ConvertFromNativeDC(RenderDC);
 
    	pDC->OutputReal(RR_TXTASPECTRATIO().MakeDouble()*100.0);	// convert from ratio to %
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
    	pDC->OutputToken(_T("Tz"));
+#pragma GCC diagnostic pop
 	pDC->OutputNewLine();
 }
 
