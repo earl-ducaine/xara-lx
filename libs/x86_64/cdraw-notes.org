@@ -1,0 +1,118 @@
+
+
+* object-files
+  
+** bshadow2
+   No objects
+
+*** header file: bshadow2.h
+
+*** functions
+
+**** GenerateWallShadow
+     #+BEGIN_SRC c++
+       bool GenerateWallShadow(CONST BITMAPINFOHEADER* pSourceInfo,
+                               CONST BYTE* pSourceBitmap,
+                               CONST BITMAPINFOHEADER* pDestinationInfo,
+                               BYTE* pDestinationBitmap,
+                               CONST UINT32 nRowOffsets,
+                               CONST UINT32* pLeftOffsets,
+                               CONST UINT32* pRightOffsets,
+                               CONST UINT32 nColumnOffsets,
+                               CONST UINT32* pLowOffsets,
+                               CONST UINT32* pHighOffsets,
+                               CONST UINT32 nTranslationShift,
+                               CONST BYTE* pTranslationTable);
+     #+END_SRC
+
+**** GenerateFloorShadow
+     #+BEGIN_SRC c++
+       bool GenerateFloorShadow(void* pCode,
+                               	CONST BITMAPINFOHEADER* pSourceInfo,
+                               	CONST BYTE* pSourceBitmap,
+                               	CONST BITMAPINFOHEADER* pDestinationInfo,
+                               	BYTE* pDestinationBitmap,
+                               	CONST UINT32 nRowOffsets,
+                               	CONST INT32* pLeftOffsets,
+                               	CONST INT32* pRightOffsets,
+                               	CONST UINT32 nTranslationShift,
+                               	CONST BYTE* pTranslationTable) ;
+
+     #+END_SRC
+
+**** ContourBitmap
+     #+BEGIN_SRC c++
+       void ContourBitmap(BYTE* pBits8, 
+                          const UINT32 uByteWidth8,
+                          BYTE* pDBits8,
+                          BITMAPINFO* pDInfo8, 
+                          const double fContour,
+                          const UINT32 uContour);
+     #+END_SRC
+
+
+** cstroke
+
+*** header file: 
+   GBevel  
+   gclip0  
+   gclip1  
+   gclip2  
+   gclip   
+   gcmaths 
+   GColour 
+   GContext
+   GConvert
+   GDraw   
+   GError  
+   GGrad   
+   GHue    
+   GMain   
+   GMaths  
+   gmem    
+   GMemory 
+   GPath   
+   GRegion 
+   GScanAA 
+   GScanBvl
+   GScanC4 
+   GScanCnv
+   GScanC  
+   GScanIni
+   GScanL4 
+   GScanL  
+   GScan   
+   GScanR4 
+   GScanR  
+   GScanRR 
+   GScanS4 
+   GScanSF 
+   GScanSI 
+   GScanS  
+   GScanSq4
+   GScanSq 
+   GScanT-A
+   GScanT-B
+   GScanT-Bvl
+   GScanT-C
+   GScanT-D
+   GScanT-H
+   GScanT-L
+   GScanT-Lu
+   GScanT  
+   GScanT-R
+   GScanT-Sn
+   GScanT-S
+   GScanX34
+   GScanX3 
+   GScanX44
+   GScanX4 
+   GScroll 
+   GSprite 
+   GStroke 
+   GStyle  
+   GTableBevel
+   GTableD 
+   GTableM 
+   GTable  
+   GTableP 
