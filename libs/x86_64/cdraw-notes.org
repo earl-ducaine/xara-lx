@@ -5,53 +5,55 @@
 ** bshadow2
    No objects
 
-** header file: bshadow2.h
+*** header file: bshadow2.h
 
-** functions
+*** functions
 
-*** GenerateWallShadow
-    #+BEGIN_SRC c++
-      bool GenerateWallShadow(CONST BITMAPINFOHEADER* pSourceInfo,
-                              CONST BYTE* pSourceBitmap,
-                              CONST BITMAPINFOHEADER* pDestinationInfo,
-                              BYTE* pDestinationBitmap,
-                              CONST UINT32 nRowOffsets,
-                              CONST UINT32* pLeftOffsets,
-                              CONST UINT32* pRightOffsets,
-                              CONST UINT32 nColumnOffsets,
-                              CONST UINT32* pLowOffsets,
-                              CONST UINT32* pHighOffsets,
-                              CONST UINT32 nTranslationShift,
-                              CONST BYTE* pTranslationTable);
-    #+END_SRC
-
-*** GenerateFloorShadow
-    #+BEGIN_SRC c++
-      bool GenerateFloorShadow(void* pCode,
-                               CONST BITMAPINFOHEADER* pSourceInfo,
+**** GenerateWallShadow
+     #+BEGIN_SRC c++
+       bool GenerateWallShadow(CONST BITMAPINFOHEADER* pSourceInfo,
                                CONST BYTE* pSourceBitmap,
                                CONST BITMAPINFOHEADER* pDestinationInfo,
                                BYTE* pDestinationBitmap,
                                CONST UINT32 nRowOffsets,
-                               CONST INT32* pLeftOffsets,
-                               CONST INT32* pRightOffsets,
+                               CONST UINT32* pLeftOffsets,
+                               CONST UINT32* pRightOffsets,
+                               CONST UINT32 nColumnOffsets,
+                               CONST UINT32* pLowOffsets,
+                               CONST UINT32* pHighOffsets,
                                CONST UINT32 nTranslationShift,
-                               CONST BYTE* pTranslationTable) ;
+                               CONST BYTE* pTranslationTable);
+     #+END_SRC
 
-    #+END_SRC
+**** GenerateFloorShadow
+     #+BEGIN_SRC c++
+       bool GenerateFloorShadow(void* pCode,
+                               	CONST BITMAPINFOHEADER* pSourceInfo,
+                               	CONST BYTE* pSourceBitmap,
+                               	CONST BITMAPINFOHEADER* pDestinationInfo,
+                               	BYTE* pDestinationBitmap,
+                               	CONST UINT32 nRowOffsets,
+                               	CONST INT32* pLeftOffsets,
+                               	CONST INT32* pRightOffsets,
+                               	CONST UINT32 nTranslationShift,
+                               	CONST BYTE* pTranslationTable) ;
 
-*** ContourBitmap
-    #+BEGIN_SRC c++
-      void ContourBitmap(BYTE* pBits8, 
-                         const UINT32 uByteWidth8,
-                         BYTE* pDBits8,
-                         BITMAPINFO* pDInfo8, 
-                         const double fContour,
-                         const UINT32 uContour);
-    #+END_SRC
+     #+END_SRC
+
+**** ContourBitmap
+     #+BEGIN_SRC c++
+       void ContourBitmap(BYTE* pBits8, 
+                          const UINT32 uByteWidth8,
+                          BYTE* pDBits8,
+                          BITMAPINFO* pDInfo8, 
+                          const double fContour,
+                          const UINT32 uContour);
+     #+END_SRC
 
 
-   cstroke 
+** cstroke
+
+*** header file: 
    GBevel  
    gclip0  
    gclip1  
