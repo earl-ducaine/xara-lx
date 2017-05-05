@@ -24,6 +24,35 @@ function build_wx {
     cd ..
 
 }
+function build_wx_from_git {
+    # https://github.com/wxWidgets/wxWidgets.git
+    VERSION=$1
+    if [ ! -d $VERSION ]; then
+	git clone --depth=1 https://github.com/wxWidgets/wxWidgets.git $VERSION
+    fi
+    cd $VERSION
+    rm -rf *
+    git fetch --tags
+    git checkout -f $VERSION
+    if [ -d buildgtk ]; then
+	cd buildgtk
+	sudo make uninstall
+	cd ..
+	rm -rf buildgtk
+    fi
+    mkdir buildgtk
+    cd buildgtk
+    ../configure --with-gtk --enable-unicode --with-libpng=builtin
+    make -j 8
+    sudo make install
+    sudo ldconfig
+    cd ..
+    cd ..
+}
+
+function run_build_wx_from_git {
+    build_wx_from_git WX_2_9_0
+}
 
 function build_png {
     if [ ! -d libpng-1.2.57 ]; then
@@ -41,7 +70,8 @@ function build_png {
 function build_xoamorph {
     ./autogen.sh
     ./configure
-    make -j 4
+    export PATH="/usr/lib/ccache:$PATH"; make -j 4 1> make-out.txt 2>make-error.txt
+    # make -j 4
 }
 
 
