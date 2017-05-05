@@ -735,14 +735,14 @@ BOOL CBitmapShadow::MakeCastShadow (UINT32* pForegroundBits,
 				uLastArea = uArea ;
 				uLastRows = uRows ;
 				uLastBlur = uThisBlur ;
-#if 0 && defined(__WXMSW__)
-				::CompileShadowCode(
-					aCode,
-					ProjectedSize.x+uThisBlur*2,
-					uRows,aLeft,aRight,
-					uShift,aTranslationTable
-				) ;
-#endif
+// #if 0 && defined(__WXMSW__)
+// 				::CompileShadowCode(
+// 					aCode,
+// 					ProjectedSize.x+uThisBlur*2,
+// 					uRows,aLeft,aRight,
+// 					uShift,aTranslationTable
+// 				) ;
+// #endif
 			}
 			// Call Gavin's routine to do the shadowing for a single scanline
 			CamProfile cp(CAMPROFILE_SHADOW);
