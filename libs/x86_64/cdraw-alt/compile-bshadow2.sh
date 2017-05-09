@@ -1,0 +1,86 @@
+
+
+
+g++ -DPACKAGE_NAME=\"XaraLX\" \
+    -DPACKAGE_TARNAME=\"xaralx\" \
+    -DPACKAGE_VERSION=\"0.7\" \
+    -DPACKAGE_STRING=\"XaraLX\ 0.7\" \
+    -DPACKAGE_BUGREPORT=\"\" \
+    -DPACKAGE_URL=\"\" \
+    -DPACKAGE=\"xaralx\" \
+    -DVERSION=\"0.7\" \
+    -DHAVE_SYS_TYPES_H=1 \
+    -DHAVE_SYS_STAT_H=1 \
+    -DHAVE_STDLIB_H=1 \
+    -DHAVE_STRING_H=1 \
+    -DHAVE_MEMORY_H=1 \
+    -DHAVE_STRINGS_H=1 \
+    -DHAVE_INTTYPES_H=1 \
+    -DHAVE_STDINT_H=1 \
+    -DHAVE_UNISTD_H=1 \
+    -DSIZEOF_VOIDP=0 \
+    -DSIZEOF_LONG_LONG=0 \
+    -DSIZEOF_LONG=0 \
+    -DSIZEOF_INT=0 \
+    -DSIZEOF_SHORT=0 \
+    -DSIZEOF___INT64=0 \
+    -I.    \
+    -Wall \
+    -fno-pie \
+    -Wno-unknown-pragmas \
+    -g \
+    -fexceptions \
+    -O3 \
+    -fabi-version=9 \
+    -fno-strict-aliasing  \
+    -Wstrict-aliasing=2   \
+    -isystem /usr/local/lib/wx/include/gtk2-unicode-release-2.8 \
+    -isystem /usr/local/include/wx-2.8 \
+    -D_FILE_OFFSET_BITS=64 \
+    -D_LARGE_FILES \
+    -D__WXGTK__ \
+    -I/home/rett/dev/xoamorph/xara-lx/libpng-1.2.57  \
+    -I/usr/include/freetype2 \
+    -pthread \
+    -I/usr/include/gtk-2.0 \
+    -I/usr/lib/x86_64-linux-gnu/gtk-2.0/include \
+    -I/usr/include/gio-unix-2.0/ \
+    -I/usr/include/cairo \
+    -I/usr/include/pango-1.0 \
+    -I/usr/include/atk-1.0 \
+    -I/usr/include/cairo \
+    -I/usr/include/pixman-1 \
+    -I/usr/include/libpng16 \
+    -I/usr/include/gdk-pixbuf-2.0 \
+    -I/usr/include/libpng16 \
+    -I/usr/include/pango-1.0 \
+    -I/usr/include/harfbuzz \
+    -I/usr/include/pango-1.0 \
+    -I/usr/include/glib-2.0 \
+    -I/usr/lib/x86_64-linux-gnu/glib-2.0/include \
+    -I/usr/include/freetype2 \
+    -I/usr/include/libxml2  \
+    -I../PreComp \
+    -I../../../wxOil \
+    -I../../../Kernel \
+    -I../../../wxOil \
+    -I../../../wxOil/Res \
+    -I../../../tools \
+    -I../../../GDraw \
+    -I../../../PreComp \
+    -I../../../wxXtra \
+    -DUSE_NATIVE_XLONG \
+    -DBUILDSHADOWS \
+    -DOLD_MATRIX_TRANSFORMATIONS \
+    -DVECTOR_STROKING \
+    -DEXCLUDE_FROM_XARALX \
+    -DNEW_SHADOW_RENDER \
+    -DNO_XARACMS \
+    -DNEW_FEATURES \
+    -DSHOWPORTNOTE \
+    -DDO_EXPORT  \
+    -MT libKernel_a-bshadow.o \
+    -MD \
+    -MP \
+    -c \
+    -o bshadow2.o bshadow2.cpp
