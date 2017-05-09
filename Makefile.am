@@ -29,10 +29,10 @@ endif
 # Do not compile po directory if WXRC is broken (gentoo wxWidgets 2.6.3.2)
 # Leave the '#po' on the end to keep automake quiet
 if INTERNATIONAL_ENABLE
-SUBDIRS = $(PRECOMPILE_DIR) wxXtra wxOil Kernel tools $(XARLIB_DIR) $(FILTERS_DIRS) po
-else
-SUBDIRS = $(PRECOMPILE_DIR) wxXtra wxOil Kernel tools $(XARLIB_DIR) $(FILTERS_DIRS)
+PO=po
 endif
+
+SUBDIRS = $(PRECOMPILE_DIR) libs wxXtra wxOil Kernel tools $(XARLIB_DIR) $(FILTERS_DIRS) $(PO)
 
 # We clean these here not in the wxOil makefile to prevent a loop
 MOSTLYCLEANFILES=wxOil/xrc/xrc.d wxOil/xrc/xrc.stamp Resources/*
