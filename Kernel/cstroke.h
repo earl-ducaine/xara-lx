@@ -101,6 +101,9 @@ service marks of Xara Group Ltd. All rights in these marks are reserved.
 //
 /************************************************************************/
 
+#ifndef CSTROKE_H
+#define CSTROKE_H
+			    
 typedef bool GBOOL;
 typedef	 __int64 DLONG;
 typedef __uint64 UDLONG;
@@ -146,17 +149,17 @@ TypeDef( FPOINT	)
 TypeDef( GPOINT	)
 
 struct FPOINT {
-  double X ;
-  double Y ;
-  FPOINT() {} ;
-FPOINT(cDOUBLE X, cDOUBLE Y) : X(X),Y(Y) {} ;
+  double X;
+  double Y;
+  FPOINT() {};
+  FPOINT(cDOUBLE X, cDOUBLE Y) : X(X),Y(Y) {} ;
   FPOINT(cGPOINT P);
-  bool   operator==(cFPOINT& P) const { return X==P.X && Y==P.Y ; }
-  bool   operator!=(cFPOINT& P) const { return X!=P.X || Y!=P.Y ; }
-  FPOINT operator+ (cFPOINT& P) const { return FPOINT(X+P.X,Y+P.Y) ; }
-  FPOINT operator- (cFPOINT& P) const { return FPOINT(X-P.X,Y-P.Y) ; }
-  FPOINT operator* (cFPOINT& P) const { return FPOINT(X*P.X,Y*P.Y) ; }
-  FPOINT operator* (cDOUBLE& F) const { return FPOINT(X*F  ,Y*F  ) ; }
+  bool   operator == (cFPOINT& P) const { return X==P.X && Y==P.Y ; }
+  bool   operator != (cFPOINT& P) const { return X!=P.X || Y!=P.Y ; }
+  FPOINT operator + (cFPOINT& P) const { return FPOINT(X+P.X,Y+P.Y) ; }
+  FPOINT operator - (cFPOINT& P) const { return FPOINT(X-P.X,Y-P.Y) ; }
+  FPOINT operator * (cFPOINT& P) const { return FPOINT(X*P.X,Y*P.Y) ; }
+  FPOINT operator * (cDOUBLE& F) const { return FPOINT(X*F  ,Y*F  ) ; }
   // In the event of 32 bit build problems, make the next line
   // conditional upon SIZEOF_LONG != SIZEOF_INT
   FPOINT operator* (cINT32&   I) const { return FPOINT(X*I  ,Y*I  ) ; }
@@ -167,18 +170,24 @@ FPOINT(cDOUBLE X, cDOUBLE Y) : X(X),Y(Y) {} ;
   DOUBLE Length    () const { return sqrt(X*X+Y*Y) ; }
   FPOINT Normalise () const { cDOUBLE L=Length() ;
     return L>0 ? *this/L : FPOINT(0,0) ; }
-} ;
-inline FPOINT operator*(cDOUBLE& F,cFPOINT& P) { return P*F ; }
+};
+
+inline FPOINT operator*(cDOUBLE& F,cFPOINT& P) {
+  return P*F ;
+}
+
 // In the event of 32 bit build problems, make the next line
 // conditional upon SIZEOF_LONG != SIZEOF_INT
-inline FPOINT operator*(cINT32&   I,cFPOINT& P) { return P*I ; }
+inline FPOINT operator*(cINT32&   I,cFPOINT& P) {
+  return P * I ;
+}
 
 struct GPOINT {
   INT32 X ;
   INT32 Y ;
   GPOINT() {} ;
-GPOINT( cINT32 X,cINT32 Y ) : X(X),Y(Y) {} ;
-GPOINT( cFPOINT P ) : X((INT32)P.X),Y((INT32)P.Y) {} ;
+  GPOINT( cINT32 X,cINT32 Y ) : X(X),Y(Y) {} ;
+  GPOINT( cFPOINT P ) : X((INT32)P.X),Y((INT32)P.Y) {} ;
   bool   operator==(cGPOINT& P) const { return X==P.X && Y==P.Y ; }
   bool   operator!=(cGPOINT& P) const { return X!=P.X || Y!=P.Y ; }
   GPOINT operator+ (cGPOINT& P) const { return GPOINT(X+P.X,Y+P.Y) ; }
@@ -188,21 +197,25 @@ GPOINT( cFPOINT P ) : X((INT32)P.X),Y((INT32)P.Y) {} ;
   GPOINT operator>>(  cINT32& I) const { return GPOINT(X>>I ,Y>>I ) ; }
   GPOINT operator+ () const { return *this ; }
   GPOINT operator- () const { return GPOINT(-X,-Y) ; }
-} ;
-inline GPOINT operator*(cINT32& I,cGPOINT& P) { return P*I ; }
+};
+
+inline GPOINT operator*(cINT32& I,cGPOINT& P) {
+  return P*I ;
+}
+
 inline FPOINT::FPOINT( cGPOINT P ) : X(P.X),Y(P.Y) {}
 
 /************************************************************************/
 
 class CBezier
 {
- public :
+public :
   CBezier( cpcFPOINT C ) ;
   double  Length( cDOUBLE T ) ;
- private :
+private :
   double BLength( cDOUBLE T ) ;
   double P0,P1,P2,P3,P4 ;
-} ;
+};
 
 /************************************************************************/
 
@@ -210,13 +223,13 @@ struct BEVEL_FACE {
   GPOINT aFace[4] ;
   GBOOL  bTriangle ;
   FPOINT Normal ;
-} ;
+};
 
 struct DASH {
   DWORD	Length ;
   DWORD	Offset ;
   DWORD	Array[8] ;
-} ;
+};
 
 TypeDef( BEVEL_FACE	)
 TypeDef( DASH )
@@ -226,7 +239,7 @@ TypeDef( DASH )
 class GenStroke
 {
 
- public :
+public :
   virtual ~GenStroke() { }
 
   enum {
@@ -258,7 +271,7 @@ class GenStroke
 			 cpcDASH		pDash
 			 ) ;
 
- protected :
+protected :
 	
   enum eEndStyle {			// End of line styles
     END_UNDEFINED,
@@ -446,7 +459,7 @@ class GenStroke
 
 class GenPathContour : public GenStroke
 {
- public :
+public :
   //
   // Set bOuter for outer contour.
   //
@@ -472,7 +485,7 @@ class GenPathContour : public GenStroke
 		    bool		bOuter
 		    ) ;
 
- protected :
+protected :
   bool bStart ;
 
   void GenLineEdge() ;
@@ -488,7 +501,7 @@ class GenPathContour : public GenStroke
 
 class GenBevelFaces : public GenStroke
 {
- public :
+public :
   //
   // Set bOuter for outer contour.
   //
@@ -513,7 +526,7 @@ class GenBevelFaces : public GenStroke
 		  bool		bOuter
 		  ) ;
 
- protected :
+protected :
   pBEVEL_FACE	pBFaces ;		// -> Bevel faces
   UINT32		nMaxBFaces ;	// Maximum number of bevel faces.
   UINT32		nBFaces ;		// Current number of bevel faces.
@@ -536,3 +549,4 @@ class GenBevelFaces : public GenStroke
 } ;
 
 /************************************************************************/
+#endif
