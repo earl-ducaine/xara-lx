@@ -14,7 +14,7 @@ CLEANFILES =
 # which then confuses things
 MOSTLYCLEANFILES = 
 
-noinst_LIBRARIES = libwxOil.a
+noinst_LIBRARIES = libCDraw.a
 
 libwxOil_a_CXXFLAGS = $(XARALXCXXFLAGS) $(XARAFLAGS)
 
@@ -27,3 +27,6 @@ AM_CXXFLAGS = $(XARAFLAGS)
 
 XARALANGUAGE = @XARALANGUAGE@
 
+libCDraw.a:
+	cp orphaned-object-files/*.o .
+	ar -s -r libCDraw.a *.o
