@@ -228,106 +228,90 @@ CBitmapShadow::CBitmapShadow()
 
 
 BOOL CBitmapShadow::MakeWallShadow (const UINT32* pForegroundBits,
-											const CNativeSize ForegroundSize,
-											const INT32 nXPosition,
-											const INT32 nYPosition,
-											const double fBlur,
-											INT32 *pOffsetX,
-											INT32 *pOffsetY,
-											const double dDarknessCoeff/*=1.0*/)
-{
-	// if the required blur is too small, then just copy the existing bitmap into an 8 bit bitmap.
-	if ( fBlur < MIN_BLUR_DIAMETER )
-	{
-		// set up my bitmap to shadow into
-		/*HRESULT Result =*/ CreateFilled( ForegroundSize.x,ForegroundSize.y,0xff,8 ) ;
-		UINT32 DestWidth = DIBUtil::ScanlineSize(ForegroundSize.x,8);
-		BYTE* pSrc0 = (BYTE *)pForegroundBits + 3;
-		BYTE* pDest0 = GetBytes();
-		BYTE* pDest0NextLine = NULL;
-		INT32 x = 0;
-
-		for (INT32 y = 0; y < ForegroundSize.y; y++)
-		{
-			pDest0NextLine = pDest0 + DestWidth;
-			for (x = 0; x < ForegroundSize.x; x++)
-			{
-				*pDest0++ = *pSrc0;
-				pSrc0 += 4;
-			}
-			pDest0 = pDest0NextLine;
-		}
-		return TRUE;
-	}
-
-	double fNewBlur = fBlur/2.0 ;
-	if ( fNewBlur>MAX_SHADOW_BLUR )
-		fNewBlur = MAX_SHADOW_BLUR ;
-//	UINT32 uBlur = (UINT32)fNewBlur ;
-	UINT32 uBlur = (UINT32)(2*fNewBlur+0.5) - 1;
-
-	// Create the bitmap to pass into gavin's routine
-	// must be Width + nNewBlur * 4, Height + nNewBlur * 4 in size and each scanline must be DWORD adjusted
-	UINT32 uBitmapToShadowWidth = DIBUtil::ScanlineSize(ForegroundSize.x+uBlur*2,8);
-	UINT32 uBitmapToShadowSize = uBitmapToShadowWidth*(ForegroundSize.y+uBlur*2) ;
-	BYTE* pBitmapToShadow = new BYTE[uBitmapToShadowSize];
-
-	// Now, set up the pointers to do the transfer of bits from one bitmap to the other
-	// and move the destination pointer into position
-	BYTE* pSrc  = (BYTE *)pForegroundBits+3 ;
-	BYTE* pDest = (BYTE *)pBitmapToShadow+(uBitmapToShadowWidth+1)*uBlur;
-
-	memset(pBitmapToShadow, 0xff, uBitmapToShadowSize);
-
-	UINT32 ForegroundScanlineSize = ForegroundSize.x * 4;
-	
-	// transfer the source bitmap into this larger bitmap to be shadowed
-	UINT32 j = 0;
-	BYTE* pNextDstLine = NULL;
-	BYTE* pNextSrcLine = NULL;
-
-	for ( UINT32 i=0 ; i<(UINT32)ForegroundSize.y ; i++ )
-	{
-		pNextSrcLine = pSrc +ForegroundScanlineSize;
-		pNextDstLine = pDest+uBitmapToShadowWidth;
-
-		for ( j=0 ; j<(UINT32)ForegroundSize.x ; j++ )
-		{
-			*pDest++ = *pSrc;
-			pSrc += 4;
-		}
-		pSrc  = pNextSrcLine;
-		pDest = pNextDstLine;
-	}
-
-	// Set up my bitmap to shadow into
-	/*HRESULT Result =*/ CreateFilled( ForegroundSize.x+uBlur, ForegroundSize.y+uBlur, 0xff , 8);
-
-	// set up the bitmap info headers
-	BITMAPINFOHEADER SourceBI;
-	SourceBI.biBitCount = 8;
-	SourceBI.biWidth    = ForegroundSize.x+uBlur*2;
-	SourceBI.biHeight	= ForegroundSize.y+uBlur*2;
-	SourceBI.biPlanes   = 1;
-
-	BITMAPINFOHEADER DestBI;
-	DestBI.biBitCount = 8;
-	DestBI.biWidth    = ForegroundSize.x+uBlur;
-	DestBI.biHeight	  = ForegroundSize.y+uBlur;
-	DestBI.biPlanes   = 1;
-
-	// blur the bitmap.
-	Blur8BppBitmap(	&SourceBI,	pBitmapToShadow,
-					&DestBI,	GetBytes(),
-					uBitmapToShadowWidth, fNewBlur );
-
-	// don't forget to discard the source bitmap.
-	delete [] pBitmapToShadow;
-
-	*pOffsetX = nXPosition - (uBlur>>1);
-	*pOffsetY = nYPosition - (uBlur>>1);
-	
-	return true;
+				    const CNativeSize ForegroundSize,
+				    const INT32 nXPosition, 
+				    const INT32 nYPosition,
+				    const double fBlur,
+				    INT32 *pOffsetX,
+				    INT32 *pOffsetY,
+				    const double dDarknessCoeff/*=1.0*/) {
+  // if the required blur is too small, then just copy the existing bitmap into an 8 bit bitmap.
+  if (fBlur < MIN_BLUR_DIAMETER) {
+    // set up my bitmap to shadow into
+    /*HRESULT Result =*/ CreateFilled(ForegroundSize.x, ForegroundSize.y, 0xff, 8 );
+    UINT32 DestWidth = DIBUtil::ScanlineSize(ForegroundSize.x,8);
+    BYTE* pSrc0 = (BYTE *)pForegroundBits + 3;
+    BYTE* pDest0 = GetBytes();
+    BYTE* pDest0NextLine = NULL;
+    INT32 x = 0;
+    for (INT32 y = 0; y < ForegroundSize.y; y++) {
+	pDest0NextLine = pDest0 + DestWidth;
+	for (x = 0; x < ForegroundSize.x; x++) {
+	    *pDest0++ = *pSrc0;
+	    pSrc0 += 4;
+	  }
+	pDest0 = pDest0NextLine;
+      }
+    return TRUE;
+  }
+  double fNewBlur = fBlur/2.0 ;
+  if (fNewBlur > MAX_SHADOW_BLUR) {
+    fNewBlur = MAX_SHADOW_BLUR ;
+  }
+  //	UINT32 uBlur = (UINT32)fNewBlur ;
+  UINT32 uBlur = (UINT32)(2*fNewBlur+0.5) - 1;
+  // Create the bitmap to pass into gavin's routine
+  // must be Width + nNewBlur * 4, Height + nNewBlur * 4 in size and each scanline must be DWORD adjusted
+  UINT32 uBitmapToShadowWidth = DIBUtil::ScanlineSize(ForegroundSize.x + uBlur*2,8);
+  UINT32 uBitmapToShadowSize = uBitmapToShadowWidth * (ForegroundSize.y + uBlur * 2);
+  BYTE* pBitmapToShadow = new BYTE[uBitmapToShadowSize];
+  // Now, set up the pointers to do the transfer of bits from one
+  // bitmap to the other and move the destination pointer into
+  // position
+  BYTE* pSrc  = (BYTE *)pForegroundBits+3 ;
+  BYTE* pDest = (BYTE *)pBitmapToShadow+(uBitmapToShadowWidth+1)*uBlur;
+  memset(pBitmapToShadow, 0xff, uBitmapToShadowSize);
+  UINT32 ForegroundScanlineSize = ForegroundSize.x * 4;	
+  // transfer the source bitmap into this larger bitmap to be shadowed
+  UINT32 j = 0;
+  BYTE* pNextDstLine = NULL;
+  BYTE* pNextSrcLine = NULL;
+  for ( UINT32 i=0 ; i<(UINT32)ForegroundSize.y ; i++ ) {
+    pNextSrcLine = pSrc +ForegroundScanlineSize;
+    pNextDstLine = pDest+uBitmapToShadowWidth;
+    for ( j=0 ; j<(UINT32)ForegroundSize.x ; j++ ) {
+      *pDest++ = *pSrc;
+      pSrc += 4;
+    }
+    pSrc  = pNextSrcLine;
+    pDest = pNextDstLine;
+  }
+  // Set up my bitmap to shadow into
+  /*HRESULT Result =*/
+  CreateFilled( ForegroundSize.x+uBlur, ForegroundSize.y+uBlur, 0xff , 8);
+  // set up the bitmap info headers
+  BITMAPINFOHEADER SourceBI;
+  SourceBI.biBitCount = 8;
+  SourceBI.biWidth    = ForegroundSize.x+uBlur*2;
+  SourceBI.biHeight	= ForegroundSize.y+uBlur*2;
+  SourceBI.biPlanes   = 1;
+  BITMAPINFOHEADER DestBI;
+  DestBI.biBitCount = 8;
+  DestBI.biWidth    = ForegroundSize.x+uBlur;
+  DestBI.biHeight	  = ForegroundSize.y+uBlur;
+  DestBI.biPlanes   = 1;
+  // blur the bitmap.
+  Blur8BppBitmap(&SourceBI,
+		 pBitmapToShadow,
+		 &DestBI,
+		 GetBytes(),
+		 uBitmapToShadowWidth,
+		 fNewBlur);
+  // don't forget to discard the source bitmap.
+  delete [] pBitmapToShadow;
+  *pOffsetX = nXPosition - (uBlur>>1);
+  *pOffsetY = nYPosition - (uBlur>>1);	
+  return true;
 }
 
 
@@ -454,87 +438,88 @@ LPBITMAPINFO CBitmapShadow::Feather8BppBitmap(	const double fBlur,
 	See also:	
 
 ********************************************************************************************/
-void CBitmapShadow::Blur8BppBitmap(	LPBITMAPINFOHEADER  pSrcBMIHeader, LPBYTE  pSrcBits,
-									LPBITMAPINFOHEADER pDestBMIHeader, LPBYTE pDestBits,
-									const UINT32 SWordBitmapWidth, const double fBlur )
-{
-	////////////////////////////////////////////////////////////////
-	// set up the row & columns for the circular convolution mask //
-	////////////////////////////////////////////////////////////////
-	UINT32 aLeft [MAX_ROW_OFFSETS] ;
-	UINT32 aRight[MAX_ROW_OFFSETS] ;
-	UINT32 aLow  [MAX_ROW_OFFSETS] ;
-	UINT32 aHigh [MAX_ROW_OFFSETS] ;
-
-//	UINT32 uBlur = (UINT32)fBlur;
-//	UINT32 uSize = 1 + 2*uBlur;
-//	double S  = uBlur ;
-//	UINT32 uLine = 0 ;
-	const UINT32 uSize = (UINT32)(2*fBlur+0.5) ;
-	const double R = (uSize+1)*0.5 ;
-		  double S = (uSize-1)*0.5 ;
-	const double R2 = fBlur*fBlur;
-	UINT32 uLine = 0 ;
-	UINT32 uArea = 0 ;
-	UINT32 uRows = 0 ;
+void CBitmapShadow::Blur8BppBitmap(LPBITMAPINFOHEADER  pSrcBMIHeader,
+				   LPBYTE  pSrcBits,
+				   LPBITMAPINFOHEADER pDestBMIHeader,
+				   LPBYTE pDestBits,
+				   const UINT32 SWordBitmapWidth,
+				   const double fBlur) {
+  ////////////////////////////////////////////////////////////////
+  // set up the row & columns for the circular convolution mask //
+  ////////////////////////////////////////////////////////////////
+  UINT32 aLeft[MAX_ROW_OFFSETS] ;
+  UINT32 aRight[MAX_ROW_OFFSETS] ;
+  UINT32 aLow[MAX_ROW_OFFSETS] ;
+  UINT32 aHigh[MAX_ROW_OFFSETS] ;
+  
+  //	UINT32 uBlur = (UINT32)fBlur;
+  //	UINT32 uSize = 1 + 2*uBlur;
+  //	double S  = uBlur ;
+  //	UINT32 uLine = 0 ;
+  const UINT32 uSize = (UINT32)(2*fBlur+0.5) ;
+  const double R = (uSize+1)*0.5 ;
+  double S = (uSize-1)*0.5 ;
+  const double R2 = fBlur*fBlur;
+  UINT32 uLine = 0 ;
+  UINT32 uArea = 0 ;
+  UINT32 uRows = 0 ;
 	
-	for ( UINT32 r=0 ; r<uSize ; ++r )
+  for ( UINT32 r=0 ; r<uSize ; ++r )
+    {
+      double fRadius = R2-S*S ;
+      if ( fRadius>=0 )
 	{
-		double fRadius = R2-S*S ;
-		if ( fRadius>=0 )
-		{
-			fRadius = sqrt(fRadius) ;
-			const UINT32  uLeft = UINT32(R-fRadius) ;
-//			const UINT32 uRight = UINT32(R+fRadius) ;
-			const UINT32 uRight = uSize-uLeft ;
-			if ( uLeft<uRight )
-			{
-				 aLeft[uRows] =  uLeft+uLine ;
-				aRight[uRows] = uRight+uLine ;
-				  aLow[uRows] =  uLeft*SWordBitmapWidth+r ;
-				 aHigh[uRows] = uRight*SWordBitmapWidth+r ;
-				uArea += uRight-uLeft ;
-				uRows++ ;
-			}
-		}
-		S-- ;
-		uLine += SWordBitmapWidth ;
+	  fRadius = sqrt(fRadius) ;
+	  const UINT32  uLeft = UINT32(R-fRadius) ;
+	  //			const UINT32 uRight = UINT32(R+fRadius) ;
+	  const UINT32 uRight = uSize-uLeft ;
+	  if ( uLeft<uRight )
+	    {
+	      aLeft[uRows] =  uLeft+uLine ;
+	      aRight[uRows] = uRight+uLine ;
+	      aLow[uRows] =  uLeft*SWordBitmapWidth+r ;
+	      aHigh[uRows] = uRight*SWordBitmapWidth+r ;
+	      uArea += uRight-uLeft ;
+	      uRows++ ;
+	    }
 	}
+      S-- ;
+      uLine += SWordBitmapWidth ;
+    }
 
-	UINT32 uTableSize = uArea*255 ;
-	UINT32 uInc = 0xffffffffu/uTableSize ;
-	UINT32 uShift = 0 ;
-	while ( uTableSize>=TABLE_SIZE )
-	{
-		uTableSize >>= 1 ;
-		uShift++ ;
-	}
-	uInc <<= uShift ;
-	BYTE* pTranslationTable = new BYTE[uTableSize+1] ;
-	UINT32 uCount = 0 ;
-	for ( UINT32 i=0 ; i<=uTableSize ; ++i )
-	{
-		pTranslationTable[i] = uCount>>24 ;
-		uCount += uInc ;
-	}
+  UINT32 uTableSize = uArea*255 ;
+  UINT32 uInc = 0xffffffffu/uTableSize ;
+  UINT32 uShift = 0 ;
+  while ( uTableSize>=TABLE_SIZE )
+    {
+      uTableSize >>= 1 ;
+      uShift++ ;
+    }
+  uInc <<= uShift ;
+  BYTE* pTranslationTable = new BYTE[uTableSize+1] ;
+  UINT32 uCount = 0 ;
+  for ( UINT32 i=0 ; i<=uTableSize ; ++i )
+    {
+      pTranslationTable[i] = uCount>>24 ;
+      uCount += uInc ;
+    }
 
 
-	/////////////////////////////////////////////////////////////////////////////////
-	// call gavin's routine to do the shadowing.
-	/////////////////////////////////////////////////////////////////////////////////
-	CamProfile cp(CAMPROFILE_SHADOW);
-	::GenerateWallShadow(
-		 pSrcBMIHeader,  pSrcBits,
-		pDestBMIHeader, pDestBits,
-		uRows, aLeft,aRight,
-		uRows, aLow ,aHigh ,
-		uShift,pTranslationTable
-	) ;	
-
-	/////////////////////////////////////////////////////////////////////////////////
-	// clean up the translation table.
-	/////////////////////////////////////////////////////////////////////////////////
-	delete [] pTranslationTable;
+  /////////////////////////////////////////////////////////////////////////////////
+  // call gavin's routine to do the shadowing.
+  /////////////////////////////////////////////////////////////////////////////////
+  CamProfile cp(CAMPROFILE_SHADOW);
+  ::GenerateWallShadow(pSrcBMIHeader,  pSrcBits,
+		       pDestBMIHeader, pDestBits,
+		       uRows, aLeft,aRight,
+		       uRows, aLow ,aHigh ,
+		       uShift,pTranslationTable
+		       ) ;	
+	
+  /////////////////////////////////////////////////////////////////////////////////
+  // clean up the translation table.
+  /////////////////////////////////////////////////////////////////////////////////
+  delete [] pTranslationTable;
 }
 
 
