@@ -386,7 +386,7 @@ case $target in
     *)
 	AC_MSG_ERROR([Architecture $target not supported])
 esac
-
+CDRAW_LIB_ALT_DIR="libs/x86_64/cdraw-alt"
 PODIR=""
 BUILDRESFLAGS=""
 if test "$InternationalEnable" = "yes" ; then
@@ -426,6 +426,7 @@ AM_CONDITIONAL(INTERNATIONAL_ENABLE, [test "$InternationalEnable" = "yes"])
 AM_CONDITIONAL(XARLIB_ENABLE, [test "$XarLibEnable" = "yes"])
 AM_CONDITIONAL(FILTERS_ENABLE, [test "$FiltersEnable" = "yes"])
 
+AC_SUBST(CDRAW_LIB_ALT_DIR)
 AC_SUBST(XARALXCXXFLAGS)
 AC_SUBST(XARALXCPPFLAGS)
 AC_SUBST(TOPDIR)
@@ -443,4 +444,4 @@ AC_SUBST(LIBXML2_LIBS)
 AC_SUBST(PODIR)
 AC_SUBST(BUILDRESFLAGS)
 
-AC_OUTPUT(Makefile PreComp/Makefile Kernel/Makefile wxOil/Makefile tools/Makefile wxXtra/Makefile xarlib/Makefile libs/Makefile libs/x86_64/Makefile libs/x86_64/orphaned-object-files/Makefile xarlib/Xar.pc po/Makefile.in)
+AC_OUTPUT(Makefile PreComp/Makefile Kernel/Makefile wxOil/Makefile tools/Makefile wxXtra/Makefile xarlib/Makefile libs/Makefile libs/x86_64/Makefile libs/x86_64/cdraw-alt/Makefile xarlib/Xar.pc po/Makefile.in)
