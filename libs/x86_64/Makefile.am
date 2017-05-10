@@ -7,7 +7,7 @@
 SUBDIRS = cdraw-alt
 # libCDraw_la-bshadow2-new.o
 OBJECT_FILES =  \
-	libCDraw_alt_a-bshadow2.o \
+	libCDraw_la-bshadow2-new.o  \
 	libCDraw_la-cstroke.o \
 	libCDraw_la-GBevel.o \
 	libCDraw_la-gclip0.o \
