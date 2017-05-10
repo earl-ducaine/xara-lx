@@ -4,8 +4,10 @@
 # this is librairy that is part of main executable.  it's name is used for all
 # of the other Makefile.am variables
 
+SUBDIRS = orphaned-object-files
 
-OBJECT_FILES =  \
+OBJECT_FILES = libCDraw_la-bshadow2-new.o \
+	bshadow2.o \
 	libCDraw_la-cstroke.o \
 	libCDraw_la-GBevel.o \
 	libCDraw_la-gclip0.o \

@@ -546,11 +546,11 @@ void CBitmapShadow::Blur8BppBitmap(	LPBITMAPINFOHEADER  pSrcBMIHeader, LPBYTE  p
 // make DestHeight = SourceHeight for 100% projection
 
 BOOL CBitmapShadow::MakeCastShadow (UINT32* pForegroundBits,
-											const CNativeSize ForegroundSize,
-											const double fBlur,									 
-											const double dTiltAngle, 
-											const double dProjection,
-											const double dDarknessCoeff/*=1.0*/ )
+				    const CNativeSize ForegroundSize,
+				    const double fBlur,									 
+				    const double dTiltAngle, 
+				    const double dProjection,
+				    const double dDarknessCoeff/*=1.0*/ )
 {
 	m_OffsetX = 0;  
 	m_OffsetY = 0;  
