@@ -70,6 +70,7 @@ bool GenerateWallShadow(CONST BITMAPINFOHEADER* pSourceInfo,
 			CONST UINT32* pHighOffsets,
 			CONST UINT32 nTranslationShift,
 			CONST BYTE* pTranslationTable) {
+  
   asm ("push   %r15\n\t"
      "push   %r14\n\t"
      "push   %r13\n\t"
