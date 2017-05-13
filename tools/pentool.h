@@ -132,7 +132,7 @@ enum penopstate
 	OS_ClosePath
 };
 
-typedef enum penclick
+enum penclick
 {
  	PenNewPath, 
  	PenOnPoint,

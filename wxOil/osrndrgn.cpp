@@ -3379,7 +3379,7 @@ void OSRenderRegion::DrawBitmap(const DocCoord &Point, KernelBitmap* pBitmap)
 
 /********************************************************************************************
 
->	void OSRenderRegion::DrawBitmap(const DocCoord &Point, UINT32 BitmapID, UINT32 ToolID = NULL)
+>	void OSRenderRegion::DrawBitmap(const DocCoord &Point, UINT32 BitmapID, UINT32 ToolID = 0)
 
 	Author:		Will_Cowling (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	7/2/95
@@ -3572,8 +3572,7 @@ void OSRenderRegion::DrawBitmapBlob(const DocCoord &Point, KernelBitmap* BlobSha
 
 /********************************************************************************************
 
->	void OSRenderRegion::DrawBitmapBlob(const DocCoord &Point, 
-											UINT32 BitmapID, UINT32 ToolID = NULL)
+>	void OSRenderRegion::DrawBitmapBlob(const DocCoord &Point, UINT32 BitmapID, UINT32 ToolID = 0)
 	Author:		Will_Cowling (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	1/9/94
 	Inputs:		Point - The Coord specifying the centre of the Blob.

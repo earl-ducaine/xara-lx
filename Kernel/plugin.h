@@ -118,7 +118,7 @@ class KernelBitmap;
 class Document;
 
 // Define the current types of plug-in that we know about
-typedef enum TypeOfPlugIn
+enum TypeOfPlugIn
 {
 	PLUGIN_PHOTOSHOP = 0,	// PhotoShop bitmap effect plug-ins
 	PLUGIN_XTRA,			// FreeHand Xtra plug-ins

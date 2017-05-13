@@ -4,6 +4,8 @@
 # this is librairy that is part of main executable.  it's name is used for all
 # of the other Makefile.am variables
 
+ARFLAGS = "Drv"
+
 SUBDIRS = cdraw-alt
 # libCDraw_la-bshadow2-new.o
 OBJECT_FILES =  \
@@ -95,6 +97,10 @@ AM_CXXFLAGS = $(XARAFLAGS)
 
 XARALANGUAGE = @XARALANGUAGE@
 
-libCDraw.a:
-	cd orphaned-object-files; cp $(OBJECT_FILES) ../; cd ..
-	ar -s -r libCDraw.a *.o
+$(OBJECT_FILES):
+	rm -f *.o
+	cd orphaned-object-files; bash objcopy-example.sh; cp $(OBJECT_FILES) ../; cd ..
+
+
+libCDraw.a: $(OBJECT_FILES)
+	$(AR) $(ARFLAGS)  libCDraw.a *.o

@@ -151,7 +151,7 @@ struct FreeHandJoinInfo
 
 
 // flag which indicates when the offscreen buffer for the brush should be next updated.
-typedef enum  UPDATE_STATE {
+enum  UPDATE_STATE {
 							UPDATE_NOW,
 							UPDATE_ONIDLE,
 							UPDATE_NEVER

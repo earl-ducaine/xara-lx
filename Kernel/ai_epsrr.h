@@ -152,7 +152,7 @@ public:
 	virtual void DrawCross(const DocCoord &Point, const UINT32 Size) {};
 
 	virtual void DrawBitmap(const DocCoord &Point, KernelBitmap* pBitmap) {};
-	virtual void DrawBitmap(const DocCoord &Point, UINT32 BitmapID, UINT32 ToolID = NULL) {};
+	virtual void DrawBitmap(const DocCoord &Point, UINT32 BitmapID, UINT32 ToolID = 0) {};
 	virtual void DrawBitmapBlob(const DocCoord &Point, KernelBitmap* BlobShape) {};
 	virtual void DrawBitmapBlob(const DocCoord &Point, ResourceID resID ) {};
 

@@ -9,6 +9,7 @@
 # LIBRARY SECTION
 #########################################################################
 
+ARFLAGS = "Drv"
 
 # explicitly remove resources.h from TOPDIR as well. It should not be
 # there on an out of tree build, but running build-resources manually

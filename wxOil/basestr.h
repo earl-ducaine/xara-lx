@@ -877,10 +877,14 @@ inline StringBase& StringBase::operator=(const TCHAR ch)
 	Purpose:	Extract single characters from the string...
 				0 is the first char, String.Length() is the terminating zero...
 **************************************************************************************/
-inline TCHAR StringBase::operator[](const INT32 Index)
-{
-	ERROR3IF(!text, "Call to String::operator[] for an unALLOCated String");
-	return (text && (Index <= (INT32)camStrlen(text))) ? text[Index] : 0;
+inline TCHAR StringBase::operator[](const INT32 i) {
+  ERROR3IF(!text, "Call to String::operator[] for an unALLOCated String");
+  uint Index = i < 0 ? 0 : i;
+  if (text && (Index <= camStrlen(text))) {
+    return text[Index];
+  } else {
+    return 0;
+  };
 }
 
 

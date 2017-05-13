@@ -142,7 +142,7 @@ class XPFRenderRegion : public RenderRegion
 
 	// Functions that are supposed to draw bitmaps
 	virtual void DrawBitmap(const DocCoord &Point, KernelBitmap* pBitmap);
-	virtual void DrawBitmap(const DocCoord &Point, UINT32 BitmapID, UINT32 ToolID = NULL);
+	virtual void DrawBitmap(const DocCoord &Point, UINT32 BitmapID, UINT32 ToolID = 0);
 	virtual BOOL DrawTransformedBitmap(NodeBitmap *pNodeBitmap);
 
 	// Other Pure virtual drawing functions that have to be overidden
