@@ -1,7 +1,7 @@
 // $Id: kerneldc.cpp 1432 2006-07-11 15:46:55Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
- 
+
                Xara LX, a vector drawing and manipulation program.
                     Copyright (C) 1993-2006 Xara Group Ltd.
        Copyright on certain contributions may be held in joint with their
@@ -32,7 +32,7 @@ ADDITIONAL RIGHTS
 
 Conditional upon your continuing compliance with the GNU General Public
 License described above, Xara Group Ltd grants to you certain additional
-rights. 
+rights.
 
 The additional rights are to use, modify, and distribute the software
 together with the wxWidgets library, the wxXtra library, and the "CDraw"
@@ -124,7 +124,7 @@ CC_IMPLEMENT_DYNAMIC(KernelDC, CCDummyDC);
 	Purpose:	Initialise a kernel DC.
 				This initialises the user space origin to (0,0) by default (only relevant
 				for DCs that use the PostScript stream functions).
-	SeeAlso:	KernelDC::SetOrigin; KernelDC::OutputUserSpaceValue; 
+	SeeAlso:	KernelDC::SetOrigin; KernelDC::OutputUserSpaceValue;
 				KernelDC::OutputCoord
 
 ********************************************************************************************/
@@ -156,7 +156,7 @@ KernelDC::KernelDC(RenderType rType) : CCDummyDC(rType)
 	Purpose:	Initialise a kernel DC.
 				This initialises the user space origin to (0,0) by default (only relevant
 				for DCs that use the PostScript stream functions).
-	SeeAlso:	KernelDC::SetOrigin; KernelDC::OutputUserSpaceValue; 
+	SeeAlso:	KernelDC::SetOrigin; KernelDC::OutputUserSpaceValue;
 				KernelDC::OutputCoord
 
 ********************************************************************************************/
@@ -208,7 +208,7 @@ void KernelDC::SetOrigin(DocCoord &NewOrigin)
 					ACCURACY_ROUNDDOWN: 	0dp, rounded down.
 	Returns:	TRUE if the data was written ok;
 				FALSE if not => ERROR1
-	Purpose:	Write out a coordinate x,y pair to the export file, automatically 
+	Purpose:	Write out a coordinate x,y pair to the export file, automatically
 				converting from spread coordinates to the EPS user space coordinate system,
 				including adjusting the origin.
 	SeeAlso:	KernelDC::OutputUserSpaceValue
@@ -227,7 +227,7 @@ BOOL KernelDC::OutputCoord(DocCoord& Coord, EPSAccuracy Accuracy)
 
 /********************************************************************************************
 
->	BOOL KernelDC::OutputUserSpaceValue(MILLIPOINT n, 
+>	BOOL KernelDC::OutputUserSpaceValue(MILLIPOINT n,
 									    EPSAccuracy Accuracy = ACCURACY_NORMAL)
 
 	Author:		Tim_Browse (Xara Group Ltd) <camelotdev@xara.com>
@@ -246,12 +246,12 @@ BOOL KernelDC::OutputCoord(DocCoord& Coord, EPSAccuracy Accuracy)
 				expressed in units of points, and usually has the origin at (0.0).
 				By default, we follow the Illustrator convention of truncating values to
 				2dp (so we can generate files compatible with Illustrator etc), but
-				Camelot EPS uses the full 3dp accuracy (we don't store more any	accuracy 
+				Camelot EPS uses the full 3dp accuracy (we don't store more any	accuracy
 				than this internally).  The accuracy can be changed by calling
 				KernelDC::SetFullAccuracy
 				Note that this routine does not do origin translation, because
 				it may be used for dimensions such as line widths, which have no earthly use
-				for origins (and anyway, it's a bit tricky to do origin translation with 
+				for origins (and anyway, it's a bit tricky to do origin translation with
 				only one dimension!).
 
 				e.g. OutputUserSpaceValue(31465) will output "3.147" to the export file.
@@ -285,7 +285,7 @@ BOOL KernelDC::OutputUserSpaceValue(MILLIPOINT n, EPSAccuracy Accuracy)
 			}
 
 			// as n is positive (or zero), this works in the way expected. Both
-			// Integer and fraction are >=0 too.	
+			// Integer and fraction are >=0 too.
 			Integer  = n / 1000;
 			Fraction = n % 1000;
 
@@ -432,7 +432,7 @@ BOOL KernelDC::OutputNamedColour(DocColour *pCol, ColourContext* pContext)
 	// Output CMYK version
 	if (!OutputColour(&CMYK))
 		return FALSE;
-		
+
 	// Get the indexed colour from the DocColour.
 	IndexedColour *pIndCol = pCol->FindParentIndexedColour();
 
@@ -478,10 +478,10 @@ BOOL KernelDC::OutputNamedColour(DocColour *pCol, ColourContext* pContext)
 	Inputs:		pCol - the colour to output.
 	Returns:	TRUE if the data was written ok;
 				FALSE if not => ERROR1
-	Purpose:	Outputs a named colour's name as a string. If pCol does not reference an 
-				indexed colour, then the name "NoName" is used. This was seperated from 
+	Purpose:	Outputs a named colour's name as a string. If pCol does not reference an
+				indexed colour, then the name "NoName" is used. This was seperated from
 				OutputNamedColour so that the DeviceContext will not need to worry about
-				which ColourModel to use (CMYK, RGB, etc...), as this will be determined 
+				which ColourModel to use (CMYK, RGB, etc...), as this will be determined
 				by the RenderRegion.
 	SeeAlso:	KernelDC::OutputNamedColour
 	Errors:		Disk/file error => ERROR1
@@ -492,7 +492,7 @@ BOOL KernelDC::OutputColourName(DocColour *pCol)
 {
 	// Success / Failure flag for the export of this colour's name.
 	BOOL ok = TRUE;
-		
+
 	// Get the indexed colour from the DocColour.
 	IndexedColour *pIndCol = pCol->FindParentIndexedColour();
 
@@ -531,7 +531,7 @@ BOOL KernelDC::OutputColourName(DocColour *pCol)
 	Inputs:		pString - the string token to output.
 	Returns:	TRUE if the data was written ok;
 				FALSE if not => ERROR1
-	Purpose:	Output a string in PostScript format, i.e. delimited by '(' and ')', 
+	Purpose:	Output a string in PostScript format, i.e. delimited by '(' and ')',
 				and escaping any parentheses so the string is syntactically correct.
 				e.g.  "String" is output as "(String)",
 				and   "Hello (there)" is output as "(Hello \(there\))"
@@ -541,7 +541,7 @@ BOOL KernelDC::OutputColourName(DocColour *pCol)
 
 ********************************************************************************************/
 
-BOOL KernelDC::OutputString(TCHAR *pString)
+BOOL KernelDC::OutputString(const TCHAR *pString)
 {
 	TCHAR Buf[128];
 
@@ -577,7 +577,7 @@ BOOL KernelDC::OutputString(TCHAR *pString)
 /********************************************************************************************
 
 >	BOOL KernelDC::OutputMatrix(Matrix * Mat)
-					 
+
 	Author:		Chris_Snook (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	22/08/94
 	Inputs:		M- pointer to the matrix to output to the EPS stream.
@@ -615,7 +615,7 @@ BOOL KernelDC::OutputMatrix(Matrix * M)
 /********************************************************************************************
 
 >	BOOL KernelDC::OutputValue(INT32 Value)
-					 
+
 	Author:		Tim_Browse (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	22/08/94
 	Inputs:		Value - the number to write to the EPS stream.
@@ -692,7 +692,7 @@ BOOL KernelDC::OutputReal(double Value)
 	Returns:	TRUE if the data was written ok;
 				FALSE if not => ERROR1
 	Purpose:	Output a real (floating point) number to the EPS stream.
-				
+
 	Errors:		Disk/file error => ERROR1
 
 ********************************************************************************************/
@@ -747,7 +747,7 @@ BOOL KernelDC::OutputFloat(const double Value, const UINT32 DecPl)
 /********************************************************************************************
 
 >	BOOL KernelDC::OutputArray(INT32* Array, INT32 ArraySize)
-				 
+
 	Author:		Will_Cowling (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	15/04/95
 	Inputs:		Array, pointer to the array data.
@@ -832,7 +832,7 @@ INT32 KernelDC::OutputRawBinary(BYTE *Data, UINT32 Length, UINT32 Alignment)
 			// Error
 			return -1;
 		}
-		
+
 		nBytes += ChunkLength;
 
 		// Adjust length and check for padding requirements
@@ -862,7 +862,7 @@ INT32 KernelDC::OutputRawBinary(BYTE *Data, UINT32 Length, UINT32 Alignment)
 			// Error encountered
 			return -1;
 	}
-	
+
 	// All done
 	return nBytes;
 }
@@ -885,8 +885,8 @@ INT32 KernelDC::OutputRawBinary(BYTE *Data, UINT32 Length, UINT32 Alignment)
 ********************************************************************************************/
 
 void KernelDC::ConvertToHex(BYTE *Data, UINT32 Length, TCHAR *Buf)
-{	
-	UINT32 DataOfs = 0, 
+{
+	UINT32 DataOfs = 0,
 		  DestOfs = 0;
 
 	while (DataOfs < Length)
@@ -940,10 +940,10 @@ BOOL KernelDC::StartASCII85Output(BOOL RunLengthEncode)
 	RawBuf = (LPBYTE) CCMalloc((A85DataSize * 4) + 4);
 	if (RawBuf == NULL)
 		return(FALSE);
-	
+
 	A85Buf = (LPBYTE) CCMalloc((A85DataSize * 5) + 4);
 	if (A85Buf == NULL)
-	{ 
+	{
 		CCFree(RawBuf);
 		return(FALSE);
 	}
@@ -1123,10 +1123,10 @@ INT32 KernelDC::ConvertToASCII85(BYTE *Src, UINT32 Length, BYTE *Dest)
 {
 	// Precompute the powers of 85 to use when encoding.
 /*
-	static const INT32 Power85[5] = { 1, 
-									 85, 
-									 85 * 85, 
-									 85 * 85 * 85, 
+	static const INT32 Power85[5] = { 1,
+									 85,
+									 85 * 85,
+									 85 * 85 * 85,
 									 85 * 85 * 85 * 85 };
 */
 
@@ -1138,7 +1138,7 @@ INT32 KernelDC::ConvertToASCII85(BYTE *Src, UINT32 Length, BYTE *Dest)
 	{
 		// Encode four bytes as five characters.
 		UINT32 n=0;
-		
+
 		if (Length >= 4)
 		{
 			// Normal 4 bytes of data
@@ -1194,7 +1194,7 @@ INT32 KernelDC::ConvertToASCII85(BYTE *Src, UINT32 Length, BYTE *Dest)
 			if (Length >= 4)
 				DstOfs += 5;
 			else
-				// Special case for last 5-tuple - see Red Book, bottom of p129 
+				// Special case for last 5-tuple - see Red Book, bottom of p129
 				DstOfs += (Length + 1);
 		#else
 /*
@@ -1230,10 +1230,10 @@ INT32 KernelDC::ConvertToASCII85(BYTE *Src, UINT32 Length, BYTE *Dest)
 INT32 KernelDC::ConvertFromASCII85(BYTE *Src, UINT32 Length, BYTE *Dest)
 {
 	// Precompute the powers of 85 to use when encoding.
-	static const INT32 Power85[5] = { 1, 
-									 85, 
-									 85 * 85, 
-									 85 * 85 * 85, 
+	static const INT32 Power85[5] = { 1,
+									 85,
+									 85 * 85,
+									 85 * 85 * 85,
 									 85 * 85 * 85 * 85 };
 
 	// Start at the beginning of the buffer
@@ -1266,7 +1266,7 @@ INT32 KernelDC::ConvertFromASCII85(BYTE *Src, UINT32 Length, BYTE *Dest)
 			TupleLength = 1;
 		}
 		else
-		{			
+		{
 			// Decode base-85 numbers.
 			for (UINT32 i = 0; i < 5; i++)
 			{
@@ -1462,7 +1462,7 @@ BYTE *KernelDC::RunLengthDecode(BYTE *Data, INT32 *pLength)
 	INT32 i = 0;
 	INT32 Length = *pLength;
 	INT32 Size = 0;
-	BOOL FoundEOD = FALSE;
+	// BOOL FoundEOD = FALSE;
 
 	while (i < Length)
 	{
@@ -1485,7 +1485,7 @@ BYTE *KernelDC::RunLengthDecode(BYTE *Data, INT32 *pLength)
 		else
 		{
 			// 128 == End of stream
-			FoundEOD = TRUE;
+			// FoundEOD = TRUE;
 			break;
 		}
 	}
@@ -1510,7 +1510,7 @@ BYTE *KernelDC::RunLengthDecode(BYTE *Data, INT32 *pLength)
 	// Ok, actually decode it now.
 	INT32 j = 0;
 	i = 0;
-	FoundEOD = FALSE;
+	// FoundEOD = FALSE;
 
 	while (i < Length)
 	{
@@ -1535,7 +1535,7 @@ BYTE *KernelDC::RunLengthDecode(BYTE *Data, INT32 *pLength)
 		else
 		{
 			// 128 == End of stream
-			FoundEOD = TRUE;
+			// FoundEOD = TRUE;
 			break;
 		}
 	}
@@ -1562,7 +1562,7 @@ BYTE *KernelDC::RunLengthDecode(BYTE *Data, INT32 *pLength)
 	Inputs:		Full:  TRUE => Use 3dp when saving user space values
 					  FALSE => Use 2dp when saving user space values
 	Purpose:	Change the accuracy used when saving out user space values to the EPS file.
-				This defaults to 2dp, but can be enabled to full accuracy (3dp) by 
+				This defaults to 2dp, but can be enabled to full accuracy (3dp) by
 				passing in TRUE.
 				We still do 2dp because that is what Illustrator and most of the other
 				mediocre programs use and we don't want to generate files that might
@@ -1620,7 +1620,7 @@ BOOL KernelDC::OutputNewLine()
 				newline characters, because this routine will not notice, and hence
 				the LineWidth count will be wrong.
 				This routine also ensures that tokens are separated by either a space
-				or a newline, so it is not necessary to output spaces directly to keep the 
+				or a newline, so it is not necessary to output spaces directly to keep the
 				tokens separate - it happens automatically.
 
 				NB. This base class version will always raise an ERROR2 and return FALSE
@@ -1632,7 +1632,7 @@ BOOL KernelDC::OutputNewLine()
 
 ********************************************************************************************/
 
-BOOL KernelDC::OutputToken(TCHAR *Str)
+BOOL KernelDC::OutputToken(const TCHAR *Str)
 {
 	ERROR2(FALSE, "OutputToken() called for base class KernelDC");
 }
@@ -1799,4 +1799,3 @@ Filter *ExportDC::GetParentFilter()
 {
 	return ParentFilter;
 }
-

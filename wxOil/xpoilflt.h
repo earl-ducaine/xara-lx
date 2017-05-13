@@ -1,7 +1,7 @@
 // $Id: xpoilflt.h 1282 2006-06-09 09:46:49Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
- 
+
                Xara LX, a vector drawing and manipulation program.
                     Copyright (C) 1993-2006 Xara Group Ltd.
        Copyright on certain contributions may be held in joint with their
@@ -32,7 +32,7 @@ ADDITIONAL RIGHTS
 
 Conditional upon your continuing compliance with the GNU General Public
 License described above, Xara Group Ltd grants to you certain additional
-rights. 
+rights.
 
 The additional rights are to use, modify, and distribute the software
 together with the wxWidgets library, the wxXtra library, and the "CDraw"
@@ -134,7 +134,7 @@ protected:
 	Author:		Gerry_Iles (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	26/01/05
 	Purpose:	This class is used to encapsulate the platform specific features of a filter.
-				Every Filter object has a pointer to an OILFilter object.  For example, 
+				Every Filter object has a pointer to an OILFilter object.  For example,
 				under Windows, it holds the file extensions that this file understands.
 	SeeAlso:	Filter
 
@@ -147,9 +147,9 @@ class PluginOILFilter : public OILFilter
 public:
 	PluginOILFilter(Filter *pFilter);
 
-	// This function initialises the filter setting up the import and export flags, 
+	// This function initialises the filter setting up the import and export flags,
 	// the filter name and file extension
-	// The parameter will almost certainly need to change when OILFilter::CreatePluginFilters 
+	// The parameter will almost certainly need to change when OILFilter::CreatePluginFilters
 	// is implemented properly by scanning the installed filters
 	BOOL Init( xmlNode* pFilterNode );
 
@@ -157,19 +157,19 @@ public:
 	BOOL IsExport() { return(m_bExport); }
 
 	// The import and export functions
-	// The mechanism may need to be modified to efficiently launch processes and 
+	// The mechanism may need to be modified to efficiently launch processes and
 	// attach CCLexFile derived classes.
-	// Currently GetExportFile is called first so it will only really support 
-	// outputting the Xar data to a temporary location so that it can be sent to the 
+	// Currently GetExportFile is called first so it will only really support
+	// outputting the Xar data to a temporary location so that it can be sent to the
 	// filter's stdin when DoExport is called.
-	// GetCapabilities doesn't really need the pFile parameter so it could be called 
+	// GetCapabilities doesn't really need the pFile parameter so it could be called
 	// before GetExportFile.
-	// At the moment, the easiest thing to do would probably be to load and save the 
-	// Xar data from temporary files and simply redirect stdin and stdout when running 
+	// At the moment, the easiest thing to do would probably be to load and save the
+	// Xar data from temporary files and simply redirect stdin and stdout when running
 	// the filter
-	// I expect this will involve far less work than trying to attach a CCFile to a 
-	// external process though to handle the progress indication correctly, stderr will 
-	// need to be attached to in such a way that the loop that waits for the process to 
+	// I expect this will involve far less work than trying to attach a CCFile to a
+	// external process though to handle the progress indication correctly, stderr will
+	// need to be attached to in such a way that the loop that waits for the process to
 	// exit can read the progress values from stderr and update the XaraLX progress system
 	BOOL GetExportFile(PathName* pPath, CCLexFile** ppNewFile);
 	BOOL GetCapabilities(CCLexFile* pFile, PathName* pPath, CapabilityTree* pCapTree);
@@ -193,8 +193,8 @@ protected:
 	BOOL ReadColour(xmlNodePtr pNode, CapabilityTree* pCapTree);
 
 	BOOL GetConvertAsType(xmlNodePtr pNode, XPFConvertType* pValue);
-	BOOL GetXPFBOOL(xmlNodePtr pNode, LPTSTR pAttrName, XPFBOOL* pbValue);
-	BOOL GetXPFProp(xmlNodePtr pNode, LPTSTR pAttrName, PropMapEntry aMap[], XPFProp* pValue);
+	BOOL GetXPFBOOL(xmlNodePtr pNode, LPCTSTR pAttrName, XPFBOOL* pbValue);
+	BOOL GetXPFProp(xmlNodePtr pNode, LPCTSTR pAttrName, PropMapEntry aMap[], XPFProp* pValue);
 	XPFCapability* CreateObjectNode(xmlNodePtr pNode);
 	XPFCapability* CreateAttributeNode(xmlNodePtr pNode);
 	XPFCapability* CreateColourNode(xmlNodePtr pNode);
@@ -237,7 +237,7 @@ public:
 	{
 		m_Path = Path;
 	}
-	
+
 	PathName m_Path;
 };
 

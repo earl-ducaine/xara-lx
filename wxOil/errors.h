@@ -573,22 +573,22 @@ public:
 #endif
 	static void CDECL XSetError(UINT32, ...);
 	static void CDECL ReleaseTrace(LPCTSTR, ...);
-	#ifdef _DEBUG
-	static void CDECL XComplain(const TCHAR *fmt, ...);
-#if 0 != wxUSE_UNICODE
+#ifdef _DEBUG
+	static void CDECL XComplain(const TCHAR* fmt, ...);
+# if 0 != wxUSE_UNICODE
 	// In UNICODE builds ONLY we allow an additional char * version of which copes with old code
 	// that does ERROR3PF("foo", ...), not ERROR3PF(_T("foo", ....). We don't include these
 	// in the non-Unicode version as they clash with the TCHAR stuff
-	static void CDECL XComplain(const char *fmt, ...);
-#endif
+	static void CDECL XComplain(const char* fmt, ...);
+# endif
 	static void CDECL TraceUser(const char *, LPCTSTR, ...);
-	static void CDECL TraceAll( LPCTSTR, ...);
-	static void CDECL TraceTime (TCHAR * t);
-	#else
+	static void CDECL TraceAll(LPCTSTR, ...);
+	static void CDECL TraceTime(const TCHAR * t);
+#else
 	static void CDECL TraceUser(const char *, LPCTSTR, ...) { }
-	static void CDECL TraceAll( LPCTSTR, ...) { }
-	static void CDECL TraceTime (TCHAR *) { }
-	#endif
+	static void CDECL TraceAll(LPCTSTR, ...) { }
+	static void CDECL TraceTime(const TCHAR *) { }
+#endif
 
 	// Stack walking stuff
 public:
@@ -764,7 +764,9 @@ UINT32 Error::GetErrorModule()
 #define	ERROR2IF_PF( condition, retvalue, args )	do { if (condition) ERROR2_PF( retvalue, args ); } while (0)
 
 #define	ERROR3(literal)								do { MARKWHERE; Error::XComplain( literal ); } while(0)
-#define	ERROR3IF(condition, literal)				do { if (condition) ERROR3(literal); } while(0)
+
+#define	ERROR3IF(condition, literal) do { if (condition) ERROR3(literal); } while(0)
+
 #define	ERROR3_PF(args)								do { MARKWHERE; Error::XComplain args; } while(0)
 #define	ERROR3IF_PF(condition, args)				do { if (condition) ERROR3_PF(args); } while(0)
 #define	TRACEUSER									Error::TraceUser

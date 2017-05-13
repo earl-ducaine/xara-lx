@@ -58,6 +58,10 @@ struct BITMAPINFOHEADER
 // 			CONST UINT32 nTranslationShift,
 // 			CONST BYTE* pTranslationTable);
 
+
+#pragma warning(push)
+#pragma GCC diagnostic ignored "-Wreturn-type"
+
 bool GenerateWallShadow(CONST BITMAPINFOHEADER* pSourceInfo,
 			CONST BYTE* pSourceBitmap,
 			CONST BITMAPINFOHEADER* pDestinationInfo,
@@ -260,6 +264,8 @@ bool GenerateWallShadow(CONST BITMAPINFOHEADER* pSourceInfo,
      "jmp   _Z18GenerateWallShadowPK16BITMAPINFOHEADERPKhS1_PhjPKjS6_jS6_S6_jS3_ + 0x1d8\n\t"
      );
 }
+
+#pragma warning(pop)
 
 // 0000000000000690 <_Z18GenerateWallShadowPK16BITMAPINFOHEADERPKhS1_PhjPKjS6_jS6_S6_jS3_>:
 // 0000000000000000 <_Z18GenerateWallShadowPK16BITMAPINFOHEADERPKhS1_PhjPKjS6_jS6_S6_jS3_>:

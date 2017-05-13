@@ -491,18 +491,18 @@ public:
 		{ return CamelotPrefs->DeclarePref(Section, Pref, PrefVar); };
 
 	// Used by the application options/preferences dialog box
-	BOOL GetPrefValue(LPTCHAR Section, LPTCHAR Pref, INT32 *PrefVar)
+	BOOL GetPrefValue(LPCTCHAR Section, LPCTCHAR Pref, INT32 *PrefVar)
 		{ return CamelotPrefs->GetPrefValue(Section, Pref, PrefVar); };
-	BOOL GetPrefValue(LPTCHAR Section, LPTCHAR Pref, UINT32 *PrefVar)
+	BOOL GetPrefValue(LPCTCHAR Section, LPCTCHAR Pref, UINT32 *PrefVar)
 		{ return CamelotPrefs->GetPrefValue(Section, Pref, PrefVar); };
-	BOOL GetPrefValue(LPTCHAR Section, LPTCHAR Pref, double *PrefVar)
+	BOOL GetPrefValue(LPCTCHAR Section, LPCTCHAR Pref, double *PrefVar)
 		{ return CamelotPrefs->GetPrefValue(Section, Pref, PrefVar); };
 
-	BOOL SetPrefValue(LPTCHAR Section, LPTCHAR Pref, INT32 *PrefVar)
+	BOOL SetPrefValue(LPCTCHAR Section, LPCTCHAR Pref, INT32 *PrefVar)
 		{ return CamelotPrefs->SetPrefValue(Section, Pref, PrefVar); };
-	BOOL SetPrefValue(LPTCHAR Section, LPTCHAR Pref, UINT32 *PrefVar)
+	BOOL SetPrefValue(LPCTCHAR Section, LPCTCHAR Pref, UINT32 *PrefVar)
 		{ return CamelotPrefs->SetPrefValue(Section, Pref, PrefVar); };
-	BOOL SetPrefValue(LPTCHAR Section, LPTCHAR Pref, double *PrefVar)
+	BOOL SetPrefValue(LPCTCHAR Section, LPCTCHAR Pref, double *PrefVar)
 		{ return CamelotPrefs->SetPrefValue(Section, Pref, PrefVar); };
 
 	// Used for direct partying on the preference file - mainly used for 'dynamic'

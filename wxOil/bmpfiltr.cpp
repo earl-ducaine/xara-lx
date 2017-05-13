@@ -1,7 +1,7 @@
 // $Id: bmpfiltr.cpp 1282 2006-06-09 09:46:49Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
- 
+
                Xara LX, a vector drawing and manipulation program.
                     Copyright (C) 1993-2006 Xara Group Ltd.
        Copyright on certain contributions may be held in joint with their
@@ -32,7 +32,7 @@ ADDITIONAL RIGHTS
 
 Conditional upon your continuing compliance with the GNU General Public
 License described above, Xara Group Ltd grants to you certain additional
-rights. 
+rights.
 
 The additional rights are to use, modify, and distribute the software
 together with the wxWidgets library, the wxXtra library, and the "CDraw"
@@ -171,7 +171,7 @@ BMPExportOptions::BMPExportOptions(const FilterType FilterID, const StringBase* 
 
 /********************************************************************************************
 
->	virtual BOOL BMPExportOptions::CopyFrom(BitmapExportOptions *pSource) 
+>	virtual BOOL BMPExportOptions::CopyFrom(BitmapExportOptions *pSource)
 
 	Author:		Stefan_Stoykov (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	19/05/97
@@ -180,7 +180,7 @@ BMPExportOptions::BMPExportOptions(const FilterType FilterID, const StringBase* 
 	See Also:	BitmapExportOptions::MakeCopy()
 
 ********************************************************************************************/
-BOOL BMPExportOptions::CopyFrom(BitmapExportOptions *pSource) 
+BOOL BMPExportOptions::CopyFrom(BitmapExportOptions *pSource)
 {
 	// copy the base class first
 	if (!BitmapExportOptions::CopyFrom(pSource))
@@ -234,7 +234,7 @@ BOOL BMPExportOptions::FileTypeChangeCopyFrom(BitmapExportOptions *pSource)
 
 /********************************************************************************************
 
->	virtual BOOL BMPExportOptions::Equal(BitmapExportOptions *pSource) 
+>	virtual BOOL BMPExportOptions::Equal(BitmapExportOptions *pSource)
 
 	Author:		Stefan_Stoykov (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	19/05/97
@@ -245,7 +245,7 @@ BOOL BMPExportOptions::FileTypeChangeCopyFrom(BitmapExportOptions *pSource)
 
 ********************************************************************************************/
 /*
-BOOL BMPExportOptions::Equal(BitmapExportOptions *pSource) 
+BOOL BMPExportOptions::Equal(BitmapExportOptions *pSource)
 {
 	BOOL ok = TRUE;
 
@@ -494,7 +494,7 @@ OutputDIB 	BMPFilter::DestDIB;
 	Preference:		DefaultExportDepth
 	Section:		Filters
 	Range:			1 to 32
-	Purpose:		Allows a default export bits per pixel amount to be remembered when 
+	Purpose:		Allows a default export bits per pixel amount to be remembered when
 					exporting either as a BMP or via the Accusoft loaders.
 	SeeAlso:		-
 
@@ -511,7 +511,7 @@ OutputDIB 	BMPFilter::DestDIB;
 	Returns:	The value currently set for the DefaultExportDepth
 	Purpose:	Allows other bitmap export filters to get at this value. Needs to be here
 				rather than in BaseBitmapFilter as that Init is never used.
-	SeeAlso:	BMPFilter::Init; BMPFilter::GetDefaultExportDpi; BMPFilter::SetDefaultExportDepth; 
+	SeeAlso:	BMPFilter::Init; BMPFilter::GetDefaultExportDpi; BMPFilter::SetDefaultExportDepth;
 
 ********************************************************************************************/
 
@@ -531,7 +531,7 @@ UINT32 BMPFilter::GetDefaultExportDepth()
 	Returns:	The value currently set for the DefaultExportDpi
 	Purpose:	Allows other bitmap export filters to get at this value. Needs to be here
 				rather than in BaseBitmapFilter as that Init is never used.
-	SeeAlso:	BMPFilter::Init; BMPFilter::GetDefaultExportDepth; BMPFilter::SetDefaultExportDPI; 
+	SeeAlso:	BMPFilter::Init; BMPFilter::GetDefaultExportDepth; BMPFilter::SetDefaultExportDPI;
 
 ********************************************************************************************/
 
@@ -548,10 +548,10 @@ double BMPFilter::GetDefaultExportDPI()
 	Created:	17/11/94
 	Inputs:		The new value to set for the DefaultExportDepth
 	Outputs:	None
-	Returns:	None  
+	Returns:	None
 	Purpose:	Allows other bitmap export filters to set this value. Needs to be here
 				rather than in BaseBitmapFilter as that Init is never used.
-	SeeAlso:	BMPFilter::Init; BMPFilter::GetDefaultExportDepth; BMPFilter::GetDefaultExportDPI; 
+	SeeAlso:	BMPFilter::Init; BMPFilter::GetDefaultExportDepth; BMPFilter::GetDefaultExportDPI;
 
 ********************************************************************************************/
 
@@ -568,10 +568,10 @@ void BMPFilter::SetDefaultExportDepth( UINT32 Depth)
 	Created:	17/11/94
 	Inputs:		The new value to set for the DefaultExportDpi
 	Outputs:	None
-	Returns:	None  
+	Returns:	None
 	Purpose:	Allows other bitmap export filters to set this value. Needs to be here
 				rather than in BaseBitmapFilter as that Init is never used.
-	SeeAlso:	BMPFilter::Init; BMPFilter::GetDefaultExportDepth; BMPFilter::GetDefaultExportDPI; 
+	SeeAlso:	BMPFilter::Init; BMPFilter::GetDefaultExportDepth; BMPFilter::GetDefaultExportDPI;
 
 ********************************************************************************************/
 
@@ -667,7 +667,7 @@ BOOL BMPFilter::Init()
 	Inputs:		pOilBitmap	pointer to the oil bitmap data to be filled in
 				pFilter			- the BaseCamelotFilter which provides functions like progress update
 				pFile			- the file to read the data from
-				IsCompressed	- Flag to say the bitmap is compressed or not.  
+				IsCompressed	- Flag to say the bitmap is compressed or not.
 	Outputs:	Will have filled in BMInfo	pointer to the bitmap header to fill in
 									BMBytes	pointer to the bitmap data to fill in
 	Purpose:	Actually does the process of reading a bitmap from a file.
@@ -677,7 +677,7 @@ BOOL BMPFilter::Init()
 				IsCompressed is only used for BMP/BMPZIP type bitmaps at present.
 				Assumes:
 					pFile has already been opened up for reading
-					pFilter has been set up for reading the data e.g. progress bar 
+					pFilter has been set up for reading the data e.g. progress bar
 	Returns:	TRUE if worked, FALSE if failed.
 
 ********************************************************************************************/
@@ -691,7 +691,7 @@ BOOL BMPFilter::ReadFromFile( OILBitmap* pOilBitmap, BaseCamelotFilter* pFilter,
 
 	// Try to import bitmap as usual binary BMP file.
 	CWxBitmap* pWBitmap = (CWxBitmap*)pOilBitmap;
-	
+
 	LPBITMAPINFO *pInfo = &(pWBitmap->BMInfo);
 	LPBYTE *pBytes = &(pWBitmap->BMBytes);
 
@@ -728,7 +728,7 @@ BOOL BMPFilter::ReadFromFile( OILBitmap* pOilBitmap, BaseCamelotFilter* pFilter,
 									BMBytes	pointer to the bitmap data to fill in
 	Purpose:	Actually does the process of reading a bitmap from a file.
 				Inherited classes override this to read in different file formats.
-				
+
 	Returns:	TRUE if worked, FALSE if failed.
 
 ********************************************************************************************/
@@ -741,13 +741,13 @@ BOOL BMPFilter::ReadFromFile( OILBitmap* pOilBitmap )
 	// The only problem is that if the user has chosen to use the BMP filter explicitly
 	// then this may not be what they really want. The BMP filter may not cope with all
 	// BMP types, whereas we may possibly have an AccusoftFilter which might cope better.
-	// If the user has not chosen explicitly then the BMP will be directed towards the 
+	// If the user has not chosen explicitly then the BMP will be directed towards the
 	// correct filter by the HowCompatible call.
 	// Generally, if the filter has been chosen at this point then HowCompatible will have
 	// been called and so we can ask the BMP filter what it found when asked this and use
-	// this result to determine whether to load the file or not. 
+	// this result to determine whether to load the file or not.
 
-	UINT32 ImportMsgId = GetImportMsgID();		
+	UINT32 ImportMsgId = GetImportMsgID();
 	String_64 ProgressString(ImportMsgId);
 
 	CCLexFile *pImportFile = GetImportFile();
@@ -756,7 +756,7 @@ BOOL BMPFilter::ReadFromFile( OILBitmap* pOilBitmap )
 	ProgressString = GetImportProgressString(pImportFile, ImportMsgId);
 
 	CWxBitmap* pWBitmap = (CWxBitmap*)pOilBitmap;
-	
+
 	LPBITMAPINFO *pInfo = &(pWBitmap->BMInfo);
 	LPBYTE *pBytes = &(pWBitmap->BMBytes);
 
@@ -766,16 +766,16 @@ PORTNOTE("ExtFilt", "Removed use of external filters")
 	if (
 		(GetBmpCompatibility() == 10) || (AccusoftFilters::GetVersionNumber() == 0)
 	   )
-	{		
+	{
 		// The BMP filter liked it very much and so use it, showing progress bar
 		if (!DIBUtil::ReadFromFile(pImportFile, pInfo, pBytes, TRUE, &ProgressString))
 			return FALSE;
 	}
 	else
 	{
-		// The BMP filter was not totally sure about that file and so we should	try and 
+		// The BMP filter was not totally sure about that file and so we should	try and
 		// see if the Accusoft loader is present and if so give this an attempt at
-		// loading that file. 		
+		// loading that file.
 		// Get a cast version of a pointer to the filter
 PORTNOTE("ExtFilt", "Removed use of external filters")
 #ifndef EXCLUDE_FROM_XARALX
@@ -792,7 +792,7 @@ PORTNOTE("ExtFilt", "Removed use of external filters")
 	if (!DIBUtil::ReadFromFile(pImportFile, pInfo, pBytes, TRUE, &ProgressString))
 		return FALSE;
 #endif //EXCLUDE_FROM_RALPH
-	
+
 	// Everything went ok and we imported the bitmap ok
 	SetLastBitmap();		// can only import one bitmap at the moment
 	return TRUE;
@@ -820,19 +820,19 @@ BOOL BMPFilter::GetExportOptions(BitmapExportOptions* pOptions)
 	WrittenHeader = FALSE;
 
 	// Set up the variables which the export dialog box uses
-	UINT32 BitmapDepth = 0;
+	// UINT32 BitmapDepth = 0;
 	if (pBMPOptions->GetSelectionType() == ABITMAP)
 	{
 		// Exporting the bitmap itself
 		// dpi should be set to the dpi of the bitmap itself
-		BitmapDepth = pBMPOptions->GetDepth();
+		//BitmapDepth = pBMPOptions->GetDepth();
 	}
 
 	// Determine the filter type currently in use in Accusoft format
 //	INT32 FilterID = BMP_UNCOMPRESSED;
 
 	// Sets the Accusoft filter type to the same specified value just in case
-	// we wish to use the Accusoft DLL to do some of the BMP saving for us 
+	// we wish to use the Accusoft DLL to do some of the BMP saving for us
 	//WEBSTER-Martin-07/01/97
 #ifndef WEBSTER
 PORTNOTE("ExtFilt", "Removed use of external filters")
@@ -875,12 +875,12 @@ PORTNOTE("BmpPrevDlg", "Removed use of bitmap preview dialog")
 #endif
 		}
 		else
-		{	
+		{
 			ERROR3("Unable to find OPTOKEN_BMAPPREVDLG");
 			Ok = FALSE;
-		} 
+		}
 	}
-	
+
 	// Return with the ok/cancel state used on the dialog box
 	return Ok;
 
@@ -954,7 +954,7 @@ PORTNOTE("ExtFilt", "Removed use of external filters")
 #else
 	return FALSE;
 #endif
-}	
+}
 
 /********************************************************************************************
 
@@ -988,7 +988,7 @@ BOOL BMPFilter::GetRenderBottomToTop()
 				NOTE - ONLY COPES WITH End=TRUE currently
 				Most of the work now is down by WriteDataToFile as this is a static form
 				and there is a similar version in the Accusoft DLL. This can therefore be
-				used to pass work onto the Accusoft DLL, for the cases we don't cope with. 
+				used to pass work onto the Accusoft DLL, for the cases we don't cope with.
 				End is ignored now and should always be set to TRUE.
 	SeeAlso:	WriteDataToFile(); AccusoftFilters::WriteToFile; AccusoftFilters::WriteDataToFile;
 
@@ -1027,7 +1027,7 @@ PORTNOTE("ExtFilt", "Removed use of external filters")
 		//WEBSTER-Martin-07/01/97
 		return FALSE;
 #endif
-	else	
+	else
 		return WriteDataToFile(End, DefaultExportDepth, DefaultExportCompression);
 #else
 	return FALSE;
@@ -1065,7 +1065,7 @@ PORTNOTE("ExtFilt", "Removed use of external filters")
 		//WEBSTER-Martin-07/01/97
 		return FALSE;
 #endif //WEBSTER
-	else	
+	else
 		return EndWriteDataToFile();
 #else
 	return FALSE;
@@ -1118,7 +1118,7 @@ BOOL BMPFilter::WriteDataToFile( BOOL End, UINT32 Bpp, UINT32 Compression)
 	// First time through, lets write out a suitable header.
 	// As we write it in one big chunk (currently), its easy
 	// If we are rendering in strips then the bitmap information in the render region will
-	// be set for the height of the strip and not the height of the entire bitmap. 
+	// be set for the height of the strip and not the height of the entire bitmap.
 	if (!WrittenHeader)
 	{
 		WrittenHeader = TRUE;
@@ -1168,7 +1168,7 @@ TRACEUSER( "Neville", _T("BMPFilter::WriteDataToFile height of 1st strip = %d\n"
 				}
 				else if	(OutputDepth == 4)
 				{
-					// Bit more tricky this one, Gavin uses a fixed 16 colour palette			
+					// Bit more tricky this one, Gavin uses a fixed 16 colour palette
 					OutputDIB::Fix16ColourPalette(lpPalette);
 				}
 			}
@@ -1183,7 +1183,7 @@ TRACEUSER( "Neville", _T("BMPFilter::WriteDataToFile height of 1st strip = %d\n"
 			Compress = BI_RLE8;
 
 		if (!DestDIB.StartFile(	OutputFile,
-								&lpInfo->bmiHeader,				// pointer to BITMAPINFOHEADER 
+								&lpInfo->bmiHeader,				// pointer to BITMAPINFOHEADER
 								lpPalette,
 
 								OutputDepth,					// actual file depth
@@ -1238,7 +1238,7 @@ TRACEUSER( "Neville", _T("BMPFilter::WriteDataToFile height of 1st strip = %d\n"
 	Created:	15/5/95
 	Inputs:		-
 	Purpose:	Actually does the job of cleaning up after writing the bitmap data out to a
-				file. Usually called by EndWriteToFile. 
+				file. Usually called by EndWriteToFile.
 	Returns:	TRUE if worked, FALSE if failed.
 
 ********************************************************************************************/
@@ -1257,7 +1257,7 @@ BOOL BMPFilter::EndWriteDataToFile( )
 
 /********************************************************************************************
 
->	INT32 BMPFilter::HowCompatible(PathName& Filename, ADDR HeaderStart, UINT32 HeaderSize, 
+>	INT32 BMPFilter::HowCompatible(PathName& Filename, ADDR HeaderStart, UINT32 HeaderSize,
 								 UINT32 FileSize)
 
 	Author:		Tim_Browse (Xara Group Ltd) <camelotdev@xara.com>
@@ -1274,7 +1274,7 @@ BOOL BMPFilter::EndWriteDataToFile( )
 
 
 
-INT32 BMPFilter::HowCompatible(PathName& Filename, ADDR HeaderStart, UINT32 HeaderSize, 
+INT32 BMPFilter::HowCompatible(PathName& Filename, ADDR HeaderStart, UINT32 HeaderSize,
 							 UINT32 FileSize)
 {
 	// We need to remember what we thought of this file in our class variable.
@@ -1301,13 +1301,13 @@ INT32 BMPFilter::HowCompatible(PathName& Filename, ADDR HeaderStart, UINT32 Head
 
 	// If the header is of the correct size then now see what we think of this bitmap
 	// header that we have been given. Cope with old OS/2 style headers and more up
-	// to date ones.  
+	// to date ones.
 	// If the header was ok we used to just say 'we like it' immediately. What we want
 	// to do now instead is only say we are really interested if it is special types of
 	// BMP, such as 32bpp,  if it is anything else then say we are less interested in it.
 	// This should allow the Accusoft BMP filter to take over the loading of BMPs which
-	// we do not support. 
-	// Pointer to the info header should be the next one after the file header 
+	// we do not support.
+	// Pointer to the info header should be the next one after the file header
 	INT32 FileCompatibility = 0;	// default, didn't like this file value
 	if (
 		(HdrSize==sizeof( BITMAPCOREHEADER ))				// old OS/2 1.0
@@ -1321,13 +1321,13 @@ INT32 BMPFilter::HowCompatible(PathName& Filename, ADDR HeaderStart, UINT32 Head
 			FileCompatibility = 9;
 	}
 	else if
-	   ( 			
+	   (
 		(HdrSize==sizeof( BITMAPINFOHEADER ))				// Win 3.0+
 	   )
 	{
 		LPBITMAPINFOHEADER pInfoHeader = (LPBITMAPINFOHEADER)(pHeader+1);
 
-		// Use the function in DIBUtil to say if we like this file or not 
+		// Use the function in DIBUtil to say if we like this file or not
 		if ( DIBUtil::CanReadFromFile(pInfoHeader) )
 			FileCompatibility = 10;
 		else
@@ -1337,7 +1337,7 @@ INT32 BMPFilter::HowCompatible(PathName& Filename, ADDR HeaderStart, UINT32 Head
 TRACEUSER( "Neville", _T("BMPFilter::HowCompatible FileCompatibility = %d\n"),FileCompatibility);
 	// Remember what we thought in our class variable.
 	BMPHowCompatible = FileCompatibility;
-				
+
 	// Return the found value to the caller.
 	return FileCompatibility;
 }
@@ -1404,22 +1404,22 @@ PORTNOTE("ExtFilt", "Removed use of external filters")
 	if (
 		(DefaultExportCompression && (Bpp == 4)) ||
 		(DefaultExportCompression && (Bpp == 8))
-	   )		
-	
+	   )
+
 	{
 		// Set Compression TRUE and force the Accusoft filter type to be compressed.
 		Compression = TRUE;
 		AccusoftFilters::SetFilterType(BMP_COMPRESSED);
-		AccusoftFilters::SetExportDpi(TheDpi);	
+		AccusoftFilters::SetExportDpi(TheDpi);
 	}
-	
+
 	if 	( Compression && (AccusoftFilters::GetVersionNumber() > 0) )
 		ok = AccusoftFilters::WriteToFile(OutputFile, Info, Bytes, &ProgressString);
 	else
 #endif
 #endif //WEBSTER
 		ok = DIBUtil::WriteToFile(OutputFile, Info, Bytes, &ProgressString);
-	
+
 	return ok;
 #else
 	return FALSE;
@@ -1479,10 +1479,10 @@ BOOL BMPFilter::WriteBitmapToFile(KernelBitmap* pKernelBitmap, BaseCamelotFilter
 		return FALSE;
 	// Now start the compression
 	pFile->SetCompression(TRUE);
-	
+
 	// Write to file, no header and using pFilter for progress bar updates
 	ok = DIBUtil::WriteToFile(pFile, Info, Bytes, NULL, FALSE, pFilter);
-	
+
 	// Now that we have finished, close the compressor down
 	pFile->SetCompression(FALSE);
 
@@ -1554,4 +1554,3 @@ void BMPFilter::AlterPaletteContents( LPLOGPALETTE pPalette )
 {
 	DestDIB.AlterExportPalette( pPalette );
 }
-

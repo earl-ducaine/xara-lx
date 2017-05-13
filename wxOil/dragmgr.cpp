@@ -1,7 +1,7 @@
 // $Id: dragmgr.cpp 1671 2006-08-04 15:56:13Z luke $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
- 
+
                Xara LX, a vector drawing and manipulation program.
                     Copyright (C) 1993-2006 Xara Group Ltd.
        Copyright on certain contributions may be held in joint with their
@@ -32,7 +32,7 @@ ADDITIONAL RIGHTS
 
 Conditional upon your continuing compliance with the GNU General Public
 License described above, Xara Group Ltd grants to you certain additional
-rights. 
+rights.
 
 The additional rights are to use, modify, and distribute the software
 together with the wxWidgets library, the wxXtra library, and the "CDraw"
@@ -145,7 +145,7 @@ END_EVENT_TABLE()
 	Author:		Chris_Snook (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	9/1/95
 
-	Purpose:	CaptureHandler constructor 
+	Purpose:	CaptureHandler constructor
 
 ********************************************************************************************/
 
@@ -166,7 +166,7 @@ CaptureHandler::CaptureHandler(wxWindow* pWindow)
 	Author:		Chris_Snook (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	9/1/95
 
-	Purpose:	CaptureWnd destructor 
+	Purpose:	CaptureWnd destructor
 
 ********************************************************************************************/
 
@@ -251,7 +251,7 @@ BOOL CaptureHandler::StartCapture()
 	Author:		Chris_Snook (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	12/01/95
 	Inputs:		MFC
-	Purpose:	
+	Purpose:
 	Errors:		-
 	SeeAlso:	-
 
@@ -284,7 +284,7 @@ void CaptureHandler::OnLButtonUp(wxMouseEvent& event)
 	Author:		Chris_Snook (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	12/01/95
 	Inputs:		MFC
-	Purpose:	
+	Purpose:
 	Errors:		-
 	SeeAlso:	-
 
@@ -346,7 +346,7 @@ BOOL CaptureHandler::SetUpSolidDrag(wxPoint StartPos)
 	m_pDisplayDC = new wxScreenDC();
 	wxMemoryDC BackGroundDC;
 	m_pBackBitmap = new wxBitmap(DSize.x, DSize.y);
-	
+
 	if (m_pDisplayDC==NULL || m_pBackBitmap == NULL)
 	{
 	 	return FALSE;
@@ -368,12 +368,12 @@ BOOL CaptureHandler::SetUpSolidDrag(wxPoint StartPos)
 
 	BackGroundDC.SelectObject(wxNullBitmap);
 
-	INT32 DragTransparency = 
+	INT32 DragTransparency =
 		DragManagerOp::CurrentManager->CurrentDragInfo->GetDragTransparency();
 
-	KernelBitmap* DragMask = 
+	KernelBitmap* DragMask =
 		DragManagerOp::CurrentManager->CurrentDragInfo->GetSolidDragMask();
-	
+
 	BOOL TransparentMask = DragManagerOp::CurrentManager->CurrentDragInfo->HasTransparentMask();
 
 	if (DragTransparency > 0 || TransparentMask ||  DragMask != NULL)
@@ -484,11 +484,11 @@ BOOL CaptureHandler::SetUpSolidDrag(wxPoint StartPos)
 				LPBITMAPINFO MemBInfo = AllocDIB(DSize.x, DSize.y, bpp, &MemBBits);
 
 				GRenderRegion::StaticPlotBitmap(&MemDC, DIB_RGB_COLORS, MemBInfo, MemBBits, 0, 0, DSize.x, DSize.y, m_pMaskBitmap->GetPalette(), 0, 0);
-	
+
 				// Now OR the Mask Bitmap into the MaskDC, so that
 				// it 'masks' the transparency mask.
 				MaskDC.Blit(0, 0, DSize.x, DSize.y, &MemDC, 0, 0, wxOR);
-	
+
 				// clean up the dc
 				MaskDC.SetBrush(*wxTRANSPARENT_BRUSH);
 				MaskDC.SetPen(*wxTRANSPARENT_PEN);
@@ -518,7 +518,7 @@ BOOL CaptureHandler::SetUpSolidDrag(wxPoint StartPos)
 
 	Purpose:	Removes any solid-drag stuff we may have on-screen at the moment and cleans up
 				the solid drag system. Called at the end of a drag to clean up, and also
-				whenever someone is redrawing underneath us, and we thus need to remove the 
+				whenever someone is redrawing underneath us, and we thus need to remove the
 				drag stuff while they redraw.
 	Errors:		-
 	SeeAlso:	CaptureHandler::CleanUpSolidDragInScreenArea
@@ -542,7 +542,7 @@ BOOL CaptureHandler::CleanUpSolidDrag()
 	if (m_pBackBitmap)
 	{
 		wxMemoryDC BackGroundDC;
-	
+
 		// select bitmap into the dc
 		BackGroundDC.SelectObject(*m_pBackBitmap);
 
@@ -691,7 +691,7 @@ BOOL CaptureHandler::DrawSolidDrag(wxPoint point)
 			 DragManagerOp::CurrentManager->CurrentDragInfo == NULL,
 			 FALSE,
 			 "No current drag in CaptureHandler::DrawSolidDrag!");
-	
+
 	// not interested ? ...
 	if(DragManagerOp::CurrentManager->DragPending)
 	   	return TRUE;
@@ -718,10 +718,10 @@ BOOL CaptureHandler::DrawSolidDrag(wxPoint point)
 	wxSize DSize = DragManagerOp::CurrentManager->CurrentDragInfo->SolidDragSize;
 
 	// create a few	DCs !!!
-	
+
 	// this one will hold the old background
 	wxMemoryDC BackDC;
-	
+
 	// select bitmap into the dc
 	BackDC.SelectObject(*m_pBackBitmap);
 
@@ -731,18 +731,18 @@ BOOL CaptureHandler::DrawSolidDrag(wxPoint point)
 
 	// select bitmap into the dc
 	ScratchDC.SelectObject(ScratchBit);
-	
+
 	// make copy of last rect
 	wxRect OldRect(m_DragRect);
-	
+
 	// set new drag draw bounds
 	m_DragRect = wxRect(point.x, point.y, DSize.x, DSize.y);
-	
+
 	// Copy screen to new background
 	ScratchDC.Blit(0,0,DSize.x,DSize.y,m_pDisplayDC,m_DragRect.x,m_DragRect.y);
-	
+
 	wxPoint Change = OldRect.GetPosition() - m_DragRect.GetPosition();
-	
+
 	// Replace part of new bkg with old background
 	if (!OldRect.IsEmpty())
 		ScratchDC.Blit(Change.x,Change.y,DSize.x,DSize.y,&BackDC,0,0);
@@ -754,7 +754,7 @@ BOOL CaptureHandler::DrawSolidDrag(wxPoint point)
 	// Copy part of image to old background
 	DragManagerOp::CurrentManager->CurrentDragInfo->
 		OnDrawSolidDrag(wxPoint(-Change.x,-Change.y), &BackDC);
-	
+
 	// Copy old background to screen
 	if (!OldRect.IsEmpty())
 		m_pDisplayDC->Blit(OldRect.x,OldRect.y,DSize.x,DSize.y,&BackDC,0,0);
@@ -814,13 +814,13 @@ BOOL CaptureHandler::DrawTransparentDrag(wxPoint point, INT32 Transparency)
 
 	// select bitmap into the dc
 	ScratchDC.SelectObject(ScratchBit);
-	
+
 	// make copy of last rect
 	wxRect OldRect = m_DragRect;
-	
+
 	// set new drag draw bounds
 	m_DragRect = wxRect(point.x,point.y,DSize.x,DSize.y);
-	
+
 	// Copy screen to new background
 	ScratchDC.Blit(0,0,DSize.x,DSize.y,m_pDisplayDC,m_DragRect.x,m_DragRect.y);
 
@@ -856,14 +856,14 @@ BOOL CaptureHandler::DrawTransparentDrag(wxPoint point, INT32 Transparency)
 
 	// Copy part of image to old background
 	BackDC.Blit(-Change.x,-Change.y, DSize.x, DSize.y, &OffScreenDC, 0,0);
-	
+
 	// Copy image to screen
 	m_pDisplayDC->Blit(m_DragRect.x, m_DragRect.y, DSize.x, DSize.y, &OffScreenDC, 0, 0);
 
 	// Copy old background to screen
 	if(!OldRect.IsEmpty())
 		m_pDisplayDC->Blit(OldRect.x, OldRect.y, DSize.x, DSize.y, &BackDC, 0, 0);
-	
+
 	// copy new background into old for next time round
 	BackDC.Blit(0, 0, DSize.x, DSize.y, &ScratchDC, 0, 0);
 
@@ -960,7 +960,7 @@ DragManagerOp::DragManagerOp(DragInformation *Descriptor)
 	CurrentDragInfo	= Descriptor;
 
 	CurrentKeypress	= NULL;
-	
+
 	DragEnded = FALSE;
 
 	CurrentID = 0;
@@ -1002,7 +1002,7 @@ DragManagerOp::~DragManagerOp()
 
 	DragActive = FALSE;
 
-	StatusLineStringID = 0; 
+	StatusLineStringID = 0;
 
 	if (CurrentCursor)
 		delete CurrentCursor;
@@ -1024,7 +1024,7 @@ DragManagerOp::~DragManagerOp()
 wxPoint DragManagerOp::GetDragMousePos()
 {
 	wxPoint MPos(0,0);
-	
+
 	if( CurrentManager != NULL )
 		MPos = CurrentManager->CurrentMousePos;
 	return MPos;
@@ -1046,7 +1046,7 @@ CaptureHandler *DragManagerOp::GetDragCaptureHandler()
 {
 	if( CurrentManager == NULL )
 		return NULL;
-	
+
 	return TheCaptureHandler;
 }
 
@@ -1065,7 +1065,7 @@ DragInformation * DragManagerOp::GetCurrentDragInfo()
 {
 	if( CurrentManager == NULL )
 		return NULL;
-	
+
 	return CurrentDragInfo;
 
 }
@@ -1131,7 +1131,7 @@ void DragManagerOp::StartDrag(DragInformation *Descriptor, CWindowID DragWindow)
 		if (TheCaptureHandler != NULL)
 		{
 			DragPending = TRUE;
-			
+
 			// Remember where the mouse is at the start of the drag
 			pNewManager->CurrentMousePos = wxGetMousePosition();
 			pNewManager->InitialMousePos = pNewManager->LastMousePos = pNewManager->CurrentMousePos;
@@ -1140,7 +1140,7 @@ void DragManagerOp::StartDrag(DragInformation *Descriptor, CWindowID DragWindow)
 			BROADCAST_TO_ALL(DragMessage(DragMessage::DRAGSTARTED, pNewManager, Descriptor));
 
 			// views don't receive messages so we'll have to do this the hard way..
-			// App->Document->View... 
+			// App->Document->View...
 			GetApplication()->CreateDragTargets(Descriptor);
 
 			// Send an Initialise event to all registered targets
@@ -1152,7 +1152,7 @@ void DragManagerOp::StartDrag(DragInformation *Descriptor, CWindowID DragWindow)
 				TRACE( _T("DragManagerOp::StartDrag - No drag targets specified for this drag!"));
 #endif
 #endif
-			pNewManager->ProcessEvent(DRAGEVENT_INITIALISE);		
+			pNewManager->ProcessEvent(DRAGEVENT_INITIALISE);
 
 			// Start the mouse capture
 			TheCaptureHandler->StartCapture();
@@ -1183,7 +1183,7 @@ void DragManagerOp::StartDrag(DragInformation *Descriptor, CWindowID DragWindow)
 	Author:		Chris_Snook (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	9/1/95
 	Purpose:
-	Input  :  Flags : mouse button state( 1=leftclick/-1= rightclick )	
+	Input  :  Flags : mouse button state( 1=leftclick/-1= rightclick )
 
 ********************************************************************************************/
 
@@ -1263,7 +1263,7 @@ void DragManagerOp::AbortDrag(void)
 		CurrentManager->End();
 	}
 
-	SetDragActive(FALSE);	
+	SetDragActive(FALSE);
 }
 
 
@@ -1299,7 +1299,7 @@ DragManagerOp *DragManagerOp::GetCurrentManager(void)
 
 	Returns:	TRUE if a DragTarget claimed the event
 
-	Purpose:	To process global drag events 
+	Purpose:	To process global drag events
 				This method calls each DragTarget event processor in turn (until one
 				claims the event), with the event. The 3 'Current' member variables are
 				passed in to the event processor, so ensure they are set up appropriately
@@ -1361,7 +1361,7 @@ BOOL DragManagerOp::ProcessEvent(DragEventType Event) {
 	// GetRect() is relative to the parent window when
 	// TargetWindow is not a TLW. What we need is (consistently)
 	// screen coordinates
-	
+
 	// TRACEUSER("Gerry", _T("KernelTargetWindow = %s"), TargetWindow->GetClassInfo()->GetClassName());
 	wxRect TargetRect = TargetWindow->GetRect();
 	// TRACEUSER("Gerry", _T("TargetRect = (%d, %d) [%d, %d]"), TargetRect.x, TargetRect.y, TargetRect.width, TargetRect.height);
@@ -1401,7 +1401,7 @@ BOOL DragManagerOp::ProcessEvent(DragEventType Event) {
 	} else {
 	  GoAhead = FALSE;
 	}
-#pragma GCC diagnostic pop				
+#pragma GCC diagnostic pop
       }
       // TRACEUSER("Gerry", _T("%s"), GoAhead ? _T("Process") : _T("Skipping"));
       if (GoAhead &&
@@ -1424,8 +1424,8 @@ BOOL DragManagerOp::ProcessEvent(DragEventType Event) {
 	TRACEUSER("Gerry", _T("OilTargetWindow = <NONE>"));
       }
 #endif
-      wxPoint ClientPoint;					// This will be screen coords, or will end up as 
-      ClientPoint.x = WinoilMousePos.x;	// client coords if we have a window... 
+      wxPoint ClientPoint;					// This will be screen coords, or will end up as
+      ClientPoint.x = WinoilMousePos.x;	// client coords if we have a window...
       ClientPoint.y = WinoilMousePos.y;
       if (TargetWindow != NULL) {
 	// Get the mouse position in client coords
@@ -1483,14 +1483,14 @@ BOOL DragManagerOp::ProcessEvent(DragEventType Event) {
     }
     Ptr = Next;
   }
-  if (!DragPending && Event != DRAGEVENT_COMPLETED) { 
+  if (!DragPending && Event != DRAGEVENT_COMPLETED) {
     SetStatusLineText();
     SetCursor();
-  }	
+  }
   return OverTarget;	// Return status to indicate wheteher or not the event was claimed
 }
 
-		 
+
 
 /********************************************************************************************
 
@@ -1515,7 +1515,7 @@ BOOL DragManagerOp::OnIdleEvent(void) {
   if(DragEnded) {
     return(FALSE);	// Done nothing, so let low-priority handlers have a go
   }
-  BOOL JustStartedDrag = FALSE;
+  //BOOL JustStartedDrag = FALSE;
   // We have received a start drag message but we are not sure whether
   // this is the real thing yet.
   if (DragPending) {
@@ -1530,7 +1530,7 @@ BOOL DragManagerOp::OnIdleEvent(void) {
     }
 #pragma GCC diagnostic pop
     DragPending = FALSE;
-    JustStartedDrag = TRUE;	// Flag that we have "just turned on" the drag
+    //JustStartedDrag = TRUE;	// Flag that we have "just turned on" the drag
     TheCaptureHandler->SetUpSolidDrag(CurrentMousePos);
   }
   // Determine what event type to send around...
@@ -1553,7 +1553,7 @@ BOOL DragManagerOp::OnIdleEvent(void) {
   // **** !!!! ToDo: This could be considered bodgy and nasty, mostly because it is.
   // ToDo: Somehow detect if the drag has ended? A bodge I know, but we wanna compile
   // this and see if it works!
-  if (KeyPress::IsEscapePressed()) {	// If escape (or equivalent) pressed, abort the drag 
+  if (KeyPress::IsEscapePressed()) {	// If escape (or equivalent) pressed, abort the drag
     AbortDrag();
     return(FALSE);	// Let low-priority handlers have a go
   }
@@ -1720,7 +1720,7 @@ void DragManagerOp::CleanUpAfterDrag(void)
 	Created:	15/1/95
 	Returns:	-
 	Purpose:	Set the cursor !
-   
+
 ********************************************************************************************/
 
 void DragManagerOp::SetCursor()
@@ -1732,11 +1732,11 @@ void DragManagerOp::SetCursor()
 	  CursorID = CurrentDragInfo->GetCursorID();  	// nope
 	else
 	  CursorID = CurrentDragTarget->GetCursorID();	// yep
-	
+
 	// the target does not want to change the cursor
 	if(CursorID == 0)
 		return;
-	
+
 	if(CurrentManager->CurrentID != CursorID) 						// nothing to change
 	{
 		if(CurrentManager->CurrentCursor)							// delete the old
@@ -1750,7 +1750,7 @@ void DragManagerOp::SetCursor()
 			if (CurrentManager->CurrentCursor)
 				CurrentManager->CurrentCursor->SetActive();		   	// make the active cursor
 		}
-		
+
 		CurrentManager->CurrentID = CursorID;
 	}
 }
@@ -1764,7 +1764,7 @@ void DragManagerOp::SetCursor()
 	Created:	15/1/95
 	Returns:	-
 	Purpose:	Write Status line help
-   
+
 ********************************************************************************************/
 
 void DragManagerOp::SetStatusLineText()
@@ -1774,14 +1774,14 @@ void DragManagerOp::SetStatusLineText()
 	{	// get the drag status text
 		if(CurrentDragInfo)
 			if(CurrentDragInfo->GetStatusLineText(&StatusText))
-				GetApplication()->UpdateStatusBarText(&StatusText,FALSE); 
+				GetApplication()->UpdateStatusBarText(&StatusText,FALSE);
 	}
 	else
 	{	// get the target status text
 		if(CurrentDragTarget->GetStatusLineText(&StatusText))
-			GetApplication()->UpdateStatusBarText(&StatusText,FALSE); 
+			GetApplication()->UpdateStatusBarText(&StatusText,FALSE);
 	}
-			
+
 
 }
 
@@ -1820,8 +1820,8 @@ BOOL DragManagerOp::GetStatusText(String_256 * StatusText)
 		else
 			return FALSE;
 	}
-		
-	return TRUE; 
+
+	return TRUE;
 
 }
 
@@ -1944,7 +1944,7 @@ void DragManagerOp::RedrawStarting(CWindowID TheWindow, CGadgetID TheGadget, Doc
 			DragManagerOp::CurrentManager->TheCaptureHandler->CleanUpSolidDrag();
 			RedrawInProgress = TRUE;
 		}
-	}	
+	}
 }
 
 
@@ -1956,7 +1956,7 @@ void DragManagerOp::RedrawStarting(CWindowID TheWindow, CGadgetID TheGadget, Doc
 	Created:	27/3/95
 	Returns:	-
 	Purpose:	Tell the drag manager that an external redraw has finished.
-   
+
 ********************************************************************************************/
 
 void DragManagerOp::RedrawFinished()

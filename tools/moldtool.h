@@ -124,7 +124,7 @@ class CCAttrMap;
 #define OPTOKEN_RECTANGULARENVELOPE		_T("DefaultEnvelope")
 #define OPTOKEN_RECTANGULARPERSPECTIVE	_T("DefaultPerspective")
 
-typedef enum EnvelopeType {
+enum EnvelopeType {
 	ENV_DEFAULT,
 	ENV_CIRCULAR,
 	ENV_ELLIPTICAL,
@@ -132,7 +132,7 @@ typedef enum EnvelopeType {
 	ENV_BANNER
 };
 
-typedef enum PerspectiveType {
+enum PerspectiveType {
 	PER_DEFAULT,
 	PER_LEFT,
 	PER_RIGHT,

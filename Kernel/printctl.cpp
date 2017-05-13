@@ -1,7 +1,7 @@
 // $Id: printctl.cpp 1454 2006-07-17 11:52:51Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
- 
+
                Xara LX, a vector drawing and manipulation program.
                     Copyright (C) 1993-2006 Xara Group Ltd.
        Copyright on certain contributions may be held in joint with their
@@ -32,7 +32,7 @@ ADDITIONAL RIGHTS
 
 Conditional upon your continuing compliance with the GNU General Public
 License described above, Xara Group Ltd grants to you certain additional
-rights. 
+rights.
 
 The additional rights are to use, modify, and distribute the software
 together with the wxWidgets library, the wxXtra library, and the "CDraw"
@@ -157,7 +157,7 @@ PrintMethodType PrintControl::AppPrintMethod = PRINTMETHOD_NORMAL;	// ini file e
 
 //	if ( Camelot.DeclareSection(TEXT("Preferences"), 3) )
 //	{
-		// section declared ok so now define the preference option  
+		// section declared ok so now define the preference option
 		//	Camelot.DeclarePref(TEXT("Preferences"), TEXT("MinPrintScale"), &MinPrintScale, 1);
 		//	Camelot.DeclarePref(TEXT("Preferences"), TEXT("MaxPrintScale"), &MaxPrintScale, 1);
 
@@ -269,7 +269,7 @@ PrintControl::~PrintControl()
 	Created:	7/4/95
 	Inputs:		-
 	Outputs:	-
-	Returns:	Returns the print info string 
+	Returns:	Returns the print info string
 	Purpose:	This uses the print control's settings to build the string displayed in the print info
 				field of a print dlg
 	Errors:		-
@@ -290,7 +290,7 @@ String_256 PrintControl::BuildPrintInfoStr()
 		default: ERROR3_PF(("Unknown fit type (%d)",FitType)); break;
 	}
 
-	TCHAR* format = _T("%.2lf%%");
+	const TCHAR* format = _T("%.2lf%%");
 	double fScale = Scale.MakeDouble();
 	INT32 n = INT32((fScale*100)+0.5);
 
@@ -366,11 +366,11 @@ String_256 PrintControl::BuildPrintInfoStr()
 		case PRINTFIT_CUSTOM:
 			{
 				DocRect Rect(0,PaperHeight-ScaledHeight,ScaledWidth,PaperHeight);
-				
+
 				INT32 CropAdj = GetCropAdjust();
 				INT32 TransX = LeftMargin + CropAdj;
 				INT32 TransY = TopMargin + CropAdj;
-				
+
 				Rect.Translate(TransX,-TransY);
 				if (PrintableArea.ContainsRect(Rect))
 					NumPages = 1;
@@ -404,7 +404,7 @@ String_256 PrintControl::BuildPrintInfoStr()
 	Created:	7/4/95
 	Inputs:		-
 	Outputs:	-
-	Returns:	Returns the paper size string 
+	Returns:	Returns the paper size string
 	Purpose:	This uses the printer settings to build the string displayed in the paper size
 				field of a print options tab
 	Errors:		-
@@ -489,7 +489,7 @@ PrintControl& PrintControl::operator=(PrintControl& other)
 	PaperWidth 		= other.PaperWidth;
 	PaperHeight		= other.PaperHeight;
 	PageWidth		= other.PageWidth;
-	PageHeight		= other.PageHeight;	
+	PageHeight		= other.PageHeight;
 	OrigPageWidth	= other.OrigPageWidth;
 	OrigPageHeight	= other.OrigPageHeight;
 
@@ -585,7 +585,7 @@ BOOL PrintControl::SetUp(Spread* pThisSpread, BOOL RedrawPrintBorders)
 	SetUpFailed    = !PrintAreaSetUp;
 
 	return PrintAreaSetUp;
-}	
+}
 
 /******************************************************************************************
 
@@ -649,7 +649,7 @@ BOOL PrintControl::CalcPrintAreaVars(BOOL RedrawPrintBorders)
 	PageHeight = TotalPrintArea.hi.y - TotalPrintArea.lo.y;
 
 	// If double page spread AND printing single pages, half the width for each page printed
-	if (DPS && !WholeSpread) 
+	if (DPS && !WholeSpread)
 		(PageWidth) /= 2;
 
 	// Save the orig values in case PageWidth & PageHeight need to be swapped due to sideways orientation
@@ -755,7 +755,7 @@ INT32 PrintControl::GetNumPrintablePages()
 					ScaledWidth
 					ScaledHeight
 	SeeAlso:	StartImport() & EndImport()
-													
+
 ******************************************************************************************/
 
 void PrintControl::SetScaleFactor(double ScaleFactor)
@@ -838,7 +838,7 @@ void PrintControl::SetPrintOrient(PrintOrient NewOrient)
 			{
 				SetRows(1);			// Use SetRows() to recalc max rows and scale factor
 				SetColumns(1);		// Use SetColumns() to recalc max columns and scale factor
-				SetGutter(0);		
+				SetGutter(0);
 			}
 		}
 	}
@@ -869,7 +869,7 @@ void PrintControl::SetWidth(INT32 NewVal)
 	else
 		ScaledWidth = NewVal;
 }
-	
+
 
 /******************************************************************************************
 
@@ -984,7 +984,7 @@ INT32 PrintControl::CalcMaxRows(INT32 GutterVal)
 	Created:	11/4/95
 	Inputs:		GutterVal = the gutter value to use
 	Returns:	Max num columns for the current paper height and gutter setting
-	Purpose:	Dynamically calcs the max num columns possible, given the current paper height 
+	Purpose:	Dynamically calcs the max num columns possible, given the current paper height
 				and gutter setting.
 
 				This is based on the min scale factor allowed
@@ -1020,7 +1020,7 @@ INT32 PrintControl::CalcMaxColumns(INT32 GutterVal)
 	Inputs:		NumRows		= num rows to base calc on
 				NumColumns	= num columns to base calc on
 	Returns:	Max gutter value
-	Purpose:	Dynamically calcs the max gutter value based on the given number of rows and columns, 
+	Purpose:	Dynamically calcs the max gutter value based on the given number of rows and columns,
 				and the current paper size
 	SeeAlso:	-
 
@@ -1087,7 +1087,7 @@ void PrintControl::CalcMultipleFit(INT32 NumRows,INT32 NumColumns,INT32 GutterVa
 	//
 	if ((NewWidth > (PatchWidth+1.0)) || (NewHeight > (PatchHeight+1.0)))
 		ScaleFactor = PatchHeight / double(PageHeight+Extra);
-	
+
 	#ifdef _DEBUG
 	{
 		// In theory, when the scale factor is applied to the page width and height, the page will fit
@@ -1102,7 +1102,7 @@ void PrintControl::CalcMultipleFit(INT32 NumRows,INT32 NumColumns,INT32 GutterVa
 		}
 	}
 	#endif
-	
+
 	SetScaleFactor(ScaleFactor); 		// Use SetScaleFactor() to recalc ScaledWidth and ScaledHeight
 }
 
@@ -1152,7 +1152,7 @@ BOOL PrintControl::CalcFit()
 				PAHeight -= (CropAdjust<<1);
 
 				CalcMultipleFit(Rows,Columns,Gutter,PAWidth,PAHeight,0);
-				
+
 				// these settings just show to the user whats happening in the dialogue
 				// they do not get used explicitly to position the pages.
 				if ((Rows==1) && (Columns==1))
@@ -1267,13 +1267,13 @@ BOOL PrintControl::CalcFit()
 	Purpose:	Return the size of the extra area we need to take into account when fitting
 				pages onto the printable paper. Currently the bleed size and crop area size
 				is used.
-	
+
 ******************************************************************************************/
 
 INT32 PrintControl::GetCropAdjust() const
 {
 	INT32 CropAdjust = 0;
-	
+
 	PrintMarksMan *pMarksMan = GetApplication()->GetMarksManager();
 	if (pMarksMan && Typesetting.OutputPrintersMarks())
 		CropAdjust = CropArea+Bleed;
@@ -1589,7 +1589,7 @@ INT32 PrintControl::GetDotsPerInch()
 		// Make the DPI half the printer res
 		DotsPerInch = PrinterDPI >> 1;
 
-		// If this DPI value > MAXAUTOBITMAPDPI, then probably printing to a typesetter, in which case cap it as 
+		// If this DPI value > MAXAUTOBITMAPDPI, then probably printing to a typesetter, in which case cap it as
 		// there's no point in printing at any higher DPI
 		if (DotsPerInch > MAXAUTOBITMAPDPI)
 			DotsPerInch = MAXAUTOBITMAPDPI;
@@ -1622,7 +1622,7 @@ INT32 PrintControl::GetDotsPerInch()
 ******************************************************************************************/
 
 void PrintControl::SetDotsPerInch(INT32 NewVal)
-{ 
+{
 	DotsPerInch = NewVal;
 
 	if (DotsPerInch > MAXBITMAPDPI)
@@ -1697,7 +1697,7 @@ void PrintControl::SetPrintMethod(PrintMethodType NewVal)
 
 				This function has been modified (today 22/7/96) so that it reacts to the current selection.
 				This is to fix bug 4857, which meant if you selected "print selected objects" then
-				deselected all the objects, it would still print the selected objects, resulting in a 
+				deselected all the objects, it would still print the selected objects, resulting in a
 				blank page.
 
 				What's worse, the UI in the print dlg would grey out, so you couldn't switch it off.
@@ -1754,7 +1754,7 @@ BOOL PrintControl::CalcNumPaper()
 {
 	BOOL CanMultiCopy=TRUE;
 //	WEBSTER-ranbirr-13/11/96
-#ifndef WEBSTER	
+#ifndef WEBSTER
 	// Can the printer do multiple copies?
 	if (!CCPrintDialog::CanMultiCopy(&CanMultiCopy))
 		return FALSE;
@@ -1777,7 +1777,7 @@ BOOL PrintControl::CalcNumPaper()
 		// we'll have to do them all
 		if (Collated || !CanMultiCopy)
 			NumPaper = NumActualPiecesOfPaper;
-	}	
+	}
 
 	return TRUE;
 }
@@ -1792,7 +1792,7 @@ BOOL PrintControl::CalcNumPaper()
 	Returns:	TRUE if all OK, FALSE otherwise
 	Purpose:	This informs the print info object that you are about to do some printing.
 
-				This is purely to set up the print layout mechanism.  It will work out how many 
+				This is purely to set up the print layout mechanism.  It will work out how many
 				pieces of paper will be printed to, and how many times the page will be printed
 				on each piece of of paper (for multiple fit printing).
 
@@ -1805,7 +1805,7 @@ BOOL PrintControl::CalcNumPaper()
 						while (GetNextPatch())
 						{
 							Use access funcs to get hold of data set up by GetNextPath(), e.g. scale, translation, etc
-						
+
 							if (SelectedOnly)
 								print all selected objects that lie within the ClipRect area in the spread
 							else
@@ -1837,7 +1837,7 @@ BOOL PrintControl::StartPrinting()
 	// MaxPaperNumber is the total number of pieces of paper we will print to.
 	PaperNumber 	= 0;		// incremented at the start of GetNextPaper()
 	MaxPaperNumber 	= NumPaper;
-	Reprint			= FALSE;	// Set to TRUE by ReprintPaper() to make GetNextPaper() to return 
+	Reprint			= FALSE;	// Set to TRUE by ReprintPaper() to make GetNextPaper() to return
 								// the same paper again
 
 	NumPatches = 0;
@@ -1968,9 +1968,9 @@ BOOL PrintControl::GetNextPaper()
 		{
 			// The number of printable pages > 1 (i.e. we have a double page spread, we are printing
 			// both left & right pages, and printing individual pages)
-			
+
 			INT32 m;
-			
+
 			if (Collated)
 			{
 				// If collated output, then oscillate the clip rect
@@ -2001,7 +2001,7 @@ BOOL PrintControl::GetNextPaper()
 
 				PatchClipRect.hi.x = PatchClipRect.lo.x + OrigPageWidth;
 			}
-		}					
+		}
 
 		// take into account the bleed margin
 /*
@@ -2027,7 +2027,7 @@ BOOL PrintControl::GetNextPaper()
 	Created:	11/6/96
 	Inputs:		-
 	Returns:	TRUE if there is more paper to come
-				FALSE if there's no more paper. 
+				FALSE if there's no more paper.
 	Purpose:	Call this for each piece of paper to be printed to.
 
 ********************************************************************************************/
@@ -2151,7 +2151,7 @@ BOOL PrintControl::GetNextPatch(PrintPatchInfo* pPatchInfo)
 			{
 				// Translate to the bottom left of the current patch
 				INT32 CropAdjust = GetCropAdjust();
-				
+
 				pPatchInfo->XTrans = CropAdjust + (SectionWidth  * PatchColumn) + ((SectionWidth  - ScaledWidth)/2);
 				pPatchInfo->YTrans = CropAdjust + (SectionHeight * PatchRow)    + ((SectionHeight - ScaledHeight)/2);
 
@@ -2185,7 +2185,7 @@ BOOL PrintControl::GetNextPatch(PrintPatchInfo* pPatchInfo)
 	Author:		Mike_Kenny (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	11/6/96
 	Inputs:		pPrintView - The View to which we are rendering
-	Outputs:	errno - 
+	Outputs:	errno -
 	Returns:	-
 	Purpose:	This function makes sure the plate printing loop is initialised for the
 				next set of pages on a single sheet of paper to pass through the driver.
@@ -2219,7 +2219,7 @@ PORTNOTE("cms", "Disabled XaraCMS");
 		String_256 PrintProfile;
 		ptheCMS->GetPrinterProfile(&PrintProfile);
 		pContext = new ColourContextCMYK(pPrintView, &PrintProfile);
-	
+
 		if (pContext==NULL)
 		{
 			// We need to error here and inform the user we
@@ -2228,7 +2228,7 @@ PORTNOTE("cms", "Disabled XaraCMS");
 			(*pErrNo) = _R(IDS_OUT_OF_MEMORY);
 			return FALSE;
 		}
-		
+
 		if (!(pContext->IsDeviceContext()))
 		{
 			// Eeek, we failed to build the physical device context
@@ -2313,7 +2313,7 @@ PORTNOTE("cms", "Disabled XaraCMS");
 				in the colour context in the print view will be destroyed. As our printer
 				dialogue keeps this in its list, we need to make sure it only gets deleted
 				once during that lists destruction.
-	
+
 ********************************************************************************************/
 
 void PrintControl::EndPlatePrinting(PrintView *pPrintView)
@@ -2324,7 +2324,7 @@ void PrintControl::EndPlatePrinting(PrintView *pPrintView)
 		ERROR3("Sanity check, The view is NULL during StartPlatePrinting!");
 		return;
 	}
-	
+
 	pPrintView->SetColourContext(COLOURMODEL_CMYK, NULL);
 }
 
@@ -2338,7 +2338,7 @@ void PrintControl::EndPlatePrinting(PrintView *pPrintView)
 	Created:	11/6/96
 	Inputs:		-
 	Returns:	TRUE if there is more plates to come
-				FALSE if there's no more plates. 
+				FALSE if there's no more plates.
 	Purpose:	Call this to determin whether there are more plates to print during this
 				separation.
 
@@ -2359,7 +2359,7 @@ BOOL PrintControl::MorePlates()
 	Inputs:		pPrintView = a pointer to the print view class.
 	Returns:	-
 	Purpose:	Call this to set up the view related data ready for the next plate rendering
-	
+
 ********************************************************************************************/
 
 BOOL PrintControl::SetNextPlate(PrintView *pPrintView)
@@ -2382,11 +2382,11 @@ BOOL PrintControl::SetNextPlate(PrintView *pPrintView)
 
 	// Find the next printing plate. We need to call this to decrement
 	// the plate printing count and other such unsightlyness so that MorePlates
-	// executes correctly. 
+	// executes correctly.
 	ColourPlate *pPrintPlate = Typesetting.GetNextPrintPlate();
 	if (pPrintPlate==NULL)
 	{
-		// There are no more plates left to print. MorePlates() has 
+		// There are no more plates left to print. MorePlates() has
 		// failed in its duty and should be shot.
 		return FALSE;
 	}
@@ -2468,8 +2468,8 @@ void PrintControl::RenderPrintBorder(RenderRegion* pRRegion)
 			DrawBorders = ((Rows == 1) && (Columns == 1));
 			break;
 
-		default: 
-			ERROR3_PF(("Unknown fit type (%d)",FitType)); 
+		default:
+			ERROR3_PF(("Unknown fit type (%d)",FitType));
 			break;
 	}
 
@@ -2618,11 +2618,11 @@ BOOL PrintControl::RedrawPrintableArea(DocView* pDocView)
 {
 	if (pDocView->GetShowPrintBorders())
 		return(TRUE);
-	
+
 	ColourPlateType PlateType = COLOURPLATE_NONE;
 	if (pDocView->GetColourPlate() && !pDocView->GetColourPlate()->IsDisabled())
 		PlateType = pDocView->GetColourPlate()->GetType();
-		
+
 	return(PlateType != COLOURPLATE_NONE && PlateType != COLOURPLATE_COMPOSITE);
 }
 
@@ -2693,7 +2693,7 @@ PrintPatchInfo::~PrintPatchInfo()
 >	DocRect PrintPatchInfo::GetClipRect(BOOL AddBleed, BOOL AddCropArea)
 
 	Author	:	Mike
-	Created	:	11/6/95 
+	Created	:	11/6/95
 	Inputs	:	AddBleed	= Inflate the output clip rectangle by the bleed value
 				AddCropArea	= Inflate the output clip rectangle by the crop area
 	Returns	:	A clip rectangle.
@@ -2756,7 +2756,7 @@ MILLIPOINT PrintPatchInfo::GetCropArea() const
 >	TypesetInfo::TypesetInfo()
 
 	Author	: Mike
-	Created	: 11/6/95 
+	Created	: 11/6/95
 	Purpose	: The default constructor for the typesetting class. We use this class to
 			  define the typesetting requirements of the next print run.
 
@@ -2791,7 +2791,7 @@ TypesetInfo::TypesetInfo()
 >	TypesetInfo::~TypesetInfo()
 
 	Author	: Mike
-	Created	: 11/6/95 
+	Created	: 11/6/95
 	Purpose	: The destructor. We must remove all items from our PrintingPlates list
 			  and delete them, otherwise the base list class will complain profusely.
 
@@ -2912,7 +2912,7 @@ BOOL TypesetInfo::GetScreenName(ScreenType type, StringBase *pString)
 	ERROR2IF(pString==NULL, FALSE, "NULL output string pointer passed to GetScreenName");
 
 	String_256 Str;
-	BOOL known=TRUE;	
+	BOOL known=TRUE;
 
 	switch (type)
 	{
@@ -2950,7 +2950,7 @@ BOOL TypesetInfo::GetScreenName(ScreenType type, StringBase *pString)
 			known=FALSE;
 			Str.Load(_R(IDS_SCRTYPE_SPOT1));
 			break;
-	}	
+	}
 
 	(*pString) = Str;
 
@@ -2963,7 +2963,7 @@ BOOL TypesetInfo::GetScreenName(ScreenType type, StringBase *pString)
 	void TypesetInfo::SetSeparations(BOOL sep)
 
 	Author	: Mike
-	Created	: 11/6/95 
+	Created	: 11/6/95
 	Inputs	: sep = a boolean which enables or disables separation output
 	Purpose	: To turn off and on printing of separated output.
 
@@ -2985,7 +2985,7 @@ void TypesetInfo::SetSeparations(BOOL sep)
 	void TypesetInfo::SetScreening(BOOL state, BOOL SetAllPlates = TRUE)
 
 	Author	: Mike
-	Created	: 11/6/95 
+	Created	: 11/6/95
 	Inputs	: sep = a boolean which enables or disables the output of setscreen commands
 			  SetAllPlates = FALSE to simply record the new state in this info class (not
 							 recommended)
@@ -3009,7 +3009,7 @@ void TypesetInfo::SetScreening(BOOL state, BOOL SetAllPlates)
 		ColourPlate *pPlate = GetFirstPlate();
 		while (pPlate != NULL)
 		{
-			pPlate->SetActiveScreening(state);	
+			pPlate->SetActiveScreening(state);
 			pPlate = GetNextPlate(pPlate);
 		}
 	}
@@ -3022,11 +3022,11 @@ void TypesetInfo::SetScreening(BOOL state, BOOL SetAllPlates)
 	void TypesetInfo::SetPrintResolution(INT32 res, BOOL SetAllPlates = TRUE);
 
 	Author	: Mike
-	Created	: 11/6/95 
+	Created	: 11/6/95
 	Inputs	: res = a dpi resolution
 			  SetAllPlates = FALSE to simply record the new printer resolution,
 							 TRUE to reset all contained colour plates to recommended
-							 default values for the new resolution. This will set 
+							 default values for the new resolution. This will set
 							 angle, freq, and function for all plates.
 
 	Purpose	: Use this function to set the prefered postscript device resolution. The
@@ -3049,7 +3049,7 @@ void TypesetInfo::SetPrintResolution(INT32 res, BOOL SetAllPlates)
 	void TypesetInfo::SetDefaultScreenFrequency(double freq, BOOL SetAllPlates = TRUE)
 
 	Author	:	Mike
-	Created	:	11/6/95 
+	Created	:	11/6/95
 	Inputs	:	freq = a double representing the screen frequency in lpi (possibly fractional)
 				SetAllPlates = FALSE to simply record the new printer resolution,
 							 TRUE to reset all contained colour plates to this new
@@ -3080,13 +3080,13 @@ void TypesetInfo::SetDefaultScreenFrequency(double freq, BOOL SetAllPlates)
 >	void TypesetInfo::SetScreenFunction(ScreenType func, BOOL SetAllPlates = TRUE);
 
 	Author	: Mike
-	Created	: 11/6/95 
+	Created	: 11/6/95
 	Inputs	: func   = the screening function to set
 			  setall = TRUE, then set this screen type in all the plates in the plate list
 					   FALSE - only remember this as the default (not recommended!)
 
 	Purpose	: Use this function to set the preferred screening function used for plates
-	
+
 ******************************************************************************************/
 
 void TypesetInfo::SetScreenFunction(ScreenType func, BOOL SetAllPlates)
@@ -3098,7 +3098,7 @@ void TypesetInfo::SetScreenFunction(ScreenType func, BOOL SetAllPlates)
 		ColourPlate *pPlate = GetFirstPlate();
 		while (pPlate != NULL)
 		{
-			pPlate->SetScreenFunction(func);	
+			pPlate->SetScreenFunction(func);
 			pPlate = GetNextPlate(pPlate);
 		}
 	}
@@ -3173,7 +3173,7 @@ void TypesetInfo::EnsureAllPlatesHaveGlobalSettings(void)
 		pPlate->SetActiveScreening(AreScreening());
 
 		pPlate = GetNextPlate(pPlate);
-	}	
+	}
 }
 
 
@@ -3183,10 +3183,10 @@ void TypesetInfo::EnsureAllPlatesHaveGlobalSettings(void)
 >	void TypesetInfo::SetPhotoNegative(BOOL state)
 
 	Author	: Mike
-	Created	: 11/6/95 
+	Created	: 11/6/95
 	Inputs	: state  = the state of the photonegative flag
 	Purpose	: Use this function to set the photonegative local flag.
-	
+
 ******************************************************************************************/
 
 void TypesetInfo::SetPhotoNegative(BOOL state)
@@ -3273,7 +3273,7 @@ BOOL TypesetInfo::CheckForExistingPlate(ColourPlateType Type, IndexedColour *Spo
 			{
 				if (Ptr->GetSpotColour() == SpotColour)
 					return(TRUE);
-				//else 
+				//else
 				//	Not an exact match, so drop through to continue searching
 			}
 			else
@@ -3517,7 +3517,7 @@ ColourPlate *TypesetInfo::CreateColourPlate()
 >	void TypesetInfo::DestroyPlateList()
 
 	Author	: Mike
-	Created	: 11/6/95 
+	Created	: 11/6/95
 	Inputs	: -
 	Returns	: -
 	Purpose	: This function simply empties the entire plate list of its contents, deleting
@@ -3541,14 +3541,14 @@ void TypesetInfo::DestroyPlateList()
 >	void TypesetInfo::AddPlate(ColourPlate* pPlate)
 
 	Author	: Mike
-	Created	: 11/6/95 
+	Created	: 11/6/95
 	Inputs	: pPlate = a pointer to a colour plate
 	Returns	: -
 	Purpose	: Use this function to add a colour plate to the colour plate list.
 			  Note, the calling function no longer has ownership of this object. The object
 			  will be deleted automatically from the list whenever the plate list class is
 			  destroyed.
-			  
+
 ******************************************************************************************/
 
 void TypesetInfo::AddPlate(ColourPlate* pPlate)
@@ -3562,7 +3562,7 @@ void TypesetInfo::AddPlate(ColourPlate* pPlate)
 >	void TypesetInfo::SetCurrentPlate(ColourPlate* pPlate)
 
 	Author	: Mike
-	Created	: 11/6/95 
+	Created	: 11/6/95
 	Inputs	: pPlate = a pointer to a colour plate
 	Returns : -
 	Purpose	: Use this function to set the current colour plate. This current plate
@@ -3582,13 +3582,13 @@ void TypesetInfo::SetCurrentPlate(ColourPlate* pPlate)
 >	ColourPlate* TypesetInfo::GetCurrentPlate() const
 
 	Author	: Mike
-	Created	: 11/6/95 
+	Created	: 11/6/95
 	Inputs	: -
 	Returns : a pointer to the current colour plate
 	Purpose	: Use this function to retrieve a pointer to the current plate.
 			  The current plate variable simply keeps track of the selected plate in the
 			  printing UI. This plate is the one which will receive all edits.
-			  
+
 ******************************************************************************************/
 
 ColourPlate* TypesetInfo::GetCurrentPlate() const
@@ -3602,11 +3602,11 @@ ColourPlate* TypesetInfo::GetCurrentPlate() const
 >	DWORD TypesetInfo::GetNumPlates() const
 
 	Author	: Mike
-	Created	: 11/6/95 
+	Created	: 11/6/95
 	Inputs	: -
 	Returns : a dword, the number of plates in the list
 	Purpose	: Returns the number of plates in the print class plate list
-			  
+
 ******************************************************************************************/
 
 DWORD TypesetInfo::GetNumPlates() const
@@ -3622,12 +3622,12 @@ DWORD TypesetInfo::GetNumPlates() const
 >	void TypesetInfo::InitPlatesForPrinting()
 
 	Author	: Mike
-	Created	: 11/6/95 
+	Created	: 11/6/95
 	Inputs	: -
 	Returns : -
 	Purpose	: Set up the plate printing service. This should be called before any attempt
 			  to access the functions GetNextPrintPlate(), NumPrintPlatesRemaining etc
-			  
+
 ******************************************************************************************/
 
 void TypesetInfo::InitPlatesForPrinting()
@@ -3654,13 +3654,13 @@ void TypesetInfo::InitPlatesForPrinting()
 >	ColourPlate* TypesetInfo::GetFirstPrintPlate()
 
 	Author	: Mike
-	Created	: 11/6/95 
+	Created	: 11/6/95
 	Inputs	: -
 	Returns : A pointer to the first print plate (NULL if no more)
 	Purpose	: Return the first plate through which the document will be printed.
 			  The class variables CurrentPrintPlate and CurrPrintPlateNum will be
 			  set.
-			  
+
 ******************************************************************************************/
 
 ColourPlate* TypesetInfo::GetFirstPrintPlate()
@@ -3675,13 +3675,13 @@ ColourPlate* TypesetInfo::GetFirstPrintPlate()
 >	ColourPlate* TypesetInfo::GetNextPrintPlate()
 
 	Author	: Mike
-	Created	: 11/6/95 
+	Created	: 11/6/95
 	Inputs	: -
 	Returns : A pointer to the next print plate (NULL if no more)
 	Purpose	: Return the next plate through which the document will be printed.
 			  The class variables CurrentPrintPlate and CurrPrintPlateNum will be
 			  used to determin the next plate
-			  
+
 ******************************************************************************************/
 
 ColourPlate* TypesetInfo::GetNextPrintPlate()
@@ -3704,13 +3704,13 @@ ColourPlate* TypesetInfo::GetNextPrintPlate()
 	ColourPlate* TypesetInfo::GetPrintPlate(DWORD num, ColourPlate* pPlate)
 
 	Author	: Mike
-	Created	: 11/6/95 
+	Created	: 11/6/95
 	Inputs	: num = the number of the plate
 			  pPlate = a pointer to the plate
 	Returns : A pointer to a print plate (NULL if none)
 	Purpose	: This function is an internal helper function to GetFirstPrintPlate() and
 			  GetNextPrintPlate()
-			  
+
 ******************************************************************************************/
 
 ColourPlate* TypesetInfo::GetPrintPlate(DWORD pnum, ColourPlate* pPlate)
@@ -3736,12 +3736,12 @@ ColourPlate* TypesetInfo::GetPrintPlate(DWORD pnum, ColourPlate* pPlate)
 >	DWORD TypesetInfo::GetNumPrintPlates() const
 
 	Author	: Mike
-	Created	: 11/6/95 
+	Created	: 11/6/95
 	Inputs	: -
 	Returns : A DWORD, the number of plates this document can theoretically be separated
 			  to. This will usually be 4 (C,M,Y and K) plus any spot colour plates
 	Purpose	: Find out how many print plates are stored in the plate list.
-			  
+
 ******************************************************************************************/
 
 DWORD TypesetInfo::GetNumPrintPlates() const
@@ -3755,7 +3755,7 @@ DWORD TypesetInfo::GetNumPrintPlates() const
 		if (!pPlate->IsDisabled())
 			nPlates++;
 		pPlate=GetNextPlate(pPlate);
-	}		
+	}
 	return nPlates;
 }
 
@@ -3769,7 +3769,7 @@ DWORD TypesetInfo::GetNumPrintPlates() const
 	Inputs	: -
 	Returns : a pointer to the currently PRINTING colour plate
 	Purpose	: Use this function to retrieve a pointer to the currently printing plate.
-			  
+
 ******************************************************************************************/
 
 ColourPlate* TypesetInfo::GetCurrentPrintPlate() const
@@ -3783,11 +3783,11 @@ ColourPlate* TypesetInfo::GetCurrentPrintPlate() const
 >	void TypesetInfo::NumPrintPlatesRemaining()
 
 	Author	: Mike
-	Created	: 11/6/95 
+	Created	: 11/6/95
 	Inputs	: -
 	Returns : The number of plate which remain to be printed
 	Purpose	: Calculate and return the number of plates remaining for this piece of paper
-			  
+
 ******************************************************************************************/
 
 INT32 TypesetInfo::NumPrintPlatesRemaining() const
@@ -3802,7 +3802,7 @@ INT32 TypesetInfo::NumPrintPlatesRemaining() const
 >	void TypesetInfo::SetNextCompositePlate()
 
 	Author	: Mike
-	Created	: 11/6/95 
+	Created	: 11/6/95
 	Inputs	: -
 	Returns : -
 	Purpose	: Called from PrintControl::SetNextPlate(). This function simply allows
@@ -3810,7 +3810,7 @@ INT32 TypesetInfo::NumPrintPlatesRemaining() const
 			  setting any plates. This function will set the internal typeset plate
 			  variables so that MorePlates() will return FALSE the next time it is
 			  called.
-			  
+
 ******************************************************************************************/
 
 void TypesetInfo::SetNextCompositePlate()

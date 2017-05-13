@@ -424,7 +424,7 @@ void PrintingMaskedRenderRegion::DrawBitmap(const DocCoord &Point, KernelBitmap*
 
 /********************************************************************************************
 
->	virtual void PrintingMaskedRenderRegion::DrawBitmap(const DocCoord &Point, UINT32 BitmapID, UINT32 ToolID = NULL)
+>	virtual void PrintingMaskedRenderRegion::DrawBitmap(const DocCoord &Point, UINT32 BitmapID, UINT32 ToolID = 0)
 
 	Author:		Rik_Heywood (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	24/7/95

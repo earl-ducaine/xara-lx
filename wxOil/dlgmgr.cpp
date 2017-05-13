@@ -7723,13 +7723,12 @@ BOOL DialogManager::CreateTabbedDialog(DialogTabOp* pTabDlgOp,
   // Has to be an index as otherwise we have not specified the
   // pages yet and so cannot convert the PageID into an index
   // which is what the PropertySheets require.
-  if (OpeningPage != -1) {
-    // Set the index of the page that is to be the active
-    // one to the one that has been specified.
-  } else {
-    // Determine if this dialog has been created before
-    DialogPosition* pPosDetails = FindDialogPositionRecord( mainDlgID );
-  }
+  // if (OpeningPage == -1) {
+  //   // one to the one that has been specified.
+  // } else {
+  //   // Determine if this dialog has been created before
+  //   DialogPosition* pPosDetails = FindDialogPositionRecord( mainDlgID );
+  // }
   // Now that the pages have been registered, check if the dialog has
   // been opened before. If so force the new ActivePage to be
   // specified rather than the old.

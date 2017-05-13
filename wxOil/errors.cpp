@@ -1089,7 +1089,7 @@ void Error::TraceWrite(const TCHAR * bufp, va_list args)
 {
 	// wxWidgets doesn't expect newlines in the string, but Camelot source provides them. So we print each bit
 	// separately
-#if 1
+# if 1
 	// replace \n by a space - the real solution is to remove the \n from all the trace statements (yawn)
 	TCHAR buf[MAXERRORFORMATLENGTH];
 	camStrncpy(buf, bufp, MAXERRORFORMATLENGTH);
@@ -1101,7 +1101,7 @@ void Error::TraceWrite(const TCHAR * bufp, va_list args)
 	} while(*b++);
 	wxVLogDebug(buf, args);
 
-#else
+# else
 	// this way is bad as it doesn't work with args either side of the newline
 
 	TCHAR * newline;
@@ -1115,10 +1115,10 @@ void Error::TraceWrite(const TCHAR * bufp, va_list args)
 
 		bufp=newline;
 	} while (bufp && *bufp);
-#endif
+# endif
 }	
 
-#if 0 != wxUSE_UNICODE
+# if 0 != wxUSE_UNICODE
 // wxWidgets does this if we let it use the vsnprintf in wxLogDebug
 // so we don't currently do this - this one converts from a char *
 // and is only enabled on Unicode builds
@@ -1127,7 +1127,7 @@ void Error::FixFormat (const char * fmt, TCHAR * fmt2)
 	wxString FString(fmt, wxConvUTF8);
 	FixFormat(FString.c_str(), fmt2);
 }
-#endif
+# endif
 
 // wxWidgets does this if we let it use the vsnprintf in wxLogDebug
 // so we don't currently do this
@@ -1170,14 +1170,13 @@ void CDECL Error::TraceAll(LPCTSTR fmt, ...)
 	va_end( marker );
 }
 
-void CDECL Error::TraceTime (TCHAR * t)
-{
+void CDECL Error::TraceTime (const TCHAR* t) {
 	TCHAR buf[256];
-#if !defined(EXCLUDE_FROM_XARLIB)
+# if !defined(EXCLUDE_FROM_XARLIB)
 	CamProfile::GetTimeString(buf, 256);
-#else
+# else
 	camStrcpy(buf, _T("unknown"));
-#endif
+# endif
 	TraceAll(_T("[%s] %s"), buf, t);
 }
 

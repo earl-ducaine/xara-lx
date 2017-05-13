@@ -1,7 +1,7 @@
 // $Id: xpoilflt.cpp 1708 2006-08-17 17:13:38Z gerry $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
- 
+
                Xara LX, a vector drawing and manipulation program.
                     Copyright (C) 1993-2006 Xara Group Ltd.
        Copyright on certain contributions may be held in joint with their
@@ -32,7 +32,7 @@ ADDITIONAL RIGHTS
 
 Conditional upon your continuing compliance with the GNU General Public
 License described above, Xara Group Ltd grants to you certain additional
-rights. 
+rights.
 
 The additional rights are to use, modify, and distribute the software
 together with the wxWidgets library, the wxXtra library, and the "CDraw"
@@ -236,9 +236,9 @@ PluginOILFilter::PluginOILFilter(Filter *pFilter) : OILFilter(pFilter)
 	Author:		Gerry_Iles (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	16/02/2005
 
-	Inputs:		rCLSID		- 
+	Inputs:		rCLSID		-
 	Returns:	TRUE if ok, FALSE if we find a problem and shouldn't use it
-	Purpose:	Initialises the OIL specific parts of this filter (file 
+	Purpose:	Initialises the OIL specific parts of this filter (file
 				extension, file type name, link to COM object etc).
 
 ****************************************************************************/
@@ -256,7 +256,7 @@ BOOL PluginOILFilter::Init( xmlNode* pFilterNode )
 	while (pChild)
 	{
 		wxString strChildName = CXMLUtils::ConvertToWXString(pChild->name);
-		
+
 		if (strChildName == _T("#text") || xmlNodeIsText(pChild))
 		{
 			// ignore it
@@ -334,9 +334,9 @@ BOOL PluginOILFilter::Init( xmlNode* pFilterNode )
 	Created:	16/02/2005
 
 	Inputs:		Filename	- The file to test compatability of
-	Returns:	An integer from 0 to 10, 0 meaning not interested and 10 
+	Returns:	An integer from 0 to 10, 0 meaning not interested and 10
 				meaning it is definitely my format
-	Purpose:	This function is called to determine if this plugin object 
+	Purpose:	This function is called to determine if this plugin object
 				can accept the specified file.
 
 ****************************************************************************/
@@ -401,7 +401,7 @@ INT32 PluginOILFilter::HowCompatible(PathName& FileName)
 	Inputs:		pFile		- pointer to a CCLexFile
 				ppNewFile	- pointer to a pointer to a CCLexFile
 	Returns:	TRUE if ok, FALSE if bother
-	Purpose:	
+	Purpose:
 
 ****************************************************************************/
 
@@ -478,7 +478,7 @@ BOOL PluginOILFilter::GetImportFile(CCLexFile* pFile, CCLexFile** ppNewFile)
 
 	Inputs:		ppNewFile	- pointer to a pointer to a CCLexFile
 	Returns:	TRUE if ok, FALSE if bother
-	Purpose:	
+	Purpose:
 
 ****************************************************************************/
 
@@ -496,7 +496,7 @@ BOOL PluginOILFilter::GetExportFile(PathName* pPath, CCLexFile** ppNewFile)
 	// Create a CCLexFile derived object that sends its data to stdin
 	// Check stderr during the Xar export and abort if an error is reported
 
-	// However, this will not be trivial so intsead we will just create a 
+	// However, this will not be trivial so intsead we will just create a
 	// CCDiskFile attached to a temporary filename and run the export process
 	// in DoExport instead
 
@@ -529,7 +529,7 @@ BOOL PluginOILFilter::GetExportFile(PathName* pPath, CCLexFile** ppNewFile)
 
 	Inputs:		pPlugCaps	- pointer to a PluginCapabilities
 	Returns:	TRUE if ok, FALSE if bother
-	Purpose:	
+	Purpose:
 
 ****************************************************************************/
 
@@ -576,7 +576,7 @@ BOOL PluginOILFilter::GetCapabilities(CCLexFile* pFile, PathName* pPath, Capabil
 
 		// Get error message from saErrors
 
-		// Look for the first entry that starts "ERROR:" and set the remainder of 
+		// Look for the first entry that starts "ERROR:" and set the remainder of
 		// the line as the error message
 		wxString line;
 		size_t index = 0;
@@ -614,13 +614,13 @@ BOOL PluginOILFilter::GetCapabilities(CCLexFile* pFile, PathName* pPath, Capabil
 	Inputs:		pXarFile	- pointer to a CCLexFile
 				pPath		- pointer to a PathName
 	Returns:	TRUE if ok, FALSE if bother
-	Purpose:	
+	Purpose:
 
 ****************************************************************************/
 
 BOOL PluginOILFilter::DoExport(CCLexFile* pXarFile, PathName* pPath)
 {
-	// Here we should just need to wait for the process started in GetExportFile 
+	// Here we should just need to wait for the process started in GetExportFile
 	// to finish
 	// Check stderr for errors and progress
 
@@ -729,7 +729,7 @@ BOOL PluginOILFilter::BuildCapabilityTree(wxString strXmlFilename, CapabilityTre
 	while (pChild && bOK)
 	{
 		wxString strChildName = CXMLUtils::ConvertToWXString(pChild->name);
-		
+
 		if (strChildName == _T("#text") || xmlNodeIsText(pChild))
 		{
 			// ignore it
@@ -1151,7 +1151,7 @@ BOOL PluginOILFilter::GetConvertAsType(xmlNodePtr pNode, XPFConvertType* pValue)
 }
 
 
-BOOL PluginOILFilter::GetXPFBOOL(xmlNodePtr pNode, LPTSTR pAttrName, XPFBOOL* pbValue)
+BOOL PluginOILFilter::GetXPFBOOL(xmlNodePtr pNode, LPCTSTR pAttrName, XPFBOOL* pbValue)
 {
 	XPFBOOL bValue = XPFB_UNKNOWN;
 
@@ -1187,7 +1187,7 @@ BOOL PluginOILFilter::GetXPFBOOL(xmlNodePtr pNode, LPTSTR pAttrName, XPFBOOL* pb
 }
 
 
-BOOL PluginOILFilter::GetXPFProp(xmlNodePtr pNode, LPTSTR pAttrName, PropMapEntry aMap[], XPFProp* pValue)
+BOOL PluginOILFilter::GetXPFProp(xmlNodePtr pNode, LPCTSTR pAttrName, PropMapEntry aMap[], XPFProp* pValue)
 {
 	XPFProp Value = XPFP_UNKNOWN;
 
@@ -1232,7 +1232,7 @@ XPFCapability* PluginOILFilter::CreateObjectNode(xmlNodePtr pNode)
 	XPFCapability* pCap = NULL;
 
 	wxString strName = CXMLUtils::ConvertToWXString(pNode->name);
-	
+
 	if (strName == _T("#text") || xmlNodeIsText(pNode))
 	{
 		wxString str = CXMLUtils::ConvertToWXString(xmlNodeGetContent(pNode));
@@ -1416,7 +1416,7 @@ XPFCapability* PluginOILFilter::CreateAttributeNode(xmlNodePtr pNode)
 	XPFCapability* pCap = NULL;
 
 	wxString strName = CXMLUtils::ConvertToWXString(pNode->name);
-	
+
 	if (strName == _T("#text") || xmlNodeIsText(pNode))
 	{
 		wxString str = CXMLUtils::ConvertToWXString(xmlNodeGetContent(pNode));
@@ -1526,7 +1526,7 @@ XPFCapability* PluginOILFilter::CreateColourNode(xmlNodePtr pNode)
 	XPFCapability* pCap = NULL;
 
 	wxString strName = CXMLUtils::ConvertToWXString(pNode->name);
-	
+
 	if (strName == _T("#text") || xmlNodeIsText(pNode))
 	{
 		wxString str = CXMLUtils::ConvertToWXString(xmlNodeGetContent(pNode));
@@ -1587,7 +1587,7 @@ XPFCapability* PluginOILFilter::CreateColourNode(xmlNodePtr pNode)
 	Author:		Gerry_Iles (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	18/02/2005
 
-	Purpose:	
+	Purpose:
 
 ****************************************************************************/
 

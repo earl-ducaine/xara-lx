@@ -175,7 +175,7 @@ BOOL GIFUtil::ReadFromFile( CCLexFile *File, LPBITMAPINFO *Info, LPBYTE *Bits,
 	*Bits			= NULL;
 	Transparent 	= -1;
 	*TransColour 	= -1;		// in case of early exit set to none
-	int Background 	= 0;		// background colour number !!! not used !!!
+	// int Background 	= 0;		// background colour number !!! not used !!!
 	Interlace 		= FALSE;	// set interlace to false by default
 
 	// Must set the exception throwing flag to True and force reporting of errors to False.
@@ -225,7 +225,7 @@ BOOL GIFUtil::ReadFromFile( CCLexFile *File, LPBITMAPINFO *Info, LPBYTE *Bits,
 			// - bits 3-0 size of global colour table 	= size is 2^(value+1)
 			int ColorResolution = (((Header.giFlags >> 4) & 0x07) + 1);
 			GlobalPaletteSize	= 2 << (Header.giFlags & 0x07);
-			Background			= Header.giBackground;
+			// Background			= Header.giBackground;
 //			int AspectRatio		= Header.giAspect;
 
 TRACEUSER("Neville",_T("Gif Global Width = %d Height = %d\n"), m_GlobalWidth, m_GlobalHeight);

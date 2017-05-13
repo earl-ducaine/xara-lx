@@ -107,7 +107,7 @@ service marks of Xara Group Ltd. All rights in these marks are reserved.
 #define PER_NUMCOORDS 4
 #define PER_UNDEFINED ((INT32)(0x80000000))
 
-typedef enum PerspectiveClick 
+enum PerspectiveClick 
 {
 	PClick_DoNothing,
 	PClick_EditVPoint0,

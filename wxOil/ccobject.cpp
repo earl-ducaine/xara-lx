@@ -208,7 +208,8 @@ BOOL SimpleCCObject::Init()
 ********************************************************************************************/
 BOOL SimpleCCObject::CheckMemory( BOOL Announce )
 {
-	char *WhyFailed = NULL;
+  
+  const char* WhyFailed = NULL;
 	MemTrackExtra *Cur = pHead;
 
 	while (Cur)
