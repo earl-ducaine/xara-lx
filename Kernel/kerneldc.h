@@ -154,7 +154,7 @@ public:
 	// OutputXXX() functions can actually be used.  (The base class versions of these three
 	// functions will error if called).
 	virtual BOOL OutputNewLine();
-	virtual BOOL OutputToken(TCHAR*);
+	virtual BOOL OutputToken(const TCHAR*);
 	virtual BOOL OutputDirect(BYTE *, INT32);
 	virtual BOOL OutputTCHARAsChar(TCHAR *Buf, INT32 nBytes);
 

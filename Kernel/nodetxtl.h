@@ -147,7 +147,9 @@ class FormatRegion : public RenderRegion
 	virtual void DrawBlob(DocCoord p, BlobType type) {ERROR3("Rendering into a FormatRegion");};
 	virtual void DrawCross(const DocCoord &Point, const UINT32 Size) {ERROR3("Rendering into a FormatRegion");};
 	virtual void DrawBitmap(const DocCoord &Point, KernelBitmap* pBitmap) {ERROR3("Rendering into a FormatRegion");};
-	virtual void DrawBitmap(const DocCoord &Point, UINT32 BitmapID, UINT32 ToolID = NULL) {ERROR3("Rendering into a FormatRegion");};
+	virtual void DrawBitmap(const DocCoord &Point, UINT32 BitmapID, UINT32 ToolID = 0) {
+	  ERROR3("Rendering into a FormatRegion");
+	};
 	virtual void DrawBitmapBlob(const DocCoord &Point, KernelBitmap* BlobShape) {ERROR3("Rendering into a FormatRegion");};
 	virtual void DrawBitmapBlob(const DocCoord &Point, ResourceID resID ) {ERROR3("Rendering into a FormatRegion");};
 

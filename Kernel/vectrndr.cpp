@@ -344,9 +344,7 @@ void VectorFileRenderRegion::DrawBitmap( const DocCoord	&Point,
 
 /********************************************************************************************
 
->	void VectorFileRenderRegion::DrawBitmap( const DocCoord	&Point,
-											  UINT32				BitmapID,
-											  UINT32				ToolID = NULL )
+>	void VectorFileRenderRegion::DrawBitmap( const DocCoord	&Point, UINT32 BitmapID, UINT32 ToolID = 0)
 
 	Author:		Graeme_Sutherland (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	26/10/00
@@ -384,9 +382,7 @@ void VectorFileRenderRegion::DrawBitmapBlob( const DocCoord	&Point,
 
 /********************************************************************************************
 
->	void VectorFileRenderRegion::DrawBitmapBlob( const DocCoord	&Point,
-												  UINT32				BitmapID,
-												  UINT32				ToolID = NULL )
+>	void VectorFileRenderRegion::DrawBitmapBlob( const DocCoord	&Point, UINT32 BitmapID, UINT32 ToolID = 0)
 
 	Author:		Graeme_Sutherland (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	26/10/00

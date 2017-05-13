@@ -422,7 +422,7 @@ public:
 				 					  UINT32 toolID,       // Module (Tool) Identifier
 				 					  UINT32 txID,         // String Resource ID
 									  CCRuntimeClass* RuntimeClass, // The operations runtime class
-				 					  TCHAR* tok,		 // pointer to the token string
+				 					  const TCHAR* tok,		 // pointer to the token string
 				 					  pfnGetState gs,	 // pointer to the GetState function
 				 					  UINT32 helpId = 0,	 // help identifier 
 									  UINT32 bubbleID = 0, // string resource for bubble help

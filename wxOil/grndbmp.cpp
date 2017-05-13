@@ -922,10 +922,10 @@ OILBitmap *GRenderBitmap::ExtractBitmapCopy(LPLOGPALETTE pPalette,
 											INT32 MaskColour, BOOL LookForDuplicates)
 {
 	ERROR3IF(MaskColour==-2,"Someone`s using a MaskColour of -2!!! Please Correct!");
-	BOOL bBrowserPalette = FALSE;
+	// BOOL bBrowserPalette = FALSE;
 	
-	if(!pPalette)
-		bBrowserPalette = TRUE;
+	// if(!pPalette)
+	// 	bBrowserPalette = TRUE;
 
 	if (pBitmapInfo && pBits)
 	{
@@ -1622,10 +1622,13 @@ BOOL GRenderOptPalette::GetNextBand()
 		}
 
 		BOOL ok;
-		if (UseSpecial8bpp)
-			ok = DIBUtil::GenOptimal8bppPaletteStats( (INT32*)Stats, (RGBQUAD*)pBits, BmpSize );
-		else
-			ok = DIBUtil::GenOptimalPaletteStats( Stats, (RGBQUAD*)pBits, BmpSize );
+		if (UseSpecial8bpp) {
+		  ok = DIBUtil::GenOptimal8bppPaletteStats( (INT32*)Stats, (RGBQUAD*)pBits, BmpSize );
+		  DIBUtil::GenOptimal8bppPaletteStats( (INT32*)Stats, (RGBQUAD*)pBits, BmpSize );
+		} else {
+		  ok = DIBUtil::GenOptimalPaletteStats( Stats, (RGBQUAD*)pBits, BmpSize );
+		  DIBUtil::GenOptimalPaletteStats( Stats, (RGBQUAD*)pBits, BmpSize );
+		}
 
 		ERROR3IF(!ok, "GenOptimalPaletteStats failed");
 	}
@@ -1663,328 +1666,325 @@ BOOL GRenderOptPalette::GetNextBand()
 
 ********************************************************************************************/
 
-LPLOGPALETTE GRenderOptPalette::GetOptimisedPalette(UINT32 PaletteSize, UINT32 NumColours, UINT32 ReservedColours, BOOL SnapToBrowserPalette)
-{
-	ERROR3IF(!(PaletteSize==2 || PaletteSize==16 || PaletteSize==256), "Bad palette size passed to GRenderOptPalette::GetOptimisedPalette");
-	ERROR3IF(ReservedColours > PaletteSize, "Too many colours reserved in GRenderOptPalette::GetOptimisedPalette");
-
-	LPLOGPALETTE pPalette = NULL;
-
-	if (Stats)
-	{
-		const size_t TotalPal = sizeof(LOGPALETTE) + ( sizeof(PALETTEENTRY) * PaletteSize );
-		pPalette = (LPLOGPALETTE)CCMalloc( TotalPal );
-		if (pPalette)
-		{
-			// Initialise the palette with zeros
-			memset(pPalette, 0, TotalPal);
-
-			pPalette->palVersion 	= 0x300;
-			pPalette->palNumEntries = PaletteSize;
-
-			if (NumColours > PaletteSize)
-				NumColours = PaletteSize;
-
-			if (ReservedColours < NumColours)
-			{
-				BOOL ok = TRUE;
-				// GAT
-				//  If the bitmap has less than 256 colours, then we want to bypass the 
-				//  optimisation code, and just use the exact palette.
-PORTNOTE("BmpPrevDlg", "Rampant use of BmapPrevDlg removed (please don't re-instate directly - the value should be a param or member of this class)")
+LPLOGPALETTE GRenderOptPalette::GetOptimisedPalette(UINT32 PaletteSize,
+						    UINT32 NumColours,
+						    UINT32 ReservedColours,
+						    BOOL SnapToBrowserPalette) {
+  ERROR3IF(!(PaletteSize==2 || PaletteSize==16 || PaletteSize==256),
+	   "Bad palette size passed to GRenderOptPalette::GetOptimisedPalette");
+  ERROR3IF(ReservedColours > PaletteSize,
+	   "Too many colours reserved in GRenderOptPalette::GetOptimisedPalette");
+  LPLOGPALETTE pPalette = NULL;
+  if (Stats) {
+    const size_t TotalPal = sizeof(LOGPALETTE) + ( sizeof(PALETTEENTRY) * PaletteSize );
+    pPalette = (LPLOGPALETTE)CCMalloc( TotalPal );
+    if (pPalette) {
+      // Initialise the palette with zeros
+      memset(pPalette, 0, TotalPal);
+      pPalette->palVersion 	= 0x300;
+      pPalette->palNumEntries = PaletteSize;
+      if (NumColours > PaletteSize) {
+	NumColours = PaletteSize;
+      }
+      if (ReservedColours < NumColours) {
+	BOOL ok = TRUE;
+	// GAT
+	//  If the bitmap has less than 256 colours, then we want to bypass the 
+	//  optimisation code, and just use the exact palette.
+	PORTNOTE("BmpPrevDlg", "Rampant use of BmapPrevDlg removed (please don't re-instate directly - the value should be a param or member of this class)")
 #ifndef EXCLUDE_FROM_XARALX
-				if( !m_bTooManyColours && m_pExactPalette && !UseOldPalette 
-					&& m_pExactPalette->palNumEntries < BmapPrevDlg::m_NumOfColoursUserAskedFor ) // and we want this many colours
+	  if( !m_bTooManyColours && m_pExactPalette && !UseOldPalette 
+	      && m_pExactPalette->palNumEntries < BmapPrevDlg::m_NumOfColoursUserAskedFor ) // and we want this many colours
 #else
-				if( !m_bTooManyColours && m_pExactPalette && !UseOldPalette ) // and we want this many colours
+	    if( !m_bTooManyColours && m_pExactPalette && !UseOldPalette ) // and we want this many colours
 #endif
-				{
-					//  Transfer the exact palette into the variable we want, and then clear up the memory.
-					INT32 blackEntry = 10;
-					pPalette->palNumEntries = m_pExactPalette->palNumEntries;
-					INT32 i = 0;
-					for( i = 0; i < m_pExactPalette->palNumEntries; i++ )
-					{
-						pPalette->palPalEntry[i].peRed	 = m_pExactPalette->palPalEntry[i].peRed;
-						pPalette->palPalEntry[i].peGreen = m_pExactPalette->palPalEntry[i].peGreen;
-						pPalette->palPalEntry[i].peBlue	 = m_pExactPalette->palPalEntry[i].peBlue;
+	      {
+		//  Transfer the exact palette into the variable we want, and then clear up the memory.
+		INT32 blackEntry = 10;
+		pPalette->palNumEntries = m_pExactPalette->palNumEntries;
+		INT32 i = 0;
+		for( i = 0; i < m_pExactPalette->palNumEntries; i++ )
+		  {
+		    pPalette->palPalEntry[i].peRed	 = m_pExactPalette->palPalEntry[i].peRed;
+		    pPalette->palPalEntry[i].peGreen = m_pExactPalette->palPalEntry[i].peGreen;
+		    pPalette->palPalEntry[i].peBlue	 = m_pExactPalette->palPalEntry[i].peBlue;
 
-						if (pPalette->palPalEntry[i].peRed == 255 &&
-							pPalette->palPalEntry[i].peGreen == 255 &&
-							pPalette->palPalEntry[i].peBlue == 255 )
-							blackEntry = i;
-					}
-					if (blackEntry != 10 && ReservedColours == 1)
-					{
-						// swap the black entry for number 10 as this is the transparent entry for some odd reason
-						pPalette->palPalEntry[blackEntry].peRed = pPalette->palPalEntry[10].peRed;
-						pPalette->palPalEntry[blackEntry].peGreen = pPalette->palPalEntry[10].peGreen;
-						pPalette->palPalEntry[blackEntry].peBlue = pPalette->palPalEntry[10].peBlue;
+		    if (pPalette->palPalEntry[i].peRed == 255 &&
+			pPalette->palPalEntry[i].peGreen == 255 &&
+			pPalette->palPalEntry[i].peBlue == 255 )
+		      blackEntry = i;
+		  }
+		if (blackEntry != 10 && ReservedColours == 1)
+		  {
+		    // swap the black entry for number 10 as this is the transparent entry for some odd reason
+		    pPalette->palPalEntry[blackEntry].peRed = pPalette->palPalEntry[10].peRed;
+		    pPalette->palPalEntry[blackEntry].peGreen = pPalette->palPalEntry[10].peGreen;
+		    pPalette->palPalEntry[blackEntry].peBlue = pPalette->palPalEntry[10].peBlue;
 
-						pPalette->palPalEntry[10].peRed = 255;
-						pPalette->palPalEntry[10].peGreen = 255;
-						pPalette->palPalEntry[10].peBlue = 255;
-					}
-					for( ; i<0x100 ; i++ )
-					{
-						pPalette->palPalEntry[i].peRed	 =
-						pPalette->palPalEntry[i].peGreen =
-						pPalette->palPalEntry[i].peBlue	 = 0 ;
-					}
+		    pPalette->palPalEntry[10].peRed = 255;
+		    pPalette->palPalEntry[10].peGreen = 255;
+		    pPalette->palPalEntry[10].peBlue = 255;
+		  }
+		for( ; i<0x100 ; i++ )
+		  {
+		    pPalette->palPalEntry[i].peRed	 =
+		      pPalette->palPalEntry[i].peGreen =
+		      pPalette->palPalEntry[i].peBlue	 = 0 ;
+		  }
 
-//					BmapPrevDlg::m_bNeedPaletteUpdated = TRUE;
-PORTNOTE("BmpPrevDlg", "Use of BmapPrevDlg removed")
+		//					BmapPrevDlg::m_bNeedPaletteUpdated = TRUE;
+		PORTNOTE("BmpPrevDlg", "Use of BmapPrevDlg removed")
 #ifndef EXCLUDE_FROM_XARALX
-					BmapPrevDlg::m_bUseExistingPalette = FALSE;
+		  BmapPrevDlg::m_bUseExistingPalette = FALSE;
 #endif
-				}
-				else if (UseSpecial8bpp)
-				{
-					if (PaletteSize != 256)
-					{
-						ERROR3("Palette size is wrong for an 8bpp bitmap");
-						CCFree( pPalette );
-						return NULL;
-					}
+	      }
+	    else if (UseSpecial8bpp)
+	      {
+		if (PaletteSize != 256)
+		  {
+		    ERROR3("Palette size is wrong for an 8bpp bitmap");
+		    CCFree( pPalette );
+		    return NULL;
+		  }
 
-					// There has to be at least 20 colours in the palette to accomodate the system colours
-					if (NumColours < 20)
-						NumColours = 20;
+		// There has to be at least 20 colours in the palette to accomodate the system colours
+		if (NumColours < 20)
+		  NumColours = 20;
 
-					// Gavin adds 16 system colours, then later we remove these and add the full set of 20 system colours
-					// Therefore, get Gavin to generate 4 fewer colours so we end up with the correct number of
-					// colours in the palette.
-					NumColours -= 4;
+		// Gavin adds 16 system colours, then later we remove these and add the full set of 20 system colours
+		// Therefore, get Gavin to generate 4 fewer colours so we end up with the correct number of
+		// colours in the palette.
+		NumColours -= 4;
 
-					// We can only generate a maximum of 252 colours (i.e. (256-20)+16 = 252)
-					if (NumColours > 252)
-						NumColours = 252;
+		// We can only generate a maximum of 252 colours (i.e. (256-20)+16 = 252)
+		if (NumColours > 252)
+		  NumColours = 252;
 
-					// Leave room for the reserved colours
-					NumColours -= ReservedColours;
+		// Leave room for the reserved colours
+		NumColours -= ReservedColours;
 
-					ok = DIBUtil::GenOptimal8bppPalette((INT32*) Stats, pPalette, NumColours);
-				}
-				else
-				{
-					// Leave room for the reserved colours
-					NumColours -= ReservedColours;
+		ok = DIBUtil::GenOptimal8bppPalette((INT32*) Stats, pPalette, NumColours);
+	      }
+	    else
+	      {
+		// Leave room for the reserved colours
+		NumColours -= ReservedColours;
 
-					ok = DIBUtil::GenOptimalPalette( Stats, pPalette, (NumColours==1) ? 2 : NumColours );
-				}
-				// GAT
-				if( m_pExactPalette )
-				{
-					//  Get some memory back.
-					CCFree( m_pExactPalette );
-					m_pExactPalette = NULL;
-				}
+		ok = DIBUtil::GenOptimalPalette( Stats, pPalette, (NumColours==1) ? 2 : NumColours );
+	      }
+	// GAT
+	if( m_pExactPalette )
+	  {
+	    //  Get some memory back.
+	    CCFree( m_pExactPalette );
+	    m_pExactPalette = NULL;
+	  }
 			
-				// WEBSTER - markn - 22/7/97
-				if (ok && SnapToBrowserPalette)
-				{
-					PaletteManager::SnapToBrowserPalette(pPalette);
-				}
+	// WEBSTER - markn - 22/7/97
+	if (ok && SnapToBrowserPalette)
+	  {
+	    PaletteManager::SnapToBrowserPalette(pPalette);
+	  }
 
-				if (ok)
-				{
-					// Now we need to shift the colours about a bit ....
-					switch (PaletteSize)
-					{
-						INT32 index;
+	if (ok)
+	  {
+	    // Now we need to shift the colours about a bit ....
+	    switch (PaletteSize)
+	      {
+		INT32 index;
 
-					 	case 2:
-							if (NumColours == 1)
-							{
-							 	// 1 colour needs some special treatment
-								if (pPalette->palPalEntry[1].peRed   == 0xFF &&
-									pPalette->palPalEntry[1].peGreen == 0xFF &&
-									pPalette->palPalEntry[1].peBlue  == 0xFF)
-								{
-									// First entry is white
-								 	pPalette->palPalEntry[1] = pPalette->palPalEntry[0];
-								 	pPalette->palPalEntry[1].peFlags = 0;
+	      case 2:
+		if (NumColours == 1)
+		  {
+		    // 1 colour needs some special treatment
+		    if (pPalette->palPalEntry[1].peRed   == 0xFF &&
+			pPalette->palPalEntry[1].peGreen == 0xFF &&
+			pPalette->palPalEntry[1].peBlue  == 0xFF)
+		      {
+			// First entry is white
+			pPalette->palPalEntry[1] = pPalette->palPalEntry[0];
+			pPalette->palPalEntry[1].peFlags = 0;
 
 
-								 	pPalette->palPalEntry[0].peRed   = 255;
-								 	pPalette->palPalEntry[0].peGreen = 255;
-								 	pPalette->palPalEntry[0].peBlue  = 255;
-								 	pPalette->palPalEntry[0].peFlags = 255;		// This makes Gavin ignore this
-																				// colour when converting the bitmap
-								}
-								else if	(pPalette->palPalEntry[0].peRed   == 0xFF &&
-										 pPalette->palPalEntry[0].peGreen == 0xFF &&
-										 pPalette->palPalEntry[0].peBlue  == 0xFF)
-								{
-									// Second entry is white
-								 	pPalette->palPalEntry[0].peFlags = 255;		// This makes Gavin ignore this
-																				// colour when converting the bitmap
-								}
-								else
-								{
-									// Neither entry is white !
-								 	pPalette->palPalEntry[0].peRed   = 255;
-								 	pPalette->palPalEntry[0].peGreen = 255;
-								 	pPalette->palPalEntry[0].peBlue  = 255;
-								 	pPalette->palPalEntry[0].peFlags = 255;		// This makes Gavin ignore this
-																				// colour when converting the bitmap
-								}
+			pPalette->palPalEntry[0].peRed   = 255;
+			pPalette->palPalEntry[0].peGreen = 255;
+			pPalette->palPalEntry[0].peBlue  = 255;
+			pPalette->palPalEntry[0].peFlags = 255;		// This makes Gavin ignore this
+			// colour when converting the bitmap
+		      }
+		    else if	(pPalette->palPalEntry[0].peRed   == 0xFF &&
+				 pPalette->palPalEntry[0].peGreen == 0xFF &&
+				 pPalette->palPalEntry[0].peBlue  == 0xFF)
+		      {
+			// Second entry is white
+			pPalette->palPalEntry[0].peFlags = 255;		// This makes Gavin ignore this
+			// colour when converting the bitmap
+		      }
+		    else
+		      {
+			// Neither entry is white !
+			pPalette->palPalEntry[0].peRed   = 255;
+			pPalette->palPalEntry[0].peGreen = 255;
+			pPalette->palPalEntry[0].peBlue  = 255;
+			pPalette->palPalEntry[0].peFlags = 255;		// This makes Gavin ignore this
+			// colour when converting the bitmap
+		      }
 								
-								pPalette->palNumEntries = 2;
-							}
-							else
-								pPalette->palNumEntries += ReservedColours;
-							break;
-
-					 	case 16:
-							// Shift the palette entries down, so the reserved colours are at the start
-							for (index = NumColours - 1; index >= 0; index--)
-							{
-							 	pPalette->palPalEntry[index + ReservedColours] = pPalette->palPalEntry[index];
-							}
-
-							// Blank the reserved colours to white
-							for (index = 0; index < INT32(ReservedColours); index++)
-							{
-							 	pPalette->palPalEntry[index].peRed   = 255;
-							 	pPalette->palPalEntry[index].peGreen = 255;
-							 	pPalette->palPalEntry[index].peBlue  = 255;
-							 	pPalette->palPalEntry[index].peFlags = 255;		// This makes Gavin ignore this
-																				// colour when converting the bitmap
-							}
-
-							pPalette->palNumEntries += ReservedColours;
-							break;
-
-					 	case 256:
-							#ifdef _BATCHING
-							{
-									for (UINT32 index = 0;index < NumColours;index++)
-									{
-						 				BYTE R = pPalette->palPalEntry[index].peRed;
-						 				BYTE G = pPalette->palPalEntry[index].peGreen;
-						 				BYTE B = pPalette->palPalEntry[index].peBlue;
-										if (R == 254 && G == 254 && B == 254)
-										{
-						 					pPalette->palPalEntry[index].peRed = 255;
-						 					pPalette->palPalEntry[index].peGreen = 255;
-						 					pPalette->palPalEntry[index].peBlue = 255;
-										}											
-									}
-							}
-							#endif
-							
-							if (UseSpecial8bpp && !( !m_bTooManyColours && !UseOldPalette ) )
-							{
-								LPLOGPALETTE pWinPalette;
-
-								// Now we move the colours.
-								UINT32 CurStart = 16;
-								UINT32 NewStart = 10 + ReservedColours;
-
-								if (CurStart < NumColours)
-								{
-									BOOL ColoursMoved = FALSE;
-
-									UINT32 NumColsToMove = NumColours - CurStart;
-									ERROR3IF((NumColsToMove+CurStart) > 256,"No room for system colours");
-									ERROR3IF((NumColsToMove+NewStart) > 256,"No room for system colours");
-									
-									if (NewStart < CurStart)
-									{
-										// Move the non-system colours down
-										for (index = 0; index < INT32(NumColsToMove); index++)
-							 				pPalette->palPalEntry[index + NewStart] = pPalette->palPalEntry[index + CurStart];
-
-										// Blank out unused colours that are not system colours
-										for (index = NumColsToMove+NewStart;index < 246;index++)
-										{
-							 				pPalette->palPalEntry[index].peRed   = 0;
-							 				pPalette->palPalEntry[index].peGreen = 0;
-							 				pPalette->palPalEntry[index].peBlue  = 0;
-										}
-
-										ColoursMoved = TRUE;
-									}
-
-									ERROR3IF(!ColoursMoved,"Rewrite code to accomodate system colours");
-								}
-
-								ERROR3IF(CurStart > NumColours,"Not enough room for system colours");
-
-								// Now fill in the rest of the palette with the 20 system colours
-								// (10 at the start, and 10 at the end)
-								pWinPalette = GetErrorDiffPalette();
-
-								for (index = 0; index < 10; index++)
-								{
-							 		pPalette->palPalEntry[index] = pWinPalette->palPalEntry[index];
-								}
-
-								for (index = 246; index < 256; index++)
-								{
-							 		pPalette->palPalEntry[index] = pWinPalette->palPalEntry[index];
-								}
-							
-								// Blank the reserved colours to white
-								for (index = 10; index < INT32(10 + ReservedColours); index++)
-								{
-							 		pPalette->palPalEntry[index].peRed   = 255;
-							 		pPalette->palPalEntry[index].peGreen = 255;
-							 		pPalette->palPalEntry[index].peBlue  = 255;
-							 		pPalette->palPalEntry[index].peFlags = 255;		// This makes Gavin ignore this
-																					// colour when converting the bitmap
-								}
-							}
-							else
-							{
-								// WEBSTER - markn 15/2/97
-								// If there's a reserved colour (i.e. creating a transparent bitmap)
-								// make sure Gavin doen't use it
-								// To do this, shift all the colours up one place, and flag the reserved colour
-								// (hard wired to 10 for some reason unknown to myself) so Gavin ignores it
-								if (ReservedColours == 1)
-								{
-									for (index = 255;index > 10;index--)
-							 			pPalette->palPalEntry[index] = pPalette->palPalEntry[index-1];
-
-							 		pPalette->palPalEntry[10].peRed   = 255;
-							 		pPalette->palPalEntry[10].peGreen = 255;
-							 		pPalette->palPalEntry[10].peBlue  = 255;
-							 		pPalette->palPalEntry[10].peFlags = 255;		// This makes Gavin ignore this
-								}
-
-								ERROR3IF(ReservedColours > 1,"This code won't work with more than one reserved colour");
-
-								// As this code is assuming that the transparent colour index is 10,
-								// if the user has chosen less than 10 colours, we need to ensure that
-								// the palette actually includes the transparent colour index. Otherwise,
-								// the GIF export code will assume it can output the requested colours using
-								// the minimum bpp. E.g. user request 2 colours, output will be 1 bpp and
-								// so the 10 will cause problems.
-								// This fixing of the number of entries is actually done in ExtractBitmapCopy
-							}
-							break;
-						default:
-							ERROR3("Bad palette size in GRenderOptPalette::GetOptimisedPalette");
-					}
-				}
-				else
-				{
-				 	ERROR3("Failed to generate optimised palette");
-					CCFree( pPalette );
-					pPalette = NULL;
-				}
-			}
-		}
-
-		// Reinitialise the Stats
-		if (UseSpecial8bpp)
-			DIBUtil::Optimal8bppPaletteInitialise((INT32*)Stats);
+		    pPalette->palNumEntries = 2;
+		  }
 		else
-			DIBUtil::OptimalPaletteInitialise(Stats);
-	}
+		  pPalette->palNumEntries += ReservedColours;
+		break;
 
- 	return pPalette;
+	      case 16:
+		// Shift the palette entries down, so the reserved colours are at the start
+		for (index = NumColours - 1; index >= 0; index--)
+		  {
+		    pPalette->palPalEntry[index + ReservedColours] = pPalette->palPalEntry[index];
+		  }
+
+		// Blank the reserved colours to white
+		for (index = 0; index < INT32(ReservedColours); index++)
+		  {
+		    pPalette->palPalEntry[index].peRed   = 255;
+		    pPalette->palPalEntry[index].peGreen = 255;
+		    pPalette->palPalEntry[index].peBlue  = 255;
+		    pPalette->palPalEntry[index].peFlags = 255;		// This makes Gavin ignore this
+		    // colour when converting the bitmap
+		  }
+
+		pPalette->palNumEntries += ReservedColours;
+		break;
+
+	      case 256:
+#ifdef _BATCHING
+		{
+		  for (UINT32 index = 0;index < NumColours;index++)
+		    {
+		      BYTE R = pPalette->palPalEntry[index].peRed;
+		      BYTE G = pPalette->palPalEntry[index].peGreen;
+		      BYTE B = pPalette->palPalEntry[index].peBlue;
+		      if (R == 254 && G == 254 && B == 254)
+			{
+			  pPalette->palPalEntry[index].peRed = 255;
+			  pPalette->palPalEntry[index].peGreen = 255;
+			  pPalette->palPalEntry[index].peBlue = 255;
+			}											
+		    }
+		}
+#endif
+							
+		if (UseSpecial8bpp && !( !m_bTooManyColours && !UseOldPalette ) )
+		  {
+		    LPLOGPALETTE pWinPalette;
+
+		    // Now we move the colours.
+		    UINT32 CurStart = 16;
+		    UINT32 NewStart = 10 + ReservedColours;
+
+		    if (CurStart < NumColours)
+		      {
+			BOOL ColoursMoved = FALSE;
+
+			UINT32 NumColsToMove = NumColours - CurStart;
+			ERROR3IF((NumColsToMove+CurStart) > 256,"No room for system colours");
+			ERROR3IF((NumColsToMove+NewStart) > 256,"No room for system colours");
+									
+			if (NewStart < CurStart)
+			  {
+			    // Move the non-system colours down
+			    for (index = 0; index < INT32(NumColsToMove); index++)
+			      pPalette->palPalEntry[index + NewStart] = pPalette->palPalEntry[index + CurStart];
+
+			    // Blank out unused colours that are not system colours
+			    for (index = NumColsToMove+NewStart;index < 246;index++)
+			      {
+				pPalette->palPalEntry[index].peRed   = 0;
+				pPalette->palPalEntry[index].peGreen = 0;
+				pPalette->palPalEntry[index].peBlue  = 0;
+			      }
+
+			    ColoursMoved = TRUE;
+			  }
+
+			ERROR3IF(!ColoursMoved,"Rewrite code to accomodate system colours");
+		      }
+
+		    ERROR3IF(CurStart > NumColours,"Not enough room for system colours");
+
+		    // Now fill in the rest of the palette with the 20 system colours
+		    // (10 at the start, and 10 at the end)
+		    pWinPalette = GetErrorDiffPalette();
+
+		    for (index = 0; index < 10; index++)
+		      {
+			pPalette->palPalEntry[index] = pWinPalette->palPalEntry[index];
+		      }
+
+		    for (index = 246; index < 256; index++)
+		      {
+			pPalette->palPalEntry[index] = pWinPalette->palPalEntry[index];
+		      }
+							
+		    // Blank the reserved colours to white
+		    for (index = 10; index < INT32(10 + ReservedColours); index++)
+		      {
+			pPalette->palPalEntry[index].peRed   = 255;
+			pPalette->palPalEntry[index].peGreen = 255;
+			pPalette->palPalEntry[index].peBlue  = 255;
+			pPalette->palPalEntry[index].peFlags = 255;		// This makes Gavin ignore this
+			// colour when converting the bitmap
+		      }
+		  }
+		else
+		  {
+		    // WEBSTER - markn 15/2/97
+		    // If there's a reserved colour (i.e. creating a transparent bitmap)
+		    // make sure Gavin doen't use it
+		    // To do this, shift all the colours up one place, and flag the reserved colour
+		    // (hard wired to 10 for some reason unknown to myself) so Gavin ignores it
+		    if (ReservedColours == 1)
+		      {
+			for (index = 255;index > 10;index--)
+			  pPalette->palPalEntry[index] = pPalette->palPalEntry[index-1];
+
+			pPalette->palPalEntry[10].peRed   = 255;
+			pPalette->palPalEntry[10].peGreen = 255;
+			pPalette->palPalEntry[10].peBlue  = 255;
+			pPalette->palPalEntry[10].peFlags = 255;		// This makes Gavin ignore this
+		      }
+
+		    ERROR3IF(ReservedColours > 1,"This code won't work with more than one reserved colour");
+
+		    // As this code is assuming that the transparent colour index is 10,
+		    // if the user has chosen less than 10 colours, we need to ensure that
+		    // the palette actually includes the transparent colour index. Otherwise,
+		    // the GIF export code will assume it can output the requested colours using
+		    // the minimum bpp. E.g. user request 2 colours, output will be 1 bpp and
+		    // so the 10 will cause problems.
+		    // This fixing of the number of entries is actually done in ExtractBitmapCopy
+		  }
+		break;
+	      default:
+		ERROR3("Bad palette size in GRenderOptPalette::GetOptimisedPalette");
+	      }
+	  }
+	else
+	  {
+	    ERROR3("Failed to generate optimised palette");
+	    CCFree( pPalette );
+	    pPalette = NULL;
+	  }
+      }
+    }
+
+    // Reinitialise the Stats
+    if (UseSpecial8bpp)
+      DIBUtil::Optimal8bppPaletteInitialise((INT32*)Stats);
+    else
+      DIBUtil::OptimalPaletteInitialise(Stats);
+  }
+
+  return pPalette;
 }
 #endif

@@ -192,7 +192,7 @@ public:
  	BOOL SetPrefValue(LPCTCHAR Pref, PrefData EntryData, PreferenceType Type);
 
 #ifdef _DEBUG
-	BOOL PrefExists(LPTCHAR Pref);
+	BOOL PrefExists(const LPTCHAR Pref);
 #endif
 
 };
@@ -537,7 +537,7 @@ BOOL PreferenceChunk::SetPrefValue(LPCTCHAR Pref, PrefData EntryData, Preference
 
 /********************************************************************************************
 
->	BOOL PreferenceChunk::PrefExists(LPTCHAR Pref)
+>	BOOL PreferenceChunk::PrefExists(const LPTCHAR Pref)
 
 	Author:		Tim_Browse (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	26/8/93
@@ -553,7 +553,7 @@ BOOL PreferenceChunk::SetPrefValue(LPCTCHAR Pref, PrefData EntryData, Preference
 
 #ifdef _DEBUG
 
-BOOL PreferenceChunk::PrefExists(LPTCHAR Pref)
+BOOL PreferenceChunk::PrefExists(const LPTCHAR Pref)
 {
 	PreferenceEntry *pEntry = pEntries;
 
@@ -672,66 +672,57 @@ PreferenceSection::~PreferenceSection()
 ********************************************************************************************/
 
 BOOL PreferenceSection::AddPref(OILPreferences* OILPrefs,
-								LPCTCHAR Pref, PreferenceType Type, PrefData PrefVar)
-{
+				LPCTCHAR Pref, PreferenceType Type, PrefData PrefVar) {
 #ifdef _DEBUG
-	if ((camStrnicmp(Pref, _T("blobby"), 7) == 0) ||
-		(camStrnicmp(Pref, _T("wobjob"), 7) == 0))
-	{
-		// Silly names not allowed
-		ENSURE(FALSE, "Preference section has suffered a cliche overload");
-		abort();
-	}
+  if ((camStrnicmp(Pref, _T("blobby"), 7) == 0) ||
+      (camStrnicmp(Pref, _T("wobjob"), 7) == 0))
+    {
+      // Silly names not allowed
+      ENSURE(FALSE, "Preference section has suffered a cliche overload");
+      abort();
+    }
 #endif
-
-	// Used for scanning the chunk list
-	PreferenceChunk *pChunk;
-
-	// In debug builds, check that this preference has not already been declared.
-	// This check ensures that two preferences with the same name are not used.
-
+  // Used for scanning the chunk list
+  PreferenceChunk *pChunk;
+  // In debug builds, check that this preference has not already been declared.
+  // This check ensures that two preferences with the same name are not used.
 #ifdef _DEBUG
-	pChunk = (PreferenceChunk *) ChunkList.GetHead();
-
-	while (pChunk != NULL)
-	{
-		ERROR3IF_PF((pChunk->PrefExists(Pref) != FALSE), ( "Preference '%s' in section '%s' declared more than once", Pref, Section ) );
-
-		pChunk = (PreferenceChunk *) ChunkList.GetNext(pChunk);
-	}
-
+  pChunk = (PreferenceChunk *) ChunkList.GetHead();
+  while (pChunk != NULL) {
+    ERROR3IF_PF((pChunk->PrefExists(Pref) != FALSE), ( "Preference '%s' in section '%s' declared more than once", Pref, Section ) );
+    pChunk = (PreferenceChunk *) ChunkList.GetNext(pChunk);
+  }
 #endif
+  // New chunks are added to the head of the list, so the partially unused one
+  // is always the first in the list.
+  pChunk = (PreferenceChunk *) ChunkList.GetHead();
 
-	// New chunks are added to the head of the list, so the partially unused one
-	// is always the first in the list.
-	pChunk = (PreferenceChunk *) ChunkList.GetHead();
+  // Try to add the preference to this chunk.
+  if (!pChunk->AddPref(Pref, PrefVar, Type))
+    {
+      // No room left in this chunk - try to get another one and put it in that.
+      // The extension chunk is big enough to hold another 10 preferences (this is pretty
+      // arbitrary).
+      pChunk = new PreferenceChunk(10);
 
-	// Try to add the preference to this chunk.
-	if (!pChunk->AddPref(Pref, PrefVar, Type))
+      if ((pChunk == NULL) || (!pChunk->Valid))
 	{
-		// No room left in this chunk - try to get another one and put it in that.
-		// The extension chunk is big enough to hold another 10 preferences (this is pretty
-		// arbitrary).
-		pChunk = new PreferenceChunk(10);
-
-		if ((pChunk == NULL) || (!pChunk->Valid))
-		{
-			delete pChunk;
-			return FALSE; // Failure - no memory left.
-		}
-
-		// Got a chunk ok, so add it to the head of the list.
-		ChunkList.AddHead(pChunk);
-
-		// Add the preference to it ('guaranteed' to work)
-		pChunk->AddPref(Pref, PrefVar, Type);
+	  delete pChunk;
+	  return FALSE; // Failure - no memory left.
 	}
 
-	// Try to read the preference
-	if (OILPrefs != NULL)
-		OILPrefs->Read(Section, Pref, Type, PrefVar);
+      // Got a chunk ok, so add it to the head of the list.
+      ChunkList.AddHead(pChunk);
 
-	return TRUE;
+      // Add the preference to it ('guaranteed' to work)
+      pChunk->AddPref(Pref, PrefVar, Type);
+    }
+
+  // Try to read the preference
+  if (OILPrefs != NULL)
+    OILPrefs->Read(Section, Pref, Type, PrefVar);
+
+  return TRUE;
 }
 
 /********************************************************************************************

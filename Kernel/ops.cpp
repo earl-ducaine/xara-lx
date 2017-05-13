@@ -1949,7 +1949,7 @@ BOOL Operation::RegisterOpDescriptor(
 			 					     UINT32 toolID,
 			 					  	 UINT32 txID,
 			 					  	 CCRuntimeClass* RuntimeClass,
-				 					 TCHAR* tok,
+				 					 const TCHAR* tok,
 				 					 pfnGetState gs,
 				 					 UINT32 helpId,
 									 UINT32 bubbleID,

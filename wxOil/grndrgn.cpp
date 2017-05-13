@@ -3706,7 +3706,7 @@ PORTNOTE("cms", "DisabledXaraCMS")
 		}
 	}
 
-	BOOL Result = FALSE; // function working correctly
+	//BOOL Result = FALSE; // function working correctly
 
 	if (bDoBitmapFill)
 	{
@@ -3746,7 +3746,7 @@ PORTNOTE("cms", "DisabledXaraCMS")
 		if (Perspective)	// Is a Perspective applied ?
 		{
 			// then plot it perspectivised
-			Result = GetDrawContext()->SetPerspectiveBitmapFill(
+			GetDrawContext()->SetPerspectiveBitmapFill(
 							&(WinBM->BMInfo->bmiHeader),
 							BitmapBits,
 							Style,
@@ -3760,7 +3760,8 @@ PORTNOTE("cms", "DisabledXaraCMS")
 		else
 		{
 			// just plot it normally
-			Result = GetDrawContext()->SetBitmapFill(
+		  // todo unchecked!
+			GetDrawContext()->SetBitmapFill(
 							&(WinBM->BMInfo->bmiHeader),
 							BitmapBits,
 							Style,
@@ -4938,7 +4939,7 @@ PORTNOTE("cms", "DisabledXaraCMS")
 
 /********************************************************************************************
 
->	void GRenderRegion::DrawBitmap(const DocCoord &Point, UINT32 BitmapID, UINT32 ToolID = NULL)
+>	void GRenderRegion::DrawBitmap(const DocCoord &Point, UINT32 BitmapID, UINT32 ToolID = 0)
 
 	Author:		Will_Cowling (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	23/3/95
@@ -5021,7 +5022,8 @@ void GRenderRegion::DrawFixedSystemText(StringBase *TheText, DocRect &BoundsRect
 	RenderDC->SetFont(FixedFont);
 
 	wxDC * pDC = RenderDC;
-	wxSize DPI = OSRenderRegion::GetFixedDCPPI(*pDC);
+	// wxSize DPI = OSRenderRegion::GetFixedDCPPI(*pDC);
+	OSRenderRegion::GetFixedDCPPI(*pDC);
 //	INT32 XDPI = DPI.GetWidth();
 //	INT32 YDPI = DPI.GetHeight();
 //	INT32 LineHeight = RenderDC->GetCharHeight();
