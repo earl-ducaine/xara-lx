@@ -1,7 +1,7 @@
 // $Id: fuzzclip.cpp 751 2006-03-31 15:43:49Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
- 
+
                Xara LX, a vector drawing and manipulation program.
                     Copyright (C) 1993-2006 Xara Group Ltd.
        Copyright on certain contributions may be held in joint with their
@@ -32,7 +32,7 @@ ADDITIONAL RIGHTS
 
 Conditional upon your continuing compliance with the GNU General Public
 License described above, Xara Group Ltd grants to you certain additional
-rights. 
+rights.
 
 The additional rights are to use, modify, and distribute the software
 together with the wxWidgets library, the wxXtra library, and the "CDraw"
@@ -321,30 +321,36 @@ inline void GenLineToAboveRight() { GenLine( IRect->hx,IRect->hy,FALSE ) ; } ;
 //	     |    |    |    |
 //
 //
-INT32 GetSector( POINT &P )
-{
-	INT32 Sector = 12 ;
-	if ( P.x < IRect->lx )
-		if ( P.x < ORect->lx )
-			Sector -= 2 ;
-		else
-			Sector-- ;
-	else if ( P.x > IRect->hx )
-		if ( P.x > ORect->hx )
-			Sector += 2 ;
-		else
-			Sector++ ;
-	if ( P.y < IRect->ly )
-		if ( P.y < ORect->ly )
-			Sector -= 2*5 ;
-		else
-			Sector -= 5 ;
-	else if ( P.y > IRect->hy )
-		if ( P.y > ORect->hy )
-			Sector += 2*5 ;
-		else
-			Sector += 5 ;
-	return Sector ;
+INT32 GetSector(POINT &P) {
+  INT32 Sector = 12 ;
+  if ( P.x < IRect->lx ) {
+    if ( P.x < ORect->lx ) {
+      Sector -= 2 ;
+    } else {
+      Sector-- ;
+    }
+  } else if ( P.x > IRect->hx ){
+    if ( P.x > ORect->hx ) {
+      Sector += 2 ;
+    } else {
+      Sector++ ;
+    }
+  }
+  if ( P.y < IRect->ly ) {
+    if ( P.y < ORect->ly ) {
+      Sector -= 2*5 ;
+    }
+    else {
+      Sector -= 5 ;
+    }
+  } else if ( P.y > IRect->hy ) {
+    if ( P.y > ORect->hy ){
+      Sector += 2*5 ;
+    } else {
+      Sector += 5 ;
+    }
+  }
+  return Sector ;
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////

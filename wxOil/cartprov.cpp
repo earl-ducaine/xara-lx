@@ -1,7 +1,7 @@
 // $Id: cartprov.cpp 1013 2006-05-11 20:24:13Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
- 
+
                Xara LX, a vector drawing and manipulation program.
                     Copyright (C) 1993-2006 Xara Group Ltd.
        Copyright on certain contributions may be held in joint with their
@@ -32,7 +32,7 @@ ADDITIONAL RIGHTS
 
 Conditional upon your continuing compliance with the GNU General Public
 License described above, Xara Group Ltd grants to you certain additional
-rights. 
+rights.
 
 The additional rights are to use, modify, and distribute the software
 together with the wxWidgets library, the wxXtra library, and the "CDraw"
@@ -319,7 +319,7 @@ void CamArtProvider::DeleteHashContents()
 		}
 		// for good measure
 		m_pHash->clear();
-		
+
 		delete (m_pHash);
 		m_pHash = NULL;
 	}
@@ -368,7 +368,7 @@ void CamArtProvider::ArtLoad(BOOL newbitmaps, BOOL defer)
 	if (defer)
 		AddPendingEvent(event);
 	else
-		ProcessEvent(event);	
+		ProcessEvent(event);
 }
 
 
@@ -420,7 +420,7 @@ void CamArtProvider::GetBitmapEvent(wxCamArtProviderEvent& event)
 				if (defer)
 					AddPendingEvent(event);
 				else
-					ProcessEvent(event);	
+					ProcessEvent(event);
 			}
 		}
 	}
@@ -758,7 +758,7 @@ void CamArtProvider::Draw(wxDC& dc, const wxRect & rect, ResourceID Resource, Ca
 	dc.SetBrush(wxSystemSettings::GetColour(wxSYS_COLOUR_3DFACE));
 	dc.SetPen(*wxTRANSPARENT_PEN);
 //	dc.DrawRectangle(rect.x, rect.y, rect.width, rect.height);
-	
+
 //	dc.SetBrush(wxSystemSettings::GetColour(wxSYS_COLOUR_3DFACE));
 	dc.SetBrush(*wxTRANSPARENT_BRUSH); // Needed in case we need to paint 3D furniture, but not the button top (ALWAYS3D)
 
@@ -772,7 +772,7 @@ void CamArtProvider::Draw(wxDC& dc, const wxRect & rect, ResourceID Resource, Ca
 		// 3Dness
 		brect.width-=1;
 		brect.height-=1;
-		
+
 		if (Flags & CAF_SELECTED)
 		{
 			// It's pushed in
@@ -798,10 +798,10 @@ void CamArtProvider::Draw(wxDC& dc, const wxRect & rect, ResourceID Resource, Ca
 			if (Flags & CAF_TOOLBACKGROUND)
 				dc.SetBrush(wxColour(255,255,192)); // A light yellow - we should load this from somewhere else
 			else
-			{	
+			{
 				if (Flags & CAF_BUTTONHOVER)
 					dc.SetBrush(wxSystemSettings::GetColour(wxSYS_COLOUR_3DHIGHLIGHT));
-				else	
+				else
 					dc.SetBrush(wxSystemSettings::GetColour(wxSYS_COLOUR_BTNFACE));
 			}
 		}
@@ -839,8 +839,8 @@ void CamArtProvider::Draw(wxDC& dc, const wxRect & rect, ResourceID Resource, Ca
 		else
 		{
 			bitmapoffsetX += (rect.width-BestSize.width)/2;
-		}	
-	}	
+		}
+	}
 	if (BestSize.height != rect.height)
 	{
 		if (Flags & CAF_BOTTOM)
@@ -854,8 +854,8 @@ void CamArtProvider::Draw(wxDC& dc, const wxRect & rect, ResourceID Resource, Ca
 		else
 		{
 			bitmapoffsetY += (rect.height-BestSize.height)/2;
-		}	
-	}	
+		}
+	}
 
 	if (Flags & CAF_TEXT)
 	{
@@ -871,7 +871,7 @@ void CamArtProvider::Draw(wxDC& dc, const wxRect & rect, ResourceID Resource, Ca
 		// hovering. We can't do this in the control (grrr...) because else by the time the flags get
 		// here we cannot distinguish selection from hover, which means we slab wrongly
 		wxBitmap *pBitmap = FindBitmap(Resource, (CamArtFlags)(Flags|((Flags & CAF_BUTTONHOVER)?CAF_SELECTED:0) ));
-		
+
 		// plot the bitmap
 		if (pBitmap)
 			dc.DrawBitmap(*pBitmap, brect.x+bitmapoffsetX, brect.y+bitmapoffsetY, TRUE);
@@ -974,135 +974,137 @@ wxSize CamArtProvider::GetBorderSize(CamArtFlags Flags /*=CAF_DEFAULT*/)
 
 ********************************************************************************************/
 
-wxString CamArtProvider::GetTextInfoOrDraw(ResourceID r, CamArtFlags f, wxDC &dc, BOOL Draw/*=FALSE*/, wxCoord *w, wxCoord *h, wxCoord x, wxCoord y,
-											wxCoord MaxWidth /*= -1*/, const wxString &text)
-{
-	// find the name by looking up the ID as a string
-	const TCHAR * tcname=text;
+wxString CamArtProvider::GetTextInfoOrDraw(ResourceID r, CamArtFlags f, wxDC &dc,
+					   BOOL Draw/*=FALSE*/, wxCoord *w,
+					   wxCoord *h, wxCoord x, wxCoord y,
+					   wxCoord MaxWidth /*= -1*/,
+					   const wxString &text) {
+  // find the name by looking up the ID as a string
+  const TCHAR * tcname=text;
 
-	if (w) *w=0;
-	if (h) *h=0;
+  if (w) *w=0;
+  if (h) *h=0;
 
-	if (text.IsEmpty())
+  if (text.IsEmpty())
+    {
+      tcname = CamResource::GetTextFail(r);
+      if (!tcname || ( (tcname[0]==_T('-')) && !tcname[1]) )
 	{
-		tcname = CamResource::GetTextFail(r);
-		if (!tcname || ( (tcname[0]==_T('-')) && !tcname[1]) )
-		{
-			// default to object name
-			tcname = CamResource::GetObjectNameFail(r);
-		}
-		
-		if (!tcname)
-		{
-			// If this goes off, then somehow we've been passed a resource ID without a reverse
-			// bitmap lookup. This can normally only happen if the resource ID is corrupted, or
-			// the resources are corrupted
-			ERROR3_PF(("Cannot get text for resource %d",r));
-			return wxEmptyString;
-		}
+	  // default to object name
+	  tcname = CamResource::GetObjectNameFail(r);
 	}
 
-	dc.SetTextForeground(wxSystemSettings::GetColour((f & CAF_GREYED)?wxSYS_COLOUR_GRAYTEXT:wxSYS_COLOUR_BTNTEXT));
-	wxFont font = wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT);
-	font.SetPointSize((f & CAF_HALFHEIGHT)?7:8);
-	dc.SetFont(font);
-
-	wxString RenderText(tcname);
-
-	if (!(f & CAF_STATUSBARTEXT))
+      if (!tcname)
 	{
-		if (h && w)
-			dc.GetTextExtent(RenderText, w, h);
-	
-		if (Draw)
-			dc.DrawText(RenderText, x, y);
+	  // If this goes off, then somehow we've been passed a resource ID without a reverse
+	  // bitmap lookup. This can normally only happen if the resource ID is corrupted, or
+	  // the resources are corrupted
+	  ERROR3_PF(("Cannot get text for resource %d", r));
+	  return wxEmptyString;
 	}
-	else
+    }
+
+  dc.SetTextForeground(wxSystemSettings::GetColour((f & CAF_GREYED)?wxSYS_COLOUR_GRAYTEXT:wxSYS_COLOUR_BTNTEXT));
+  wxFont font = wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT);
+  font.SetPointSize((f & CAF_HALFHEIGHT)?7:8);
+  dc.SetFont(font);
+
+  wxString RenderText(tcname);
+
+  if (!(f & CAF_STATUSBARTEXT))
+    {
+      if (h && w)
+	dc.GetTextExtent(RenderText, w, h);
+
+      if (Draw)
+	dc.DrawText(RenderText, x, y);
+    }
+  else
+    {
+      // It's status bar text. We have to go through the tokens individually
+
+      // First tokenize the string
+      INT32 i=0;
+      wxArrayString Tokens;
+      wxArrayString Separators;
+      wxString SubString=wxEmptyString;
+      INT32 BoldBreak=-1;
+      for (i=0; i<(INT32)(RenderText.Length()); i++)
 	{
-		// It's status bar text. We have to go through the tokens individually
+	  wxChar c = RenderText[i];
+	  if ( (c==_T(';')) ||
+	       ((c==_T(':')) && (i<((INT32)RenderText.Length())-1) && (RenderText[i+1]==_T(':')) )
+	       )
+	    {
+	      // We found a separator
+	      Tokens.Add(SubString);
+	      Separators.Add(wxString(c));
 
-		// First tokenize the string
-		INT32 i=0;
-		wxArrayString Tokens;
-		wxArrayString Separators;
-		wxString SubString=wxEmptyString;
-		INT32 BoldBreak=-1;
-		for (i=0; i<(INT32)(RenderText.Length()); i++)
+	      // Was it a colon separator?
+	      if (c==_T(':'))
 		{
-			wxChar c = RenderText[i];
-			if ( (c==_T(';')) ||
-				 ((c==_T(':')) && (i<((INT32)RenderText.Length())-1) && (RenderText[i+1]==_T(':')) )
-				)
-			{
-				// We found a separator
-				Tokens.Add(SubString);
-				Separators.Add(wxString(c));
-
-				// Was it a colon separator?
-				if (c==_T(':'))
-				{
-					// Remember it's now bold up to here
-					BoldBreak=Tokens.GetCount();
-					// Skip over the second colon
-					i++;
-				}
-
-				SubString=wxEmptyString;
-			}
-			else
-				SubString+=c; // It's not a separator, add it to the substring
+		  // Remember it's now bold up to here
+		  BoldBreak=Tokens.GetCount();
+		  // Skip over the second colon
+		  i++;
 		}
 
-		// add the final token
-		if (!SubString.IsEmpty())
-		{
-			Tokens.Add(SubString);
-			Separators.Add(wxEmptyString);
-		}
-
-		BOOL Stop = FALSE;
-		wxCoord CumWidth = 0; // The cumulative width used so far
-		wxCoord MaxHeight = 0; // The max height used so far
-		wxFont BoldFont = font;
-		BoldFont.SetWeight(wxFONTWEIGHT_BOLD);
-
-		for (i=0; i<(INT32)(Tokens.GetCount()) && !Stop; i++)
-		{
-			wxString TextBlob = Tokens[i] + Separators[i];
-
-			// Set the font up
-			if (i<BoldBreak)
-				dc.SetFont(BoldFont);
-			else
-				dc.SetFont(font);
-
-			// Find out how large this blob is
-			wxCoord ww=0;
-			wxCoord hh=0;
-			dc.GetTextExtent(TextBlob, &ww, &hh);
-
-			// Does it fit (or do we force it to fit because it is the first text)
-			if ((MaxWidth<0) || (i==0) || (CumWidth+ww<=MaxWidth))
-			{
-				// Draw it if necessary
-				if (Draw)
-					dc.DrawText(TextBlob, x+CumWidth, y);
-
-				// Account for its width
-				CumWidth+=ww;
-				if (hh>MaxHeight)
-					MaxHeight=hh;
-			}
-			else
-				Stop=TRUE;
-		}
-		if (h)
-			*h = MaxHeight;
-		if (w)
-			*w = CumWidth;
+	      SubString=wxEmptyString;
+	    }
+	  else
+	    SubString+=c; // It's not a separator, add it to the substring
 	}
 
-	return RenderText;
+      // add the final token
+      if (!SubString.IsEmpty())
+	{
+	  Tokens.Add(SubString);
+	  Separators.Add(wxEmptyString);
+	}
+
+      BOOL Stop = FALSE;
+      wxCoord CumWidth = 0; // The cumulative width used so far
+      wxCoord MaxHeight = 0; // The max height used so far
+      wxFont BoldFont = font;
+      BoldFont.SetWeight(wxFONTWEIGHT_BOLD);
+
+      for (i=0; i<(INT32)(Tokens.GetCount()) && !Stop; i++)
+	{
+	  wxString TextBlob = Tokens[i] + Separators[i];
+
+	  // Set the font up
+	  if (i<BoldBreak)
+	    dc.SetFont(BoldFont);
+	  else
+	    dc.SetFont(font);
+
+	  // Find out how large this blob is
+	  wxCoord ww=0;
+	  wxCoord hh=0;
+	  dc.GetTextExtent(TextBlob, &ww, &hh);
+
+	  // Does it fit (or do we force it to fit because it is the first text)
+	  if ((MaxWidth<0) || (i==0) || (CumWidth+ww<=MaxWidth))
+	    {
+	      // Draw it if necessary
+	      if (Draw)
+		dc.DrawText(TextBlob, x+CumWidth, y);
+
+	      // Account for its width
+	      CumWidth+=ww;
+	      if (hh>MaxHeight)
+		MaxHeight=hh;
+	    }
+	  else
+	    Stop=TRUE;
+	}
+      if (h)
+	*h = MaxHeight;
+      if (w)
+	*w = CumWidth;
+    }
+
+  return RenderText;
 }
 
 /********************************************************************************************
@@ -1147,7 +1149,7 @@ wxImage * CamArtProvider::MakeBitmap(ResourceIDWithFlags ResWithFlags)
 		// If this goes off, then somehow we've been passed a resource ID without a reverse
 		// bitmap lookup. This can normally only happen if the resource ID is corrupted, or
 		// the resources are corrupted
-		ERROR3_PF(("Cannot get bitmap name for resource %d",r));
+		Error::XComplain("Cannot get bitmap name for resource %d", r);
 		delete pBitmap;
 		return FALSE;
 	}
@@ -1160,14 +1162,14 @@ wxImage * CamArtProvider::MakeBitmap(ResourceIDWithFlags ResWithFlags)
 	for (ext=0; ext<(INT32)(CamResource::BitmapExtensions.GetCount()); ext++)
 	{
 		resname=CamResource::MakeBitmapString(basename, MakeBitmapFlagString(f), CamResource::BitmapExtensions[ext]);
-	
+
 		pBitmap=CamResource::GetCachedBitmap(resname.c_str());
 		if (pBitmap) return pBitmap;
-	
+
 		// OK, it didn't work. Try deleting the flags in order and seeing whether
 		// that works. Note each of these will itself try deleting flags. Thus recursively
 		// we work our way down to the base bitmap.
-	
+
 #ifdef _DEBUG
 		static INT32 recursion=0;
 		recursion++;
@@ -1181,7 +1183,7 @@ wxImage * CamArtProvider::MakeBitmap(ResourceIDWithFlags ResWithFlags)
 		recursion--;
 #endif
 		if (pBitmap) return pBitmap;
-	}	
+	}
 
 	return NULL;
 }
@@ -1196,7 +1198,7 @@ wxImage * CamArtProvider::MakeBitmap(ResourceIDWithFlags ResWithFlags)
 	Inputs:		str - sting to look at
 	Outputs:	None
 	Returns:	Flags associated with a bitmap string
-	Purpose:	
+	Purpose:
 	Errors:		-
 	SeeAlso:	-
 
@@ -1223,7 +1225,7 @@ CamArtFlags CamArtProvider::GetBitmapFlags(const wxString &str)
 	Inputs:		flags - the flags to look at
 	Outputs:	None
 	Returns:	Flags string associated with a bitmap
-	Purpose:	
+	Purpose:
 	Errors:		-
 	SeeAlso:	-
 
@@ -1239,4 +1241,3 @@ wxString CamArtProvider::MakeBitmapFlagString(const CamArtFlags flags)
 	if (flags & CAF_GREYED) mod+=_T("g");
 	return mod;
 }
-

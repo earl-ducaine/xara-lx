@@ -37,7 +37,7 @@ public:
     virtual void FixUpdate(wxWindow * pwxWindow, bool flush=true);
 
 #if defined( __WXGTK__ )
-    virtual void ParseGtkRcString(char * rcstring);
+    virtual void ParseGtkRcString(const char * rcstring);
     virtual void SetGtkWidgetName(wxWindow * pwxWindow, char * name);
 #endif
 

@@ -1,7 +1,7 @@
 // $Id: grndbmp.cpp 1282 2006-06-09 09:46:49Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
- 
+
                Xara LX, a vector drawing and manipulation program.
                     Copyright (C) 1993-2006 Xara Group Ltd.
        Copyright on certain contributions may be held in joint with their
@@ -32,7 +32,7 @@ ADDITIONAL RIGHTS
 
 Conditional upon your continuing compliance with the GNU General Public
 License described above, Xara Group Ltd grants to you certain additional
-rights. 
+rights.
 
 The additional rights are to use, modify, and distribute the software
 together with the wxWidgets library, the wxXtra library, and the "CDraw"
@@ -105,10 +105,10 @@ service marks of Xara Group Ltd. All rights in these marks are reserved.
 // all references to ScaleFactor in this code and replaced them with
 // ERROR3s.  -- Jonathan Payne, 8/9/2000
 
-// The above comment fails to take into account the need for the 
-// feathering code to know the scale factor so it can adjust the size of 
+// The above comment fails to take into account the need for the
+// feathering code to know the scale factor so it can adjust the size of
 // its bitmaps correctly when rendering to a bitmap for printing or on-
-// screen preview of separations.  This causes feathers to be rendered 
+// screen preview of separations.  This causes feathers to be rendered
 // incorrectly at any scale factor other than 100%!!!!!
 // Gerry - 15/04/2004
 
@@ -156,8 +156,8 @@ BOOL GRenderOptPalette::UseOldPalette = TRUE;
 
 /********************************************************************************************
 
->	GRenderBitmap::GRenderBitmap(DocRect ClipRegion, Matrix ConvertMatrix, FIXED16 ViewScale, 
-							 UINT32 Depth, INT32 dpi, BOOL Printing, UINT32 Dither, LPLOGPALETTE pPalette, 
+>	GRenderBitmap::GRenderBitmap(DocRect ClipRegion, Matrix ConvertMatrix, FIXED16 ViewScale,
+							 UINT32 Depth, INT32 dpi, BOOL Printing, UINT32 Dither, LPLOGPALETTE pPalette,
 							 BOOL AutoConvert)
 
 	Author:		Andy_Pennell (Xara Group Ltd) <camelotdev@xara.com>
@@ -173,8 +173,8 @@ BOOL GRenderOptPalette::UseOldPalette = TRUE;
 
 ********************************************************************************************/
 
-GRenderBitmap::GRenderBitmap(DocRect ClipRegion, Matrix ConvertMatrix, FIXED16 ViewScale, 
-							 UINT32 Depth, double dpi, BOOL Printing, UINT32 Dither, LPLOGPALETTE pPalette, 
+GRenderBitmap::GRenderBitmap(DocRect ClipRegion, Matrix ConvertMatrix, FIXED16 ViewScale,
+							 UINT32 Depth, double dpi, BOOL Printing, UINT32 Dither, LPLOGPALETTE pPalette,
 							 BOOL AutoConvert)
 	: GRenderDIB( ClipRegion, ConvertMatrix, ViewScale, Depth, dpi)
 {
@@ -200,8 +200,8 @@ GRenderBitmap::GRenderBitmap(DocRect ClipRegion, Matrix ConvertMatrix, FIXED16 V
 	DitherType = Dither;
 	uOutputDepth = Depth;  		// If different from the actual RR bpp, then the bitmap will
 								// be converted before output
-	lpOutputInfo = NULL;	
-	lpOutputBits = NULL;	
+	lpOutputInfo = NULL;
+	lpOutputBits = NULL;
 
 	m_dXCentralAdjust = 0;
 	m_dYCentralAdjust = 0;
@@ -245,8 +245,8 @@ BOOL GRenderBitmap::DitheringNeeds32bpp(UINT32 Dither)
 
 	Author:		Andy_Pennell (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	15/8/94
-	Inputs:		
-	Outputs:	
+	Inputs:
+	Outputs:
 	Returns:	TRUE if worked, FALSE if failed
 	Purpose:	Uses base class to do normal stuff, then fills bitmap with White as a sort
 				of paper background.
@@ -287,7 +287,7 @@ BOOL GRenderBitmap::StartRender()
 	Inputs:		DocRect is a rectangle on document co-ords.
 				dpi is the resolution of the device we are rendering to
 	Outputs:	RenderMatrix is the rendering matrix, may have e anf f components changed by the call
-	Returns:	Object containing the new rectangle coordinates.     			
+	Returns:	Object containing the new rectangle coordinates.
 	Purpose:	To convert a rectangle in Doc coordinates to a rectangle in Win coordinates
 				taking account of the destination dpi rather than assuming screen dpi.
 				Virtual so that it can be overriden by different render regions if so required.
@@ -392,7 +392,7 @@ GRenderBitmap::~GRenderBitmap()
 		pBits = NULL;
 	}
 
-	// Make sure we restore the state of the GDrawContext if our client forgot to 
+	// Make sure we restore the state of the GDrawContext if our client forgot to
 	// turn off the context replacement. See UseGreyscaleContextDangerous(), below.
 	if (pPreviousGDrawContext != NULL)
 	{
@@ -461,11 +461,11 @@ INT32 GRenderBitmap::GetFullRegionHeight()
 {
 	// Find out the actual size in pixels of this render region
 	// Use the same method that is used to construct the matrix and we use in
-	// the bitmap options dialog box to work out the size so that we are consistent 
+	// the bitmap options dialog box to work out the size so that we are consistent
 	Matrix Identity;	// default construction is an identity matrix
 	WinRect	Rect = OSRenderRegion::BitmapDocRectToWin( Identity, RegionRect, PixelsPerInch );
 	return Rect.height;
-}	
+}
 
 
 /********************************************************************************************
@@ -504,8 +504,8 @@ BOOL GRenderBitmap::SetRenderBottomToTop(BOOL NewVal)
 {
 	BOOL OldVal = RenderBottomToTop;
 	RenderBottomToTop = NewVal;
-	return OldVal;	
-}	
+	return OldVal;
+}
 
 
 /********************************************************************************************
@@ -599,7 +599,7 @@ BOOL GRenderBitmap::SetFirstBand()
 		}
 
 		// Set the new clip rect up ready for rendering
-		SetClipRect(NewClipRect);		
+		SetClipRect(NewClipRect);
 		return TRUE;
 	}
 }
@@ -718,7 +718,7 @@ BOOL GRenderBitmap::GetNextBand()
 		if ((NewClipRect.lo.y < RegionRect.lo.y) || (IsLastBand))
 			NewClipRect.lo.y = RegionRect.lo.y;
 	}
-		
+
 	// Make sure that we are not dealing with an empty rect
 	if (NewClipRect.Height()==0)
 		return FALSE;
@@ -820,8 +820,8 @@ OILBitmap *GRenderBitmap::ExtractBitmap(LPLOGPALETTE pPalette)
 {
 	if (pBitmapInfo && pBits)
 	{
-		LPBITMAPINFO lpConvInfo;	
-		LPBYTE lpConvBits;	
+		LPBITMAPINFO lpConvInfo;
+		LPBYTE lpConvBits;
 
 		BOOL DeletePalette = FALSE;
 
@@ -834,7 +834,7 @@ OILBitmap *GRenderBitmap::ExtractBitmap(LPLOGPALETTE pPalette)
 
 		BOOL ok = DoOutputBitmapConversion(&lpConvInfo, &lpConvBits, pPalette);
 		ERROR3IF(!ok, "Output conversion failed in GRenderBitmap::ExtractBitmap");
-		if (!ok) 
+		if (!ok)
 		{
 			if(DeletePalette)
 				CCFree(pPalette);
@@ -846,9 +846,9 @@ OILBitmap *GRenderBitmap::ExtractBitmap(LPLOGPALETTE pPalette)
 		{
 			// Setup the Oil bitmap's pallete
 			RGBQUAD* pOilPalette = OILBM->BMInfo->bmiColors;
- 			PALETTEENTRY* pPaletteEntry = pPalette->palPalEntry; 
+ 			PALETTEENTRY* pPaletteEntry = pPalette->palPalEntry;
 
-			// Copy the palette entries over, we cannot copy a structure at a time because 
+			// Copy the palette entries over, we cannot copy a structure at a time because
 			// the bytes are in different orders
 			for (DWORD i=0; i< OILBM->BMInfo->bmiHeader.biClrUsed; i++)
 			{
@@ -892,7 +892,7 @@ OILBitmap *GRenderBitmap::ExtractBitmap(LPLOGPALETTE pPalette)
 
 /********************************************************************************************
 
->	OILBitmap *GRenderBitmap::ExtractBitmapCopy(LPLOGPALETTE pPalette = NULL, 
+>	OILBitmap *GRenderBitmap::ExtractBitmapCopy(LPLOGPALETTE pPalette = NULL,
 												LPBITMAPINFO pMaskInfo = NULL, LPBYTE pMaskData = NULL,
 												INT32 MaskColour = -1,
 												BOOL LookForDuplicates = FALSE)
@@ -917,13 +917,13 @@ OILBitmap *GRenderBitmap::ExtractBitmap(LPLOGPALETTE pPalette)
 	Purpose:	So that the caller may do what he likes with the bitmap.
 
 ********************************************************************************************/
-OILBitmap *GRenderBitmap::ExtractBitmapCopy(LPLOGPALETTE pPalette, 
-											LPBITMAPINFO pMaskInfo, LPBYTE pMaskData, 
+OILBitmap *GRenderBitmap::ExtractBitmapCopy(LPLOGPALETTE pPalette,
+											LPBITMAPINFO pMaskInfo, LPBYTE pMaskData,
 											INT32 MaskColour, BOOL LookForDuplicates)
 {
 	ERROR3IF(MaskColour==-2,"Someone`s using a MaskColour of -2!!! Please Correct!");
 	// BOOL bBrowserPalette = FALSE;
-	
+
 	// if(!pPalette)
 	// 	bBrowserPalette = TRUE;
 
@@ -931,8 +931,8 @@ OILBitmap *GRenderBitmap::ExtractBitmapCopy(LPLOGPALETTE pPalette,
 	{
 		LPBITMAPINFO	lpCopyInfo = NULL;
 		LPBYTE			lpCopyBits = NULL;
-		LPBITMAPINFO	lpConvInfo = NULL;	
-		LPBYTE			lpConvBits = NULL;	
+		LPBITMAPINFO	lpConvInfo = NULL;
+		LPBYTE			lpConvBits = NULL;
 
 		BOOL DeletePalette = FALSE;
 
@@ -1030,7 +1030,7 @@ OILBitmap *GRenderBitmap::ExtractBitmapCopy(LPLOGPALETTE pPalette,
 				if (ColoursInPal > MaxColours)
 					ColoursInPal = MaxColours;
 
-				// Copy the palette entries over, we cannot copy a structure at a time because 
+				// Copy the palette entries over, we cannot copy a structure at a time because
 				// the bytes are in different orders
 	 			PALETTEENTRY* pPaletteEntry = pPalette->palPalEntry;
 				for (INT32 i = 0; i < MaxColours; i++)
@@ -1063,7 +1063,7 @@ OILBitmap *GRenderBitmap::ExtractBitmapCopy(LPLOGPALETTE pPalette,
 
 				// Only set up the required number of palette entries
 				OILBM->BMInfo->bmiHeader.biClrUsed = ColoursInPal;
-			} 
+			}
 
 			if (lpCopyBits == pBits)
 			{
@@ -1140,7 +1140,7 @@ BOOL GRenderBitmap::GetBitmapData(LPBITMAPINFO* pBmpInfo, LPBYTE* pBmpData, BOOL
 	{
 		*pBmpInfo = pBitmapInfo;
 		*pBmpData = pBits;
-		
+
 		if(m_bEnableConversion && m_DoCompression)
 		{
 			UINT32 Width = pBitmapInfo->bmiHeader.biWidth;
@@ -1165,8 +1165,8 @@ BOOL GRenderBitmap::GetBitmapData(LPBITMAPINFO* pBmpInfo, LPBYTE* pBmpData, BOOL
 		return TRUE;
 	}
 
-	LPBITMAPINFO lpConvInfo=NULL;	
-	LPBYTE lpConvBits=NULL;	
+	LPBITMAPINFO lpConvInfo=NULL;
+	LPBYTE lpConvBits=NULL;
 
 	LPLOGPALETTE pPalette = GetConversionPalette();
 
@@ -1411,7 +1411,7 @@ PORTNOTE("other","GRenderBitmap::UseGreyscaleContextDangerous - removed progress
 			if (pGreyscaleContext != NULL)
 			{
 //				pGreyscaleContext->Init();
-				
+
 				// And initialise the palette - this can unfortunately take a couple of seconds
 				DWORD PaletteFlag = 0;
 				if (WhichDither == 0 || WhichDither == 3)
@@ -1501,7 +1501,7 @@ void GRenderBitmap::Deinit(void)
 /********************************************************************************************
 
 	GRenderOptPalette ... a special Render Region for generating an optimised palette for
-	                      use during export 
+	                      use during export
 
 ********************************************************************************************/
 
@@ -1624,16 +1624,16 @@ BOOL GRenderOptPalette::GetNextBand()
 		BOOL ok;
 		if (UseSpecial8bpp) {
 		  ok = DIBUtil::GenOptimal8bppPaletteStats( (INT32*)Stats, (RGBQUAD*)pBits, BmpSize );
-		  DIBUtil::GenOptimal8bppPaletteStats( (INT32*)Stats, (RGBQUAD*)pBits, BmpSize );
+		  //DIBUtil::GenOptimal8bppPaletteStats( (INT32*)Stats, (RGBQUAD*)pBits, BmpSize );
 		} else {
 		  ok = DIBUtil::GenOptimalPaletteStats( Stats, (RGBQUAD*)pBits, BmpSize );
-		  DIBUtil::GenOptimalPaletteStats( Stats, (RGBQUAD*)pBits, BmpSize );
+		  //DIBUtil::GenOptimalPaletteStats( Stats, (RGBQUAD*)pBits, BmpSize );
 		}
 
 		ERROR3IF(!ok, "GenOptimalPaletteStats failed");
 	}
 
-	return GRenderBitmap::GetNextBand();									 	
+	return GRenderBitmap::GetNextBand();
 }
 
 /********************************************************************************************
@@ -1648,7 +1648,7 @@ BOOL GRenderOptPalette::GetNextBand()
 				SnapToBrowserPalette = TRUE if palette should be snapped to the browser palett
 	Outputs:	-
 	Returns:	A pointer to the optimised palette, or NULL if failed
-				
+
 				The reserved colours will appear as follows ...
 				1bpp, at end of the palette,
 				4bpp, at the start of the palette,
@@ -1657,7 +1657,7 @@ BOOL GRenderOptPalette::GetNextBand()
 				WEBSTER Changes (markn 16/1/97):
 				This function has been modified so that you can specify the number colours you want in the
 				palette
-				
+
 				WEBSTER v2 changes (markn 22/7/97)
 
 	Purpose:	Generates an optimised palette from the Statistics generated from each band
@@ -1689,11 +1689,11 @@ LPLOGPALETTE GRenderOptPalette::GetOptimisedPalette(UINT32 PaletteSize,
       if (ReservedColours < NumColours) {
 	BOOL ok = TRUE;
 	// GAT
-	//  If the bitmap has less than 256 colours, then we want to bypass the 
+	//  If the bitmap has less than 256 colours, then we want to bypass the
 	//  optimisation code, and just use the exact palette.
 	PORTNOTE("BmpPrevDlg", "Rampant use of BmapPrevDlg removed (please don't re-instate directly - the value should be a param or member of this class)")
 #ifndef EXCLUDE_FROM_XARALX
-	  if( !m_bTooManyColours && m_pExactPalette && !UseOldPalette 
+	  if( !m_bTooManyColours && m_pExactPalette && !UseOldPalette
 	      && m_pExactPalette->palNumEntries < BmapPrevDlg::m_NumOfColoursUserAskedFor ) // and we want this many colours
 #else
 	    if( !m_bTooManyColours && m_pExactPalette && !UseOldPalette ) // and we want this many colours
@@ -1779,7 +1779,7 @@ LPLOGPALETTE GRenderOptPalette::GetOptimisedPalette(UINT32 PaletteSize,
 	    CCFree( m_pExactPalette );
 	    m_pExactPalette = NULL;
 	  }
-			
+
 	// WEBSTER - markn - 22/7/97
 	if (ok && SnapToBrowserPalette)
 	  {
@@ -1829,7 +1829,7 @@ LPLOGPALETTE GRenderOptPalette::GetOptimisedPalette(UINT32 PaletteSize,
 			pPalette->palPalEntry[0].peFlags = 255;		// This makes Gavin ignore this
 			// colour when converting the bitmap
 		      }
-								
+
 		    pPalette->palNumEntries = 2;
 		  }
 		else
@@ -1869,11 +1869,11 @@ LPLOGPALETTE GRenderOptPalette::GetOptimisedPalette(UINT32 PaletteSize,
 			  pPalette->palPalEntry[index].peRed = 255;
 			  pPalette->palPalEntry[index].peGreen = 255;
 			  pPalette->palPalEntry[index].peBlue = 255;
-			}											
+			}
 		    }
 		}
 #endif
-							
+
 		if (UseSpecial8bpp && !( !m_bTooManyColours && !UseOldPalette ) )
 		  {
 		    LPLOGPALETTE pWinPalette;
@@ -1889,7 +1889,7 @@ LPLOGPALETTE GRenderOptPalette::GetOptimisedPalette(UINT32 PaletteSize,
 			UINT32 NumColsToMove = NumColours - CurStart;
 			ERROR3IF((NumColsToMove+CurStart) > 256,"No room for system colours");
 			ERROR3IF((NumColsToMove+NewStart) > 256,"No room for system colours");
-									
+
 			if (NewStart < CurStart)
 			  {
 			    // Move the non-system colours down
@@ -1925,7 +1925,7 @@ LPLOGPALETTE GRenderOptPalette::GetOptimisedPalette(UINT32 PaletteSize,
 		      {
 			pPalette->palPalEntry[index] = pWinPalette->palPalEntry[index];
 		      }
-							
+
 		    // Blank the reserved colours to white
 		    for (index = 10; index < INT32(10 + ReservedColours); index++)
 		      {

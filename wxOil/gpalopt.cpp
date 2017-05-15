@@ -6,7 +6,7 @@
 /////////////////////////////////////////////////////////////////////////////
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
- 
+
                Xara LX, a vector drawing and manipulation program.
                     Copyright (C) 1993-2006 Xara Group Ltd.
        Copyright on certain contributions may be held in joint with their
@@ -37,7 +37,7 @@ ADDITIONAL RIGHTS
 
 Conditional upon your continuing compliance with the GNU General Public
 License described above, Xara Group Ltd grants to you certain additional
-rights. 
+rights.
 
 The additional rights are to use, modify, and distribute the software
 together with the wxWidgets library, the wxXtra library, and the "CDraw"
@@ -321,7 +321,7 @@ void PaletteOptimiser::Moments3D()
 
     for ( UINT32 r=1 ; r<AXIS ; ++r )
     {
-		for ( UINT32 i=0 ; i<AXIS ; ++i ) 
+		for ( UINT32 i=0 ; i<AXIS ; ++i )
 		    areaW[i] = areaR[i] = areaG[i] = areaB[i] = areaS[i] = 0.0 ;
 		for ( UINT32 g=1 ; g<AXIS ; ++g )
 		{
@@ -427,11 +427,14 @@ double PaletteOptimiser::Snap( cpBox pCube, cDOUBLE halfW,cDOUBLE halfR,cDOUBLE 
 	{
 		if ( aPDist[pCube->clr.r]+aPDist[pCube->clr.g]+aPDist[pCube->clr.b] <= m_uSnapToPrimaries2 )
 		{
-			Clr C = {
-				pCube->clr.r<0x80 ? 0x00 : 0xFF,
-				pCube->clr.g<0x80 ? 0x00 : 0xFF,
-				pCube->clr.b<0x80 ? 0x00 : 0xFF,
-			} ;
+		  uint clr_r = pCube->clr.r < 0x80 ? 0x00 : 0xFF;
+		  uint clr_g = pCube->clr.g < 0x80 ? 0x00 : 0xFF;
+		  uint clr_b = pCube->clr.b < 0x80 ? 0x00 : 0xFF;
+		  Clr C = {
+		    clr_r,
+		    clr_g,
+		    clr_b,
+		  } ;
 			if ( aIndex[pCube->r0]<=C.r && aIndex[pCube->r1]>C.r &&
 				 aIndex[pCube->g0]<=C.g && aIndex[pCube->g1]>C.g &&
 				 aIndex[pCube->b0]<=C.b && aIndex[pCube->b1]>C.b )
@@ -484,11 +487,11 @@ double PaletteOptimiser::Top( cpcBox pCube, cUINT32 dir, cUINT32 pos, double Sta
 	switch (dir)
 	{
 	case RED :	 return +LCube(p,pos,pCube->g1,pCube->b1)
-			   			+LCube(p,pos,pCube->g0,pCube->b0) 
+			   			+LCube(p,pos,pCube->g0,pCube->b0)
 			   			-LCube(p,pos,pCube->g1,pCube->b0)
 			   			-LCube(p,pos,pCube->g0,pCube->b1) ;
 	case GREEN : return +LCube(p,pCube->r1,pos,pCube->b1)
-			   			+LCube(p,pCube->r0,pos,pCube->b0) 
+			   			+LCube(p,pCube->r0,pos,pCube->b0)
 			   			-LCube(p,pCube->r1,pos,pCube->b0)
 			   			-LCube(p,pCube->r0,pos,pCube->b1) ;
 	case BLUE :  return +LCube(p,pCube->r1,pCube->g1,pos)
@@ -514,8 +517,8 @@ double PaletteOptimiser::Var( cpcBox pCube ) const
 /////////////////////////////////////////////////////////////////////////////
 
 double PaletteOptimiser::Maximize(
-							cpBox pCube, 
-							cUINT32 dir, 
+							cpBox pCube,
+							cUINT32 dir,
 							cUINT32 first,
 							cUINT32 last,
 							cpBox pCube1,
@@ -591,7 +594,7 @@ bool PaletteOptimiser::Cut( cpBox pSet1,cpBox pSet2, cpDOUBLE pMax )
 		*pSet1 = cubeR1 ;
 		*pSet2 = cubeR2 ;
 	}
-	else if ( maxG>=maxR && maxG>=maxB ) 
+	else if ( maxG>=maxR && maxG>=maxB )
 	{
 		*pMax = maxG ;
 		*pSet1 = cubeG1 ;
@@ -610,7 +613,7 @@ bool PaletteOptimiser::Cut( cpBox pSet1,cpBox pSet2, cpDOUBLE pMax )
 
 double PaletteOptimiser::Maximize(
 							cpBox pCube,
-							cUINT32 dir, 
+							cUINT32 dir,
 							cUINT32 first,
 							cUINT32 last,
 							cpBox pCube1,
@@ -711,7 +714,7 @@ bool PaletteOptimiser::Cut( cpBox pSet1,cpBox pSet2,cpBox pSet3 )
 		*pSet2 = cubeR2 ;
 		*pSet3 = cubeR3 ;
 	}
-	else if ( maxG>=maxR && maxG>=maxB ) 
+	else if ( maxG>=maxR && maxG>=maxB )
 	{
 		*pSet1 = cubeG1 ;
 		*pSet2 = cubeG2 ;
