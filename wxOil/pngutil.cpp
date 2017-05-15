@@ -1,7 +1,7 @@
 // $Id: pngutil.cpp 1372 2006-06-27 11:23:21Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
- 
+
                Xara LX, a vector drawing and manipulation program.
                     Copyright (C) 1993-2006 Xara Group Ltd.
        Copyright on certain contributions may be held in joint with their
@@ -32,7 +32,7 @@ ADDITIONAL RIGHTS
 
 Conditional upon your continuing compliance with the GNU General Public
 License described above, Xara Group Ltd grants to you certain additional
-rights. 
+rights.
 
 The additional rights are to use, modify, and distribute the software
 together with the wxWidgets library, the wxXtra library, and the "CDraw"
@@ -130,7 +130,7 @@ PORTNOTE("other","png_progress_bar_read - removed progressbar")
 class PNGProgressBar * png_progress_bar_read;
 #endif
 
-/******************************************************************* 
+/*******************************************************************
 
 >       void camelot_png_read_row_callback
 			(png_structp png_ptr, png_uint_32 row_number, INT32 pass)
@@ -167,8 +167,8 @@ CCLexFile* PNGUtil::pFile			= NULL;		// The CCLexFile class that we are using
 
 	Author:		Neville_Humphrys (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	09/05/96
-	Purpose:	Default constructor for the class. 
-	SeeAlso:	
+	Purpose:	Default constructor for the class.
+	SeeAlso:
 
 ********************************************************************************************/
 
@@ -182,7 +182,7 @@ PNGUtil::PNGUtil()
 	Author:		Neville_Humphrys (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	09/05/96
 	Purpose:	Default destructor for the class.
-	SeeAlso:	
+	SeeAlso:
 
 ********************************************************************************************/
 
@@ -193,7 +193,7 @@ PNGUtil::~PNGUtil()
 /********************************************************************************************
 
 >	static BOOL PNGUtil::ReadFromFile( CCLexFile *File, LPBITMAPINFO *Info, LPBYTE *Bits,
-									   INT32 *TransColour, 
+									   INT32 *TransColour,
 									   String_64 *ProgressString = NULL,
 									   BaseCamelotFilter *pFilter = NULL )
 
@@ -202,11 +202,11 @@ PNGUtil::~PNGUtil()
 	Inputs:		File			A opened CCLexFile that can be read from. It should be positioned at the
 								start. Caller is responsible for closing it. The file needs to be in
 								Binary mode.
-				ProgressString	allows the user to specify whether they require a progress hourglass or 
+				ProgressString	allows the user to specify whether they require a progress hourglass or
 								not. If NULL then none is shown, otherwise an progress bar is shown
 								using the text supplied. Defaults to NULL i.e. no progress bar.
 				pFilter			is an alternative way of handling the progress bar, assume the
-								progress bar has been start and just call the IncProgressBarCount in 
+								progress bar has been start and just call the IncProgressBarCount in
 								BaseCamelotFilter to do the progress bar update.
 								Defaults to NULL i.e. no progress bar.
 	Outputs:	Info points to a new LPBITMAPINFO struct and Bits points to the bytes.
@@ -223,7 +223,7 @@ PNGUtil::~PNGUtil()
 ********************************************************************************************/
 
 BOOL PNGUtil::ReadFromFile( CCLexFile *File, LPBITMAPINFO *Info, LPBYTE *Bits,
-							INT32 *TransColour, 
+							INT32 *TransColour,
 							String_64 *ProgressString,
 							BaseCamelotFilter *pFilter)
 {
@@ -233,14 +233,14 @@ BOOL PNGUtil::ReadFromFile( CCLexFile *File, LPBITMAPINFO *Info, LPBYTE *Bits,
 	pFile = File;
 	Transparent 	= -1;
 	*TransColour 	= -1;	// in case of early exit set to none
-	
+
 	UINT32 sig_read = 0;
 	png_uint_32 width, height;
 	INT32 bit_depth, color_type, interlace_type;
-	
+
    	BOOL OldThrowingState = File->SetThrowExceptions( TRUE );
 	BOOL OldReportingState = File->SetReportErrors( FALSE );
-	
+
 	png_structp png_ptr		= 0;	// Must be zero to avoid bad free in case of exception
 	png_infop info_ptr		= 0;	// Must be zero to avoid bad free in case of exception
 
@@ -264,7 +264,7 @@ BOOL PNGUtil::ReadFromFile( CCLexFile *File, LPBITMAPINFO *Info, LPBYTE *Bits,
 			camelot_png_malloc,		// Function called to alloc memory
 			camelot_png_free			// Function called to free memory
 			);
-		
+
 		if (png_ptr == NULL)
 			File->GotError( _R(IDS_OUT_OF_MEMORY) );
 
@@ -275,52 +275,52 @@ BOOL PNGUtil::ReadFromFile( CCLexFile *File, LPBITMAPINFO *Info, LPBYTE *Bits,
 			png_destroy_read_struct(&png_ptr, (png_infopp)NULL, (png_infopp)NULL);
 			File->GotError( _R(IDS_OUT_OF_MEMORY) );
 		}
-		
+
 		/* Set up the input control if you are using standard C streams */
 		iostream* pFStream = File->GetIOFile();
 		// Should use our own IO functions eg.
 		png_set_read_fn(png_ptr, pFStream, camelot_png_read_data);
 		//   png_init_io(png_ptr, pFStream);
-		
+
 		/* If we have already read some of the signature */
 		// Not sure about this - JP
 		png_set_sig_bytes(png_ptr, sig_read);
-		
+
 		/* The call to png_read_info() gives us all of the information from the
 		* PNG file before the first IDAT (image data chunk).  REQUIRED */
 		png_read_info(png_ptr, info_ptr);
-		
+
 		png_get_IHDR(png_ptr, info_ptr, &width, &height, &bit_depth, &color_type,
 			&interlace_type, NULL, NULL);
-		
+
 		TRACEUSER( "Jonathan", _T("PNG read: Start transforms: %d channels of %d bits\n"),
 			png_get_channels(png_ptr, info_ptr),
 			png_get_bit_depth(png_ptr, info_ptr));
-		
+
 		/* tell libpng to strip 16 bit/color files down to 8 bits/color */
 		png_set_strip_16(png_ptr);
-		
+
 		/* Expand grayscale images to the full 8 bits from 1, 2, or 4 bits/pixel */
 		/* JP - Changed so just 2 bit images are expanded */
 		if (color_type == PNG_COLOR_TYPE_GRAY && bit_depth == 2)
 			png_set_expand(png_ptr);
-		
+
 		/* Expand paletted images to the full 8 bits from 2 bits/pixel */
 		if (color_type == PNG_COLOR_TYPE_PALETTE && bit_depth == 2)
 			png_set_expand(png_ptr);
-		
+
 		if (color_type == PNG_COLOR_TYPE_GRAY_ALPHA)
 			png_set_gray_to_rgb(png_ptr);
 
 			/* Note that screen gamma is the display_exponent, which includes
 		* the CRT_exponent and any correction for viewing conditions */
 		/* A good guess for a PC monitors in a dimly lit room is 2.2 */
-		const double screen_gamma = 2.2;  
-		
+		const double screen_gamma = 2.2;
+
 		png_set_invert_alpha(png_ptr);
-		
+
 		INT32 intent;
-		
+
 		if (png_get_sRGB(png_ptr, info_ptr, &intent))
 			png_set_gamma(png_ptr, screen_gamma, 0.45455);
 		else
@@ -331,7 +331,7 @@ BOOL PNGUtil::ReadFromFile( CCLexFile *File, LPBITMAPINFO *Info, LPBYTE *Bits,
 			else
 				png_set_gamma(png_ptr, screen_gamma, 0.45455);
 		}
-		
+
 		/* flip the RGB pixels to BGR (or RGBA to BGRA) */
 		if (color_type & PNG_COLOR_MASK_COLOR)
 			png_set_bgr(png_ptr);
@@ -341,32 +341,32 @@ BOOL PNGUtil::ReadFromFile( CCLexFile *File, LPBITMAPINFO *Info, LPBYTE *Bits,
 		INT32 num_palette;
 		if (png_get_valid(png_ptr, info_ptr, PNG_INFO_PLTE))
 			png_get_PLTE(png_ptr, info_ptr, &pPalette, &num_palette);
-		
+
 //		TRACEUSER( "Jonathan", _T("PNG read: Number of palette colours = %d\n"), num_palette);
-		
+
 		png_bytep pTrans;
 		INT32 num_trans = 0; // if the 'if' statement is falue 0 is the correct value
 		png_color_16p trans_values;
 		if (png_get_valid(png_ptr, info_ptr, PNG_INFO_tRNS))
 			png_get_tRNS(png_ptr, info_ptr, &pTrans, &num_trans, &trans_values);
-		
+
 		TRACEUSER( "Jonathan", _T("PNG read: Number of transparent colours = %d\n"), num_trans);
-		
-		
+
+
 		/* Take a look at the transparency list and see it there is only one
 		colour which is not opaque and that that colour is fully transparent
 		(so the exported bitmap can have one-bit transparency).  If this
 		condition is not meet, convert the bitmap up to full alpha transparency
 		(should really give a bitmap that has paletted RGBA but the interface
 		to the PNG stuff appears to limit our options).
-		
+
 		Warning: If the PNG reading code is asked for 256 colour with a
 		transparent colour, it must do this, otherwise the export dialog
 		will go wrong when it re-imports the file for preview as it can not find
 		a palette. */
-		
+
 		if (
-			png_get_bit_depth(png_ptr, info_ptr) * png_get_channels(png_ptr, info_ptr) <= 8 
+			png_get_bit_depth(png_ptr, info_ptr) * png_get_channels(png_ptr, info_ptr) <= 8
 			&& png_get_color_type(png_ptr, info_ptr) == PNG_COLOR_TYPE_PALETTE
 			)
 		{
@@ -381,29 +381,29 @@ BOOL PNGUtil::ReadFromFile( CCLexFile *File, LPBITMAPINFO *Info, LPBYTE *Bits,
 				//	so we can use a one bit transparency paletted RGB image
 				INT32 i = 0;
 				png_byte * pCurrentTransEntry = pTrans;
-				
+
 				// Scan throught opaque entrys
 				while (i <= num_trans && pCurrentTransEntry[i] == 255)
 					i++;
-				
+
 				// This looks like a good bet for transparent colour
 				if (pCurrentTransEntry[i] == 0)
 					*TransColour = i;
-				
+
 				// Check any entrys after this to make sure they are not transparent
 				if (i < num_trans)
 					i++;
-				
+
 				while (i <= num_trans && pCurrentTransEntry[i] == 255)
 					i++;
-				
+
 				// Check we got to the end of the palette without finding any other
 				// transparent colours
 				if (i != num_trans)
 				{
 					// There are other transparent colours so convert to RGBA
 					*TransColour = -1;
-					
+
 					// Expand paletted or RGB images with transparency to full alpha channels
 					// so the data will be available as RGBA quartets.
 					if (png_get_valid(png_ptr, info_ptr, PNG_INFO_tRNS))
@@ -424,7 +424,7 @@ BOOL PNGUtil::ReadFromFile( CCLexFile *File, LPBITMAPINFO *Info, LPBYTE *Bits,
 		{
 			TRACEUSER( "Jonathan", _T("PNG read: Transparency: No work needed as no palette\n"));
 		}
-		
+
 		TRACEUSER( "Jonathan", _T("PNG read: transparent colour = %d\n"), *TransColour);
 
 		Transparent = *TransColour;
@@ -433,17 +433,17 @@ BOOL PNGUtil::ReadFromFile( CCLexFile *File, LPBITMAPINFO *Info, LPBYTE *Bits,
 		* and update info structure.  REQUIRED if you are expecting libpng to
 		* update the palette for you (ie you selected such a transform above). */
 		png_read_update_info(png_ptr, info_ptr);
-		
+
 		/* Turn on interlace handling.  REQUIRED if you are not using
 		* png_read_image().  To see how to handle interlacing passes,
 		* see the png_read_row() method below: */
 		//   INT32 number_passes = png_set_interlace_handling(png_ptr);
-		
-		
+
+
 		TRACEUSER( "Jonathan", _T("PNG read: End transforms: %d channels of %d bits\n"),
 			png_get_channels(png_ptr, info_ptr),
 			png_get_bit_depth(png_ptr, info_ptr));
-		
+
 		/* Allocate the memory to hold the image using the fields of info_ptr. */
 		INT32 bits_per_pixel = png_get_bit_depth(png_ptr, info_ptr) * png_get_channels(png_ptr, info_ptr);
 		if (bits_per_pixel == 1 || bits_per_pixel == 4 || bits_per_pixel == 8 ||  bits_per_pixel == 16 || bits_per_pixel == 24 || bits_per_pixel == 32)
@@ -451,10 +451,10 @@ BOOL PNGUtil::ReadFromFile( CCLexFile *File, LPBITMAPINFO *Info, LPBYTE *Bits,
 		else
 			// This should never happen!
 			File->GotError( _R(IDS_UNKNOWN_PNG_ERROR) );
-		
+
 		if (*Info == NULL || *Bits == NULL)
 			File->GotError( _R(IDS_OUT_OF_MEMORY) );
-		
+
 		/* Set the bitmap DPI */
 		png_uint_32 x_res, y_res;
 		INT32 unit_type;
@@ -472,7 +472,7 @@ BOOL PNGUtil::ReadFromFile( CCLexFile *File, LPBITMAPINFO *Info, LPBYTE *Bits,
 		// Check if we require a palette if we are on low bpp images.
 		// If so then allocate one
 		if (
-			png_get_bit_depth(png_ptr, info_ptr) * png_get_channels(png_ptr, info_ptr) <= 8 
+			png_get_bit_depth(png_ptr, info_ptr) * png_get_channels(png_ptr, info_ptr) <= 8
 			&& png_get_color_type(png_ptr, info_ptr) == PNG_COLOR_TYPE_PALETTE
 			)
 		{
@@ -481,7 +481,7 @@ BOOL PNGUtil::ReadFromFile( CCLexFile *File, LPBITMAPINFO *Info, LPBYTE *Bits,
 			// Read in palette into the palette of the DIB
 			LPRGBQUAD lpPalette = (*Info)->bmiColors;
 			TRACEUSER( "Jonathan", _T("PNG read: allocate palette and copy size %d\n"),PaletteSize);
-			
+
 			// Get our function to read the palette from the PNG definition to the one we are
 			// going to apply to the bitmap.
 			if (
@@ -491,8 +491,8 @@ BOOL PNGUtil::ReadFromFile( CCLexFile *File, LPBITMAPINFO *Info, LPBYTE *Bits,
 			{
 				File->GotError( _R(IDS_PNG_ERR_READ_PALETTE) ); // Should be bad palette error
 			}
-		} 
-		else if (png_get_bit_depth(png_ptr, info_ptr) * png_get_channels(png_ptr, info_ptr) <= 8 
+		}
+		else if (png_get_bit_depth(png_ptr, info_ptr) * png_get_channels(png_ptr, info_ptr) <= 8
 			&& png_get_color_type(png_ptr, info_ptr) == PNG_COLOR_TYPE_GRAY)
 		{
 			// We have a greyscale image and so generate a greyscale palette
@@ -506,30 +506,30 @@ BOOL PNGUtil::ReadFromFile( CCLexFile *File, LPBITMAPINFO *Info, LPBYTE *Bits,
 			if (lpPalette == NULL || !GenerateGreyPalette(PaletteSize, lpPalette))
 				File->GotError( _R(IDS_PNG_ERR_READ_PALETTE) ); // Should be bad palette error
 		}
-		
+
 		/* and allocate memory for an array of row-pointers */
 		if ((ppbRowPointers = (png_bytepp) png_malloc(png_ptr, (height) * sizeof(png_bytep))) == NULL)
 			File->GotError(_R(IDS_OUT_OF_MEMORY));
-		
+
 		/* set the individual row-pointers to point at the correct offsets */
 		UINT32 ulRowBytes = png_get_rowbytes(png_ptr, info_ptr);
-		
+
 		/* make the row finish on a word boundry */
 		if (ulRowBytes % 4 != 0)
 			ulRowBytes += 4 - (ulRowBytes % 4);
-		
+
 		for (UINT32 i = 0; i < height; i++)
 			ppbRowPointers[height - 1 - i] = *Bits + i * ulRowBytes;
-		
-		bool interlace;
+
+		//bool interlace;
 		switch (png_get_interlace_type(png_ptr, info_ptr))
 		{
 		case PNG_INTERLACE_NONE:
-			interlace = false;
+		  //interlace = false;
 			break;
 
 		case PNG_INTERLACE_ADAM7:
-			interlace = true;
+		  //interlace = true;
 			break;
 
 		default:
@@ -547,7 +547,7 @@ PORTNOTE("other","PNGUtil::ReadFromFile - removed progressbar")
 
 		/* now we can go ahead and just read the whole image */
 		png_read_image(png_ptr, ppbRowPointers);
-		
+
 #ifndef EXCLUDE_FROM_XARALX
 		png_progress_bar_read = 0;
 #endif
@@ -556,9 +556,9 @@ PORTNOTE("other","PNGUtil::ReadFromFile - removed progressbar")
 
 		/* read rest of file, and get additional chunks in info_ptr - REQUIRED */
 		png_read_end(png_ptr, info_ptr);
-		
+
 		/* At this point the entire image has been read */
-		
+
 		/* clean up after the read, and free any memory allocated - REQUIRED */
 		png_destroy_read_struct(&png_ptr, &info_ptr, (png_infopp)NULL);
 
@@ -567,12 +567,12 @@ PORTNOTE("other","PNGUtil::ReadFromFile - removed progressbar")
 		/* Must set the exception throwing and reporting flags back to their entry states */
 		File->SetThrowExceptions( OldThrowingState );
 		File->SetReportErrors( OldReportingState );
-		
+
 		/* Reset the file pointer back to null for safety */
 		pFile = NULL;
-		
+
 		TRACEUSER( "Jonathan", _T("PNG read: Finshed\n"));
-		
+
 		/* that's it */
 		return (OK);
    }
@@ -580,7 +580,7 @@ PORTNOTE("other","PNGUtil::ReadFromFile - removed progressbar")
    {
 	   // catch our form of a file exception
 	   TRACE( _T("PNGUtil::ReadFromFile CC catch handler\n"));
-	   
+
 //GAT	png_progress_bar_read = 0;
 
 		if (ppbRowPointers != 0)
@@ -590,30 +590,30 @@ PORTNOTE("other","PNGUtil::ReadFromFile - removed progressbar")
 		png_destroy_read_struct(&png_ptr, &info_ptr, (png_infopp)NULL);
 
 		png_ptr = NULL;
- 
+
 	   // Now our Camelot related bits
 	   if (*Info != NULL && *Bits != NULL)
 		   FreeDIB( *Info, *Bits );							// free any alloced memory
 	   *Info = NULL;										// and NULL the pointers
 	   *Bits = NULL;
-	   
+
 	   // Free up the bit of memory for a palette we grabbed, if present
 	   //if (lpGlobalPalette)
 	   //{
 	   //	CCFree(lpGlobalPalette);
 	   //		lpGlobalPalette = NULL;
 	   //}
-	   
+
 	   // Must set the exception throwing and reporting flags back to their entry states
 	   File->SetThrowExceptions( OldThrowingState );
 	   File->SetReportErrors( OldReportingState );
-	   
+
 	   // Reset the file pointer back to null for safety
 	   pFile = NULL;
-	   
+
 	   return FALSE;
    }
-	   
+
    ERROR2( FALSE, "Escaped exception clause somehow" );
 }
 
@@ -664,7 +664,7 @@ CCLexFile* PNGUtil::GetCCFilePointer()
 	Author:		Neville_Humphrys (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	13/05/96
 	Inputs:		The id of the message
-				An optional error string 
+				An optional error string
 	Outputs:	-
 	Returns:	-
 	Purpose:	To handle errors within the PNG code in a nice fashion.
@@ -678,7 +678,7 @@ CCLexFile* PNGUtil::GetCCFilePointer()
 //void PNGUtil::DefaultErrorHandler(UINT32 MessageID, TCHAR * pMessage)
 void PNGUtil::DefaultErrorHandler()
 {
-	// Use the CCLexFile GotError function to do the error handling for us 
+	// Use the CCLexFile GotError function to do the error handling for us
 	// Assumes TRY CATCH block in use
 	if (pFile)
 	{
@@ -710,7 +710,7 @@ void PNGUtil::DefaultErrorHandler()
 	Returns:	True if worked ok, False otherwise.
 	Purpose:	Copy the palette entries across from the PNG palette to the bitmap palette
 				in Camelot.
-	SeeAlso:	
+	SeeAlso:
 
 ********************************************************************************************/
 
@@ -729,7 +729,7 @@ BOOL PNGUtil::ReadColourMap(INT32 Png_Entries, png_colorp pPNGPalette, INT32 num
 		lpPalette++;
 		pPNGPalette++;
 	}
-	
+
 	return TRUE;
 }
 
@@ -741,11 +741,11 @@ BOOL PNGUtil::ReadColourMap(INT32 Png_Entries, png_colorp pPNGPalette, INT32 num
 	Created:	13/05/96
 	Inputs:		PaletteSize		number of palette entries that need generating
 				lpPalette		pointer to the palette defined in the DIB
-				
+
 	Outputs:	-
 	Returns:	True if worked ok, False otherwise.
 	Purpose:	Generate a greyscale palette for a greyscale DIB.
-	SeeAlso:	
+	SeeAlso:
 
 ********************************************************************************************/
 
@@ -770,6 +770,6 @@ BOOL PNGUtil::GenerateGreyPalette(INT32 PaletteSize, LPRGBQUAD lpPalette)
 		if (value > 255)
 			value = 255;
 	}
-	
+
 	return TRUE;
 }

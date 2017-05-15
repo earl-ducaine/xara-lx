@@ -146,7 +146,7 @@ CC_DECLARE_DYNAMIC(SGScrollDragTarget)
 
 
 public:	// Public interface
-	SGScrollDragTarget(DialogOp *TheDialog, CGadgetID TheGadget = NULL);
+	SGScrollDragTarget(DialogOp *TheDialog, CGadgetID TheGadget = 0);
 
 	virtual UINT32 GetCursorID();
 	virtual BOOL GetStatusLineText(String_256 * TheText);

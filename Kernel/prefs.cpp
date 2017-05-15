@@ -192,7 +192,7 @@ public:
  	BOOL SetPrefValue(LPCTCHAR Pref, PrefData EntryData, PreferenceType Type);
 
 #ifdef _DEBUG
-	BOOL PrefExists(const LPTCHAR Pref);
+	BOOL PrefExists(LPCTCHAR Pref);
 #endif
 
 };
@@ -553,7 +553,7 @@ BOOL PreferenceChunk::SetPrefValue(LPCTCHAR Pref, PrefData EntryData, Preference
 
 #ifdef _DEBUG
 
-BOOL PreferenceChunk::PrefExists(const LPTCHAR Pref)
+BOOL PreferenceChunk::PrefExists(LPCTCHAR Pref)
 {
 	PreferenceEntry *pEntry = pEntries;
 

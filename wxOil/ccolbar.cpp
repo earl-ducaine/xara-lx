@@ -1,7 +1,7 @@
 // $Id: ccolbar.cpp 1528 2006-07-25 13:43:14Z gerry $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
- 
+
                Xara LX, a vector drawing and manipulation program.
                     Copyright (C) 1993-2006 Xara Group Ltd.
        Copyright on certain contributions may be held in joint with their
@@ -32,7 +32,7 @@ ADDITIONAL RIGHTS
 
 Conditional upon your continuing compliance with the GNU General Public
 License described above, Xara Group Ltd grants to you certain additional
-rights. 
+rights.
 
 The additional rights are to use, modify, and distribute the software
 together with the wxWidgets library, the wxXtra library, and the "CDraw"
@@ -103,7 +103,7 @@ service marks of Xara Group Ltd. All rights in these marks are reserved.
 
 	/*	IMPORTANT NOTE!
 	 *	===============
-	 *	
+	 *
 	 *	When working on the Colour Bar, it is VITAL that you remember that it
 	 *	differs from much of Camelot in that it works exclusively on the
 	 *	SelectedDocument (rather than CurrentDocument).
@@ -170,7 +170,7 @@ typedef struct
 } ColBarDefaultSizeInfo;
 
 const INT32 MAXDEFAULTSIZES = 4;
-ColBarDefaultSizeInfo ColBarDefaultSize[MAXDEFAULTSIZES] = 
+ColBarDefaultSizeInfo ColBarDefaultSize[MAXDEFAULTSIZES] =
 {
 	{12, 0},  	// Small (no scroll bar)
 	{16, 0},	// Medium (no scroll bar)
@@ -340,14 +340,14 @@ inline void RestoreCurrentDoc(Document *OldCurrentDoc)
 
 /********************************************************************************************
 
->	void EditButtonDragTarget::EditButtonDragTarget() 
-	 
+>	void EditButtonDragTarget::EditButtonDragTarget()
+
 	Author:		Chris_Snook (Xara Group Ltd) <camelotdev@xara.com>
-	Created:	12/1/95		  
+	Created:	12/1/95
 	Inputs:		-
 	Outputs:	-
 	Returns:	-
-	Purpose:	
+	Purpose:
 	Errors:		-
 	SeeAlso:	-
 
@@ -355,7 +355,7 @@ inline void RestoreCurrentDoc(Document *OldCurrentDoc)
 EditButtonDragTarget::EditButtonDragTarget(wxWindow* TheWindow, wxRect *ClientArea)
 	: OilDragTarget(TheWindow, ClientArea)
 {
-//	TRACEUSER("Gerry", _T("EditButtonDragTarget created"));	
+//	TRACEUSER("Gerry", _T("EditButtonDragTarget created"));
 }
 
 
@@ -364,14 +364,14 @@ EditButtonDragTarget::EditButtonDragTarget(wxWindow* TheWindow, wxRect *ClientAr
 
 >	void EditButtonDragTarget::ProcessEvent(DragEventType Event,
 						DragInformation *pDragInfo,
-						wxPoint *pMousePos, KeyPress* pKeyPress) 
-	 
+						wxPoint *pMousePos, KeyPress* pKeyPress)
+
 	Author:		Chris_Snook (Xara Group Ltd) <camelotdev@xara.com>
-	Created:	12/1/95		  
+	Created:	12/1/95
 	Inputs:		-
 	Outputs:	-
 	Returns:	-
-	Purpose:	Event Handler for Edit Drag 
+	Purpose:	Event Handler for Edit Drag
 	Errors:		-
 	SeeAlso:	-
 
@@ -472,7 +472,7 @@ UINT32 EditButtonDragTarget::GetCursorID()
 	Created:	15/1/95 (25/3/96)
 	Returns:	Whether String is valid
 	Purpose:	provide status line text for this target
-   
+
 ********************************************************************************************/
 
 BOOL EditButtonDragTarget::GetStatusLineText(String_256 *TheText)
@@ -505,7 +505,7 @@ BOOL EditButtonDragTarget::GetStatusLineText(String_256 *TheText)
 	Returns:	Whether this is something that can be dropped on the edit button
 
 	Purpose:	Internal helper function
-   
+
 ********************************************************************************************/
 
 BOOL EditButtonDragTarget::CanDropHere(DragInformation *pDragInfo)
@@ -542,14 +542,14 @@ BOOL EditButtonDragTarget::CanDropHere(DragInformation *pDragInfo)
 
 /********************************************************************************************
 
->	void ColourLineDragTarget::ColourLineDragTarget() 
-	 
+>	void ColourLineDragTarget::ColourLineDragTarget()
+
 	Author:		Jason_Williams (Xara Group Ltd) <camelotdev@xara.com>
-	Created:	20/11/95		  
+	Created:	20/11/95
 	Inputs:		-
 	Outputs:	-
 	Returns:	-
-	Purpose:	
+	Purpose:
 	Errors:		-
 	SeeAlso:	-
 
@@ -566,10 +566,10 @@ ColourLineDragTarget::ColourLineDragTarget(wxWindow* TheWindow, wxRect *ClientAr
 
 >	void ColourLineDragTarget::ProcessEvent(DragEventType Event,
 						DragInformation *pDragInfo,
-						wxPoint *pMousePos, KeyPress* pKeyPress) 
-	 
+						wxPoint *pMousePos, KeyPress* pKeyPress)
+
 	Author:		Jason_Williams (Xara Group Ltd) <camelotdev@xara.com>
-	Created:	20/11/95		  
+	Created:	20/11/95
 
 	Purpose:	Event Handler for Edit Drag - see the base class for details
 
@@ -619,7 +619,7 @@ BOOL ColourLineDragTarget::ProcessEvent(DragEventType Event,
 						// The colour was dropped onto a legal colour cell - move it
 						ColourList *TheList = pColourLine->m_pCurrentColourList;
 						ERROR3IF(TheList == NULL, _T("No current colour list!"));
-						
+
 						IndexedColour *Target = (IndexedColour *) TheList->GetUndeletedHead();
 						while (CellIndex > 0 && Target)
 						{
@@ -718,7 +718,7 @@ UINT32 ColourLineDragTarget::GetCursorID()
 						// The pointer is over a legal colour cell
 						ColourList *TheList = CColourBar::TheColourBar->m_pCurrentColourList;
 						ERROR3IF(TheList == NULL, _T("No current colour list!"));
-					
+
 						IndexedColour *Target = (IndexedColour *) TheList->GetUndeletedHead();
 						while (CellIndex > 0 && Target != NULL)
 						{
@@ -766,7 +766,7 @@ UINT32 ColourLineDragTarget::GetCursorID()
 	Created:	20/11/95
 	Returns:	Whether String is valid
 	Purpose:	provide status line text for this target
-   
+
 ********************************************************************************************/
 
 BOOL ColourLineDragTarget::GetStatusLineText(String_256 * TheText)
@@ -874,7 +874,7 @@ CColourBar::CColourBar()
 	Notes:		IMPORTANT - After calling the destructor (delete ColourBar) it is
 				VITAL that you then call RecalcLayout() for the main frame window in
 				which the Colour Bar is appearing (the one you passed in to PB::Create().
-				If you don't do this, the bar won't disappear until the next time the main 
+				If you don't do this, the bar won't disappear until the next time the main
 				window is resized or a tool is chosen.
 
 				The ColourBar works exclusively on the SELECTED Doc. Change with care
@@ -883,7 +883,7 @@ CColourBar::CColourBar()
 
 CColourBar::~CColourBar()
 {
-	TheColourBar = NULL;	// There is no longer a colour bar around	
+	TheColourBar = NULL;	// There is no longer a colour bar around
 
 	if (MsgHandler != NULL)
 		delete MsgHandler;	// Kill our message handler
@@ -1032,7 +1032,7 @@ wxSize CColourBar::DoGetBestSize() const
 
 	Purpose:	Sets the base sizes of the colour strip and colour scroll bar
 				in the colour bar window. Other features of the bar are automatically
-				resized to fit the new sizing. The bar will be redrawn. If the 
+				resized to fit the new sizing. The bar will be redrawn. If the
 				combined height of the bar elements has now changed, the bar will
 				be resized (by calling the parent's RecalcLayout method).
 
@@ -1104,7 +1104,7 @@ void CColourBar::SetDisplayMode(INT32 NewDisplayMode)
 	if (NewDisplayMode == -1)
 		NewDisplayMode = DefaultSizeIndex;
 
-	if (NewDisplayMode < 0 || NewDisplayMode >= MAXDEFAULTSIZES)  
+	if (NewDisplayMode < 0 || NewDisplayMode >= MAXDEFAULTSIZES)
 		NewDisplayMode = 2;
 
 	DefaultSizeIndex = NewDisplayMode;		// Remember this as a preference setting
@@ -1135,7 +1135,7 @@ void CColourBar::SetDisplayMode(INT32 NewDisplayMode)
 INT32 CColourBar::GetNumberOfColours()
 {
 	INT32 total = 0;
-	
+
 	// Get the actually colours in the selected document
 	INT32 DocColours = 0;
 
@@ -1222,7 +1222,7 @@ PORTNOTE("other","Removed ColourSGallery usage")
 			// Force a redraw of the bar to ensure it's up to date
 			// This checks that the size is correct
 			PaletteHasChanged(NULL);
-			//TheColourBar->Invalidate();		
+			//TheColourBar->Invalidate();
 		}
 	}
 #endif
@@ -1293,7 +1293,7 @@ BOOL CColourBar::DoColourPickerColour (wxWindow* colourPicker, wxPoint mousePt, 
 		if ((((INT32)ColourCell) >= 0)/* && (lastColourCell != ColourCell)*/)		// we are over a valid colour
 		{
 			BOOL validColour = FALSE;
-			
+
 			if (m_pCurrentColourList == NULL)		// Ensure the current ColourList pointer is valid
 			{
 				m_pCurrentColourList = ColourManager::GetColourList();
@@ -1328,7 +1328,7 @@ BOOL CColourBar::DoColourPickerColour (wxWindow* colourPicker, wxPoint mousePt, 
 
 			if (validColour && pTheCol)
 				*pTheCol = TheColour;
-			
+
 			if ((lastColourCell != ColourCell) && validColour)
 			{
 				ColourEditDlg* pColourEditDlg = ColourEditDlg::GetColourEditDlg ();
@@ -1337,7 +1337,7 @@ BOOL CColourBar::DoColourPickerColour (wxWindow* colourPicker, wxPoint mousePt, 
 				pColourEditDlg->SetEditingColour (TheColour);
 				lastColourCell = ColourCell;
 			}
-			
+
 			return (TRUE);
 		}
 		else
@@ -1424,7 +1424,7 @@ BOOL CColourBar::HasNoScrollBar(INT32 DisplayedColours, INT32 MaxColours, wxRect
 				ScrollBarRect	- The area in which the scrollbar is drawn
 				EditButtonRect	- The area in which the Edit Button is drawn
 				NewButtonRect	- The area in which the New Button is drawn [DEFUNCT]
-	
+
 	Returns:	-
 	Purpose:	Calculates various useful rectangular regions to be found within the
 				Colour Bar window. Returns the screen rectangles ready for redraw.
@@ -1474,7 +1474,7 @@ void CColourBar::CalculateRects(void)
 				pNewButtonRect	- The area in which the New Button is drawn [DEFUNCT]
 
 				NONE of these inputs/outputs may be NULL!
-	
+
 	Returns:	-
 	Purpose:	Calculates various useful rectangular regions to be found within the
 				Colour Bar window. Returns the screen rectangles ready for redraw.
@@ -1499,7 +1499,7 @@ void CColourBar::CalculateRectsInternal(wxRect *pWindowRect,
 	ERROR3IF(pWindowRect == NULL || pStripRect == NULL || pIndicatorRect == NULL ||
 			 pScrollBarRect == NULL || pEditButtonRect == NULL || pNewButtonRect == NULL,
 				_T("NULL parameter passed to CColourBar::CalculateRectsInternal"));
-	
+
 	wxRect TempRect(*pWindowRect);
 
 //	CalcInsideRect(&TempRect);
@@ -1705,7 +1705,7 @@ void CColourBar::CalculateNoColourCellRect(wxRect *Rect)
 	Author:		Jason_Williams (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	17/6/94
 	Inputs:		pDC - The DC to draw into
-				rect - The rectangle to draw around the OUTSIDE of with a plinth 
+				rect - The rectangle to draw around the OUTSIDE of with a plinth
 				PlinthOut - FALSE to indent, TRUE to pop-out the plinth.
 	Outputs:	-
 	Returns:	-
@@ -1790,7 +1790,7 @@ void CColourBar::PaintEditOrNewButton(wxDC *pDC, BOOL Normal, BOOL IsEditButton)
 	ResourceID bitmap = 0;
 
 	INT32 BmpSize = (CellSize > 15) ? 12 : 8;			// size of glyph bitmaps (8x8 and 12x12)
-		
+
 	if (IsEditButton)								// Load appropriate glyph bitmap
 	{
 		if (CellSize > 15)
@@ -2054,7 +2054,7 @@ wxBrush *CColourBar::GetColourBrush(COLORREF rgb)
 ********************************************************************************************/
 
 void CColourBar::PaintColourCell(wxDC *pDC, wxRect *Rect, DocColour *RectCol)
-{		   
+{
 	Document *ScopeDoc = Document::GetSelected();
 	if (ScopeDoc == NULL) return;
 
@@ -2092,7 +2092,7 @@ void CColourBar::PaintColourCell(wxDC *pDC, wxRect *Rect, DocColour *RectCol)
 	ERROR3IF(CCrgbt == NULL, _T("Can't find an RGB colour context to render with!"));
 
 	DWORD ScreenWord = ConvertColourToTransScreenWord(CCrgbt, RectCol);
-	
+
 	wxBrush *Brush = GetColourBrush((COLORREF) (ScreenWord & 0x00ffffff));
 
 	IndexedColour *Parent = RectCol->FindParentIndexedColour();
@@ -2159,7 +2159,7 @@ void CColourBar::PaintColourCell(wxDC *pDC, wxRect *Rect, DocColour *RectCol)
 ********************************************************************************************/
 
 void CColourBar::PaintNoColourCell(wxDC *pDC)
-{		   
+{
 	wxRect Rect;
 	CalculateNoColourCellRect(&Rect);
 
@@ -2227,7 +2227,7 @@ void CColourBar::PaintNoColourCell(wxDC *pDC)
 ********************************************************************************************/
 
 void CColourBar::PaintLibColourCell(wxDC *pDC, wxRect *Rect, DocColour *RectCol, BOOL SpotColour)
-{		   
+{
 	Document *ScopeDoc = Document::GetSelected();
 	if (ScopeDoc == NULL) return;
 
@@ -2250,7 +2250,7 @@ void CColourBar::PaintLibColourCell(wxDC *pDC, wxRect *Rect, DocColour *RectCol,
 	ERROR3IF(CCrgbt == NULL, _T("Can't find an RGB colour context to render with!"));
 
 	DWORD ScreenWord = ConvertColourToTransScreenWord(CCrgbt, RectCol);
-	
+
 	wxBrush *Brush = GetColourBrush((COLORREF) (ScreenWord & 0x00ffffff));
 
 	// Library colours are shown as diamond swatches in order to make them more obvious
@@ -2482,7 +2482,7 @@ void CColourBar::PaintIndicatorDiamond(wxDC *pDC, const wxRect &CellRect,
 		case CBCOLOUR_LINE:
 			LastLineCell = CellIndex;
 			break;
-		
+
 		case CBCOLOUR_END:
 			LastEndCell  = CellIndex;
 			break;
@@ -2547,7 +2547,7 @@ void CColourBar::PaintColourStrip(wxDC *pDC, const wxRect &ClipRect)
 			CurrentLineColour = LineColour->FindParentIndexedColour();
 
 		if (FillColour)
-			CurrentFillColour = FillColour->FindParentIndexedColour();	
+			CurrentFillColour = FillColour->FindParentIndexedColour();
 
 		if (EndColour)
 		{
@@ -2572,7 +2572,7 @@ void CColourBar::PaintColourStrip(wxDC *pDC, const wxRect &ClipRect)
 		DocColour Temp;
 		IndexedColour *TheColour = FindColourByIndex((UINT32) LeftmostColour);
 		while (TheColour != NULL)
-		{ 
+		{
 			// Paint the colour cell, but only bother if it's in the invalid region
 			// This speeds up redraw, especially when ScrollTheStrip only wishes to redraw
 			// a few colour cells at one end of the strip.
@@ -2598,7 +2598,7 @@ void CColourBar::PaintColourStrip(wxDC *pDC, const wxRect &ClipRect)
 
 			// if no more room in the strip for painting, or have updated the clip
 			// rectangle fully, we can stop redrawing
-			if ((CellRect.x + CellRect.width) > (StripRect.x + StripRect.width) || 
+			if ((CellRect.x + CellRect.width) > (StripRect.x + StripRect.width) ||
 				CellRect.x > (ClipRect.x + ClipRect.width))
 			{
 				RedrawFinished = TRUE;
@@ -2641,7 +2641,7 @@ void CColourBar::PaintColourStrip(wxDC *pDC, const wxRect &ClipRect)
 
 		// if no more room in the strip for painting, or have updated the clip
 		// rectangle fully, we can stop redrawing
-		if ((CellRect.x + CellRect.width) > (StripRect.x + StripRect.width) || 
+		if ((CellRect.x + CellRect.width) > (StripRect.x + StripRect.width) ||
 			CellRect.x > (ClipRect.x + ClipRect.width))
 		{
 			RedrawFinished = TRUE;
@@ -2668,7 +2668,7 @@ void CColourBar::PaintColourStrip(wxDC *pDC, const wxRect &ClipRect)
 	Purpose:	Redraws the colour bar
 	Errors:		-
 
-**********************************************************************************************/ 
+**********************************************************************************************/
 void CColourBar::OnPaint( wxPaintEvent &evnt )
 {
 	// Always create this so that the area is validated
@@ -2746,7 +2746,7 @@ void CColourBar::DoPaint(wxDC* pDC)
 	if (ClipRect.IsEmpty())
 		ClipRect = GetClientRect();
 
-	// Fill everything to the right of the colourstrip with BTNFACE grey, to ensure we 
+	// Fill everything to the right of the colourstrip with BTNFACE grey, to ensure we
 	// overwrite any stuff that might have been drawn there and not erased (on some updates
 	// we purposely do not bother with erasing the background, to reduce flicker)
 	wxRect TheRect(WindowRect);
@@ -2827,7 +2827,7 @@ void CColourBar::ForceRedrawOfRect(const wxRect &RectToDraw)
 {
 	wxRect OffsetRectToDraw(RectToDraw);
 	wxRect RealWindowRect;
-	
+
 	// Convert the screen rectangle coords into window *offsets*
 	RealWindowRect = GetClientRect();
 	OffsetRectToDraw.Offset(-RealWindowRect.x, -RealWindowRect.y);
@@ -3090,7 +3090,7 @@ void CColourBar::ApplyColour(IndexedColour *TheColour, BOOL SetLineColour)
 		((AttrStrokeColourChange *)Attrib)->SetStartColour(&ColourToApply);
 
 		// AttributeSelected knows what to do with a selected attribute
-		AttributeManager::AttributeSelected(NULL, Attrib); 
+		AttributeManager::AttributeSelected(NULL, Attrib);
 
 /*
 		// Bodge Alert !!
@@ -3110,11 +3110,11 @@ void CColourBar::ApplyColour(IndexedColour *TheColour, BOOL SetLineColour)
 		((AttrStrokeTranspChange *)Attrib)->SetStartTransp(&Transp);
 
 		// AttributeSelected knows what to do with a selected attribute
-		AttributeManager::AttributeSelected(NULL, Attrib); 
+		AttributeManager::AttributeSelected(NULL, Attrib);
 */
 	}
 	else
-	{	
+	{
 		// Rather than setting the flat fill colour, we do an AttrColourChange, which
 		// (I assume) will handle things like selected grad fill points, etc.
 		Attrib = new AttrColourChange;
@@ -3124,7 +3124,7 @@ void CColourBar::ApplyColour(IndexedColour *TheColour, BOOL SetLineColour)
 		((AttrColourChange *)Attrib)->SetStartColour(&ColourToApply);
 
 		// AttributeSelected knows what to do with a selected attribute
-		AttributeManager::AttributeSelected(NULL, Attrib); 
+		AttributeManager::AttributeSelected(NULL, Attrib);
 	}
 
 	// Note: Redraw of affected parts of the colour bar (indicator diamonds, etc) will
@@ -3313,7 +3313,7 @@ PORTNOTE("other","Removed ColourSGallery usage")
 	Created:	23/6/94
 	Inputs:		ChangedList - NULL if the list has been paged to a different one,
 				or a pointer to the list in which a change has been made.
-				
+
 	Purpose:	This will cause the colourbar to redraw itself with the new list
 				if necessary, and cache new values for the new current list.
 
@@ -3384,7 +3384,7 @@ INT32 CColourBar::CalculateColourCellIndex(IndexedColour *TheColour)
 		IndexedColour *TestColour = m_pCurrentColourList->GetUndeletedHead();
 
 		while (TestColour != NULL)
-		{ 
+		{
 			if (TheColour == TestColour)
 				return((INT32) Index);
 
@@ -3491,7 +3491,7 @@ void CColourBar::SelectionHasChangedInternal(void)
 	static INT32 LastClickedFillCell = CELLINDEX_NOCELL;
 	static INT32 LastClickedEndCell  = CELLINDEX_NOCELL;
 
-	// If the user has not asked for document colours in the colour line then 
+	// If the user has not asked for document colours in the colour line then
 	// no need to do any of the checks below
 	if (!ColourSGallery::ShowDocumentColours)
 	{
@@ -3642,7 +3642,7 @@ void CColourBar::SelectionHasChangedInternal(void)
 		}
 	}
 
-	
+
 	// OK, let's autoscroll - Preferably both Major and Minor can be shown, but if not, it is better
 	// to show Major (fill) than Minor (line).
 
@@ -3709,7 +3709,7 @@ void CColourBar::SelectionHasChangedInternal(void)
 
 #ifndef EXCLUDE_GALS
 			if (
-				ColourSGallery::AutoScrollSelection && 
+				ColourSGallery::AutoScrollSelection &&
 				ScrollBy != 0)
 			{
 				ScrollTheStrip(ScrollBy);
@@ -3759,7 +3759,7 @@ void CColourBar::SelectionHasChanged(void)
 				released.
 
 	Notes:		The ColourBar works exclusively on the SELECTED Doc. Change with care
-				
+
 ********************************************************************************************/
 
 void CColourBar::ReleaseAllClaims(void)
@@ -3789,7 +3789,7 @@ void CColourBar::ReleaseAllClaims(void)
 				FALSE for auto-repeat
 
 	Purpose:	Sets a timer to cause a timer message to be sent to us after
-				the keyboard auto-repeat delay. 
+				the keyboard auto-repeat delay.
 				If we are already waiting for a timer event, the current timer will
 				be replaced by the new one.
 
@@ -3797,7 +3797,7 @@ void CColourBar::ReleaseAllClaims(void)
 				agree with him).
 
 	Notes:		The ColourBar works exclusively on the SELECTED Doc. Change with care
-				
+
 ********************************************************************************************/
 
 void CColourBar::SetATimer(BOOL Delay)
@@ -3924,8 +3924,8 @@ void CColourBar::RedrawGBrushAreas(void)
 		return;
 
 	TheColourBar->CalculateRects();
-	TheColourBar->ForceRedrawOfRect(TheColourBar->StripRect);	
-	TheColourBar->ForceRedrawOfRect(TheColourBar->IndicatorRect);	
+	TheColourBar->ForceRedrawOfRect(TheColourBar->StripRect);
+	TheColourBar->ForceRedrawOfRect(TheColourBar->IndicatorRect);
 	TheColourBar->Update();
 }
 
@@ -3967,7 +3967,7 @@ IndexedColour *CColourBar::FindColourByIndex(UINT32 Index)
 	UINT32 DocColours = (UINT32) m_pCurrentColourList->GetUndeletedCount();
 	if (Index < DocColours)
 		return(m_pCurrentColourList->FindUndeletedItem(Index));
-	
+
 	// not in this list so return NULL
 	return NULL;
 }
@@ -4043,7 +4043,7 @@ PORTNOTE("other","Removed ColourSGallery usage")
 #endif
 	// Nothing found
 	return NULL;
-} 
+}
 
 /********************************************************************************************
 
@@ -4188,7 +4188,7 @@ void CColourBar::OnSize(wxSizeEvent &event)
 							&tEditButtonRect, &tNewButtonRect);
 
 	INT32 NewDisplayedColours = tStripRect.width / CellSize;
-	
+
 	//INT32 MaxColours = (INT32) m_pCurrentColourList->GetUndeletedCount(); // FIXEDCOLOURS
 	INT32 MaxColours = (INT32)GetNumberOfColours();
 
@@ -4286,7 +4286,7 @@ INT32 CColourBar::CalculateNewBarHeight(wxRect *AvailableRect)
 	}
 
 	// Work out how many colours we want to display in the window.
-	// Removed this line so that FullScreen mode (which destroys and recreates the colour 
+	// Removed this line so that FullScreen mode (which destroys and recreates the colour
 	// gallery) does not leave us with a cached pointer to garbage memory.
 	// if (m_pCurrentColourList == NULL)
 		m_pCurrentColourList = ColourManager::GetColourList();
@@ -4301,7 +4301,7 @@ INT32 CColourBar::CalculateNewBarHeight(wxRect *AvailableRect)
 	// Calculate where all the rectangles are going to be placed if the window is resized
 	// to the 'AvailableRect'. From this, we get the projected StripRect size, which allows
 	// us to project the number of colours we will be able to display.
-	
+
 	wxRect tStripRect;		// Temporary lookalikes to the global cached rects
 	wxRect tIndicatorRect;
 	wxRect tScrollBarRect;
@@ -4397,7 +4397,7 @@ LRESULT CColourBar::OnSizeParent(WPARAM, LPARAM lParam)
 		CSize sizeAvail = rect.Size();	// maximum size available
 
 		// get maximum requested size
-		CSize size = CalcFixedLayout(lpLayout->bStretch, 
+		CSize size = CalcFixedLayout(lpLayout->bStretch,
 									(dwStyle & CBRS_ORIENT_HORZ) ? TRUE : FALSE);
 
 		size.cx = min(size.cx, sizeAvail.cx);
@@ -4458,7 +4458,7 @@ inline BOOL GetModifierKeyState(void)
 
 	Purpose:	Checks if SHIFT is held down - used to convert shift-left-clicks into
 				"right clicks". (Now uses KeyPress::IsAdjustPressed() to determine this)
-	
+
 	Scope:		private (to ccolbar.cpp)
 
 	SeeAlso:	KeyPress::IsAdjustPressed
@@ -4725,7 +4725,7 @@ void CColourBar::OnAnyButtonDown(const wxPoint &point, INT32 Modifier) {
 	}
 	}
 	}
-	break;	
+	break;
       */
 #endif
     }
@@ -4817,7 +4817,7 @@ void CColourBar::OnAnyButtonDblClk(wxPoint point, INT32 Modifier)
 		DocColour *EndColour;
 		ColourManager::GetCurrentLineAndFillColours(&LineColour, &FillColour, &EndColour);
 
-		if (InnerRect.Inside(point))
+		if (InnerRect.Contains(point))
 		{
 			if (EndColour != NULL && point.y <= (InnerRect.y + (InnerRect.height / 2)))
 				FillColour = EndColour;
@@ -5018,7 +5018,7 @@ void CColourBar::OnMouseMove(wxMouseEvent& event) {
 				drags, and releases any claims (timers, drags) we might have
 	Errors:		-
 
-**********************************************************************************************/ 
+**********************************************************************************************/
 
 void CColourBar::OnAnyButtonUp(const wxPoint &point)
 {
@@ -5053,7 +5053,7 @@ void CColourBar::OnAnyButtonUp(const wxPoint &point)
 	Purpose:	Processes a left-button-released message
 	Errors:		-
 
-**********************************************************************************************/ 
+**********************************************************************************************/
 
 void CColourBar::OnLButtonUp(wxMouseEvent& event)
 {
@@ -5077,7 +5077,7 @@ void CColourBar::OnLButtonUp(wxMouseEvent& event)
 	Purpose:	Processes a right-button-released message
 	Errors:		-
 
-**********************************************************************************************/ 
+**********************************************************************************************/
 
 void CColourBar::OnRButtonUp(wxMouseEvent& event)
 {
@@ -5102,8 +5102,8 @@ void CColourBar::OnRButtonUp(wxMouseEvent& event)
 				Dragging the scroll sausage is handled in OnMouseMove
 
 	SeeAlso:	CColourbar::OnMouseMove
-				
-**********************************************************************************************/ 
+
+**********************************************************************************************/
 
 void CColourBar::OnTimer(wxTimerEvent& event)
 {
@@ -5160,7 +5160,7 @@ void CColourBar::OnTimer(wxTimerEvent& event)
 				The main purpose of the routine is to make sure that if the mouse has been
 				captured it is released, and if a timer has been allocated, it is freed.
 
-**********************************************************************************************/ 
+**********************************************************************************************/
 
 PORTNOTE("other","Removed CancelMode")
 #if !defined(EXCLUDE_FROM_XARALX)
@@ -5179,8 +5179,8 @@ void CColourBar::OnCancelMode(void)
 
 	Author:		Jason_Williams (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	17/6/94
-	Inputs:		pTarget - 
-				bDisableIfNoHandler - 
+	Inputs:		pTarget -
+				bDisableIfNoHandler -
 	Outputs:	-
 	Returns:	-
 
@@ -5220,7 +5220,7 @@ void CColourBar::OnUpdateCmdUI(CFrameWnd* pTarget, BOOL bDisableIfNoHandler)
 
 	Author:		Jason_Williams (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	2/1/95
-	
+
 	Inputs:		-
 	Outputs:	Result - If the mouse pointer is currently over the colour line, this is
 				returned containing appropriate help text, otherwise this is left untouched.
@@ -5287,10 +5287,10 @@ BOOL CColourBar::GetStatusLineText(String_256 *Result)
 							String_256 Desc = Selection->Describe(MENU);
 							Result->MakeMsg(_R(IDS_COLBAR_SEDITBUTTON2), (TCHAR *)Desc);
 						}
-					}					
+					}
 				}
 				break;
-			
+
 #if FALSE
 			case CLICKED_NEWBUTTON:
 				Result->MakeMsg(_R(IDS_COLBAR_SNEWBUTTON));
@@ -5378,7 +5378,7 @@ MsgResult ColourBarMsgHandler::Message(Msg* Message)
 				break;
 		}
 	}
-	// The new CommonAttrsChanged msg replaces these two messages. It handles 
+	// The new CommonAttrsChanged msg replaces these two messages. It handles
 	// a change in the Current Attribute group associated with a tool as well !
 	// what a bargain !
 	/*
@@ -5406,7 +5406,7 @@ MsgResult ColourBarMsgHandler::Message(Msg* Message)
 	else if (MESSAGE_IS_A(Message,DragMessage))
 	{
 		DragMessage *Msg = (DragMessage *) Message;
-		
+
 	 	if (Msg->State == DragMessage::DRAGSTARTED)
 		{
 			if (Msg->pInfo->IsKindOf(CC_RUNTIME_CLASS(ColourDragInformation)))
@@ -5417,10 +5417,10 @@ MsgResult ColourBarMsgHandler::Message(Msg* Message)
 				{
 					// Create drag targets to recieve colour drags. We don't really care if this fails,
 					// and the drag system will clean up any mess afterwards.
-					EditButtonDragTarget *ButtonTarget;
-					ButtonTarget = new EditButtonDragTarget(CColourBar::TheColourBar,
-														 &CColourBar::TheColourBar->EditButtonRect);
-
+				  //EditButtonDragTarget *ButtonTarget;
+				  // ButtonTarget = new EditButtonDragTarget(CColourBar::TheColourBar,
+				  new EditButtonDragTarget(CColourBar::TheColourBar,
+							   &CColourBar::TheColourBar->EditButtonRect);
 					// Check that the colour being dragged is in the current colour list
 					IndexedColour *Col = ((ColourDragInformation *) Msg->pInfo)->GetInitiallyDraggedColour();
 					if (Col != NULL && CColourBar::TheColourBar->m_pCurrentColourList->FindPosition(Col) < 0)
@@ -5429,9 +5429,11 @@ MsgResult ColourBarMsgHandler::Message(Msg* Message)
 					// And if it is in the list, then allow it to be rearranged in the list
 					if (Col != NULL)
 					{
-						ColourLineDragTarget *LineTarget;
-						LineTarget = new ColourLineDragTarget(CColourBar::TheColourBar,
-															 &CColourBar::TheColourBar->StripRect);
+					  // ColourLineDragTarget *LineTarget;
+					  // LineTarget = new ColourLineDragTarget(CColourBar::TheColourBar,
+					  // &CColourBar::TheColourBar->StripRect);
+					  new ColourLineDragTarget(CColourBar::TheColourBar,
+								   &CColourBar::TheColourBar->StripRect);
 					}
 				}
 			}
@@ -5463,7 +5465,5 @@ MsgResult ColourBarMsgHandler::Message(Msg* Message)
 		}
 	}
 
-	return OK; 
+	return OK;
 }
-
-

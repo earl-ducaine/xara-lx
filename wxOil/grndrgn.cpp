@@ -1,7 +1,7 @@
 // $Id: grndrgn.cpp 1699 2006-08-15 11:43:53Z phil $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
- 
+
                Xara LX, a vector drawing and manipulation program.
                     Copyright (C) 1993-2006 Xara Group Ltd.
        Copyright on certain contributions may be held in joint with their
@@ -32,7 +32,7 @@ ADDITIONAL RIGHTS
 
 Conditional upon your continuing compliance with the GNU General Public
 License described above, Xara Group Ltd grants to you certain additional
-rights. 
+rights.
 
 The additional rights are to use, modify, and distribute the software
 together with the wxWidgets library, the wxXtra library, and the "CDraw"
@@ -261,7 +261,7 @@ RealLogPalette GRenderRegion::ErrorDiffPalette = 	// ptr to GDraw's default pale
 	256
 };
 
-static RealLogPalette StandardPalette = 
+static RealLogPalette StandardPalette =
 {
 	0x300,
 	256
@@ -281,7 +281,7 @@ enum BlitModeType
 
 // TODOG: Nasty local preference...
 static INT32 LargeGradTables = 0;
-	  
+
 // setting this to non-zero controls fresh bitmap initialisation
 #define	FILL_BITMAP	0
 
@@ -320,7 +320,7 @@ BOOL GRenderRegion::HighQualityAA = FALSE;
 				1 - fast conversion (visible banding in deep bitmaps and cached stuff)
 				2 - medium conversion (best setting for general use)
 				3 - slow conversion (not yet implemented, most accurate but slow)
-	Purpose:	Specifies which bitmap conversion algorithm is used by GDraw when rendering 
+	Purpose:	Specifies which bitmap conversion algorithm is used by GDraw when rendering
 				bitmaps in show printer colours mode.
 
 ********************************************************************************************/
@@ -483,7 +483,7 @@ static void DoRememberMe(GRenderRegion *lpG, char *name)
 static void DoRememberDump(GRenderRegion *lpG)
 {
 	for (INT32 i=0; i<RememberWhere; i++)
-		TRACE( _T("%08lx %s\n"), RememberList[i].RR, RememberList[i].Where);		
+		TRACE( _T("%08lx %s\n"), RememberList[i].RR, RememberList[i].Where);
 }
 
 #define	RememberMe(name)	DoRememberMe(this, name)
@@ -519,7 +519,7 @@ BOOL GRenderRegion::Init( BOOL bFirstTime )
 
 	// Scary critical section stuff
 //	CriticalSection::Init();	// Not required for CDraw
-	
+
 	if (bFirstTime)
 	{
 		CanDoGDraw = FALSE;
@@ -564,7 +564,7 @@ BOOL GRenderRegion::Init( BOOL bFirstTime )
 
 	// Initialise the palette manager
 //	PaletteManager::Init();
-	
+
 	// Initialise the DIBConvert classes (don't care if it fails)
 	DIBConvert::Init();
 
@@ -760,7 +760,7 @@ PORTNOTE("other","GRenderRegion::Init - Removed palette code")
 						_R(IDBBL_GDRAWOP),
 						0	// bitmap ID
 						))
-		return FALSE; 
+		return FALSE;
 
 	if (!GBrush::InitGBrush( bFirstTime ))
 		return FALSE;
@@ -795,7 +795,7 @@ void GRenderRegion::DeInit()
 	}
 */
 	ERROR3IF(GD != pRealGD, "GDraw context not restored in GRenderRegion::DeInit");
-	
+
 	GD = NULL;
 
 	if (pRealGD)
@@ -817,7 +817,7 @@ void GRenderRegion::DeInit()
 
 	// Scary critical section stuff
 //	CriticalSection::DeInit();	// Not required for CDraw
-	
+
 	// Make sure GBrush doesn't leave any memory leaks lying around
 	GBrush::DeinitGBrush();
 }
@@ -859,7 +859,7 @@ GRenderRegion::GRenderRegion(DocRect ClipRegion, Matrix ConvertMatrix, FIXED16 V
 #endif
 
 //	BitmapSize = 0;
-	
+
 	// If specified dpi is zero then use the calculated screen dpi otherwise use the specified value
 	if (dpi == 0.0)
 		PixelsPerInch = (double)LogPixelsX;
@@ -951,7 +951,7 @@ GRenderRegion::~GRenderRegion()
 
 //GAT	if (FractalBitmap)
 //		delete FractalBitmap;
-	
+
 	// manual removal of the contents of our clip-maps.
 	FreeStoredClipRegions();
 
@@ -1083,7 +1083,7 @@ void GRenderRegion::InitBmpBits()
 	if(bh->biCompression==0x80000001)
 		UseInternalFormat = TRUE;
 
-	// ensure all bitmap memory is initialised (ie don't use the 
+	// ensure all bitmap memory is initialised (ie don't use the
 	// bogus info from the bmp header dimensions)
 	// NB this assumes that the bmp buff lpBits was allocated using AllocDIB (usually via GetLPBits() fn)
 	UINT32 BmpSize = GetDIBBitsSize( bh );
@@ -1156,7 +1156,7 @@ BOOL GRenderRegion::StartRender()
 	// any new bmps.
 	// In the former case the bitmap must be initialised
 	// In the later case the bitmap must only be re-initialised if m_bDoCompression is set
-	// as in this case inplace bmp conversion will have occured in the process of transfering 
+	// as in this case inplace bmp conversion will have occured in the process of transfering
 	// the bitmap to the screen (ie during the last StopRender() call)
 	BOOL AllocatedNewBmp = FALSE;
 
@@ -1169,11 +1169,11 @@ BOOL GRenderRegion::StartRender()
 
 	// Check that Initialise hasn't been called already
 	ENSURE(RenderFlags.Rendering == FALSE, "Initialise called whilst already rendering");
-	
+
 	// JCF: added this check for retail builds as otherwise this ENSURE goes off after a
 	// Crash Me Render.
 	if (RenderFlags.Rendering != false) return FALSE;
-	
+
 	TRACEUSER("Gavin",_T("GRenderRegion::StartRender - RenderFlags.Rendering = TRUE;\n"));
 	RenderFlags.Rendering = TRUE;
 
@@ -1329,7 +1329,7 @@ BOOL GRenderRegion::StartRender()
 		InitBmpBits();
 	}
 
-	// Make sure we don't Init again until something forces it 
+	// Make sure we don't Init again until something forces it
 	ForceInitBmpBits = FALSE;
 
 	// Gerry has re-written this bit so it works properly
@@ -1385,10 +1385,10 @@ BOOL GRenderRegion::StartRender()
 	Inputs:		Width of bitmap
 				Height of bitmap
 				Depth of Bitmap
-	Outputs:	
+	Outputs:
 	Returns:	Pointer to BITMAPINFO structure. Returns NULL on failure.
 	Purpose:	To create bitmap from wxBitmap structure.
-	SeeAlso:	
+	SeeAlso:
 
 ********************************************************************************************/
 
@@ -1434,7 +1434,7 @@ LPBITMAPINFO GRenderRegion::AllocWxBitmap( UINT32 Width, UINT32 Height, UINT32 D
 	pBits = (BYTE*)pBitmap->GetRawData(*pBitmapData,Depth);
 	if ( pBitmapData->GetRowStride()<0 )
 		pBits += pBitmapData->GetRowStride()*(Height-1);
-	
+
 	pInfo->bmiHeader.biSize				= sizeof(BITMAPINFOHEADER);
 	pInfo->bmiHeader.biWidth			= Width;
 	pInfo->bmiHeader.biHeight			= Height;
@@ -1461,10 +1461,10 @@ LPBITMAPINFO GRenderRegion::AllocWxBitmap( UINT32 Width, UINT32 Height, UINT32 D
 	Inputs:		Width of bitmap
 				Height of bitmap
 				Depth of Bitmap
-	Outputs:	
-	Returns:	
+	Outputs:
+	Returns:
 	Purpose:	To free bitmap
-	SeeAlso:	
+	SeeAlso:
 
 ********************************************************************************************/
 
@@ -1497,7 +1497,7 @@ void GRenderRegion::FreeWxBitmap()
 	Inputs:		DocRect is a rectangle on document co-ords.
 				dpi is the resolution of the device we are rendering to
 	Outputs:	RenderMatrix is the rendering matrix, may have e anf f components changed by the call
-	Returns:	Object containing the new rectangle coordinates.     			
+	Returns:	Object containing the new rectangle coordinates.
 	Purpose:	To convert a rectangle in Doc coordinates to a rectangle in Win coordinates
 				taking account of the destination dpi rather than assuming screen dpi.
 				Virtual so that it can be overriden by different render regions if so required.
@@ -1791,9 +1791,9 @@ delete OffscreenBitmap;
 		DisplayBits();
 	}
 }
-				
-				
-				
+
+
+
 /********************************************************************************************
 
 >	virtual void GRenderRegion::SetClean(BOOL bResetChangedBounds, BOOL FillWhite)
@@ -1840,7 +1840,7 @@ void GRenderRegion::SetClean(BOOL bResetChangedBounds, BOOL FillWhite)
 
 /********************************************************************************************
 
->	BOOL GRenderRegion::StrokePath( const DocCoord *Coords, const PathVerb *Verbs, 
+>	BOOL GRenderRegion::StrokePath( const DocCoord *Coords, const PathVerb *Verbs,
 									UINT32 Count, BOOL DrawArrows = FALSE )
 
 	Author:		Andy_Pennell (Xara Group Ltd) <camelotdev@xara.com>
@@ -1862,7 +1862,7 @@ void GRenderRegion::SetClean(BOOL bResetChangedBounds, BOOL FillWhite)
 ********************************************************************************************/
 
 BOOL GRenderRegion::StrokePath( const DocCoord *Coords, const PathVerb *Verbs, UINT32 Count,
-								const DocCoord *UnclippedCoords, const PathVerb *UnclippedVerbs, 
+								const DocCoord *UnclippedCoords, const PathVerb *UnclippedVerbs,
 								UINT32 UnclippedCount,
 								BOOL DrawArrows )
 {
@@ -1946,13 +1946,13 @@ BOOL GRenderRegion::StrokePath( const DocCoord *Coords, const PathVerb *Verbs, U
 			SetDashPattern(SD_DASH1);
 			DocColour* pCol = AttrQuality::GetColour();
 			if (pCol != NULL)
-				SetGCol(*pCol);				
+				SetGCol(*pCol);
 			else
 			{
 				DocColour	colorRed(COLOUR_RED);
 				SetGCol( colorRed );
 			}
-			
+
 			Width = ScaledPixelWidth;
 			DrawArrows = FALSE;
 		}
@@ -1973,8 +1973,8 @@ BOOL GRenderRegion::StrokePath( const DocCoord *Coords, const PathVerb *Verbs, U
 		DashType* pDashRec = NULL;
 		DashType GavinDash;
 
-		if ( Width > 0 && 
-			(RRQuality.GetLineQuality() >= Quality::FullLine) && 
+		if ( Width > 0 &&
+			(RRQuality.GetLineQuality() >= Quality::FullLine) &&
 			 RR_DASHPATTERN().Elements > 0)
 		{
 			INT32 Length = RR_DASHPATTERN().Elements;
@@ -2085,7 +2085,7 @@ void GRenderRegion::DrawPathToOutputDevice(Path* PathToDraw, PathShape)
 		// This may have clipped out all the points (or left just a moveto),
 		// and in this case, it may seem pointless to continue.
 		// but we will carry on, so that ArrowHeads get a chance to render
-		// using the unclipped path coords.  
+		// using the unclipped path coords.
 		// This shouldn't be a problem, so long as anything that uses the clipped
 		// coords, checks to make sure there are enough (more than 1).
 
@@ -2109,9 +2109,9 @@ void GRenderRegion::DrawPathToOutputDevice(Path* PathToDraw, PathShape)
 						ClippedPathIsValid = FALSE;
 	//					OutputDebugString("Clipped path zero length element, Ignoring it.\n");
 						NumCoords = 0;
-						break;				
-					}	
-					
+						break;
+					}
+
 					i += 2;
 				}
 				else
@@ -2121,8 +2121,8 @@ void GRenderRegion::DrawPathToOutputDevice(Path* PathToDraw, PathShape)
 						ClippedPathIsValid = FALSE;
 	//					OutputDebugString("Clipped path zero length element, Ignoring it.\n");
 						NumCoords = 0;
-						break;				
-					}	
+						break;
+					}
 				}
 			}
 */
@@ -2147,24 +2147,24 @@ void GRenderRegion::DrawPathToOutputDevice(Path* PathToDraw, PathShape)
 	if ( PathToDraw->IsFilled )
 	{
 		BOOL ExtendedFill = FALSE;
-		FillGeometryAttribute *pFillProvider 
+		FillGeometryAttribute *pFillProvider
 			= (FillGeometryAttribute *) CurrentAttrs[ATTR_FILLGEOMETRY].pAttr;
 
-		if ( 
+		if (
 			(pFillProvider->GetRuntimeClass() != CC_RUNTIME_CLASS(FlatFillAttribute)) &&
-			(FillQuality >= Quality::Graduated) 
+			(FillQuality >= Quality::Graduated)
 		   )
 			ExtendedFill = TRUE;
 
-		if ( 
+		if (
 			(pFillProvider->GetRuntimeClass() == CC_RUNTIME_CLASS(BitmapFillAttribute)) &&
-			(FillQuality >= Quality::Solid) 
+			(FillQuality >= Quality::Solid)
 		   )
 			ExtendedFill = TRUE;
 
-		if ( 
+		if (
 			(pFillProvider->GetRuntimeClass() == CC_RUNTIME_CLASS(FractalFillAttribute)) &&
-			(FillQuality >= Quality::Solid) 
+			(FillQuality >= Quality::Solid)
 		   )
 			ExtendedFill = TRUE;
 
@@ -2205,13 +2205,13 @@ void GRenderRegion::DrawPathToOutputDevice(Path* PathToDraw, PathShape)
 			}
 		}
 
-	   	if ( (!ExtendedFill) && 
+	   	if ( (!ExtendedFill) &&
 			 (FillQuality >= Quality::Solid)
 		   )
 		{
 			DocColour FlatColour = RR_FILLCOLOUR();
 
-			if (RenderFlags.VeryMono && 
+			if (RenderFlags.VeryMono &&
 				pFillProvider->GetRuntimeClass() == CC_RUNTIME_CLASS(BitmapFillAttribute))
 			{
 				// Bitmap fills will return 'No Colour' as their flat colour,
@@ -2249,7 +2249,7 @@ void GRenderRegion::DrawPathToOutputDevice(Path* PathToDraw, PathShape)
 			// Just do everything in black outlines...
 			DocColour	colorBlk(COLOUR_BLACK);
 			if ( SetGCol( colorBlk ) )
-				StrokePath( Coords, Verbs, NumCoords, 
+				StrokePath( Coords, Verbs, NumCoords,
 							UnclippedCoords, UnclippedVerbs, UnclippedNumCoords, DrawArrows );
 		}
 		else if (RenderFlags.VeryMono)
@@ -2257,12 +2257,12 @@ void GRenderRegion::DrawPathToOutputDevice(Path* PathToDraw, PathShape)
 			// Just do everything in black outlines...
 			DocColour	colorBlk(COLOUR_BLACK);
 			if ( !(RR_STROKECOLOUR().IsTransparent()) && SetGCol( colorBlk ) )
-				StrokePath( Coords, Verbs, NumCoords, 
+				StrokePath( Coords, Verbs, NumCoords,
 							UnclippedCoords, UnclippedVerbs, UnclippedNumCoords, DrawArrows );
 		}
 		else if ( SetGCol( RR_STROKECOLOUR() ) )
 		{
-				StrokePath( Coords, Verbs, NumCoords, 
+				StrokePath( Coords, Verbs, NumCoords,
 							UnclippedCoords, UnclippedVerbs, UnclippedNumCoords, DrawArrows );
 		}
 	}
@@ -2377,7 +2377,7 @@ void GRenderRegion::RestoreClipRegion(ClipRegionAttribute* pClipAttr, BOOL Temp)
 
 	Author:		Karim_MacDonald (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	14 April 2000
-	Inputs:		
+	Inputs:
 	Outputs:	GDraw should have its clipping region and rectangle set so that rendering
 				only occurs within a region specified by the clipping path which the current
 				ClipRegionAttribute is carrying.
@@ -2386,7 +2386,7 @@ void GRenderRegion::RestoreClipRegion(ClipRegionAttribute* pClipAttr, BOOL Temp)
 	Purpose:	Have a look at the current ClipRegionAttribute and make sure
 				we set our clipping region accordingly. Details within the method.
 	Errors:		ERROR3 in DEBUG if we have no valid ptr to a ClipRegionAttribute.
-	See also:	
+	See also:
 
 ********************************************************************************************/
 BOOL GRenderRegion::ApplyCurrentClipRegion()
@@ -2518,7 +2518,7 @@ BOOL GRenderRegion::RenderGradFillPath(Path *PathToDraw, GradFillAttribute *Fill
 
 	if (EndPoint2 != NULL)
     {
-    	C.x = (*EndPoint2).x;	
+    	C.x = (*EndPoint2).x;
     	C.y = (*EndPoint2).y;
 	}
 
@@ -2562,7 +2562,7 @@ BOOL GRenderRegion::RenderGradFillPath(Path *PathToDraw, GradFillAttribute *Fill
 		// Are the control points sensible ?
 
 		// Gerry removed the pixel size test cos it makes small repeating fills go spappy
-		
+
 		if (MouldPerspective::WillBeValid(PGram))
 		{
 			// We're going to plot a perspective fill,
@@ -2601,7 +2601,7 @@ BOOL GRenderRegion::RenderGradFillPath(Path *PathToDraw, GradFillAttribute *Fill
 		// If the transparency type is one of the unimplemented ones then set to zero
 		if ((Style & 0xFF00) < 0x400)
 			Style = (Style & 0xFF0000);
-		
+
 		// We wont do anything scary with the colours (separation/correction)
 		// as this only renders to a GDraw bitmap
 
@@ -2629,7 +2629,7 @@ BOOL GRenderRegion::RenderGradFillPath(Path *PathToDraw, GradFillAttribute *Fill
 		}*/
 
 		if (FillType == CC_RUNTIME_CLASS(ThreeColFillAttribute))
-		{			
+		{
 			// Style & 0xFF = 0 (simple with better colours outside the mesh)
 			// Style & 0xFF = 2 (tiled)
 
@@ -2689,7 +2689,7 @@ BOOL GRenderRegion::RenderGradFillPath(Path *PathToDraw, GradFillAttribute *Fill
 		// this in the standard fashion (i.e.  let GDraw build it).
 		// If however it does NOT, then we will build the table ourselves (with respect to
 		// the applied biasgain) ....
-		
+
 		CProfileBiasGain DefaultBiasGain;			// default
 													// DiagramMapper is the applied biasgain
 
@@ -2902,7 +2902,7 @@ void GRenderRegion::SetOffscreen(OffscreenAttrValue* pAttr)
 
 	// Ensure that we have minimum pixel dimensions
 	// Expand cliprect if more pixels required
-	// NB expanding by GRR->ScaledPixelWidth will ensure we increase bmp size 
+	// NB expanding by GRR->ScaledPixelWidth will ensure we increase bmp size
 	// by exactly the no. of pixels required
 	UINT32 RequiredWidth, RequiredHeight;
 	pAttr->GetMinimumOffscreenBmpDimensions(&RequiredWidth,&RequiredHeight);
@@ -2966,7 +2966,7 @@ void GRenderRegion::SetOffscreen(OffscreenAttrValue* pAttr)
 
 	//---------------------------------------------
 	// Now startup the offscreen capture...
-	// 
+	//
 	// If a non-mix attribute is already in scope we must not start capturing transparently
 	// because transparent bitmaps can't render non-mix transparencies correctly
 	// (See SetTranspFillGeometry and ChangeCapture)
@@ -3280,21 +3280,21 @@ BOOL GRenderRegion::IsDistorted(FillGeometryAttribute *Fill)
 	// or vertical/horizontal flipping.
 	// i.e. we will deem the bmp to be distorted if either of the
 	// endpoints do not line up with the startpoint.
-	// 
+	//
 	// e.g. these are all non-distorted fills:
-	// 
+	//
 	// B       A--->B  C<---A
 	// ^       |            |
 	// |       |            |
 	// |       V            V
 	// A--->C  C            B
-	// 
+	//
 	// startpoint A(x0,y0), endpoints B(x1,y1), C(x2,y2)
 
 	ERROR3IF(GetScaledPixelWidth()==0, "Scaled pixel width is 0 in IsDistorted");
 	if (GetScaledPixelWidth()==0)
 		return TRUE;
-	
+
 	ERROR3IF(GetScaledPixelWidth()==0, "It's all gone wrong!");
 	if (GetScaledPixelWidth()==0) return TRUE;						// Fail safe
 
@@ -3348,7 +3348,7 @@ BOOL GRenderRegion::NeedToSmooth(FillGeometryAttribute *Fill,BOOL bAlreadyScaled
 	}
 
 	//TRACEUSER( "Andy", _T("antialias=%d\n"),(RRQuality.GetAntialiasQuality() >= Quality::FullAntialias));
-	
+
 	// check that smoothing is enabled, and detail=max, and document bitmap smoothing is enabled
 	if (Fill==NULL ||
 		BitmapFillAttribute::m_doBitmapSmoothing == FALSE ||
@@ -3389,7 +3389,7 @@ BOOL GRenderRegion::NeedToSmooth(FillGeometryAttribute *Fill,BOOL bAlreadyScaled
 	Purpose:	Helper function for RenderBitmapFill and SetBitmapTransparencyFill.
 				Sets the smoothing flags using SetBitmapSmoothingFlag and
 				SetTileFilteringFlag.
-				These flags determine the quality of subsequent SetBitmapFill / 
+				These flags determine the quality of subsequent SetBitmapFill /
 				SetTransparentBitmapFill operations.
 	Errors:		-
 
@@ -3410,7 +3410,7 @@ BOOL GRenderRegion::SetSmoothingFlags(FillGeometryAttribute *Fill)
 	{
 		// Normal document rendering --> use normal bmp rendering functions.
 		// The bitmap may require smoothing (e.g. if it's being rotated/skewed).
-		
+
 		// to smooth or not to smooth? NeedToSmooth answers the question.
 		SetExtraSmoothFlag = NeedToSmooth( Fill, FALSE /* we haven't scaled the bitmap down */ );
 	}
@@ -3486,7 +3486,7 @@ BOOL GRenderRegion::RenderBitmapFill(Path *PathToDraw, BitmapFillAttribute* Fill
 				pGreyTable = Fill->GetBitmap()->ActualBitmap->GetGreyscaleTable();
 			}
 		}
-	}	
+	}
 
 	if (WinBM == NULL)
 	{
@@ -3519,7 +3519,7 @@ BOOL GRenderRegion::RenderBitmapFill(Path *PathToDraw, BitmapFillAttribute* Fill
 	{
 		PGram[2].x = Fill->EndPoint2.x;
 		PGram[2].y = Fill->EndPoint2.y;
-	}		
+	}
 
 	// get the colour we use to fill around the edges from the current solid fill colour
 	COLORREF DefaultColour = 0xFFFFFFFF;
@@ -3561,7 +3561,7 @@ BOOL GRenderRegion::RenderBitmapFill(Path *PathToDraw, BitmapFillAttribute* Fill
 			ERROR3("No memory for palette");
 			return FALSE;
 		}
-		
+
 		// Copy the entries from the contone palette into the new one,
 		// using the Grey table as a guide
 		for (INT32 i=0; i<1<<bpp; i++)
@@ -3635,7 +3635,7 @@ BOOL GRenderRegion::RenderBitmapFill(Path *PathToDraw, BitmapFillAttribute* Fill
 //	BYTE *pUnderColourRemovalTable = NULL;
 //	BYTE *pBlackGenerationTable = NULL;
 	CWxBitmap* pNewBitmap = NULL;
-	
+
 	// --- Add Separation Style bits as approriate to the current colour separation mode
 	// Currently, the only "separation" option we use is composite print preview
 	// SepStyle for the SetBitmapFill functions are always in the MS byte of Style
@@ -3645,7 +3645,7 @@ BOOL GRenderRegion::RenderBitmapFill(Path *PathToDraw, BitmapFillAttribute* Fill
 		if (CurrentColContext->GetColourPlate() != NULL &&
 			!CurrentColContext->GetColourPlate()->IsDisabled())
 		{
-			
+
 			if (CurrentColContext->GetColourPlate()->GetType() == COLOURPLATE_COMPOSITE)
 			{
 				// Find the colour manager (if there is one), and ask it for the 15-bit RGB
@@ -3664,7 +3664,7 @@ PORTNOTE("cms", "DisabledXaraCMS")
 						// Bits 3 and 4 of top byte of Style specifies the conversion algorithm
 						// Make sure it only affects the 2 bits
 						Style |= ((BitmapConversion & 3) << 27);
-						
+
 						// Make a copy of the bitmap
 //						pNewBitmap = (WinBitmap*)WinBM->MakeCompositeCopy(RenderView);
 //						OrigWinBM = WinBM;					// Save original bitmap pointer
@@ -3968,7 +3968,7 @@ BOOL GRenderRegion::GetTransparencyFill(TranspGradTable* pTranspTable, DWORD* St
 	INT32 Tiling = ((FillMappingAttribute*)CurrentAttrs[ATTR_TRANSPFILLMAPPING].pAttr)->Repeat;
 
 	// make some optimisation decisions ....
-	
+
 	if (DiagramMapper == DefaultBiasGain)			// applied profile is the default profile
 	{
 		if (!SpecialFill)
@@ -4012,19 +4012,19 @@ BOOL GRenderRegion::GetTransparencyFill(TranspGradTable* pTranspTable, DWORD* St
 
 	if (StartPoint != NULL)
     {
-    	TA.x = (*StartPoint).x;	
+    	TA.x = (*StartPoint).x;
     	TA.y = (*StartPoint).y;
 	}
 
 	if (EndPoint != NULL)
     {
-    	TB.x = (*EndPoint).x;	
+    	TB.x = (*EndPoint).x;
     	TB.y = (*EndPoint).y;
 	}
 
 	if (EndPoint2 != NULL)
     {
-    	TC.x = (*EndPoint2).x;	
+    	TC.x = (*EndPoint2).x;
     	TC.y = (*EndPoint2).y;
 	}
 
@@ -4090,7 +4090,7 @@ BOOL GRenderRegion::GetTransparencyFill(TranspGradTable* pTranspTable, DWORD* St
 			TC.x = PGram[2].x;	TC.y = PGram[2].y;
 			TD.x = PGram[3].x;	TD.y = PGram[3].y;
 		}
-		else 
+		else
 		{
 			// The mould is bad...
 			Perspective = FALSE;
@@ -4119,7 +4119,7 @@ BOOL GRenderRegion::GetTransparencyFill(TranspGradTable* pTranspTable, DWORD* St
 		DWORD OurStyle = 0;
 
 		if (FillType == CC_RUNTIME_CLASS(ThreeColTranspFillAttribute))
-		{			
+		{
 			// Style & 0xFF = 0 (simple with better colours outside the mesh)
 			// Style & 0xFF = 2 (tiled)
 
@@ -4159,7 +4159,7 @@ BOOL GRenderRegion::GetTransparencyFill(TranspGradTable* pTranspTable, DWORD* St
 #ifdef NEW_FEATURES
 		if(Tiling == 4)
 			TransStyle |= 0x10000;
-#endif	
+#endif
 // Set the Current Transparency to be a graduated Transparency
 		if (Perspective)
 			GetDrawContext()->SetTransparentGraduation4( TransStyle, pTranspTable, &TA, &TB, &TC, &TD );
@@ -4264,7 +4264,7 @@ BOOL GRenderRegion::SetBitmapTransparencyFill(TranspFillAttribute* Fill, DWORD* 
 
 	// convert ArtWorks style attribute into Gavin-style
 	POINT PGram[4];
-	PGram[0].x = (*Fill->GetStartPoint()).x; 
+	PGram[0].x = (*Fill->GetStartPoint()).x;
 	PGram[0].y = (*Fill->GetStartPoint()).y;
 	PGram[1].x = (*Fill->GetEndPoint  ()).x;
 	PGram[1].y = (*Fill->GetEndPoint  ()).y;
@@ -4288,7 +4288,7 @@ BOOL GRenderRegion::SetBitmapTransparencyFill(TranspFillAttribute* Fill, DWORD* 
 	{
 		PGram[2].x = (*Fill->GetEndPoint2()).x;
 		PGram[2].y = (*Fill->GetEndPoint2()).y;
-	}		
+	}
 
 	// get the colour we use to fill around the edges from the current solid fill colour
 	COLORREF DefaultColour;
@@ -4300,7 +4300,7 @@ BOOL GRenderRegion::SetBitmapTransparencyFill(TranspFillAttribute* Fill, DWORD* 
 	DWORD TranspStyle = tType<<8;
 
 //	INT32 Tiling = Fill->GetTesselation();
-	INT32 Tiling = 
+	INT32 Tiling =
 		((TranspFillMappingAttribute*)CurrentAttrs[ATTR_TRANSPFILLMAPPING].pAttr)->Repeat;
 	TranspStyle |= Tiling;
 
@@ -4391,7 +4391,7 @@ BOOL GRenderRegion::SetFractalTransparencyFill(TranspFillAttribute* Fill, DWORD*
 	FractalTranspFillAttribute* FractFill = (FractalTranspFillAttribute*)Fill;
 
 	// First make a fractal from the variables stored in the fill.
-	PlasmaFractalFill TheFractal(FractFill->Seed, TRUE, 0, 
+	PlasmaFractalFill TheFractal(FractFill->Seed, TRUE, 0,
 									FractFill->Graininess, FractFill->Gravity);
 
 	// Get the fill control points
@@ -4437,7 +4437,7 @@ BOOL GRenderRegion::SetFractalTransparencyFill(TranspFillAttribute* Fill, DWORD*
 
 	// Make a rectangle describing the unscaled fractal bounds.
 	DocRect FractRect = DocRect(FractalOrigin, FractalOrigin);
-	FractRect.IncludePoint(DocCoord(FractalOrigin.x + FracDocWidth, 
+	FractRect.IncludePoint(DocCoord(FractalOrigin.x + FracDocWidth,
 									FractalOrigin.y + FracDocHeight));
 
 	//if (IsUserName("Will")) TRACE( _T("Fractal Rect = %d,%d, %d,%d\n"),FractRect.lox, FractRect.loy,
@@ -4638,7 +4638,7 @@ void GRenderRegion::DrawBlob(DocCoord p, BlobType type)
 {
 	// class GRenderClickColour needs to render the paper (for custom colour picker control)
 	// BUT we also need to avoid firing off the ENSURE !!!!
-	
+
 	if (this->IsKindOf (CC_RUNTIME_CLASS (GRenderClick/*Colour*/)))
 	{
 		return;
@@ -4701,7 +4701,7 @@ void GRenderRegion::DrawLine(const DocCoord &StartPoint, const DocCoord &EndPoin
 	}
 	else
 	{
-		StrokePath( ClippedCoords, ClippedVerbs, (UINT32)Worked, 
+		StrokePath( ClippedCoords, ClippedVerbs, (UINT32)Worked,
 					Coords, Verbs, 2, TRUE);
 	}
 }
@@ -4745,7 +4745,7 @@ void GRenderRegion::DrawBitmap(const DocCoord &Point, KernelBitmap* pBitmap)
 	// Get the Bitmap width and height in Millipoints
 	INT32 Width  = GotInfo ? Info.PixelWidth  * PixelSize : 16 * PixelSize;
 	INT32 Height = GotInfo ? Info.PixelHeight * PixelSize : 16 * PixelSize;
-		
+
 	// Setup the Gavin control points
 	POINT PGram[3];
 	PGram[0].x = Point.x;				PGram[0].y = Point.y;
@@ -5160,7 +5160,7 @@ void GRenderRegion::SetFixedSystemTextColours(DocColour *TextCol, DocColour *Bac
 
 	Notes:		If for any reason the call fails, an origin based rectangle with zero
 				height and width will be returned.
-				
+
 	SeeAlso:	GRenderRegion::DrawFixedSystemText
 
 ********************************************************************************************/
@@ -5208,7 +5208,7 @@ void GRenderRegion::GetFixedSystemTextSize(StringBase *TheText, DocRect *BoundsR
 
 	Author:		Will_Cowling (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	3/4/95
-	Inputs:		An ArrowRec defining the Arrowhead, the Centre point of the Arrow and a 
+	Inputs:		An ArrowRec defining the Arrowhead, the Centre point of the Arrow and a
 				point defining the direction of the Arrow.
 	Purpose:	Draw an Arrow head on the start or end of a line.
 	SeeAlso:	-
@@ -5330,7 +5330,7 @@ GMATRIX GRenderRegion::MakeGavinMatrix(Matrix NewRenderMatrix, DocRect ClipRect,
 	WinRect UnscrolledClip = OSRenderRegion::DocRectToWin(UnscrolledRender, ClipRect, dPixelsPerInch);
 
 	// Now, the offsets to the Gavin bitmap are simply the corner of the Windows cliprect.
-	// This needs to be the exclusive bottom value rather than the inclusive value returned 
+	// This needs to be the exclusive bottom value rather than the inclusive value returned
 	// by wxRect::GetBottom.  Hence we call our extra GetBottomEx function.
 	INT32 xdisp = +UnscrolledClip.GetLeft();
 	INT32 ydisp = -UnscrolledClip.GetBottomEx();
@@ -5370,13 +5370,13 @@ BOOL GRenderRegion::SetGCol( DocColour &Col ) const
 	COLORREF rgbt;
 	rgbt = ConvertColourToScreenWord(CurrentColContext, &Col);
 
-	// get RGB value, or RGBT value if deep bitmap	
+	// get RGB value, or RGBT value if deep bitmap
 	// Find out about the line quality
 	if (uBitmapDepth==32)
 	{
 		// Only do transparency if the line quality is better than black outline AND
 		// the overall quality it not guide layer quality
-		if ((RRQuality.GetLineQuality() >  Quality::BlackLine) && 
+		if ((RRQuality.GetLineQuality() >  Quality::BlackLine) &&
 			(RRQuality.GetQuality()     != Quality::QualityGuideLayer))
 		{
 			DWORD Transp = *RR_STROKETRANSP()->GetStartTransp();
@@ -5708,7 +5708,7 @@ BOOL GRenderRegion::InitDevice()
 	ERROR2IF(WRect.width==0 || WRect.height==0, FALSE, "GRenderRegion::InitDevice was passed a rectangle with zero size");
 	if (WRect.width == 0 || WRect.height == 0)
 		return FALSE;
-	
+
 	// Make sure the rectangle is ok
 	ERROR2IF(WRect.width<0  || WRect.height<0 , FALSE, "GRenderRegion::InitDevice was passed a rectangle with -ve size");
 	if (WRect.width < 0 || WRect.height < 0)
@@ -5723,7 +5723,7 @@ BOOL GRenderRegion::InitDevice()
 
 /********************************************************************************************
 
->	RenderRegion* GRenderRegion::Create(DocRect ClipRegion, Matrix ConvertMatrix, 
+>	RenderRegion* GRenderRegion::Create(DocRect ClipRegion, Matrix ConvertMatrix,
 										FIXED16 ViewScale,  RenderType rType,
 										View *pView = NULL)
 
@@ -5838,18 +5838,18 @@ PORTNOTE("cms", "DisabledXaraCMS")
 			Document* pDoc = pView->GetDoc();
 
 			// Get print information for this document.
-			PrintComponent *pPrint = 
+			PrintComponent *pPrint =
 				(PrintComponent *) pDoc->GetDocComponent(CC_RUNTIME_CLASS(PrintComponent));
 			ERROR2IF(pPrint == NULL, NULL, "Unable to find PrintComponent in document.");
 
 			PrintControl *pPrintControl = pPrint->GetPrintControl();
-			ERROR2IF(pPrintControl == NULL, NULL, 
+			ERROR2IF(pPrintControl == NULL, NULL,
 					 "Unable to find PrintControl object in document component.");
 
 			// Find out what DPI to use...
 			INT32 PrintDPI = pPrintControl->GetDotsPerInch();
 
-			return new GRenderPrint(ClipRegion, ConvertMatrix, ViewScale, 
+			return new GRenderPrint(ClipRegion, ConvertMatrix, ViewScale,
 									BitmapDepth, PrintDPI);
 		}
 	}
@@ -5972,14 +5972,14 @@ void GRenderRegion::DisplayHto8Bitmap()
 		DestX += ChangeX;
 
 		INT32 ChangeY = RectHeight - UsedRect.bottom;
-	
+
 		SourceY += ChangeY;
 		DestY += ChangeY;
 
 		RectWidth = UsedRect.right - UsedRect.left;
 		RectHeight = UsedRect.bottom - UsedRect.top;
-		
-	
+
+
 		if (UsedRect.top > 4)
 		{
 			// Allow 4 pixels extra
@@ -5991,10 +5991,10 @@ void GRenderRegion::DisplayHto8Bitmap()
 
 		// Allow 4 pixels extra
 		StripBottom = UsedRect.bottom + 4;
-	
+
 		// Round up to multiple of 4 to avoid dither alignment problems
 		StripBottom = (StripBottom + 3) & ~3;
-		
+
 		// Clip to bitmap height
 		if (StripBottom > BHeight)
 			StripBottom = BHeight;
@@ -6114,8 +6114,8 @@ void GRenderRegion::DisplayHto8Bitmap()
 		GDC->SetConversionPalette(NULL);
 	}
 	else
-	{	
-	
+	{
+
 		ColourFlag = SetPaletteEntries((LPBITMAPINFO)&DBitmapInfo, RenderDC);
 
 		GDC->ConvertBitmap(&SourceHeader, SourceBits,
@@ -6282,171 +6282,172 @@ void GRenderRegion::PlotBitmap( wxDC* hDC, UINT32 ColourFlag,
 
 LPBYTE GRenderRegion::StaticPlotBitmap( wxDC* hDC, UINT32 ColourFlag,
 		LPBITMAPINFO lpBitmapInfo, LPBYTE lpBits,
-		INT32 Left,INT32 Top, UINT32 Width,UINT32 Height, wxPalette* hPalette, INT32 SourceLeft,INT32 SourceTop )
-{
-	if( Width==0 || Height==0 )
-		return lpBits;
+		INT32 Left,INT32 Top, UINT32 Width,UINT32 Height, wxPalette* hPalette, INT32 SourceLeft,INT32 SourceTop) {
+  if( Width==0 || Height==0 )
+    return lpBits;
 
-	// Test preconditions
-	ERROR3IF((lpBitmapInfo->bmiHeader.biSize==0x00000000) /*|| 
-			 (lpBitmapInfo->bmiHeader.biSize==0xdddddddd) || 
-			 (lpBitmapInfo->bmiHeader.biSize==0xcdcdcdcd) */,"Illegal BitmapInfo structure passed to PlotBitmap");
-			// AB commented second two checks out as bmiHeader.biSize is a WORD, i.e. 16 bits in size, according to compatdef.h
-//	TRACE( _T("SrcRect(%d, %d, %d, %d) - (%d, %d)"), rectDraw.GetLeft(), rectDraw.GetTop(),
-//		rectDraw.GetWidth(), rectDraw.GetHeight(), pBitmap->GetWidth(), pBitmap->GetHeight() );
+  // Test preconditions
+  ERROR3IF((lpBitmapInfo->bmiHeader.biSize==0x00000000) /*||
+							  (lpBitmapInfo->bmiHeader.biSize==0xdddddddd) ||
+							  (lpBitmapInfo->bmiHeader.biSize==0xcdcdcdcd) */,"Illegal BitmapInfo structure passed to PlotBitmap");
+  // AB commented second two checks out as bmiHeader.biSize is a WORD, i.e. 16 bits in size, according to compatdef.h
+  //	TRACE( _T("SrcRect(%d, %d, %d, %d) - (%d, %d)"), rectDraw.GetLeft(), rectDraw.GetTop(),
+  //		rectDraw.GetWidth(), rectDraw.GetHeight(), pBitmap->GetWidth(), pBitmap->GetHeight() );
 
-	CamProfile cp(CAMPROFILE_BLIT);
+  CamProfile cp(CAMPROFILE_BLIT);
 
 #if !USE_wxBITMAP
 
-	ERROR3IF(lpBitmapInfo->bmiHeader.biBitCount!=32,"Image must (currently) be 32bpp");
+  ERROR3IF(lpBitmapInfo->bmiHeader.biBitCount!=32,"Image must (currently) be 32bpp");
 
-	wxBitmap Bitmap(Width,Height,32);
-	wxAlphaPixelData BitmapData(Bitmap);
-	//
-	// Copy source (or part of source) into wxBitmap.
-	//
-	DWORD* pSBuffer = 
-			(DWORD*)lpBits + 
-			lpBitmapInfo->bmiHeader.biWidth*(lpBitmapInfo->bmiHeader.biHeight-1-SourceTop) +
-			SourceLeft;
-	DWORD* pDBuffer = (DWORD*)Bitmap.GetRawData(BitmapData,32);
-	DWORD* pDLine = pDBuffer;
-	INT32 nStep = Width;
-	if ( BitmapData.GetRowStride()<0 )
-		nStep = -nStep;
-	for( UINT32 y=0 ; y<Height ; ++y )
-	{
-		//
-		// Set all pixels to be opaque. (We don't want to plot with alpha here
-		// so inverting the alpha channel would not be correct, and it's
-		// possible that the transparency channel will not always be zero).
-		//
+  wxBitmap Bitmap(Width,Height,32);
+  wxAlphaPixelData BitmapData(Bitmap);
+  //
+  // Copy source (or part of source) into wxBitmap.
+  //
+  DWORD* pSBuffer =
+    (DWORD*)lpBits +
+    lpBitmapInfo->bmiHeader.biWidth*(lpBitmapInfo->bmiHeader.biHeight-1-SourceTop) +
+    SourceLeft;
+  DWORD* pDBuffer = (DWORD*)Bitmap.GetRawData(BitmapData,32);
+  DWORD* pDLine = pDBuffer;
+  INT32 nStep = Width;
+  if ( BitmapData.GetRowStride()<0 )
+    nStep = -nStep;
+  for( UINT32 y=0 ; y<Height ; ++y )
+    {
+      //
+      // Set all pixels to be opaque. (We don't want to plot with alpha here
+      // so inverting the alpha channel would not be correct, and it's
+      // possible that the transparency channel will not always be zero).
+      //
 #if defined(__WXGTK__)
-		for( UINT32 x=0; x<Width; ++x )
-		{
-			BYTE* pS = pBYTE(pSBuffer+x);
-			BYTE* pD = pBYTE(pDLine  +x);
-			pD[0] = pS[2];
-			pD[1] = pS[1];
-			pD[2] = pS[0];
-			pD[3] = 0xFF;
-		}
-#else
-		for( UINT32 x=0; x<Width; ++x )
-			pDLine[x] = pSBuffer[x];
-#endif
-		pSBuffer -= lpBitmapInfo->bmiHeader.biWidth;
-		pDLine += nStep;
-	}
-	if ( ScreenHinting==CONVHINT_FINAL16  ||
-		 ScreenHinting==CONVHINT_FINAL555 ||
-		 ScreenHinting==CONVHINT_FINAL565 ||
-		 ScreenHinting==CONVHINT_FINAL655 ||
-		 ScreenHinting==CONVHINT_FINAL664 )
+      for( UINT32 x=0; x<Width; ++x )
 	{
-		BITMAPINFOHEADER Info = { sizeof(BITMAPINFOHEADER),Width,Height,1,32 } ;
-		if ( nStep<0 )
-			pDBuffer += (Height-1)*nStep;
-		UINT32 uHint;
-		switch (ScreenHinting)
-		{
-		case CONVHINT_FINAL565: uHint = 8+0; break;
-		case CONVHINT_FINAL655: uHint = 8+1; break;
-		case CONVHINT_FINAL664: uHint = 8+3; break;
-		default:				uHint = 8+2; break;
-		}
-		GRenderRegion::GetStaticDrawContext()->ConvertBitmap(&Info,(BYTE*)pDBuffer,&Info,(BYTE*)pDBuffer,uHint);
+	  BYTE* pS = pBYTE(pSBuffer+x);
+	  BYTE* pD = pBYTE(pDLine  +x);
+	  pD[0] = pS[2];
+	  pD[1] = pS[1];
+	  pD[2] = pS[0];
+	  pD[3] = 0xFF;
 	}
-	Bitmap.UngetRawData(BitmapData) ;
+#else
+      for( UINT32 x=0; x<Width; ++x )
+	pDLine[x] = pSBuffer[x];
+#endif
+      pSBuffer -= lpBitmapInfo->bmiHeader.biWidth;
+      pDLine += nStep;
+    }
+  if ( ScreenHinting==CONVHINT_FINAL16  ||
+       ScreenHinting==CONVHINT_FINAL555 ||
+       ScreenHinting==CONVHINT_FINAL565 ||
+       ScreenHinting==CONVHINT_FINAL655 ||
+       ScreenHinting==CONVHINT_FINAL664 )
+    {
+      INT32 int32_width = Width <= INT_MAX ? Width : INT_MAX;
+      INT32 int32_height = Height <= INT_MAX ? Height : INT_MAX;
+      BITMAPINFOHEADER Info = {sizeof(BITMAPINFOHEADER), int32_width, int32_height, 1, 32} ;
+      if ( nStep<0 )
+	pDBuffer += (Height-1)*nStep;
+      UINT32 uHint;
+      switch (ScreenHinting)
+	{
+	case CONVHINT_FINAL565: uHint = 8+0; break;
+	case CONVHINT_FINAL655: uHint = 8+1; break;
+	case CONVHINT_FINAL664: uHint = 8+3; break;
+	default:				uHint = 8+2; break;
+	}
+      GRenderRegion::GetStaticDrawContext()->ConvertBitmap(&Info,(BYTE*)pDBuffer,&Info,(BYTE*)pDBuffer,uHint);
+    }
+  Bitmap.UngetRawData(BitmapData) ;
 
 #ifdef _DEBUG
-	// Alex's test to test scaling
-	if ((hDC->LogicalToDeviceX(wxCoord(72000)))!=wxCoord(72000))
-	{
-		ERROR3("X coordinate out");
-	}
-	if ((hDC->LogicalToDeviceY(wxCoord(72000)))!=wxCoord(72000))
-	{
-		ERROR3("Y coordinate out");
-	}
+  // Alex's test to test scaling
+  if ((hDC->LogicalToDeviceX(wxCoord(72000)))!=wxCoord(72000))
+    {
+      ERROR3("X coordinate out");
+    }
+  if ((hDC->LogicalToDeviceY(wxCoord(72000)))!=wxCoord(72000))
+    {
+      ERROR3("Y coordinate out");
+    }
 #endif
 
-	{
-//		CamProfile cp(CAMPROFILE_BLIT);
-		hDC->DrawBitmap(Bitmap,Left,Top) ;
-	}
+  {
+    //		CamProfile cp(CAMPROFILE_BLIT);
+    hDC->DrawBitmap(Bitmap,Left,Top) ;
+  }
 
 #else
 
 #if defined(__WXGTK__)
-	RGBT* pBuffer = (RGBT*)lpBits + pBitmapData->m_width*SourceTop + SourceLeft;
-	for( UINT32 y=0 ; y<Height ; ++y )
-	{
-		//
-		// Set all pixels to be opaque. (We don't want to plot with alpha here
-		// so inverting the alpha channel would not be correct as it's
-		// possible that the transparency channel will not always be zero).
-		//
-		for( UINT32 x=0; x<Width; ++x )
-			pBuffer[x].Transparency = 0xFF;
-		pBuffer += pBitmapData->m_width;
-	}
+  RGBT* pBuffer = (RGBT*)lpBits + pBitmapData->m_width*SourceTop + SourceLeft;
+  for( UINT32 y=0 ; y<Height ; ++y )
+    {
+      //
+      // Set all pixels to be opaque. (We don't want to plot with alpha here
+      // so inverting the alpha channel would not be correct as it's
+      // possible that the transparency channel will not always be zero).
+      //
+      for( UINT32 x=0; x<Width; ++x )
+	pBuffer[x].Transparency = 0xFF;
+      pBuffer += pBitmapData->m_width;
+    }
 #endif
 
-	BITMAPINFOHEADER Info = { sizeof(BITMAPINFOHEADER),Width,Height,1,32 } ;
+  BITMAPINFOHEADER Info = { sizeof(BITMAPINFOHEADER),Width,Height,1,32 } ;
 
-	bool bIs16Bit = false ;
-	UINT32 uHint = 8+2;
-	if ( ScreenHinting==CONVHINT_FINAL16  ||
-		 ScreenHinting==CONVHINT_FINAL555 ||
-		 ScreenHinting==CONVHINT_FINAL565 ||
-		 ScreenHinting==CONVHINT_FINAL655 ||
-		 ScreenHinting==CONVHINT_FINAL664 )
+  bool bIs16Bit = false ;
+  UINT32 uHint = 8+2;
+  if ( ScreenHinting==CONVHINT_FINAL16  ||
+       ScreenHinting==CONVHINT_FINAL555 ||
+       ScreenHinting==CONVHINT_FINAL565 ||
+       ScreenHinting==CONVHINT_FINAL655 ||
+       ScreenHinting==CONVHINT_FINAL664 )
+    {
+      switch (ScreenHinting)
 	{
-		switch (ScreenHinting)
-		{
-		case CONVHINT_FINAL565: uHint = 8+0; break;
-		case CONVHINT_FINAL655: uHint = 8+1; break;
-		case CONVHINT_FINAL664: uHint = 8+3; break;
-		default:							 break;
-		}
-		bIs16Bit = true ;
+	case CONVHINT_FINAL565: uHint = 8+0; break;
+	case CONVHINT_FINAL655: uHint = 8+1; break;
+	case CONVHINT_FINAL664: uHint = 8+3; break;
+	default:							 break;
 	}
-	if ( SourceLeft || SourceTop || Width!=pBitmap->GetWidth() || Height!=pBitmap->GetHeight() )
+      bIs16Bit = true ;
+    }
+  if ( SourceLeft || SourceTop || Width!=pBitmap->GetWidth() || Height!=pBitmap->GetHeight() )
+    {
+      pBitmap->UngetRawData(*pBitmapData) ;
+      wxBitmap bmp = pBitmap->GetSubBitmap( wxRect(SourceLeft,SourceTop,Width,Height) ) ;
+      if ( bIs16Bit )
 	{
-		pBitmap->UngetRawData(*pBitmapData) ;
-		wxBitmap bmp = pBitmap->GetSubBitmap( wxRect(SourceLeft,SourceTop,Width,Height) ) ;
-		if ( bIs16Bit )
-		{
-			wxAlphaPixelData bmpData(bmp);
-			BYTE* pData = (BYTE*)bmp.GetRawData(bmpData,32);
-			if ( bmpData.GetRowStride()<0 )
-				pData += bmpData.GetRowStride()*(Height-1);
-			GRenderRegion::GetStaticDrawContext()->ConvertBitmap(&Info,pData,&Info,pData,uHint);
-			bmp.UngetRawData(bmpData) ;
-		}
-		{
-//			CamProfile cp(CAMPROFILE_BLIT);
-			hDC->DrawBitmap(bmp,Left,Top);
-		}
-		TRACE( _T("DrawBitmap(%08x,%04x,%04x),%04x,%04x\n"),hDC,Left,Top,Width,Height);
+	  wxAlphaPixelData bmpData(bmp);
+	  BYTE* pData = (BYTE*)bmp.GetRawData(bmpData,32);
+	  if ( bmpData.GetRowStride()<0 )
+	    pData += bmpData.GetRowStride()*(Height-1);
+	  GRenderRegion::GetStaticDrawContext()->ConvertBitmap(&Info,pData,&Info,pData,uHint);
+	  bmp.UngetRawData(bmpData) ;
 	}
-	else
-	{
-		if ( bIs16Bit )
-			GRenderRegion::GetStaticDrawContext()->ConvertBitmap(&Info,lpBits,&Info,lpBits,uHint);
-		pBitmap->UngetRawData(*pBitmapData) ;
-		{
-//			CamProfile cp(CAMPROFILE_BLIT);
-			hDC->DrawBitmap(*pBitmap,Left,Top) ;
-		}
-		TRACE( _T("DrawBitmap(%08x,%04x,%04x)\n"),hDC,Left,Top);
-	}
+      {
+	//			CamProfile cp(CAMPROFILE_BLIT);
+	hDC->DrawBitmap(bmp,Left,Top);
+      }
+      TRACE( _T("DrawBitmap(%08x,%04x,%04x),%04x,%04x\n"),hDC,Left,Top,Width,Height);
+    }
+  else
+    {
+      if ( bIs16Bit )
+	GRenderRegion::GetStaticDrawContext()->ConvertBitmap(&Info,lpBits,&Info,lpBits,uHint);
+      pBitmap->UngetRawData(*pBitmapData) ;
+      {
+	//			CamProfile cp(CAMPROFILE_BLIT);
+	hDC->DrawBitmap(*pBitmap,Left,Top) ;
+      }
+      TRACE( _T("DrawBitmap(%08x,%04x,%04x)\n"),hDC,Left,Top);
+    }
 
-	lpBits = (BYTE*)pBitmap->GetRawData(*pBitmapData,uBitmapDepth);
+  lpBits = (BYTE*)pBitmap->GetRawData(*pBitmapData,uBitmapDepth);
 #endif
-	return lpBits;
+  return lpBits;
 }
 
 
@@ -6535,7 +6536,7 @@ void GRenderRegion::PlotBitmap( UINT32 ColourFlag )
 	if (GetDrawContext()->GetChangedBBox( &UsedRect ))
 	{
 //		TRACE( _T("ChangedBBox = (%d, %d, %d, %d)"), UsedRect.left, UsedRect.top, UsedRect.right, UsedRect.bottom );
-		
+
 		if ((UsedRect.right < UsedRect.left) ||
 			(UsedRect.bottom< UsedRect.top ))
 		{
@@ -6565,8 +6566,8 @@ void GRenderRegion::PlotBitmap( UINT32 ColourFlag )
 //			TRACE( _T("Reg    %d - %d\n"),WRect.top, WRect.bottom);
 //			TRACE( _T("Gav    %d - %d\n"),UsedRect.top, UsedRect.bottom);
 //			TRACE( _T("Height %d\n"), Height);
-			
-//			if (FALSE) 
+
+//			if (FALSE)
 //			{
 //				TRACE( _T("Was %dx%d now %dx%d\n"), WRect.right-WRect.left, WRect.bottom-WRect.top,
 //												Width, Height );
@@ -6575,7 +6576,7 @@ void GRenderRegion::PlotBitmap( UINT32 ColourFlag )
 	}
 
 //	TRACE(_T("Blitting (%d, %d) (%d, %d) (%d, %d)\n"), DestX, DestY, Width, Height, SourceX, SourceY);
-	
+
 // GAT
 //	PlotBitmap( RenderDC, ColourFlag, lpBitmapInfo, lpBits, DestX, DestY,
 //				Width, Height, hPalette, SourceX, SourceY );
@@ -6608,7 +6609,7 @@ void GRenderRegion::Display1to1Bitmap()
 			*rgb++ = 0x03e0 ;
 			*rgb++ = 0x001f ;
 			break;
-	
+
 		case 32:
 			*rgb++ = 0x00ff0000 ;
 			*rgb++ = 0x0000ff00 ;
@@ -6686,7 +6687,7 @@ void GRenderRegion::DrawPixel(const DocCoord &Point)
 
 	RememberMe("DrawPixel");
 
-	if (!SetGCol(RR_STROKECOLOUR()))				
+	if (!SetGCol(RR_STROKECOLOUR()))
 		return;
 
 	POINT PlotMe;
@@ -6897,7 +6898,7 @@ void GRenderRegion::GColInit( wxDC* hdc, BOOL Force )
 		// If this isn't a palette device then don't do anything...
 		if (!(::GetDeviceCaps(hdc, RASTERCAPS) & RC_PALETTE))
 			return;
-		
+
 		// The user wants us to make sure GDraw is ready to render. We will check
 		// to see if the palette has changed, and if it has, we'll redraw
 		PALETTEENTRY NewPal[260];
@@ -7010,7 +7011,7 @@ void GRenderRegion::UpdateErrorDiffPalette(void)
 			for(i=224; i<=231; i++)
 				pEntry[i] = 0;
 			for(i=240; i<=245; i++)
-				pEntry[i] = 0;			
+				pEntry[i] = 0;
 
 // DEFCONS: This is a marker for updating the default context tables
 //			Change the following #if FALSE to TRUE
@@ -7048,7 +7049,7 @@ void GRenderRegion::UpdateErrorDiffPalette(void)
 
 	Notes:		This function does not require a GDraw critical section
 
-********************************************************************************************/ 
+********************************************************************************************/
 
 DWORD GRenderRegion::GetMaxBitmapWidth(void)
 {
@@ -7056,7 +7057,7 @@ DWORD GRenderRegion::GetMaxBitmapWidth(void)
 }
 
 
-	
+
 /********************************************************************************************
 
 >	static DWORD GRenderRegion::GetMaxBitmapDepth(void)
@@ -7071,7 +7072,7 @@ DWORD GRenderRegion::GetMaxBitmapWidth(void)
 
 	Notes:		This function does not require a GDraw critical section
 
-********************************************************************************************/ 
+********************************************************************************************/
 
 DWORD GRenderRegion::GetMaxBitmapDepth(void)
 {
@@ -7088,14 +7089,14 @@ DWORD GRenderRegion::GetMaxBitmapDepth(void)
 	Created:	10 April 2000
 	Inputs:		pClipAttr		ptr to the ClipRegionAttribute whose path we'll base the new
 								clip region on.
-	Outputs:	
+	Outputs:
 	Returns:	Pointer to a new GDraw clipping region, or
 				NULL if unsuccessful for some reason.
 
 	Purpose:	Given a ptr to a ClipRegionAttribute, generate an appropriate GDraw clipping
 				region and return it.
-	Errors:		
-	See also:	
+	Errors:
+	See also:
 
 ********************************************************************************************/
 const REGION* GRenderRegion::MakeClipRegionFromClipAttr(ClipRegionAttribute* pClipAttr)
@@ -7125,7 +7126,7 @@ const REGION* GRenderRegion::MakeClipRegionFromClipAttr(ClipRegionAttribute* pCl
 	// our guess until it works or it hits our imposed ceiling.
 	//
 	//	NOTE:
-	//		This is ok for uncomplicated paths. Complex paths require proportionally more 
+	//		This is ok for uncomplicated paths. Complex paths require proportionally more
 	//		memory, so we should really be slightly more intelligent in guesswork here...
 	//
 	// Regions require approximatly the following amount of memory per scanline:
@@ -7195,7 +7196,7 @@ const REGION* GRenderRegion::MakeClipRegionFromClipAttr(ClipRegionAttribute* pCl
 	Author:		Diccon_Yamanaka (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	29/10/99
 	Inputs:		Value - the value to set
-	Outputs:	
+	Outputs:
 	Purpose:	Sets the flag which indicates that we are rendering to a 32bit bitmap
 
 ********************************************************************************************/
@@ -7360,7 +7361,7 @@ void GRenderRegion::SetSimulatePrinting(UINT32 PrintType)
 
 /********************************************************************************************
 
->	SlowJobResult GRenderRegion::DrawMaskedBitmap(const DocRect &Rect, KernelBitmap* pBitmap, 
+>	SlowJobResult GRenderRegion::DrawMaskedBitmap(const DocRect &Rect, KernelBitmap* pBitmap,
 								  MaskedRenderRegion* pMask, Progress *Progress)
 
 	Author:		Gerry_Iles (Xara Group Ltd) <camelotdev@xara.com>
@@ -7373,11 +7374,11 @@ void GRenderRegion::SetSimulatePrinting(UINT32 PrintType)
 
 ********************************************************************************************/
 
-SlowJobResult GRenderRegion::DrawMaskedBitmap(const DocRect &Rect, KernelBitmap* pBitmap, 
+SlowJobResult GRenderRegion::DrawMaskedBitmap(const DocRect &Rect, KernelBitmap* pBitmap,
 								  	  MaskedRenderRegion* pMask, ProgressDisplay *Progress)
 {
 //	RELTRACE( _T("In GRenderRegion::DrawMaskedBitmap\n"));
-	
+
 	// Make sure the world is in one piece
 	if ((pBitmap==NULL) || (pMask==NULL))
 		return SLOWJOB_FAILURE;
@@ -7766,7 +7767,7 @@ Capture* GRenderRegion::StartCapture(CCObject* pOwner,
 	// 2) save current
 	// 3) change to new offscreen state
 
-	// If there's already a capture running and this one is nested but wants to change 
+	// If there's already a capture running and this one is nested but wants to change
 	// the transparency type then we must notify existing captures of the change...
 	Capture* pCurrentCapture = GetTopCapture();
 	if (pCurrentCapture!=NULL && cinfo.caType==ctNESTABLE && !cinfo.caFlags.GrabRendered && pCurrentCapture->IsTransparent() && !bTransparent)
@@ -7861,7 +7862,7 @@ Capture* GRenderRegion::StartCapture(CCObject* pOwner,
 	WinRect Rect = CalculateWinRect(CaptureMatrix, CaptureRect, dPPI);
 	UINT32 PixelWidth = Rect.width;
 	UINT32 PixelHeight = Rect.height;
-	if (PixelWidth==0 || PixelHeight==0 || 
+	if (PixelWidth==0 || PixelHeight==0 ||
 		PixelWidth*PixelHeight>256*1024*1024 ||
 		PixelWidth >GetDrawContext()->GetMaxBitmapWidth() ||
 		PixelHeight>GetDrawContext()->GetMaxBitmapDepth())
@@ -7914,7 +7915,7 @@ if (dPPI!=PixelsPerInch)
 	{
 		BYTE* pSetBits = (BYTE*)pNewCapture->lpBits;
 
-		// ensure all bitmap memory is initialised (ie don't use the 
+		// ensure all bitmap memory is initialised (ie don't use the
 		// bogus info from the bmp header dimensions)
 		UINT32 BmpSize = GetDIBBitsSize( &(pNewCapture->lpBitmapInfo->bmiHeader) );
 		UINT32 Index = 0;
@@ -8161,9 +8162,9 @@ BOOL GRenderRegion::StopCapture(CCObject* pOwner,
 	return bOK;
 }
 
-	
-	
-	
+
+
+
 /********************************************************************************************
 
 >	BOOL GRenderRegion::ChangeCapture(CAPTUREINFO cinfo,
@@ -8569,9 +8570,9 @@ Capture* GRenderRegion::GetTopCaptureBitmap(Capture* pFromCapture) const
 
 ********************************************************************************************/
 
-#ifdef _DEBUG
-BOOL GRenderRegion::DumpCaptureStack()
-{
+// #ifdef _DEBUG
+#if 0
+BOOL GRenderRegion::DumpCaptureStack() {
 	if (m_CaptureStack.Empty())
 	{
 		return FALSE;
@@ -8581,7 +8582,7 @@ BOOL GRenderRegion::DumpCaptureStack()
 
 //	LPBITMAPINFO lpCapturedBitmapInfo = pBitmapInfo;
 //	LPBYTE lpCapturedBits = pBits;
-	DocRect rectCaptured = CurrentClipRect;
+	//DocRect rectCaptured = CurrentClipRect;
 
 	Capture* pCapture = m_CaptureStack.Top();
 	ListT<Capture*>* pList = m_CaptureStack.GetListT();
@@ -8703,7 +8704,7 @@ BOOL GRenderRegion::SetRenderToCapture(Capture* pCapture, BOOL ApplyClipRegion, 
 //	{
 		// general case is to draw offscreen bmp without clip region applied
 		// We apply the clip region when restoring so that it is in place
-		// if we draw the offscreen bitmap to the original bmp (where the 
+		// if we draw the offscreen bitmap to the original bmp (where the
 		// clipregion was applied)
 		if ( !GetDrawContext()->ClipRectangle((LPRECT)&pCapture->CaptureRect) )
 		{
@@ -8936,9 +8937,9 @@ void GRenderRegion::SetBitmapPointers(LPBITMAPINFO bi, LPBYTE by)
 	pBitmapInfo = bi;
 	pBits = by;
 }
-	
-	
-	
+
+
+
 /********************************************************************************************
 
 >	BOOL GRenderRegion::GetBitmapPointers(LPBITMAPINFO* ppInfo, LPBYTE* ppBits, BOOL bCorrectTransparency = TRUE)
@@ -8970,9 +8971,9 @@ BOOL GRenderRegion::GetBitmapPointers(LPBITMAPINFO* ppInfo, LPBYTE* ppBits, BOOL
 
 	return TRUE;
 }
-	
-	
-	
+
+
+
 // Operations to control GDraw options
 // (will probably be in a dialog at some point)
 

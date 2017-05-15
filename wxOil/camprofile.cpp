@@ -1,7 +1,7 @@
 // $Id: camprofile.cpp 1464 2006-07-18 12:32:26Z gerry $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
- 
+
                Xara LX, a vector drawing and manipulation program.
                     Copyright (C) 1993-2006 Xara Group Ltd.
        Copyright on certain contributions may be held in joint with their
@@ -32,7 +32,7 @@ ADDITIONAL RIGHTS
 
 Conditional upon your continuing compliance with the GNU General Public
 License described above, Xara Group Ltd grants to you certain additional
-rights. 
+rights.
 
 The additional rights are to use, modify, and distribute the software
 together with the wxWidgets library, the wxXtra library, and the "CDraw"
@@ -148,7 +148,7 @@ CamProfile::CamProfile(CamProfileMode myMode)
 	pPrev = NULL;
 	pNext = NULL;
 	OilTime = 0;
-	
+
 	Zombie = FALSE ;
 
 	if (!Running)
@@ -170,7 +170,7 @@ CamProfile::CamProfile(CamProfileMode myMode)
 	if (!pHead)
 	{
 		pHead = this;
-	}	
+	}
 
 	// note we didn't alter pCurrent above, so it's still set to the old one
 	SetMode(myMode);
@@ -199,10 +199,10 @@ CamProfile::~CamProfile()
 	{
 		return;
 	}
-	
+
 	// If it's not a Zombie, but we are still running, we need to do
 	// list maintenance etc.
-	
+
 	ERROR3IF(!Inited, "Profiling system not yet initialized");
 
 	if (pPrev)
@@ -236,7 +236,7 @@ CamProfile::~CamProfile()
 		pTail->SetMode(pTail->Mode);
 	}
 	else
-	{	
+	{
 		pCurrent = NULL;
 	}
 
@@ -278,12 +278,12 @@ BOOL CamProfile::Init()
 	if (!OurHead) return FALSE;
 
 	Inited = TRUE;
-	
+
 	// Give the lists a work through
 	ActivateProfiling (TRUE);
 	ActivateProfiling (FALSE);
 
-	return TRUE;	
+	return TRUE;
 
 }
 
@@ -300,7 +300,7 @@ BOOL CamProfile::Init()
 	Returns:	TRUE if worked, FALSE if failed (out of memory)
 	Purpose:	Changes the mode of a profiler
 	Errors:		Returns FALSE on failure.
-	Scope:		
+	Scope:
 
 This is the heart of the profiling system. We've just been told our timer has changed
 from its current state, to myMode. Therefore, if we were profiling before, we attribute
@@ -340,7 +340,7 @@ void CamProfile::SetMode(CamProfileMode myMode, BOOL Base)
 		// Stop the current profiler running - note this may be us
 		UINT64 Elapsed = NewTime - pCurrent->OilTime;
 		OilTimeArray[pCurrent->Mode] += Elapsed;
-		
+
 		// TRACE(_T("CAMPROFILER Credit %lld to %d\n"),Elapsed,(INT32)pCurrent->Mode);
 
 		pCurrent->OilTime = 0; // So we can detect screw-ups - we'll set it again when we start it
@@ -374,12 +374,12 @@ void CamProfile::SetMode(CamProfileMode myMode, BOOL Base)
 			p = pn;
 			// sadly they are not ours to delete
 		}
-		
+
 		// Now unjunk us
 		Zombie = FALSE;
 		pHead = this;
 		pTail = this;
-	}	
+	}
 
 
 	// Now start us
@@ -443,34 +443,14 @@ void CamProfile::GetTimeString(TCHAR * pTime, UINT32 length)
 {
 	ERROR3IF(!Inited, "Profiling system not yet initialized");
 	UpdateOilTimes();
-	if ((length < 26+6) || pCurrent && Running && !pCurrent->Zombie)
+	if ((length >= 26 + 6) && pCurrent && Running && !pCurrent->Zombie)
 	{
 		// Read from LastOilTime
 		UINT64 Time=LastOilTime;
-#if WIN32
-		// Convert LastOil time to secs since 1 Jan 1970. We don't care about the date,
-		// we only care about the time, so we pick a roughly correct number of DAYS
-		// to add.
-		// That's 369 years, which would have 92 leap years, except for the fact that
-		// 1700, 1800, 1900 were not leap years. So that's 369 years of 365 days plus 89
-		// leap year days, or 134,774 days, or 11,644,473,600 seconds
-		// For the purist, I suppose we might be a few leap seconds out. Yawn.
-		// Another test (thta's all one line):
-		// 11perl -e '{use DateTime;$o=DateTime->new(year=>1601,month=>1,day=>1); 
-		//            $n=DateTime->new(year=>1970,month=>1,day=>1), 
-		//            printf "%d\n", $n->subtract_datetime_absolute($o)->in_units(seconds)}'
-		//
-		// 11644473600
-		//
-		Time = Time-11644473600LL*10000000LL;
-		Time = (Time+5)/10;
-#endif
 		// Time is now in microseconds since 1 Jan 1970
 		UINT64 uSecs = Time % 1000000;
 		UINT64 Secs = Time / 1000000;
 		time_t t = Secs;
-
-		// Don't use ctime_r as it isn't present on Windows
 
 		//Ask wx for a string with the time
 		wxDateTime TheTime(t);
@@ -478,8 +458,9 @@ void CamProfile::GetTimeString(TCHAR * pTime, UINT32 length)
 
 		// Now camSnprintf this into the string. This turns it into UNICODE if appropriate
 		camSnprintf (pTime, length, _T("%s.%06d"), sTime.c_str(), uSecs);
+	} else {
+	  camStrncpy(pTime, _T("[UNAVAILABLE]"), length);
 	}
-	else camStrncpy(pTime, _T("[UNAVAILABLE]"), length);
 	pTime[length-1]=0; // ensure string terminated - string copy primatives do funny thing
 }
 
@@ -519,7 +500,7 @@ void CamProfile::AtBase(CamProfileMode myMode)
 		// Note we allocate this, and discard the pointer. That's because it has already
 		// added itself to the linked list
 		if (OurHead) delete(OurHead);
-		OurHead = new CamProfile;	
+		OurHead = new CamProfile;
 		if (!OurHead) return;
 	}
 
@@ -569,7 +550,7 @@ BOOL CamProfile::ResetCounters()
 	{
 		OldMode = pActive->Mode;
 		pActive->SetMode(CAMPROFILE_NONE);
-	}	
+	}
 
 	for (INT32 i=0; i<CAMPROFILE_NONE; i++)
 	{
@@ -626,8 +607,8 @@ BOOL CamProfile::ActivateProfiling(BOOL Run)
 			// Note we allocate this, and discard the pointer. That's because it has already
 			// added itself to the linked list
 			if (OurHead) delete(OurHead);
-			OurHead = new CamProfile;	
-			if (!OurHead) return FALSE;			
+			OurHead = new CamProfile;
+			if (!OurHead) return FALSE;
 		}
 		// We can't wake the zombies up as we don't have a list of them
 		ResetCounters();

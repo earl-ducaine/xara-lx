@@ -69,7 +69,7 @@ void wxPlatformDependent::FixUpdate(wxWindow * pwxWindow, bool flush /*=true*/)
 }
 
 #if defined( __WXGTK__ )
-void wxPlatformDependent::ParseGtkRcString(char * rcstring)
+void wxPlatformDependent::ParseGtkRcString(const char * rcstring)
 {
     gtk_rc_parse_string(rcstring);
 	return;

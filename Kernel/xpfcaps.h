@@ -1,7 +1,7 @@
 // $Id: xpfcaps.h 1708 2006-08-17 17:13:38Z gerry $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
- 
+
                Xara LX, a vector drawing and manipulation program.
                     Copyright (C) 1993-2006 Xara Group Ltd.
        Copyright on certain contributions may be held in joint with their
@@ -32,7 +32,7 @@ ADDITIONAL RIGHTS
 
 Conditional upon your continuing compliance with the GNU General Public
 License described above, Xara Group Ltd grants to you certain additional
-rights. 
+rights.
 
 The additional rights are to use, modify, and distribute the software
 together with the wxWidgets library, the wxXtra library, and the "CDraw"
@@ -194,7 +194,7 @@ typedef INT32 XPFProp;
 
 typedef struct PropMapEntry
 {
-	TCHAR* pName;
+	const TCHAR* pName;
 	XPFProp Value;
 } PropMapEntry;
 
@@ -269,7 +269,7 @@ protected:
 	Created:	26/01/05
 	Purpose:	This is a general class that just uses the runtime class of the node
 				It can be used directly to handle those complex objects that just support
-				a simple on/off style of conversion or it can be used as the baseclass 
+				a simple on/off style of conversion or it can be used as the baseclass
 				for more complex classes
 
 ********************************************************************************************/
@@ -313,12 +313,12 @@ class XPFCLayer : public XPFCComplexClass
 	CC_DECLARE_MEMDUMP(XPFCLayer);
 
 public:
-	XPFCLayer(XPFConvertType ConvertType, 
-				XPFBOOL bVisible, 
-				XPFBOOL bLocked, 
-				XPFBOOL bPrintable, 
-				XPFBOOL bActive, 
-				XPFBOOL bBackground, 
+	XPFCLayer(XPFConvertType ConvertType,
+				XPFBOOL bVisible,
+				XPFBOOL bLocked,
+				XPFBOOL bPrintable,
+				XPFBOOL bActive,
+				XPFBOOL bBackground,
 				XPFBOOL bGuide,
 				XPFProp ContentOnly)
 		: XPFCComplexClass(CC_RUNTIME_CLASS(Layer), ConvertType)
@@ -464,7 +464,7 @@ class XPFCBlend : public XPFCComplexClass
 	CC_DECLARE_MEMDUMP(XPFCBlend);
 
 public:
-	XPFCBlend(XPFConvertType ConvertType, 
+	XPFCBlend(XPFConvertType ConvertType,
 				XPFProp Effect,
 				XPFBOOL bOnCurve,
 				XPFProp bObjProfile,
@@ -1080,7 +1080,7 @@ public:
 	void SetSelection(BOOL bSelection) { m_bSelection = bSelection; }
 	void SetBoundsLevel(BoundsWriteLevel Level) { m_BoundsLevel = Level; }
 	void SetPreviewBitmap(BOOL bPreviewBitmap) { m_bPreviewBitmap = bPreviewBitmap; }
-	
+
 	void SetSpreadType(XPFConvertType Type) { m_SpreadType = Type; }
 
 	void SetRasterise(double DPI, BOOL bAlpha, INT32 Compression, const String_256& CommonTrans, BOOL bResample)
@@ -1146,7 +1146,7 @@ protected:
 	BOOL m_bResample;
 
 	XPFConvertType m_SpreadType;
-	
+
 	XPFCapability* m_pObjects;
 	XPFConvertType m_ObjectsType;
 	XPFCapability* m_pAttributes;

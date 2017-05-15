@@ -1,7 +1,7 @@
 // $Id: dragbmp.cpp 1658 2006-08-03 14:50:05Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
- 
+
                Xara LX, a vector drawing and manipulation program.
                     Copyright (C) 1993-2006 Xara Group Ltd.
        Copyright on certain contributions may be held in joint with their
@@ -32,7 +32,7 @@ ADDITIONAL RIGHTS
 
 Conditional upon your continuing compliance with the GNU General Public
 License described above, Xara Group Ltd grants to you certain additional
-rights. 
+rights.
 
 The additional rights are to use, modify, and distribute the software
 together with the wxWidgets library, the wxXtra library, and the "CDraw"
@@ -108,7 +108,7 @@ service marks of Xara Group Ltd. All rights in these marks are reserved.
 #include "keypress.h"
 #include "camframe.h"
 //#include "bitmap.h" - in camtypes.h [AUTOMATICALLY REMOVED]
-#include "bitmpinf.h"	
+#include "bitmpinf.h"
 #include "oilbitmap.h"
 
 #include "grndrgn.h"
@@ -139,10 +139,10 @@ INT32 BitmapDragInformation::DragTransparency = 50;
 
 /********************************************************************************************
 
->	void BitmapDragInformation::BitmapDragInformation() 
-	 
+>	void BitmapDragInformation::BitmapDragInformation()
+
 	Author:		Will_Cowling (Xara Group Ltd) <camelotdev@xara.com>
-	Created:	12/1/95		  
+	Created:	12/1/95
 
 	Purpose:	Conmstructor - do not call this default constructor.
 
@@ -150,7 +150,7 @@ INT32 BitmapDragInformation::DragTransparency = 50;
 
 BitmapDragInformation::BitmapDragInformation()
 {
-//	ERROR3("Default BitmapDragInformation constructor called");	
+//	ERROR3("Default BitmapDragInformation constructor called");
 }
 
 
@@ -159,14 +159,14 @@ BitmapDragInformation::BitmapDragInformation()
 
 >	void BitmapDragInformation::BitmapDragInformation(KernelBitmap * Bitmap,
 													  INT32 xSize,
-													  INT32 ySize, 
+													  INT32 ySize,
 													  INT32 xOffset,
 													  INT32 yOffset,
-													  BOOL IsAdjust) 
-	 
+													  BOOL IsAdjust)
+
 	Author:		Will_Cowling (Xara Group Ltd) <camelotdev@xara.com>
-	Created:	12/1/95		  
-	
+	Created:	12/1/95
+
 	Inputs:		Bitmap - The KernelBitmap being dragged
 				xSize - The Width (in Pixels) of the Drag Rectangle.
 				ySize - The Height (in Pixels) of the Drag Rectangle.
@@ -180,7 +180,7 @@ BitmapDragInformation::BitmapDragInformation()
 
 BitmapDragInformation::BitmapDragInformation(	KernelBitmap * DragBitmap,
 												INT32 xSize,
-												INT32 ySize, 
+												INT32 ySize,
 												INT32 xOffset,
 												INT32 yOffset,
 												BOOL IsAdjust)
@@ -199,11 +199,11 @@ BitmapDragInformation::BitmapDragInformation(	KernelBitmap * DragBitmap,
 
 	// Set up a few things about this drag
 	DoesSolidDrag = TRUE;
-	
+
 	// offset of Bitmap swatch from the pointer
 	SolidDragOffset.x = 0;
-	SolidDragOffset.y = 16;	   
-	
+	SolidDragOffset.y = 16;
+
 	BitmapInfo Info;
 
 	INT32 BitmapWidth  = (TheBitmap != NULL) ? CellSize : NullSize;
@@ -212,7 +212,7 @@ BitmapDragInformation::BitmapDragInformation(	KernelBitmap * DragBitmap,
 	// The aspect ratio of the bitmap
 	double Ratio = 1.0;
 
-	if (ySize == 0 && 
+	if (ySize == 0 &&
 		TheBitmap != NULL &&
 		TheBitmap->ActualBitmap != NULL &&
 		TheBitmap->ActualBitmap->GetInfo( &Info ))
@@ -224,7 +224,7 @@ BitmapDragInformation::BitmapDragInformation(	KernelBitmap * DragBitmap,
 		Ratio = double(Info.RecommendedWidth)/double(Info.RecommendedHeight);
 	}
 
-	// If the user supplied the sizes, keep their aspect	
+	// If the user supplied the sizes, keep their aspect
 	if(xSize > 0 && ySize > 0)
 		Ratio = double(xSize) / double(ySize);
 
@@ -249,7 +249,7 @@ BitmapDragInformation::BitmapDragInformation(	KernelBitmap * DragBitmap,
 
 	// Offset relative to bitmap centre
 	SolidDragOffset.x += (xOffset - SolidDragSize.x/2);
-	SolidDragOffset.y += (yOffset - SolidDragSize.y/2);	   
+	SolidDragOffset.y += (yOffset - SolidDragSize.y/2);
 
 	DragRect.x = SolidDragSize.x;
 	DragRect.y = SolidDragSize.y;
@@ -258,10 +258,10 @@ BitmapDragInformation::BitmapDragInformation(	KernelBitmap * DragBitmap,
 /********************************************************************************************
 
 >	void BitmapDragInformation::~BitmapDragInformation()
- 
+
 	Author:		Will_Cowling (Xara Group Ltd) <camelotdev@xara.com>
-	Created:	12/1/95		  
-	
+	Created:	12/1/95
+
 	Purpose:	Destructor
 
 ********************************************************************************************/
@@ -295,7 +295,7 @@ BitmapDragInformation::~BitmapDragInformation()
 	Created:	15/1/95
 	Returns:	Apply current drag Bitmap to selection - set current fill/stroke attributes
 	Purpose:	Applies the dragged Bitmap to the current selection
-   
+
 ********************************************************************************************/
 
 void BitmapDragInformation::ApplyBitmapToSelection()
@@ -312,7 +312,7 @@ void BitmapDragInformation::ApplyBitmapToSelection()
 	Created:	15/1/95
 	Returns:	a cursor ID to set during this drag
 	Purpose:	Determines what cursor to display during a Bitmap drag
-   
+
 ********************************************************************************************/
 
 UINT32 BitmapDragInformation::GetCursorID()
@@ -333,7 +333,7 @@ UINT32 BitmapDragInformation::GetCursorID()
 	Returns:	Whether String is valid
 
 	Purpose:	provide status line text for this drag
-   
+
 ********************************************************************************************/
 
 BOOL BitmapDragInformation::GetStatusLineText(String_256 * TheText)
@@ -354,7 +354,7 @@ BOOL BitmapDragInformation::GetStatusLineText(String_256 * TheText)
 	Created:	15/1/95
 	Returns:	a cursor ID to set during this drag
 	Purpose:	Determines what cursor to display during a Bitmap drag
-   
+
 ********************************************************************************************/
 
 UINT32 BitmapDragInformation::GetCursorID(DragTarget* pDragTarget)
@@ -373,7 +373,7 @@ UINT32 BitmapDragInformation::GetCursorID(DragTarget* pDragTarget)
 	Returns:	Whether String is valid
 
 	Purpose:	provide status line text for this drag
-   
+
 ********************************************************************************************/
 
 BOOL BitmapDragInformation::GetStatusLineText(String_256 * TheText, DragTarget* pDragTarget)
@@ -389,15 +389,15 @@ BOOL BitmapDragInformation::GetStatusLineText(String_256 * TheText, DragTarget* 
 
 /********************************************************************************************
 
->	void BitmapDragInformation::OnClick(INT32 Flags,POINT Point) 
-	 
+>	void BitmapDragInformation::OnClick(INT32 Flags,POINT Point)
+
 	Author:		Will_Cowling (Xara Group Ltd) <camelotdev@xara.com>
-	Created:	12/1/95		  
-	Inputs:		
+	Created:	12/1/95
+	Inputs:
 	Outputs:	-
 	Returns:	-
 
-	Purpose:	This is called if a drag was attempted but never started because it was a 
+	Purpose:	This is called if a drag was attempted but never started because it was a
 				click all along. In the base class, the default action is to make the
 				Bitmap bar think that the dragged Bitmap has been clicked.
 
@@ -423,17 +423,17 @@ BOOL BitmapDragInformation::StartGalleryItemDrag(SGDisplayItem* pGalleryItem)
 	FIXED16 ViewScale = 1;
 
 	CDC* pDisplayDC = new CDC();
-	pDisplayDC->CreateDC("DISPLAY", NULL, NULL, NULL); 
+	pDisplayDC->CreateDC("DISPLAY", NULL, NULL, NULL);
 
-	UINT32 Depth = GetDeviceCaps( pDisplayDC->m_hDC, BITSPIXEL ) * 
+	UINT32 Depth = GetDeviceCaps( pDisplayDC->m_hDC, BITSPIXEL ) *
 									GetDeviceCaps( pDisplayDC->m_hDC, PLANES );
 
 	INT32 dpi   = GetDeviceCaps( pDisplayDC->m_hDC, LOGPIXELSX );
 
-	GRenderBitmap* pRegion 		= new GRenderBitmap(ClipRegion, ConvertMatrix, ViewScale, 
+	GRenderBitmap* pRegion 		= new GRenderBitmap(ClipRegion, ConvertMatrix, ViewScale,
 												Depth, dpi);
 
-	GRenderBitmap* pMaskRegion 	= new GRenderBitmap(ClipRegion, ConvertMatrix, ViewScale, 
+	GRenderBitmap* pMaskRegion 	= new GRenderBitmap(ClipRegion, ConvertMatrix, ViewScale,
 													1, dpi);
 
 	DocView *View = DocView::GetCurrent();
@@ -451,10 +451,10 @@ BOOL BitmapDragInformation::StartGalleryItemDrag(SGDisplayItem* pGalleryItem)
   	((SGDisplayLineAttrItem*)pGalleryItem)->Render(pRegion, ClipRegion);
 
 	OILBitmap* pOilMaskBmp = pMaskRegion->ExtractBitmap();
-	DragMask = new KernelBitmap(pOilMaskBmp);	
+	DragMask = new KernelBitmap(pOilMaskBmp);
 
 	OILBitmap* pOilDragBmp = pRegion->ExtractBitmap();
-	TheBitmap = new KernelBitmap(pOilDragBmp);	
+	TheBitmap = new KernelBitmap(pOilDragBmp);
 
 	delete pMaskRegion;
 	delete pRegion;
@@ -466,10 +466,10 @@ BOOL BitmapDragInformation::StartGalleryItemDrag(SGDisplayItem* pGalleryItem)
 
 /********************************************************************************************
 
->	void BitmapDragInformation::OnDrawSolidDrag(wxPoint Origin, wxDC * TheDC, DragTarget* pDragTarget) 
-	 
+>	void BitmapDragInformation::OnDrawSolidDrag(wxPoint Origin, wxDC * TheDC, DragTarget* pDragTarget)
+
 	Author:		Will_Cowling (Xara Group Ltd) <camelotdev@xara.com>
-	Created:	12/1/95		  
+	Created:	12/1/95
 	Inputs:		TheDC - pointer to a DC ready to draw into.
 	Outputs:	-
 	Returns:	-
@@ -487,10 +487,10 @@ BOOL BitmapDragInformation::OnDrawSolidDrag(wxPoint Origin, wxDC * TheDC, DragTa
 
 /********************************************************************************************
 
->	void BitmapDragInformation::OnDrawSolidDrag(wxPoint Origin, wxDC* TheDC) 
-	 
+>	void BitmapDragInformation::OnDrawSolidDrag(wxPoint Origin, wxDC* TheDC)
+
 	Author:		Will_Cowling (Xara Group Ltd) <camelotdev@xara.com>
-	Created:	12/1/95		  
+	Created:	12/1/95
 	Inputs:		TheDC - pointer to a DC ready to draw into.
 	Outputs:	-
 	Returns:	-
@@ -511,7 +511,7 @@ BOOL BitmapDragInformation::OnDrawSolidDrag(wxPoint Origin, wxDC* TheDC)
 //	}
 
 	if (TheBitmap != NULL && TheBitmap->ActualBitmap != NULL)
-	{	
+	{
 		PlotBitmap((CWxBitmap*)TheBitmap->ActualBitmap, Origin, DragRect, TheDC);
 	}
 	else
@@ -526,8 +526,8 @@ BOOL BitmapDragInformation::OnDrawSolidDrag(wxPoint Origin, wxDC* TheDC)
 		wxBrush *pDragBrush = NULL;
 
 		pDragBrush = new wxBrush;
-	
-		BOOL BrushCreate = TRUE;
+
+		// BOOL BrushCreate = TRUE;
 
 		if (pDragBrush != NULL )
 		{
@@ -538,9 +538,9 @@ BOOL BitmapDragInformation::OnDrawSolidDrag(wxPoint Origin, wxDC* TheDC)
 			}
 			else
 				*pDragBrush=wxBrush(wxColour(0x7F,0x7F,0x7F));
-			
+
 			wxPen MyPen(*wxBLACK);
-		
+
 			//the rectangle to draw into
 			wxRect DrawRect;
 
@@ -558,18 +558,18 @@ BOOL BitmapDragInformation::OnDrawSolidDrag(wxPoint Origin, wxDC* TheDC)
 
 			// draw some text
 			// String_256 Str("Blobby");
-			// TheDC->TextOut(Origin.x, Origin.y, (TCHAR *)Str, Str.Length());		
+			// TheDC->TextOut(Origin.x, Origin.y, (TCHAR *)Str, Str.Length());
 
-			// draw a rectangle 			 		
+			// draw a rectangle
 	 		TheDC->DrawRectangle(DrawRect);
 
 			TheDC->SetBrush(*wxTRANSPARENT_BRUSH);
 			TheDC->SetPen(*wxTRANSPARENT_PEN);
 
 			delete pDragBrush;
+		} else {
+		  // BrushCreate = FALSE;
 		}
-		else
-			BrushCreate = FALSE;
 
 		// Finish with GBrush
 		GDrawBrush.Stop();
@@ -577,19 +577,19 @@ BOOL BitmapDragInformation::OnDrawSolidDrag(wxPoint Origin, wxDC* TheDC)
 
 //	if (OldPal)
 //		PaletteManager::StopPaintPalette(TheDC, OldPal);
-	
+
 	return TRUE;
 }
 
 
 /********************************************************************************************
 
->	BOOL BitmapDragInformation::PlotBitmap(	CWxBitmap *wxBM, 
-											CPoint Origin, CSize Size, 
+>	BOOL BitmapDragInformation::PlotBitmap(	CWxBitmap *wxBM,
+											CPoint Origin, CSize Size,
 											CDC * RenderDC)
- 
+
 	Author:		Will_Cowling (Xara Group Ltd) <camelotdev@xara.com>
-	Created:	19/3/95		  
+	Created:	19/3/95
 	Inputs:		RenderDC - pointer to a DC ready to draw into.
 	Outputs:	-
 	Returns:	FALSE, if the plot failed.
@@ -599,8 +599,8 @@ BOOL BitmapDragInformation::OnDrawSolidDrag(wxPoint Origin, wxDC* TheDC)
 
 ********************************************************************************************/
 
-BOOL BitmapDragInformation::PlotBitmap(	CWxBitmap *wxBM, 
-										wxPoint Origin, wxSize Size, 
+BOOL BitmapDragInformation::PlotBitmap(	CWxBitmap *wxBM,
+										wxPoint Origin, wxSize Size,
 										wxDC* RenderDC)
 {
 	if ((wxBM == NULL) ||
@@ -694,7 +694,7 @@ PORTNOTE("other", "disabled palettes in dragbmp")
 
 PORTNOTE("other", "Assume 24bpp intermediate bitmap in DragBmp");
 #ifndef EXCLUDE_FROM_XARALX
-		DeviceDepth = GetDeviceCaps( RenderDC->m_hDC, BITSPIXEL ) * 
+		DeviceDepth = GetDeviceCaps( RenderDC->m_hDC, BITSPIXEL ) *
 										GetDeviceCaps( RenderDC->m_hDC, PLANES );
 #else
 		DeviceDepth = 24;
@@ -727,7 +727,7 @@ PORTNOTE("other", "Assume 24bpp intermediate bitmap in DragBmp");
 
 		GD->SetupBitmap(TempInfo->bmiHeader.biWidth,
 						TempInfo->bmiHeader.biHeight,
-						TempInfo->bmiHeader.biBitCount, 
+						TempInfo->bmiHeader.biBitCount,
 						TempBits );
 
 		GD->SetMatrix( &GMatrix );
@@ -736,7 +736,7 @@ PORTNOTE("other", "Assume 24bpp intermediate bitmap in DragBmp");
 
 		RGBQUAD TempPalette[256];
 		RGBQUAD* Palette = wxBM->BMInfo->bmiColors;
-	
+
 		if (bpp <= 8)
 		{
 			INT32 NumCols;
@@ -864,9 +864,9 @@ PORTNOTE("other", "Assume 24bpp intermediate bitmap in DragBmp");
 /********************************************************************************************
 
 >	KernelBitmap* BitmapDragInformation::GetSolidDragMask()
- 
+
 	Author:		Will_Cowling (Xara Group Ltd) <camelotdev@xara.com>
-	Created:	10/4/95		  
+	Created:	10/4/95
 	Returns:	-
 	Purpose:	Get a 1 bpp mask to use for the solid drag.
 	SeeAlso:	-
@@ -879,22 +879,22 @@ which has to be done before the first plot (on setup)
 KernelBitmap* BitmapDragInformation::GetSolidDragMask()
 {
 	if (TheBitmap != NULL && TheBitmap->ActualBitmap != NULL)
-	{	
+	{
 		wxBitmap bitmap(1,1);
 		wxMemoryDC DC;
 		DC.SelectObject(bitmap);
 		PlotBitmap((CWxBitmap*)TheBitmap->ActualBitmap, wxPoint(0,0), DragRect, &DC);
 	}
-	
+
 	return DragMask;
 }
 
 /********************************************************************************************
 
 >	INT32 BitmapDragInformation::GetDragTransparency()
- 
+
 	Author:		Will_Cowling (Xara Group Ltd) <camelotdev@xara.com>
-	Created:	19/3/95		  
+	Created:	19/3/95
 	Returns:	-
 	Purpose:	Specifies how transparent a drag should be.
 				A value of 0, will cause a normal solid blit.
@@ -925,10 +925,9 @@ BOOL BitmapDragInformation::Init()
 	// Setup preference for drag transparency
 	if (GetApplication()->DeclareSection(_T("Dragging"), 1))
 	{
-		GetApplication()->DeclarePref( NULL, _T("BitmapDragTransparency"), 
+		GetApplication()->DeclarePref( NULL, _T("BitmapDragTransparency"),
 								&DragTransparency, 0, 100);
 	}
 
 	return TRUE;
 }
-
