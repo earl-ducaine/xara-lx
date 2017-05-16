@@ -1,0 +1,54 @@
+
+
+* Xara LX README
+  Xara LX is primarily a vector graphics (drawing and illustration)
+  program but is one of the new generation of cross-over products that
+  handles photos and drawings with equal ease.
+
+** Building
+
+   Currently Xara LX has only be verified to compile with Ubuntu
+   16.10.  Though it should be possible to compile it with other
+   versions of Ubuntu and other distributions.
+
+   Compiling is currently somewhat complicated by the fact that build
+   the software requires the use of some obsoleet packages.  Steps:
+   
+   NOTE, a current project is underway to 'debrand' the project.  When
+   this is completed the application will be named Xoamorph, thus the
+   names of some of the files and shell operations.
+   
+   1) Make sure that you don't have any dev version of wxWidgets
+      installed.
+   2) Make sure that you have the old version of gcc v5.4.1 installed
+      and that it's the default compiler.  The easiest way to do this
+      is using update-alternatives.
+   3) Get the definition of several functions in the make-xoamorph.sh
+      script: 
+
+      #+BEGIN_SRC sh
+        . make-xoamorph.sh
+      #+END_SRC
+   4) Build and install the dev version of wxWidgets 4.8:
+      #+BEGIN_SRC sh
+        build_wx
+      #+END_SRC
+   5) Build the libpng v1.2.57 library
+      #+BEGIN_SRC sh
+        build_png
+      #+END_SRC
+   6) Build the libpng v1.2.57 library
+      #+BEGIN_SRC sh
+        build_png
+      #+END_SRC
+   7) Finally build Xara LX
+      #+BEGIN_SRC sh
+        build_xoamorph
+      #+END_SRC
+
+
+
+** Assuming things built correctly execut using:
+   #+BEGIN_SRC sh
+     ./XaraLX
+   #+END_SRC
