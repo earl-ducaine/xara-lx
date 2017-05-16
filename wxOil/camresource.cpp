@@ -746,53 +746,42 @@ If an empty string is specified, it returns the overridden resource path (if one
 
 ********************************************************************************************/
 
-wxString CamResource::GetResourceFilePath( const wxString &str, BOOL AllowOverride )
+wxString CamResource::GetResourceFilePath( const wxString &str, BOOL AllowOverride)
 {
-	// If we are given a full path, then return. For the time being that's anything with a colon or a slash in it
-	// as the resources file is flat
-	if ( ((str.Find(_T(':')))>=0) || ((str.Find(_T('/')))>=0) || ((str.Find(_T('\\')))>=0) )
-	{
-		return str;
-	}
-
-	wxString mfn = _T("memory:resources#zip:");
-
-	if (AllowOverride && pResourcePath && pwxFileSystem)
-	{
-		wxString fn = *pResourcePath + _T('/');
-
-		// If we have not run the check on the checksum do it now.
-		if (!HaveCheckedResourcePath)
-		{
-			if (CheckResourcePath(mfn+_T("xrc.check"),fn+_T("xrc.check")))
-			{
-				HaveCheckedResourcePath = TRUE;
-			}
-			else
-			{
-				wxMessageBox(_T("Ignoring resource path specified on command line due to bad resource checksum"), _T("Resource loading error"));
-				delete (pResourcePath);
-				pResourcePath = NULL;
-			}
-		}
-
-		if (str.IsEmpty() && pResourcePath)
-			return fn;
-
-		fn += str;
-
-		if (pResourcePath) // may have been cleared
-		{
-			wxFSFile * pTwxFSFile = pwxFileSystem->OpenFile(fn);
-			if (pTwxFSFile)
-			{
-				// we found it, so close it & return
-				delete pTwxFSFile;
-				return fn;
-			}
-		}
-	}
-	return mfn + str;
+  // If we are given a full path, then return. For the time being
+  // that's anything with a colon or a slash in it as the resources
+  // file is flat
+  if (((str.Find(_T(':')))>=0) || ((str.Find(_T('/')))>=0) || ((str.Find(_T('\\')))>=0)) {
+    return str;
+  }
+  wxString mfn = _T("memory:resources#zip:");
+  if (AllowOverride && pResourcePath && pwxFileSystem) {
+    wxString fn = *pResourcePath + _T('/');
+    // If we have not run the check on the checksum do it now.
+    if (!HaveCheckedResourcePath) {
+      if (CheckResourcePath(mfn+_T("xrc.check"),fn+_T("xrc.check"))) {
+	HaveCheckedResourcePath = TRUE;
+      } else {
+	wxMessageBox(_T("Ignoring resource path specified on command line due to bad resource checksum"),
+		     _T("Resource loading error"));
+	delete (pResourcePath);
+	pResourcePath = NULL;
+      }
+    }
+    if (str.IsEmpty() && pResourcePath) {
+      return fn;
+    }
+    fn += str;
+    if (pResourcePath) { // may have been cleared
+      wxFSFile * pTwxFSFile = pwxFileSystem->OpenFile(fn);
+      if (pTwxFSFile) {
+	// we found it, so close it & return
+	delete pTwxFSFile;
+	return fn;
+      }
+    }
+  }
+  return mfn + str;
 }
 
 
@@ -1754,10 +1743,9 @@ BOOL CamResource::DeInit()
 
 #if !defined(EXCLUDE_FROM_XARLIB)
 
-/********************************************************************************************
+/*********************************************************************
 
->	static BOOL CamResource::Splash()
-
+	static BOOL CamResource::Splash()
 
 	Author:		Alex_Bligh <alex@alex.org.uk>
 	Created:	02/12/2005
@@ -1768,42 +1756,48 @@ BOOL CamResource::DeInit()
 	Errors:		via wxMessageBox
 	SeeAlso:	-
 
-********************************************************************************************/
+*********************************************************************/
 
-BOOL CamResource::Splash()
-{
-	TRACET(_T("CamResource::Splash() called"));
-
-	if (pSplashBitmap) delete pSplashBitmap;
-	pSplashBitmap=NULL;
-
-	
-	pSplashBitmap = new wxBitmap();
-	if (!pSplashBitmap) return FALSE;
-
-	// We'd like to get the bitmap name from the resources, but, urm, we haven't yet
-	// loaded them
-	if (!LoadwxBitmap(*pSplashBitmap, _T("startup-lx.png") ))
-	{
-		TRACE(_T("Cannot load splash bitmap - possible resource compilation error?"));
-		return TRUE;
-	}
-
-	if (!pSplashBitmap->Ok()) return FALSE;
-
-	pSplashScreen = new wxAdvSplashScreen(*pSplashBitmap,
-		wxSPLASH_CENTRE_ON_SCREEN | wxSPLASH_NO_TIMEOUT,
-		0, NULL, -1, wxDefaultPosition, wxDefaultSize,
-		wxNO_BORDER
+BOOL CamResource::Splash() {
+  TRACET(_T("CamResource::Splash() called"));
+  if (pSplashBitmap) {
+    delete pSplashBitmap;
+  }
+  pSplashBitmap=NULL;
+  pSplashBitmap = new wxBitmap();
+  if (!pSplashBitmap) {
+    return FALSE;
+  }
+  // We'd like to get the bitmap name from the resources, but,
+  // urm, we haven't yet loaded them
+  if (!LoadwxBitmap(*pSplashBitmap, _T("startup-lx.png"))) {
+    TRACE(_T("Cannot load splash bitmap - possible resource compilation error?"));
+    return TRUE;
+  }
+  if (!pSplashBitmap->Ok()) {
+    return FALSE;
+  }
+  pSplashScreen =
+    new wxAdvSplashScreen(*pSplashBitmap,
+			  wxSPLASH_CENTRE_ON_SCREEN | wxSPLASH_NO_TIMEOUT,
+			  0,
+			  NULL,
+			  -1,
+			  wxDefaultPosition,
+			  wxDefaultSize,
+			  wxNO_BORDER
 #if 0 && !defined (_DEBUG)
-		|wxSTAY_ON_TOP // Only stay on top in non-debug builds - too annoying for preinit debugging
+			  | wxSTAY_ON_TOP // Only stay on top in
+			  // non-debug builds -
+			  // too annoying for
+			  // preinit debugging
 #endif
-		  );
-	if (!pSplashScreen) return FALSE;
-
-  	wxYield();
-
-	return TRUE;
+			  );
+  if (!pSplashScreen) {
+    return FALSE;
+  }
+  wxYield();
+  return TRUE;
 }
 #endif	// EXCLUDE_FROM_XARLIB
 
@@ -2058,9 +2052,8 @@ CCLexFile * CamResource::Open( ResourceID ID, BOOL ErrorReporting, BOOL Exceptio
 
 ********************************************************************************************/
 
-wxFSFile * CamResource::OpenwxFSFile( ResourceID ID )
-{
-	return OpenwxFSFile(GetText(ID));
+wxFSFile* CamResource::OpenwxFSFile(ResourceID id) {
+	return OpenwxFSFile(GetText(id));
 }
 
 /********************************************************************************************
@@ -2079,17 +2072,15 @@ wxFSFile * CamResource::OpenwxFSFile( ResourceID ID )
 
 ********************************************************************************************/
 
-wxFSFile * CamResource::OpenwxFSFile( const TCHAR * pFileName )
-{
-	wxFSFile * pTwxFSFile = pwxFileSystem->OpenFile(GetResourceFilePath(pFileName));
-	if (!pTwxFSFile)
-	{
-		return NULL;
-	}
-
-	pwxFSFile=pTwxFSFile;
-
-	return pwxFSFile;
+wxFSFile* CamResource::OpenwxFSFile(const TCHAR * pFileName) {
+  wxFSFile* pTwxFSFile =
+    pwxFileSystem->OpenFile(GetResourceFilePath(pFileName));
+  if (!pTwxFSFile)
+    {
+      return NULL;
+    }
+  pwxFSFile=pTwxFSFile;
+  return pwxFSFile;
 }
 
 
@@ -2274,14 +2265,17 @@ BOOL CamResource::LoadwxImage (wxImage & rImage, const TCHAR * pFileName, BOOL G
 
 ********************************************************************************************/
 
-BOOL CamResource::LoadwxBitmap (wxBitmap & rBitmap, const TCHAR * pFileName, BOOL Grey)
-{
-	// Annoyingly, wxBitmap does not support the stream class
-	wxImage i;
-	if (!LoadwxImage(i, pFileName)) return FALSE;
-	wxBitmap b(i, -1); // for now, always use screen depth, not least as GDK doesn't support anything except this & 1bpp
-	rBitmap = b;
-	return TRUE;
+BOOL CamResource::LoadwxBitmap (wxBitmap & rBitmap, const TCHAR * pFileName, BOOL Grey) {
+  // Annoyingly, wxBitmap does not support the stream class
+  wxImage i;
+  if (!LoadwxImage(i, pFileName)) {
+    return FALSE;
+  }
+  wxBitmap b(i, -1); // for now, always use screen depth, not least as
+		     // GDK doesn't support anything except this &
+		     // 1bpp
+  rBitmap = b;
+  return TRUE;
 }
 
 #endif	// EXCLUDE_FROM_XARLIB
