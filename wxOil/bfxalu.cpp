@@ -2603,23 +2603,22 @@ BOOL BfxALU::GetStatistics(Path * ThePath, KernelStatistics * pStats)
 #endif
 
 	INT32 Width = pBMI->biWidth;
-		
 	pStats->LowX = -1;
 	pStats->LowY = -1;
 	pStats->Pixel = (DWORD)(-1);
-
-	if (Stats.C>0)
-	{
-		UINT32 Offset = ((UINT_PTR)(Stats.C))-((UINT_PTR)((((CWxBitmap *)(A->ActualBitmap))->BMBytes)));
-		if (Offset<(UINT32)pBMI->biSizeImage)
-		{
-			pStats->LowX = (Offset>>2) % Width;
-			pStats->LowY = (Offset>>2) / Width;
-			DWORD pval = *((DWORD *)(Stats.C));
-			pStats->Pixel = (pval & 0x00FF00) | ((pval >> 16) & 0xFF) | ((pval << 16) & 0xFF0000);
-		}
+	if (Stats.C>0) {
+	  UINT32 Offset = ((UINT_PTR)(Stats.C)) -
+	    ((UINT_PTR)((((CWxBitmap *)(A->ActualBitmap))->BMBytes)));
+	  if (Offset<(UINT32)pBMI->biSizeImage) {
+	    pStats->LowX = (Offset>>2) % Width;
+	    pStats->LowY = (Offset>>2) / Width;
+	    unsigned long pval = ((unsigned long)(Stats.C));
+	    pStats->Pixel =
+	      (pval & 0x00FF00) |
+	      ((pval >> 16) & 0xFF) |
+	      ((pval << 16) & 0xFF0000);
+	  }
 	}
-
 	return(TRUE);
 }
 
@@ -4570,34 +4569,30 @@ BOOL BfxALU::RemoveDither(KernelBitmap * * ppOutput, INT32 Thresh, INT32 QuantCo
 		{ 6, 8, 8, 8, 6 },
 		{ 4, 8, 8, 8, 4 },
 		{ 1, 4, 6, 4, 1 }};
-
-	INT32 * NoiseMatrixP[5];
-
 	INT32 Distrib[256];
 	INT32 Points=0;
 	INT32 n;
-	for (n=0; n<256; n++) Distrib[n]=0;
-
-	if (Method==TRACEMETHOD_GREYSCALE)
-	{
-		double QuantPoints[255];
-		double QuantDist=256.0/(QuantCols-1);
-		double q=-0.5*QuantDist;
-		for (n=0; n<QuantCols; n++)
-		{
-			QuantPoints[n]=q;
-			q+=QuantDist;
-		}
-		INT32 cp=0;
-		for (n=0; n<256; n++)
-		{
-			while ((cp<QuantCols) && (n>QuantPoints[cp])) cp++;
-			Distrib[n]=(INT32)(QuantDist*(cp-1));
-			if (Distrib[n]<0) Distrib[n]=0;
-			if (Distrib[n]>255) Distrib[n]=255;
-		}
+	for (n=0; n<256; n++) {
+	  Distrib[n]=0;
 	}
-
+	if (Method==TRACEMETHOD_GREYSCALE) {
+	  double QuantPoints[255];
+	  double QuantDist=256.0/(QuantCols-1);
+	  double q=-0.5*QuantDist;
+	  for (n=0; n<QuantCols; n++)
+	    {
+	      QuantPoints[n]=q;
+	      q+=QuantDist;
+	    }
+	  INT32 cp=0;
+	  for (n=0; n<256; n++)
+	    {
+	      while ((cp<QuantCols) && (n>QuantPoints[cp])) cp++;
+	      Distrib[n]=(INT32)(QuantDist*(cp-1));
+	      if (Distrib[n]<0) Distrib[n]=0;
+	      if (Distrib[n]>255) Distrib[n]=255;
+	    }
+	}
 	OutputLine=(BYTE *) CCMalloc(Width<<2);
 	if (!OutputLine)
 	{
@@ -4607,30 +4602,33 @@ BOOL BfxALU::RemoveDither(KernelBitmap * * ppOutput, INT32 Thresh, INT32 QuantCo
 			return FALSE;
 	}
 	for (x=0; x<(Width<<2); x++) OutputLine[x]=0;
-
-	for (l=0; l<5; l++)
-	{
-		if ((InputLine[l]=(DWORD *)/*assign*/CCMalloc((Width+4)<<2))==NULL)
-		{
-			for (l=0; l<5; l++) if (InputLine[l]) CCFree(InputLine[l]);
-			CCFree(OutputLine);
-			delete pKB;
-			CCFree(pQuantMap);
-			CCFree(pQuantIndex);
-			return FALSE;
-		};
-		ByteLine[l]=(BYTE *)InputLine[l];
-		NoiseMatrixP[l]=&(NoiseMatrix[l][0]);
+#ifdef FASTREMOVEDITHER	  
+	INT32 * NoiseMatrixP[5];
+#endif 	
+	for (l=0; l<5; l++) {
+	  /* assignment */
+	  InputLine[l] = (DWORD *)CCMalloc((Width+4) << 2);
+	  if (InputLine[l] == NULL) {
+	    for (l = 0; l < 5; l++) {
+	      if (InputLine[l]) {
+		CCFree(InputLine[l]);
+	      }
+	    }
+	    CCFree(OutputLine);
+	    delete pKB;
+	    CCFree(pQuantMap);
+	    CCFree(pQuantIndex);
+	    return FALSE;
+	  }
+	  ByteLine[l] = (BYTE *)InputLine[l];
+#ifdef FASTREMOVEDITHER	  
+	  NoiseMatrixP[l] = &(NoiseMatrix[l][0]);
+#endif	 
 	}
-	
-
 	for (INT32 Pass=0; Pass<NumPasses; Pass++)
 	{
-
 		// First of all we must convert a new block to 32 bpp
-
-		for (y=0; y<Height; y++)
-		{	
+		for (y=0; y<Height; y++) {
 			// Shuffle the existing lines down
 			// L4 shifts into L3
 			// ..
@@ -4654,36 +4652,43 @@ BOOL BfxALU::RemoveDither(KernelBitmap * * ppOutput, INT32 Thresh, INT32 QuantCo
 				InputLine[l][0]=InputLine[l][1]=InputLine[l][2]; // duplicate 1st pixel
 				InputLine[l][Width+3]=InputLine[l][Width+2]=InputLine[l][Width+1]; // duplicate last pixel
 			}
-
-			for (l=0; l<5; l++) ByteLine[l]=(BYTE *)InputLine[l];
-
+			for (l=0; l<5; l++) {
+			  ByteLine[l] = (BYTE *)InputLine[l];
+			}
 			INT32 r;
 			INT32 g;
 			INT32 b;
-
 			// First create the output scanline
 			BYTE * pOutput=OutputLine;
-			if (Depth==1)
-			{
-				// This is a great optimisation for mono source where the pixels will always be completely different
-				// (and thus be unaffected as they'll be over the threshold) or identical (and won't affect things
-				// as they are identical). Thus we might as well just memcpy the line
-				memcpy(OutputLine, &(ByteLine[2][2<<2]), Width<<2);
-			}
-			else
-			{
+			if (Depth==1) {
+			  // This is a great optimisation for mono
+			  // source where the pixels will always be
+			  // completely different (and thus be
+			  // unaffected as they'll be over the
+			  // threshold) or identical (and won't affect
+			  // things as they are identical). Thus we
+			  // might as well just memcpy the line
+			  memcpy(OutputLine, &(ByteLine[2][2<<2]), Width<<2);
+			} else {
 #ifdef FASTREMOVEDITHER
-
-				FastRemoveDither(ByteLine, NoiseMatrixP, (DWORD *) OutputLine, Width, Thresh,
-					(Method==TRACEMETHOD_GREYSCALE || Method==TRACEMETHOD_MONO)?1:0);
-
+			  FastRemoveDither(ByteLine,
+					   NoiseMatrixP,
+					   (DWORD *) OutputLine,
+					   Width,
+					   Thresh,
+					   (Method==TRACEMETHOD_GREYSCALE ||
+					    Method==TRACEMETHOD_MONO)?1:0);
 #else
-				SlowRemoveDither(ByteLine, NoiseMatrix, OutputLine, Width, Thresh,
-					(Method==TRACEMETHOD_GREYSCALE || Method==TRACEMETHOD_MONO));
+			  SlowRemoveDither(ByteLine,
+					   NoiseMatrix,
+					   OutputLine,
+					   Width,
+					   Thresh,
+					   (Method==TRACEMETHOD_GREYSCALE ||
+					    Method==TRACEMETHOD_MONO));
 #endif
 			}
 			// Now write it back
-
 			void * VImage = (((CWxBitmap *)(pKB->ActualBitmap))->BMBytes);
 			switch (Method)
 			{
