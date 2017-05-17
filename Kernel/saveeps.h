@@ -255,7 +255,7 @@ protected:
 	// Member variables.
 	BOOL			ValidPen;
 	CCLexFile		*ExportFile;
-	TCHAR			*CreatorString;
+	const TCHAR* CreatorString;
 
 	// This render regions caps. We keep a cached version here as it can be needed in rendering
 	RRCaps Caps;
@@ -285,7 +285,7 @@ public:
 
 	// Functions to do the actual output to the EPS file.
 	virtual BOOL OutputNewLine();
-	virtual BOOL OutputToken(TCHAR*);
+	virtual BOOL OutputToken(const TCHAR*);
 	virtual BOOL OutputDirect(BYTE *, INT32);
 };
 

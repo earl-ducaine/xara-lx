@@ -2421,7 +2421,7 @@ protected:
 	BOOL RenderLastComplexSpan(RenderRegion* pRegion, Node* pNextSpanStart)
 	{
 		// Call RenderOptimalBitmapPhase to handle this
-		SlowJobResult BitmapResult;
+		// SlowJobResult BitmapResult;
 		DocRect ClipRect = pRegion->GetClipRect();
 		ClipRect = ClipRect.Intersection(m_SpanBoundsRect);
 //		TRACE( _T("ClipRect = (%d, %d) - (%d, %d)\n"), ClipRect.lox, ClipRect.loy, ClipRect.hix, ClipRect.hiy);
@@ -2430,7 +2430,8 @@ protected:
 			Matrix ViewTrans = pRegion->GetMatrix();
 //			TRACE( _T("Rendering from 0x%08x - %s\n", m_pComplexStart, m_pComplexStart?m_pComplexStart->GetRuntimeClass()->m_lpszClassName:""));
 //			TRACE( _T("Rendering to   0x%08x - %s\n", pNextSpanStart, pNextSpanStart?pNextSpanStart->GetRuntimeClass()->m_lpszClassName:""));
-			BitmapResult = m_pView->RenderOptimalBitmapPhase(ClipRect, ViewTrans, m_pSpread, pRegion,
+			// BitmapResult =
+			  m_pView->RenderOptimalBitmapPhase(ClipRect, ViewTrans, m_pSpread, pRegion,
 											  m_pComplexStart, pNextSpanStart, m_bRenderAll,
 											  m_bPrintPaper, *m_pNodesSoFar, m_pProgress, m_ComplexCount);
 		}
@@ -3322,9 +3323,10 @@ public:
 //				TRACE( _T("Entire complex span rendered here\n"));
 //				TRACE( _T("ComplexRect = (%d, %d) - (%d, %d)\n"), ComplexRect.lo.x, ComplexRect.lo.y, ComplexRect.hi.x, ComplexRect.hi.y);
 				// Call RenderBitmapPhase to handle this
-				SlowJobResult BitmapResult;
+				// SlowJobResult BitmapResult;
 				Matrix ViewTrans = pRegion->GetMatrix();
-				BitmapResult = m_pView->RenderBitmapPhase(ComplexRect, ViewTrans, m_pSpread, pRegion,
+				//BitmapResult =
+				  m_pView->RenderBitmapPhase(ComplexRect, ViewTrans, m_pSpread, pRegion,
 												  m_pFirstComplex, m_pLastComplex, m_bRenderAll,
 												  m_bPrintPaper, *m_pProgress);
 			}
@@ -3815,7 +3817,7 @@ SlowJobResult View::RenderBitmapPhase(DocRect& ComplexClipRect, Matrix& ViewTran
 	ClipRect.Inflate((INT32)(2*72000.0/Dpi + 0.5));
 
 	// We will need the clip rect of the whole region too
-	DocRect RClipRect = pHostRegion->GetRegionRect();
+	// DocRect RClipRect = pHostRegion->GetRegionRect();
 
 //	pHostRegion->StopRender();
 
@@ -4222,7 +4224,7 @@ void ProgressDisplay::SetUpOptimal(RenderRegion *pRender, ScanningRenderRegion* 
 
 	// We need a progress display
 	DoProgressDisplay = TRUE;
-	DocRect ClipRect = pRender->GetClipRect();
+	// DocRect ClipRect = pRender->GetClipRect();
 	Spread *pSpread = pRender->GetRenderSpread();
 //	Node *pNode = pSpread->FindFirstForClippedInkRender(&ClipRect, pRender);
 	TotalNodes = 0;

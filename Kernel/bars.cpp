@@ -178,7 +178,7 @@ static String_64 BarsVersion;
 
 static struct
 {
-	TCHAR*  Token;
+	const TCHAR*  Token;
 } TokenTable[] = 
 {
 	{_T("Bar")},
@@ -2264,102 +2264,97 @@ MsgResult DialogBarOp::Message(Msg* Msg)
 		
 	}	
 
-	else if (IS_OUR_DIALOG_MSG(Msg)||
-		 Msg->IsKindOf(CC_RUNTIME_CLASS(DialogMsg)) &&
-			((DialogMsg*)Msg)->DlgMsg == DIM_BAR_DEATH )
-
-	{
-		
-		// It's a dialog message 
-		DialogMsg* DlgMsg = (DialogMsg*)Msg; 
-		if(DlgMsg->DlgMsg==DIM_BAR_DEATH)
-		{
-			if(IS_KIND_OF(InformationBarOp))
-				return (DLG_EAT_IF_HUNGRY(DlgMsg)); 
-		
-		 	if(IsAllBarsOp())
-				return (DLG_EAT_IF_HUNGRY(DlgMsg)); 
-		}		 	 
-
-// The equivalend of the following now done in DialogOp so "bar" controls (i.e. ones with
-// associated OpDescriptors can live in classes derived from DialogOp (not DialogBarOp)
+	else if ((IS_OUR_DIALOG_MSG(Msg) ||
+		  Msg->IsKindOf(CC_RUNTIME_CLASS(DialogMsg))) &&
+		 ((DialogMsg*)Msg)->DlgMsg == DIM_BAR_DEATH ) {
+	  // It's a dialog message 
+	  DialogMsg* DlgMsg = (DialogMsg*)Msg; 
+	  if(DlgMsg->DlgMsg==DIM_BAR_DEATH)
+	    {
+	      if(IS_KIND_OF(InformationBarOp))
+		return (DLG_EAT_IF_HUNGRY(DlgMsg)); 
+	      if(IsAllBarsOp())
+		return (DLG_EAT_IF_HUNGRY(DlgMsg)); 
+	    }		 	 
+	  // The equivalend of the following now done in DialogOp so "bar" controls (i.e. ones with
+	  // associated OpDescriptors can live in classes derived from DialogOp (not DialogBarOp)
 #if 0
-		OpDescriptor* OpDesc = NULL;
-		BarControl* BarCtrl = NULL;
+	  OpDescriptor* OpDesc = NULL;
+	  BarControl* BarCtrl = NULL;
 
-		// Traverse the list of all BarItems
-		for (BarItem* CurrentBarItem = (BarItem*)BarItemList.GetHead();
-			 CurrentBarItem != NULL; 
-			 CurrentBarItem = (BarItem*)BarItemList.GetNext((ListItem*)CurrentBarItem ))
+	  // Traverse the list of all BarItems
+	  for (BarItem* CurrentBarItem = (BarItem*)BarItemList.GetHead();
+	       CurrentBarItem != NULL; 
+	       CurrentBarItem = (BarItem*)BarItemList.GetNext((ListItem*)CurrentBarItem ))
+	    {
+	      if (CurrentBarItem->IsKindOf(CC_RUNTIME_CLASS(BarControl)))
 		{
-			if (CurrentBarItem->IsKindOf(CC_RUNTIME_CLASS(BarControl)))
-			{
-				BarCtrl = (BarControl*)CurrentBarItem;
-			 	BarControlInfo BarCtrlInfo = BarCtrl->GetBarControlInfo(BarOrientation == Horizontal);  
+		  BarCtrl = (BarControl*)CurrentBarItem;
+		  BarControlInfo BarCtrlInfo = BarCtrl->GetBarControlInfo(BarOrientation == Horizontal);  
 			 	   
-				// Obtain the OpDescriptor
-				OpDesc = (BarCtrl)->
-						GetOpDescriptor(BarOrientation == Horizontal);
+		  // Obtain the OpDescriptor
+		  OpDesc = (BarCtrl)->
+		    GetOpDescriptor(BarOrientation == Horizontal);
 				
-				//ENSURE(OpDesc != NULL, "DialogBarOp has a NULL OpDescriptor"); 
-				if (OpDesc != NULL)
-				{
-					OpDesc->SetBarControlInfo(BarCtrlInfo);
-					SendMessageToBarControl(OpDesc, DlgMsg, BarCtrlInfo.ControlID, BarCtrl->GetUniqueGadgetID() );
-				}
-			}
+		  //ENSURE(OpDesc != NULL, "DialogBarOp has a NULL OpDescriptor"); 
+		  if (OpDesc != NULL)
+		    {
+		      OpDesc->SetBarControlInfo(BarCtrlInfo);
+		      SendMessageToBarControl(OpDesc, DlgMsg, BarCtrlInfo.ControlID, BarCtrl->GetUniqueGadgetID() );
+		    }
 		}
+	    }
 #endif
 		
-		if (DlgMsg->DlgMsg == DIM_CANCEL||DlgMsg->DlgMsg == DIM_BAR_DEATH)
-		{
-PORTNOTE("other", "Removed GetBarPosInfo usage")
+	  if (DlgMsg->DlgMsg == DIM_CANCEL||DlgMsg->DlgMsg == DIM_BAR_DEATH)
+	    {
+	      PORTNOTE("other", "Removed GetBarPosInfo usage")
 #ifndef EXCLUDE_FROM_XARALX
-			KernelBarPos* 	pKernelBarPos;
-			DockBarType 	Dock;
-        	if (GetMainFrame()->GetBarPosInfo(WindowID,&Dock,&pKernelBarPos))
-			{
-				SetDockBarType(Dock);
-				if (Dock == DOCKBAR_FLOAT)
-					SetFloatingCPoint(wxPoint(pKernelBarPos->x,pKernelBarPos->y));
-				else
-				{
-					SetSlot(pKernelBarPos->Slot);
-					SetOffset(pKernelBarPos->Position);
-				}
-			}
+		KernelBarPos* 	pKernelBarPos;
+	      DockBarType 	Dock;
+	      if (GetMainFrame()->GetBarPosInfo(WindowID,&Dock,&pKernelBarPos))
+		{
+		  SetDockBarType(Dock);
+		  if (Dock == DOCKBAR_FLOAT)
+		    SetFloatingCPoint(wxPoint(pKernelBarPos->x,pKernelBarPos->y));
+		  else
+		    {
+		      SetSlot(pKernelBarPos->Slot);
+		      SetOffset(pKernelBarPos->Position);
+		    }
+		}
 #endif
 			
-			// This is new and may cause problems - it used to only be set on
-			// a cancel message to a control but now overides default close handling
-			// allowing bars and galleries to be closed on a single click
+	      // This is new and may cause problems - it used to only be set on
+	      // a cancel message to a control but now overides default close handling
+	      // allowing bars and galleries to be closed on a single click
 
-			DestroyWindow = TRUE;
-		}
+	      DestroyWindow = TRUE;
+	    }
 		
-		if (DestroyWindow && WindowID != NULL)
-		{
-			// Destroy the bar window							 
-			CCamApp::GetDlgManager()->Delete(WindowID, this);
-			WindowID = NULL;
-		}
+	  if (DestroyWindow && WindowID != NULL)
+	    {
+	      // Destroy the bar window							 
+	      CCamApp::GetDlgManager()->Delete(WindowID, this);
+	      WindowID = NULL;
+	    }
 
-		if (DlgMsg->DlgMsg == DIM_CANCEL||DlgMsg->DlgMsg == DIM_BAR_DEATH)
-		{
-			// Report bar is closing to interested parties
-			BROADCAST_TO_CLASS(BarMsg(BAR_CLOSE,this),DialogOp);
-			// This should only be called if we really want to destroy the bar list
-			// So far only used when we are about to read in another *.ini file	
-		}
-		if(DlgMsg->DlgMsg == DIM_BAR_DEATH)
-		{
+	  if (DlgMsg->DlgMsg == DIM_CANCEL||DlgMsg->DlgMsg == DIM_BAR_DEATH)
+	    {
+	      // Report bar is closing to interested parties
+	      BROADCAST_TO_CLASS(BarMsg(BAR_CLOSE,this),DialogOp);
+	      // This should only be called if we really want to destroy the bar list
+	      // So far only used when we are about to read in another *.ini file	
+	    }
+	  if(DlgMsg->DlgMsg == DIM_BAR_DEATH)
+	    {
 		
-			End();
-			return(OK);
-		}
-		return DialogOp::Message(Msg);
+	      End();
+	      return(OK);
+	    }
+	  return DialogOp::Message(Msg);
 	
-	//	return (DLG_EAT_IF_HUNGRY(DlgMsg));  
+	  //	return (DLG_EAT_IF_HUNGRY(DlgMsg));  
 	
 	}
 		

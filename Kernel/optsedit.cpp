@@ -608,8 +608,9 @@ TRACEUSER( "Neville", _T("EditTab::UpdateAskBefore()\n"));
 		return TRUE;		// page not present
 
 	BOOL AskBeforeSetting = FALSE;
-	BOOL ReadOk = FALSE;
-	ReadOk = Camelot.GetPrefValue(TEXT("Attributes"), TEXT("AskBeforeSettingCurrentAttr"), &AskBeforeSetting);
+	// BOOL ReadOk = FALSE;
+	// ReadOk =
+	  Camelot.GetPrefValue(TEXT("Attributes"), TEXT("AskBeforeSettingCurrentAttr"), &AskBeforeSetting);
 	pPrefsDlg->SetLongGadgetValue(_R(IDC_OPTS_ASKSETATTRB), AskBeforeSetting);
 	//ERROR2IF(!ReadOk,FALSE,_R(IDE_OPTS_READPREF_EDIT));
 

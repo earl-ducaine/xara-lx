@@ -641,11 +641,11 @@ ChangeCode NodePath::OnChildChange(ObjChangeParam* pParam)
 {
 	// look for an applied brush attribute
 	NodeAttribute* pAttr = NULL;
-	AttrBrushType* pAttrBrush = NULL;
+	// AttrBrushType* pAttrBrush = NULL;
 	FindAppliedAttribute(CC_RUNTIME_CLASS(AttrBrushType), &pAttr);
 	if (pAttr!= NULL)
 	{
-		pAttrBrush = (AttrBrushType*)pAttr;
+	  // pAttrBrush = (AttrBrushType*)pAttr;
 		
 		// make an undoable action
 		UpdateBrushAction* pAction;
@@ -1201,7 +1201,7 @@ DocRect NodePath::GetBoundingRect(BOOL DontUseAttrs, BOOL HitTest)
 			CCAttrMap AttribMap(30);
 			if (FindAppliedAttributes(&AttribMap))
 			{
-				void* pType;
+			  // void* pType;
 				void* pVal;
 
 				// iterating all (key, value) pairs
@@ -1209,7 +1209,7 @@ DocRect NodePath::GetBoundingRect(BOOL DontUseAttrs, BOOL HitTest)
 				for( CCAttrMap::iterator Pos = AttribMap.GetStartPosition(); Pos != end; ++Pos )
 				{
 					// Get attr at position Pos
-					pType = Pos->first;
+					// pType = Pos->first;
 					pVal = Pos->second;
 
 					if (pVal != NULL)
@@ -1856,7 +1856,7 @@ NodePath * NodePath::MakeNodePathFromAttributes(double Flatness, CCAttrMap * pAt
 				StrokedPath.CloneFrom(ClipPath);
 			
 			// now, do the arrowheads
-			INT32 Index = 0;
+			// INT32 Index = 0;
 			DocCoord Centre;
 			DocCoord Direction;
 			Trans2DMatrix ArrowMatrix;
@@ -1905,7 +1905,7 @@ NodePath * NodePath::MakeNodePathFromAttributes(double Flatness, CCAttrMap * pAt
 			{
 				if (pEndArrow->EndArrow.GetArrowPath())
 				{
-					Index = 0;
+				  // Index = 0;
 
 					Centre = FlatPath.GetCoordArray()[FlatPath.GetNumCoords() - 1];
 					Direction.x = FlatPath.GetCoordArray()[FlatPath.GetNumCoords() - 1].x -
@@ -3059,11 +3059,12 @@ Path* NodePath::GetPathCopy()
 ********************************************************************************************/
 BOOL NodePath::GetAreaDetails(XLONG* pxlArea, XLONG* pxlPerimeter)
 {
-	BOOL bOK = TRUE;
+  // BOOL bOK = TRUE;
 
 	*pxlArea = InkPath.CalcArea();
 	double dDistance = 0;
-	bOK = InkPath.DistanceTo(InkPath.GetNumCoords()-1, 1, &dDistance);
+	// bOK =
+	  InkPath.DistanceTo(InkPath.GetNumCoords()-1, 1, &dDistance);
 	*pxlPerimeter = (INT32)dDistance;
 
 	return TRUE;

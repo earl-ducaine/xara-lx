@@ -140,16 +140,16 @@ enum PpmTokenIndex
 
 static struct
 {
-	TCHAR*  Token;
+  const TCHAR*  Token;
 } TokenTable[] = 
-{
-	{_T("P3")},
-	{_T("P6")},
-	{_T("P2")},
-	{_T("P5")},
-	{_T("P1")},
-	{_T("P4")},
-};
+  {
+    {_T("P3")},
+    {_T("P6")},
+    {_T("P2")},
+    {_T("P5")},
+    {_T("P1")},
+    {_T("P4")},
+  };
 
 static PpmTokenIndex FindToken(const TCHAR* Token)
 {

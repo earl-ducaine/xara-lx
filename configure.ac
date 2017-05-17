@@ -1,11 +1,8 @@
 AC_INIT([XaraLX], [0.7])
 AC_CONFIG_SRCDIR([wxOil/camelot.cpp])
 AC_CANONICAL_TARGET
-AM_INIT_AUTOMAKE([subdir-objects])
+AM_INIT_AUTOMAKE([subdir-objects foreign])
 AC_DEFUN([AC_DATAROOTDIR_CHECKED])
-
-# AC_INIT(wxOil/camelot.cpp)
-# AM_INIT_AUTOMAKE(XaraLX, 0.7)
 
 AC_PREFIX_PROGRAM( pkg-config )
 
@@ -351,7 +348,7 @@ if test "$StaticEnable" = "yes"; then
 	LIBXML2_LIBS="`echo $LIBXML2_LIBS | sed -e 's/-lz/-Wl,-Bstatic -lz -Wl,-Bdynamic/g'`"
 	LIBXML2_LIBS="`echo $LIBXML2_LIBS | sed -e 's/-lm/-Wl,-Bstatic -lm -Wl,-Bdynamic/g'`"
 fi
--Ilibpng-1.2.57
+
 # pass the Pango, FreeType and GTK flags (required for wxGTK font rendering)
 CPPFLAGS="$CPPFLAGS  $WX_CPPFLAGS -I/home/rett/dev/xoamorph/xara-lx/libpng-1.2.57 $PANGO_CFLAGS $FT_CFLAGS $GTK_CFLAGS $LIBXML2_CFLAGS $RESOURCE_DIR_DEFINE"
 CXXFLAGS="$CXXFLAGS  $WX_CPPFLAGS -I/home/rett/dev/xoamorph/xara-lx/libpng-1.2.57 $PANGO_CFLAGS $FT_CFLAGS $GTK_CFLAGS $LIBXML2_CFLAGS $RESOURCE_DIR_DEFINE"

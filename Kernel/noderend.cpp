@@ -3467,8 +3467,8 @@ BOOL NodeRenderableInk::CalculatePathBoundingRect(Path& BoundPath,
 			void* pLineColour = NULL;
 			AttribMap.Lookup( CC_RUNTIME_CLASS(AttrStrokeColour),pLineColour);
 
-			if (pLineColour && (*((AttrStrokeColour*)pLineColour)->GetStartColour() == COLOUR_NONE) ||
-				!BoundPath.IsStroked)
+			if ((pLineColour && (*((AttrStrokeColour*)pLineColour)->GetStartColour() == COLOUR_NONE)) ||
+			    !BoundPath.IsStroked)
 			{
 				// This path is not stroked, so we won't bother with any of the attributes
 				// applied to it

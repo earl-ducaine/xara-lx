@@ -754,8 +754,9 @@ TRACEUSER( "Neville", _T("MiscTab::UpdateAskBefore()\n"));
 		return TRUE;		// page not present
 
 	BOOL AskBeforeSetting = FALSE;
-	BOOL ReadOk = FALSE;
-	ReadOk = Camelot.GetPrefValue(TEXT("Attributes"), TEXT("AskBeforeSettingCurrentAttr"), &AskBeforeSetting);
+	// BOOL ReadOk = FALSE;
+	// ReadOk =
+	  Camelot.GetPrefValue(TEXT("Attributes"), TEXT("AskBeforeSettingCurrentAttr"), &AskBeforeSetting);
 	pPrefsDlg->SetLongGadgetValue(_R(IDC_OPTS_ASKSETATTRB), AskBeforeSetting);
 	//ERROR2IF(!ReadOk,FALSE,_R(IDE_OPTS_READPREF_MISC));
 
@@ -1054,7 +1055,7 @@ TRACEUSER( "Neville", _T("InitControlsWithUnits\n"));
 	}
 
 	BOOL ReadOk = FALSE; 	// Flag to say whether the preference value was read ok 
-	BOOL ok	= TRUE;			// Flag for whether value set up ok 
+	// BOOL ok	= TRUE;			// Flag for whether value set up ok 
 
 	// Sets up controls which display measurements in units
 
@@ -1068,7 +1069,8 @@ TRACEUSER( "Neville", _T("InitControlsWithUnits\n"));
 TRACEUSER( "Neville", _T("set constraint angle '%d'\n"),Angle);
 	// Set up the default option displayed
 	AngleInDegrees = (Angle * 180.0/PI);	// Convert angle to degrees
-	ok = pPrefsDlg->SetDoubleGadgetValue(_R(IDC_OPTS_ANGLECONST), AngleInDegrees, FALSE, -1);
+	// ok =
+	  pPrefsDlg->SetDoubleGadgetValue(_R(IDC_OPTS_ANGLECONST), AngleInDegrees, FALSE, -1);
 	ERROR2IF(!ReadOk,FALSE,_R(IDE_OPTS_READPREF_MISC));
 
 	// Now the duplicate distance
@@ -1079,17 +1081,20 @@ TRACEUSER( "Neville", _T("set constraint angle '%d'\n"),Angle);
 //	INT32 y = 0;
 	DocCoord offset = pDocument->GetDuplicationOffset();
 //	ReadOk = Camelot.GetPrefValue(TEXT("Duplicate"), TEXT("DuplicatePlacementX"), &x);
-	ok = pPrefsDlg->SetDimensionGadgetValue(_R(IDC_OPTS_XDUPLICATE), offset.x, pSpread, TRUE, FALSE, -1);
+	// ok =
+	  pPrefsDlg->SetDimensionGadgetValue(_R(IDC_OPTS_XDUPLICATE), offset.x, pSpread, TRUE, FALSE, -1);
 	ERROR2IF(!ReadOk,FALSE,_R(IDE_OPTS_READPREF_MISC));
 
 //	ReadOk = Camelot.GetPrefValue(TEXT("Duplicate"), TEXT("DuplicatePlacementY"), &y);
-	ok = pPrefsDlg->SetDimensionGadgetValue(_R(IDC_OPTS_YDUPLICATE), offset.y, pSpread, TRUE, FALSE, -1);
+	// ok =
+	  pPrefsDlg->SetDimensionGadgetValue(_R(IDC_OPTS_YDUPLICATE), offset.y, pSpread, TRUE, FALSE, -1);
 	ERROR2IF(!ReadOk,FALSE,_R(IDE_OPTS_READPREF_MISC));
 
 	// Now the nudge size distance
 	UINT32 Nudge = pDocument->GetDocNudge ();
 	//ReadOk = TRUE;//Camelot.GetPrefValue(TEXT("Nudge"), TEXT("StepSize"), &Nudge);
-	ok = pPrefsDlg->SetDimensionGadgetValue(_R(IDC_OPTS_NUDGESIZE), Nudge, pSpread, TRUE, FALSE, -1);
+	// ok =
+	  pPrefsDlg->SetDimensionGadgetValue(_R(IDC_OPTS_NUDGESIZE), Nudge, pSpread, TRUE, FALSE, -1);
 	ERROR2IF(!ReadOk,FALSE,_R(IDE_OPTS_READPREF_MISC));
 
 	return TRUE;

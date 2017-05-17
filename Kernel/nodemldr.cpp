@@ -1525,7 +1525,7 @@ BOOL NodeMoulder::AllowOp(ObjChangeParam* pParam, BOOL SetOpPermissionState,
 	// decide if we allow it, we dont allow very much at the moment, the only thing you can
 	// actually do to children of a moulder is to copy them
 	BOOL allowed=TRUE;
-	ObjChangeFlags Flags=pParam->GetChangeFlags();
+	// ObjChangeFlags Flags = pParam->GetChangeFlags();
 	if ((pParam->GetDirection()==OBJCHANGE_CALLEDBYCHILD) ||
 		(pParam->GetDirection()==OBJCHANGE_CALLEDBYOP))
 //		if (Flags.DeleteNode ||	Flags.ReplaceNode || Flags.MoveNode || Flags.Attribute || Flags.MultiReplaceNode || Flags.TransformNode)

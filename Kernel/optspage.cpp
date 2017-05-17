@@ -1159,7 +1159,7 @@ BOOL	PageTab::HandlePageList(INT32 ItemClicked, BOOL Portrait)
 	// Now enable or disable and fill in the height and width fields dependent
 	// on what size has been selected in the list of available pages. 
 	BOOL Enable;
-	BOOL ok;
+	// BOOL ok;
 	MILLIPOINT Width = 0;
 	MILLIPOINT Height = 0;
 
@@ -1187,9 +1187,11 @@ TRACEUSER( "Neville", _T("PageTab::HandlePageList width %d height %d in MP\n"),W
 		 	Height = Temp;
 		}	
 		// Now set up the height and width fields accordingly
-		ok = pPrefsDlg->SetUnitGadgetValue(_R(IDC_OPTS_HEIGHT), CurrentPageUnits,
+		// ok =
+		  pPrefsDlg->SetUnitGadgetValue(_R(IDC_OPTS_HEIGHT), CurrentPageUnits,
 										 	 Height, FALSE, -1);
-		ok = pPrefsDlg->SetUnitGadgetValue(_R(IDC_OPTS_WIDTH), CurrentPageUnits,
+		  // ok =
+		  pPrefsDlg->SetUnitGadgetValue(_R(IDC_OPTS_WIDTH), CurrentPageUnits,
 										 	 Width, FALSE, -1);
 	}	
 	
@@ -1233,7 +1235,7 @@ TRACEUSER( "Neville", _T("PageTab::HandlePortraitLandscape() change state\n"));
 	// First, get the current values from the editable fields
 	MILLIPOINT Width = 0;
 	MILLIPOINT Height = 0;
-	BOOL ok;
+	// BOOL ok;
 	Height = pPrefsDlg->GetUnitGadgetValue(_R(IDC_OPTS_HEIGHT), CurrentPageUnits,
 											  0, INT_MAX, _R(IDE_OPTS_INVALIDHEIGHT), &Valid);
 	if (!Valid)
@@ -1254,9 +1256,11 @@ TRACEUSER( "Neville", _T("PageTab::HandlePortraitLandscape() change state\n"));
 	}
 
 	// Now set up the height and width fields reversly
-	ok = pPrefsDlg->SetUnitGadgetValue(_R(IDC_OPTS_HEIGHT), CurrentPageUnits,
+	// ok =
+	  pPrefsDlg->SetUnitGadgetValue(_R(IDC_OPTS_HEIGHT), CurrentPageUnits,
 								 		  Width, FALSE, -1);
-	ok = pPrefsDlg->SetUnitGadgetValue(_R(IDC_OPTS_WIDTH), CurrentPageUnits,
+	  // ok =
+	  pPrefsDlg->SetUnitGadgetValue(_R(IDC_OPTS_WIDTH), CurrentPageUnits,
 								 	 	  Height, FALSE, -1);
 	
 	// Now update the stored present state to the new state 

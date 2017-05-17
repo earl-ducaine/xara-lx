@@ -8905,7 +8905,7 @@ void TranspInfoBarOp::SetTranspValue(UINT32 Transp, BOOL bIntermediateStep, BOOL
 		m_pDragTransp->SetStartTransp(&Transp);
 
 		ERROR3IF(m_pAttrApplyOp==NULL, "Why don't we have a drag op yet?\n");
-		if (m_pAttrApplyOp)
+		if (m_pAttrApplyOp) {
 			if (m_pAttrApplyOp==Operation::GetCurrentDragOp())
 			{
 				m_pAttrApplyOp->DragAttrFinished(m_pDragTransp);		// Drag over
@@ -8921,7 +8921,7 @@ void TranspInfoBarOp::SetTranspValue(UINT32 Transp, BOOL bIntermediateStep, BOOL
 				ShowInfo();						// Update UI
 				m_pAttrApplyOp = NULL;			// Release invalid pointer
 			}
-
+		}
 		if (m_pDragTransp)
 		{
 			delete m_pDragTransp;

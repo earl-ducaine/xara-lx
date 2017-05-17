@@ -1214,7 +1214,7 @@ BOOL ArrowRec::GetArrowMatrix(const DocCoord& ArrowCentre, const DocCoord& Direc
 	ANGLE RotateAngle = CalcAngle(ArrowCentre, Direction);
 
 	// Now we work how much we need to scale the path
-	DocRect ArrowBounds = ArrowShape->GetBoundingRect();
+	// DocRect ArrowBounds = ArrowShape->GetBoundingRect();
 
 	double TempLineWidth = ParentLineWidth;
 

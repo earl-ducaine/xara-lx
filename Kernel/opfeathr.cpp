@@ -170,7 +170,7 @@ ChangeFeatherSizeSliderOpDesc::ChangeFeatherSizeSliderOpDesc(
 						 	UINT32 toolID,                    // Tool (Module) Identifier
 						 	UINT32 txID,                      // String Resource ID
 						 	CCRuntimeClass* Op,				// pointer to the Op's runtime class object
-						 	TCHAR* tok,						// pointer to the token string
+						 	const TCHAR* tok,						// pointer to the token string
 						 	pfnGetState gs,					// pointer to the GetState function
 						 	UINT32 helpId,				// help identifier 
 						 	UINT32 bubbleID,				// string resource for bubble help
@@ -733,25 +733,27 @@ void ChangeFeatherSizeSliderOpDesc::OnSliderCancelled(OpDescControlMsg* SliderCh
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-BOOL OpChangeFeatherSize::Init()
-{
-	OpDescriptor* OpDesc = new ChangeFeatherSizeSliderOpDesc(0,
-											 _R(IDS_FEATHERSIZEOP),
-											 CC_RUNTIME_CLASS(OpChangeFeatherSize),
-											 OPTOKEN_FEATHERSIZE,
-											 OpChangeFeatherSize::GetState,			// NB Operations GetState
-											 0,
-											 _R(IDBBL_FEATHERSIZEOP),
-											 SYSTEMBAR_FEATHER,
-											 _R(IDC_FEATHERSIZE_CUSTOMEDIT),
-											 TRUE,
-											 FALSE,
-											 FALSE,
-											 (GREY_WHEN_NO_CURRENT_DOC | GREY_WHEN_NO_SELECTION | DONT_GREY_WHEN_SELECT_INSIDE ) );
-
-	ERROR2IF(!OpDesc, FALSE, _R(IDE_NOMORE_MEMORY));
-
-	return TRUE;
+BOOL OpChangeFeatherSize::Init() {
+  OpDescriptor* OpDesc =
+    new ChangeFeatherSizeSliderOpDesc(0,
+				      _R(IDS_FEATHERSIZEOP),
+				      CC_RUNTIME_CLASS(OpChangeFeatherSize),
+				      OPTOKEN_FEATHERSIZE,
+				      OpChangeFeatherSize::GetState,			// NB Operations GetState
+				      0,
+				      _R(IDBBL_FEATHERSIZEOP),
+				      SYSTEMBAR_FEATHER,
+				      _R(IDC_FEATHERSIZE_CUSTOMEDIT),
+				      TRUE,
+				      FALSE,
+				      FALSE,
+				      (GREY_WHEN_NO_CURRENT_DOC |
+				       GREY_WHEN_NO_SELECTION |
+				       DONT_GREY_WHEN_SELECT_INSIDE ) );
+  
+  ERROR2IF(!OpDesc, FALSE, _R(IDE_NOMORE_MEMORY));
+  
+  return TRUE;
 }
 
 
@@ -887,7 +889,7 @@ void OpChangeFeatherSize::DoWithParam(OpDescriptor* pOpDesc, OpParam* pParam)
 	//		3. adding it to a list of feather attrs to update.
 	//
 	BOOL bAddNewFeathers = TRUE;
-	MILLIPOINT size = 0;
+	// MILLIPOINT size = 0;
 	ListRange* pLevelRange = NULL;
 	ListRange* pLocalRange = NULL;
 	BOOL bGotSelRange = FALSE;
@@ -895,7 +897,7 @@ void OpChangeFeatherSize::DoWithParam(OpDescriptor* pOpDesc, OpParam* pParam)
 	{
 		OpChangeFeatherSizeParam* pCFSParam = (OpChangeFeatherSizeParam*)pParam;
 		bAddNewFeathers = pCFSParam->bAddNewFeathers;
-		size = pCFSParam->size;
+		// size = pCFSParam->size;
 		pLevelRange = pCFSParam->pLevelRange;
 	}
 
@@ -1387,7 +1389,7 @@ ChangeFeatherProfileOpDesc::ChangeFeatherProfileOpDesc(
 						 	UINT32 toolID,                    // Tool (Module) Identifier
 						 	UINT32 txID,                      // String Resource ID
 						 	CCRuntimeClass* Op,				// pointer to the Op's runtime class object
-						 	TCHAR* tok,						// pointer to the token string
+						 	const TCHAR* tok,						// pointer to the token string
 						 	pfnGetState gs,					// pointer to the GetState function
 						 	UINT32 helpId,				// help identifier 
 						 	UINT32 bubbleID,				// string resource for bubble help
@@ -1529,23 +1531,25 @@ void ChangeFeatherProfileOpDesc::OnProfileChanging(OpDescControlMsg* SliderChang
 
 BOOL OpChangeFeatherProfile::Init()
 {
-	OpDescriptor* OpDesc = new ChangeFeatherProfileOpDesc(0,
-											 _R(IDS_FEATHERPROFILEOP),
-											 CC_RUNTIME_CLASS(OpChangeFeatherProfile),
-											 OPTOKEN_FEATHERPROFILE,
-											 OpChangeFeatherProfile::GetState,			// NB Operations GetState
-											 0,
-											 _R(IDBBL_FEATHERPROFILEOP),
-											 SYSTEMBAR_FEATHER,
-											 _R(IDC_FEATHERPROFILE_GDGT),
-											 TRUE,
-											 FALSE,
-											 FALSE,
-											 (GREY_WHEN_NO_CURRENT_DOC | GREY_WHEN_NO_SELECTION | DONT_GREY_WHEN_SELECT_INSIDE ) );
-
-	ERRORIF(!OpDesc, FALSE, _R(IDE_NOMORE_MEMORY));
-
-	return TRUE;
+  OpDescriptor* OpDesc =
+    new ChangeFeatherProfileOpDesc(0,
+				   _R(IDS_FEATHERPROFILEOP),
+				   CC_RUNTIME_CLASS(OpChangeFeatherProfile),
+				   OPTOKEN_FEATHERPROFILE,
+				   OpChangeFeatherProfile::GetState,			// NB Operations GetState
+				   0,
+				   _R(IDBBL_FEATHERPROFILEOP),
+				   SYSTEMBAR_FEATHER,
+				   _R(IDC_FEATHERPROFILE_GDGT),
+				   TRUE,
+				   FALSE,
+				   FALSE,
+				   (GREY_WHEN_NO_CURRENT_DOC |
+				    GREY_WHEN_NO_SELECTION |
+				    DONT_GREY_WHEN_SELECT_INSIDE ));  
+  ERRORIF(!OpDesc, FALSE, _R(IDE_NOMORE_MEMORY));
+  
+  return TRUE;
 }
 
 
@@ -2017,29 +2021,23 @@ BOOL OpChangeFeatherProfile::OnSelChangingMsg(SelChangingMsg::SelectionState Sta
 
 *********************************************************************************************/
 
-BOOL OpChangeFeatherProfile::DoChangeFeatherProfile(FeatherAttrValue* pFeather, CProfileBiasGain &newProf)
-{
-	CProfileBiasGain undoProf = pFeather->GetProfile();
-
-	if (!pFeather->ChangeFeatherProfile(newProf))
-	{
-		// ChangeFeatherProfileAction doesn't need to alloc any memory so shouldn't ever fail
-		return FALSE;
-	}
-
-	ChangeFeatherProfileAction* pAct = NULL;
-
-	// Setup the action to undo this Operation
-	if (!ChangeFeatherProfileAction::Init(	this, 
-		 									&UndoActions,
-											pFeather,
-											undoProf,
-											&pAct	) == AC_OK )
-	{
-		return FALSE;
-	}
-
-	return TRUE;
+BOOL OpChangeFeatherProfile::DoChangeFeatherProfile(FeatherAttrValue* pFeather,
+						    CProfileBiasGain &newProf) {
+  CProfileBiasGain undoProf = pFeather->GetProfile();
+  if (!pFeather->ChangeFeatherProfile(newProf)) {
+    // ChangeFeatherProfileAction doesn't need to alloc any memory so shouldn't ever fail
+    return FALSE;
+  }
+  ChangeFeatherProfileAction* pAct = NULL;
+  // Setup the action to undo this Operation
+  if (ChangeFeatherProfileAction::Init(this, 
+				       &UndoActions,
+				       pFeather,
+				       undoProf,
+				       &pAct) != AC_OK ) {
+    return FALSE;
+  }
+  return TRUE;
 }
 
 

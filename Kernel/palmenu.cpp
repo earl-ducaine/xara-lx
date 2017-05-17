@@ -177,25 +177,26 @@ BOOL PaletteContextMenu::Build()
 
 ******************************************************************************************/
 
-BOOL OpPalettePopupCommand::InitPolymorphicCommand( TCHAR *OpToken, UINT32 MenuTextID )
-{
-	return(RegisterOpDescriptor(0,									// Tool ID 
-								MenuTextID,		 					// String resource ID
-								CC_RUNTIME_CLASS(OpPalettePopupCommand),// Runtime class
-								OpToken, 							// Token string
-								OpPalettePopupCommand::GetCommandState,	// GetState function
-								0,									// help ID
-								0,									// bubble help
-								0,									// resource ID
-								0,									// control ID
-								SYSTEMBAR_ILLEGAL,					// Bar ID
-								FALSE,								// Receive system messages
-								FALSE,								// Smart duplicate operation
-								TRUE,								// Clean operation
-								NULL,								// No vertical counterpart
-								0,									// String for one copy only error
-								DONT_GREY_WHEN_SELECT_INSIDE		// Auto state flags
-								));
+BOOL OpPalettePopupCommand::InitPolymorphicCommand(const TCHAR *OpToken,
+						   UINT32 MenuTextID ) {
+  return(RegisterOpDescriptor(0,									        // Tool ID 
+			      MenuTextID,		 					                // String resource ID
+			      CC_RUNTIME_CLASS(OpPalettePopupCommand),
+			      // Runtime class
+			      OpToken, 							                        // Token string
+			      OpPalettePopupCommand::GetCommandState,	// GetState function
+			      0,									// help ID
+			      0,									// bubble help
+			      0,									// resource ID
+			      0,									// control ID
+			      SYSTEMBAR_ILLEGAL,					// Bar ID
+			      FALSE,								// Receive system messages
+			      FALSE,								// Smart duplicate operation
+			      TRUE,								// Clean operation
+			      NULL,								// No vertical counterpart
+			      0,									// String for one copy only error
+			      DONT_GREY_WHEN_SELECT_INSIDE		// Auto state flags
+			      ));
 }
 
 
@@ -212,9 +213,12 @@ BOOL OpPalettePopupCommand::Init(BitmapExportPaletteControl *pPaletteControl, Bm
 	m_pPaletteControl	= pPaletteControl;
 	m_pBmapPrevDlg		= pBmapPrevDlg;
 
-	InitPolymorphicCommand( OPTOKEN_PALETTE_LOCKED,					_R(IDS_MENU_LOCKED) );
-	InitPolymorphicCommand( OPTOKEN_PALETTE_WEB_SAFE,				_R(IDS_MENU_WEB_SAFE) );
-	InitPolymorphicCommand( OPTOKEN_PALETTE_TRANSPARENT_BACKGROUND,	_R(IDS_MENU_TRANSPARENT_BACK) );
+	InitPolymorphicCommand(OPTOKEN_PALETTE_LOCKED,
+			       _R(IDS_MENU_LOCKED) );
+	InitPolymorphicCommand(OPTOKEN_PALETTE_WEB_SAFE,
+			       _R(IDS_MENU_WEB_SAFE));
+	InitPolymorphicCommand(OPTOKEN_PALETTE_TRANSPARENT_BACKGROUND,
+			       _R(IDS_MENU_TRANSPARENT_BACK) );
 	InitPolymorphicCommand( OPTOKEN_PALETTE_TRANSPARENT,			_R(IDS_MENU_TRANSPARENT) );
 
 	InitPolymorphicCommand( OPTOKEN_PALETTE_RESTORE,				_R(IDS_MENU_RESTORE) );

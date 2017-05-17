@@ -2332,7 +2332,7 @@ BOOL NodeShadowController::PostDuplicate(UndoableOperation* pOp)
 	NodeRenderableInk::PostDuplicate(pOp);
 
 	IsBoundingRectValid = FALSE;
-	DocRect dr = GetBoundingRect(TRUE, FALSE);
+	// DocRect dr = GetBoundingRect(TRUE, FALSE);
 
 	return TRUE;
 }
@@ -3905,7 +3905,7 @@ TRACEUSER( "Phil", _T("NSC::RenderSubtree rendered cached @ %fdpi\n"), GetPixels
 
 	// Work out how much of the object we propose to capture
 	// (This may change during the Capture if we have to fall back to 24BPP opaque capture)
-	DocRect viewrect = ClipRect;
+	// DocRect viewrect = ClipRect;
 	DocRect CaptureRect = GetChildBoundingRect();			// Make sure we get our child bound not result of processing!
 
 	// Inflate by one pixel all round to allow for anti-aliasing effects at the edges

@@ -604,43 +604,34 @@ void CBeveler::CalcSelectionBounds()
 		}
 }
 
-void CBeveler::CalcInnerPath()
-{
-	CCFree(m_pBevelPoints);
-	m_pBevelPoints = NULL;
-	CCFree(m_pBevelTypes);
-	m_pBevelTypes = NULL;
-
-	if (m_NumFaces == 0)
-	{
-		ERROR3("CBeveler::CalcInnerPath has empty face list");
-		return;
-	}
-	
-	m_pBevelPoints = (POINT*)CCMalloc(sizeof(POINT) * m_NumFaces);
-	m_pBevelTypes  = (BYTE*)CCMalloc(sizeof(BYTE) * m_NumFaces);
-
-	GPOINT* pPoints = (GPOINT*)m_pBevelPoints ;
-	BYTE*   pTypes  =		   m_pBevelTypes  ;
-
-	GPOINT LastPoint(INT_MAX,INT_MAX) ;
-	BEVEL_FACE* pFace = (BEVEL_FACE*)m_pFaceList ;
-	for ( UINT32 i=0 ; i<m_NumFaces ; i++ )
-	{
-		if ( !pFace->bTriangle )
-			if ( LastPoint!=pFace->aFace[0] )
-			{
-				*pTypes++ = PT_MOVETO ;
-				*pPoints++ = LastPoint = pFace->aFace[1] ;
-			}
-			else if ( LastPoint!=pFace->aFace[1] )
-			{
-				*pTypes++ = PT_LINETO ;
-				*pPoints++ = LastPoint = pFace->aFace[1] ;
-			}
-		pFace++ ;
-	}
-	m_nBevelLength = pTypes-m_pBevelTypes ;
+void CBeveler::CalcInnerPath() {
+  CCFree(m_pBevelPoints);
+  m_pBevelPoints = NULL;
+  CCFree(m_pBevelTypes);
+  m_pBevelTypes = NULL;
+  if (m_NumFaces == 0) {
+    ERROR3("CBeveler::CalcInnerPath has empty face list");
+    return;
+  }
+  m_pBevelPoints = (POINT*)CCMalloc(sizeof(POINT) * m_NumFaces);
+  m_pBevelTypes  = (BYTE*)CCMalloc(sizeof(BYTE) * m_NumFaces);
+  GPOINT* pPoints = (GPOINT*)m_pBevelPoints ;
+  BYTE*   pTypes  =		   m_pBevelTypes  ;
+  GPOINT LastPoint(INT_MAX,INT_MAX) ;
+  BEVEL_FACE* pFace = (BEVEL_FACE*)m_pFaceList ;
+  for ( UINT32 i=0 ; i<m_NumFaces ; i++ ) {
+    if ( !pFace->bTriangle ){
+      if ( LastPoint!=pFace->aFace[0] ) {
+	*pTypes++ = PT_MOVETO ;
+	*pPoints++ = LastPoint = pFace->aFace[1] ;
+      } else if ( LastPoint!=pFace->aFace[1] ) {
+	*pTypes++ = PT_LINETO ;
+	*pPoints++ = LastPoint = pFace->aFace[1] ;
+      }
+    }
+    pFace++ ;
+  }
+  m_nBevelLength = pTypes-m_pBevelTypes ;
 }
 
 /********************************************************************************************

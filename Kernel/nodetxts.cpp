@@ -4023,12 +4023,11 @@ INT32 TextStory::BaseComplexHide(UndoableOperation *pOp)
 
 ********************************************************************************************/
 
-TextStory* TextStory::CreateFromChars(DocCoord Pos, char* pChars, WCHAR* pWChars, Document* pCreateDoc,
-									  LOGFONT* pLogFont, BOOL ControlCodes, DocColour* pColour)
-{
-	ERROR2IF(pChars==NULL && pWChars==NULL || pChars!=NULL && pWChars!=NULL, NULL,
-			 "TextStory::CreateFromCharArray() - must specify one and only one char array");
-	ERROR2IF(pCreateDoc==NULL, NULL, "No creation document");
+TextStory* TextStory::CreateFromChars(DocCoord Pos, char* pChars, WCHAR* pWChars, Document* pCreateDoc, LOGFONT* pLogFont, BOOL ControlCodes, DocColour* pColour) {
+  ERROR2IF((pChars == NULL && pWChars == NULL) ||
+	   (pChars != NULL && pWChars != NULL), NULL,
+	   "TextStory::CreateFromCharArray() - must specify one and only one char array");
+  ERROR2IF(pCreateDoc==NULL, NULL, "No creation document");
 
 	// create an empty text story, getting pointers to TextLine and Caret
 	TextStory* pTextStory=TextStory::CreateTextObject(Pos);

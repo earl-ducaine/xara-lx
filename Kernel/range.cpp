@@ -3117,8 +3117,8 @@ Range::CommonAttribResult Range::FindCommonAttributeType(CCRuntimeClass* AttribT
 
 									if ( pAttribute->IsKindOf(CC_RUNTIME_CLASS(AttrRadialFill)) )
 									{
-										if (! (((AttrRadialFill*)pAttribute)->IsElliptical()) == 
-											(((AttrRadialFill*)AppliedAttr)->IsElliptical()) )
+									  if (! ((((AttrRadialFill*)pAttribute)->IsElliptical()) == 
+										 (((AttrRadialFill*)AppliedAttr)->IsElliptical()) ))
 										{
 											(*pCommonType) = NULL; // Nothing useful to return here
 											return ATTR_MANY;	   // 									*RETURN
@@ -3184,8 +3184,8 @@ Range::CommonAttribResult Range::FindCommonAttributeType(CCRuntimeClass* AttribT
 
 				if ( pAttribute->IsKindOf(CC_RUNTIME_CLASS(AttrRadialFill)) )
 				{
-					if (! (((AttrRadialFill*)pAttribute)->IsElliptical()) == 
-							(((AttrRadialFill*)AppliedAttr)->IsElliptical()) )
+				  if (!((((AttrRadialFill*)pAttribute)->IsElliptical()) == 
+					(((AttrRadialFill*)AppliedAttr)->IsElliptical())))
 					{
 						(*pCommonType) = NULL; // Nothing useful to return here
 						return ATTR_MANY;	   // 									*RETURN
@@ -6873,53 +6873,49 @@ Node* ListRange::FindFirst(BOOL AndChildren)
 
 Node* ListRange::FindNext(Node* pPrevious, BOOL AndChildren)
 {
-	// Preconditions
-	// No need to check that "this" is NULL because that's already been done
-	// in FindFirst.
-	ERROR2IF(pPrevious == NULL, NULL, "NULL pointer passed to Range::FindNext");
-//	ERROR2IF(AndChildren, NULL, "ListRange can't honour AndChildren requests yet");
-
-	BOOL found = FALSE;
-	NodeListItem* pNodeItem = (NodeListItem*)nodelist.GetHead();
-
-	// ------------------
-	// Optimisation
-	if (pLastReturnedItem)
+  // Preconditions
+  // No need to check that "this" is NULL because that's already been done
+  // in FindFirst.
+  ERROR2IF(pPrevious == NULL, NULL, "NULL pointer passed to Range::FindNext");
+  //	ERROR2IF(AndChildren, NULL, "ListRange can't honour AndChildren requests yet");
+  BOOL found = FALSE;
+  NodeListItem* pNodeItem = (NodeListItem*)nodelist.GetHead();
+  // ------------------
+  // Optimisation
+  if (pLastReturnedItem)
+    {
+      if (pLastReturnedItem->pNode == pPrevious)
+	pNodeItem = pLastReturnedItem;
+      else if (AndChildren && pLastReturnedItem->pNode->IsNodeInSubtree(pPrevious))
+	pNodeItem = pLastReturnedItem;
+    }
+  // ------------------
+  while (pNodeItem && !found)
+    {
+      found = (pNodeItem->pNode == pPrevious);
+      if (!found && AndChildren)
 	{
-		if (pLastReturnedItem->pNode == pPrevious)
-			pNodeItem = pLastReturnedItem;
-		else if (AndChildren && pLastReturnedItem->pNode->IsNodeInSubtree(pPrevious))
-			pNodeItem = pLastReturnedItem;
+	  // If this list item contains the previous context node
+	  // Then we are still traversing the subtree of that list item
+	  // So get the next item in the subtree
+	  if (pNodeItem->pNode->IsNodeInSubtree(pPrevious))
+	    {
+	      pLastReturnedItem = pNodeItem;
+	      return pPrevious->FindNextDepthFirst(pNodeItem->pNode);
+	    }
 	}
-	// ------------------
-
-	while (pNodeItem && !found)
-	{
-		found = (pNodeItem->pNode == pPrevious);
-		if (!found && AndChildren)
-		{
-			// If this list item contains the previous context node
-			// Then we are still traversing the subtree of that list item
-			// So get the next item in the subtree
-			if (pNodeItem->pNode->IsNodeInSubtree(pPrevious))
-			{
-				pLastReturnedItem = pNodeItem;
-				return pPrevious->FindNextDepthFirst(pNodeItem->pNode);
-			}
-		}
-
-		pNodeItem = (NodeListItem*)nodelist.GetNext(pNodeItem);
-	}
-
-	pLastReturnedItem = pNodeItem;
-
-	if (pNodeItem && found)
-		if (AndChildren)
-			return pNodeItem->pNode->FindFirstDepthFirst();
-		else
-			return pNodeItem->pNode;
-
-	return NULL;
+      pNodeItem = (NodeListItem*)nodelist.GetNext(pNodeItem);
+    }
+  pLastReturnedItem = pNodeItem;
+  if (pNodeItem && found) {
+    if (AndChildren) {
+      return pNodeItem->pNode->FindFirstDepthFirst();
+    }
+    else {
+      return pNodeItem->pNode;
+    }
+  }
+  return NULL;
 }
 
 

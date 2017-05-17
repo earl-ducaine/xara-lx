@@ -501,7 +501,7 @@ BOOL ContextMenu::BuildEffectCommands()
 
 ********************************************************************************************/
 
-BOOL ContextMenu::BuildCommand(TCHAR* pOpToken, BOOL Separator, MenuItem* pRootMenu, const String& strNewText, OpMenuParam* pParam)
+BOOL ContextMenu::BuildCommand(const TCHAR* pOpToken, BOOL Separator, MenuItem* pRootMenu, const String& strNewText, OpMenuParam* pParam)
 {
 	MenuItem* pNewItem;
 

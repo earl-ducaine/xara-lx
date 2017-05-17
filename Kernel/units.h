@@ -303,10 +303,10 @@ public:
 private:
 	BOOL MakeFactoryDefaultUnits();
 
-	void OutputTrace(char* err,const TCHAR* TokenBuf);
-	BOOL ReadLong(CCLexFile& file,void* pLong,char* err);
-	BOOL ReadDouble(CCLexFile& file,double* pDouble,char* err);
-	BOOL ReadString(CCLexFile& file,StringBase* pStr,char* err);
+	void OutputTrace(const char* err, const TCHAR* TokenBuf);
+	BOOL ReadLong(CCLexFile& file, void* pLong, const char* err);
+	BOOL ReadDouble(CCLexFile& file,double* pDouble, const char* err);
+	BOOL ReadString(CCLexFile& file, StringBase* pStr, const char* err);
 
 	BOOL ReadUnitsFromFile(CCLexFile& file);
 	BOOL ReadUnitsFromDisk();

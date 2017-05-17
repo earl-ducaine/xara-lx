@@ -1744,7 +1744,7 @@ void DocView::RenderView(RenderRegion* pRRegion, Matrix& ViewTransform,
 
 	BOOL HasRendered = FALSE;
 	BOOL Continue = TRUE;
-	BOOL bPaperRenderedThisTime = FALSE;
+	// BOOL bPaperRenderedThisTime = FALSE;
 
 	// Record time when rendering started
 	StartTime.Sample();
@@ -1811,7 +1811,7 @@ void DocView::RenderView(RenderRegion* pRRegion, Matrix& ViewTransform,
 
 			// The Paper is now done
 			pRRegion->IsPaperRendered = TRUE;
-			bPaperRenderedThisTime = TRUE;
+			// bPaperRenderedThisTime = TRUE;
 		}
 
 		// ------------------------------------------
@@ -4901,7 +4901,7 @@ Spread* DocView::GetVisibleSpread()
 //	XLONG xlCandidateArea = 0;
 
 	// Begin by finding the extent of the viewport.
-	WorkRect wrViewPort = GetViewRect();
+	// WorkRect wrViewPort = GetViewRect();
 
 	// Check that we have a document.
 	if (pDoc == NULL) 

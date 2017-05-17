@@ -1767,8 +1767,8 @@ KernelBitmap * BevelAttributeValueType::CreateBevelBitmap(RenderRegion * pRegion
 	CBeveler Beveler(m_pProc->GetSummedPath());
 	Beveler.SetBevelAngle(m_LightAngle);
 	Beveler.SetBevelType(m_Type);
-	BOOL Ok = Beveler.SetUpBeveler(abs(m_Indent), RoundJoin, &LightAngle, bOuter, 100, NULL, 200);
-	Ok = Beveler.SetBevelerSize(Width,Height);
+	Beveler.SetUpBeveler(abs(m_Indent), RoundJoin, &LightAngle, bOuter, 100, NULL, 200);
+	Beveler.SetBevelerSize(Width,Height);
 
 	return NULL;
 }

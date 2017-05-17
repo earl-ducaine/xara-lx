@@ -1964,7 +1964,9 @@ BOOL Operation::RegisterOpDescriptor(
 									 UINT32 AutoStateFlags,
 									 BOOL fCheckable /*= FALSE*/ )
 {
+#if !defined(EXCLUDE_FROM_RALPH) && !defined(EXCLUDE_FROM_XARALX)
 	BOOL ok = TRUE;
+#endif
 
 	// tok is going into a string which turns out to be a string 32, so do a sanity check (Neville 26/6/97)
 	size_t len = camStrclen(tok);
@@ -1988,8 +1990,9 @@ BOOL Operation::RegisterOpDescriptor(
 				 							AutoStateFlags,
 											fCheckable
 				 						   );
-
+#if !defined(EXCLUDE_FROM_RALPH) && !defined(EXCLUDE_FROM_XARALX)
 	ok = (pHorzOpDesc != NULL);
+#endif	
 
 #if !defined(EXCLUDE_FROM_RALPH) && !defined(EXCLUDE_FROM_XARALX)
 	// If a hidden group bar has been specified try to connect the new OpDescriptor to

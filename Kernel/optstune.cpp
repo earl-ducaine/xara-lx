@@ -510,13 +510,14 @@ TRACEUSER( "Neville", _T("commit gallery cache size='%d'\n"), CacheSize);
 	// ---------------------------------------------------------------------------------
 	// Cacheing preferences
 	{
-		BOOL SetOk = FALSE;
+	  // BOOL SetOk = FALSE;
 		INT32 State = 0;
 		BOOL Valid = FALSE;
 
 		State = pPrefsDlg->GetLongGadgetValue(_R(IDC_CHECK_CACHE_ENABLED), 0, 1, 0, &Valid);
 		if (Valid)
-			SetOk = Camelot.SetPrefValue(TEXT("Rendering"), TEXT("Cacheing"), &State);
+		  //SetOk =
+			  Camelot.SetPrefValue(TEXT("Rendering"), TEXT("Cacheing"), &State);
 
 	//	State = pPrefsDlg->GetLongGadgetValue(_R(IDC_EDIT_CACHE_SIZE), 1, 100, 0, &Valid);
 		String_256 strCachePercent = pPrefsDlg->GetStringGadgetValue(_R(IDC_EDIT_CACHE_SIZE), &Valid);
@@ -526,7 +527,8 @@ TRACEUSER( "Neville", _T("commit gallery cache size='%d'\n"), CacheSize);
 		Convert::ReadNumber(strCachePercent, &Pos, &dValue);	// Allow trailing chars
 		if (Valid && dValue>=1 && dValue<=100)
 			iValue = (INT32)dValue;
-			SetOk = Camelot.SetPrefValue(TEXT("Cache"), TEXT("CacheRAMPercent"), &iValue);
+		// SetOk =
+			  Camelot.SetPrefValue(TEXT("Cache"), TEXT("CacheRAMPercent"), &iValue);
 
 		// Reset the cache size...
 		CBitmapCache* pCache = Camelot.GetBitmapCache();
@@ -792,7 +794,7 @@ BOOL TuneTab::InitRenderingSection()
 	ERROR2IF(pPrefsDlg == NULL,FALSE,"TuneTab::InitRenderingSection called with no dialog pointer");
 
 	BOOL ReadOk = TRUE; 	// Flag to say whether the preference value was read ok 
-	BOOL ok	= TRUE;			// Flag for whether value set up ok 
+	// BOOL ok	= TRUE;			// Flag for whether value set up ok 
 
 	// The Maximum temporary workspace available to Gdraw
 	UINT32 TempWorkMem = TunedMemory::GetLimitedMemSize();
@@ -818,7 +820,8 @@ BOOL TuneTab::InitRenderingSection()
 	 
 	// Find out how much ram is needed for a full screen transparency blit
 	INT32 FullPageMem = TunedMemory::GetScreenMemSize();
- 	ok = pPrefsDlg->SetMemoryGadgetValue(_R(IDC_OPTS_FULLPAGEMEM), FullPageMem);
+ 	// ok =
+	  pPrefsDlg->SetMemoryGadgetValue(_R(IDC_OPTS_FULLPAGEMEM), FullPageMem);
 
 	// Format a string to relate the amount of memory put aside
 	// Display the chosen value in the editable field

@@ -2637,8 +2637,7 @@ void OpTextCaret::DoMoveCaretRight(BOOL WithSelect, BOOL AWord)
 			// Ensure that start is before end.  For right movement see if the character
 			// after the new start is selected, swap if it isn't
 			VisibleTextNode* pNext = pSelStart->FindNextVTNInStory();
-			if ((pNext == NULL) || (pNext != NULL) && (pSelStart != pSelEnd) && (pNext != pSelEnd) && !pNext->IsSelected())
-			{
+			if ((pNext == NULL) || (pNext != NULL) && ((pSelStart != pSelEnd) && (pNext != pSelEnd) && !pNext->IsSelected())) {
 				VisibleTextNode* pTemp = pSelEnd;
 				pSelEnd = pSelStart;
 				pSelStart = pTemp;

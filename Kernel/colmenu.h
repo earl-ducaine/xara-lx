@@ -169,7 +169,7 @@ public:
 				// Initialises the Ops that the colour editor can use
 
 protected:
-	static BOOL InitPolymorphicCommand(StringBase *OpToken, UINT32 MenuTextID);
+	static BOOL InitPolymorphicCommand(const StringBase *OpToken, UINT32 MenuTextID);
 				// Called by Init() to create another OpDescriptor for this Op.
 
 public:

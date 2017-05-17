@@ -780,11 +780,11 @@ BOOL CBitmapShadow::CreateShadow(const BOOL bIsWallShadow,
 								 const CNativeSize ForegroundSize
 								 )
 {										
-	RECT ShadowRect;
-	ShadowRect.left =0;
-	ShadowRect.right =0;
-	ShadowRect.top =0;
-	ShadowRect.bottom =0;
+	// RECT ShadowRect;
+	// ShadowRect.left =0;
+	// ShadowRect.right =0;
+	// ShadowRect.top =0;
+	// ShadowRect.bottom =0;
 
 	if(bIsWallShadow)
 		MakeWallShadow (pForegroundBits,

@@ -132,7 +132,7 @@ public:
 
 	void OutputDebugLine(TCHAR *);
 
-	static void OutputDebug(TCHAR *);
+	static void OutputDebug(const TCHAR *);
 
 private:
 	CWindowID WindowID;

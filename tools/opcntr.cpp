@@ -317,7 +317,7 @@ void OpCreateContour::DoWithParam(OpDescriptor* pOp, OpParam* pParam)
 //	NodeAttribute * pAttr = NULL;
 
 	DocColour StrokeColour;
-	MILLIPOINT LineWidth = 0;
+	// MILLIPOINT LineWidth = 0;
 //	INT32 Red = 0;
 //	INT32 Blue = 0;
 //	INT32 Green = 0;
@@ -344,8 +344,8 @@ void OpCreateContour::DoWithParam(OpDescriptor* pOp, OpParam* pParam)
 				pLineWidthAttr = (AttrLineWidth *)pPathNode->FindFirstChild(CC_RUNTIME_CLASS(AttrLineWidth));
 				pStrokeColourAttr = (AttrStrokeColour *)pPathNode->FindFirstChild(CC_RUNTIME_CLASS(AttrStrokeColour));
 
-				if (pLineWidthAttr)
-					LineWidth = pLineWidthAttr->Value.LineWidth;
+				// if (pLineWidthAttr)
+				// 	LineWidth = pLineWidthAttr->Value.LineWidth;
 
 				if (pStrokeColourAttr)
 					StrokeColour = pStrokeColourAttr->Value.Colour;

@@ -109,7 +109,7 @@ service marks of Xara Group Ltd. All rights in these marks are reserved.
 
 MenuItem *GetMenuPreferences(UINT32 ResourceID);
 
-MenuItem *CreateMenuItem(TCHAR *OpToken, UINT32 ParentId, BOOL Separator);
+MenuItem *CreateMenuItem(const TCHAR *OpToken, UINT32 ParentId, BOOL Separator);
 
 // Parser Routines
 

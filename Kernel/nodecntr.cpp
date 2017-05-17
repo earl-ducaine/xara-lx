@@ -447,14 +447,14 @@ void NodeContour::Render(RenderRegion* pRender)
 	pRender->SaveContext();
 
 	// find out the line width
-	LineWidthAttribute * pLineWidth = (LineWidthAttribute *)pRender->GetCurrentAttribute(ATTR_LINEWIDTH);
+	// LineWidthAttribute * pLineWidth = (LineWidthAttribute *)pRender->GetCurrentAttribute(ATTR_LINEWIDTH);
 
 	TRACEUSER( "DaivdM", _T("Contour node render 1\n"));
 
-	MILLIPOINT LineWidth = 0;
+	// MILLIPOINT LineWidth = 0;
 
-	if (pLineWidth)
-		LineWidth = pLineWidth->LineWidth;
+	// if (pLineWidth)
+	// 	LineWidth = pLineWidth->LineWidth;
 
 	if (m_pPathList != NULL && m_NumPaths > 0)
 	{
@@ -1323,7 +1323,7 @@ BOOL NodeContour::GenerateContour(List * pList, CCAttrMap * pAttrMap)
 	AttrJoinType * pJT = NULL;
 	AttrStartCap * pCT = NULL;
 	JointType generateJoinType = BevelledJoin;//RoundJoin;
-	LineCapType ct = LineCapRound;
+	// LineCapType ct = LineCapRound;
 
 	if (!pList)
 	{
@@ -1337,8 +1337,8 @@ BOOL NodeContour::GenerateContour(List * pList, CCAttrMap * pAttrMap)
 		if (FindAppliedAttribute(CC_RUNTIME_CLASS(AttrStartCap), (NodeAttribute **)&pCT))
 		{
 			// found an attribute so use this
-			if (pCT)
-				ct = pCT->Value.StartCap;
+			// if (pCT)
+			// 	ct = pCT->Value.StartCap;
 		}
 	}
 
@@ -1489,8 +1489,9 @@ BOOL NodeContour::GenerateContour(List * pList, CCAttrMap * pAttrMap)
 			if (pJoinType)
 				generateJoinType = pJoinType->Value.JoinType;		// use the one in the blend step
 
-			if (pStartType)
-				ct = pStartType->Value.StartCap;		// use the one in the blend step
+			// if (pStartType)
+			// 	ct = pStartType->Value.StartCap;
+			// use the one in the blend step
 
 			NodePath * pStrokedPathNode = pPathNode->MakeNodePathFromAttributes(Flatness, pElem->GetAttrMap(),FALSE,FALSE);
 			

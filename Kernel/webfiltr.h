@@ -151,7 +151,7 @@ public:
 protected:
 	virtual BaseCamelotFilter* CreateNULLFilter(Document* pDocument);
 
-	virtual char* GetExportFileType(); // Returns a three char long ASCII string
+	virtual const char* GetExportFileType(); // Returns a three char long ASCII string
 
 	virtual BOOL BeginDocumentExport();
 	virtual BOOL EndDocumentExport();

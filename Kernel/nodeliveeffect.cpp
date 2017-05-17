@@ -3110,8 +3110,8 @@ SubtreeRenderState NodeLockedEffect::RenderSubtree(RenderRegion* pRender, Node**
 
 	// Work out how much of the object we propose to capture
 	// (This may change during the Capture if we have to fall back to 24BPP opaque capture)
-	DocRect viewrect = ClipRect;
-	DocRect CaptureRect = GetChildBoundingRect();			// Make sure we get our child bound not result of processing!
+	// DocRect viewrect = ClipRect;
+	// DocRect CaptureRect = GetChildBoundingRect();			// Make sure we get our child bound not result of processing!
 
 	// Only cache if it's worth it!
 	if (CanGenerateBitmap())

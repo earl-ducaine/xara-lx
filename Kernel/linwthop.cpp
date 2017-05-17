@@ -154,21 +154,19 @@ service marks of Xara Group Ltd. All rights in these marks are reserved.
 
 ********************************************************************************************/
 
-OpChangeLineWidthOpDesc::OpChangeLineWidthOpDesc(	UINT32 toolID,                      
-												 	UINT32 txID,                        
-												 	CCRuntimeClass* Op,			
-												 	TCHAR* tok,					
-												 	pfnGetState gs,				
-												 	UINT32 helpId,				
-												 	UINT32 bubbleID,				
-												 	UINT32 resourceID,		
-												 	UINT32 controlID,			
-												 	BOOL ReceiveMessages, 		
-												 	BOOL Smart, 
-												 	BOOL Clean 
-						  						 )
-	:UndoableOpDescriptor(toolID, txID, Op, tok, gs, helpId, bubbleID, 
-						 resourceID, controlID, ReceiveMessages, Smart, Clean, 0, 0 /*GREY_WHEN_NO_CURRENT_DOC*/) 
+OpChangeLineWidthOpDesc::OpChangeLineWidthOpDesc(UINT32 toolID,
+						 UINT32 txID,
+						 CCRuntimeClass* Op,
+						 const TCHAR* tok,
+						 pfnGetState gs,
+						 UINT32 helpId,
+						 UINT32 bubbleID,
+						 UINT32 resourceID,
+						 UINT32 controlID,
+						 BOOL ReceiveMessages,
+						 BOOL Smart,
+						 BOOL Clean)
+			    :UndoableOpDescriptor(toolID, txID, Op, tok, gs, helpId, bubbleID, resourceID, controlID, ReceiveMessages, Smart, Clean, 0, 0 /*GREY_WHEN_NO_CURRENT_DOC*/) 
 
 {
 

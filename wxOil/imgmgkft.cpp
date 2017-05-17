@@ -1364,11 +1364,11 @@ BOOL ImageMagickFilter::ConvertToTempFile(CCLexFile * File)
 	ERROR2IF(!TempFile || TempFileName.IsEmpty(), FALSE, "ImageMagickFilter::ConvertToTempFile has no temporary file to process");
 	TempFile->close();
 
-	wxChar * cifn;
-	wxChar * cofn;
-	wxChar * pcommand=_T("/usr/bin/convert");
-	wxChar * IMargv[10];
-	wxChar * cdpi = NULL;
+	wxChar* cifn;
+	wxChar* cofn;
+	wxChar* pcommand=_T("/usr/bin/convert");
+	const wxChar* IMargv[10];
+	wxChar* cdpi = NULL;
 
 	// get filename in usable form
 	cifn = camStrdup(GetTag()+_T(":")+(const TCHAR *)(InputPath.GetPath())+_T("[0]"));

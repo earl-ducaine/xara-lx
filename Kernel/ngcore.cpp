@@ -561,48 +561,48 @@ MsgResult NameGallery::Message(Msg* pMessage)
 				return DialogOp::Message(pMessage);
 			}
 			if( _R(IDC_GALLERY_APPLY)	== pMsg->GadgetID ||
-				_R(IDC_GALLERY_REDEFINE) == pMsg->GadgetID )
-			{
-				// Do as above, but afterwards check to ensure that (if any of the sets
-				// affected is involved in a stretch) no NodeRegularShapes are involved
-				MsgResult tempMsg = DialogOp::Message(pMessage);
-
-
-				// For every SGNameItem currently selected, check if it is involved in a stretch...
-				NameGallery *pNameGallery = NameGallery::Instance();
-				if (!pNameGallery)	{ return tempMsg;	}
-
-				SGUsedNames *pNames = pNameGallery->GetUsedNames();
-				if (!pNames)	{ return tempMsg;	}
-
-				SGNameItem *pNameGalleryItem = (SGNameItem*) pNames->GetChild();
-				while (pNameGalleryItem)
-				{
-					if ((SGDisplayNode *)((SGDisplayItem *)pNameGalleryItem)->Flags.Selected)
-					{
-						NodeSetProperty* pPropNode = pNameGalleryItem->GetPropertyNode();
-						if (pPropNode)
-						{
-							NamedStretchProp* pProp = (NamedStretchProp*) pPropNode->GetProperty(NamedStretchProp::nIndex);
-							if (pProp && pProp->GetState())
-							{
-								// OK, we should have the NamedStretchProp for the current selected SGNameItem
-								// AND we have checked to see if it is flagged as being stretched by something...
-								// Therefore, we want to check if it contains a NodeRegularShape...
-								if (!pProp->ValidateStretchingObjects(pNameGalleryItem))
-								{
-									InformWarning(_R(IDE_SGNODEREGULARSHAPESDETECTED));
-									return tempMsg;
-								}
-							}
-						}
-
-					}
-
-					pNameGalleryItem = (SGNameItem *) pNameGalleryItem->GetNext();
-				}
-
-				return tempMsg;
+			    _R(IDC_GALLERY_REDEFINE) == pMsg->GadgetID ) {
+			  // Do as above, but afterwards check to ensure that (if any of the sets
+			  // affected is involved in a stretch) no NodeRegularShapes are involved
+			  MsgResult tempMsg = DialogOp::Message(pMessage);
+			  // For every SGNameItem currently selected,
+			  // check if it is involved in a stretch...
+			  NameGallery *pNameGallery = NameGallery::Instance();
+			  if (!pNameGallery)	{ return tempMsg;	}
+			  
+			  SGUsedNames *pNames = pNameGallery->GetUsedNames();
+			  if (!pNames)	{
+			    return tempMsg;
+			  }
+			  SGNameItem *pNameGalleryItem = (SGNameItem*) pNames->GetChild();
+			  while (pNameGalleryItem) {
+			    if (((SGDisplayItem *)pNameGalleryItem)->Flags.Selected) {
+			      NodeSetProperty* pPropNode = pNameGalleryItem->GetPropertyNode();
+			      if (pPropNode) {
+				NamedStretchProp* pProp =
+				  (NamedStretchProp*) pPropNode->GetProperty(NamedStretchProp::nIndex);
+				if (pProp && pProp->GetState())
+				  {
+				    // OK, we should have the
+				    // NamedStretchProp for the
+				    // current selected SGNameItem AND
+				    // we have checked to see if it is
+				    // flagged as being stretched by
+				    // something...  Therefore, we
+				    // want to check if it contains a
+				    // NodeRegularShape...
+				    if (!pProp->ValidateStretchingObjects(pNameGalleryItem)) {
+				      InformWarning(_R(IDE_SGNODEREGULARSHAPESDETECTED));
+				      return tempMsg;
+				    }
+				  }
+			      }
+			      
+			    }
+			    
+			    pNameGalleryItem = (SGNameItem *) pNameGalleryItem->GetNext();
+			  }
+			  return tempMsg;
 			}
 			break;
 			
@@ -1684,7 +1684,7 @@ PORTNOTE("other", "Removed OpBarCreation");
 
 	INT32 i = 0;
 		BOOL CleanTarget = TRUE;
-		BOOL StretchAsSingularItem = FALSE;
+		// BOOL StretchAsSingularItem = FALSE;
 
 		if (pTop)
 		{
@@ -1711,7 +1711,7 @@ PORTNOTE("other", "Removed OpBarCreation");
 							CompareTo(((TemplateAttribute *)pNode)->GetParam()) == 0)
 						{
 							CleanTarget = TRUE;
-							StretchAsSingularItem = FALSE;
+							// StretchAsSingularItem = FALSE;
 							// exclude it if it is the trigger node aswell as a target
 							pTempNode = pParent->FindFirstChild(CC_RUNTIME_CLASS(TemplateAttribute));
 							while (pTempNode && CleanTarget)
@@ -2334,8 +2334,11 @@ BOOL NameGallery::ExpandVirtualTriggers(INT32 ExpandType, INT32 BarNo, DocRect &
 
 ***************************************************************************************/
 
-BOOL NameGallery::SetBSTData(INT32 Index, DWORD MaxWidth = NULL, DWORD MaxHeight = NULL, BYTE TriggeredBar = NULL, BYTE HasABackBar = NULL)
-{
+BOOL NameGallery::SetBSTData(INT32 Index,
+			     DWORD MaxWidth = 0,
+			     DWORD MaxHeight = 0,
+			     BYTE TriggeredBar = 0,
+			     BYTE HasABackBar = 0) {
 	if (Index > MAX_BARS || (!MaxWidth && !MaxHeight && !TriggeredBar && !HasABackBar))
 	{
 		ERROR3("Problem calling SetBSTData()");

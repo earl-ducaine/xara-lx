@@ -812,7 +812,9 @@ BOOL BaseDocument::CheckReferences()
 BOOL BaseDocument::CheckFontSubstitution()
 {
 	// check whether any fonts have been substituted
+#if !defined(EXCLUDE_FROM_RALPH) && !defined(EXCLUDE_FROM_XARALX)
 	BOOL  FontSubstitution = FALSE;
+#endif	
 	FontList DocFonts;
 	DocFonts.Build((Document*)this);
 	FontListItem* FontItem = DocFonts.GetFirstItem();
@@ -825,8 +827,10 @@ BOOL BaseDocument::CheckFontSubstitution()
 			String_64 Name = FontItem->GetFontName();
 			FontClass Class = FontItem->GetFontClass();
 			if (FONTMANAGER->IsFontReplaced(&Name, Class))
-			{			
+			{
+#if !defined(EXCLUDE_FROM_RALPH) && !defined(EXCLUDE_FROM_XARALX)
 				FontSubstitution=TRUE;
+#endif				
 				break;
 			}
 	 		FontItem = DocFonts.GetNextItem(FontItem);

@@ -973,16 +973,16 @@ void OpRetroSmooth::DoRetroSmooth(NodePath* pThisNode, Path* pPath, double smoot
 
 	// also check for blends needing to be re-initialised
 	NodeBlender * pBlender = NULL;
-	NodeBlend * pBlend = NULL;
-	NodeBlend* pOrigBlend = NULL;
+	// NodeBlend * pBlend = NULL;
+	// NodeBlend* pOrigBlend = NULL;
 	pBlender = (NodeBlender *)pThisNode->FindNext(CC_RUNTIME_CLASS(NodeBlender));
 	if (!pBlender) pBlender = (NodeBlender *)pThisNode->FindPrevious(CC_RUNTIME_CLASS(NodeBlender));
 	
 	if (pBlender)
 	{	
-		pBlend = (NodeBlend *)pBlender->FindParent();
+	  //pBlend = (NodeBlend *)pBlender->FindParent();
 		//pBlend->forOpRetroSmooth = FALSE;
-		pOrigBlend = pBlend;
+		// pOrigBlend = pBlend;
 	}
 
 	// Invalidate the region
@@ -1010,7 +1010,7 @@ void OpRetroSmooth::DoRetroSmooth(NodePath* pThisNode, Path* pPath, double smoot
 
 		if (pBlender)
 		{
-			pBlend = (NodeBlend *)pBlender->FindParent();
+		  //pBlend = (NodeBlend *)pBlender->FindParent();
 
 			if (InitBlendAction::InitOnBlender(this, GetUndoActionList(), pBlender, TRUE, TRUE) != AC_OK)
 			{
@@ -1034,7 +1034,7 @@ void OpRetroSmooth::DoRetroSmooth(NodePath* pThisNode, Path* pPath, double smoot
 
 			if (pBlender)
 			{
-				pBlend = (NodeBlend *)pBlender->FindParent();
+			  //pBlend = (NodeBlend *)pBlender->FindParent();
 
 				if (InitBlendAction::InitOnBlender(this, GetUndoActionList(), pBlender, TRUE, TRUE) != AC_OK)
 				{

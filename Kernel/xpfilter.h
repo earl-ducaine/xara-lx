@@ -198,7 +198,7 @@ public:
 protected:
 //	virtual BaseCamelotFilter* CreateNULLFilter(Document* pDocument);
 	
-	virtual char* GetExportFileType();	// Returns a three char long ASCII string
+	virtual const char* GetExportFileType();	// Returns a three char long ASCII string
 
 	BOOL GenerateExportData(CapabilityTree* pPlugCaps);
 	BOOL DoConversionPassN(CapabilityTree* pPlugCaps, INT32 ConvertPass);
