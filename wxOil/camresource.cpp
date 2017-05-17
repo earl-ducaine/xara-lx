@@ -754,7 +754,7 @@ wxString CamResource::GetResourceFilePath( const wxString &str, BOOL AllowOverri
   if (((str.Find(_T(':')))>=0) || ((str.Find(_T('/')))>=0) || ((str.Find(_T('\\')))>=0)) {
     return str;
   }
-  wxString mfn = _T("memory:resources#zip:");
+  wxString mfn = _T("memory:resources.xrs#zip:");
   if (AllowOverride && pResourcePath && pwxFileSystem) {
     wxString fn = *pResourcePath + _T('/');
     // If we have not run the check on the checksum do it now.
@@ -1479,7 +1479,7 @@ BOOL CamResource::Init()
 
 	// Do not use a file extension, as unbelievably this adds 3 seconds to startup time pre-splash box
 	// This is because it tries to initialize the MIME system (sigh)
-	wxMemoryFSHandler::AddFile(_T("resources"), pFile, Length); // Irritatingly does not return errors
+	wxMemoryFSHandler::AddFile(_T("resources.xrs"), pFile, Length); // Irritatingly does not return errors
 
 	wxXmlResource::Get()->SetFlags(wxXRC_NO_RELOADING); // reloading fails with assert due to missing timestamps
 
