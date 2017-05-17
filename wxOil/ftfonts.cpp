@@ -235,7 +235,7 @@ BOOL FTFontMan::IsOkToCall()
 }
 
 // debugging routine to conveniently output a String_64 string
-static void DumpString64User(char* user, TCHAR* msg, const String_64* pString)
+static void DumpString64User(const char* user, TCHAR* msg, const String_64* pString)
 {
 	TRACEUSER(user, msg);
 	TRACEUSER(user, (const TCHAR*)(*pString));  // use TCHAR* conversion operator

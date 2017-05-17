@@ -469,13 +469,13 @@ BOOL ColourDropDown::FillInColourList(IndexedColour *Selected, INT32 SelectIndex
 	if (ParentList != NULL)
 	{
 		// Determine (precalculate) if NotADescendant (if any) is a tint colour
-		BOOL NotATint = TRUE;
-		if (NotDescendantOf != NULL &&
-			NotDescendantOf->GetType() == COLOURTYPE_TINT &&
-			!NotDescendantOf->TintIsShade())
-		{
-			NotATint = FALSE;
-		}
+		// BOOL NotATint = TRUE;
+		// if (NotDescendantOf != NULL &&
+		// 	NotDescendantOf->GetType() == COLOURTYPE_TINT &&
+		// 	!NotDescendantOf->TintIsShade())
+		// {
+		// 	NotATint = FALSE;
+		// }
 
 		// Now scan the colour list, adding any legal parent colours to the list
 		IndexedColour *Ptr = (IndexedColour *) ParentList->GetHead();

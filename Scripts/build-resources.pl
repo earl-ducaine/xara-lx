@@ -336,7 +336,7 @@ foreach $i (@all)
 
 my $checksum=$context->hexdigest();
 
-print STDERR "New checksum = $checksum\n" if ($verbose);
+print "New checksum = $checksum\n" if ($verbose);
 
 my $buildresources=$force;
 
@@ -365,7 +365,7 @@ my $ret;
 
 if ($buildresources)
 {
-    print STDERR "Rebuilding resources - new checksum $checksum\n";
+    print  "Rebuilding resources - new checksum $checksum\n";
     unlink ("$outputdir/xrc/$xaralanguage/xrc.check");
     unlink ("$outputdir/xrc/xrc.check");
 
