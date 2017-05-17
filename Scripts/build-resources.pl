@@ -461,8 +461,19 @@ open(CHECK,">$outputdir/xrc/$xaralanguage/xrc.check") || die "Could not write xr
 print CHECK "$checksum\n";
 close CHECK;
 
-$ret = system("$zip","-9","-j","-q","$outputdir/xrc/resources.xrs","$outputdir/xrc/$xaralanguage/xrc.check","$outputdir/xrc/dialogs.xrc","$outputdir/xrc/strings.xrc","$outputdir/xrc/strings.lst",@resfiles);
+$ret = system("$zip",
+	      "-9",
+	      "-j",
+	      "-q",
+	      "$outputdir/xrc/resources.xrs",
+	      "$outputdir/xrc/$xaralanguage/xrc.check",
+	      "$outputdir/xrc/dialogs.xrc",
+	      "$outputdir/xrc/strings.xrc",
+	      "$outputdir/xrc/strings.lst",
+	      @resfiles);
+
 die "Could not make resources.xrs: $!" if ($ret);
+
 $ret = system("$topdir/Scripts/bin2cpp.pl -f CamResource::GetBinaryFileInfo $outputdir/xrc/resources.xrs $outputdir/resources.h");
 die "Could not make resources.cpp: $!" if ($ret);
 

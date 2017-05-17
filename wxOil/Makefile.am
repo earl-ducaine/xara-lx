@@ -56,4 +56,4 @@ XARALANGUAGE = @XARALANGUAGE@
 
 
 resources.h svnversion.h:
-	../Scripts/build-resources.pl -i  -t $(TOPDIR) -o . --version $(VERSION) -x $(XARALANGUAGE) -u $(USER) --wxrc "$(WXRC)"
+	../Scripts/build-resources.pl --verbose -i  -t $(TOPDIR) -o . --version $(VERSION) -x $(XARALANGUAGE) -u $(USER) --wxrc "$(WXRC)"

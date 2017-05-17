@@ -71,8 +71,8 @@ function build_xoamorph {
     ./autogen.sh
     ./configure --enable-debug
     cd libs/x86_64
-    ar -s -r libCDraw.a *.o
-    cd ..
+    #  ar -s -r libCDraw.a *.o
+    # cd ../..
     # ar -xv libCDraw.a 
     export PATH="/usr/lib/ccache:$PATH"; make -j 4 1> make-out.txt 2>make-error.txt
     # make -j 4
