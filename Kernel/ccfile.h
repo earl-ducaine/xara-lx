@@ -325,10 +325,10 @@ public:
 	void DeinitLexer();
 
 	// Change behaviour of token parser
-	void SetWhitespace(char*);
-	void SetDelimiters(char*);
+	void SetWhitespace(const char*);
+	void SetDelimiters(const char*);
 	void SetCommentMarker(char);
-	void SetStringDelimiters(char*);
+	void SetStringDelimiters(const char*);
 
 	// Read in the next token.
 	BOOL GetToken();
@@ -503,18 +503,18 @@ protected:
 	// Delimiter/white space definitions.
 	// (These point to char arrays that hold a null-terminated set of characters that are
 	// considered to be delimiters and whitespace respectively).
-	char			   *WhitespaceChars;
-	char			   *DelimiterChars;
+	const char* WhitespaceChars;
+	const char* DelimiterChars;
 
 	// Comment definition - similar to whitespace and delimiters, except that it is
 	// holds one character that starts a comment.
 	// e.g. for PostScript, it would be "%".
 	// Comments are deemed to last until the end of the line (i.e. the first CR or LF found).
-	char				CommentMarker;
+	char CommentMarker;
 
 	// These two characters are what bracket string tokens.
 	// e.g. for C it would be "\"\"" and for PostScript it would be "()".
-	char			   *StringDelimiters;
+	const char* StringDelimiters;
 
 	// The number of spaces to output at the start of every line.
 	// This can be changed using IncIndent() and DecIndent() and is used
@@ -522,8 +522,8 @@ protected:
 	// structures of tokens.
 	// IndentDelta is the amount that IndentSpaces is increased/decreased by
 	// IncIndent() and DecIndent().  It can be changed using SetIndentDelta()
-	INT32				IndentSpaces;
-	UINT32				IndentDelta;
+	INT32 IndentSpaces;
+	UINT32 IndentDelta;
 
 private:
 	// A flag to tell when the lexer has been initialised.

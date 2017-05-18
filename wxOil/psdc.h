@@ -168,7 +168,7 @@ public:
 
 	// Functions to do the actual output to the PostScript printer.
 	virtual BOOL OutputNewLine();
-	virtual BOOL OutputToken(TCHAR*);
+	virtual BOOL OutputToken(const TCHAR*);
 	virtual BOOL OutputDirect(BYTE *, INT32);
 
 	// Handles the change of co-ordinate system that GDI introduces to PS devices.
