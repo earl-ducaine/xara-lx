@@ -2196,13 +2196,11 @@ void OriginGadget::OnLButtonDown(wxMouseEvent& event)
 	Purpose:	Handle left button up events - pop-up context sensitive menu
 ********************************************************************************************/
                     
-void OriginGadget::OnRButtonUp(wxMouseEvent& event)
-{
-//	UINT32 nFlags = ClickModifiers::SynthesizeMouseEventFlags(event);
-	wxPoint point = event.GetPosition();
-
-	OriginContextMenu* pOriginMenu = new OriginContextMenu;
-	pOriginMenu->Show();
+void OriginGadget::OnRButtonUp(wxMouseEvent& event) {
+  //	UINT32 nFlags = ClickModifiers::SynthesizeMouseEventFlags(event);
+  // wxPoint point = event.GetPosition();
+  OriginContextMenu* pOriginMenu = new OriginContextMenu;
+  pOriginMenu->Show();
 }
 
 
@@ -2216,19 +2214,17 @@ void OriginGadget::OnRButtonUp(wxMouseEvent& event)
 	Purpose:	handle left button double clicks
 ********************************************************************************************/
                     
-void OriginGadget::OnLButtonDblClk(wxMouseEvent& event)
-{
-	/*UINT32 nFlags =*/ ClickModifiers::SynthesizeMouseEventFlags(event);
-	wxPoint point = event.GetPosition();
-
-	if (OpResetSpreadOrigin::GetState(NULL,NULL).Greyed==FALSE)
-	{
-	 	OpDescriptor* pOpDesc = OpDescriptor::FindOpDescriptor(OPTOKEN_RESETSPREADORIGIN);
-		if (pOpDesc!=NULL)
-			pOpDesc->Invoke();
-		else
-			ERROR3("OriginGadget::OnLButtonDblClk() - FindOpDescriptor(OPTOKEN_RESETSPREADORIGIN) failed");
-	}
+void OriginGadget::OnLButtonDblClk(wxMouseEvent& event) {
+  /*UINT32 nFlags =*/ ClickModifiers::SynthesizeMouseEventFlags(event);
+  // wxPoint point = event.GetPosition();
+  if (OpResetSpreadOrigin::GetState(NULL, NULL).Greyed == FALSE) {
+    OpDescriptor* pOpDesc = OpDescriptor::FindOpDescriptor(OPTOKEN_RESETSPREADORIGIN);
+    if (pOpDesc!=NULL) {
+      pOpDesc->Invoke();
+    } else {
+      ERROR3("OriginGadget::OnLButtonDblClk() - FindOpDescriptor(OPTOKEN_RESETSPREADORIGIN) failed");
+    }
+  }
 }
 
 

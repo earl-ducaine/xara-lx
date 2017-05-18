@@ -249,7 +249,7 @@ BOOL PSPrintDC::OutputNewLine()
 
 ********************************************************************************************/
 
-BOOL PSPrintDC::OutputToken(TCHAR *Str) {
+BOOL PSPrintDC::OutputToken(const TCHAR *Str) {
 #ifndef STANDALONE
 	// Should we re-instate the Camelot context?
 	if (!SafeToUseGDI && GDIContextIsCurrent)

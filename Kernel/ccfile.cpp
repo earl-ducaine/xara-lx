@@ -971,7 +971,7 @@ void CCLexFile::DeinitLexer()
 
 ********************************************************************************************/
 
-void CCLexFile::SetWhitespace(char *Str)
+void CCLexFile::SetWhitespace(const char *Str)
 {
 	WhitespaceChars = Str;
 }
@@ -1003,8 +1003,7 @@ void CCLexFile::SetWhitespace(char *Str)
 
 ********************************************************************************************/
 
-void CCLexFile::SetDelimiters(char *Str)
-{
+void CCLexFile::SetDelimiters(const char* Str) {
 	DelimiterChars = Str;
 }
 
@@ -1048,7 +1047,7 @@ void CCLexFile::SetCommentMarker(char ch)
 
 ********************************************************************************************/
 
-void CCLexFile::SetStringDelimiters(char *Str)
+void CCLexFile::SetStringDelimiters(const char* Str)
 {
 	StringDelimiters = Str;
 }
@@ -2344,15 +2343,17 @@ BOOL CCLexFile::IsWhitespace( char cToTest )
 
 ********************************************************************************************/
 
-BOOL CCLexFile::PutString( const StringBase &str, UINT32 length, char* pszSep )
-{
-	write( StringDelimiters[0] );
-	write( str, length );
-	write( StringDelimiters[1] );
-	if( strlen( pszSep ) > 0 )
-		write( pszSep, (UINT32)strlen( pszSep ) );
-
-	return (good());
+BOOL CCLexFile::PutString(const StringBase &str, UINT32 length, char* pszSep) {
+  char string_delimiter_0 = StringDelimiters[0];
+  char string_delimiter_1 = StringDelimiters[1];
+  
+  write(string_delimiter_0);
+  write(str, length);
+  write(string_delimiter_1);
+  if( strlen( pszSep ) > 0 ) {
+    write( pszSep, (UINT32)strlen( pszSep ) );
+  }
+  return (good());
 }
 
 /********************************************************************************************

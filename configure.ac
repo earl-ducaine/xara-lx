@@ -4,9 +4,6 @@ AC_CANONICAL_TARGET
 AM_INIT_AUTOMAKE([subdir-objects foreign])
 AC_DEFUN([AC_DATAROOTDIR_CHECKED])
 
-# AC_INIT(wxOil/camelot.cpp)
-# AM_INIT_AUTOMAKE(XaraLX, 0.7)
-
 AC_PREFIX_PROGRAM( pkg-config )
 
 # BinReloc sets CFLAGS and CXXFLAGS, so we have to undo this
