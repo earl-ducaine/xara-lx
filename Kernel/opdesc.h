@@ -458,16 +458,16 @@ class CCAPI OpDescriptor : public MessageHandler
 
 protected:
 
-	DWORD			ModuleID;
-    UINT32 			TextID;
-	UINT32			HelpID;
-	UINT32			BubbleID;
-	BarControlInfo	BarCtrlInfo;
+	DWORD ModuleID;
+	UINT32 TextID;
+	UINT32 HelpID;
+	UINT32 BubbleID;
+	BarControlInfo BarCtrlInfo;
 //	UINT32			BitmapID;
 	CCRuntimeClass* OpClass;
 	OpFlgs			Flags;
 
-	BOOL			m_bHotKeyEnabled;
+	BOOL m_bHotKeyEnabled;
 	// This set of member vars looks after the aliased state of the op descriptor
     BOOL			Aliased;			// TRUE if the op desc has been aliased
 	CCRuntimeClass* AliasOpClass;		// The op class to use to invoke the alias op
@@ -702,7 +702,7 @@ public:
 						 UINT32 toolID,                      	// Tool (Module) Identifier
 						 UINT32 txID,                         // String Resource ID
 						 CCRuntimeClass* Op,				// pointer to the Op's runtime class object
-						 TCHAR* tok,						// pointer to the token string
+						 const TCHAR* tok,						// pointer to the token string
 						 pfnGetState gs,					// pointer to the GetState function
 						 UINT32 helpId = 0,					// help identifier
 						 UINT32 bubbleID = 0,					// string resource for bubble help

@@ -249,7 +249,7 @@ BOOL SelOperation::DoApply( SelOperation* pOp,
 							BOOL* pbCanDiscardUndo /* = NULL */
 							)
 {
-	BOOL AttributeExists = FALSE;  // Until we find that the attribute does exist
+  // BOOL AttributeExists = FALSE;  // Until we find that the attribute does exist
 
 	CCRuntimeClass* AttrType = Attrib->GetAttributeType();
 	
@@ -382,7 +382,7 @@ BOOL SelOperation::DoApply( SelOperation* pOp,
 					// if applying a brush attribute we must copy some data over
 					if (!LookForMultiple)
 					{
-						AttributeExists = TRUE; 
+					  // AttributeExists = TRUE; 
 						break; 
 					}
 				}
@@ -1257,7 +1257,7 @@ void OpApplyAttribToSelected::DoWithParam(OpDescriptor* OpDesc, OpParam* pOpPara
 
 	BOOL Mutate = FALSE;
 	BOOL RedrawBlobs = FALSE;
-	NodeAttribute* OldAttr = NULL;
+	// NodeAttribute* OldAttr = NULL;
 
 	if (Attrib == NULL)
 	{
@@ -1286,7 +1286,7 @@ void OpApplyAttribToSelected::DoWithParam(OpDescriptor* OpDesc, OpParam* pOpPara
    	{
 		// Someone has specified a Particular Attribute that we should replace
 		// and ignore all others.
-   		OldAttr = (NodeAttribute*)(void *)pOpParam->Param2;
+   		// OldAttr = (NodeAttribute*)(void *)pOpParam->Param2;
 		RedrawBlobs = Attrib->EffectsParentBounds();
 	}
 
@@ -1651,17 +1651,17 @@ BOOL OpApplyAttribToSelected::Init()
 
 		// Bodge this needs to use faby Macro technology so that the op is attached to
 		// a system bar.
-	OpDesc = new OpChangeLineWidthOpDesc(0,
-										 _R(IDS_CHANGELINEWIDTH),
-										 CC_RUNTIME_CLASS(OpApplyAttribToSelected),
-										 OPTOKEN_CHANGELINEWIDTH,
-										 OpChangeLineWidthOpDesc::GetState,
-										 0,
-										 _R(IDBBL_CHANGELINEWIDTH),
-										 _R(IDCB_LINEWIDTH_COMBO_BOX),
-										 _R(IDCB_LINEWIDTH_COMBO_BOX));
+	OpDesc =
+	  new OpChangeLineWidthOpDesc(0,
+				      _R(IDS_CHANGELINEWIDTH),
+				      CC_RUNTIME_CLASS(OpApplyAttribToSelected),
+				      OPTOKEN_CHANGELINEWIDTH,
+				      OpChangeLineWidthOpDesc::GetState,
+				      0,
+				      _R(IDBBL_CHANGELINEWIDTH),
+				      _R(IDCB_LINEWIDTH_COMBO_BOX),
+				      _R(IDCB_LINEWIDTH_COMBO_BOX));
 	ERRORIF(!OpDesc, _R(IDE_NOMORE_MEMORY), FALSE);
-
 	if (!OpRepeatApplyAttribToSelected::Init())
 		return FALSE;	
 	
