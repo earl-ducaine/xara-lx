@@ -1804,7 +1804,7 @@ void AttrStartCap::GetDebugDetails(StringBase* Str)
 	NodeAttribute::GetDebugDetails( Str );
 
 	String_256 TempStr;
-	char *p;
+	const char *p;
 	switch (Value.StartCap)
 	{
 		case LineCapButt: p = "Butt"; break;
@@ -2843,7 +2843,7 @@ void AttrJoinType::GetDebugDetails(StringBase* Str)
 	NodeAttribute::GetDebugDetails( Str );
 
 	String_256 TempStr;
-	char *p;
+	const char *p;
 	switch (Value.JoinType)
 	{
 		case MitreJoin: p = "Mitre"; break;
@@ -3444,7 +3444,7 @@ void AttrWindingRule::GetDebugDetails(StringBase* Str)
 	NodeAttribute::GetDebugDetails( Str );
 
 	String_256 TempStr;
-	char *p;
+	const char *p;
 	switch (Value.WindingRule)
 	{
 		case NonZeroWinding: p = "Non-zero"; break;

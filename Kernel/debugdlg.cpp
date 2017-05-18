@@ -1548,7 +1548,7 @@ void DebugDlg::InvokeCommand(INT32 GroupIndex, INT32 CommandIndex, StringBase *N
 				if (pObjCache == NULL)
 					return;
 
-				WORD hObj = 0;
+				// WORD hObj = 0;
 										
 				switch(CommandIndex)
 				{
@@ -1584,7 +1584,8 @@ void DebugDlg::InvokeCommand(INT32 GroupIndex, INT32 CommandIndex, StringBase *N
 					case 3:	// Add an object which size is bigger than the cache size
 						{
 							DummyCachedObject* u = new DummyCachedObject(55);
-							hObj = pObjCache->Add(u);
+							// hObj =
+							   pObjCache->Add(u);
 						}
 						break;
 					default:

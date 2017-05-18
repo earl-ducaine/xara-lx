@@ -2041,7 +2041,7 @@ void GPerspective::Transform( DPOINT a, DPOINT& b )
 	p.y = V0.y ;
 	q.x = V3.x ;
 	q.y = V3.y ;
-	if ( notequal(a.y,0) )
+	if ( notequal(a.y,0) ){
 		if ( I0flag )
 		{
 			if ( notequal(V0.x,V1.x) )
@@ -2060,9 +2060,10 @@ void GPerspective::Transform( DPOINT a, DPOINT& b )
 			q.x = V3.x+a.y*(V2.x-V3.x) ;
 			q.y = V3.y+a.y*(V2.y-V3.y) ;
 		}
+	}
 	b.x = p.x ;
 	b.y = p.y ;
-	if ( notequal(a.x,0) )
+	if ( notequal(a.x,0) ) {
 		if ( I1flag )
 		{
 			if ( notequal(p.x,q.x) )
@@ -2075,6 +2076,7 @@ void GPerspective::Transform( DPOINT a, DPOINT& b )
 			b.x = p.x+a.x*(q.x-p.x) ;
 			b.y = p.y+a.x*(q.y-p.y) ;
 		}
+	}
 }
 
 

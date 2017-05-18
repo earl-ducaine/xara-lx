@@ -1200,7 +1200,7 @@ INT32 PluginNativeFilter::HowCompatibleIsFileType(char* pFileType)
 		return 9;
 }
 
-char* PluginNativeFilter::GetExportFileType()
+const char* PluginNativeFilter::GetExportFileType()
 {
 	return EXPORT_FILETYPE_NATIVE;
 }

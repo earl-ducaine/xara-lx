@@ -2661,7 +2661,7 @@ void NodeBitmap::SetAspectRatio(double dExWidth, double dExHeight, BOOL bPathAnd
 	double				w = double(GetBitmap()->GetWidth());
 	double				h = double(GetBitmap()->GetHeight());
 
-	DocCoord C = DocCoord::OneHalf( p1, p2 );
+	// DocCoord C = DocCoord::OneHalf( p1, p2 );
 	INT32 dxx = INT32(( p1.x - p0.x ) * dExWidth / w);
 	INT32 dxy = INT32(( p1.y - p0.y ) * dExWidth / w);
 	INT32 dyx = INT32(( p2.x - p0.x ) * dExHeight / h);

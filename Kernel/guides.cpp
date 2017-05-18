@@ -2389,7 +2389,8 @@ void OpNewGuideline::Do(OpDescriptor* pOpDesc)
 	if (pOpDesc!=NULL && pSpread!=NULL && NewGuidelineParam.Method==GUIDELINEOPMETHOD_NEW_IMMEDIATE)
 	{
 //		GuidelineType Type     = NewGuidelineParam.Type;
-		DocCoord      GuidePos = DocCoord(NewGuidelineParam.NewOrdinate, NewGuidelineParam.NewOrdinate);
+	  // DocCoord      GuidePos =
+		  DocCoord(NewGuidelineParam.NewOrdinate, NewGuidelineParam.NewOrdinate);
 		DoWithParam(pOpDesc,&NewGuidelineParam);
 
 		NewGuidelineParam.Method = GUIDELINEOPMETHOD_INVALID;	// reset static param block

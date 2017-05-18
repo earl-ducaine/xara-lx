@@ -390,7 +390,7 @@ INT32 CamelotWebFilter::HowCompatibleIsFileType(char* pFileType)
 	return compatibility;
 }
 
-char* CamelotWebFilter::GetExportFileType()
+const char* CamelotWebFilter::GetExportFileType()
 {
 	if (IsCompactNativeFilter())
 		return EXPORT_FILETYPE_WEB;
