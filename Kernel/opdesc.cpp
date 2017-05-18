@@ -1570,7 +1570,7 @@ UndoableOpDescriptor::UndoableOpDescriptor(
 						   UINT32 toolID,
 						   UINT32 txID,
 						   CCRuntimeClass *Op,
-						   TCHAR* tok,
+						   const TCHAR* tok,
 						   pfnGetState gs,
 						   UINT32 helpID,
 						   UINT32 bubbleID,
