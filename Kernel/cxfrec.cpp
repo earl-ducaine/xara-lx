@@ -292,7 +292,7 @@ void CXaraFileRecord::DumpTypes(void)
 	DWORD Index;
 	for (Index = 0; Index < Count; Index++)
 	{
-		PTSTR			pType = NULL;
+		PCTSTR pType = NULL;
 		DWORD len = 0;
 		switch (pPtr[Index])
 		{

@@ -236,7 +236,7 @@ MenuItem *GetMenuPreferences(UINT32 ResourceID)
 				}
 #endif
 
-				pSubMenu = CreateMenuItem(	OpToken, 
+				pSubMenu = CreateMenuItem((const wchar_t*)OpToken, 
 											pCurMenu->GetMenuId(),
 											GetSeparator(	&MenuScript, 
 															separator_sym, 
@@ -271,7 +271,7 @@ MenuItem *GetMenuPreferences(UINT32 ResourceID)
 					continue;
 #endif
 
-				pMenuItem = CreateMenuItem(	OpToken,
+				pMenuItem = CreateMenuItem((const wchar_t*)OpToken,
 											pCurMenu->GetMenuId(),
 											GetSeparator(	&MenuScript, 
 															separator_sym, 
@@ -318,7 +318,7 @@ MenuItem *GetMenuPreferences(UINT32 ResourceID)
 
 ********************************************************************************************/
 
-MenuItem *CreateMenuItem(TCHAR *OpToken, UINT32 ParentId, BOOL Separator)
+MenuItem *CreateMenuItem(const TCHAR *OpToken, UINT32 ParentId, BOOL Separator)
 {
 	OpDescriptor *Operation = OpDescriptor::FindOpDescriptor(OpToken);
 

@@ -3294,6 +3294,7 @@ BOOL BaseCamelotFilter::ReadFile()
 BOOL BaseCamelotFilter::ReadFileUntil(INT32 tag) {
   ERROR2IF(pCXaraFile == NULL,FALSE,"pCXaraFile is NULL");
   BOOL ok = TRUE;
+  unsigned int uint = tag >= 0 ? tag : 0;
   while (!EndOfFileFlag &&
 	 ok &&
 	 !EscapePressed &&

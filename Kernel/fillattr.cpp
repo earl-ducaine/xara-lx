@@ -5019,7 +5019,7 @@ FillControl AttrFillGeometry::DoColourDropTest(AttrColourDrop* ColDrop,
 	Node* pParent = (Node*)*Object;
 	ColDrop->SetObjectDroppedOn(*Object);
 
-	DocRect ParentBounds = ((NodeRenderableBounded*)*Object)->GetBoundingRect();
+	// DocRect ParentBounds = ((NodeRenderableBounded*)*Object)->GetBoundingRect();
 
 	AttribMap.RemoveAll();
 	BOOL FoundAttrs = ((NodeRenderableInk*)pParent)->FindAppliedAttributes(&AttribMap);
@@ -5073,7 +5073,7 @@ AttrFillGeometry* AttrFillGeometry::DoColourDrop(AttrColourDrop* ColDrop)
 			IsVisible()
 			)
 		{
-			BOOL UniqueFill = TRUE;
+		  // BOOL UniqueFill = TRUE;
 
 			AttrFillGeometry* pAttr = FindFirstSelectedAttr();
 			while (pAttr != NULL)
@@ -5083,7 +5083,7 @@ AttrFillGeometry* AttrFillGeometry::DoColourDrop(AttrColourDrop* ColDrop)
 					if ( IsMeshSame((FillGeometryAttribute*)GetAttributeValue(),
 									(FillGeometryAttribute*)pAttr->GetAttributeValue()) )
 					{
-						UniqueFill = FALSE;
+					  // UniqueFill = FALSE;
 						break;
 					}
 				}
@@ -6552,7 +6552,7 @@ void AttrLinearFill::ValidateAttributeValue()
 	DocRect AttrBounds = DocRect(0,0,0,0);
 
 	INT32 Width  = DEFAULT_FILLWIDTH;
-	INT32 Height = DEFAULT_FILLHEIGHT;
+	// INT32 Height = DEFAULT_FILLHEIGHT;
 
 	// Are we an Orphan ?
  	if (FindParent() != NULL)
@@ -6566,7 +6566,7 @@ void AttrLinearFill::ValidateAttributeValue()
 			AttrBounds = Selected->GetBoundingRect();
 
 		Width  = AttrBounds.Width();
-		Height = AttrBounds.Height();
+		// Height = AttrBounds.Height();
 	}
 
 	// If the StartPoint is 'NULL' then make all points sensible
@@ -8649,7 +8649,7 @@ AttrFillGeometry* AttrConicalFill::DoColourDrop(AttrColourDrop* ColDrop)
 			IsVisible()
 			)
 		{
-			BOOL UniqueFill = TRUE;
+		  // BOOL UniqueFill = TRUE;
 
 			AttrFillGeometry* pAttr = FindFirstSelectedAttr();
 			while (pAttr != NULL)
@@ -8659,7 +8659,7 @@ AttrFillGeometry* AttrConicalFill::DoColourDrop(AttrColourDrop* ColDrop)
 					if ( IsMeshSame((FillGeometryAttribute*)GetAttributeValue(),
 									(FillGeometryAttribute*)pAttr->GetAttributeValue()) )
 					{
-						UniqueFill = FALSE;
+					  // UniqueFill = FALSE;
 						break;
 					}
 				}
@@ -8989,7 +8989,7 @@ void AttrConicalFill::ValidateAttributeValue()
 	DocRect AttrBounds = DocRect(0,0,0,0);
 
 	INT32 Width  = DEFAULT_FILLWIDTH;
-	INT32 Height = DEFAULT_FILLHEIGHT;
+	// INT32 Height = DEFAULT_FILLHEIGHT;
 
 	// Are we an Orphan ?
  	if (FindParent() != NULL)
@@ -9003,7 +9003,7 @@ void AttrConicalFill::ValidateAttributeValue()
 			AttrBounds = Selected->GetBoundingRect();
 
 		Width  = AttrBounds.Width();
-		Height = AttrBounds.Height();
+		// Height = AttrBounds.Height();
 	}
 
 	// If the StartPoint is 'NULL' then make all points sensible
@@ -9052,7 +9052,8 @@ DocRect AttrConicalFill::GetBlobBoundingRect()
 	// Get the Start and End Points
 	DocCoord StartPoint = *GetStartPoint();
 	DocCoord EndPoint   = *GetEndPoint();
-	DocCoord EndPoint2  = MakeLineAtAngle(StartPoint, EndPoint, 180);
+	// DocCoord EndPoint2  =
+	  MakeLineAtAngle(StartPoint, EndPoint, 180);
 
 	DocRect StartBlobRect;
 	DocRect EndBlobRect;
@@ -11691,8 +11692,8 @@ void AttrThreeColFill::ValidateAttributeValue()
 	// Make up some sensible defaults
 	DocRect AttrBounds = DocRect(0,0,0,0);
 
-	INT32 Width  = DEFAULT_FILLWIDTH;
-	INT32 Height = DEFAULT_FILLHEIGHT;
+	// INT32 Width  = DEFAULT_FILLWIDTH;
+	// INT32 Height = DEFAULT_FILLHEIGHT;
 
 	// Are we an Orphan ?
  	if (FindParent() != NULL)
@@ -11705,8 +11706,8 @@ void AttrThreeColFill::ValidateAttributeValue()
 		else
 			AttrBounds = Selected->GetBoundingRect();
 
-		Width  = AttrBounds.Width();
-		Height = AttrBounds.Height();
+		// Width  = AttrBounds.Width();
+		// Height = AttrBounds.Height();
 	}
 
 	// If the StartPoint is 'NULL' then make all points sensible
@@ -13113,8 +13114,8 @@ void AttrFourColFill::ValidateAttributeValue()
 	// Make up some sensible defaults
 	DocRect AttrBounds = DocRect(0,0,0,0);
 
-	INT32 Width  = DEFAULT_FILLWIDTH;
-	INT32 Height = DEFAULT_FILLHEIGHT;
+	// INT32 Width  = DEFAULT_FILLWIDTH;
+	// INT32 Height = DEFAULT_FILLHEIGHT;
 
 	// Are we an Orphan ?
  	if (FindParent() != NULL)
@@ -13127,8 +13128,8 @@ void AttrFourColFill::ValidateAttributeValue()
 		else
 			AttrBounds = Selected->GetBoundingRect();
 
-		Width  = AttrBounds.Width();
-		Height = AttrBounds.Height();
+		// Width  = AttrBounds.Width();
+		// Height = AttrBounds.Height();
 	}
 
 	// If the StartPoint is 'NULL' then make all points sensible

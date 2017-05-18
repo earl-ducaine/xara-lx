@@ -499,13 +499,13 @@ BOOL BrushAttrValue::Blend(BlendAttrParam* pBlendParam)
 	BrushDefinition* pThisDef = GetBrushDefinition();
 	BrushDefinition* pOtherDef = pOtherBrush->GetBrushDefinition();
 	// BrushHandle ThisHandle = BrushHandle_NoBrush;
-	BrushHandle OtherHandle = BrushHandle_NoBrush;
+	// BrushHandle OtherHandle = BrushHandle_NoBrush;
 
 	// if (pThisPPB != NULL)
 	// 	ThisHandle = pThisPPB->GetBrushDefinitionHandle();
 
-	if (pOtherPPB != NULL)
-		OtherHandle = pOtherPPB->GetBrushDefinitionHandle();
+	// if (pOtherPPB != NULL)
+	// 	OtherHandle = pOtherPPB->GetBrushDefinitionHandle();
 	
 	if (BlendRatio <= 0.5)
 	{

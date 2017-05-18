@@ -4909,10 +4909,10 @@ ProcessEPSResult Document::ImportPageInfo(TCHAR* Comment)
 				return EPSCommentSystemError;
 
 			// Ask the pages to change themselves
-			BOOL Worked = FALSE;
+			// BOOL Worked = FALSE;
 			if ((Width>0) && (Height>0))
 			{
-				Worked = pSpread->SetPageSize(Width, Height, Margin, Bleed, Dps, ShowDropShadow);
+				pSpread->SetPageSize(Width, Height, Margin, Bleed, Dps, ShowDropShadow);
 			}
 		}                 
 
