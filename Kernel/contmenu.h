@@ -162,7 +162,7 @@ public:
 // Helper functions...
 	BOOL 				BuildTransferCommands(BOOL NodeCommands);
 	BOOL				BuildEffectCommands();
-	BOOL 				BuildCommand(TCHAR* pOpToken,
+	BOOL 				BuildCommand(const TCHAR* pOpToken,
 									 BOOL Separator = FALSE,
 									 MenuItem* pRootMenu = NULL,
 									 const String& strNewText = String( _T("") ),

@@ -498,14 +498,14 @@ BOOL BrushAttrValue::Blend(BlendAttrParam* pBlendParam)
 	// don't want to blend the variables any more, lets just copy them
 	BrushDefinition* pThisDef = GetBrushDefinition();
 	BrushDefinition* pOtherDef = pOtherBrush->GetBrushDefinition();
-	BrushHandle ThisHandle = BrushHandle_NoBrush;
-	BrushHandle OtherHandle = BrushHandle_NoBrush;
+	// BrushHandle ThisHandle = BrushHandle_NoBrush;
+	// BrushHandle OtherHandle = BrushHandle_NoBrush;
 
-	if (pThisPPB != NULL)
-		ThisHandle = pThisPPB->GetBrushDefinitionHandle();
+	// if (pThisPPB != NULL)
+	// 	ThisHandle = pThisPPB->GetBrushDefinitionHandle();
 
-	if (pOtherPPB != NULL)
-		OtherHandle = pOtherPPB->GetBrushDefinitionHandle();
+	// if (pOtherPPB != NULL)
+	// 	OtherHandle = pOtherPPB->GetBrushDefinitionHandle();
 	
 	if (BlendRatio <= 0.5)
 	{
@@ -1572,7 +1572,7 @@ BOOL BrushAttrValue::DeleteTimeStampPoints(MILLIPOINT StartDistance, UINT32 NumP
 					pRemovedPoints->push_back(TSBP);
 				RemPos = LastPos;
 				TSBP = *LastPos; ++LastPos;
-				TimeStampBrushPoint Test = *RemPos;
+				// TimeStampBrushPoint Test = *RemPos;
 		//		TRACEUSER("Diccon", _T("Removing point at %d\n"), Test.m_Distance);
 				// remove it from the main list
 				m_pTimeStampList->erase( RemPos );

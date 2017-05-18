@@ -285,7 +285,7 @@ public:
 
 	// Functions to do the actual output to the EPS file.
 	virtual BOOL OutputNewLine();
-	virtual BOOL OutputToken(TCHAR*);
+	virtual BOOL OutputToken(const TCHAR*);
 	virtual BOOL OutputDirect(BYTE *, INT32);
 };
 

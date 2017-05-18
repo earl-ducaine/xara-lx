@@ -189,7 +189,7 @@ void DebugTreeInfo::OutputDebugLine(TCHAR *Str)
 
 ********************************************************************************************/
 
-void DebugTreeInfo::OutputDebug(TCHAR *Str)
+void DebugTreeInfo::OutputDebug(const TCHAR* Str)
 {
 #if defined(__WXMSW__)
 	OutputDebugString( Str );
