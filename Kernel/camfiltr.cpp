@@ -2698,7 +2698,7 @@ BOOL BaseCamelotFilter::EnsureLayerIntegrity(Spread* pSpread)
 			UINT32 OriginalNonFrameLayersFound = 0;
 			UINT32 OriginalFrameLayersFound = 0;
 			Layer* pCurrentLayer = NULL;
-			Layer * pActiveLayer = NULL;
+			// Layer * pActiveLayer = NULL;
 			// Search from the first imported layer, so that we only ever combine newly imported
 			// layers together. Only do when importing.
 			// Also, find the first active layer in the spread which should be our original active
@@ -2742,7 +2742,7 @@ BOOL BaseCamelotFilter::EnsureLayerIntegrity(Spread* pSpread)
 					// Note the original active layer, if found 
 					if (!Finished && pLayer == m_pActiveLayerBeforeImport) // pLayer->IsPseudoFrame() && pLayer->IsActive())
 					{
-						pActiveLayer = pLayer;
+					  // pActiveLayer = pLayer;
 					}
 
 					pLayer = pLayer->FindNextLayer();
@@ -3291,20 +3291,21 @@ BOOL BaseCamelotFilter::ReadFile()
 
 ********************************************************************************************/
 
-BOOL BaseCamelotFilter::ReadFileUntil(INT32 tag)
-{
-	ERROR2IF(pCXaraFile == NULL,FALSE,"pCXaraFile is NULL");
-
-	BOOL ok = TRUE;
-
-	while (!EndOfFileFlag && ok && !EscapePressed && !pCXaraFile->GetLastReadTag()==tag)
-		ok = pCXaraFile->ReadNextRecord();
-
-	// If the user has pressed escape during export - progress update returns this to us
-	if (EscapePressed)
-		return FALSE;
-
-	return ok;
+BOOL BaseCamelotFilter::ReadFileUntil(INT32 tag) {
+  ERROR2IF(pCXaraFile == NULL,FALSE,"pCXaraFile is NULL");
+  BOOL ok = TRUE;
+  while (!EndOfFileFlag &&
+	 ok &&
+	 !EscapePressed &&
+	 !(pCXaraFile->GetLastReadTag() == tag)) {
+    ok = pCXaraFile->ReadNextRecord();
+  }
+  // If the user has pressed escape during export - progress update
+  // returns this to us
+  if (EscapePressed) {
+    return FALSE;
+  }
+  return ok;
 }
 
 /********************************************************************************************

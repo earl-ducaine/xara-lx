@@ -467,7 +467,7 @@ public:
 			 					     UINT32 toolID,       
 			 					  	 UINT32 txID, 
 			 					  	 CCRuntimeClass* RuntimeClass,        
-				 					 TCHAR* tok,	
+				 					 const TCHAR* tok,	
 				 					 pfnGetState gs,	 
 				 					 UINT32 helpId = 0, 
 									 UINT32 bubbleID = 0,
