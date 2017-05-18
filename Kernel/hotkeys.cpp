@@ -143,7 +143,7 @@ enum HK_TokenIndex
 
 static struct
 {
-	TCHAR*  Token;
+	const TCHAR*  Token;
 } TokenTable[] = 
 {
 	{ _T("HotKey") },

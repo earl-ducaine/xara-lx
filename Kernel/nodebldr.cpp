@@ -996,8 +996,8 @@ void NodeBlender::CreateBlends(RenderRegion* pRender,HandleBecomeA* pHandleBecom
 	// occur. (The BlendRatio would get out of bounds pretty quick, though, and that would
 	// stop the loop within a couple more iterations.)
 	while ( ContinueRender &&
-		    ( !IsReversed() && m_BlendStep < StopBlendStep ) ||
-			( IsReversed() && m_BlendStep > StopBlendStep ) )
+		(( !IsReversed() && m_BlendStep < StopBlendStep ) ||
+		 ( IsReversed() && m_BlendStep > StopBlendStep ) ))
 	{
 
 		// Calc the blend ratio using the current blend step
@@ -1104,8 +1104,8 @@ void NodeBlender::CreateBlends(RenderRegion* pRender,HandleBecomeA* pHandleBecom
 			
 			double AttrBlendRatio = MapAttrBlendRatio(LinearBlendRatio);
 
-			NodeRenderableInk * pStartBlendNode = NULL;
-			NodeRenderableInk * pEndBlendNode = NULL;
+			//NodeRenderableInk * pStartBlendNode = NULL;
+			//NodeRenderableInk * pEndBlendNode = NULL;
 
 			if (LinearBlendRatio <= 0.5)	// CGS:  27/7/2000  We used to use BlendRatio for
 											// this comparison.  We now use LinearBlendRatio since
@@ -1118,8 +1118,10 @@ void NodeBlender::CreateBlends(RenderRegion* pRender,HandleBecomeA* pHandleBecom
 					pCurrBlendPathStart->GetBlendNode(), pCurrBlendPathEnd->GetBlendNode(),
 					IsOneToOne(), GetNodeBlendPath(), pHandleBecomeA, ptrProc);
 
-				pStartBlendNode = pCurrBlendPathStart->GetBlendNode();
-				pEndBlendNode = pCurrBlendPathEnd->GetBlendNode();
+				// pStartBlendNode =
+				  pCurrBlendPathStart->GetBlendNode();
+				  // pEndBlendNode =
+				  pCurrBlendPathEnd->GetBlendNode();
 			}
 			else
 			{
@@ -1129,8 +1131,10 @@ void NodeBlender::CreateBlends(RenderRegion* pRender,HandleBecomeA* pHandleBecom
 					pCurrBlendPathEnd->GetBlendNode(), pCurrBlendPathStart->GetBlendNode(),
 					IsOneToOne(), GetNodeBlendPath(), pHandleBecomeA, ptrProc);
 
-				pStartBlendNode = pCurrBlendPathEnd->GetBlendNode();
-				pEndBlendNode = pCurrBlendPathStart->GetBlendNode();
+				// pStartBlendNode =
+				  pCurrBlendPathEnd->GetBlendNode();
+				  // pEndBlendNode =
+				  pCurrBlendPathStart->GetBlendNode();
 			}
 
 			if (!CallBeginBlendStep(&BNParam, usingSumAllPathsPathProcessor))
@@ -2148,15 +2152,19 @@ BOOL NodeBlender::ConvertLineToShape(Path* pPath,Path* pShapePath)
 	if (!ReversePath.Initialise(pPath->GetNumCoords())) return FALSE;
 	if (!ReversePath.CopyPathDataFrom(pPath)) return FALSE;
 
-	PathVerb* pRevVerb = ReversePath.GetVerbArray();
-	PathVerb* pShapeVerb = pShapePath->GetVerbArray();
+	//PathVerb* pRevVerb =
+	  ReversePath.GetVerbArray();
+	  // PathVerb* pShapeVerb =
+	  pShapePath->GetVerbArray();
 
 	ReversePath.Reverse();
 	ReversePath.FindStartOfPath();
 	ReversePath.DeleteElement();
 
-	pRevVerb = ReversePath.GetVerbArray();
-	pShapeVerb = pShapePath->GetVerbArray();
+	// pRevVerb =
+	  ReversePath.GetVerbArray();
+	  // pShapeVerb =
+	  pShapePath->GetVerbArray();
 
 	pShapePath->ClearPath(FALSE);
 	if (!pShapePath->MergeTwoPaths(*pPath)) return FALSE;
@@ -5276,7 +5284,7 @@ INT32 BlendPath::FindBottomLeft()
 	DocCoord* pCoords = m_pPath->GetCoordArray();
 	if (pCoords == NULL) return -1;
 
-	INT32 BottomLeftIndex = -1;
+	// INT32 BottomLeftIndex = -1;
 	INT32 Index;
 	BOOL ok;
 
@@ -5295,7 +5303,7 @@ INT32 BlendPath::FindBottomLeft()
 		ThisDist = VeryMostBottomLeft.Distance(pCoords[Index]);
 		if (ThisDist < SmallestDist)
 		{
-			BottomLeftIndex = Index;
+		  // BottomLeftIndex = Index;
 			SmallestDist = ThisDist;
 		}
 		ok = m_pPath->FindNextEndPoint(&Index);
@@ -6510,7 +6518,7 @@ BOOL BlendBecomeA::PassBack(NodeRenderableInk* pNewNode,NodeRenderableInk* pCrea
 
 	Path* pInkPath = NULL;
 
-	Node * pPathNode = NULL;
+	// Node * pPathNode = NULL;
 
 	// DMc
 	// we have a game of let's pretend in here
@@ -6519,7 +6527,7 @@ BOOL BlendBecomeA::PassBack(NodeRenderableInk* pNewNode,NodeRenderableInk* pCrea
 	if (pNewNode->IsNodePath())
 	{
 		pInkPath = &(((NodePath*)pNewNode)->InkPath);
-		pPathNode = (NodePath *)pNewNode;
+		// pPathNode = (NodePath *)pNewNode;
 	}
 	else if (pNewNode->IsCompound())
 	{
@@ -6530,7 +6538,7 @@ BOOL BlendBecomeA::PassBack(NodeRenderableInk* pNewNode,NodeRenderableInk* pCrea
 			if (pNodeToBlend->IsNodePath())
 			{
 				pInkPath = &(((NodePath *)pNodeToBlend)->InkPath);
-				pPathNode = (NodePath *)pNodeToBlend;
+				// pPathNode = (NodePath *)pNodeToBlend;
 			}
 		}
 	}

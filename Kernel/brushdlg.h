@@ -107,7 +107,7 @@ service marks of Xara Group Ltd. All rights in these marks are reserved.
 #include "opdrbrsh.h"
 
 enum RenderPreviewType { RT_LINE, RT_S, RT_LAST };
-typedef enum RectSideInfo {WIDTH, HEIGHT, LONGEST};
+enum RectSideInfo {WIDTH, HEIGHT, LONGEST};
 
 class CBrushEditDlg : public DialogTabOp//DialogOp
 {

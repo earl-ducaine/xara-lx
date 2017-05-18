@@ -448,7 +448,7 @@ INT32 CamelotNativeFilter::HowCompatibleIsFileType(char* pFileType)
 		return 9;
 }
 
-char* CamelotNativeFilter::GetExportFileType()
+const char* CamelotNativeFilter::GetExportFileType()
 {
 	return EXPORT_FILETYPE_NATIVE;
 }

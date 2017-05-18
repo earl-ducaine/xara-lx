@@ -3294,11 +3294,11 @@ BOOL BaseCamelotFilter::ReadFile()
 BOOL BaseCamelotFilter::ReadFileUntil(INT32 tag) {
   ERROR2IF(pCXaraFile == NULL,FALSE,"pCXaraFile is NULL");
   BOOL ok = TRUE;
-  unsigned int uint = tag >= 0 ? tag : 0;
+  unsigned int utag = tag >= 0 ? tag : 0;
   while (!EndOfFileFlag &&
 	 ok &&
 	 !EscapePressed &&
-	 !(pCXaraFile->GetLastReadTag() == tag)) {
+	 !(pCXaraFile->GetLastReadTag() == utag)) {
     ok = pCXaraFile->ReadNextRecord();
   }
   // If the user has pressed escape during export - progress update

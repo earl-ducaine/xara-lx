@@ -609,12 +609,12 @@ BOOL NodeBevel::CreateBevelBitmap()
 	ERROR2IF(!m_pBeveler,FALSE,"Failed to create a CBeveler pointer!");
 
 	// the flatness needs to be linked to the height of this
-	MILLIPOINT Flatness = BEVEL_FLATNESS;
+	// MILLIPOINT Flatness = BEVEL_FLATNESS;
 
 	// alter the flatness for printing
 	NodeBevelController* pBevelController = (NodeBevelController *) pNode;
 	if (pBevelController && pBevelController->IsPrinting())
-		Flatness = (MILLIPOINT)(((double)BEVEL_FLATNESS) * (96.0 / pBevelController->GetDPI()));
+	  // Flatness = (MILLIPOINT)(((double)BEVEL_FLATNESS) * (96.0 / pBevelController->GetDPI()));
 
 	// set up the bevel type
 	m_pBeveler->SetBevelType(m_BevelType);

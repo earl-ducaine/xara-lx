@@ -926,11 +926,12 @@ BOOL Matrix::Decompose(FIXED16* pScale, FIXED16* pAspect, ANGLE* pRotation,
 	// set output values where required
 	if (pTranslate) *pTranslate = Coord(this->e,this->f);
 	if (pScale)     *pScale     = Scale;
-	if (pAspect)
-		if (Scale==0)
-		    *pAspect    = (FIXED16)1;
-		else
+	if (pAspect) {
+	  if (Scale==0) {
+	    *pAspect    = (FIXED16)1; } else {
 		    *pAspect    = ModA/fabs(Scale);
+	  }
+	}
 	if (pRotation)  *pRotation  = (ANGLE)atan2(c,a);
 	if (pShear)
 	{

@@ -452,7 +452,7 @@ protected:
 
 public:
 	// Function to find the file type for this filter
-	virtual char*	GetExportFileType() = 0;
+	virtual const char*	GetExportFileType() = 0;
 	virtual void	SetImportFileType(char* pFileType);
 	virtual	BOOL	IsOpeningMinimalWebFormat();
 
