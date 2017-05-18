@@ -2660,7 +2660,7 @@ BOOL EPSExportDC::OutputNewLine()
 
 ********************************************************************************************/
 
-BOOL EPSExportDC::OutputToken(TCHAR *Str)
+BOOL EPSExportDC::OutputToken(const TCHAR *Str)
 {
 	// Special tokens
 	static TCHAR Space = _T(' ');

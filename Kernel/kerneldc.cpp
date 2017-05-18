@@ -1684,7 +1684,7 @@ BOOL KernelDC::OutputDirect(BYTE *, INT32)
 
 ********************************************************************************************/
 
-BOOL KernelDC::OutputTCHARAsChar(TCHAR *Buf, INT32 nBytes)
+BOOL KernelDC::OutputTCHARAsChar(const TCHAR *Buf, INT32 nBytes)
 {
 	if (sizeof(TCHAR) == sizeof(char))
 		return OutputDirect((BYTE *)Buf, nBytes);

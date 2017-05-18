@@ -2843,7 +2843,7 @@ void OpRepeatApplyAttribToSelected::DoWithParam(OpDescriptor* OpDesc, OpParam* p
 	NodeAttribute* Attrib = (NodeAttribute*)(void *)pOpParam->Param1;
 
 	BOOL Mutate = FALSE;
-	NodeAttribute* OldAttr = NULL;
+	// NodeAttribute* OldAttr = NULL;
 
 	if (Attrib == NULL)
 	{
@@ -2855,7 +2855,7 @@ void OpRepeatApplyAttribToSelected::DoWithParam(OpDescriptor* OpDesc, OpParam* p
    	{
 		// Someone has specified a Particular Attribute that we should replace
 		// and ignore all others.
-   		OldAttr = (NodeAttribute*)(void *)pOpParam->Param2;
+   		//OldAttr = (NodeAttribute*)(void *)pOpParam->Param2;
 	}
 
 	SelRange* Sel;
@@ -3090,7 +3090,7 @@ BOOL OpRepeatApplyAttribToSelected::DoApply(Node* CurrentNode, NodeAttribute* At
 	Spread* pSpread = (Spread*)CurrentNode->FindParent(CC_RUNTIME_CLASS(Spread)); 
 	DocRect TempRect = ((NodeRenderableBounded*)CurrentNode)->GetBoundingRect();
 
-	BOOL AttributeExists = FALSE;  // Until we find that the attribute does exist
+	// BOOL AttributeExists = FALSE;  // Until we find that the attribute does exist
 
 	CCRuntimeClass* AttrType = Attrib->GetAttributeType();
 
@@ -3123,7 +3123,7 @@ BOOL OpRepeatApplyAttribToSelected::DoApply(Node* CurrentNode, NodeAttribute* At
 		{
 			if( ((NodeAttribute*)n)->GetAttributeType() == AttrType)
 			{
-				AttributeExists = TRUE; 
+			  //AttributeExists = TRUE; 
 				break; 
 			}
 		}
