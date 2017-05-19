@@ -1271,16 +1271,18 @@ BOOL AppPrefsDlg::Init()
 
 void AppPrefsDlg::Deinit()
 {
-	BOOL ok;
+  //BOOL ok;
 	
 	// Remove any options tabs that have been declared to the system.
-	ok = OptionsTabs::DeinitOptionsTabs();	
+	// ok =
+  OptionsTabs::DeinitOptionsTabs();	
 
 	// Remove the page sizes list that is currently attached to the applications options
 	// dialog box for the present moment.  
 	if (pPageSizesList != NULL)
 	{
-		ok = pPageSizesList->DeinitPageSizes();	// delete all list items
+	  // ok =
+		  pPageSizesList->DeinitPageSizes();	// delete all list items
 		delete pPageSizesList;					// delete list item object
 		pPageSizesList = NULL;					// set item pointer to null
 	}

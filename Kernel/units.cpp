@@ -1850,7 +1850,7 @@ BOOL DocUnitList::ReadLong(CCLexFile& file, void* pLong, const char* err)
 
 ********************************************************************************************/
 
-BOOL DocUnitList::ReadDouble(CCLexFile& file,double* pDouble,char* err)
+BOOL DocUnitList::ReadDouble(CCLexFile& file, double* pDouble, const char* err)
 {
 	ERROR2IF(pDouble == NULL,FALSE,"pDouble == NULL");
 
@@ -1969,10 +1969,10 @@ BOOL DocUnitList::ReadUnitsFromFile(CCLexFile& file)
 								"Expected the unit's name");
 					if (ok) ok = ReadString(file,&SpecifierStr,		"Expected the unit's specifier");
 					if (ok) ok = ReadDouble(file,&NumMillipoints,	"Expected the unit's millipoint value");
-					if (ok) ok = ReadLong(	file,&Prefix,			"Expected the unit's prefix flag");
-					if (ok) ok = ReadLong(	file,&BaseUnitType,		"Expected the unit's base type");
-					if (ok) ok = ReadDouble(file,&BaseNumerator,	"Expected the unit's base numerator");
-					if (ok) ok = ReadDouble(file,&BaseDenominator,	"Expected the unit's base denominator");
+					if (ok) ok = ReadLong(file, &Prefix,			"Expected the unit's prefix flag");
+					if (ok) ok = ReadLong(file, &BaseUnitType,		"Expected the unit's base type");
+					if (ok) ok = ReadDouble(file, &BaseNumerator,	"Expected the unit's base numerator");
+					if (ok) ok = ReadDouble(file, &BaseDenominator,	"Expected the unit's base denominator");
 
 					if (ok)
 					{

@@ -1305,10 +1305,12 @@ void HelpOps::Do(OpDescriptor* WhichOp)
 
 #ifdef INC_WEB_MENU_ITEMS
 	else if (WhichOp->Token == String(OPTOKEN_WEBLINK))
-		if(GetCDHelpOn())
+	  if(GetCDHelpOn()) {
 			SetWebsterReg(FALSE);
-		else
-			SetWebsterReg(TRUE);
+	  }
+	  else {
+	    SetWebsterReg(TRUE);
+	  }
 #endif	//INC_WEB_MENU_ITEMS	
 
 #ifdef STANDALONE
