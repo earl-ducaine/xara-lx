@@ -509,7 +509,7 @@ void NodeRegularShape::GetDebugDetails( StringBase* Str )
 	(*Str) += TEXT( "\r\nPath 1\r\nNum\tType\tX Coord\tY Coord\r\n" );
 	PathVerb* Verbs  = EdgePath1.GetVerbArray();
 	DocCoord* Coords = EdgePath1.GetCoordArray();
-	PathFlags* Flags = EdgePath1.GetFlagArray();
+	// PathFlags* Flags = EdgePath1.GetFlagArray();
 	INT32					i;
 	for( i = 0; i<EdgePath1.GetNumCoords(); i++)
 	{
@@ -522,7 +522,7 @@ void NodeRegularShape::GetDebugDetails( StringBase* Str )
 	(*Str) += TEXT( "\r\nPath 2\r\nNum\tType\tX Coord\tY Coord\r\n" );
 	Verbs  = EdgePath2.GetVerbArray();
 	Coords = EdgePath2.GetCoordArray();
-	Flags = EdgePath2.GetFlagArray();
+	// Flags = EdgePath2.GetFlagArray();
 	for (i=0; i<EdgePath2.GetNumCoords(); i++)
 	{
 		// Add the info to the string
@@ -538,7 +538,7 @@ void NodeRegularShape::GetDebugDetails( StringBase* Str )
 		(*Str) += TEXT( "\r\nRender path\r\nNum\tType\tX Coord\tY Coord\r\n" );
 		Verbs  = RenderPath->GetVerbArray();
 		Coords = RenderPath->GetCoordArray();
-		Flags = RenderPath->GetFlagArray();
+		// Flags = RenderPath->GetFlagArray();
 		for (i=0; i<RenderPath->GetNumCoords(); i++)
 		{
 			// Add the info to the string

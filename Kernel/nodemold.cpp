@@ -2296,7 +2296,7 @@ ChangeCode NodeMould::HandleMouldShapeChange(ObjChangePathEdit* pParam)
 	return (ChangeCode)CC_OK;
 #else
 	ObjChangeType pType = pParam->GetChangeType();
-	ObjChangeFlags pFlags = pParam->GetChangeFlags();
+	// ObjChangeFlags pFlags = pParam->GetChangeFlags();
 	ChangeCode Chge = CC_OK;
 	BOOL ok;
 
