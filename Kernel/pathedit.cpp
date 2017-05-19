@@ -1176,7 +1176,7 @@ void OpNodePathEditBlob::DragFinished( DocCoord PointerPos, ClickModifiers Click
 		DestroyCursors();
 		EndDrag();
 		BeginSlowJob();
-		ChangeCode Chge;									   
+		// ChangeCode Chge;									   
 
 		BOOL NotFailed = Success;
 		
@@ -1305,15 +1305,15 @@ void OpNodePathEditBlob::DragFinished( DocCoord PointerPos, ClickModifiers Click
 
 		// Inform all the parents of this node that it has been changed.
 		if (NotFailed)
-		{
-			ObjChangeFlags ChgeFlags;
-			EditObjChange.Define(OBJCHANGE_FINISHED,ChgeFlags,OriginalPath,this,&EditPath,StartSpread);
-			NotFailed = UpdateChangedNodes(&EditObjChange);
-		}
-		else
-		{
-			if (EditObjChange.ChangeMask.Finished)
-				Chge=EditObjChange.ObjChangeFailed(OriginalPath,this,&EditPath,StartSpread,TRUE);
+		  {
+		    ObjChangeFlags ChgeFlags;
+		    EditObjChange.Define(OBJCHANGE_FINISHED,ChgeFlags,OriginalPath,this,&EditPath,StartSpread);
+		    NotFailed = UpdateChangedNodes(&EditObjChange);
+		  } else {
+		  if (EditObjChange.ChangeMask.Finished) {
+		    //hge=
+		      EditObjChange.ObjChangeFailed(OriginalPath,this,&EditPath,StartSpread,TRUE);
+		  }
 		}
 
 		
@@ -1337,7 +1337,7 @@ void OpNodePathEditBlob::DragFinished( DocCoord PointerPos, ClickModifiers Click
 		DestroyCursors();
 		EndDrag();
 		BeginSlowJob();
-		ChangeCode Chge;		   
+		// ChangeCode Chge;		   
 
 		BOOL NotFailed = Success;
 		
@@ -1523,15 +1523,15 @@ void OpNodePathEditBlob::DragFinished( DocCoord PointerPos, ClickModifiers Click
 
 			// Inform all the parents of this node that it has been changed.
 			if (NotFailed)
-			{
-				ObjChangeFlags ChgeFlags;
-				EditObjChange.Define(OBJCHANGE_FINISHED,ChgeFlags,pOrigPath,this,pEditPath,StartSpread);
-				NotFailed = UpdateChangedNodes(&EditObjChange);
-			}
-			else
-			{
-				if (EditObjChange.ChangeMask.Finished)
-					Chge=EditObjChange.ObjChangeFailed(pOrigPath,this,pEditPath,StartSpread,TRUE);
+			  {
+			    ObjChangeFlags ChgeFlags;
+			    EditObjChange.Define(OBJCHANGE_FINISHED,ChgeFlags,pOrigPath,this,pEditPath,StartSpread);
+			    NotFailed = UpdateChangedNodes(&EditObjChange);
+			  } else {
+			  if (EditObjChange.ChangeMask.Finished) {
+			    //Chge=
+			    EditObjChange.ObjChangeFailed(pOrigPath,this,pEditPath,StartSpread,TRUE);
+			  }
 			}
 
 			pCurrentOrig = (NodeListItem*) OriginalPaths.GetNext (pCurrentOrig);
@@ -3412,7 +3412,7 @@ void OpNodePathEditControlBlob::DoStartDragEdit(NodePath* OrigPath, DocCoord Anc
 	BOOL ok = TRUE;
 
 	PathFlags* Flags = OrigPath->InkPath.GetFlagArray();
-	PathVerb* Verbs = OrigPath->InkPath.GetVerbArray();
+	// PathVerb* Verbs = OrigPath->InkPath.GetVerbArray();
 	DocCoord* Coords = OrigPath->InkPath.GetCoordArray();
 
 	// Find the index of the end point that this control point is attached to
@@ -3445,7 +3445,7 @@ void OpNodePathEditControlBlob::DoStartDragEdit(NodePath* OrigPath, DocCoord Anc
 	if (ok)
 	{
 		Flags = EditPath.GetFlagArray();
-		Verbs = EditPath.GetVerbArray();
+		// Verbs = EditPath.GetVerbArray();
 
 		Flags[ControlIndex].IsSmooth = FALSE;
 		if (OppositeIndex >= 0)
@@ -3711,7 +3711,7 @@ void OpNodePathEditControlBlob::RenderPathEditControlBlobs( DocRect Rect, Spread
 	INT32 NumCoords = EditPath.GetNumCoords();
 
 //	BOOL PrevIsEndPoint;
-	DocCoord StartCoord = Coords[0];
+	// DocCoord StartCoord = Coords[0];
 
 	// And this bit actually draws the path we have just made
 	RenderRegion* pRegion = DocView::RenderOnTop( NULL, StartSpread, ClippedEOR );

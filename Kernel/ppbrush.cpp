@@ -868,17 +868,17 @@ void PathProcessorBrush::RenderBrushAtPoint(DocCoord Point,
 	// get the scaling here, this differs slightly according to whether this is a realtime
 	// or a normal render (in the latter GetNextScaling was called in ProcessPath)
 	double Scaling = 1.0;
-	double ExtraAngle = 0;
+	// double ExtraAngle = 0;
 	if (!RealtimeBrush)
 	{
 		Scaling = m_CurrentScaling;
-		ExtraAngle = m_LastAngle;
+		// ExtraAngle = m_LastAngle;
 
 		OffsetVal = m_LastOffset;
 	}
 	else
 	{
-		ExtraAngle = GetNextAngle();
+	  // ExtraAngle = GetNextAngle();
 		Scaling = GetNextScaling(Counter);
 		if (Scaling <= 0)
 			return;
@@ -2084,7 +2084,7 @@ DocCoord PathProcessorBrush::AdjustPositionForBlendPathOffset(DocCoord OriginalP
 	MILLIPOINT XOffset;
 	MILLIPOINT YOffset;
 
-	DocCoord RotateCentre = OriginalPoint;
+	// DocCoord RotateCentre = OriginalPoint;
 
 	XOffset = (MILLIPOINT)(pOffset->m_XOffset *Scaling);
 	YOffset = (MILLIPOINT)(pOffset->m_YOffset *Scaling);

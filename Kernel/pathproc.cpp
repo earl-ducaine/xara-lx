@@ -1425,12 +1425,12 @@ INT32 ProcessPathDistance::Process(const ProcessFlags& PFlags, INT32 AlreadyProc
 	if (Found)
 		m_LastFoundIndex = i -2;
 
-	INT32 ReturnValue;
+	// INT32 ReturnValue;
 	// we have processed i-1 points
-	if (ok)
-		ReturnValue = i-1; 
-	else
-		ReturnValue = -1;
+	// if (ok)
+	// 	ReturnValue = i-1; 
+	// else
+	// 	ReturnValue = -1;
 
 	return ok;
 }
