@@ -1045,7 +1045,8 @@ TRACEUSER( "Neville", _T("set colour bar mode '%d'\n"),ColourBarMode);
 	pPrefsDlg->SetStringGadgetValue(_R(IDC_OPTS_COLOURBAR), String_32(_R(IDN_COLBAR_LARGE)));
 	pPrefsDlg->SetComboListLength(_R(IDC_OPTS_COLOURBAR));
 	// Set up the default option displayed
-	BOOL ok = pPrefsDlg->SetSelectedValueIndex(_R(IDC_OPTS_COLOURBAR),ColourBarMode);
+	BOOL ok =
+	  pPrefsDlg->SetSelectedValueIndex(_R(IDC_OPTS_COLOURBAR),ColourBarMode);
 	ERROR2IF(!ReadOk,FALSE,_R(IDE_OPTS_READPREF_VIEW));
 
 	
