@@ -1640,7 +1640,7 @@ String_32 DocUnitList::GetSpecifier(UnitType ThisUnitType)
 // Tokens used in winoil\units.ini
 static struct
 {
-	TCHAR*  Token;
+	const TCHAR*  Token;
 } TokenTable[] = 
 {
 	{_T("Unit")},
@@ -1785,8 +1785,7 @@ BOOL DocUnitList::ReadUnitsFromRes()
 
 ********************************************************************************************/
 
-void DocUnitList::OutputTrace( char *err, const TCHAR *TokenBuf )
-{
+void DocUnitList::OutputTrace(const char *err, const TCHAR *TokenBuf ) {
 #if 0 != wxUSE_UNICODE
 	size_t				cch = camMbstowcs( NULL, err, 0 ) + 1;
 	wchar_t			   *pwsz = (wchar_t *)alloca( cch * 2 );
@@ -1819,7 +1818,7 @@ void DocUnitList::OutputTrace( char *err, const TCHAR *TokenBuf )
 
 ********************************************************************************************/
 
-BOOL DocUnitList::ReadLong(CCLexFile& file,void* pLong,char* err)
+BOOL DocUnitList::ReadLong(CCLexFile& file, void* pLong, const char* err)
 {
 	ERROR2IF(pLong == NULL,FALSE,"pLong == NULL");
 
@@ -1829,7 +1828,7 @@ BOOL DocUnitList::ReadLong(CCLexFile& file,void* pLong,char* err)
 		ok = ( camSscanf( TokenBuf, _T("%li"), pLong ) == 1 );
 
 	if (!ok)
-		OutputTrace( err, TokenBuf );
+		OutputTrace(err, TokenBuf);
 
 	return ok;
 }
@@ -1883,7 +1882,7 @@ BOOL DocUnitList::ReadDouble(CCLexFile& file,double* pDouble,char* err)
 
 ********************************************************************************************/
 
-BOOL DocUnitList::ReadString(CCLexFile& file,StringBase* pStr,char* err)
+BOOL DocUnitList::ReadString(CCLexFile& file, StringBase* pStr, const char* err)
 {
 	ERROR2IF(pStr == NULL,FALSE,"pStr == NULL");
 
@@ -1965,7 +1964,9 @@ BOOL DocUnitList::ReadUnitsFromFile(CCLexFile& file)
 
 					// Read in all the fields of the unit definition
 					if (ok) ok = ReadLong(	file,&TheUnitType,		"Expected the unit's type");
-					if (ok) ok = ReadString(file,&NameStr,			"Expected the unit's name");
+					if (ok) ok = ReadString(file,
+								&NameStr,
+								"Expected the unit's name");
 					if (ok) ok = ReadString(file,&SpecifierStr,		"Expected the unit's specifier");
 					if (ok) ok = ReadDouble(file,&NumMillipoints,	"Expected the unit's millipoint value");
 					if (ok) ok = ReadLong(	file,&Prefix,			"Expected the unit's prefix flag");

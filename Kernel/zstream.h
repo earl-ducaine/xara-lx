@@ -138,7 +138,7 @@ public:
 	// The application can compare zlib_version and ZLIB_VERSION for consistency.
    	// If the first character differs, the library code actually used is
    	// not compatible with the zlib.h header file used by the application.
-	char *zlib_version;
+	const char *zlib_version;
 
 	// ZStream object
     Byte     *next_in;  	/* next input byte */

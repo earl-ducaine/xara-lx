@@ -4342,7 +4342,7 @@ void AttrTxtBold::GetDebugDetails(StringBase* Str)
 	NodeAttribute::GetDebugDetails( Str );
 
 	String_256 TempStr;
-	TCHAR* p;
+	const TCHAR* p;
 
 	(Value.BoldOn) ? (p = _T("TRUE")) : (p = _T("FALSE"));
 	TempStr._MakeMsg( TEXT("\r\nBold=#1%s\r\n"), p);
@@ -4627,7 +4627,7 @@ void AttrTxtItalic::GetDebugDetails(StringBase* Str)
 	NodeAttribute::GetDebugDetails( Str );
 
 	String_256 TempStr;
-	TCHAR* p;
+	const TCHAR* p;
 
 	(Value.ItalicOn) ? (p = _T("TRUE")) : (p = _T("FALSE"));
 	TempStr._MakeMsg( TEXT("\r\nItalic=#1%s\r\n"), p);
@@ -5211,7 +5211,7 @@ void AttrTxtUnderline::GetDebugDetails(StringBase* Str)
 	NodeAttribute::GetDebugDetails( Str );
 
 	String_256 TempStr;
-	TCHAR* p;
+	const TCHAR* p;
 	(Value.Underlined) ? (p=_T("TRUE")) : (p=_T("FALSE"));
 	TempStr._MakeMsg( TEXT("\r\nUnderline=#1%s\r\n"), p);
 	(*Str) += TempStr;
@@ -5773,7 +5773,7 @@ void AttrTxtJustification::GetDebugDetails(StringBase* Str)
 	NodeAttribute::GetDebugDetails( Str );
 
 	String_256 TempStr;
-	char* p;
+	const char* p;
 
 	switch (Value.justification)
 	{

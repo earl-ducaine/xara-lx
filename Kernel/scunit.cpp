@@ -1545,7 +1545,7 @@ Parser::TOKEN Parser::GetToken()
 BOOL UnitGroup::ScaleFromString(const StringBase& string, double& dNumber) const
 {
 	String_32 qualifier, amount;
-	Qualifier::QUALIFIER_AFFIX affixType;
+	// Qualifier::QUALIFIER_AFFIX affixType;
 	Parser parser(string);
 
 	parser.PrepareForParse();
@@ -1554,7 +1554,7 @@ BOOL UnitGroup::ScaleFromString(const StringBase& string, double& dNumber) const
 	if (tk == Parser::TK_QUALIFIER)		// expecting prefix qualifier
 	{
 		qualifier = parser.GetSemanticValue();
-		affixType = Qualifier::PREFIX;
+		// affixType = Qualifier::PREFIX;
 		tk = parser.GetToken();
 		if (tk == Parser::TK_NUMBER)
 		{
@@ -1572,12 +1572,12 @@ BOOL UnitGroup::ScaleFromString(const StringBase& string, double& dNumber) const
 		tk = parser.GetToken();
 		if (tk == Parser::TK_QUALIFIER)
 		{
-			affixType = Qualifier::SUFFIX;
+		  // affixType = Qualifier::SUFFIX;
 			qualifier = parser.GetSemanticValue();
 		}
 		else if (tk == Parser::TK_EOS)
 		{
-			affixType = Qualifier::NONE;
+		  // affixType = Qualifier::NONE;
 		}
 		else
 		{

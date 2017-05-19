@@ -2420,7 +2420,7 @@ BOOL Spread::AlignPasteboards(const DocRect NewPasteRect, const MILLIPOINT Margi
 	// Now ensure all following spreads are properly attached to this one 
 	// Assumes that we are altering the first spread in the document
 	// Note this spread as a possible last spread in the document
-	Spread* pLastSpread = this;
+	// Spread* pLastSpread = this;
 	Spread* pThisSpread = this;
 	Spread* pNextSpread = FindNextSpread(); 
 	while (pNextSpread != NULL)
@@ -2463,7 +2463,7 @@ TRACEUSER( "Neville", _T("Second spread high corner y = %d\n"),SecondPasteRect.H
 		pNextSpread->InvalidateBoundingRect();
 
 		// Note this next spread as a possible last spread and this spread
-		pLastSpread = pNextSpread;
+		// pLastSpread = pNextSpread;
 		pThisSpread = pNextSpread;
 
 		// Now, see whether there is a next spread or not.

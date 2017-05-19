@@ -667,7 +667,7 @@ TrapsList *PathProcessorStroke::PrepareTrapsForStroke(Path *pPath, RenderRegion 
 	// BLOCK
 	{
 		// --- Get the current line cap style from the render region
-		StartCapAttribute *pCapAttr = (StartCapAttribute *) pRender->GetCurrentAttribute(ATTR_STARTCAP);
+		// StartCapAttribute *pCapAttr = (StartCapAttribute *) pRender->GetCurrentAttribute(ATTR_STARTCAP);
 		// if (pCapAttr != NULL)
 		// 	LineCap = pCapAttr->StartCap;
 
