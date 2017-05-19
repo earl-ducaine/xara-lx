@@ -147,8 +147,9 @@ class OpPalettePopupCommand : public Operation
 {
 	CC_DECLARE_DYNCREATE( OpPalettePopupCommand );
 
-protected:
-	static BOOL InitPolymorphicCommand( TCHAR *OpToken, UINT32 MenuTextID );
+ protected:
+	static BOOL InitPolymorphicCommand(const TCHAR *OpToken,
+					   UINT32 MenuTextID );
 
 public:
 	static BOOL Init(BitmapExportPaletteControl *, BmapPrevDlg *);

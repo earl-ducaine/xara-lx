@@ -218,15 +218,18 @@ BOOL ColEditContextMenu::Build(void)
 
 ********************************************************************************************/
 
-BOOL OpColEditCommand::InitPolymorphicCommand(StringBase *OpToken, UINT32 MenuTextID)
-{
-	return(RegisterOpDescriptor(0,									// Tool ID 
-								MenuTextID,		 					// String resource ID
-								CC_RUNTIME_CLASS(OpColEditCommand),	// Runtime class
-								(TCHAR *) (*OpToken), 				// Token string
-								OpColEditCommand::GetCommandState,	// GetState function
-								0,									// help ID
-								0,									// bubble help
+BOOL OpColEditCommand::InitPolymorphicCommand(const StringBase *OpToken,
+					      UINT32 MenuTextID) {
+  return(RegisterOpDescriptor(0,									        // Tool ID 
+			      MenuTextID,		 					                // String resource ID
+			      CC_RUNTIME_CLASS(OpColEditCommand),
+			      // Runtime class
+			      (const TCHAR *) (*OpToken),
+			      // Token string
+			      OpColEditCommand::GetCommandState,
+			      // GetState function
+			      0,									        // help ID
+			      0,									        // bubble help
 								0,									// resource ID
 								0,									// control ID
 								SYSTEMBAR_ILLEGAL,					// Bar ID
