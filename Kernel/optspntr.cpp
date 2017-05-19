@@ -624,10 +624,12 @@ TRACEUSER( "Neville", _T("PointersTab::InitSection\n"));
 	BOOL ok	= TRUE;			// Flag for whether value set up ok 
 
 	// Set up the click lists for the left, right and middle mouse buttons
-	ok = InitClickLists();
+	// ok =
+	  InitClickLists();
 	
 	// Now set up the magnetic radii section 
-	ok = InitMagneticRadii();
+	// ok =
+	  InitMagneticRadii();
 
 	return TRUE;
 }
@@ -654,7 +656,7 @@ BOOL PointersTab::InitClickLists()
 TRACEUSER( "Neville", _T("InitClickLists\n"));
 	ERROR2IF(pPrefsDlg == NULL,FALSE,"PointersTab::InitClickLists called with no dialog pointer");
 
-	BOOL ok	= TRUE;			// Flag for whether value set up ok 
+	// BOOL ok	= TRUE;			// Flag for whether value set up ok 
 
 	// Middle button removed for now as nothing seems to use it.
 
@@ -692,9 +694,11 @@ TRACEUSER( "Neville", _T("InitClickLists\n"));
 	pPrefsDlg->SetComboListLength(_R(IDC_OPTS_RIGHTBUTTON));
 
 	// Set up the default option displayed
-	ok = pPrefsDlg->SetSelectedValueIndex(_R(IDC_OPTS_LEFTBUTTON), (INT32)LeftButton);
+	// ok =
+	  pPrefsDlg->SetSelectedValueIndex(_R(IDC_OPTS_LEFTBUTTON), (INT32)LeftButton);
 //	ok = pPrefsDlg->SetSelectedValueIndex(_R(IDC_OPTS_MIDDLEBUTTON), (INT32)MiddleButton);
-	ok = pPrefsDlg->SetSelectedValueIndex(_R(IDC_OPTS_RIGHTBUTTON), (INT32)RightButton);
+	// ok =
+	  pPrefsDlg->SetSelectedValueIndex(_R(IDC_OPTS_RIGHTBUTTON), (INT32)RightButton);
 
 	return TRUE;
 }	
@@ -731,7 +735,7 @@ TRACEUSER( "Neville", _T("InitMagneticRadii\n"));
 	}
 
 	// General flags
-	BOOL ok	= TRUE;			 
+	// BOOL ok	= TRUE;			 
 	BOOL ReadOk = TRUE;
 
 	// Now the magnetic radii
@@ -740,11 +744,13 @@ TRACEUSER( "Neville", _T("InitMagneticRadii\n"));
 	INT32 LineRadius = 0;					
 	INT32 PointRadius = 0;					
 	ReadOk = Camelot.GetPrefValue(TEXT("Magnetic Options"), TEXT("Line Radius"), &LineRadius);
-	ok = pPrefsDlg->SetUnitGadgetValue(_R(IDC_OPTS_LINERADIUS), CurrentPageUnits, LineRadius, FALSE, -1);
+	// ok =
+	  pPrefsDlg->SetUnitGadgetValue(_R(IDC_OPTS_LINERADIUS), CurrentPageUnits, LineRadius, FALSE, -1);
 	ERROR2IF(!ReadOk,FALSE,_R(IDE_OPTS_READPREF_EDIT));
 
 	ReadOk = Camelot.GetPrefValue(TEXT("Magnetic Options"), TEXT("Point Radius"), &PointRadius);
-	ok = pPrefsDlg->SetUnitGadgetValue(_R(IDC_OPTS_POINTRADIUS), CurrentPageUnits, PointRadius, FALSE, -1);
+	// ok =
+	  pPrefsDlg->SetUnitGadgetValue(_R(IDC_OPTS_POINTRADIUS), CurrentPageUnits, PointRadius, FALSE, -1);
 	ERROR2IF(!ReadOk,FALSE,_R(IDE_OPTS_READPREF_EDIT));
 
 	return TRUE;
