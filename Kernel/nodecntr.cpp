@@ -447,7 +447,7 @@ void NodeContour::Render(RenderRegion* pRender)
 	pRender->SaveContext();
 
 	// find out the line width
-	LineWidthAttribute * pLineWidth = (LineWidthAttribute *)pRender->GetCurrentAttribute(ATTR_LINEWIDTH);
+	// LineWidthAttribute * pLineWidth = (LineWidthAttribute *)pRender->GetCurrentAttribute(ATTR_LINEWIDTH);
 
 	TRACEUSER( "DaivdM", _T("Contour node render 1\n"));
 
