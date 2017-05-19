@@ -2537,7 +2537,7 @@ BOOL NodeShadow::PostDuplicate(UndoableOperation* pOp)
 	NodeRenderableInk::PostDuplicate(pOp);
 
 	IsBoundingRectValid = FALSE;
-	DocRect dr = GetBoundingRect(FALSE, FALSE);
+	// DocRect dr = GetBoundingRect(FALSE, FALSE);
 
 	return TRUE;
 }
