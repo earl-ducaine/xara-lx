@@ -661,15 +661,15 @@ BOOL PathProcessorStroke::DoesActuallyDoAnything(RenderRegion* pRender)
 
 TrapsList *PathProcessorStroke::PrepareTrapsForStroke(Path *pPath, RenderRegion *pRender, INT32 LineWidth)
 {
-	LineCapType LineCap = LineCapButt;
+  // LineCapType LineCap = LineCapButt;
 	JointType JoinStyle = RoundJoin;
 
 	// BLOCK
 	{
 		// --- Get the current line cap style from the render region
 		StartCapAttribute *pCapAttr = (StartCapAttribute *) pRender->GetCurrentAttribute(ATTR_STARTCAP);
-		if (pCapAttr != NULL)
-			LineCap = pCapAttr->StartCap;
+		// if (pCapAttr != NULL)
+		// 	LineCap = pCapAttr->StartCap;
 
 		// --- Get the current line join style from the render region
 		JoinTypeAttribute *pJoinAttr = (JoinTypeAttribute *) pRender->GetCurrentAttribute(ATTR_JOINTYPE);

@@ -281,7 +281,7 @@ PrintComponent::~PrintComponent()
 
 #define PC_SECTION_VERSION 1
 
-static TCHAR *PCTokenStr[] =
+static const TCHAR *PCTokenStr[] =
 {
 	_T("%%PrintControl"),
 	_T("%%+WholeSpread"),

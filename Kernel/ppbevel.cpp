@@ -586,7 +586,7 @@ BOOL BevelHelpers::IsPathToBeReversed(Path * pPath)
 
 	double TotalDot = 0;
 	double dot1 = 0;
-	double dot2 = 0;
+	// double dot2 = 0;
 
 	DocRect Bounds = pPath->GetBoundingRect();
 	DocCoord Centre ;
@@ -616,7 +616,7 @@ BOOL BevelHelpers::IsPathToBeReversed(Path * pPath)
 		ncBefore90.x =  ncBefore.y;
 
 		dot1 = ncBefore90.x * ncAfter.x + ncBefore90.y * ncAfter.y;
-		dot2 = ncBefore.x * ncAfter.x + ncBefore.y * ncAfter.y;
+		//dot2 = ncBefore.x * ncAfter.x + ncBefore.y * ncAfter.y;
 
 		TotalDot += dot1;
 	}
@@ -657,7 +657,7 @@ void BevelHelpers::EliminateMultiplePoints(Path * pPath)
 	DocCoord dc1(0,0);
 	DocCoord dc2;
 
-	INT32 StartIndex = 0;
+	// INT32 StartIndex = 0;
 
 	for (INT32 i = 0 ; i < pPath->GetNumCoords(); i++)
 	{
@@ -688,7 +688,7 @@ void BevelHelpers::EliminateMultiplePoints(Path * pPath)
 				*/
 
 				NewPath.AddMoveTo(dc2);
-				StartIndex = i;
+				// StartIndex = i;
 			}
 			else
 			{
