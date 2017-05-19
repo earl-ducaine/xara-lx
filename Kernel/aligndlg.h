@@ -189,7 +189,9 @@ private:
 	void	  DialogOKed();
 	void      RedrawDiagram(ReDrawInfoType* ExtraInfo);
 	void      DiagramClicked(ReDrawInfoType* ExtraInfo);
-	void	  BuildIDSDropList(const CGadgetID DropListID, const INT32* IDSList, INT32 Default);
+	void	  BuildIDSDropList(const CGadgetID DropListID,
+				   const unsigned int* IDSList,
+				   INT32 Default);
 	void	  SetRadioGroup( const CGadgetID* IDCList, const CGadgetID IDC);
 	CGadgetID ReadRadioGroup(const CGadgetID* IDCList, const CGadgetID IDCDefault = 0);
 

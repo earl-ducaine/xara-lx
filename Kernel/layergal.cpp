@@ -575,16 +575,16 @@ PORTNOTE("galleries", "disabled frame gallery")
 					// this layer is a guide layer - get the next one
 					pLastLayer = pLastLayer->FindPrevLayer();
 				}
-				Node* pNodeToInsert;
-				if(pLastLayer)
-				{
-					pNodeToInsert = pLastLayer;
-				}
-				else
-				{
-					// what?! can't find a Last Layer to use?
-					pNodeToInsert = pContextNode;
-				}
+				// Node* pNodeToInsert;
+				// if(pLastLayer)
+				// {
+				// 	pNodeToInsert = pLastLayer;
+				// }
+				// else
+				// {
+				// 	// what?! can't find a Last Layer to use?
+				// 	pNodeToInsert = pContextNode;
+				// }
 
 				if (DoInsertNewNode(pLayer, pLastLayer, NEXT, FALSE))
 				{

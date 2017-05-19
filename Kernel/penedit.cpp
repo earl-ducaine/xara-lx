@@ -1389,7 +1389,7 @@ BOOL OpPenEditPath::ConvertPathEnd(Path* pDocPath)
 	INT32 LastEl	= pDocPath->GetNumCoords();
 	pDocPath->SetPathPosition(LastEl-1);
 
-	DocCoord  CtrlPtC = pDocPath->GetCoord();
+	// DocCoord  CtrlPtC = pDocPath->GetCoord();
 	PathVerb  CtrlPtV = (pDocPath->GetVerb()) & ~PT_CLOSEFIGURE;
 	PathFlags CtrlPtF = pDocPath->GetFlags();
 

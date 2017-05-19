@@ -561,48 +561,48 @@ MsgResult NameGallery::Message(Msg* pMessage)
 				return DialogOp::Message(pMessage);
 			}
 			if( _R(IDC_GALLERY_APPLY)	== pMsg->GadgetID ||
-				_R(IDC_GALLERY_REDEFINE) == pMsg->GadgetID )
-			{
-				// Do as above, but afterwards check to ensure that (if any of the sets
-				// affected is involved in a stretch) no NodeRegularShapes are involved
-				MsgResult tempMsg = DialogOp::Message(pMessage);
-
-
-				// For every SGNameItem currently selected, check if it is involved in a stretch...
-				NameGallery *pNameGallery = NameGallery::Instance();
-				if (!pNameGallery)	{ return tempMsg;	}
-
-				SGUsedNames *pNames = pNameGallery->GetUsedNames();
-				if (!pNames)	{ return tempMsg;	}
-
-				SGNameItem *pNameGalleryItem = (SGNameItem*) pNames->GetChild();
-				while (pNameGalleryItem)
-				{
-					if ((SGDisplayNode *)((SGDisplayItem *)pNameGalleryItem)->Flags.Selected)
-					{
-						NodeSetProperty* pPropNode = pNameGalleryItem->GetPropertyNode();
-						if (pPropNode)
-						{
-							NamedStretchProp* pProp = (NamedStretchProp*) pPropNode->GetProperty(NamedStretchProp::nIndex);
-							if (pProp && pProp->GetState())
-							{
-								// OK, we should have the NamedStretchProp for the current selected SGNameItem
-								// AND we have checked to see if it is flagged as being stretched by something...
-								// Therefore, we want to check if it contains a NodeRegularShape...
-								if (!pProp->ValidateStretchingObjects(pNameGalleryItem))
-								{
-									InformWarning(_R(IDE_SGNODEREGULARSHAPESDETECTED));
-									return tempMsg;
-								}
-							}
-						}
-
-					}
-
-					pNameGalleryItem = (SGNameItem *) pNameGalleryItem->GetNext();
-				}
-
-				return tempMsg;
+			    _R(IDC_GALLERY_REDEFINE) == pMsg->GadgetID ) {
+			  // Do as above, but afterwards check to ensure that (if any of the sets
+			  // affected is involved in a stretch) no NodeRegularShapes are involved
+			  MsgResult tempMsg = DialogOp::Message(pMessage);
+			  // For every SGNameItem currently selected,
+			  // check if it is involved in a stretch...
+			  NameGallery *pNameGallery = NameGallery::Instance();
+			  if (!pNameGallery)	{ return tempMsg;	}
+			  
+			  SGUsedNames *pNames = pNameGallery->GetUsedNames();
+			  if (!pNames)	{
+			    return tempMsg;
+			  }
+			  SGNameItem *pNameGalleryItem = (SGNameItem*) pNames->GetChild();
+			  while (pNameGalleryItem) {
+			    if (((SGDisplayItem *)pNameGalleryItem)->Flags.Selected) {
+			      NodeSetProperty* pPropNode = pNameGalleryItem->GetPropertyNode();
+			      if (pPropNode) {
+				NamedStretchProp* pProp =
+				  (NamedStretchProp*) pPropNode->GetProperty(NamedStretchProp::nIndex);
+				if (pProp && pProp->GetState())
+				  {
+				    // OK, we should have the
+				    // NamedStretchProp for the
+				    // current selected SGNameItem AND
+				    // we have checked to see if it is
+				    // flagged as being stretched by
+				    // something...  Therefore, we
+				    // want to check if it contains a
+				    // NodeRegularShape...
+				    if (!pProp->ValidateStretchingObjects(pNameGalleryItem)) {
+				      InformWarning(_R(IDE_SGNODEREGULARSHAPESDETECTED));
+				      return tempMsg;
+				    }
+				  }
+			      }
+			      
+			    }
+			    
+			    pNameGalleryItem = (SGNameItem *) pNameGalleryItem->GetNext();
+			  }
+			  return tempMsg;
 			}
 			break;
 			

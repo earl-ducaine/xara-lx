@@ -1086,10 +1086,14 @@ MsgResult StatusLine::Message(Msg* pMsg)
 
 
 	// if pref units changed, or zoom changed flag mouse pos pane needs resizing
-	if (MESSAGE_IS_A(pMsg,OptionsChangingMsg) /* && ((OptionsChangingMsg*)pMsg)->State==OptionsChangingMsg::NEWUNITS */
-	||  MESSAGE_IS_A(pMsg,DocChangingMsg)        && ((DocChangingMsg*)pMsg)->State==DocChangingMsg::SELCHANGED
-	||  MESSAGE_IS_A(pMsg,DocViewMsg)            && ((DocViewMsg*)pMsg)->State==DocViewMsg::SCALECHANGED)
-		MousePosPaneNeedsResizing=TRUE;
+	if (((MESSAGE_IS_A(pMsg, OptionsChangingMsg)
+	      /* && ((OptionsChangingMsg*)pMsg)->State==OptionsChangingMsg::NEWUNITS */
+	      ||  MESSAGE_IS_A(pMsg, DocChangingMsg)) &&
+	     ((DocChangingMsg*)pMsg)->State == DocChangingMsg::SELCHANGED)
+	    ||  (MESSAGE_IS_A(pMsg, DocViewMsg) &&
+		 ((DocViewMsg*)pMsg)->State==DocViewMsg::SCALECHANGED)) {
+	  MousePosPaneNeedsResizing=TRUE;
+	}
 
 	// if doc changing flag transparency needs updating & mouse pos pane needs resizing
 	if (MESSAGE_IS_A(pMsg,DocChangingMsg) && ((DocChangingMsg*)pMsg)->State==DocChangingMsg::SELCHANGED)
@@ -1104,7 +1108,9 @@ MsgResult StatusLine::Message(Msg* pMsg)
 		if (pMainFrame)
 		{
 			DocView* pView = ((DocViewMsg*)pMsg)->pNewDocView;
+#ifndef EXCLUDE_FROM_XARALX			
 			BOOL bState = TRUE;
+#endif			
 			String_256 sPlateName;
 			if (pView)
 			{
@@ -1146,13 +1152,17 @@ MsgResult StatusLine::Message(Msg* pMsg)
 					break;
 
 				default:
+#ifndef EXCLUDE_FROM_XARALX			
 					bState = FALSE;
+#endif					
 					break;
 				}
 			}
 			else
 			{
-				bState = FALSE;
+#ifndef EXCLUDE_FROM_XARALX
+			  bState = FALSE;
+#endif
 			}
 PORTNOTE("printing", "Removed SetPrinterColourStatus");
 #ifndef EXCLUDE_FROM_XARALX
