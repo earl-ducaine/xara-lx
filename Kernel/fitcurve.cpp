@@ -411,9 +411,9 @@ BOOL CurveFitObject::Initialise(Path* CopyPath, INT32 NumPoints)
 		}
 
 		// Check to see if this coordinate is really needed (last point is always needed)
-		if ((Coords[i].x != PathArray[IncludePoint-1].x) || (Coords[i].y != PathArray[IncludePoint-1].y) &&
-			(i!=NumPoints-1))
-		{
+		if (((Coords[i].x != PathArray[IncludePoint-1].x) ||
+		     (Coords[i].y != PathArray[IncludePoint-1].y)) &&
+		    (i != NumPoints-1)) {
 			// This point is not the same as the one before, so add it into the array
 			PathArray[IncludePoint].x = Coords[i].x;
 			PathArray[IncludePoint].y = Coords[i].y;

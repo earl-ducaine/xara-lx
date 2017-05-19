@@ -332,10 +332,10 @@ BOOL EffectsStack::Intersect(ListRange* pRange)
 
 		PPStackLevel* pLastMatchItem = NULL;
 		PPStackLevel* pFirstMatchItem = (PPStackLevel*)GetHead();
-		NodeEffect* pStackSample;
+		// NodeEffect* pStackSample;
 		while (pFirstMatchItem!=NULL && pLastMatchItem==NULL)
 		{
-			pStackSample = pFirstMatchItem->pPPNode;
+		  // pStackSample = pFirstMatchItem->pPPNode;
 
 			pLastMatchItem = FindMatch(pFirstMatchItem, pRange, pLE);
 			if (pLastMatchItem)

@@ -607,7 +607,7 @@ void OpBringToFront::Do(OpDescriptor*)
 			goto EndOperation; 
 		}
 		
-		Spread* pSpread; 
+		// Spread* pSpread; 
 		Node* Tail;
 		Node* NextSelNode;  
 
@@ -617,7 +617,8 @@ void OpBringToFront::Do(OpDescriptor*)
 		Range LayerRange; 
 	   	
 	   	// Find the spread that the selection lies on
-		pSpread = FirstSelectedNode->FindParentSpread();
+		// pSpread =
+		  FirstSelectedNode->FindParentSpread();
 		
 		Node* CurrentNode = FirstSelectedNode;     
         Node* LastNodeOnLayer;
@@ -2270,7 +2271,7 @@ void OpMoveToLyrInFront::Do(OpDescriptor*)
 		Node*	LastObjectMoved		= NULL; 
 
 		BOOL	OldVisible			= FALSE;
-		BOOL	OldLocked			= FALSE;
+		// BOOL	OldLocked			= FALSE;
 
 #ifndef WEBSTER
 		MODE PresentMode			= LAYER; 
@@ -2315,7 +2316,7 @@ void OpMoveToLyrInFront::Do(OpDescriptor*)
 				// Make the layer visible and editable so we don't loose the selection
 				// do it blatently as it will be fixed up properly latter
 				OldVisible = NxtLyr->IsVisible();
-				OldLocked = NxtLyr->IsLocked();
+				// OldLocked = NxtLyr->IsLocked();
 				NxtLyr->SetVisible(TRUE);
 				NxtLyr->SetLocked(FALSE);
 			}
@@ -2348,7 +2349,7 @@ void OpMoveToLyrInFront::Do(OpDescriptor*)
 					// Make the layer visible and editable so we don't loose the selection
 					// do it blatently as it will be fixed up properly latter
 					OldVisible = NxtLyr->IsVisible();
-					OldLocked = NxtLyr->IsLocked();
+					// OldLocked = NxtLyr->IsLocked();
 					NxtLyr->SetVisible(TRUE);
 					NxtLyr->SetLocked(FALSE);
 				}
@@ -2376,7 +2377,7 @@ void OpMoveToLyrInFront::Do(OpDescriptor*)
 					// Make the layer visible and editable so we don't loose the selection
 					// do it blatently as it will be fixed up properly latter
 					OldVisible = NxtLyr->IsVisible();
-					OldLocked = NxtLyr->IsLocked();
+					//OldLocked = NxtLyr->IsLocked();
 					NxtLyr->SetVisible(TRUE);
 					NxtLyr->SetLocked(FALSE);
 				}
@@ -2834,7 +2835,7 @@ void OpMoveToLyrBehind::Do(OpDescriptor*)
 		Node*	NextNode				= NULL;
 
 		BOOL	OldVisible				= FALSE;
-		BOOL	OldLocked				= FALSE;
+		// BOOL	OldLocked				= FALSE;
 
 #ifndef WEBSTER
 		MODE PresentMode				= LAYER;
@@ -2894,7 +2895,7 @@ void OpMoveToLyrBehind::Do(OpDescriptor*)
 				// Make the layer visible and editable so we don't loose the selection
 				// do it blatently as it will be fixed up properly latter
 				OldVisible = PrevLayer->IsVisible();
-				OldLocked = PrevLayer->IsLocked();
+				// OldLocked = PrevLayer->IsLocked();
 				PrevLayer->SetVisible(TRUE);
 				PrevLayer->SetLocked(FALSE);
 			}
@@ -2927,7 +2928,7 @@ void OpMoveToLyrBehind::Do(OpDescriptor*)
 					// Make the layer visible and editable so we don't loose the selection
 					// do it blatently as it will be fixed up properly latter
 					OldVisible = PrevLayer->IsVisible();
-					OldLocked = PrevLayer->IsLocked();
+					// OldLocked = PrevLayer->IsLocked();
 					PrevLayer->SetVisible(TRUE);
 					PrevLayer->SetLocked(FALSE);
 				}
@@ -2955,7 +2956,7 @@ void OpMoveToLyrBehind::Do(OpDescriptor*)
 					// Make the layer visible and editable so we don't loose the selection
 					// do it blatently as it will be fixed up properly latter
 					OldVisible = PrevLayer->IsVisible();
-					OldLocked = PrevLayer->IsLocked();
+					// OldLocked = PrevLayer->IsLocked();
 					PrevLayer->SetVisible(TRUE);
 					PrevLayer->SetLocked(FALSE);
 				}
