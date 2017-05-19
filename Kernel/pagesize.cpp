@@ -144,7 +144,7 @@ enum PsTokenIndex
 
 static struct
 {
-	TCHAR*  Token;
+	const TCHAR*  Token;
 } TokenTable[] = 
 {
 	{_T("PageSize")},
@@ -873,7 +873,7 @@ BOOL PageSizesList::ReadPageSizeDef(CCLexFile& file,
 //	String_32* pTextDesc 	= NULL;
 
 	// This is FALSE until we have read the text that describes the page size
-	BOOL TextDescRead 		= FALSE;
+	// BOOL TextDescRead 		= FALSE;
 	// This is FALSE until we have read the first number in, which should be the width
 	BOOL ReadWidth 			= FALSE;
 
@@ -908,7 +908,7 @@ BOOL PageSizesList::ReadPageSizeDef(CCLexFile& file,
 							*pPageName = TokenBuf;
 							
 							// We have read the text desc string
-							TextDescRead = TRUE;
+							// TextDescRead = TRUE;
 						}
 						else
 						{

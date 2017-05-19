@@ -168,10 +168,10 @@ EPSCommentDef::EPSCommentDef ( const EPSCommentDef &NewValue )
 
 ********************************************************************************************/
 
-EPSCommentDef::EPSCommentDef ( TCHAR	*pStart,
-							   TCHAR	*pEnd,
-							   BOOL		DoProcessContents,
-							   UINT32		NestingDepth )
+EPSCommentDef::EPSCommentDef (const TCHAR* pStart,
+			      const TCHAR *pEnd,
+			      BOOL DoProcessContents,
+			      UINT32 NestingDepth )
 {
 	// Set the variables according to the passed-in values.
 	StartMarker		= pStart;
