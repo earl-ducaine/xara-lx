@@ -1286,7 +1286,7 @@ Node* XPFRenderCallback::ReformatTextLine(TextLine* pLineNode, FormatRegion* pFo
 {
 //	TRACE( _T("ReformatTextLine 0x%08x\n"), pLineNode);
 	
-	BOOL ok = TRUE;
+  // BOOL ok = TRUE;
 
 	// Copy the line
 	Node* pNewRoot = pLineNode->PublicCopy();
@@ -1327,7 +1327,8 @@ Node* XPFRenderCallback::ReformatTextLine(TextLine* pLineNode, FormatRegion* pFo
 			// Get the metrics of the character
 //			MILLIPOINT EMWidth = 0;
 			CharMetrics CharMet;
-			ok = pFormatRegion->GetCharMetrics(&CharMet, pATC->GetUnicodeValue());
+			// ok =
+			  pFormatRegion->GetCharMetrics(&CharMet, pATC->GetUnicodeValue());
 
 			// If this character isn't a space
 			// (have to do this or we get problems at the ends of lines)
@@ -1356,7 +1357,8 @@ Node* XPFRenderCallback::ReformatTextLine(TextLine* pLineNode, FormatRegion* pFo
 					KernCode* pKern = new KernCode(TempCoord);
 					if (pKern)
 					{
-						ok = CopyAttributesFromNode(pKern, pNode);
+					  // ok =
+						  CopyAttributesFromNode(pKern, pNode);
 						pKern->AttachNode(pContextNode, Direction, FALSE, FALSE);
 						pContextNode = pKern;
 						Direction = NEXT;
@@ -1373,7 +1375,8 @@ Node* XPFRenderCallback::ReformatTextLine(TextLine* pLineNode, FormatRegion* pFo
 			pNewNode = pNode->PublicCopy();
 			if (pNewNode)
 			{
-				ok = CopyAttributesFromNode(pNewNode, pNode);
+			  // ok =
+				  CopyAttributesFromNode(pNewNode, pNode);
 				pNewNode->AttachNode(pContextNode, Direction, FALSE, FALSE);
 				pContextNode = pNewNode;
 				Direction = NEXT;
@@ -1392,7 +1395,8 @@ Node* XPFRenderCallback::ReformatTextLine(TextLine* pLineNode, FormatRegion* pFo
 
 			if (pNewNode)
 			{
-				ok = CopyAttributesFromNode(pNewNode, pNode);
+			  // ok =
+				  CopyAttributesFromNode(pNewNode, pNode);
 				pNewNode->AttachNode(pContextNode, Direction, FALSE, FALSE);
 				pContextNode = pNewNode;
 				Direction = NEXT;

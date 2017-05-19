@@ -129,13 +129,13 @@ class EPSCommentDef
 {
 public:
 	// Constructor and destructor.
-	EPSCommentDef ( void );
-	EPSCommentDef ( const EPSCommentDef &NewValue );
-	EPSCommentDef ( TCHAR	*pStart,
-					TCHAR	*pEnd,
-					BOOL	DoProcessContents,
-					UINT32	NestingDepth );
-	~EPSCommentDef ( void );
+	EPSCommentDef (void );
+	EPSCommentDef (const EPSCommentDef &NewValue );
+	EPSCommentDef (const  TCHAR* pStart,
+		       const TCHAR* pEnd,
+		       BOOL DoProcessContents,
+		       UINT32 NestingDepth);
+	~EPSCommentDef (void);
 
 	// Access functions.
 	void Add ( EPSCommentDef *pNewItem );

@@ -2212,8 +2212,8 @@ BOOL AnimationColoursTab::HavePropertiesChanged()
 
 	// Get the current details from animation colours tab.
 
-	PALETTE_COLOURS CurPalCols;							// Browser/Optimized palette.
-	WEB_PALETTE		CurWebPal;							// Global/Local palette.	
+	// PALETTE_COLOURS CurPalCols;							// Browser/Optimized palette.
+	//WEB_PALETTE		CurWebPal;							// Global/Local palette.	
 	DWORD			CurNumColsInPal			= 256;		// The current number of colours in the palette.
 	BOOL			Global_Browser_Palette	= FALSE;	// Has the Global browser palette switch been selected.
 	BOOL			Optimized				= FALSE;	// Has the optimized palette switch been selected.
@@ -2225,16 +2225,16 @@ BOOL AnimationColoursTab::HavePropertiesChanged()
 	// Global Browser
 	if (pPropertiesDlg->GetBoolGadgetSelected(_R(IDC_FRAME_GLOBALBROWSER)))
 	{
-		CurPalCols		=	PALCOL_BROWSER;
-		CurWebPal		=	PAL_GLOBAL;
+	  // CurPalCols		=	PALCOL_BROWSER;
+	  // CurWebPal		=	PAL_GLOBAL;
 		CurPaletteType	=	1;
 		Global_Browser_Palette = TRUE;
 	}
 	// Global Optimized
 	else if (pPropertiesDlg->GetBoolGadgetSelected(_R(IDC_FRAME_GLOBALOPTIMISED)))
 	{
-		CurWebPal		= PAL_GLOBAL;
-		CurPalCols		= PALCOL_OPTIMIZED;
+	  // CurWebPal		= PAL_GLOBAL;
+	  // CurPalCols		= PALCOL_OPTIMIZED;
 		Optimized		= TRUE;		
 		CurPaletteType	= 2;
 		Global_Browser_Palette = FALSE;
@@ -2242,8 +2242,8 @@ BOOL AnimationColoursTab::HavePropertiesChanged()
 	// Local Optimized
 	else if(pPropertiesDlg->GetBoolGadgetSelected(_R(IDC_FRAME_LOCALOPT)))
 	{
-		CurWebPal		= PAL_LOCAL;
-		CurPalCols		= PALCOL_OPTIMIZED;
+	  // CurWebPal		= PAL_LOCAL;
+	  // CurPalCols		= PALCOL_OPTIMIZED;
 		Optimized		= TRUE;
 		CurPaletteType	= 3;
 		Global_Browser_Palette = FALSE;

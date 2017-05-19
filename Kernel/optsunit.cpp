@@ -1615,7 +1615,7 @@ MsgResult UnitPropertiesDlg::Message(Msg* Message)
 
 		MsgResult Result;
 
-		BOOL EndDialog = FALSE;		// TRUE if we should quit the dialog
+		// BOOL EndDialog = FALSE;		// TRUE if we should quit the dialog
 
 		// Should now handle the required messages that we respond to
 		switch (Msg->DlgMsg)
@@ -1634,7 +1634,7 @@ MsgResult UnitPropertiesDlg::Message(Msg* Message)
 					if (ok)
 					{
 						// Values found ok so quit dialogue
-						EndDialog = TRUE;				// Flag to close and end
+						// EndDialog = TRUE;				// Flag to close and end
 						if (pIsOk)
 							*pIsOk = TRUE;				// flag an ok return
 					}
@@ -1645,7 +1645,7 @@ MsgResult UnitPropertiesDlg::Message(Msg* Message)
 
 			case DIM_CANCEL:
 				// Cancel all changes that the user has made to the settings
-				EndDialog = TRUE;	// Flag to close and end
+				// EndDialog = TRUE;	// Flag to close and end
 				if (pIsOk)
 					*pIsOk = FALSE;	// flag a bad return
 			break;
@@ -1718,14 +1718,14 @@ MsgResult UnitPropertiesDlg::Message(Msg* Message)
 		Result = DialogOp::Message(Message);
 
 // Commented out as base class closes the dialog in LX.
-#if 0
-		// End dialog here
-		if (EndDialog) 
-		{
-			Close();				// Hide the dialog box
-			End();					// Finish the operation
-		}
-#endif
+// #if 0
+// 		// End dialog here
+// 		if (EndDialog) 
+// 		{
+// 			Close();				// Hide the dialog box
+// 			End();					// Finish the operation
+// 		}
+// #endif
 
 		// The message was for our dialog box so return that we have handled it, if necessary
 		return Result;

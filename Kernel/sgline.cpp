@@ -258,9 +258,10 @@ BOOL LineAttrItem::UpdateCurrentAttribStatus()
 		for (INT32 i = 0; i < nAttribClasses; i++)
 		{
 			NodeAttribute* pattr = NULL; // sjk
-			SelRange::CommonAttribResult eResult;
+			// SelRange::CommonAttribResult eResult;
 			
-			eResult = GetApplication()->
+			// eResult =
+			  GetApplication()->
 						FindSelection()->
 							FindCommonAttribute(ppAttribClasses[i], &pattr);
 
