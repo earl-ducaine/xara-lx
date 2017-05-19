@@ -178,7 +178,7 @@ static String_64 BarsVersion;
 
 static struct
 {
-	TCHAR*  Token;
+	const TCHAR*  Token;
 } TokenTable[] = 
 {
 	{_T("Bar")},

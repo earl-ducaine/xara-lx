@@ -2196,9 +2196,9 @@ BOOL OpDragRegularShape::ProcessEllipse( DocCoord PointerPos, ClickModifiers Mod
 	DocView::SnapCurrent(StartSpread,&PointerPos);
 
 	// Untransform the current pointer pos
-	DocCoord UTPointerPos = GetUTPosition(PointerPos);
+	// DocCoord UTPointerPos = GetUTPosition(PointerPos);
 	const DocCoord UTCentre = OriginalShape->GetUTCentrePoint();
-	const DocCoord Centre = OriginalShape->GetCentrePoint();
+	// const DocCoord Centre = OriginalShape->GetCentrePoint();
 	Matrix OriginalMat;
 	OriginalShape->GetTransformMatrix(&OriginalMat);
 	DocCoord UTStartPos = GetUTPosition(StartMousePos);
@@ -2527,8 +2527,8 @@ BOOL OpDragRegularShape::ProcessRadius(DocCoord Pos, ClickModifiers Mods)
 	DocView::SnapCurrent(StartSpread,&Pos);
 
 	// Untransform the current pointer pos
-	DocCoord UTPointerPos = GetUTPosition(Pos);
-	const DocCoord UTCentre = OriginalShape->GetUTCentrePoint();
+	// DocCoord UTPointerPos = GetUTPosition(Pos);
+	// const DocCoord UTCentre = OriginalShape->GetUTCentrePoint();
 	const DocCoord Centre = OriginalShape->GetCentrePoint();
 
 	// Get rotation of original and current primary points
@@ -2586,7 +2586,7 @@ BOOL OpDragRegularShape::ProcessRadius(DocCoord Pos, ClickModifiers Mods)
 void OpDragRegularShape::WheelConstrain(DocCoord* PointerPos, const DocCoord StartPos)
 {
 	// Obtain perpendicular distance from StartPos
-	DocCoord LineConstrainPoint = StartPos;
+	// DocCoord LineConstrainPoint = StartPos;
 	DocCoord RotStartPos = StartPos;
 	Matrix Mat(-OriginalShape->GetCentrePoint().x, -OriginalShape->GetCentrePoint().y);
 	Mat *= Matrix(ANGLE(90));

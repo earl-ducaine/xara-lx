@@ -3006,7 +3006,7 @@ void Path::RenderPathBlobs(RenderRegion* pRender)
 	PathFlags* Flags  = (PathFlags*) DescribeHandle(FlagsHandle);
 	PathVerb*  Verbs  = (PathVerb*)  DescribeHandle(VerbHandle);
 
-	BOOL PrevIsEndPoint;
+	// BOOL PrevIsEndPoint;
 	DocCoord StartCoord = Coords[0];
 
 	// loop through the path and render each of the blobs
@@ -3028,7 +3028,7 @@ void Path::RenderPathBlobs(RenderRegion* pRender)
 				}
 			}
 			//GdiFlush();
-			PrevIsEndPoint = TRUE;
+			// PrevIsEndPoint = TRUE;
 			if (Verbs[i] == PT_MOVETO)
 				StartCoord = Coords[i];
 		}

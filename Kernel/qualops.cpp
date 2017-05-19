@@ -148,7 +148,7 @@ QualitySliderDescriptor::QualitySliderDescriptor(
 						 	UINT32 toolID,                    // Tool (Module) Identifier
 						 	UINT32 txID,                      // String Resource ID
 						 	CCRuntimeClass* Op,				// pointer to the Op's runtime class object
-						 	TCHAR* tok,						// pointer to the token string
+						 	const TCHAR* tok,						// pointer to the token string
 						 	pfnGetState gs,					// pointer to the GetState function
 						 	UINT32 helpId,				// help identifier 
 						 	UINT32 bubbleID,				// string resource for bubble help
@@ -409,16 +409,17 @@ BOOL OpQuality::Init()
 						&Quality::DefaultQuality.QualityValue, 10, QUALITY_MAX); 
 
 	// Create a new OpDescriptor for the slider
-	QualitySliderDescriptor* pOpDesc = new QualitySliderDescriptor(0,
-									_R(IDS_VIEWQUALITY), 
-									CC_RUNTIME_CLASS(OpQuality), 
-									OPTOKEN_QUALITYSLIDER,
-									QualitySliderDescriptor::GetState, 
-									0, 
-									_R(IDBBL_VIEWQUALITYSLIDER),
-									_R(IDC_QUALITYSLIDER),
-									_R(IDC_QUALITYSLIDER));
-
+	QualitySliderDescriptor* pOpDesc =
+	  new QualitySliderDescriptor(0,
+				      _R(IDS_VIEWQUALITY), 
+				      CC_RUNTIME_CLASS(OpQuality), 
+				      OPTOKEN_QUALITYSLIDER,
+				      QualitySliderDescriptor::GetState, 
+				      0, 
+				      _R(IDBBL_VIEWQUALITYSLIDER),
+				      _R(IDC_QUALITYSLIDER),
+				      _R(IDC_QUALITYSLIDER));
+	
 	// check that it worked
 	if (pOpDesc==NULL)
 		return FALSE;

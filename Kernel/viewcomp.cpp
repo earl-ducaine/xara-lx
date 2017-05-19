@@ -649,7 +649,7 @@ BOOL ViewComponent::ExportViewDefinition(BaseCamelotFilter* pFilter, DocView * p
 	Spread* pSpread = pFilter->GetSpread();
 	ERROR2IF(pSpread == NULL,FALSE,"ExportViewDefinition no spread pointer");
 
-	WorkCoord ScrollOffsets = pView->GetScrollOffsets();
+	// WorkCoord ScrollOffsets = pView->GetScrollOffsets();
 	//INT32 XOffset			= ScrollOffsets.x.MakeLong();
 	//INT32 YOffset			= ScrollOffsets.y.MakeLong();
 	//WorkRect WorkViewRect	= pView->GetViewRect();
