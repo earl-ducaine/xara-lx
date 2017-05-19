@@ -1389,7 +1389,7 @@ ChangeFeatherProfileOpDesc::ChangeFeatherProfileOpDesc(
 						 	UINT32 toolID,                    // Tool (Module) Identifier
 						 	UINT32 txID,                      // String Resource ID
 						 	CCRuntimeClass* Op,				// pointer to the Op's runtime class object
-						 	TCHAR* tok,						// pointer to the token string
+						 	const TCHAR* tok,						// pointer to the token string
 						 	pfnGetState gs,					// pointer to the GetState function
 						 	UINT32 helpId,				// help identifier 
 						 	UINT32 bubbleID,				// string resource for bubble help
@@ -1531,23 +1531,25 @@ void ChangeFeatherProfileOpDesc::OnProfileChanging(OpDescControlMsg* SliderChang
 
 BOOL OpChangeFeatherProfile::Init()
 {
-	OpDescriptor* OpDesc = new ChangeFeatherProfileOpDesc(0,
-											 _R(IDS_FEATHERPROFILEOP),
-											 CC_RUNTIME_CLASS(OpChangeFeatherProfile),
-											 OPTOKEN_FEATHERPROFILE,
-											 OpChangeFeatherProfile::GetState,			// NB Operations GetState
-											 0,
-											 _R(IDBBL_FEATHERPROFILEOP),
-											 SYSTEMBAR_FEATHER,
-											 _R(IDC_FEATHERPROFILE_GDGT),
-											 TRUE,
-											 FALSE,
-											 FALSE,
-											 (GREY_WHEN_NO_CURRENT_DOC | GREY_WHEN_NO_SELECTION | DONT_GREY_WHEN_SELECT_INSIDE ) );
-
-	ERRORIF(!OpDesc, FALSE, _R(IDE_NOMORE_MEMORY));
-
-	return TRUE;
+  OpDescriptor* OpDesc =
+    new ChangeFeatherProfileOpDesc(0,
+				   _R(IDS_FEATHERPROFILEOP),
+				   CC_RUNTIME_CLASS(OpChangeFeatherProfile),
+				   OPTOKEN_FEATHERPROFILE,
+				   OpChangeFeatherProfile::GetState,			// NB Operations GetState
+				   0,
+				   _R(IDBBL_FEATHERPROFILEOP),
+				   SYSTEMBAR_FEATHER,
+				   _R(IDC_FEATHERPROFILE_GDGT),
+				   TRUE,
+				   FALSE,
+				   FALSE,
+				   (GREY_WHEN_NO_CURRENT_DOC |
+				    GREY_WHEN_NO_SELECTION |
+				    DONT_GREY_WHEN_SELECT_INSIDE ));  
+  ERRORIF(!OpDesc, FALSE, _R(IDE_NOMORE_MEMORY));
+  
+  return TRUE;
 }
 
 

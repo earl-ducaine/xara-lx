@@ -1533,10 +1533,10 @@ BOOL LayerSGallery::ApplyAction(SGActionType Action)
 	// Determine useful info - this is usually needed for most actions, so always get it
 	Document		*SelectedDoc = Document::GetSelected();
 	SGDisplayGroup	*DocumentGroup = DisplayTree->FindSubtree(this, SelectedDoc, NULL);
-	SGDisplayLayer	*FirstSelected = NULL;
+	//SGDisplayLayer	*FirstSelected = NULL;
 	
-	if (DocumentGroup != NULL)
-		FirstSelected = (SGDisplayLayer *) DocumentGroup->FindNextSelectedItem(NULL);
+	// if (DocumentGroup != NULL)
+	// 	FirstSelected = (SGDisplayLayer *) DocumentGroup->FindNextSelectedItem(NULL);
 
 	// Now, process the action	TO DO! - see Colour gallery for examples
 	switch(Action)

@@ -147,7 +147,17 @@ const CGadgetID TargetArea[]={_R(IDC_ALIGNDIALOG_TOSELECTION),	// default
 
 // string ID lists for combo boxes (null terminated)
 // >>>> NB. must be in same order as AlignType enum <<<<
-const INT32 HAlignIDS[]={_R(IDS_HALIGNNONE),
+// const INT32 HAlignIDS[]={_R(IDS_HALIGNNONE),
+// 						_R(IDS_HALIGNLEFT),
+// 						_R(IDS_HALIGNCENTRE),
+// 						_R(IDS_HALIGNRIGHT),
+// 						_R(IDS_HDISTRIBUTELEFT),
+// 						_R(IDS_HDISTRIBUTECENTRE),
+// 						_R(IDS_HDISTRIBUTERIGHT),
+// 						_R(IDS_HDISTRIBUTEEQUI),
+// 						0};
+
+const unsigned int HAlignIDS[]={_R(IDS_HALIGNNONE),
 						_R(IDS_HALIGNLEFT),
 						_R(IDS_HALIGNCENTRE),
 						_R(IDS_HALIGNRIGHT),
@@ -156,7 +166,8 @@ const INT32 HAlignIDS[]={_R(IDS_HALIGNNONE),
 						_R(IDS_HDISTRIBUTERIGHT),
 						_R(IDS_HDISTRIBUTEEQUI),
 						0};
-const INT32 VAlignIDS[]={_R(IDS_VALIGNNONE),
+
+const unsigned int VAlignIDS[]={_R(IDS_VALIGNNONE),
 						_R(IDS_VALIGNBOTTOM),
 						_R(IDS_VALIGNCENTRE),
 						_R(IDS_VALIGNTOP),
@@ -347,8 +358,12 @@ MsgResult ArrangeAlignment::Message(Msg* Message)
 		switch (Msg->DlgMsg)
 		{
 			case DIM_CREATE:				// dialog created - restore its previous state
-				BuildIDSDropList(_R(IDC_ALIGNDIALOG_HORIZONTAL), HAlignIDS, Align.h);
-				BuildIDSDropList(_R(IDC_ALIGNDIALOG_VERTICAL),   VAlignIDS, Align.v);
+				BuildIDSDropList(_R(IDC_ALIGNDIALOG_HORIZONTAL),
+						 HAlignIDS,
+						 Align.h);
+				BuildIDSDropList(_R(IDC_ALIGNDIALOG_VERTICAL),
+						 VAlignIDS,
+						 Align.v);
 				SetRadioGroup(TargetArea, TargetArea[Align.target]);
 				UpdateState();
 				break;
@@ -658,7 +673,7 @@ void ArrangeAlignment::DialogOKed()
 ******************************************************************************/
 
 void ArrangeAlignment::BuildIDSDropList(const CGadgetID DropListID,
-		const INT32* IDSList, INT32 Default)
+		const unsigned int* IDSList, INT32 Default)
 {
 	// Make sure the list is empty
 	DeleteAllValues(DropListID);

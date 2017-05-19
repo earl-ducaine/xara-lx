@@ -774,7 +774,7 @@ void SGDisplayKernelBitmap::HandleRedraw(SGRedrawInfo *RedrawInfo, SGMiscInfo *M
 
 	BitmapInfo Info;
 
-	BOOL bScaleDown = FALSE;
+	// BOOL bScaleDown = FALSE;
 
 	if (TheKernelBitmap->ActualBitmap &&
 		TheKernelBitmap->ActualBitmap->GetInfo( &Info ))
@@ -825,7 +825,7 @@ void SGDisplayKernelBitmap::HandleRedraw(SGRedrawInfo *RedrawInfo, SGMiscInfo *M
 			IconRect.Translate(Centre.x, Centre.y);
 
 			IconWidth = YSize;
-			bScaleDown = TRUE;
+			// bScaleDown = TRUE;
 		}
 
 		INT32 RightSpace = 0;
@@ -867,7 +867,7 @@ void SGDisplayKernelBitmap::HandleRedraw(SGRedrawInfo *RedrawInfo, SGMiscInfo *M
 
 			MyRect.lo.y = IconRect.lo.y;
 			MyRect.hi.y = IconRect.hi.y;
-			bScaleDown = TRUE;
+			// bScaleDown = TRUE;
 		}
 	}
 

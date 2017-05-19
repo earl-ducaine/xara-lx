@@ -196,7 +196,7 @@ void OpBackground::DoWithParam(OpDescriptor* pOpDesc,OpParam* pParam)
 
 	if (pParam != NULL)
 	{
-		BOOL ok = TRUE;
+	  // BOOL ok = TRUE;
 
 		OpBackgroundParam* pOpBackgroundParam = (OpBackgroundParam*)pParam;
 //		Document *		pDoc		= pOpBackgroundParam->pDoc;
@@ -212,7 +212,8 @@ void OpBackground::DoWithParam(OpDescriptor* pOpDesc,OpParam* pParam)
 		}
 
 		// Go and do the job of making the page background
-		ok = DoMakePageBackground(this, pSpread, pBitmap, pDocColour);
+		// ok =
+		  DoMakePageBackground(this, pSpread, pBitmap, pDocColour);
 	}
 
 	End();
