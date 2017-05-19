@@ -1684,7 +1684,7 @@ PORTNOTE("other", "Removed OpBarCreation");
 
 	INT32 i = 0;
 		BOOL CleanTarget = TRUE;
-		BOOL StretchAsSingularItem = FALSE;
+		// BOOL StretchAsSingularItem = FALSE;
 
 		if (pTop)
 		{
@@ -1711,7 +1711,7 @@ PORTNOTE("other", "Removed OpBarCreation");
 							CompareTo(((TemplateAttribute *)pNode)->GetParam()) == 0)
 						{
 							CleanTarget = TRUE;
-							StretchAsSingularItem = FALSE;
+							// StretchAsSingularItem = FALSE;
 							// exclude it if it is the trigger node aswell as a target
 							pTempNode = pParent->FindFirstChild(CC_RUNTIME_CLASS(TemplateAttribute));
 							while (pTempNode && CleanTarget)
@@ -2334,8 +2334,11 @@ BOOL NameGallery::ExpandVirtualTriggers(INT32 ExpandType, INT32 BarNo, DocRect &
 
 ***************************************************************************************/
 
-BOOL NameGallery::SetBSTData(INT32 Index, DWORD MaxWidth = NULL, DWORD MaxHeight = NULL, BYTE TriggeredBar = NULL, BYTE HasABackBar = NULL)
-{
+BOOL NameGallery::SetBSTData(INT32 Index,
+			     DWORD MaxWidth = 0,
+			     DWORD MaxHeight = 0,
+			     BYTE TriggeredBar = 0,
+			     BYTE HasABackBar = 0) {
 	if (Index > MAX_BARS || (!MaxWidth && !MaxHeight && !TriggeredBar && !HasABackBar))
 	{
 		ERROR3("Problem calling SetBSTData()");

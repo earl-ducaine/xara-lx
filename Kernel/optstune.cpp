@@ -510,13 +510,14 @@ TRACEUSER( "Neville", _T("commit gallery cache size='%d'\n"), CacheSize);
 	// ---------------------------------------------------------------------------------
 	// Cacheing preferences
 	{
-		BOOL SetOk = FALSE;
+	  // BOOL SetOk = FALSE;
 		INT32 State = 0;
 		BOOL Valid = FALSE;
 
 		State = pPrefsDlg->GetLongGadgetValue(_R(IDC_CHECK_CACHE_ENABLED), 0, 1, 0, &Valid);
 		if (Valid)
-			SetOk = Camelot.SetPrefValue(TEXT("Rendering"), TEXT("Cacheing"), &State);
+		  //SetOk =
+			  Camelot.SetPrefValue(TEXT("Rendering"), TEXT("Cacheing"), &State);
 
 	//	State = pPrefsDlg->GetLongGadgetValue(_R(IDC_EDIT_CACHE_SIZE), 1, 100, 0, &Valid);
 		String_256 strCachePercent = pPrefsDlg->GetStringGadgetValue(_R(IDC_EDIT_CACHE_SIZE), &Valid);
@@ -526,7 +527,8 @@ TRACEUSER( "Neville", _T("commit gallery cache size='%d'\n"), CacheSize);
 		Convert::ReadNumber(strCachePercent, &Pos, &dValue);	// Allow trailing chars
 		if (Valid && dValue>=1 && dValue<=100)
 			iValue = (INT32)dValue;
-			SetOk = Camelot.SetPrefValue(TEXT("Cache"), TEXT("CacheRAMPercent"), &iValue);
+		// SetOk =
+			  Camelot.SetPrefValue(TEXT("Cache"), TEXT("CacheRAMPercent"), &iValue);
 
 		// Reset the cache size...
 		CBitmapCache* pCache = Camelot.GetBitmapCache();
