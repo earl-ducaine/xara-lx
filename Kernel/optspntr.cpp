@@ -621,7 +621,7 @@ TRACEUSER( "Neville", _T("PointersTab::InitSection\n"));
 	ERROR2IF(pPrefsDlg == NULL,FALSE,"PointersTab::InitSection called with no dialog pointer");
 
 //	BOOL ReadOk = FALSE; 	// Flag to say whether the preference value was read ok 
-	BOOL ok	= TRUE;			// Flag for whether value set up ok 
+	// BOOL ok	= TRUE;			// Flag for whether value set up ok 
 
 	// Set up the click lists for the left, right and middle mouse buttons
 	// ok =

@@ -794,7 +794,7 @@ BOOL TuneTab::InitRenderingSection()
 	ERROR2IF(pPrefsDlg == NULL,FALSE,"TuneTab::InitRenderingSection called with no dialog pointer");
 
 	BOOL ReadOk = TRUE; 	// Flag to say whether the preference value was read ok 
-	BOOL ok	= TRUE;			// Flag for whether value set up ok 
+	// BOOL ok	= TRUE;			// Flag for whether value set up ok 
 
 	// The Maximum temporary workspace available to Gdraw
 	UINT32 TempWorkMem = TunedMemory::GetLimitedMemSize();
@@ -820,7 +820,8 @@ BOOL TuneTab::InitRenderingSection()
 	 
 	// Find out how much ram is needed for a full screen transparency blit
 	INT32 FullPageMem = TunedMemory::GetScreenMemSize();
- 	ok = pPrefsDlg->SetMemoryGadgetValue(_R(IDC_OPTS_FULLPAGEMEM), FullPageMem);
+ 	// ok =
+	  pPrefsDlg->SetMemoryGadgetValue(_R(IDC_OPTS_FULLPAGEMEM), FullPageMem);
 
 	// Format a string to relate the amount of memory put aside
 	// Display the chosen value in the editable field

@@ -1055,7 +1055,7 @@ TRACEUSER( "Neville", _T("InitControlsWithUnits\n"));
 	}
 
 	BOOL ReadOk = FALSE; 	// Flag to say whether the preference value was read ok 
-	BOOL ok	= TRUE;			// Flag for whether value set up ok 
+	// BOOL ok	= TRUE;			// Flag for whether value set up ok 
 
 	// Sets up controls which display measurements in units
 
