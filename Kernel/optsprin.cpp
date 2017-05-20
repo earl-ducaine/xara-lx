@@ -4003,17 +4003,29 @@ PORTNOTE("other", "While CCustomList, mark 2 variables as used to avoid warnings
 
 		ERROR2IF(!pMarkItem->GetPrintMark(), FALSE, "Illegal NULL pointer");
 
-		UINT32 ImageID = _R(IDB_PRINTMARK_UNKNOWNMK);
-		UINT32 GreyedID = _R(IDB_PRINTMARK_UNKNOWNMK);
+		// UINT32 ImageID = _R(IDB_PRINTMARK_UNKNOWNMK);
+		// UINT32 GreyedID = _R(IDB_PRINTMARK_UNKNOWNMK);
 		MarkType markType = pMarkItem->GetPrintMark()->GetType();
 		switch (markType)
 		{
-			case MarkType_Star:			ImageID = _R(IDB_PRINTMARK_STARMK);			GreyedID = _R(IDB_PRINTMARK_GREYED_STARMK);			break;
-			case MarkType_Registration:	ImageID = _R(IDB_PRINTMARK_REGISTRATIONMK);	GreyedID = _R(IDB_PRINTMARK_GREYED_REGISTRATIONMK);	break;
-			case MarkType_Information:	ImageID = _R(IDB_PRINTMARK_INFORMATIONMK);	GreyedID = _R(IDB_PRINTMARK_GREYED_INFORMATIONMK);		break;
-			case MarkType_Crop:			ImageID = _R(IDB_PRINTMARK_CROPMK);			GreyedID = _R(IDB_PRINTMARK_GREYED_CROPMK);			break;
-			case MarkType_GreyBar:		ImageID = _R(IDB_PRINTMARK_GRAYBARMK);		GreyedID = _R(IDB_PRINTMARK_GRAYBARMK);			break;
-			case MarkType_ColourBar:	ImageID = _R(IDB_PRINTMARK_COLOURBARMK);	GreyedID = _R(IDB_PRINTMARK_GREYED_COLOURBARMK);		break;
+		case MarkType_Star:			// ImageID =
+		  _R(IDB_PRINTMARK_STARMK);			// GreyedID =
+								  _R(IDB_PRINTMARK_GREYED_STARMK);			break;
+		case MarkType_Registration:	// ImageID =
+		  _R(IDB_PRINTMARK_REGISTRATIONMK);	// GreyedID =
+							  _R(IDB_PRINTMARK_GREYED_REGISTRATIONMK);	break;
+		case MarkType_Information:	// ImageID =
+		  _R(IDB_PRINTMARK_INFORMATIONMK);	// GreyedID =
+								  _R(IDB_PRINTMARK_GREYED_INFORMATIONMK);		break;
+		case MarkType_Crop:			// ImageID =
+		  _R(IDB_PRINTMARK_CROPMK);			// GreyedID =
+									  _R(IDB_PRINTMARK_GREYED_CROPMK);			break;
+		case MarkType_GreyBar:		// ImageID =
+		  _R(IDB_PRINTMARK_GRAYBARMK);		// GreyedID =
+									  _R(IDB_PRINTMARK_GRAYBARMK);			break;
+		case MarkType_ColourBar:	// ImageID = 
+		  _R(IDB_PRINTMARK_COLOURBARMK);	// GreyedID =
+								  _R(IDB_PRINTMARK_GREYED_COLOURBARMK);		break;
 			default:
 				break;
 		}

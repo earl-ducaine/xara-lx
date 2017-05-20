@@ -1437,7 +1437,7 @@ void OpCreateBevel::ApplyBevelToNode(Node * pNode, BevelInfo* pBevelInfo)
 
 	// also check for blends needing to be re-initialised
 	NodeBlender * pBlender = NULL;
-	NodeBlend * pBlend = NULL;
+	// NodeBlend * pBlend = NULL;
 	NodeShadowController* pShadController = NULL;
 
 	if (!IS_A (pBevelControl->FindParent (), NodeShadowController))
@@ -1452,7 +1452,8 @@ void OpCreateBevel::ApplyBevelToNode(Node * pNode, BevelInfo* pBevelInfo)
 
 	if (pBlender)
 	{
-		pBlend = (NodeBlend *)pBlender->FindParent();
+	  // pBlend =
+		  (NodeBlend *)pBlender->FindParent();
 
 		if (InitBlendAction::InitOnBlender(this, GetUndoActionList(), pBlender, TRUE, TRUE) != AC_OK)
 			ERROR2RAW("Couldn't Initialise blend action");
@@ -1470,7 +1471,8 @@ void OpCreateBevel::ApplyBevelToNode(Node * pNode, BevelInfo* pBevelInfo)
 
 		if (pBlender)
 		{
-			pBlend = (NodeBlend *)pBlender->FindParent();
+		  // pBlend =
+			  (NodeBlend *)pBlender->FindParent();
 
 			if (InitBlendAction::InitOnBlender(this, GetUndoActionList(), pBlender, TRUE, TRUE) != AC_OK)
 				ERROR2RAW("Couldn't Initialise blend action");
@@ -1813,9 +1815,9 @@ void OpRemoveBevel::Do(OpDescriptor *pOpDesc)
 	// go through this list, hiding them
 	pItem = (NodeListItem *)BevelControllerList.GetHead();
 
-	NodeShadowController * pShadControl = NULL;
+	// NodeShadowController * pShadControl = NULL;
 
-	NodeBlend * pBlend = NULL;
+	// NodeBlend * pBlend = NULL;
 	NodeBlender * pBlender = NULL;
 
 	BOOL bBlendBefore = FALSE;
@@ -1846,7 +1848,8 @@ void OpRemoveBevel::Do(OpDescriptor *pOpDesc)
 				// we're before it !
 				bBlendBefore = TRUE;
 
-				pBlend = (NodeBlend *)pBlender->FindParent();
+				// pBlend =
+				  (NodeBlend *)pBlender->FindParent();
 			}
 			else
 			{
@@ -1856,7 +1859,8 @@ void OpRemoveBevel::Do(OpDescriptor *pOpDesc)
 				if (pBlender)
 				{
 					bBlendAfter = TRUE;
-					pBlend = (NodeBlend *)pBlender->FindParent();
+					// pBlend =
+					  (NodeBlend *)pBlender->FindParent();
 				}
 			}
 			
@@ -1922,7 +1926,7 @@ void OpRemoveBevel::Do(OpDescriptor *pOpDesc)
 					ok = DoDeselectNode((NodeRenderableInk *)pItem->pNode);
 				
 				// need to tell any shadows to regen
-				pShadControl = 
+				// pShadControl = 
 					(NodeShadowController *)pItem->pNode->FindParent(CC_RUNTIME_CLASS(NodeShadowController));
 
 				if (ok) 

@@ -1644,7 +1644,7 @@ BOOL OpDrawBrush::SimpleJoinBrush(NodePath* pInsertedNode, Path* pNewPath)
 	// new points.  As this is a simple join it will either be at the beginning or the end.
 	// we also need to know the distance to the end of the new points, as this is required
 	// for the undo.
-	MILLIPOINT NewPathLength = (MILLIPOINT)pNewPath->GetPathLength();
+	// MILLIPOINT NewPathLength = (MILLIPOINT)pNewPath->GetPathLength();
 	MILLIPOINT OldPathLength = -1;
 	if (StartPath != NULL)
 	{
@@ -1656,8 +1656,8 @@ BOOL OpDrawBrush::SimpleJoinBrush(NodePath* pInsertedNode, Path* pNewPath)
 			OldPathLength = (MILLIPOINT)EndPath->InkPath.GetPathLength();
 	}
 
-	MILLIPOINT InsertDistance = -1;
-	MILLIPOINT EndInsertDistance = -1;
+	// MILLIPOINT InsertDistance = -1;
+	// MILLIPOINT EndInsertDistance = -1;
 	INT32 StartIndex = 0; //where we will begin our insert
 	
 	// according to the type of join we will want to insert our new data at the beginning or the
@@ -1665,26 +1665,26 @@ BOOL OpDrawBrush::SimpleJoinBrush(NodePath* pInsertedNode, Path* pNewPath)
 	switch (JoinType)
 	{
 		case JOINTYPE_NEWSTART_TO_OLDSTART:
-			InsertDistance = 0;
-			EndInsertDistance = NewPathLength;
+		  // InsertDistance = 0;
+		  // EndInsertDistance = NewPathLength;
 			StartIndex = 0; 
 			// in this instance we reversed the new path section so also reverse the pressure data
 			m_pPressureSampler->ReverseData();
 			break;
 		case JOINTYPE_NEWSTART_TO_OLDEND:
-			InsertDistance = OldPathLength;
-			EndInsertDistance = OldPathLength + NewPathLength;
+		  // InsertDistance = OldPathLength;
+		  // EndInsertDistance = OldPathLength + NewPathLength;
 			StartIndex = pPressData->GetInternalIndexFromDistance(OldPathLength);
 			if (StartIndex==-1) StartIndex = pPressData->GetNumItems();
 			break;
 		case JOINTYPE_NEWEND_TO_OLDSTART:  
-			InsertDistance = 0;
-			EndInsertDistance = NewPathLength;
+		  // InsertDistance = 0;
+		  // EndInsertDistance = NewPathLength;
 			StartIndex = 0; 
 			break;
 		case JOINTYPE_NEWEND_TO_OLDEND:
-			InsertDistance = OldPathLength;
-			EndInsertDistance = OldPathLength + NewPathLength;
+		  // InsertDistance = OldPathLength;
+		  // EndInsertDistance = OldPathLength + NewPathLength;
 			StartIndex = pPressData->GetInternalIndexFromDistance(OldPathLength);	
 			if (StartIndex==-1) StartIndex = pPressData->GetNumItems();
 			m_pPressureSampler->ReverseData();

@@ -205,25 +205,25 @@ BOOL GalleryContextMenu::Build(void)
 
 ********************************************************************************************/
 
-BOOL OpGalleryCommand::InitPolymorphicCommand(StringBase *OpToken, UINT32 MenuTextID)
+BOOL OpGalleryCommand::InitPolymorphicCommand(const StringBase *OpToken, UINT32 MenuTextID)
 {
-	return(RegisterOpDescriptor(0,									// Tool ID 
-								MenuTextID,		 					// String resource ID
-								CC_RUNTIME_CLASS(OpGalleryCommand),	// Runtime class
-								(TCHAR *) (*OpToken), 				// Token string
-								OpGalleryCommand::GetCommandState,	// GetState function
-								0,									// help ID
-								0,									// bubble help
-								0,									// resource ID
-								0,									// control ID
-								SYSTEMBAR_ILLEGAL,					// Bar ID
-								FALSE,								// Recieve system messages
-								FALSE,								// Smart duplicate operation
-								TRUE,								// Clean operation
-								0,									// No vertical counterpart
-								0,									// String for one copy only error
-								DONT_GREY_WHEN_SELECT_INSIDE		// Auto state flags
-								));
+  return(RegisterOpDescriptor(0,									// Tool ID 
+			      MenuTextID,		 					// String resource ID
+			      CC_RUNTIME_CLASS(OpGalleryCommand),	// Runtime class
+			      (const TCHAR *) (*OpToken), 				// Token string
+			      OpGalleryCommand::GetCommandState,	// GetState function
+			      0,									// help ID
+			      0,									// bubble help
+			      0,									// resource ID
+			      0,									// control ID
+			      SYSTEMBAR_ILLEGAL,					// Bar ID
+			      FALSE,								// Recieve system messages
+			      FALSE,								// Smart duplicate operation
+			      TRUE,								// Clean operation
+			      0,									// No vertical counterpart
+			      0,									// String for one copy only error
+			      DONT_GREY_WHEN_SELECT_INSIDE		// Auto state flags
+			      ));
 }
 
 

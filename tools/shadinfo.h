@@ -203,7 +203,7 @@ public:
 	void SetBitmapUpdate(BOOL OnOrOff);
 	BOOL SetPenumbraSize(MILLIPOINT PenumSize);
 
-	BOOL ConvertValueToString(String_256 &In, const INT32 value, UnitType type=NOTYPE, TCHAR *unit=_T("pix"));
+	BOOL ConvertValueToString(String_256 &In, const INT32 value, UnitType type=NOTYPE, const TCHAR *unit=_T("pix"));
 	BOOL ConvertStringToValue(CGadgetID ID, MILLIPOINT& value);
 
 	// Inputs error
