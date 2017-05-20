@@ -173,8 +173,10 @@ BOOL BezierTool::CreateCurve = TRUE;
 BOOL BezierTool::CreateCusp	= FALSE;
 
 const INT32 NumberIconIDs = 18;
-INT32 AllIconIDs[NumberIconIDs] =  
-		{_R(IDC_PATH_EDIT_ENDPOINTX), _R(IDC_PATH_EDIT_ENDPOINTY), _R(IDC_PATH_BUMP_ENDX_LESS),
+// INT32 AllIconIDs[NumberIconIDs] =  
+unsigned int AllIconIDs[NumberIconIDs] =  
+
+  {_R(IDC_PATH_EDIT_ENDPOINTX), _R(IDC_PATH_EDIT_ENDPOINTY), _R(IDC_PATH_BUMP_ENDX_LESS),
 		 _R(IDC_PATH_BUMP_ENDX_MORE), _R(IDC_PATH_BUMP_ENDY_LESS), _R(IDC_PATH_BUMP_ENDY_MORE),
 		 _R(IDC_PATH_EDIT_FIRSTX), _R(IDC_PATH_EDIT_FIRSTY), _R(IDC_PATH_BUMP_FIRSTX_LESS),
 		 _R(IDC_PATH_BUMP_FIRSTX_MORE), _R(IDC_PATH_BUMP_FIRSTY_LESS), _R(IDC_PATH_BUMP_FIRSTY_MORE),
@@ -2998,7 +3000,7 @@ BOOL BezierTool::CyclePathPoints(BOOL Fowards)
 
 				if (Fowards)
 				{	
-					INT32 Current = 0;
+				  // INT32 Current = 0;
 					INT32 Next = 0;
 					BOOL MoreEndpoints = TRUE;
 					BOOL PrevSelected = Flags[0].IsSelected;
@@ -3019,7 +3021,7 @@ BOOL BezierTool::CyclePathPoints(BOOL Fowards)
 							LastSelectedPointValid = TRUE;
 							}
 							PrevSelected= temp;
-							Current = Next;
+							// Current = Next;
 						}
 						else
 						{

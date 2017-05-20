@@ -243,7 +243,7 @@ CC_DECLARE_DYNCREATE(OpGalleryCommand);
 public:
 	// There is no Init() method for this base class
 
-	static BOOL InitPolymorphicCommand(StringBase *OpToken, UINT32 MenuTextID);
+	static BOOL InitPolymorphicCommand(const StringBase *OpToken, UINT32 MenuTextID);
 				// Called by SuperGallery::InitMenuCommand to create another OpDescriptor
 				// for this Op.
 

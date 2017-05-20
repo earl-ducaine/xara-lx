@@ -1565,7 +1565,7 @@ BOOL OpFreeHand::SimpleJoin(NodePath* FreePath, NodePath* OldPath)
 	// First we should make a note of the region that we will need redrawing
 	DocRect InvalidRect = FreePath->GetBlobBoundingRect();
 	
-	DocRect OriginalRect = OldPath->GetBoundingRect();
+	// DocRect OriginalRect = OldPath->GetBoundingRect();
 //	Spread* pSpread = Document::GetSelectedSpread();
 
 	InvalidateBrushRegion(OldPath);

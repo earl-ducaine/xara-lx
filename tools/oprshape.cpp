@@ -536,8 +536,8 @@ void OpNewRegShape::InflateShape(DocRect *Bounds, DocCoord* NewCentre, DocCoord*
 	// Move them if required
 	if (!NewShape->IsCircular())
 	{
-		DocCoord MajorRender = *NewMajor;
-		DocCoord MinorRender = *NewMinor;
+	  // DocCoord MajorRender = *NewMajor;
+	  // DocCoord MinorRender = *NewMinor;
 		double radius = NewCentre->Distance(*NewMajor);
 		double SideA = cos(PI/NewShape->GetNumSides())*radius;
 		if (SideA != 0.0)

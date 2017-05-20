@@ -952,7 +952,7 @@ void OpRemoveShadow::DoWithParam(OpDescriptor *pOpDesc, OpParam* pParam)
 	// Start the SelectionOp
 	if (ok) ok = DoStartSelOp(TRUE);
 
-	NodeBlend * pBlend = NULL;
+	// NodeBlend * pBlend = NULL;
 	NodeBlender * pBlender = NULL;
 	NodeRenderableInk * pRenderableNode = NULL;
 
@@ -984,17 +984,20 @@ void OpRemoveShadow::DoWithParam(OpDescriptor *pOpDesc, OpParam* pParam)
 				// we're before it !
 				bBlendBefore = TRUE;
 
-				pBlend = (NodeBlend *)pBlender->FindParent();
+				// pBlend =
+				  (NodeBlend *)pBlender->FindParent();
 			}
 			else
 			{
 				// try the blend after
-				pBlender = (NodeBlender *)pNode->FindPrevious(CC_RUNTIME_CLASS(NodeBlender));
+				// pBlender =
+				  (NodeBlender *)pNode->FindPrevious(CC_RUNTIME_CLASS(NodeBlender));
 
 				if (pBlender)
 				{
 					bBlendAfter = TRUE;
-					pBlend = (NodeBlend *)pBlender->FindParent();
+					// pBlend = 
+					  (NodeBlend *)pBlender->FindParent();
 				}
 			}
 
@@ -1924,7 +1927,7 @@ ActionCode ChangePenumbraSizeAction::Execute()
 	ChangePenumbraSizeAction* pAction;
 
 	// force a redraw of the region
-	DocRect dr = m_LastRect;
+	// DocRect dr = m_LastRect;
 
 	Act = ChangePenumbraSizeAction::Init(	pOperation, 
 										pOppositeActLst,
@@ -2215,7 +2218,7 @@ ActionCode ChangeFloorShadowHeightAction::Execute()
 	ChangeFloorShadowHeightAction* pAction;
 
 	// force a redraw of the region
-	DocRect dr = m_LastRect;
+	// DocRect dr = m_LastRect;
 
 	Act = ChangeFloorShadowHeightAction::Init(	pOperation, 
 										pOppositeActLst,
@@ -2383,7 +2386,7 @@ ActionCode ChangeFloorShadowAngleAction::Execute()
 	ChangeFloorShadowAngleAction* pAction;
 
 	// force a redraw of the region
-	DocRect dr = m_LastRect;
+	// DocRect dr = m_LastRect;
 
 	Act = ChangeFloorShadowAngleAction::Init(	pOperation, 
 										pOppositeActLst,
@@ -2545,7 +2548,7 @@ ActionCode ChangeShadowTypeAction::Execute()
 	ChangeShadowTypeAction* pAction;
 
 	// force a redraw of the region
-	DocRect dr = m_LastRect;
+	// DocRect dr = m_LastRect;
 
 	Act = ChangeShadowTypeAction::Init(	pOperation, 
 										pOppositeActLst,
@@ -3146,7 +3149,7 @@ ActionCode ChangeShadowScaleAction::Execute()
 	ChangeShadowScaleAction* pAction;
 
 	// force a redraw of the region
-	DocRect dr = m_LastRect;
+	// DocRect dr = m_LastRect;
 
 	Act = ChangeShadowScaleAction::Init(	pOperation, 
 										pOppositeActLst,
@@ -3415,11 +3418,11 @@ ActionCode SaveShadowDataAction::Init( Operation* pOp,
 
 		Node * pNode = (*ppNewAction)->m_pSelRange->FindFirst();
 
-		Spread *pSpread = NULL;
+		// Spread *pSpread = NULL;
 
 		while (pNode)
 		{
-			pSpread = pNode->FindParentSpread();
+		  // pSpread = pNode->FindParentSpread();
 			
 			if (pNode->IsKindOf(CC_RUNTIME_CLASS(NodeShadowController)))
 			{
@@ -3471,7 +3474,7 @@ ActionCode SaveShadowDataAction::Execute()
 	SaveShadowDataAction* pAction;
 
 	// force a redraw of the region
-	DocRect dr = m_LastRect;
+	// DocRect dr = m_LastRect;
 
 	Act = SaveShadowDataAction::Init(	pOperation, 
 										pOppositeActLst,
@@ -3866,7 +3869,7 @@ ActionCode ChangeGlowWidthAction::Execute()
 	ChangeGlowWidthAction* pAction;
 
 	// force a redraw of the region
-	DocRect dr = m_LastRect;
+	// DocRect dr = m_LastRect;
 
 	Act = ChangeGlowWidthAction::Init(	pOperation, 
 										pOppositeActLst,

@@ -256,7 +256,7 @@ void OpSelectPathPoints::DoDrag(DocCoord Anchor,
 			PathVerb* Verbs = ThisPath->GetVerbArray();
 			INT32 UsedSlots = ThisPath->GetNumCoords();
 
-			DocCoord StartCoord = Coords[0];
+			// DocCoord StartCoord = Coords[0];
 
 			// Go into a RenderOnTop loop
 			RenderRegion* pRender = DocView::RenderOnTop(NULL, pSpread, ClippedEOR);

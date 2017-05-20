@@ -126,10 +126,10 @@ public:
 	~EPSCommentList	( void );
 
 	// Access functions.
-	BOOL Add ( TCHAR	*pStart,
-			   TCHAR	*pEnd,
-			   BOOL		DoProcessComments,
-			   UINT32		NestingDepth );
+	BOOL Add(const TCHAR* pStart,
+		 const TCHAR* pEnd,
+		 BOOL DoProcessComments,
+		 UINT32 NestingDepth);
 
 	const EPSCommentDef& ReturnElement ( INT32 Index );
 

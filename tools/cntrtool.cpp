@@ -2650,7 +2650,7 @@ void ContourInfoBarOp::UpdateState()
 	UINT32 NumSelBlends = 0;
 	ColourBlendType ColBlendType = COLOURBLEND_FADE;
 	UINT32 StepDistance = 0;
-	BOOL OnlyBlendsSelected			= TRUE;
+	// BOOL OnlyBlendsSelected			= TRUE;
 //	BOOL AllSelectedBlendsAreOnCurve= TRUE;
 //	BOOL AtLeastOneBlendIsOnCurve	= FALSE;
 //	BOOL Tangential					= FALSE;
@@ -2772,8 +2772,9 @@ void ContourInfoBarOp::UpdateState()
 			if (pControl->GetWidth() > 0)
 				bHasInner = TRUE;
 		}
-		else
-			OnlyBlendsSelected = FALSE;
+		else {
+		  // OnlyBlendsSelected = FALSE;
+		}
 		
 		pItem = (NodeListItem *)ContourList.GetNext(pItem);
 

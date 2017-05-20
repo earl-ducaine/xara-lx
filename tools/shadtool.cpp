@@ -1220,9 +1220,9 @@ void OpDragCreateShadow2::DoWithParam(OpDescriptor* pOpDesc, OpParam* pOpParam)
 	}
 	NodeRenderableInk* pTargetCompound = NodeRenderableInk::FindCompoundFromSimple(pTargetInk);	// Normal click logic
 	NodeCompound* pController = pTargetInk->GetParentController();
-	BOOL bControllerOfSelected = FALSE;
-	if (pController)
-		bControllerOfSelected = pController->IsParentOfSelected();
+	// BOOL bControllerOfSelected = FALSE;
+	// if (pController)
+	// 	bControllerOfSelected = pController->IsParentOfSelected();
 
 	// By default assume that the selected shadows, as decribed by m_pEditRange will be dragged
 	// If the clicked node is selected
