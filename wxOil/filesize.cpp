@@ -106,7 +106,9 @@ service marks of Xara Group Ltd. All rights in these marks are reserved.
 #include "camtypes.h"
 //#include "ensure.h" - in camtypes.h [AUTOMATICALLY REMOVED]
 //#include "ccfile.h" - in camtypes.h [AUTOMATICALLY REMOVED]
+#include "wxmbstowcs.h"
 
+			    
 DECLARE_SOURCE("$Revision: 1282 $");
 
 

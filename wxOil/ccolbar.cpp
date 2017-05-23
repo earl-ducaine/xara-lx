@@ -1248,7 +1248,7 @@ PORTNOTE("other","Removed ColourSGallery usage")
 BOOL CColourBar::IsColourPickerOverStripRect (wxWindow* colourPicker, wxPoint mousePt) {
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
-  return((colourPicker == this) && StripRect.Inside(mousePt));
+  return((colourPicker == this) && StripRect.Contains(mousePt));
 #pragma GCC diagnostic pop
 #if FALSE
   // firstly, lets check for obvious insanity
@@ -2875,7 +2875,7 @@ INT32 CColourBar::WhereIsMouse(wxPoint MousePos, wxRect *TheRectItIsIn, BOOL *To
   }
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
-  if (StripRect.Inside(MousePos)) {	// Check ColourStrip - MUST be checked first!
+  if (StripRect.Contains(MousePos)) {	// Check ColourStrip - MUST be checked first!
     if (TheRectItIsIn != NULL) {
       *TheRectItIsIn = StripRect;
     }
@@ -2888,13 +2888,13 @@ INT32 CColourBar::WhereIsMouse(wxPoint MousePos, wxRect *TheRectItIsIn, BOOL *To
     }
     return((INT32) (((MousePos.x - StripRect.x) / CellSize) + LeftmostColour));
   }
-  if (IndicatorRect.Inside(MousePos)) {	// Check Indicator patch
+  if (IndicatorRect.Contains(MousePos)) {	// Check Indicator patch
     if (TheRectItIsIn != NULL) {
       *TheRectItIsIn = IndicatorRect;
     }
     return(CLICKED_INDICATORS);
   }
-  if (EditButtonRect.Inside(MousePos)) {
+  if (EditButtonRect.Contains(MousePos)) {
     if (TheRectItIsIn != NULL) {
       *TheRectItIsIn = EditButtonRect;
     }
@@ -2909,7 +2909,7 @@ INT32 CColourBar::WhereIsMouse(wxPoint MousePos, wxRect *TheRectItIsIn, BOOL *To
   */
   wxRect TheRect;
   if (!HasNoScrollBar(-1, -1)) {			// Check Scrollbar rectangle (if any)
-    if (ScrollHeight != 0 && ScrollBarRect.Inside(MousePos) &&
+    if (ScrollHeight != 0 && ScrollBarRect.Contains(MousePos) &&
 	CalculateSausageRect(&TheRect)) {
       if (TheRectItIsIn != NULL) {
 	*TheRectItIsIn = TheRect;
@@ -2935,7 +2935,7 @@ INT32 CColourBar::WhereIsMouse(wxPoint MousePos, wxRect *TheRectItIsIn, BOOL *To
     TheRect = ScrollBarRect;			// Check left scroll button
     TheRect.x -= ButtonWidth;
     TheRect.width = ButtonWidth;
-    if (TheRect.Inside(MousePos))
+    if (TheRect.Contains(MousePos))
       {
 	if (TheRectItIsIn != NULL)
 	  *TheRectItIsIn = TheRect;
@@ -2944,7 +2944,7 @@ INT32 CColourBar::WhereIsMouse(wxPoint MousePos, wxRect *TheRectItIsIn, BOOL *To
     TheRect = ScrollBarRect;		   	// Check right scroll button
     TheRect.x += TheRect.width;
     TheRect.width = ButtonWidth;
-    if (TheRect.Inside(MousePos))
+    if (TheRect.Contains(MousePos))
       {
 	if (TheRectItIsIn != NULL)
 	  *TheRectItIsIn = TheRect;
@@ -2952,7 +2952,7 @@ INT32 CColourBar::WhereIsMouse(wxPoint MousePos, wxRect *TheRectItIsIn, BOOL *To
       }
   }
   CalculateNoColourCellRect(&TheRect);	// Check NoColour cell
-  if (TheRect.Inside(MousePos))
+  if (TheRect.Contains(MousePos))
     {
       if (TheRectItIsIn != NULL)
 	*TheRectItIsIn = TheRect;
@@ -4578,7 +4578,7 @@ void CColourBar::OnAnyButtonDown(const wxPoint &point, INT32 Modifier) {
 	DocColour *DocColourToUse = NULL;
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
-	if (InnerRect.Inside(point)) {
+	if (InnerRect.Contains(point)) {
 	  if (EndColour != NULL && point.y <= (InnerRect.y + (InnerRect.height / 2)))
 	    DocColourToUse = EndColour;
 	  else
@@ -4931,7 +4931,7 @@ void CColourBar::OnMouseMove(wxMouseEvent& event) {
   BOOL ModifierKeyDown = GetModifierKeyState();
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
-  if (StripRect.Inside(point) && ModifierKeyDown) {
+  if (StripRect.Contains(point) && ModifierKeyDown) {
     // Set the cursor to the push hand shape
     if (!PushCursor) {
       PushCursor = new Cursor(_R(IDC_PUSHTOOLCURSOR));

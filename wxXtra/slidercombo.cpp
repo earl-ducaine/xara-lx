@@ -14,6 +14,16 @@
 #include <wx/slider.h>
 
 #ifdef __WXGTK20__
+#define WXGTK20OR30 1
+#endif
+
+#ifdef __WXGTK30__
+#define WXGTK20OR30 1
+#endif
+
+
+
+#ifdef WXGTK20OR30
 #include <gtk/gtk.h>
 
 extern "C" {

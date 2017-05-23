@@ -1078,7 +1078,7 @@ BOOL FreeHandEPSFilter::DiscardFillSubType()
 			String_64 Str;
 			if(!Stack.Pop(&Str))
 				return FALSE;
-			if(camStrcmp(Str, _T("{")) == 0)
+			if(camStrcmp((TCHAR*)Str, _T("{")) == 0)
 				Done = TRUE;		// found end of this bit
 		}
 		else

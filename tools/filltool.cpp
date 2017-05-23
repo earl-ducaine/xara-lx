@@ -7876,7 +7876,7 @@ void TranspInfoBarOp::ShowCommonBitmapDpi()
 	else if (dpi > 0)
 	{
 		String_256 jcf(_R(IDS_FILLTOOL_DPI_FORMAT));
-		camSnprintf(Str, 15, jcf, (INT32) dpi);
+		camSnprintf(Str, 15, (TCHAR*)jcf, (INT32) dpi);
 		DpiStr = Str;
 	}
 

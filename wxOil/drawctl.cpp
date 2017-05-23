@@ -101,7 +101,8 @@ service marks of Xara Group Ltd. All rights in these marks are reserved.
 
 #include "dlgevt.h"
 #include "drawctl.h"
-
+#include <wx/xml/xml.h>
+			    
 /*****************************************************************************
 
 This file contains the class for wxCamDrawControl, derived from

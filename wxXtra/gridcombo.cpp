@@ -320,7 +320,7 @@ Notes     : We need to update our scroll bars.
 ******************************************************************************/
 void wxGridComboPopup::OnSize(wxSizeEvent& event)
 {
-	wxScrolledWindow::OnSize(event);
+  // wxScrolledWindow::OnSize(event);
 
 	UpdateScrollers();
 }

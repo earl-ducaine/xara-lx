@@ -100,6 +100,7 @@ service marks of Xara Group Ltd. All rights in these marks are reserved.
 */
 
 #include "camtypes.h"
+#include "wxmbstowcs.h"
 
 #if defined( __WXMSW__ )
 #include <new.h>

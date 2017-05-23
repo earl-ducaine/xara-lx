@@ -2020,7 +2020,7 @@ BOOL CCamView::GetCurrentMousePos(OilCoord* pMousePos) {
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
   // If the mouse is outside the view then we can do nothing more.
-  if (!CurrentSize.Inside(pt)) {
+  if (!CurrentSize.Contains(pt)) {
     return FALSE;
   }
 #pragma GCC diagnostic pop
@@ -2898,7 +2898,7 @@ void CCamView::OnLButtonDown( wxMouseEvent &event ) {
 	INT32 TimeDelay = (ThisClickTime - TimeOfLastClick);
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
-	if( ClickBounds.Inside( point ) && ( TimeDelay <= (INT32)ClickGap ) ) {
+	if( ClickBounds.Contains(point) && ( TimeDelay <= (INT32)ClickGap ) ) {
 		ThisSingleIsTriple = TRUE;
 	} else {
 		ThisSingleIsTriple = FALSE;
@@ -3141,7 +3141,7 @@ void CCamView::OnLButtonDblClk(wxMouseEvent &event) {
   INT32 TimeDelay = (ThisClickTime - TimeOfLastClick);
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
-  if (ClickBounds.Inside( point ) && (TimeDelay <= (INT32)ClickGap)) {
+  if (ClickBounds.Contains(point) && (TimeDelay <= (INT32)ClickGap)) {
     ThisDoubleIsQuad = TRUE;
   } else {
     ThisDoubleIsQuad = FALSE;
@@ -4781,7 +4781,7 @@ void CCamView::HandleDragScrolling(wxPoint point) {
 #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
     // If the mouse is within the window, and we are performing
     // deferred-scrolling then we can change over to auto-scrolling.
-    if (!wrSize.IsEmpty() && wrSize.Inside(point)) {
+    if (!wrSize.IsEmpty() && wrSize.Contains(point)) {
       CurrentDragType = DRAGTYPE_AUTOSCROLL;
       AutoScrollExcludeRulers = TRUE;
     }
@@ -4797,7 +4797,7 @@ void CCamView::HandleDragScrolling(wxPoint point) {
   // Has the mouse moved outside there bounds?
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
-  if (!wrSize.IsEmpty() && !wrSize.Inside(point)) {
+  if (!wrSize.IsEmpty() && !wrSize.Contains(point)) {
     BOOL bCalcDeltas = TRUE;
 #if !defined(EXCLUDE_FROM_XARALX)
     WinRect Outer = wrSize;
@@ -5148,64 +5148,55 @@ DocView *CCamView::GetDocViewFromWindowID( CWindowID WindowID )
 }
 
 
-bool CCamView::OnDropFiles(wxCoord x, wxCoord y, const wxArrayString& filenames)
-{
-	// Set the correct docivew (and hence document)
-	pDocView->SetCurrent();
-
-	// Create the drop info object
-	FileDropInfo DropInfo(WinCoord(x, y));
-	List* pList = DropInfo.GetFileList();
-
-	size_t Index;
-	for (Index = 0; Index < filenames.GetCount(); Index++)
-	{
-		wxString TempStr(filenames[Index]);
-
-		// A bit of a nasty hack here to work around a bug in wxWidgets
-		// Filenames with multibyte characters are not correctly decoded
-		// into the wxString so it still contains multi-byte sequences
-		// We will check if all the chars are single byte and if so,
-		// force it into a char buffer and convert using wxConvFileName
-		// This should mean that this code will not interfere if someone
-		// fixes wxWidgets
-		UINT32 i = 0;
-		while (TempStr[i] != 0 && (TempStr[i] & 0xFF) == TempStr[i])
-			i++;
-
-		if (TempStr[i] == 0)
-		{
-			// All the chars are bytes so try sticking them into a char array
-			// and converting them with wxConvFileName
-			char* pBuf = (char*)CCMalloc(i + 1);
-			if (pBuf)
-			{
-				i = 0;
-				while (TempStr[i] != 0)
-				{
-					pBuf[i] = (char)(TempStr[i] & 0xFF);
-					i++;
-				}
-				pBuf[i] = 0;
-
-				TempStr = wxConvFileName->cMB2WX(pBuf);
-				CCFree(pBuf);
-			}
-		}
-
-		String_256 Str(TempStr);
-
-		StringListItem* pItem = new StringListItem(Str);
-		if (pItem)
-			pList->AddTail(pItem);
+bool CCamView::OnDropFiles(wxCoord x, wxCoord y,
+			   const wxArrayString& filenames) {
+  // Set the correct docivew (and hence document)
+  pDocView->SetCurrent();
+  // Create the drop info object
+  FileDropInfo DropInfo(WinCoord(x, y));
+  List* pList = DropInfo.GetFileList();
+  size_t Index;
+  for (Index = 0; Index < filenames.GetCount(); Index++) {
+    wxString TempStr(filenames[Index]);
+    // A bit of a nasty hack here to work around a bug in wxWidgets
+    // Filenames with multibyte characters are not correctly decoded
+    // into the wxString so it still contains multi-byte sequences
+    // We will check if all the chars are single byte and if so,
+    // force it into a char buffer and convert using wxConvFileName
+    // This should mean that this code will not interfere if someone
+    // fixes wxWidgets
+    UINT32 i = 0;
+    while (TempStr.mb_str()[i] != 0 &&
+	   ((TempStr.mb_str()[i] & 0xFF) == TempStr.mb_str()[i])) {
+      i++;
+    }
+    if (TempStr[i] == 0) {
+      // All the chars are bytes so try sticking them into a char array
+      // and converting them with wxConvFileName
+      char* pBuf = (char*)CCMalloc(i + 1);
+      if (pBuf)	 {
+	i = 0;
+	while (TempStr.mb_str()[i] != 0) {
+	  pBuf[i] = (char)(TempStr.mb_str()[i] & 0xFF);
+	  i++;
 	}
-
-	// Invoke the dropped files operation
-	OpDescriptor *pOpDesc = OpDescriptor::FindOpDescriptor(OPTOKEN_DROPPEDFILE);
-	if (pOpDesc)
-		pOpDesc->Invoke((OpParam *) &DropInfo);
-
-	return(true);
+	pBuf[i] = 0;
+	TempStr = wxConvFileName->cMB2WX(pBuf);
+	CCFree(pBuf);
+      }
+    }
+    String_256 Str(TempStr);
+    StringListItem* pItem = new StringListItem(Str);
+    if (pItem) {
+      pList->AddTail(pItem);
+    }
+  }
+  // Invoke the dropped files operation
+  OpDescriptor *pOpDesc = OpDescriptor::FindOpDescriptor(OPTOKEN_DROPPEDFILE);
+  if (pOpDesc) {
+    pOpDesc->Invoke((OpParam *) &DropInfo);
+  }
+  return(true);
 }
 
 

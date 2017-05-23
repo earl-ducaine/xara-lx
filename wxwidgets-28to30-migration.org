@@ -1,0 +1,60 @@
+
+
+* conversions
+
+** camSscanf
+
+camSscanf(MainWndPosString,
+		 _T("%d %d %d %d %d %d"),
+		 &WndRect.x,
+		 &WndRect.y,
+		 &WndRect.width,
+		 &WndRect.height,
+		 &OldScreenSize.x,
+		 &OldScreenSize.y) == 6) &&
+
+camSscanf(MainWndPosString,
+		 "%d %d %d %d %d %d",
+		 &WndRect.x,
+		 &WndRect.y,
+		 &WndRect.width,
+		 &WndRect.height,
+		 &OldScreenSize.x,
+		 &OldScreenSize.y) == 6) &&
+
+** wxRect::Inside
+
+   wxRect::Contains() instead
+
+** camPrintf
+
+
+
+
+** wxString::c_str
+
+
+AfxGetApp().GetAppName().c_str();
+
+to
+
+AfxGetApp().GetAppName().wx_str();
+
+** camPrintf(String_256*);
+
+
+String_256 DiagOutput;
+
+
+camPrintf(DiagOutput);
+
+to 
+
+camPrintf( (TCHAR*)DiagOutput);
+
+** wxTextValidator::CheckValidator
+
+
+		  // if( !CheckValidator() ) {
+		  //   return false;			/*TYPENOTE: Correct*/
+		  // }

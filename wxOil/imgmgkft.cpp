@@ -1306,14 +1306,23 @@ BOOL ImageMagickFilter::ConvertFromTempFile(CCLexFile * File)
 	ERROR2IF(!TempFile || TempFileName.IsEmpty(), FALSE, "ImageMagickFilter::ConvertFromTempFile has no temporary file to process");
 	TempFile->close();
 
-	wxChar * cifn;
-	wxChar * cofn;
+	const wxChar* cifn;
+	const wxChar* cofn;
 	wxChar * pcommand=_T("/usr/bin/convert");
-	wxChar * IMargv[4];
+	const wxChar* IMargv[4];
 
 	// get filename in usable form
-	cifn = camStrdup(wxString(_T("png:"))+TempFileName );
-	cofn = camStrdup(GetTag()+_T(":")+(const TCHAR *)(OutputPath.GetPath()));
+	wxString cam_str_dup_cifn(camStrdup(wxString(_T("png:")) +
+					    TempFileName ));
+	
+	// cifn = camStrdup(wxString(_T("png:")) + TempFileName );
+	cifn = cam_str_dup_cifn.wx_str();
+
+	wxString cam_str_dup_cofn(camStrdup(GetTag()+
+				       _T(":")+
+				       (const TCHAR *)(OutputPath.GetPath())));
+	
+	cofn = cam_str_dup_cofn.wx_str();
 
 	// Now convert the file
 	IMargv[0]=pcommand;
@@ -1321,9 +1330,10 @@ BOOL ImageMagickFilter::ConvertFromTempFile(CCLexFile * File)
 	IMargv[2]=cofn;
 	IMargv[3]=NULL;
 	long /*TYPENOTE: Correct*/ ret = ::wxExecute((wxChar **)IMargv, wxEXEC_SYNC | wxEXEC_NODISABLE);
-	
-	free(cifn);
-	free(cofn);
+
+	// no memory leak?
+	// free(cifn);
+	// free(cofn);
 
 	if (ret)
 	{
@@ -1364,15 +1374,21 @@ BOOL ImageMagickFilter::ConvertToTempFile(CCLexFile * File)
 	ERROR2IF(!TempFile || TempFileName.IsEmpty(), FALSE, "ImageMagickFilter::ConvertToTempFile has no temporary file to process");
 	TempFile->close();
 
-	wxChar* cifn;
-	wxChar* cofn;
+	const wxChar* cifn;
+	const wxChar* cofn;
 	wxChar* pcommand=_T("/usr/bin/convert");
 	const wxChar* IMargv[10];
-	wxChar* cdpi = NULL;
+	const wxChar* cdpi = NULL;
 
 	// get filename in usable form
-	cifn = camStrdup(GetTag()+_T(":")+(const TCHAR *)(InputPath.GetPath())+_T("[0]"));
-	cofn = camStrdup(wxString(_T("png:"))+TempFileName );
+	
+	cifn = (new wxString(camStrdup(GetTag() +
+				       _T(":") +
+				       (const TCHAR *)(InputPath.GetPath()) +
+				       _T("[0]"))))->wx_str();
+	
+	cofn = (new wxString(camStrdup(wxString(_T("png:")) +
+				       TempFileName )))->wx_str();
 
 	INT32 p = 0;
 
@@ -1386,7 +1402,7 @@ BOOL ImageMagickFilter::ConvertToTempFile(CCLexFile * File)
 		IMargv[p++]=_T("-density");
 		UINT32	uHorzDpi = UINT32( m_ImportDPI ? m_ImportDPI : DefaultDPI.GetWidth() );
 		UINT32	uVertDpi = UINT32( m_ImportDPI ? m_ImportDPI : DefaultDPI.GetHeight() );
-		cdpi = camStrdup( wxString::Format( _T("%dx%d"), uHorzDpi, uVertDpi ) );
+		cdpi = (new wxString(camStrdup( wxString::Format( _T("%dx%d"), uHorzDpi, uVertDpi ) )))->wx_str();
 		IMargv[p++]=cdpi;	
 	}
 	IMargv[p++]=cifn;
@@ -1398,12 +1414,13 @@ BOOL ImageMagickFilter::ConvertToTempFile(CCLexFile * File)
 #else
 	long /*TYPENOTE: Correct*/ ret = ::wxExecute((wxChar **)IMargv, wxEXEC_SYNC | wxEXEC_NODISABLE);
 #endif
-	
-	free(cifn);
-	free(cofn);
+
+	// Memory leak?
+	// free(cifn);
+	// free(cofn);
 	if (cdpi)
 	{
-		free(cdpi);
+		// free(cdpi);
 		cdpi = NULL;
 	}
 

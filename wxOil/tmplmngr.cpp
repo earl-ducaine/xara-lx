@@ -228,7 +228,7 @@ BOOL CTemplateManager::Init()
 	}
 
 	if( ms_strDefaultDrawingTemplate == String_256( _T("") ) || 
-		0 == camStrcmp( ms_strDefaultDrawingTemplate, _T("default.xar") ) )
+	    0 == camStrcmp( (TCHAR*)ms_strDefaultDrawingTemplate, _T("default.xar") ) )
 	{
 		ms_strDefaultDrawingTemplate=String_256(_R(IDS_DEFAULTDOCNAME));
 

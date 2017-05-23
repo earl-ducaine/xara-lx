@@ -148,7 +148,8 @@ service marks of Xara Group Ltd. All rights in these marks are reserved.
 //#include "dlgtypes.h" - in camtypes.h [AUTOMATICALLY REMOVED]
 #include "statline.h"
 #include <wx/imaglist.h>
-
+#include <wx/spinctrl.h>
+			    
 DECLARE_SOURCE("$Revision: 1770 $");
 
 CC_IMPLEMENT_DYNAMIC(CGadgetImageList, CCObject);
@@ -265,7 +266,7 @@ protected:
 	TabType m_TabType;
 	virtual wxBookCtrlBase* CreateBookCtrl()
 	{
-		INT32 style = wxCLIP_CHILDREN | wxBC_DEFAULT;
+		INT32 style = wxCLIP_CHILDREN | wxBK_DEFAULT;
 		wxBookCtrlBase* pBook = NULL;
 
 		switch (m_TabType)
@@ -842,7 +843,7 @@ void DialogManager::EnsurePanePreferenceDeclared(wxString key)
 		// Detect first-time run and make Open File dialog default to Examples folder
 		if (Camelot.DeclareSection(_T("BarPositions"), 10))
 		{
-			Camelot.DeclarePref( NULL, (TCHAR *)(key.c_str()), &(i->second) );
+			Camelot.DeclarePref( NULL, (TCHAR *)(key.wx_str()), &(i->second) );
 		}
 	}
 }
@@ -4331,7 +4332,7 @@ String_256 DialogManager::GetStringGadgetValue(CWindowID WindowID,
 	String = pGadget->GetLabel();
 
 out:
-	StrVal = String.c_str();
+	StrVal = String.wx_str();
 	return StrVal;
 
 invalid:
@@ -6001,7 +6002,10 @@ public:
 	{	
 		if ( m_stringValue )
 		{
-			if( !CheckValidator() ) return false;			/*TYPENOTE: Correct*/
+		  // validity of the validator is now always checked (?) no need to call it directly.
+		  // if( !CheckValidator() ) {
+		  //   return false;			/*TYPENOTE: Correct*/
+		  // }
 			wxTextCtrl *control = (wxTextCtrl *) m_validatorWindow;
 			control->SetValue(* m_stringValue);
 		}
@@ -6011,7 +6015,9 @@ public:
 	{
 		if ( m_stringValue )
 		{
-			if( !CheckValidator() )	return false;			/*TYPENOTE: Correct*/
+		  // if( !CheckValidator() )	{
+		  //   return false;
+		  // } /*TYPENOTE: Correct*/
 			wxTextCtrl *control = (wxTextCtrl *) m_validatorWindow;
 			*m_stringValue = control->GetValue();
 		}

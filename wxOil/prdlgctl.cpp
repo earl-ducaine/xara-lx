@@ -2081,7 +2081,15 @@ CNativeDC * CCPrintInfo::GetDC() const
 
 BOOL CCPrintInfo::OnPreparePrinting(BOOL bPrintSetupOnly /*=FALSE*/)
 {
-	wxPostScriptDC::SetResolution(600); // temporary bodge
+  // postscript has not resolution per se. But it does have a print quality
+  // see: http://docs.wxwidgets.org/3.0/classwx_print_data.html
+  //      http://docs.wxwidgets.org/3.0/classwx_post_script_d_c.html
+  // void wxPrintData::SetQuality
+  // wxPRINT_QUALITY_HIGH
+  // wxPRINT_QUALITY_MEDIUM
+  // wxPRINT_QUALITY_LOW
+  // wxPRINT_QUALITY_DRAFT
+  // wxPostScriptDC::SetResolution(600); // temporary bodge
 
 	// Zap any existing print dialog
 	if (pOurPD)

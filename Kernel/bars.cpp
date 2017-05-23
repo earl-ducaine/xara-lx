@@ -3492,11 +3492,10 @@ BOOL DialogBarOp::WriteNamedBars(String_256 FileName)
 	const UINT32 cchMaxPath = 1 + pathconf( "/", _PC_PATH_MAX );
 #endif
 	TCHAR *szBuff = static_cast<TCHAR *>(alloca( cchMaxPath * sizeof(TCHAR) ));
-	if (DefaultBarsConfigPath.Length() > 0)
-	{
-		camStrcpy( szBuff, DefaultBarsConfigPath );
-		camStrcpy( szBuff, _T("\\") );
-		camStrcpy( szBuff, File );
+	if (DefaultBarsConfigPath.Length() > 0) {
+	  camStrcpy((TCHAR*)szBuff, (TCHAR*)DefaultBarsConfigPath);
+	  camStrcpy( szBuff, _T("\\") );
+	  camStrcpy(szBuff, (TCHAR*)File);
 	}
 	// no entry use windows dir
 	else
@@ -3511,7 +3510,7 @@ BOOL DialogBarOp::WriteNamedBars(String_256 FileName)
 		if ((Len > 0) && (Len < cchMaxPath))
 		{
 			camStrcat( szBuff, _T("\\") );
-			camStrcat( szBuff, File );
+			camStrcat(szBuff, (TCHAR*)File);
 		}	
 	}
 

@@ -109,6 +109,9 @@ service marks of Xara Group Ltd. All rights in these marks are reserved.
 #include "gdraw.h"
 #include "cversion.h"
 //#include "ensure.h" - in camtypes.h [AUTOMATICALLY REMOVED]
+#include "wxmbstowcs.h"			    
+#include <wx/xml/xml.h>
+
 #if !defined(EXCLUDE_FROM_XARLIB)
 //#include "tool.h" - in camtypes.h [AUTOMATICALLY REMOVED]
 #include "helpuser.h"
@@ -1125,7 +1128,7 @@ void Error::TraceWrite(const TCHAR * bufp, va_list args)
 void Error::FixFormat (const char * fmt, TCHAR * fmt2)
 {
 	wxString FString(fmt, wxConvUTF8);
-	FixFormat(FString.c_str(), fmt2);
+	FixFormat(FString.wx_str(), fmt2);
 }
 # endif
 
@@ -1240,7 +1243,7 @@ static void CalcInternalMessage( LPTCHAR result, UINT32 Line, const TCHAR* Filen
 
 	// this message should not be translated
 	String_256 jcf(_R(IDS_INTERNAL_ERROR_MSG));
-	camSnprintf(result, 256, jcf, (UINT32) Line, (LPCTSTR) Filename);
+	camSnprintf(result, 256, (TCHAR*)jcf, (UINT32) Line, (LPCTSTR) Filename);
 }
 
 

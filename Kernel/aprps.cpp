@@ -3151,7 +3151,7 @@ BOOL AnimationPropertiesTab::HavePropertiesChanged(BOOL ValidateDelayValue)
 		
 	// If "Many" is displayed in the "Delay for" edit field, then we do not want to read the value.
 	String_256 StrDelay = pPropertiesDlg->GetStringGadgetValue(_R(IDC_ANIMTAB_DELAY), NULL);
-	INT32 result = camStrnicmp(StrDelay, _T("Many"), 4);
+	INT32 result = camStrnicmp((TCHAR*)StrDelay, _T("Many"), 4);
 			
 	// Is 'Many' displayed in the delay edit field?
 	if(result == 0)

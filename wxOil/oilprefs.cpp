@@ -124,8 +124,8 @@ service marks of Xara Group Ltd. All rights in these marks are reserved.
 
 OILPreferences* OILPreferences::Init()
 {
-	wxStandardPaths		Paths;
-	wxString	strPath( Paths.GetUserConfigDir() );
+	wxStandardPaths Paths = wxStandardPaths::Get();
+	wxString strPath( Paths.GetUserConfigDir() );
 	strPath += _T("/.xaralx");
 
 	// Delete any file that exists where the directory should be

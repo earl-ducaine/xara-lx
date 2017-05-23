@@ -128,6 +128,7 @@ using namespace std;
 // This must be the first file included of ours as it defines _R()
 // note it does include other stuff, but only after it has defined _R()
 #include "camresource.h"
+#include "wxmbstowcs.h"
 
 // ADDR is a general pointer type. Using void* would mean casts of every use so it is a
 // pointer to BYTE, to make address calculation marginally easier.

@@ -785,38 +785,38 @@ INT32 StringBase::Sub(const StringBase& mask, UINT32 from, TCHAR fuzz) const
 	Purpose:	Similar to the (non-standard) BASIC Instr$() function.
 	Scope:		Public
 ***************************************************************************************/
-INT32 StringBase::SubWithoutCase(const StringBase& strToFind) const
-{
-	ERROR3IF(!text || !strToFind.text, "Call to String::Sub for an unALLOCated String");
+INT32 StringBase::SubWithoutCase(const StringBase& strToFind) const {
 
-	if (IsEmpty() || strToFind.IsEmpty())
-		return -1;
+  ERROR3IF(!text || !strToFind.text, "Call to String::Sub for an unALLOCated String");
+
+  if (IsEmpty() || strToFind.IsEmpty())
+    return -1;
 	
 #if !defined(__WXMAC__)
-	//First set up a pointer to search this string with
-	TCHAR* pcThisChar=text;
-	INT32 iThisChar=0;
+  //First set up a pointer to search this string with
+  TCHAR* pcThisChar=text;
+  INT32 iThisChar=0;
 	
-	//Now, while pcThisChar is valid
-	while (pcThisChar!=0 && *pcThisChar!='\0')
+  //Now, while pcThisChar is valid
+  while (pcThisChar!=0 && *pcThisChar!='\0')
+    {
+      //Is strToSearch from pcThisChar onwards the same
+      //as strToFind, doing a case insensitive comparision?
+      if (camStrnicmp(pcThisChar, strToFind.text, camStrlen(strToFind.text))==0)
 	{
-		//Is strToSearch from pcThisChar onwards the same
-		//as strToFind, doing a case insensitive comparision?
-		if (camStrnicmp(pcThisChar, strToFind, camStrlen(strToFind))==0)
-		{
-			//Yes. So return the index of the character we found
-			return iThisChar;
-		}
-
-		pcThisChar=camStrinc(pcThisChar);
-		iThisChar++;
+	  //Yes. So return the index of the character we found
+	  return iThisChar;
 	}
+
+      pcThisChar=camStrinc(pcThisChar);
+      iThisChar++;
+    }
 #else
-PORTNOTE("macport", "StringBase::SubWithoutCase not yet implemented");
-ERROR3("StringBase::SubWithoutCase not yet implemented");
+  PORTNOTE("macport", "StringBase::SubWithoutCase not yet implemented");
+  ERROR3("StringBase::SubWithoutCase not yet implemented");
 #endif
-	//Otherwise return -1
-	return -1;
+  //Otherwise return -1
+  return -1;
 
 }
 

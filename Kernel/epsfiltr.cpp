@@ -4017,7 +4017,7 @@ BOOL EPSFilter::ProcessComment(BOOL BypassDocComponents)
 		for(;;)
 		{
 			Comments = EPSComments.ReturnElement ( Index );
-			INT32 StartLen = camStrclen( Comments.StartMarker );
+			INT32 StartLen = camStrclen((TCHAR*)Comments.StartMarker);
 
 			if (StartLen == 0)
 			{
@@ -4025,7 +4025,7 @@ BOOL EPSFilter::ProcessComment(BOOL BypassDocComponents)
 				break;
 			}
 
-			if (camStrncmp(TokenBuf, Comments.StartMarker, StartLen) == 0)
+			if (camStrncmp(TokenBuf, (TCHAR*)Comments.StartMarker, StartLen) == 0)
 			{
 				FoundComment = TRUE;
 				break;
@@ -4038,7 +4038,7 @@ BOOL EPSFilter::ProcessComment(BOOL BypassDocComponents)
 		if (FoundComment)
 		{
 			// Look for the end of this comment block.
-			INT32 EndLen = camStrclen(Comments.EndMarker);
+		  INT32 EndLen = camStrclen((TCHAR*)Comments.EndMarker);
 
 			do
 			{
@@ -4046,7 +4046,7 @@ BOOL EPSFilter::ProcessComment(BOOL BypassDocComponents)
 
 				if (Token == EPSC_Comment)
 				{
-					if (camStrncmp(TokenBuf, Comments.EndMarker, EndLen) == 0)
+				  if (camStrncmp(TokenBuf, (TCHAR*)Comments.EndMarker, EndLen) == 0)
 					{
 						// Found the end of the comment block
 						break;

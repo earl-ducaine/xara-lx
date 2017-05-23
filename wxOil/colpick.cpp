@@ -1721,7 +1721,7 @@ BOOL ColourPicker::SetComponentsFromHexString(IndexedColour *Dest,
 		{	
 			No0xPrefixNewValue.Split (&rValStr, &No0xPrefixNewValue, 2, FALSE);
            INT32 convertedVal;
-           camSscanf(rValStr, _T("%X"), &convertedVal);
+           camSscanf((TCHAR*) rValStr, _T("%X"), &convertedVal);
            camSprintf(rValStr, _T("%d"), convertedVal);
            //INT32 convertedVal = (INT32) strtol ((TCHAR*) rValStr, (TCHAR**) "\0", 16);//ToDec (rValStr);//atoi ((TCHAR*) rValStr);
            //_itoa (convertedVal, (TCHAR*) rValStr, 10);
@@ -1754,7 +1754,7 @@ BOOL ColourPicker::SetComponentsFromHexString(IndexedColour *Dest,
 		{
 			No0xPrefixNewValue.Split (&gValStr, &No0xPrefixNewValue, 2, FALSE);
            INT32 convertedVal;
-           camSscanf(gValStr, _T("%X"), &convertedVal);
+           camSscanf((TCHAR*)gValStr, _T("%X"), &convertedVal);
            camSprintf(gValStr, _T("%d"), convertedVal);
            //INT32 convertedVal = (INT32) strtol ((TCHAR*) gValStr, (TCHAR**) "\0", 16);//ToDec (rValStr);//atoi ((TCHAR*) rValStr);
            //_itoa (convertedVal, (TCHAR*) gValStr, 10);
@@ -1787,7 +1787,7 @@ BOOL ColourPicker::SetComponentsFromHexString(IndexedColour *Dest,
 		{
 			No0xPrefixNewValue.Split (&bValStr, &No0xPrefixNewValue, 2, FALSE);
            INT32 convertedVal;
-           camSscanf(bValStr, _T("%X"), &convertedVal);
+           camSscanf((TCHAR*)bValStr, _T("%X"), &convertedVal);
            camSprintf(bValStr, _T("%d"), convertedVal);
            //INT32 convertedVal = (INT32) strtol ((TCHAR*) bValStr, (TCHAR**) "\0", 16);//ToDec (rValStr);//atoi ((TCHAR*) rValStr);
            //_itoa (convertedVal, (TCHAR*) bValStr, 10);
