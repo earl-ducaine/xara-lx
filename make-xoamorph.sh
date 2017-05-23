@@ -22,8 +22,35 @@ function build_wx {
     sudo ldconfig
     cd ..
     cd ..
-
 }
+
+ 
+function build_wx_30 {
+    if [ ! -d wxWidgets-3.0.3 ]; then
+	if [ ! -f wxGTK-3.0.3.tar.gz ]; then
+	    curl -LO https://github.com/wxWidgets/wxWidgets/releases/download/v3.0.3/wxWidgets-3.0.3.tar.bz2
+	fi
+	tar xf wxWidgets-3.0.3.tar.bz2 
+    fi
+    cd wxWidgets-3.0.3
+    if [ -d buildgtk ]; then
+	cd buildgtk
+	sudo make uninstall
+	cd ..
+	rm -rf buildgtk
+    fi
+    mkdir buildgtk
+    cd buildgtk
+    ../configure --with-gtk --enable-debug --enable-unicode --with-libpng=builtin
+    make -j 8
+    sudo make install
+    sudo ldconfig
+    cd ..
+    cd ..
+}
+
+
+
 function build_wx_from_git {
     # https://github.com/wxWidgets/wxWidgets.git
     VERSION=$1
