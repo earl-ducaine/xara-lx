@@ -1771,7 +1771,7 @@ void OpRemoveMould::Do(OpDescriptor*)
 		if (Selected)
 		{
 			// compile a list of the selected objects
-			DocRect Bounds = Selected->GetBoundingRect();
+			// DocRect Bounds = Selected->GetBoundingRect();
 			List* pNodeList = Selected->MakeListOfNodes();
 
 			// remove all mould objects in the list

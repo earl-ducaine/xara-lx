@@ -150,7 +150,7 @@ public:
 				// Initialises the Ops that the dialog can use
 
 protected:
-	static BOOL InitPolymorphicCommand(TCHAR *OpToken, UINT32 MenuTextID);
+	static BOOL InitPolymorphicCommand(const TCHAR* OpToken, UINT32 MenuTextID);
 				// Called by Init() to create another OpDescriptor for this Op.
 
 public:

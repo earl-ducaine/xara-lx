@@ -629,7 +629,7 @@ MsgResult CBrushEditDlg::Message (Msg* Message)
 		CDlgResID ThePage = Msg->PageID;		// the current page
 
 		BOOL MessageAlreadyHandled = FALSE;		// due to the 'multi-pass' nature of the function
-		INT32 Test = -1;
+		// INT32 Test = -1;
 		switch (Msg->DlgMsg)
 		{
 			// we don't want the focus ....
@@ -780,10 +780,10 @@ MsgResult CBrushEditDlg::Message (Msg* Message)
 				switch (Msg->DlgMsgParam)
 				{
 					case ENTER_COMMIT:
-					Test = 3;
+					  // Test = 3;
 					break;
 					case TAB_COMMIT:
-						Test = 4;
+					  // Test = 4;
 					break;
 					default:
 
@@ -2211,9 +2211,9 @@ void CBrushEditDlg::ReadComboBox (DialogMsg* Msg)
 		
 		switch (Index)
 		{
-			case -1:
-				ERROR3("Invalid index");
-			break;
+			// case -1:
+			// 	ERROR3("Invalid index");
+			// break;
 
 			case OFFSET_NONE:
 				EditData->m_PathOffsetType = OFFSET_NONE;

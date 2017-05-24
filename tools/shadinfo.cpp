@@ -249,7 +249,7 @@ void SoftShadowInfoBarOp::Init()
 
 ********************************************************************************************/
 
-BOOL SoftShadowInfoBarOp::ConvertValueToString(String_256 &In, const INT32 value, UnitType type, TCHAR *unit)
+BOOL SoftShadowInfoBarOp::ConvertValueToString(String_256 &In, const INT32 value, UnitType type, const TCHAR *unit)
 {
 	BOOL Converted = FALSE;	// True when a value has been converted
 	Range	Selection(*(GetApplication()->FindSelection()));
@@ -312,7 +312,7 @@ BOOL SoftShadowInfoBarOp::ConvertStringToValue(CGadgetID ID, MILLIPOINT& Value)
 	Selection.SetRangeControl(rg);
 	Node*	pNode = Selection.FindFirst();
 
-	BOOL bContinue = FALSE;
+	// BOOL bContinue = FALSE;
 
 	while (pNode != NULL/* && Selection != NULL*/)
 	{	
@@ -327,7 +327,7 @@ BOOL SoftShadowInfoBarOp::ConvertStringToValue(CGadgetID ID, MILLIPOINT& Value)
 			String_128 FieldContents = GetStringGadgetValue(ID, &Valid);
 			String_128 NumberString;
 
-			bContinue = TRUE;
+			// bContinue = TRUE;
 			/*
 
 			for (INT32 i = 0 ; i < FieldContents.Length() && bContinue; i++)
@@ -1973,7 +1973,7 @@ void SoftShadowInfoBarOp::ChangeShadowPenumbra(INT32 nBlur)
 	ShadowDragData* pItem = (ShadowDragData*)ShadowDataList.GetHead();
 	
 	NodeShadowController* pControl = NULL;
-	NodeShadow* pShadow = NULL;
+	// NodeShadow* pShadow = NULL;
 
 	Document* pDoc = Document::GetCurrent();
 
@@ -1984,7 +1984,7 @@ void SoftShadowInfoBarOp::ChangeShadowPenumbra(INT32 nBlur)
 	while (pItem)
 	{
 		pControl = (NodeShadowController *)pItem->pNode;
-		pShadow = pControl->GetShadow();
+		// pShadow = pControl->GetShadow();
 		pControl->ReleaseCached(TRUE, FALSE, FALSE, TRUE);	// Parents and derived data only
 
 		pSpread = pControl->FindParentSpread();	
@@ -2266,7 +2266,7 @@ void SoftShadowInfoBarOp::UpdateGadgetTypeButtons()
 	BOOL bHasWallShadow = FALSE;
 	BOOL bHasGlowShadow = FALSE;
 	BOOL bHasFloorShadow = FALSE;
-	BOOL bHasFeather = FALSE;
+	// BOOL bHasFeather = FALSE;
 
 	NodeShadowController* pMaster = NULL;
 	ListRange* pEditRange = pSoftShadowTool->GetShadowEditRange(&pMaster);
@@ -2290,7 +2290,7 @@ void SoftShadowInfoBarOp::UpdateGadgetTypeButtons()
 				bHasGlowShadow = TRUE;
 				break;
 			case SHADOWTYPE_FEATHER:
-				bHasFeather = TRUE;
+			  // bHasFeather = TRUE;
 				break;
 
 			default:

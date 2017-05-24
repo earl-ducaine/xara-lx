@@ -2293,13 +2293,13 @@ void AIEPSRenderRegion::OutputTextRenderMode ()
 
 		switch (Style)
 		{
-			case 0: OverflowTextWrite (_T("3 Tr\n"));	// Invisible
+			case 0: OverflowTextWrite(_T("3 Tr\n"));	// Invisible
 					break;
-			case 1: OverflowTextWrite (_T("0 Tr\n"));	// filled only
+			case 1: OverflowTextWrite(_T("0 Tr\n"));	// filled only
 					break;
-			case 2: OverflowTextWrite (_T("1 Tr\n"));	// stroked only
+			case 2: OverflowTextWrite(_T("1 Tr\n"));	// stroked only
 					break;
-			case 3: OverflowTextWrite (_T("2 Tr"));	// filled and stroked
+			case 3: OverflowTextWrite(_T("2 Tr"));	// filled and stroked
 					break;
 		}
 	}
@@ -2721,13 +2721,11 @@ void AIEPSRenderRegion::OverflowTextFinishGap ()
 
 ********************************************************************************************/
 
-void AIEPSRenderRegion::OverflowTextWrite (TCHAR * text)
-{
-	ASSERT (ExportingOnPath ());
-	while (*text)
-	{
-		fprintf (m_fpOverflowText, "%c", *text++);
-	}
+void AIEPSRenderRegion::OverflowTextWrite (const TCHAR* text) {
+  ASSERT (ExportingOnPath ());
+  while (*text) {
+    fprintf (m_fpOverflowText, "%c", *text++);
+  }
 }
 
 

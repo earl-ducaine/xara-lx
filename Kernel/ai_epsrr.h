@@ -301,7 +301,7 @@ protected:
 
 	virtual void OverflowTextStartGap ();
 	virtual void OverflowTextFinishGap ();
-	virtual void OverflowTextWrite (TCHAR * text);
+	virtual void OverflowTextWrite (const TCHAR * text);
 	virtual void OverflowTextWriteSingleColour (UINT32 n);
 	virtual void OverflowTextWriteColour (PColourCMYK*);
 	virtual void OverflowTextWriteNamedColour (DocColour*, ColourContext* pContext=NULL);

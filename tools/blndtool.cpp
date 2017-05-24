@@ -2070,7 +2070,7 @@ void BlendInfoBarOp::UpdateInfoBarState()
 	ColourBlendType ColBlendType = COLOURBLEND_FADE;
 
 	BOOL OnlyBlendsSelected			= TRUE;
-	BOOL AllSelectedBlendsAreOnCurve= TRUE;
+	// BOOL AllSelectedBlendsAreOnCurve = TRUE;
 //	BOOL AtLeastOneBlendIsOnCurve	= FALSE;
 	BOOL Tangential					= FALSE;
 	BOOL EditSteps					= TRUE;
@@ -2083,7 +2083,7 @@ void BlendInfoBarOp::UpdateInfoBarState()
 	if (!ok)
 	{
 		OnlyBlendsSelected = FALSE;
-		AllSelectedBlendsAreOnCurve = FALSE;
+		// AllSelectedBlendsAreOnCurve = FALSE;
 	}
 	else
 	{
@@ -2126,10 +2126,12 @@ void BlendInfoBarOp::UpdateInfoBarState()
 				if (!Tangential && pNodeBlend->IsTangential())
 					Tangential = TRUE;
 
-				if (pNodeBlend->GetNodeBlendPath(0) != NULL)
+				if (pNodeBlend->GetNodeBlendPath(0) != NULL) {
 					NumBlendsOnCurve++;
-				else
-					AllSelectedBlendsAreOnCurve = FALSE;	
+				}
+				else {
+				  //AllSelectedBlendsAreOnCurve = FALSE;
+				}
 
 				if (pNodeBlend->NonLinearObjectProfile())
 					NonLinearProfile = TRUE;
@@ -2485,33 +2487,33 @@ BOOL BlendInfoBarOp::GetMeanBlendDistance(double* Distance)
 
 *********************************************************************************************/
 
-BOOL BlendInfoBarOp::AllBlendsHaveSameNumSteps()
-{
-	UINT32 NumSteps = 0;
-	BOOL FoundFirst = FALSE;
-	BOOL SameNumber = FALSE;
-	SelRange* pSel = GetApplication()->FindSelection();
-	if (pSel != NULL)
+BOOL BlendInfoBarOp::AllBlendsHaveSameNumSteps() {
+  UINT32 NumSteps = 0;
+  BOOL FoundFirst = FALSE;
+  BOOL SameNumber = FALSE;
+  SelRange* pSel = GetApplication()->FindSelection();
+  if (pSel != NULL)
+    {
+      Node* pNode = pSel->FindFirst();
+      while (pNode != NULL)
 	{
-		Node* pNode = pSel->FindFirst();
-		while (pNode != NULL)
-		{
-			if (pNode->IS_KIND_OF(NodeBlend))	
-				if (!FoundFirst)
-				{
-					NumSteps = ((NodeBlend*)pNode)->GetNumBlendSteps();
-					FoundFirst = TRUE;
-					SameNumber = TRUE;
-				}
-				else
-				{
-					if (((NodeBlend*)pNode)->GetNumBlendSteps() != NumSteps)
-						return FALSE;
-				}
-				pNode = pSel->FindNext(pNode);
-		}
+	  if (pNode->IS_KIND_OF(NodeBlend)) {
+	    if (!FoundFirst)
+	      {
+		NumSteps = ((NodeBlend*)pNode)->GetNumBlendSteps();
+		FoundFirst = TRUE;
+		SameNumber = TRUE;
+	      }
+	    else
+	      {
+		if (((NodeBlend*)pNode)->GetNumBlendSteps() != NumSteps)
+		  return FALSE;
+	      }
+	  }
+	  pNode = pSel->FindNext(pNode);
 	}
-	return SameNumber;
+    }
+  return SameNumber;
 }
 
 /********************************************************************************************
@@ -2528,45 +2530,45 @@ BOOL BlendInfoBarOp::AllBlendsHaveSameNumSteps()
 
 *********************************************************************************************/
 
-BOOL BlendInfoBarOp::AllBlendsHaveSameDistance()
-{
-	double FirstDistance = 0.0;
-	double FirstStepDistance = 0.0;
+BOOL BlendInfoBarOp::AllBlendsHaveSameDistance() {
+  double FirstDistance = 0.0;
+  double FirstStepDistance = 0.0;
 	
-	BOOL FoundFirst = FALSE;
-	BOOL SameNumber = FALSE;
-	SelRange* pSel = GetApplication()->FindSelection();
-	if (pSel != NULL)
+  BOOL FoundFirst = FALSE;
+  BOOL SameNumber = FALSE;
+  SelRange* pSel = GetApplication()->FindSelection();
+  if (pSel != NULL)
+    {
+      Node* pNode = pSel->FindFirst();
+      while (pNode != NULL)
 	{
-		Node* pNode = pSel->FindFirst();
-		while (pNode != NULL)
-		{
-			if (pNode->IS_KIND_OF(NodeBlend))	
-				if (!FoundFirst)
-				{
-					if (!((NodeBlend*)pNode)->GetBlendDistance(FALSE, &FirstDistance))
-						return FALSE;
-					UINT32 NumSteps = ((NodeBlend*)pNode)->GetNumBlendSteps();
-					FirstStepDistance = FirstDistance/NumSteps;
-					FoundFirst = TRUE;
-					SameNumber = TRUE;
-				}
-				else
-				{
-					double NextDistance;
-					if (!((NodeBlend*)pNode)->GetBlendDistance(FALSE, &NextDistance))
-						return FALSE;
+	  if (pNode->IS_KIND_OF(NodeBlend)) {
+	    if (!FoundFirst)
+	      {
+		if (!((NodeBlend*)pNode)->GetBlendDistance(FALSE, &FirstDistance))
+		  return FALSE;
+		UINT32 NumSteps = ((NodeBlend*)pNode)->GetNumBlendSteps();
+		FirstStepDistance = FirstDistance/NumSteps;
+		FoundFirst = TRUE;
+		SameNumber = TRUE;
+	      }
+	    else
+	      {
+		double NextDistance;
+		if (!((NodeBlend*)pNode)->GetBlendDistance(FALSE, &NextDistance))
+		  return FALSE;
 					
-					UINT32 NumSteps = ((NodeBlend*)pNode)->GetNumBlendSteps();
-					double ThisStepDistance = FirstDistance/NumSteps;
+		UINT32 NumSteps = ((NodeBlend*)pNode)->GetNumBlendSteps();
+		double ThisStepDistance = FirstDistance/NumSteps;
 
-					if (ThisStepDistance != FirstStepDistance)
-						return FALSE;
-				}
-				pNode = pSel->FindNext(pNode);
-		}
+		if (ThisStepDistance != FirstStepDistance)
+		  return FALSE;
+	      }
+	  }
+	  pNode = pSel->FindNext(pNode);
 	}
-	return SameNumber;
+    }
+  return SameNumber;
 }
 
 /********************************************************************************************
@@ -9264,14 +9266,16 @@ BOOL OpEditBlendEndObject::RecalculateBlend(DocCoord EndPosition)
 	// Range::FindFirst() always returns NULL for some reason so I'm forced
 	// to use FindLast(), given that there is only one this seems ok.
 	Node* pNode = m_pRange->FindLast();
-	NodeRenderableInk* pNodeToEdit= NULL;
+	// NodeRenderableInk* pNodeToEdit= NULL;
 	if (pNode == NULL)
 	{
 		ERROR3("Range is empty");
 		Valid = FALSE;
 	}
-	else
-		 pNodeToEdit = (NodeRenderableInk*)pNode;
+	else {
+	  // pNodeToEdit =
+	  // (NodeRenderableInk*)pNode;
+	}
 
 	if (Valid)
 	{

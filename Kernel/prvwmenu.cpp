@@ -166,7 +166,7 @@ BOOL PreviewContextMenu :: Build()
 	Purpose:	Registeres a menu operation
 ********************************************************************************************/
 
-BOOL OpPreviewPopupCommand::InitPolymorphicCommand(TCHAR *OpToken, UINT32 MenuTextID)
+BOOL OpPreviewPopupCommand::InitPolymorphicCommand(const TCHAR* OpToken, UINT32 MenuTextID)
 {
 	return(RegisterOpDescriptor(0,									// Tool ID 
 								MenuTextID,		 					// String resource ID

@@ -161,39 +161,37 @@ EPSCommentList::~EPSCommentList ( void )
 
 ********************************************************************************************/
 
-BOOL EPSCommentList::Add (const TCHAR* pStart,
-			  const TCHAR* pEnd,
+
+BOOL EPSCommentList::Add (const TCHAR *pStart,
+			  const TCHAR *pEnd,
 			  BOOL DoProcessComments,
-			  UINT32 NestingDepth ) {
-	// Create a new EPSCommentDef, and assign the appropriate values.
-	EPSCommentDef	*pNewDef	= new EPSCommentDef ( pStart, pEnd, DoProcessComments,
-													  NestingDepth );
-
-	// Determine whether something was created.
-	if ( pNewDef != NULL )
+			  UINT32 NestingDepth) {
+  // Create a new EPSCommentDef, and assign the appropriate values.
+  EPSCommentDef	*pNewDef	= new EPSCommentDef ( pStart, pEnd, DoProcessComments,
+						      NestingDepth );
+  // Determine whether something was created.
+  if ( pNewDef != NULL )
+    {
+      // Add it to the end of the list.
+      if ( mpCommentList == NULL )
 	{
-		// Add it to the end of the list.
-		if ( mpCommentList == NULL )
-		{
-			// The pointer is NULL, so just assign the value.
-			mpCommentList = pNewDef;
-		}
-		else
-		{
-			// There already is a list, so add this to it.
-			mpCommentList->Add ( pNewDef );
-		}
-
-		// Maintain a count of the number of elements in the list.
-		mListSize ++;
-
-		return TRUE;
+	  // The pointer is NULL, so just assign the value.
+	  mpCommentList = pNewDef;
 	}
-	else
+      else
 	{
-		// Not enough memory.
-		return FALSE;
+	  // There already is a list, so add this to it.
+	  mpCommentList->Add ( pNewDef );
 	}
+      // Maintain a count of the number of elements in the list.
+      mListSize ++;
+      return TRUE;
+    }
+  else
+    {
+      // Not enough memory.
+      return FALSE;
+    }
 }
 
 /********************************************************************************************
