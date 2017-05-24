@@ -113,8 +113,8 @@ void wxKeyMap::GenerateMap()
 	wxKeyMap::keymap[TEXT("WXK_MENU")]=WXK_MENU;
 	wxKeyMap::keymap[TEXT("WXK_PAUSE")]=WXK_PAUSE;
 	wxKeyMap::keymap[TEXT("WXK_CAPITAL")]=WXK_CAPITAL;
-	wxKeyMap::keymap[TEXT("WXK_PRIOR")]=WXK_PRIOR;
-	wxKeyMap::keymap[TEXT("WXK_NEXT")]=WXK_NEXT;
+	// 	wxKeyMap::keymap[TEXT("WXK_PRIOR")]=WXK_PRIOR;
+	// 	wxKeyMap::keymap[TEXT("WXK_NEXT")]=WXK_NEXT;
 	wxKeyMap::keymap[TEXT("WXK_END")]=WXK_END;
 	wxKeyMap::keymap[TEXT("WXK_HOME")]=WXK_HOME;
 	wxKeyMap::keymap[TEXT("WXK_LEFT")]=WXK_LEFT;

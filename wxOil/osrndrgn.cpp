@@ -751,8 +751,9 @@ void OSRenderRegion::InitClipping()
 		ENSURE(OSClipRegion != NULL,"'new' failed when creating OSClipRegion");
 
 		// Set the Clipping Region
-		if (OSClipRegion)
+		if (OSClipRegion) {
 			RenderDC->SetClippingRegion(*OSClipRegion);
+		}
 	}
 }
 
@@ -1998,7 +1999,7 @@ void OSRenderRegion::DrawDragRect(DocRect* RectToDraw)
 void OSRenderRegion::DrawDragBounds(DocRect *RectToRender)
 {
 	INT32 OurOldBkMode = RenderDC->GetBackgroundMode() ;
-	INT32 OurOldDrawingMode = RenderDC->GetLogicalFunction();
+	wxRasterOperationMode OurOldDrawingMode = RenderDC->GetLogicalFunction();
 	wxPen OurOldPen = RenderDC->GetPen() ;
 
 	wxPen DotPen(CalcEORColour(RR_STROKECOLOUR()),1,wxDOT);
@@ -2042,7 +2043,7 @@ void OSRenderRegion::DrawDragBounds(DocRect *RectToRender)
 void OSRenderRegion::DrawDashLine(const DocCoord &StartPoint, const DocCoord &EndPoint)
 {
 	INT32 OurOldBkMode = RenderDC->GetBackgroundMode() ;
-	INT32 OurOldDrawingMode = RenderDC->GetLogicalFunction();
+	wxRasterOperationMode OurOldDrawingMode = RenderDC->GetLogicalFunction();
 	wxPen OurOldPen = RenderDC->GetPen() ;
 
 	wxPen DotPen(CalcEORColour(RR_STROKECOLOUR()),1,wxDOT);
@@ -2093,8 +2094,9 @@ void OSRenderRegion::DrawLine(const DocCoord &StartPoint, const DocCoord &EndPoi
 	if (!StartArrow.IsNull)
 		DrawLineArrow(StartArrow, StartPoint, EndPoint);
 
-	if (!EndArrow.IsNull)
+	if (!EndArrow.IsNull) {
 		DrawLineArrow(EndArrow, EndPoint, StartPoint);
+	}
 #endif
 }
 
@@ -2797,7 +2799,7 @@ BOOL OSRenderRegion::StrokeProperly( Path *const DrawPath )
 			{
 				// (We don't bother to try again if GDI fails, as it is extremely unlikely as
 				// we are only doing small Gavin sub-paths from the path stroking routines).
-				RenderDC->DrawPolygon(PolySize,PointArray,0,0,nFillStyle);		// render it
+				RenderDC->DrawPolygon(PolySize, PointArray, 0, 0, nFillStyle);		// render it
 				PathSoFar += Read;								// inc pointers etc
 				VerbSoFar += Read;
 				PathSizeLeft -= Read;

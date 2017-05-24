@@ -525,7 +525,7 @@ void PSPrintDC::WritePSTCHAR(TCHAR * pBuf, INT32 nBytes)
 	}
 
 	Buffer.CharData[nBytes]=0; // safe as chardata one larger than MAX_PSBUF
-	((wxPostScriptDC *)GetDC())->PsPrint(Buffer.CharData);
+	((wxPostScriptDC *)GetDC())->StartDoc(Buffer.CharData);
 }
 
 /********************************************************************************************
@@ -564,7 +564,7 @@ void PSPrintDC::WritePSchar(char * pBuf, INT32 nBytes)
 	// Need to copy it so we can safely zero terminate it
 	memcpy(Buffer.CharData, pBuf, nBytes);
 	Buffer.CharData[nBytes]=0; // safe as chardata one larger than MAX_PSBUF
-	((wxPostScriptDC *)GetDC())->PsPrint(Buffer.CharData);
+	((wxPostScriptDC *)GetDC())->StartDoc(Buffer.CharData);
 }
 
 /********************************************************************************************

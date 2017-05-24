@@ -102,6 +102,7 @@ service marks of Xara Group Ltd. All rights in these marks are reserved.
 #include "cartctl.h"
 #include "cartprov.h"
 #include "dlgevt.h"
+#include <wx/xml/xml.h>
 
 /*****************************************************************************
 
@@ -527,12 +528,15 @@ wxObject * wxCamArtControlXmlHandler::DoCreateResource()
 
 ********************************************************************************************/
 
-bool /*TYPENOTE: Correct*/ wxCamArtControlXmlHandler::CanHandle(wxXmlNode *node)
+/*TYPENOTE: Correct*/
+bool wxCamArtControlXmlHandler::CanHandle(wxXmlNode *node)
 {
-	bool	fOurClass = node->GetPropVal(wxT("class"), wxEmptyString) == wxT("wxCamArtControl");
-	return fOurClass;
-
-	// This doesn't work on some compilers (although it is identical to what's above
-	// just not in a function implemented in a header)
-//	return (IsOfClass(node, wxT("wxCamArtControl")));
+  bool fOurClass =
+    node->GetPropVal(wxT("class"), wxEmptyString) == wxT("wxCamArtControl");
+  return fOurClass;
+  
+  // This doesn't work on some compilers (although it is identical to
+  // what's above just not in a function implemented in a header)
+  
+  //	return (IsOfClass(node, wxT("wxCamArtControl")));
 }

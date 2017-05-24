@@ -176,7 +176,7 @@ void CDECL DiagnosticFn(LPCTSTR FunctionStr, LPCTSTR pszFormat, ...)
 
 	if( OutputDiagnostics == 1 )
 	{
-		DiagOutput = AfxGetApp().GetAppName().c_str();
+		DiagOutput = AfxGetApp().GetAppName().wx_str();
 		DiagOutput += wxT(": ");
 	}
 
@@ -248,7 +248,7 @@ void CDECL Diagnostic(LPCTSTR pszFormat, ...)
 
 	if( OutputDiagnostics == 1 )
 	{
-		DiagOutput = AfxGetApp().GetAppName().c_str();
+		DiagOutput = AfxGetApp().GetAppName().wx_str();
 		DiagOutput += wxT(": ");
 	}
 
@@ -258,7 +258,7 @@ void CDECL Diagnostic(LPCTSTR pszFormat, ...)
 #if defined(__WXMSW__)
 	OutputDebugString(DiagOutput);
 #elif defined(__WXGTK__)
-	camPrintf( DiagOutput );
+	camPrintf( (TCHAR*)DiagOutput);
 #endif
 
 #endif

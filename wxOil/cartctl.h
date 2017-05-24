@@ -291,7 +291,7 @@ DECLARE_DYNAMIC_CLASS(wxCamArtControlXmlHandler)
 public:
 	wxCamArtControlXmlHandler();
 	virtual wxObject *DoCreateResource();
-	virtual bool /*TYPENOTE: Correct*/ CanHandle(wxXmlNode *node);
+	virtual bool /*TYPENOTE: Correct*/ CanHandle(wxXmlNode* node);
 };
 
 

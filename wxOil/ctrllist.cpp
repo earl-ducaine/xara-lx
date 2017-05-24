@@ -298,7 +298,7 @@ BOOL ControlList::AssociateControl(wxControl * pControl, DialogOp * pDialogOp)
 
 	if (!(opDesc.IsEmpty()))
 	{
-		pOpDesc = OpDescriptor::FindOpDescriptor((TCHAR *)(opDesc.c_str()));
+		pOpDesc = OpDescriptor::FindOpDescriptor((TCHAR *)(opDesc.wx_str()));
 		SpecifiedOpDesc = TRUE;
 #if _DEBUG
 		if (!pOpDesc)

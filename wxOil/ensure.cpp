@@ -104,7 +104,8 @@ service marks of Xara Group Ltd. All rights in these marks are reserved.
 //#include "andy.h"
 //#include "simon.h"				// for _R(IDS_CONTINUE)
 //#include "errorbox.h"			// for CInformErrorDialog::GetSafeParent
-
+#include "wxmbstowcs.h"
+			    
 #ifdef AFX_DBG1_SEG                                               
 #pragma code_seg(AFX_DBG1_SEG)
 #endif

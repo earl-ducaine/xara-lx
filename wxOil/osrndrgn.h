@@ -400,7 +400,7 @@ protected:
 	// The size of a pixel
 	FIXED16 PixelScale;
 
-	INT32	nFillStyle ;
+	wxPolygonFillMode nFillStyle ;
 
 	// A selection of pens and brushes for drawing with
 	INT32 	CurrentPen;

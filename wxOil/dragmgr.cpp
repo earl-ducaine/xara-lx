@@ -1373,7 +1373,7 @@ BOOL DragManagerOp::ProcessEvent(DragEventType Event) {
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
 	if (BroadcastToAll || Ptr->WantsAllEvents() ||
-	    TargetRect.Inside(WinoilMousePos)) {
+	    TargetRect.Contains(WinoilMousePos)) {
 	  // Determine if the pointer is over the target window, or any of its children
 	  wxWindow* WindowUnderPoint = wxChildWindowFromPoint(WinoilMousePos, false, -1);
 	  BOOL AreOverTargetWnd = (WindowUnderPoint == TargetWindow);
@@ -1434,7 +1434,7 @@ BOOL DragManagerOp::ProcessEvent(DragEventType Event) {
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
 	if (BroadcastToAll || Ptr->WantsAllEvents() ||
-	    TargetRect.Inside(ClientPoint)) {
+	    TargetRect.Contains(ClientPoint)) {
 	  // Don't give the event to oil targets unless the pointer is over the
 	  // window (ie dont pass on events to overlapped windows) unless we want
 	  // to broadcast to all, or this target really wants to know!
@@ -1524,7 +1524,7 @@ BOOL DragManagerOp::OnIdleEvent(void) {
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
     if (!DragStartTimer.Elapsed(DragDelay) &&
-	StillClickRect.Inside(CurrentMousePos)) {
+	StillClickRect.Contains(CurrentMousePos)) {
       // The drag is still pending
       return(FALSE);	// Done nothing, so let low-priority handlers have a go
     }

@@ -1306,14 +1306,23 @@ BOOL ImageMagickFilter::ConvertFromTempFile(CCLexFile * File)
 	ERROR2IF(!TempFile || TempFileName.IsEmpty(), FALSE, "ImageMagickFilter::ConvertFromTempFile has no temporary file to process");
 	TempFile->close();
 
-	wxChar * cifn;
-	wxChar * cofn;
+	const wxChar* cifn;
+	const wxChar* cofn;
 	wxChar * pcommand=_T("/usr/bin/convert");
-	wxChar * IMargv[4];
+	const wxChar* IMargv[4];
 
 	// get filename in usable form
-	cifn = camStrdup(wxString(_T("png:"))+TempFileName );
-	cofn = camStrdup(GetTag()+_T(":")+(const TCHAR *)(OutputPath.GetPath()));
+	wxString cam_str_dup_cifn(camStrdup(wxString(_T("png:")) +
+					    TempFileName ));
+	
+	// cifn = camStrdup(wxString(_T("png:")) + TempFileName );
+	cifn = cam_str_dup_cifn.wx_str();
+
+	wxString cam_str_dup_cofn(camStrdup(GetTag()+
+				       _T(":")+
+				       (const TCHAR *)(OutputPath.GetPath())));
+	
+	cofn = cam_str_dup_cofn.wx_str();
 
 	// Now convert the file
 	IMargv[0]=pcommand;
@@ -1321,9 +1330,10 @@ BOOL ImageMagickFilter::ConvertFromTempFile(CCLexFile * File)
 	IMargv[2]=cofn;
 	IMargv[3]=NULL;
 	long /*TYPENOTE: Correct*/ ret = ::wxExecute((wxChar **)IMargv, wxEXEC_SYNC | wxEXEC_NODISABLE);
-	
-	free(cifn);
-	free(cofn);
+
+	// no memory leak?
+	// free(cifn);
+	// free(cofn);
 
 	if (ret)
 	{
@@ -1364,15 +1374,19 @@ BOOL ImageMagickFilter::ConvertToTempFile(CCLexFile * File)
 	ERROR2IF(!TempFile || TempFileName.IsEmpty(), FALSE, "ImageMagickFilter::ConvertToTempFile has no temporary file to process");
 	TempFile->close();
 
-	wxChar* cifn;
-	wxChar* cofn;
+	const wxChar* cifn;
+	const wxChar* cofn;
 	wxChar* pcommand=_T("/usr/bin/convert");
 	const wxChar* IMargv[10];
 	wxChar* cdpi = NULL;
 
 	// get filename in usable form
-	cifn = camStrdup(GetTag()+_T(":")+(const TCHAR *)(InputPath.GetPath())+_T("[0]"));
-	cofn = camStrdup(wxString(_T("png:"))+TempFileName );
+	cifn = camStrdup(GetTag() +
+			 _T(":") +
+			 (const TCHAR *)(InputPath.GetPath())+_T("[0]"));
+	
+	cofn = camStrdup(wxString(_T("png:")) +
+			 TempFileName );
 
 	INT32 p = 0;
 

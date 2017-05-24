@@ -248,7 +248,7 @@ static void CharLower( TCHAR *psz )
 	for( ; *psz != '\0'; ++psz )
 		*psz = camTolower( *psz );
 }
-
+#define SIZEOF_CHAR 1
 #if SIZEOF_CHAR == 1
 typedef unsigned char		BYTE;
 typedef signed char			INT8;

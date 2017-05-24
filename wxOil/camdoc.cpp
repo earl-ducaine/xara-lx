@@ -825,139 +825,115 @@ bool CCamDoc::DoSaveDocument( const wxString &strPathName )
 	return fOK;
 }
 
-bool CCamDoc::OnOpenDocument( const wxString &strFilename )
-{
+bool CCamDoc::OnOpenDocument(const wxString& strFilename) {
 #if (_OLE_VER >= 0x200)
-	#ifdef _DEBUG
-		if (IsUserName("JustinF"))
-		{
-			TRACE( _T("In CCamDoc::OnOpenDocument("));	
-			if (pcszPathName)
-				TRACE( _T("FILE %s)\n"), (LPCTSTR) pcszPathName);
-			else
-				TRACE( _T("STORAGE 0x%p)\n"), (LPVOID) m_lpRootStg);
-		}
-	#endif
-#endif
-
-	// Put the kernel in the know.
-	m_bIsModifiable = FALSE;
-
-#if (_OLE_VER >= 0x200)
-	// Make sure the doc is considered 'visible' unless it is embedded.
-	if (!IsEmbedded()) m_fIsVisible = TRUE;
-#endif
-
-	// Remember the selected document, for possible restoration.
-	DocView* pOldSelView = DocView::GetSelected();
-
-#if (_OLE_VER >= 0x200)
-	// If this doc is not embedded then the user will want control after the server session.
-	extern BOOL Bodge_NoRecentFileList;
-	if (!IsEmbedded() && !Bodge_NoRecentFileList) AfxOleSetUserCtrl(TRUE);
-#endif
-
-	// Set the busy prefix.
-//	StatusLine::SetPrefix(String_64(_R(IDS_WAIT_OPENING_DOC_PFX)));
-
-	// Get the title from MFC - we use it as a prefix to the whole title.
-	m_TitlePrefix = wxFileNameFromPath(strFilename); //GetTitle();
-
-	// Try to open the document.
-	if( !DoOpenDocument( strFilename ) )
-	{
-	#if !defined(EXCLUDE_FROM_RALPH)
-		// If we failed then because we may have loaded a default document we will
-		// have to ensure that the selection is put back to what it was before this
-		// rather than what happens in the GeneralOpenDocument which is to put it back
-		// to the selection before the function was called. If we don't do this then we
-		// will loose the selection if the default doc was loaded.
-		// Find out what the old doc was, if any.
-		if (Document::GetSelected())
-		{
-			// Don't do this if no documents are open ('selected').
-			Document* pDoc = NULL;
-			if (pOldSelView != NULL) pDoc = pOldSelView->GetDoc();
-			Document::SetSelectedViewAndSpread(pDoc, pOldSelView, NULL);
-		}
-	#endif
-
-		// Damn, blown it again.
-//		StatusLine::SetDefaultPrefix();
-		return FALSE;
-	}
-
-#if (_OLE_VER >= 0x200)
-	
-	// Don't try to re-register copies of already registered docs.
-	if (!IsACopy())
-	{
-		// Always register the document before opening it.
-		Revoke();
-		if (!RegisterIfServerAttached(pcszPathName, FALSE))
-		{
-			// always output a trace (it is just an FYI -- not generally fatal)
-			TRACEUSER( "JustinF", _T("Warning: unable to register moniker '%s' as running\n"),
-						(LPCTSTR) pcszPathName);
-		}	
-	}
-
-#endif
-
-	// Record the path we opened in a preference so it survives sessions
-	BaseFileDialog::DefaultOpenFilePath = AfxGetApp().GetDocumentManager()->GetLastDirectory();
-
-	SetOriginalPath( strFilename.c_str() );
-	
-	if( s_RemoveExistingOnNewDoc )
-		RemoveExistingDocs();
-
-	m_fIsUntouched = FALSE;				// Mark this document as having been "touched"
-										// by the user (because he's told us to open it)
-//	fRunIdleProcessing = TRUE;			// Flag the idle document processor that it should
-										// scan for untouched docs and remove them.
-
-	// Now that the document is stable, everything is selected and ready to go
-	// we should now broadcast a message to this effect. This is so that things
-	// like the options system can then update itself in the knowledge that
-	// everything is fine and fabby rather than just sitting on doc selection
-	// messages and wondering why it doesn't recieve a last one to say that 
-	// everything has been set up..
-	m_pKernelDoc->SetStable( TRUE );
-	BROADCAST_TO_ALL( DocChangingMsg( m_pKernelDoc, DocChangingMsg::BORNANDSTABLE ) );
-
-#if (_OLE_VER >= 0x200)
-
 #ifdef _DEBUG
-	DocRect drBounds;
-	GetPageBounds(&drBounds);
-	TRACEUSER( "JustinF", _T("\t- doc is %ld x %ld HIMETRIC\n"),
-				(INT32) CCamSrvrItem::MPtoHM(drBounds.Width()),
-				(INT32) CCamSrvrItem::MPtoHM(drBounds.Height()));
+  if (IsUserName("JustinF"))
+    {
+      TRACE( _T("In CCamDoc::OnOpenDocument("));	
+      if (pcszPathName)
+	TRACE( _T("FILE %s)\n"), (LPCTSTR) pcszPathName);
+      else
+	TRACE( _T("STORAGE 0x%p)\n"), (LPVOID) m_lpRootStg);
+    }
 #endif
-
-	// Make sure the first view onto this already-existing document *doesn't* auto-zoom.
-	m_lpszInitialZoomOp = 0;
-
 #endif
-
-	SetFilename( strFilename, true );
-    SetTitle(wxFileNameFromPath(strFilename));
-	Modify(false);
-    m_savedYet = true;
-	UpdateAllViews();
-
-	// Tidy up.
-	m_bIsModifiable = TRUE;
-	SetModified(FALSE);
-
+  // Put the kernel in the know.
+  m_bIsModifiable = FALSE;
+#if (_OLE_VER >= 0x200)
+  // Make sure the doc is considered 'visible' unless it is embedded.
+  if (!IsEmbedded()) m_fIsVisible = TRUE;
+#endif
+  // Remember the selected document, for possible restoration.
+  DocView* pOldSelView = DocView::GetSelected();
+#if (_OLE_VER >= 0x200)
+  // If this doc is not embedded then the user will want control after the server session.
+  extern BOOL Bodge_NoRecentFileList;
+  if (!IsEmbedded() && !Bodge_NoRecentFileList) AfxOleSetUserCtrl(TRUE);
+#endif
+  // Set the busy prefix.
+  //	StatusLine::SetPrefix(String_64(_R(IDS_WAIT_OPENING_DOC_PFX)));
+  // Get the title from MFC - we use it as a prefix to the whole title.
+  m_TitlePrefix = wxFileNameFromPath(strFilename); //GetTitle();
+  // Try to open the document.
+  if( !DoOpenDocument( strFilename ) )
+    {
+#if !defined(EXCLUDE_FROM_RALPH)
+      // If we failed then because we may have loaded a default document we will
+      // have to ensure that the selection is put back to what it was before this
+      // rather than what happens in the GeneralOpenDocument which is to put it back
+      // to the selection before the function was called. If we don't do this then we
+      // will loose the selection if the default doc was loaded.
+      // Find out what the old doc was, if any.
+      if (Document::GetSelected())
+	{
+	  // Don't do this if no documents are open ('selected').
+	  Document* pDoc = NULL;
+	  if (pOldSelView != NULL) pDoc = pOldSelView->GetDoc();
+	  Document::SetSelectedViewAndSpread(pDoc, pOldSelView, NULL);
+	}
+#endif
+      // Damn, blown it again.
+      //		StatusLine::SetDefaultPrefix();
+      return FALSE;
+    }
+#if (_OLE_VER >= 0x200)
+  // Don't try to re-register copies of already registered docs.
+  if (!IsACopy())
+    {
+      // Always register the document before opening it.
+      Revoke();
+      if (!RegisterIfServerAttached(pcszPathName, FALSE))
+	{
+	  // always output a trace (it is just an FYI -- not generally fatal)
+	  TRACEUSER( "JustinF", _T("Warning: unable to register moniker '%s' as running\n"),
+		     (LPCTSTR) pcszPathName);
+	}	
+    }
+#endif
+  // Record the path we opened in a preference so it survives sessions
+  BaseFileDialog::DefaultOpenFilePath = AfxGetApp().GetDocumentManager()->GetLastDirectory();
+  // SetOriginalPath(strFilename.c_str());
+  SetOriginalPath(strFilename.wx_str());
+  if( s_RemoveExistingOnNewDoc )
+    RemoveExistingDocs();
+  m_fIsUntouched = FALSE;				// Mark this document as having been "touched"
+  // by the user (because he's told us to open it)
+  //	fRunIdleProcessing = TRUE;			// Flag the idle document processor that it should
+  // scan for untouched docs and remove them.
+  // Now that the document is stable, everything is selected and ready to go
+  // we should now broadcast a message to this effect. This is so that things
+  // like the options system can then update itself in the knowledge that
+  // everything is fine and fabby rather than just sitting on doc selection
+  // messages and wondering why it doesn't recieve a last one to say that 
+  // everything has been set up..
+  m_pKernelDoc->SetStable( TRUE );
+  BROADCAST_TO_ALL( DocChangingMsg( m_pKernelDoc, DocChangingMsg::BORNANDSTABLE ) );
+#if (_OLE_VER >= 0x200)
+#ifdef _DEBUG
+  DocRect drBounds;
+  GetPageBounds(&drBounds);
+  TRACEUSER( "JustinF", _T("\t- doc is %ld x %ld HIMETRIC\n"),
+	     (INT32) CCamSrvrItem::MPtoHM(drBounds.Width()),
+	     (INT32) CCamSrvrItem::MPtoHM(drBounds.Height()));
+#endif
+  // Make sure the first view onto this already-existing document *doesn't* auto-zoom.
+  m_lpszInitialZoomOp = 0;
+#endif
+  SetFilename( strFilename, true );
+  SetTitle(wxFileNameFromPath(strFilename));
+  Modify(false);
+  m_savedYet = true;
+  UpdateAllViews();
+  // Tidy up.
+  m_bIsModifiable = TRUE;
+  SetModified(FALSE);
 #if defined(_DEBUG)
-	if ( Error::IsUserName("Gavin") )
-		DebugTreeDlg::TweeDump( GetKernelDoc() );
+  if ( Error::IsUserName("Gavin") )
+    DebugTreeDlg::TweeDump( GetKernelDoc() );
 #endif
-
-//	StatusLine::SetDefaultPrefix();
-	return TRUE;
+  //	StatusLine::SetDefaultPrefix();
+  return TRUE;
 }
 
 /********************************************************************************************
@@ -1736,7 +1712,7 @@ bool CCamDoc::SaveAs()
 							strName,
 							strExt,
 							filter,
-							wxSAVE,
+							wxFD_SAVE,
 							GetDocumentWindow());
 
 		if (tmp.IsEmpty())
@@ -2502,9 +2478,7 @@ String_256 CCamDoc::GetOriginalPath() const
 	SeeAlso:	CCamDoc::GetOriginalPath
 ********************************************************************************************/
 
-void CCamDoc::SetOriginalPath(const String_256& strPath)
-{
-//	TRACEUSER( "JustinF", _T("\tSetting original path to %s\n"), (LPCTSTR) strPath);
+void CCamDoc::SetOriginalPath(const String_256& strPath) {
 	m_strOriginalPath = strPath;
 }
 
