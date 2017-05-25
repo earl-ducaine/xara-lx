@@ -41,7 +41,7 @@ function build_wx_30 {
     fi
     mkdir buildgtk
     cd buildgtk
-    ../configure --with-gtk --enable-debug --enable-unicode --with-libpng=builtin
+    ../configure --with-gtk --enable-debug --enable-unicode --enable-aui --with-libpng=builtin
     make -j 8
     sudo make install
     sudo ldconfig
@@ -97,11 +97,12 @@ function build_png {
 function build_xoamorph {
     ./autogen.sh
     ./configure --enable-debug
-    cd libs/x86_64
+    # cd libs/x86_64
     #  ar -s -r libCDraw.a *.o
     # cd ../..
     # ar -xv libCDraw.a 
-    export PATH="/usr/lib/ccache:$PATH"; make -j 4 1> make-out.txt 2>make-error.txt
+    # export PATH="/usr/lib/ccache:$PATH"; make -j 4 1> make-out.txt 2>make-error.txt
+    make -j 4 1> make-out.txt 2>make-error.txt
     # make -j 4
 }
 

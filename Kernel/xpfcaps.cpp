@@ -1086,7 +1086,7 @@ BOOL CapabilityTree::IsRasteriseCommonTrans(UINT32 Type)
 	else
 		return(FALSE);
 
-	if (camStrstr(m_CommonTrans, TransStr) != NULL)
+	if (camStrstr(m_CommonTrans, (TCHAR*)TransStr) != NULL)
 		return(TRUE);
 
 	return(FALSE);

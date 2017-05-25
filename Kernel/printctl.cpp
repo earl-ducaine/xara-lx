@@ -448,7 +448,7 @@ String_256 PrintControl::BuildPaperSizeStr()
 
 				TCHAR s[100];
 				String_32 jcf(_R(IDS_PERCENT_FORMAT));
-				camSprintf(s, jcf, (INT32) PrScale);
+				camSprintf(s, (TCHAR*)jcf, (INT32) PrScale);
 				Str += s;
 			}
 		}

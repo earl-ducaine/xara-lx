@@ -1378,15 +1378,17 @@ BOOL ImageMagickFilter::ConvertToTempFile(CCLexFile * File)
 	const wxChar* cofn;
 	wxChar* pcommand=_T("/usr/bin/convert");
 	const wxChar* IMargv[10];
-	wxChar* cdpi = NULL;
+	const wxChar* cdpi = NULL;
 
 	// get filename in usable form
-	cifn = camStrdup(GetTag() +
-			 _T(":") +
-			 (const TCHAR *)(InputPath.GetPath())+_T("[0]"));
 	
-	cofn = camStrdup(wxString(_T("png:")) +
-			 TempFileName );
+	cifn = (new wxString(camStrdup(GetTag() +
+				       _T(":") +
+				       (const TCHAR *)(InputPath.GetPath()) +
+				       _T("[0]"))))->wx_str();
+	
+	cofn = (new wxString(camStrdup(wxString(_T("png:")) +
+				       TempFileName )))->wx_str();
 
 	INT32 p = 0;
 
@@ -1400,7 +1402,7 @@ BOOL ImageMagickFilter::ConvertToTempFile(CCLexFile * File)
 		IMargv[p++]=_T("-density");
 		UINT32	uHorzDpi = UINT32( m_ImportDPI ? m_ImportDPI : DefaultDPI.GetWidth() );
 		UINT32	uVertDpi = UINT32( m_ImportDPI ? m_ImportDPI : DefaultDPI.GetHeight() );
-		cdpi = camStrdup( wxString::Format( _T("%dx%d"), uHorzDpi, uVertDpi ) );
+		cdpi = (new wxString(camStrdup( wxString::Format( _T("%dx%d"), uHorzDpi, uVertDpi ) )))->wx_str();
 		IMargv[p++]=cdpi;	
 	}
 	IMargv[p++]=cifn;
@@ -1412,12 +1414,13 @@ BOOL ImageMagickFilter::ConvertToTempFile(CCLexFile * File)
 #else
 	long /*TYPENOTE: Correct*/ ret = ::wxExecute((wxChar **)IMargv, wxEXEC_SYNC | wxEXEC_NODISABLE);
 #endif
-	
-	free(cifn);
-	free(cofn);
+
+	// Memory leak?
+	// free(cifn);
+	// free(cofn);
 	if (cdpi)
 	{
-		free(cdpi);
+		// free(cdpi);
 		cdpi = NULL;
 	}
 

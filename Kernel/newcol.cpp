@@ -532,7 +532,7 @@ void NewColourDlg::CommitDetails(BOOL Force, BOOL ForceMakeShade)
 
 		TCHAR TempStr[256];
 		String_256 jcf(_R(IDS_NEWCOL_RENAMED));
-		camSnprintf(TempStr, 256, jcf, (LPCTSTR) UniqueName);
+		camSnprintf(TempStr, 256, (TCHAR*)jcf, (LPCTSTR) UniqueName);
 
 		// We still don't have a f***ing way of reporting a f***ing message to the user which uses
 		// a STRING so we can f***ing include f***ing useful information at runtime!

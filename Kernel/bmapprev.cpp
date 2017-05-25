@@ -1958,7 +1958,7 @@ void BmapPrevDlg::HandlePaletteColourEditChange(CGadgetID id)
 		case MODEL_RGBHEX:
 		{
 			INT32 t;
-			camSscanf(str, _T("%x"), &t);
+			camSscanf((TCHAR*)str, _T("%x"), &t);
 			if (t >= 0 && t < 256)
 				*pColourWeAreChanging = t;
 			break;
@@ -1967,7 +1967,7 @@ void BmapPrevDlg::HandlePaletteColourEditChange(CGadgetID id)
 		case MODEL_RGBPERCENT:
 		{
 			double t;
-			camSscanf(str, _T("%lf"), &t);
+			camSscanf((TCHAR*)str, _T("%lf"), &t);
 			double tt = t * (255.0 / 100.0); // convert from percent to 0-255
 			if (tt >= 0 && tt < 256)
 				*pColourWeAreChanging = UINT8(tt + 0.5); // adding 0.5 so number rounds to nearest INT32
@@ -1976,7 +1976,7 @@ void BmapPrevDlg::HandlePaletteColourEditChange(CGadgetID id)
 		case MODEL_RGBNUMBER:
 		{
 			INT32 t;
-			camSscanf(str, _T("%u"), &t);
+			camSscanf((TCHAR*)str, _T("%u"), &t);
 			if (t >= 0 && t < 256)
 				*pColourWeAreChanging = UINT8(t);
 			break;
@@ -1989,13 +1989,13 @@ void BmapPrevDlg::HandlePaletteColourEditChange(CGadgetID id)
 			if (id == _R(IDC_RED_EDIT))					// H component
 			{
 				INT32 t;								// temp INT32 varaible
-				camSscanf(str, _T("%u"), &t);				// read as an in
+				camSscanf((TCHAR*)str, _T("%u"), &t);				// read as an in
 				newValue = t;						// value to be set (check range before setting)
 			}
 			else									// S & V components
 			{
 				double t;							// temp float variable (using float to keep sscanf happy)
-				camSscanf(str, _T("%lf"), &t);				// read value as a float
+				camSscanf((TCHAR*)str, _T("%lf"), &t);				// read value as a float
 				t *= (float)(255.0 / 100.0);		// convert from percent to 0-255
 				newValue = UINT8(t + 0.5);					// value to be set (check range before setting)
 			}
