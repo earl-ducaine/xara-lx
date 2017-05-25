@@ -150,7 +150,7 @@ CC_IMPLEMENT_DYNCREATE( FTFont, FontBase )
 
 static GtkWidget *gs_RootWindow = NULL;
 
-GtkWidget* wxGetRootWindow() {
+GtkWidget* my_wxGetRootWindow() {
     if (gs_RootWindow == NULL)
     {
         gs_RootWindow = gtk_window_new( GTK_WINDOW_TOPLEVEL );
@@ -894,7 +894,7 @@ static PangoContext* GetPangoContext()
 	// from wxWidgets/unix/fontenum.cpp
 	PangoContext *pPangoContext =
 #ifdef __WXGTK20__
-		gtk_widget_get_pango_context( wxGetRootWindow() );
+		gtk_widget_get_pango_context( my_wxGetRootWindow() );
 #elif defined(__WXGTK__)
 		wxTheApp->GetPangoContext();
 #else
