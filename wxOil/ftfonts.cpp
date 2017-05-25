@@ -121,10 +121,21 @@ DECLARE_SOURCE( "$Revision: 1535 $" );
 #include FT_TRUETYPE_TABLES_H
 #include FT_TYPE1_TABLES_H
 
+
 #ifdef __WXGTK20__
+#define WXGTK20OR30 1
+#endif
+
+#ifdef __WXGTK30__
+#define WXGTK20OR30 1
+#endif
+
+
+
+#ifdef WXGTK20OR30
 #define GSocket GlibGSocket
 #include <gtk/gtk.h>
-extern GtkWidget *wxGetRootWindow();
+// extern GtkWidget *wxGetRootWindow();
 #undef GSocket
 #endif
 
@@ -132,6 +143,23 @@ CC_IMPLEMENT_DYNCREATE( FTFontMan, CCObject )
 CC_IMPLEMENT_DYNCREATE( FTFont, FontBase )
 
 #define new CAM_DEBUG_NEW     
+
+
+
+#include <gtk/gtk.h>
+
+static GtkWidget *gs_RootWindow = NULL;
+
+GtkWidget* wxGetRootWindow() {
+    if (gs_RootWindow == NULL)
+    {
+        gs_RootWindow = gtk_window_new( GTK_WINDOW_TOPLEVEL );
+        gtk_widget_realize( gs_RootWindow );
+    }
+    return gs_RootWindow;
+}
+
+
 
 // static class members
 FTFontCache* FTFontMan::m_cache = NULL;
