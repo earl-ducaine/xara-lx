@@ -70,7 +70,7 @@ function build_png {
 function build_xoamorph {
     ./autogen.sh
     ./configure --enable-debug
-    cd libs/x86_64
+    # cd libs/x86_64
     #  ar -s -r libCDraw.a *.o
     # cd ../..
     # ar -xv libCDraw.a 

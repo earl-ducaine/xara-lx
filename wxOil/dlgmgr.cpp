@@ -1784,175 +1784,146 @@ BOOL DialogManager::ColourPickerAbort(CWindowID WindowID, CGadgetID Gadget, WPAR
 
 ********************************************************************************************/
 
-void DialogManager::Delete(CWindowID WindowID, DialogOp* pDlgOp)
-{
-	ERROR2IF (!pDlgOp, (void)0, "No dialog op to DialogManager::Delete()");
-	ERROR2IF (!WindowID, (void)0, "No window to DialogManager::Delete()");
-
-	if (!pDlgOp->pEvtHandler)
-	{
-		ERROR3("DialogManager::Delete() No dialog op event handler - has this window been deleted twice?");
-		return;
-	}
-
-	// If we've already been destroyed (by something else) - a situation which should never happen - then
-	// return without doing anything
-	if (pDlgOp->pEvtHandler && pDlgOp->pEvtHandler->m_GrimReaperSent)
-	{
-		TRACEALL(_T("DialogManager::Delete() Window has been deleted by something else, then Delete() called"));
-		return;
-	}
-
-	if (((wxWindow *)WindowID)->IsBeingDeleted())
-	{
-		ERROR3("Trying to delete a window that is already being deleted, has an event handler, but has not sent grim reaper");
-		return;
-	}
-
-	wxBookCtrlBase * pBook=NULL;
-	// Only do special processing for DialogTabOp
-	if (pDlgOp->IS_KIND_OF(DialogTabOp))
-		pBook=GetBookControl(WindowID);
-//	ResourceID BookGadget=pBook?pBook->GetId():0;
-
-	// See if the dialogs has a position record  (If it's a DialogBarOp it won't have one)
-	DialogPosition* DlgPos = (DialogPosition*)DialogPositionList.GetHead();
-	CWindowIDItem* WinID;
-	while(DlgPos != NULL)
-	{
-		// Search the DlgWinList for the DlgPos for WindowID
-		WinID = (CWindowIDItem*)DlgPos->DlgWinList.GetHead();
-		while (WinID != NULL)
-		{
-			if ((WinID->DlgWin) == WindowID) // Found the dialogs position record
-			{
-				// The Dialogs window is about to be destroyed so delete the WinID from the
-				// DlgWinList of DlgPos.
-				delete(DlgPos->DlgWinList.RemoveItem((ListItem*)WinID));
-				goto FoundPos; // What a rebel
-			}
-			WinID = (CWindowIDItem*)DlgPos->DlgWinList.GetNext((ListItem*)WinID);
-		}
-		// Get the next position record
-		DlgPos = ((DialogPosition*)DialogPositionList.GetNext((ListItem*)DlgPos));
-	}
-	// No DialogPosition record was found so must be a DialogBarOp
-
-
-	FoundPos:
-
-	wxWindow		   *pCWnd = (wxWindow *)WindowID;
-
-
-	if (DlgPos != NULL)
-	{
-		// Record the dialog's position so that it can be restored if the dialog is created again
-		wxRect			DialogRect( pCWnd->GetRect() );
-		DlgPos->LastX = DialogRect.x;
-		DlgPos->LastY = DialogRect.y;
-		DlgPos->ActivePage = 0;
-		DlgPos->ActivePageIndex = 0;
-
-		// If the dialog is tabbed then we need to record the active page as well
-		// We can't find the runtime class of the DialogOp at this point because Delete can be called
-		// from its destructor
-		if (pBook)
-		{
-			wxNotebookPage* pPage = pBook->GetCurrentPage();
-			if (pPage)
-			{
-				DlgPos->ActivePage = pPage->GetId();
-				// Store the pages index as well
-				GetPageWindow(WindowID, DlgPos->ActivePage, &(DlgPos->ActivePageIndex));
-			}
-			else
-				ERROR3("There is no active page");
-		}
-	}
-
-	if (pDlgOp->pEvtHandler->wxAUImanaged)
-	{
-		wxAuiPaneInfo paneinfo = CCamFrame::GetMainFrame()->GetFrameManager()->GetPane(pCWnd);
-		if (paneinfo.IsOk())
-			SavePaneInfo(wxString(CamResource::GetObjectName(pCWnd->GetId())), paneinfo);
-		// Remove the bar from wxAUI
-		CCamFrame::GetMainFrame()->GetFrameManager()->DetachPane(pCWnd);
-		CCamFrame::GetMainFrame()->UpdateFrameManager();
-	}
-
-	// Delete all discardable strings associated with the dialog
-	DlgDiscardString* DiscardStr = (DlgDiscardString*)(DiscardStrList.GetHead());
-	while (DiscardStr != NULL) // While there are still strings to delete
-	{
-		DlgDiscardString* Next = (DlgDiscardString*)(DiscardStrList.GetNext(DiscardStr));
-		if (DiscardStr->DlgWindow == WindowID)  // The string belongs to the dialog being
-												// deleted
-		{
-			delete (DiscardStr->pStr); // Delete the string
-			delete(DiscardStrList.RemoveItem(DiscardStr)); // Delete the DiscardStr record
-		}
-		DiscardStr = Next;  // Get next string record
-	}
-
-	// Delete all scrollPageInc information associated with the dialog
-	ScrollPageInc* PgInc = (ScrollPageInc*)(ScrollPageIncList.GetHead());
-	while (PgInc != NULL)
-	{
-		ScrollPageInc* Next = (ScrollPageInc*)(ScrollPageIncList.GetNext((ListItem*)PgInc));
-		if( PgInc->pDlgWindow == WindowID )	// The ScrollPageInc record belongs to the dialog
-											// being deleted.
-			delete (ScrollPageIncList.RemoveItem( (ListItem*)PgInc) );	// Delete the
-																		// ScrollPageInc record
-		PgInc = Next; // Get next record
-	}
-
-	// Delete all ControlInfo records
-	List* ControlInfoList = GetControlList( (wxWindow *)WindowID );
-
-	// Kill of Dropdowns
-	DropDown::KillDropDownsByWindow(WindowID);
-	CGridDropDown::KillDropDownsByWindow(WindowID);
-
-	// Remove new-form control list
-	ControlList::Get()->RemoveWindowAndChildren((wxWindow *)WindowID);
-
-	// We are about to destroy the window. Disconnecting our event handler sounds like a good
-	// idea at this point, as Destroy() does not destroy the window immediately, so there
-	// is a possibility of receiving further events
-	((wxWindow *)WindowID)->PopEventHandler(FALSE); // leave the DialogOp's destructor to delete it
-	pDlgOp->pEvtHandler->Destroy();
-
-
-	if (pDlgOp->IsModal() && WindowID->IsKindOf(CLASSINFO(wxDialog)))
-	// A normal Modal
-	{
-		( (wxDialog *)WindowID )->EndModal( TRUE );
-		( (wxWindow *)WindowID )->Destroy();
-	}
-	else
-	{
-		( (wxWindow *)WindowID )->Destroy();
-	}
-
-	if (ControlInfoList)
-	{
-		// Its one of our special windows with an attached list
-
-		while (!ControlInfoList->IsEmpty())
-			delete(ControlInfoList->RemoveHead());
-		// Delete the ControlInfo list
-		delete (ControlInfoList);
-		ControlInfoList = NULL;
-	}
-
-	// Restore the active/disabled window state
-	if (pDlgOp->IsModal())
-	{
-		// DialogManager::RestoreActiveDialogState();
-	}
-
-	DefaultKeyboardFocus();
-	// All spick and span
+void DialogManager::Delete(CWindowID WindowID, DialogOp* pDlgOp) {
+  ERROR2IF (!pDlgOp, (void)0, "No dialog op to DialogManager::Delete()");
+  ERROR2IF (!WindowID, (void)0, "No window to DialogManager::Delete()");
+  if (!pDlgOp->pEvtHandler) {
+    ERROR3("DialogManager::Delete() "
+	   "No dialog op event handler - has this window been deleted twice?");
+    return;
+  }
+  // If we've already been destroyed (by something else) - a situation
+  // which should never happen - then return without doing anything
+  if (pDlgOp->pEvtHandler && pDlgOp->pEvtHandler->m_GrimReaperSent) {
+    TRACEALL(_T("DialogManager::Delete() "
+		"Window has been deleted by something else, "
+		"then Delete() called"));
+    return;
+  }
+  if (((wxWindow *)WindowID)->IsBeingDeleted()) {
+    ERROR3("Trying to delete a window that is already being deleted, "
+	   "has an event handler, but has not sent grim reaper");
+    return;
+  }
+  wxBookCtrlBase* pBook = NULL;
+  // Only do special processing for DialogTabOp
+  if (pDlgOp->IS_KIND_OF(DialogTabOp)) {
+    pBook=GetBookControl(WindowID);
+  }
+  // ResourceID BookGadget=pBook?pBook->GetId():0;
+  //
+  // See if the dialogs has a position record (If it's a DialogBarOp
+  // it won't have one)
+  DialogPosition* DlgPos = (DialogPosition*)DialogPositionList.GetHead();
+  CWindowIDItem* WinID;
+  while(DlgPos != NULL) {
+    // Search the DlgWinList for the DlgPos for WindowID
+    WinID = (CWindowIDItem*)DlgPos->DlgWinList.GetHead();
+    while (WinID != NULL) {
+      // Found the dialogs position record
+      if ((WinID->DlgWin) == WindowID)  {
+	// The Dialogs window is about to be destroyed so delete the
+	// WinID from the DlgWinList of DlgPos.
+	delete(DlgPos->DlgWinList.RemoveItem((ListItem*)WinID));
+	goto FoundPos; // What a rebel
+      }
+      WinID = (CWindowIDItem*)DlgPos->DlgWinList.GetNext((ListItem*)WinID);
+    }
+    // Get the next position record
+    DlgPos = ((DialogPosition*)DialogPositionList.GetNext((ListItem*)DlgPos));
+  }
+  // No DialogPosition record was found so must be a DialogBarOp
+ FoundPos:
+  wxWindow* pCWnd = (wxWindow *)WindowID;
+  if (DlgPos != NULL) {
+    // Record the dialog's position so that it can be restored if
+    // the dialog is created again
+    wxRect DialogRect(pCWnd->GetRect());
+    DlgPos->LastX = DialogRect.x;
+    DlgPos->LastY = DialogRect.y;
+    DlgPos->ActivePage = 0;
+    DlgPos->ActivePageIndex = 0;
+    // If the dialog is tabbed then we need to record the active page
+    // as well We can't find the runtime class of the DialogOp at this
+    // point because Delete can be called from its destructor
+    if (pBook) {
+      wxNotebookPage* pPage = pBook->GetCurrentPage();
+      if (pPage) {
+	DlgPos->ActivePage = pPage->GetId();
+	// Store the pages index as well
+	GetPageWindow(WindowID, DlgPos->ActivePage, &(DlgPos->ActivePageIndex));
+      } else {
+	ERROR3("There is no active page");
+      }
+    }
+  }
+  if (pDlgOp->pEvtHandler->wxAUImanaged) {
+    wxAuiPaneInfo paneinfo = CCamFrame::GetMainFrame()->GetFrameManager()->GetPane(pCWnd);
+    if (paneinfo.IsOk())
+      SavePaneInfo(wxString(CamResource::GetObjectName(pCWnd->GetId())),
+		   paneinfo);
+    // Remove the bar from wxAUI
+    CCamFrame::GetMainFrame()->GetFrameManager()->DetachPane(pCWnd);
+    CCamFrame::GetMainFrame()->UpdateFrameManager();
+  }
+  // Delete all discardable strings associated with the dialog
+  DlgDiscardString* DiscardStr = (DlgDiscardString*)(DiscardStrList.GetHead());
+  // While there are still strings to delete
+  while (DiscardStr != NULL)  {
+    DlgDiscardString* Next = (DlgDiscardString*)(DiscardStrList.GetNext(DiscardStr));
+    if (DiscardStr->DlgWindow == WindowID)  // The string belongs to the dialog being
+      // deleted
+      {
+	delete (DiscardStr->pStr); // Delete the string
+	delete(DiscardStrList.RemoveItem(DiscardStr)); // Delete the DiscardStr record
+      }
+    DiscardStr = Next;  // Get next string record
+  }
+  // Delete all scrollPageInc information associated with the dialog
+  ScrollPageInc* PgInc = (ScrollPageInc*)(ScrollPageIncList.GetHead());
+  while (PgInc != NULL)
+    {
+      ScrollPageInc* Next = (ScrollPageInc*)(ScrollPageIncList.GetNext((ListItem*)PgInc));
+      if( PgInc->pDlgWindow == WindowID )	// The ScrollPageInc record belongs to the dialog
+	// being deleted.
+	delete (ScrollPageIncList.RemoveItem( (ListItem*)PgInc) );	// Delete the
+      // ScrollPageInc record
+      PgInc = Next; // Get next record
+    }
+  // Delete all ControlInfo records
+  List* ControlInfoList = GetControlList( (wxWindow *)WindowID );
+  // Kill of Dropdowns
+  DropDown::KillDropDownsByWindow(WindowID);
+  CGridDropDown::KillDropDownsByWindow(WindowID);
+  // Remove new-form control list
+  ControlList::Get()->RemoveWindowAndChildren((wxWindow *)WindowID);
+  // We are about to destroy the window. Disconnecting our event handler sounds like a good
+  // idea at this point, as Destroy() does not destroy the window immediately, so there
+  // is a possibility of receiving further events
+  ((wxWindow *)WindowID)->PopEventHandler(FALSE); // leave the DialogOp's destructor to delete it
+  pDlgOp->pEvtHandler->Destroy();
+  if (pDlgOp->IsModal() && WindowID->IsKindOf(CLASSINFO(wxDialog))) {
+    // A normal Modal
+    ((wxDialog *)WindowID)->EndModal(TRUE);
+    ((wxWindow*)WindowID)->Destroy();
+  } else {
+    ((wxWindow*)WindowID )->Destroy();
+  }
+  if (ControlInfoList) {
+    // Its one of our special windows with an attached list
+    while (!ControlInfoList->IsEmpty()) {
+      delete(ControlInfoList->RemoveHead());
+    }
+    // Delete the ControlInfo list
+    delete (ControlInfoList);
+    ControlInfoList = NULL;
+  }
+  // Restore the active/disabled window state
+  if (pDlgOp->IsModal()) {
+    // DialogManager::RestoreActiveDialogState();
+  }
+  DefaultKeyboardFocus();
+  // All spick and span
 }
 
 
@@ -2777,22 +2748,29 @@ BOOL DialogManager::SetStringGadgetValue(CWindowID WindowID,
 
 ********************************************************************************************/
 
-wxWindow * DialogManager::GetGadget(CWindowID WindowID, CGadgetID Gadget)
-{
-	ERROR2IF(!WindowID || !WindowID->IsKindOf(CLASSINFO(wxWindow)), FALSE, "Bad Window ID passed");
-	wxWindow * pGadget=WindowID->FindWindow(Gadget);
-//	TRACEUSER("amb",_T("pwxDialog=0x%016llx Gadget=%d(%s) pGadget=0x%016llx"), WindowID, Gadget, CamResource::GetObjectName((ResourceID)Gadget), pGadget);
-	if (!pGadget)
-	{
-		// Some dialogs seem to consciously do this, EG galleries
-//		ERROR3_PF((_T("Bad Gadget ID %d(%s) passed"), Gadget, CamResource::GetObjectName((ResourceID)Gadget)));
-		return NULL;
-	}
+wxWindow * DialogManager::GetGadget(CWindowID WindowID, CGadgetID Gadget) {
+  ERROR2IF(!WindowID || !WindowID->IsKindOf(CLASSINFO(wxWindow)),
+	   FALSE,
+	   "Bad Window ID passed");
+  wxWindow * pGadget=WindowID->FindWindow(Gadget);
+  // TRACEUSER("amb",
+  // 	    _T("pwxDialog=0x%016llx Gadget=%d(%s) pGadget=0x%016llx"),
+  // 	    WindowID,
+  // 	    Gadget,
+  // 	    CamResource::GetObjectName((ResourceID)Gadget),
+  // 	    pGadget);
+  if (!pGadget) {
+    // Some dialogs seem to consciously do this, EG galleries
+    // ERROR3_PF((_T("Bad Gadget ID %d(%s) passed"),
+    // 	       Gadget,
+    // 	       CamResource::GetObjectName((ResourceID)Gadget)));
+    return NULL;
+  }
 #if 0
-	const TCHAR * pGadgetClassName = (const TCHAR *) pGadget->GetClassInfo()->GetClassName();
-	TRACEUSER("amb",_T("Gadget is a %s"),pGadgetClassName);
+  const TCHAR * pGadgetClassName = (const TCHAR *) pGadget->GetClassInfo()->GetClassName();
+  TRACEUSER("amb",_T("Gadget is a %s"),pGadgetClassName);
 #endif
-	return pGadget;
+  return pGadget;
 }
 
 /********************************************************************************************
@@ -5498,30 +5476,30 @@ void DialogManager::PaintGadgetNow(CWindowID WindowID, CGadgetID Gadget)
 
 
 
-/********************************************************************************************
+/***************************************************************************
+>       static void DialogManager::InvalidateGadget(CWindowID
+           WindowID, CGadgetID Gadget, BOOL EraseBackground)
 
->	static void DialogManager::InvalidateGadget(CWindowID WindowID, CGadgetID Gadget, BOOL EraseBackground)
+	Author:	   Rik_Heywood (Xara Group Ltd) <camelotdev@xara.com>
+	Created:   20/10/94
+	Inputs:	   WindowID - The Window identifier
+                   Gadget - The control that requires invalidating
+	Purpose:   Invalidates the control so that it will be repainted soon.
+***************************************************************************/
 
-	Author:		Rik_Heywood (Xara Group Ltd) <camelotdev@xara.com>
-	Created:	20/10/94
-	Inputs:		WindowID - The Window identifier
-				Gadget - The control that requires invalidating
-	Purpose:	Invalidates the control so that it will be repainted soon.
-
-********************************************************************************************/
-
-void DialogManager::InvalidateGadget(CWindowID WindowID, CGadgetID Gadget, BOOL EraseBackground /*=TRUE*/)
-{
-	if (!Gadget)
-	{
-		((wxWindow *)WindowID)->Refresh(EraseBackground);
-		return;
-	}
-	// For the time being, we do this by Hide/Unhide
-	wxWindow * pGadget = GetGadget(WindowID, Gadget);
-	if (!pGadget) return;
-
-	pGadget->Refresh(EraseBackground);
+void DialogManager::InvalidateGadget(CWindowID WindowID,
+				     CGadgetID Gadget,
+				     BOOL EraseBackground /*=TRUE*/) {
+  if (!Gadget) {
+    ((wxWindow*)WindowID)->Refresh(EraseBackground);
+    return;
+  }
+  // For the time being, we do this by Hide/Unhide
+  wxWindow* pGadget = GetGadget(WindowID, Gadget);
+  if (!pGadget) {
+    return;
+  }
+  pGadget->Refresh(EraseBackground);
 }
 
 

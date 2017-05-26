@@ -98,7 +98,7 @@ service marks of Xara Group Ltd. All rights in these marks are reserved.
 
 // Contains useful routines for compressing a bitmap out to a PNG format file and
 // routines to load that file back in.
-
+#define PNG_PEDANTIC_WARNINGS 1
 #include "camtypes.h"
 #include "pngutil.h"
 #include "pngprgrs.h"

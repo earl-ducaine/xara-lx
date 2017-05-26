@@ -683,102 +683,85 @@ BOOL CALLBACK EnumChildProc(wxWindow* hChild, LPARAM lParam )
 	NOTE:		The window movement code is oily code and should become part of the dialog manager
 				along with the above function, EnumChildProc.
 ********************************************************************************************/
-BOOL BmapPrevDlg::OnCreate()
-{
-	// If we need to add a preview section then go and do it now
-	if ((m_FilterType == JPEG) || (m_pExportOptions->GetSelectionType() != ABITMAP))
-	{
-PORTNOTETRACE("other","Preview section NOT setup");
+BOOL BmapPrevDlg::OnCreate() {
+  // If we need to add a preview section then go and do it now
+  if ((m_FilterType == JPEG) ||
+      (m_pExportOptions->GetSelectionType() != ABITMAP)) {
+    PORTNOTETRACE("other","Preview section NOT setup");
 #ifndef EXCLUDE_FROM_XARALX
-		//First get the size of the current window
-		wxRect Rect;
-		GetWindowRect(WindowID, &Rect);
+    //First get the size of the current window
+    wxRect Rect;
+    GetWindowRect(WindowID, &Rect);
 #endif
-
-		//Now, the current window contains only the Tabs
-		//section of the dialog. We need to insert the Preview
-		//section of the dialog above the Tabs section. This
-		//means doing the following:
-
-		//1. Increasing the height of the dialog by the
-		//	 height of the Preview section
-		//2. Moving the Tabs section downwards, by a distance
-		//	 equal to the height of the Preview section
-		//3. Inserting the Preview section at the top of the
-		//	 dialog
-
-		//Also, if this is the first time the dialog
-		//has been created, we must recentre the dialog on 
-		//screen to compensate for the fact that the Preview
-		//section has been added. We do this at the same
-		//time as step 1.
-
-		//So...
-
-		//First, we need to get the height of the 
-		//Preview section
-
-		//To do this, we create the Preview dialog object
-		m_pPreviewDlg = new BitmapExportPreviewDialog(WindowID);
-		ERROR2IF(m_pPreviewDlg == NULL, FALSE, "No preview dialog!");
-
-		//And start the dialog up
-		m_pPreviewDlg->InitPreviewDialog(this, m_pBmpFilter);
-
-		// Get the window ID
-		m_DialogWnd = m_pPreviewDlg->WindowID;
-		ERROR2IF(m_DialogWnd == NULL, FALSE, "No preview dialog!");
-	
-		DialogManager::MergeDialogs( WindowID, m_pPreviewDlg->WindowID, true );
-
-		// enable our window (which has been disabled when the preview window was created)
-		WindowID->Enable( TRUE );
-	}
-
-	// set the title bar
-	if (m_FilterType != MAKE_BITMAP_FILTER) 
-	{
-		// Set up the title of the dialog box according to the passed in string which
-		// is the name of the filter plus export bitmap options.
-		String_256 Temp = ""; //*(m_pExportOptions->GetFilterName());
-		Temp.Load(m_pExportOptions->GetFilterNameStrID()); // which is safer than the ptr into whatever
-		Temp += String_256(_R(IDN_EXPORTBMPOPTS));
-
-		DialogManager::SetTitlebarName(WindowID, &Temp); // set the title bar for the window
-	}
-	else
-	{
-		// set up the title string for the MakeBitmap filter
-		String_256 Temp(_R(IDS_MAKEBMPOPTS));
-		DialogManager::SetTitlebarName(WindowID, &Temp); // set the title bar
-	}
-
-	// set the OK and preview button
-	SetButtonsText();
-
-	// calculate a dpi value if dpi is not supported
-	if (!m_bDpiSupported)							// Doesn't support dpi...
-	{
-		// and ensure that its always the number of dpi as defined by a pixel unit
-		DocUnitList* pDocUnitList =	DocUnitList::GetCurrentDocUnitList();
-		ERROR3IF(pDocUnitList == 0, "BmapPrevDlg::OnCreate - no pDocUnitList!");
-		Unit* pPixelUnit = pDocUnitList->FindUnit(PIXELS);
-		ERROR3IF(pPixelUnit == 0, "BmapPrevDlg::OnCreate - no pixel units!");
-		Unit* pInchUnit = pDocUnitList->FindUnit(INCHES);
-		ERROR3IF(pInchUnit == 0, "BmapPrevDlg::OnCreate - no inch units!");
-		double newDpi = (pPixelUnit->GetMillipoints() > 0)
-							? pInchUnit->GetMillipoints() / pPixelUnit->GetMillipoints()
-							: 96.0;
-		m_pExportOptions->SetDPI(newDpi);
-	}
-
-	AddControlsToHelper();
-
-	UpdateCurrentTab();
-
-	m_PaletteControl.Init(GetReadWriteWindowID());
-
-	return TRUE;
+    // Now, the current window contains only the Tabs section of the
+    // dialog. We need to insert the Preview section of the dialog
+    // above the Tabs section. This means doing the following:
+    // 
+    // 1. Increasing the height of the dialog by the height of the
+    //    Preview section
+    // 2. Moving the Tabs section downwards, by a distance equal to
+    //    the height of the Preview section
+    // 3. Inserting the Preview section at the top of the dialog
+    // 
+    // Also, if this is the first time the dialog has been created,
+    // we must recentre the dialog on screen to compensate for the
+    // fact that the Preview section has been added. We do this at
+    // the same time as step 1.
+    //
+    // So...
+    //
+    // First, we need to get the height of the Preview section To do
+    // this, we create the Preview dialog object
+    m_pPreviewDlg = new BitmapExportPreviewDialog(WindowID);
+    ERROR2IF(m_pPreviewDlg == NULL, FALSE, "No preview dialog!");
+    //And start the dialog up
+    m_pPreviewDlg->InitPreviewDialog(this, m_pBmpFilter);
+    // Get the window ID
+    m_DialogWnd = m_pPreviewDlg->WindowID;
+    ERROR2IF(m_DialogWnd == NULL, FALSE, "No preview dialog!");
+    DialogManager::MergeDialogs( WindowID, m_pPreviewDlg->WindowID, true );
+    // enable our window (which has been disabled when the preview window was created)
+    WindowID->Enable( TRUE );
+  }
+  // set the title bar
+  if (m_FilterType != MAKE_BITMAP_FILTER)  {
+    // Set up the title of the dialog box according to the passed in string which
+    // is the name of the filter plus export bitmap options.
+    String_256 Temp = ""; //*(m_pExportOptions->GetFilterName());
+    Temp.Load(m_pExportOptions->GetFilterNameStrID()); // which is safer than the ptr into whatever
+    Temp += String_256(_R(IDN_EXPORTBMPOPTS));
+    DialogManager::SetTitlebarName(WindowID, &Temp); // set the title bar for the window
+  } else {
+    // set up the title string for the MakeBitmap filter
+    String_256 Temp(_R(IDS_MAKEBMPOPTS));
+    DialogManager::SetTitlebarName(WindowID, &Temp); // set the title bar
+  }
+  // set the OK and preview button
+  SetButtonsText();
+  // calculate a dpi value if dpi is not supported
+  // Doesn't support dpi...
+  if (!m_bDpiSupported) {
+    // and ensure that its always the number of dpi as defined by a pixel unit
+    DocUnitList* pDocUnitList =	DocUnitList::GetCurrentDocUnitList();
+    ERROR3IF(pDocUnitList == 0, "BmapPrevDlg::OnCreate - no pDocUnitList!");
+    Unit* pPixelUnit = pDocUnitList->FindUnit(PIXELS);
+    ERROR3IF(pPixelUnit == 0, "BmapPrevDlg::OnCreate - no pixel units!");
+    Unit* pInchUnit = pDocUnitList->FindUnit(INCHES);
+    ERROR3IF(pInchUnit == 0, "BmapPrevDlg::OnCreate - no inch units!");
+    double newDpi = (pPixelUnit->GetMillipoints() > 0)
+      ? pInchUnit->GetMillipoints() / pPixelUnit->GetMillipoints()
+      : 96.0;
+    m_pExportOptions->SetDPI(newDpi);
+  }
+  // Note, the ill-defined protocal for composite widget creation is
+  // that the hierarchy of components is created from parent to
+  // children.  But refreshing/rendering occures from leaf child to
+  // parent, i.e. bubbles up.  So update of controls should be the
+  // last thing to do
+  AddControlsToHelper();
+  m_PaletteControl.Init(GetReadWriteWindowID());
+  UpdateCurrentTab();  
+  return TRUE;
 }
 
 /******************************************************************************************
@@ -1092,208 +1075,210 @@ BOOL BmapPrevDlg::DoPreview()
 }
 
 
-/********************************************************************************************
+/***************************************************************************
 >	MsgResult BmapPrevDlg::Message( Msg* Message)
-	Author:		Simon_Maneggio (Xara Group Ltd) <camelotdev@xara.com>
-	Created:	18/2/94
-	Inputs:		Message: The message 
-	Returns:	OK	 		  Message handled ok (return this even if you don't need to 
-							  respond to the message). 
 
-				FAIL 		  Something terrible happened whilst processing the message
-				 			  eg. we ran out of memory. You must set ERROR if you
-				 			  are returning this value. 
+	Author:   Simon_Maneggio (Xara Group Ltd) <camelotdev@xara.com>
+	Created:  18/2/94
+	Inputs:   Message: The message 
 
-				EAT_MSG       The Message was handled ok but don't send it to any
-				 			  more MessageHandlers. 
+	Returns: OK       Message handled ok return this even if you don't
+		          need to respond to the message).
 
-	Purpose:	This is the message handler for the BmapPrevDlg
-********************************************************************************************/
+                 FAIL     Something terrible happened whilst processing
+		          the message eg. we ran out of memory. You
+		          must set ERROR if you are returning this
+		          value.
 
-MsgResult BmapPrevDlg::Message( Msg* Message)
-{
-	// handle the message
-	if (!IS_OUR_DIALOG_MSG(Message))
-		return OK;
+                 EAT_MSG  The Message was handled ok but don't send it to any
+			  more MessageHandlers. 
 
-	if (m_DialogWnd != NULL)
-		m_DialogWnd->Enable( TRUE );
-	
-	DialogMsg* Msg = ((DialogMsg*) Message); 
+                 Purpose: This is the message handler for the BmapPrevDlg
+***************************************************************************/
 
-	BOOL EndDialog = FALSE;		// TRUE if we should quit the dialog
-//	BOOL CommitValues = FALSE; 	// TRUE if we should commit the dialog values
+MsgResult BmapPrevDlg::Message(Msg* Message) {
+  // handle the message
+  if (!IS_OUR_DIALOG_MSG(Message)) {
+    return OK;
+  }
+  if (m_DialogWnd != NULL) {
+    m_DialogWnd->Enable(TRUE);
+  }
+  DialogMsg* Msg = ((DialogMsg*) Message); 
+  BOOL EndDialog = FALSE;		// TRUE if we should quit the dialog
+  //	BOOL CommitValues = FALSE; 	// TRUE if we should commit the dialog values
 
-	// Catch mouse move messages for all tabs here so we can do all the bubble help / status
-	// bar stuff for all the tabs (note: DIM_MOUSE_MOVE still goes to the tabs, this is just
-	// a hook to process it a little first)
-	if (Msg->DlgMsg == DIM_MOUSE_MOVE && m_LastCursorOverControlID != Msg->GadgetID)
+  // Catch mouse move messages for all tabs here so we can do all the bubble help / status
+  // bar stuff for all the tabs (note: DIM_MOUSE_MOVE still goes to the tabs, this is just
+  // a hook to process it a little first)
+  if (Msg->DlgMsg == DIM_MOUSE_MOVE && m_LastCursorOverControlID != Msg->GadgetID)
+    {
+      m_LastCursorOverControlID = Msg->GadgetID;
+
+      UpdateStatusBar(Msg->GadgetID);
+      PrepareBubbleHelp();
+    }
+
+  if (Msg->DlgMsg == DIM_TIMER)
+    {
+      if (m_pBubbleTimer && m_pBubbleTimer->Elapsed(BUBBLE_TIME))
 	{
-		m_LastCursorOverControlID = Msg->GadgetID;
+	  // Delete the timer as it is no longer needed
+	  delete m_pBubbleTimer;
+	  m_pBubbleTimer = 0;
 
-		UpdateStatusBar(Msg->GadgetID);
-		PrepareBubbleHelp();
+	  // Show the bubble help window
+	  DoBubbleHelp();
 	}
+    }
 
-	if (Msg->DlgMsg == DIM_TIMER)
-	{
-		if (m_pBubbleTimer && m_pBubbleTimer->Elapsed(BUBBLE_TIME))
-		{
-			// Delete the timer as it is no longer needed
-			delete m_pBubbleTimer;
-			m_pBubbleTimer = 0;
-
-			// Show the bubble help window
-			DoBubbleHelp();
-		}
-	}
-
-	// Determine from what page the message originated
-	if( Msg->PageID == _R(IDD_TBITMAPSIZE) )
-		HandleBitmapSizeTabMsg(Msg); 
-	else
-	if( Msg->PageID == _R(IDD_PALETTE_TAB) )
-		HandlePaletteTabMsg(Msg);
-	else
-	if( Msg->PageID == _R(IDD_TIMAPOPTIONS) )
-		HandleImageMapTabMsg(Msg); 
-	else
+  // Determine from what page the message originated
+  if( Msg->PageID == _R(IDD_TBITMAPSIZE) )
+    HandleBitmapSizeTabMsg(Msg); 
+  else
+    if( Msg->PageID == _R(IDD_PALETTE_TAB) )
+      HandlePaletteTabMsg(Msg);
+    else
+      if( Msg->PageID == _R(IDD_TIMAPOPTIONS) )
+	HandleImageMapTabMsg(Msg); 
+      else
 	if( Msg->PageID == _R(IDD_TBROWSER) )
-		HandleBrowserPreviewTabMsg(Msg); 
+	  HandleBrowserPreviewTabMsg(Msg); 
 	else
-	if( Msg->PageID == _R(IDD_TBITMAPOPTIONS) )
-		HandleBitmapOptionsTabMsg(Msg);
-	else
-	if( Msg->PageID == 0 )
-	{
+	  if( Msg->PageID == _R(IDD_TBITMAPOPTIONS) )
+	    HandleBitmapOptionsTabMsg(Msg);
+	  else
+	    if( Msg->PageID == 0 )
+	      {
 		// A message generated from the tabbed dialog itself
 		switch (Msg->DlgMsg)
-		{
-			case DIM_CREATE:
+		  {
+		  case DIM_CREATE:
+		    {
+		      if (!OnCreate()) // initialise
 			{
-				if (!OnCreate()) // initialise
-				{
-					ERROR3("Problem in OnCreate()");
-					return FAIL;
-				}
-				// disable browser preview for now
-//				BOOL Old = m_bDoPreviewInBrowser; // remember the value of the flag
-//				m_bDoPreviewInBrowser = FALSE; // disable browser preview
-//				DoPreview(); // do preview
-//				m_bDoPreviewInBrowser = Old; // restore the setting
-
-PORTNOTE("other", "Remove bubble help timer usage" );
-#if !defined(EXCLUDE_FROM_XARALX)
-			//  Set up the bubble-help timer.
-				SetTimer(BUBBLE_HELP_TIMMER_ID, 100);
-#endif
-				break;
+			  ERROR3("Problem in OnCreate()");
+			  return FAIL;
 			}
+		      // disable browser preview for now
+		      //				BOOL Old = m_bDoPreviewInBrowser; // remember the value of the flag
+		      //				m_bDoPreviewInBrowser = FALSE; // disable browser preview
+		      //				DoPreview(); // do preview
+		      //				m_bDoPreviewInBrowser = Old; // restore the setting
 
-			case DIM_COMMIT:		// Close dialog and insert the bitmap in the document
-				EndDialog = TRUE;
-PORTNOTE("other", "Remove bubble help timer usage" );
+		      PORTNOTE("other", "Remove bubble help timer usage" );
 #if !defined(EXCLUDE_FROM_XARALX)
-				KillTimer(BUBBLE_HELP_TIMMER_ID);
+		      //  Set up the bubble-help timer.
+		      SetTimer(BUBBLE_HELP_TIMMER_ID, 100);
 #endif
-				BmapPrevDlg::m_bClickedOnExport = TRUE;
-				ImageMapOnCommit();		// Save the image map values
-				break;
+		      break;
+		    }
 
-			case DIM_SOFT_COMMIT:		// Update the preview
-				EndDialog = FALSE;
-				DoPreview();
-				BmapPrevDlg::m_bClickedOnExport = FALSE;
-				break; 
-
-			case DIM_CANCEL:		// Close dialog and don't insert the bitmap in the document
-				EndDialog = TRUE;
-PORTNOTE("other", "Remove bubble help timer usage" );
+		  case DIM_COMMIT:		// Close dialog and insert the bitmap in the document
+		    EndDialog = TRUE;
+		    PORTNOTE("other", "Remove bubble help timer usage" );
 #if !defined(EXCLUDE_FROM_XARALX)
-				KillTimer(BUBBLE_HELP_TIMMER_ID);
+		    KillTimer(BUBBLE_HELP_TIMMER_ID);
 #endif
-				BmapPrevDlg::m_bClickedOnExport = FALSE;
-				// we have cancelled so these options are not valid
-				m_pExportOptions->MarkInvalid();
-				break;
+		    BmapPrevDlg::m_bClickedOnExport = TRUE;
+		    ImageMapOnCommit();		// Save the image map values
+		    break;
 
-			case DIM_LFT_BN_CLICKED:
-			case DIM_RGT_BN_CLICKED:
-				// If they clicked on the help button
-				if (Msg->GadgetID == wxID_HELP)
-					OnHelpButtonClicked();
-				break;
+		  case DIM_SOFT_COMMIT:		// Update the preview
+		    EndDialog = FALSE;
+		    DoPreview();
+		    BmapPrevDlg::m_bClickedOnExport = FALSE;
+		    break; 
 
-			default:
-				break;
+		  case DIM_CANCEL:		// Close dialog and don't insert the bitmap in the document
+		    EndDialog = TRUE;
+		    PORTNOTE("other", "Remove bubble help timer usage" );
+#if !defined(EXCLUDE_FROM_XARALX)
+		    KillTimer(BUBBLE_HELP_TIMMER_ID);
+#endif
+		    BmapPrevDlg::m_bClickedOnExport = FALSE;
+		    // we have cancelled so these options are not valid
+		    m_pExportOptions->MarkInvalid();
+		    break;
+
+		  case DIM_LFT_BN_CLICKED:
+		  case DIM_RGT_BN_CLICKED:
+		    // If they clicked on the help button
+		    if (Msg->GadgetID == wxID_HELP)
+		      OnHelpButtonClicked();
+		    break;
+
+		  default:
+		    break;
+		  }
+	      }
+	    else
+	      ERROR3("Message from unknown tab dialog page"); 
+
+  if (EndDialog)	// Dialog communication over 
+    {	
+      // set the proper state in the export options to indicate which button was clicked
+      if (Msg->DlgMsg == DIM_COMMIT)
+	{
+	  //  Now, the ModifiedAfterLastExport variable used to tell us whether the options had
+	  //  been changed since the user last pressed the Preview button. This does not
+	  //  apply now since the preview is always up to date, so we will ignore it.
+	  if (m_FilterType == MAKE_BITMAP_FILTER)
+	    {
+	      // we need to get rid of any temp files
+	      if (m_pExportOptions->HasTempFile())
+		{
+		  // get the path name
+		  PathName Path = m_pExportOptions->GetPathName();
+
+		  // if a valid path, delete it
+		  if (Path.IsValid())
+		    FileUtil::DeleteFile(&Path);
+
+		  m_pExportOptions->SetPathName(NULL);
 		}
-	}
-	else
-		ERROR3("Message from unknown tab dialog page"); 
+	    }
 
-	if (EndDialog)	// Dialog communication over 
-	{	
-		// set the proper state in the export options to indicate which button was clicked
-		if (Msg->DlgMsg == DIM_COMMIT)
+	  // set the extention as we may have changed file type
+	  // some extentions are in the form jpg,jpeg
+	  // just use the first example
+	  String_256 Ext = m_pExportOptions->FindBitmapFilterForTheseExportOptions()->pOILFilter->FilterExt;
+	  for (INT32 i = 0; i < 256 && Ext[i]; i++)
+	    {
+	      if (Ext[i] == ',')
 		{
-			//  Now, the ModifiedAfterLastExport variable used to tell us whether the options had
-			//  been changed since the user last pressed the Preview button. This does not
-			//  apply now since the preview is always up to date, so we will ignore it.
-			if (m_FilterType == MAKE_BITMAP_FILTER)
-			{
-				// we need to get rid of any temp files
-				if (m_pExportOptions->HasTempFile())
-				{
-					// get the path name
-					PathName Path = m_pExportOptions->GetPathName();
-
-					// if a valid path, delete it
-					if (Path.IsValid())
-						FileUtil::DeleteFile(&Path);
-
-					m_pExportOptions->SetPathName(NULL);
-				}
-			}
-
-			// set the extention as we may have changed file type
-			// some extentions are in the form jpg,jpeg
-			// just use the first example
-			String_256 Ext = m_pExportOptions->FindBitmapFilterForTheseExportOptions()->pOILFilter->FilterExt;
-			for (INT32 i = 0; i < 256 && Ext[i]; i++)
-			{
-				if (Ext[i] == ',')
-				{
-					Ext.Remove(i, Ext.Length()-i);
-					break;
-				}
-			}
-			BmapPrevDlg::m_pthExport.SetType ( Ext );
-
-			m_pExportOptions->SetPutHTMLTagOnClipboard(m_ClipBoardUsage == CLIPBOARD_HTML);
-
-			// we have committed these values so mark them as valid
-			m_pExportOptions->MarkValid();
-		} // End DIM_COMMIT.
-		else 
-		{
-			// check if jpeg export dialog has been canceled 
-			if (m_FilterType == JPEG)
-			{
-				// set our KernelBitmap pointer to NULL.
-				JPEGExportOptions::SetKernelBitmap(NULL);
-			}
+		  Ext.Remove(i, Ext.Length()-i);
+		  break;
 		}
+	    }
+	  BmapPrevDlg::m_pthExport.SetType ( Ext );
 
-		// tell the preview dialog to shut down			
-		if (m_DialogWnd != NULL)
-			BROADCAST_TO_CLASS( DialogMsg(m_DialogWnd, Msg->DlgMsg, 0, 0, 0), DialogOp );
-		m_DialogWnd = NULL;
+	  m_pExportOptions->SetPutHTMLTagOnClipboard(m_ClipBoardUsage == CLIPBOARD_HTML);
 
-		Close();
-		End(); 	 	// End of dialog 
+	  // we have committed these values so mark them as valid
+	  m_pExportOptions->MarkValid();
+	} // End DIM_COMMIT.
+      else 
+	{
+	  // check if jpeg export dialog has been canceled 
+	  if (m_FilterType == JPEG)
+	    {
+	      // set our KernelBitmap pointer to NULL.
+	      JPEGExportOptions::SetKernelBitmap(NULL);
+	    }
 	}
 
-	return DLG_EAT_IF_HUNGRY(Msg);   // I return EAT_MSG unless the message needs to be sent to all dialogs 
+      // tell the preview dialog to shut down			
+      if (m_DialogWnd != NULL)
+	BROADCAST_TO_CLASS( DialogMsg(m_DialogWnd, Msg->DlgMsg, 0, 0, 0), DialogOp );
+      m_DialogWnd = NULL;
+
+      Close();
+      End(); 	 	// End of dialog 
+    }
+
+  // I return EAT_MSG unless the message needs to be sent to all dialogs 
+  return DLG_EAT_IF_HUNGRY(Msg);   
 }
 
 /********************************************************************************************
