@@ -350,8 +350,8 @@ if test "$StaticEnable" = "yes"; then
 fi
 
 # pass the Pango, FreeType and GTK flags (required for wxGTK font rendering)
-CPPFLAGS="$CPPFLAGS  $WX_CPPFLAGS -I/home/rett/dev/xoamorph/xara-lx/libpng-1.4.19 $PANGO_CFLAGS $FT_CFLAGS $GTK_CFLAGS $LIBXML2_CFLAGS $RESOURCE_DIR_DEFINE"
-CXXFLAGS="$CXXFLAGS  $WX_CPPFLAGS -I/home/rett/dev/xoamorph/xara-lx/libpng-1.4.19 $PANGO_CFLAGS $FT_CFLAGS $GTK_CFLAGS $LIBXML2_CFLAGS $RESOURCE_DIR_DEFINE"
+CPPFLAGS="$CPPFLAGS  $WX_CPPFLAGS -I/home/rett/dev/xoamorph/xara-lx/libpng-1.6.29 $PANGO_CFLAGS $FT_CFLAGS $GTK_CFLAGS $LIBXML2_CFLAGS $RESOURCE_DIR_DEFINE"
+CXXFLAGS="$CXXFLAGS  $WX_CPPFLAGS -I/home/rett/dev/xoamorph/xara-lx/libpng-1.6.29 $PANGO_CFLAGS $FT_CFLAGS $GTK_CFLAGS $LIBXML2_CFLAGS $RESOURCE_DIR_DEFINE"
 
 AC_MSG_CHECKING([Linker])
 case $host in
@@ -373,8 +373,8 @@ case $target in
 	AC_MSG_RESULT([libs/x86])
 	CDRAW_LIB_DIR="libs/x86";;
     amd64-* | x86_64-*)
-	AC_MSG_RESULT([libpng-1.4.19/.libs])
-	PNG_LIB_DIR="libpng-1.4.19/.libs"
+	AC_MSG_RESULT([libpng-1.6.29/.libs])
+	PNG_LIB_DIR="libpng-1.6.29/.libs"
 	AC_MSG_RESULT([libs/x86_64])
 	CDRAW_LIB_DIR="libs/x86_64";;
     powerpc-*)
