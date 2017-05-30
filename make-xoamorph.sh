@@ -54,14 +54,17 @@ function run_build_wx_from_git {
     build_wx_from_git WX_2_9_0
 }
 
+
+# https://sourceforge.net/projects/libpng/files/libpng14/1.4.19/libpng-1.4.19.tar.gz/download
+
 function build_png {
-    if [ ! -d libpng-1.2.57 ]; then
-	if [ ! -f libpng-1.2.57.tar.gz ]; then
-	    curl -LO https://superb-sea2.dl.sourceforge.net/project/libpng/libpng12/1.2.57/libpng-1.2.57.tar.gz
+    if [ ! -d libpng-1.4.19 ]; then
+	if [ ! -f libpng-1.4.19.tar.gz ]; then
+	    curl -LO https://superb-sea2.dl.sourceforge.net/project/libpng/libpng14/1.4.19/libpng-1.4.19.tar.gz
 	fi
-	tar xf libpng-1.2.57.tar.gz
+	tar xf libpng-1.4.19.tar.gz
     fi
-    cd libpng-1.2.57
+    cd libpng-1.4.19
     ./configure
     make -j 2
     cd ..
