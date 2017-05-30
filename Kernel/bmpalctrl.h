@@ -124,84 +124,103 @@ class BmapPrevDlg;
 **************************************************************************************/
 class BitmapExportPaletteControl : public CCObject
 {
-	// Declare the class for memory tracking
-	CC_DECLARE_MEMDUMP(BitmapExportPaletteControl);
+  // Declare the class for memory tracking
+  CC_DECLARE_MEMDUMP(BitmapExportPaletteControl);
+
+  // Data members
 private:
-	// Data members
-	INT32			m_MouseOverCell;	// Cell that the mouse is over (highlighed cell), -1 means none
-	INT32			m_SelectedCell;		// Cell that is selected, -1 means none
+  // Cell that the mouse is over (highlighed cell), -1 means none
+  INT32 m_MouseOverCell;
+  // Cell that is selected, -1 means none
+  INT32 m_SelectedCell; 
+  BitmapExportPaletteInterface m_Palette;
+  CWindowID m_WindowID;
 
-	BitmapExportPaletteInterface	m_Palette;
+  // Constants (that are set in the constuctor as they are DPI dpenedant)
+  INT32 m_nPixelSize;
+  INT32 m_nCellWidthPixels;
+  INT32 m_nCellHeightPixels;
+  INT32 m_nCellWidth;
+  INT32 m_nCellHeight;
+  INT32 m_nCellsPerLine;
 
-	CWindowID	m_WindowID;
-
-	// Constants (that are set in the constuctor as they are DPI dpenedant)
-	INT32 m_nPixelSize;
-	INT32 m_nCellWidthPixels;
-	INT32 m_nCellHeightPixels;
-	INT32 m_nCellWidth;
-	INT32 m_nCellHeight;
-	INT32 m_nCellsPerLine;
-
-	INT32 m_NumberOfColoursAtLastRedraw; // used so we know when to redraw the background
+  INT32 m_NumberOfColoursAtLastRedraw; // used so we know when to redraw the background
 
 public:
-	// Constants
-	enum {
-		INVALID_COLOUR_VALUE	= -1 // A value that can never be a colour index
-	};
+  // Constants
+  enum {
+    // A value that can never be a colour index
+    INVALID_COLOUR_VALUE = -1 
+  };
 
-	// Constructors / Destructors
-	BitmapExportPaletteControl();
-	~BitmapExportPaletteControl();
-	void Init(CWindowID wid) { m_WindowID = wid; };
+  // Constructors / Destructors
+  BitmapExportPaletteControl();
+  ~BitmapExportPaletteControl();
+  void Init(CWindowID wid) {
+    m_WindowID = wid;
+  };
 
-	// Manipulators
-	void SetCurrentSortType(BitmapExportPaletteInterface::PaletteSortType newSortType);
-	void SetSelectedColourToggleLocked();
-	void SetSelectedColourWebSafe();
-	bool SetSelectedColourToggleTransparent();
-	void SetSelectedColourToggleDeleted();
+  // Manipulators
+  void SetCurrentSortType(BitmapExportPaletteInterface::PaletteSortType
+			  newSortType);
+  
+  void SetSelectedColourToggleLocked();
+  void SetSelectedColourWebSafe();
+  bool SetSelectedColourToggleTransparent();
+  void SetSelectedColourToggleDeleted();
 
-	// These functions set the selected/hightlighted cell based on an index into
-	// the real palette (so 0 is the first colour in the bitmap's palette)
-	bool SetSelectedCell(ReDrawInfoType *pInfo, INT32 paletteIndex);
-	bool SetHighlightedCell(ReDrawInfoType *pInfo, INT32 paletteIndex);
+  // These functions set the selected/hightlighted cell based on an
+  // index into the real palette (so 0 is the first colour in the
+  // bitmap's palette)
+  bool SetSelectedCell(ReDrawInfoType *pInfo, INT32 paletteIndex);
+  bool SetHighlightedCell(ReDrawInfoType *pInfo, INT32 paletteIndex);
 
-	// Access functions
-	BitmapExportPaletteInterface::PaletteSortType GetCurrentSortType();
-	INT32 GetSelectedColour();									// Find out the palette index of the selected colour
-	INT32 GetMouseOverColour();									// Find out the palette index of the selected colour
-	bool GetSelectedColourLocked();
-	bool GetSelectedColourWebSafe();
-	bool GetSelectedColourTransparent();
-	bool GetSelectedColourDeleted();
+  // Access functions
+  BitmapExportPaletteInterface::PaletteSortType GetCurrentSortType();
+  INT32 GetSelectedColour();
+  
+  // Find out the palette index of the selected colour
+  INT32 GetMouseOverColour();
 
-	// Message processing funtions
-	void MsgMouseMove(ReDrawInfoType *pInfo);
-	bool MsgMouseLeftButtonDown(ReDrawInfoType *pInfo);
-	void MsgMouseRightButtonUp(ReDrawInfoType *pInfo, BmapPrevDlg *pBmapPrevDlg);
+  // Find out the palette index of the selected colour
+  bool GetSelectedColourLocked();
+  bool GetSelectedColourWebSafe();
+  bool GetSelectedColourTransparent();
+  bool GetSelectedColourDeleted();
 
-	// Actions
-	void Render(ReDrawInfoType *pInfo);
-	void RenderSoon();
-	void RedrawSelectedCell(ReDrawInfoType *pInfo);
+  // Message processing funtions
+  void MsgMouseMove(ReDrawInfoType *pInfo);
+  bool MsgMouseLeftButtonDown(ReDrawInfoType *pInfo);
+  void MsgMouseRightButtonUp(ReDrawInfoType *pInfo, BmapPrevDlg *pBmapPrevDlg);
+
+  // Actions
+  void Render(ReDrawInfoType *pInfo);
+  void RenderSoon();
+  void RedrawSelectedCell(ReDrawInfoType *pInfo);
 
 private:
-	INT32 GetCellFromPos(INT32 x, INT32 y);
-	void RenderGrey(DocRect *pPaletteSize, RenderRegion *pRender);
-	void RenderPalette(DocRect *pPaletteSize, RenderRegion *pRender, INT32 controlHeight, DocRect* pClipRect);
-	void GetRectForCell(INT32 cell, DocRect *rect, INT32 controlHeight);
-	void InvalidateCell(ReDrawInfoType *pInfo, INT32 paletteIndex);
-	void DrawCell(DocRect *rect, DocColour colour, INT32 flags, RenderRegion *pRender,
-												bool webSafe, bool selected);
-	bool IsColourWebSafe(BYTE r, BYTE g, BYTE b);
-	void MakeColourWebSafe(BYTE *pColour);
+  INT32 GetCellFromPos(INT32 x, INT32 y);
+  void RenderGrey(DocRect *pPaletteSize, RenderRegion *pRender);
+	
+  void RenderPalette(DocRect *pPaletteSize, RenderRegion *pRender,
+		     INT32 controlHeight, DocRect* pClipRect);
+	
+  void GetRectForCell(INT32 cell, DocRect *rect, INT32 controlHeight);
+  void InvalidateCell(ReDrawInfoType *pInfo, INT32 paletteIndex);
+	
+  void DrawCell(DocRect *rect, DocColour colour, INT32 flags,
+		RenderRegion *pRender, bool webSafe, bool selected);
+	
+  bool IsColourWebSafe(BYTE r, BYTE g, BYTE b);
+  void MakeColourWebSafe(BYTE *pColour);
 
-	// These functions set the selected/hightlighted cell based on an index into
-	// the sorted palette (so 0 is the top left cell)
-	bool SetSelectedCellFromSortedIndex(ReDrawInfoType *pInfo, INT32 paletteIndex);
-	bool SetHighlightedCellFromSortedIndex(ReDrawInfoType *pInfo, INT32 paletteIndex);
+  // These functions set the selected/hightlighted cell based on an
+  // index into the sorted palette (so 0 is the top left cell)
+  bool SetSelectedCellFromSortedIndex(ReDrawInfoType *pInfo,
+				      INT32 paletteIndex);
+	
+  bool SetHighlightedCellFromSortedIndex(ReDrawInfoType *pInfo,
+					 INT32 paletteIndex);
 };
 
 #endif	// INC_BMPALCTRL

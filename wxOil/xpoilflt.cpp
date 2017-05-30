@@ -432,7 +432,7 @@ BOOL PluginOILFilter::GetImportFile(CCLexFile* pFile, CCLexFile** ppNewFile)
 	wxString sCommand(m_DoImport);
 	sCommand.Replace(_T("%IN%"), (LPCTSTR)FileName.GetPath());
 
-	TRACEUSER("Gerry", _T("Running '%s'"), sCommand.c_str());
+	TRACEUSER("Gerry", _T("Running '%s'"), sCommand.wx_str());
 
 	// Create a process with the TempFile as the stdout
 	PluginFilterProcess* pTheProc = new PluginFilterProcess((PluginNativeFilter*)Parent, NULL, &TempFile);
