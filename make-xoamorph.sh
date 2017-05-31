@@ -27,19 +27,19 @@ function build_wx {
 function build_wx_from_git {
     # https://github.com/wxWidgets/wxWidgets.git
     VERSION=$1
-    if [ ! -d $VERSION ]; then
-	git clone --depth=1 https://github.com/wxWidgets/wxWidgets.git $VERSION
+    if [ ! -d wxWidgets.git  ]; then
+	git clone https://github.com/wxWidgets/wxWidgets.git wxWidgets.git
     fi
-    cd $VERSION
-    rm -rf *
-    git fetch --tags
-    git checkout -f $VERSION
+    cd wxWidgets.git
     if [ -d buildgtk ]; then
 	cd buildgtk
 	sudo make uninstall
 	cd ..
 	rm -rf buildgtk
     fi
+    rm -rf *
+    git fetch --tags
+    git checkout -f $VERSION
     mkdir buildgtk
     cd buildgtk
     ../configure --with-gtk --enable-debug --enable-unicode --with-libpng=builtin
@@ -51,7 +51,10 @@ function build_wx_from_git {
 }
 
 function run_build_wx_from_git {
-    build_wx_from_git WX_2_9_0
+    # WX_2_8_12 772c594b16fc6a713dd2d0ab70ae7a05a65725ff
+    # 83ef06d42e
+    # d180df5c431d4dc9e788141794fd51fe1f39ad3e Dec 2 23:49:48 2012
+    build_wx_from_git d180df5c431d4dc9e788141794fd51fe1f39ad3e
 }
 
 
