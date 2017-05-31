@@ -420,6 +420,8 @@ BOOL OutputPNG::OutputPNGHeader(CCLexFile *File, INT32 TransColour, BOOL Interla
 {
 	return OutputPNGHeader(File, &(DestBitmapInfo->bmiHeader), InterlaceState, TransColour, OutputPalette);
 }
+ // - array of transparent entries for paletted images
+ png_byte* trans = NULL;
 
 /********************************************************************************************
 
@@ -599,8 +601,7 @@ TRACEUSER( "Jonathan", _T("PNG write: Bitdepth = %d\n"),BitsPerPixel);
  png_color * palette = NULL;
  int num_palette = 0;
 		//info_ptr->trans_values	= 0;	// - transparent pixel for non-paletted images
-		info_ptr->trans				= NULL;	// - array of transparent entries for paletted images
-		info_ptr->num_trans			= 0;	// - number of transparent entries
+		int num_trans			= 0;	// - number of transparent entries
 TRACEUSER( "Jonathan", _T("PNG write: TransColour = %d\n"),TransparentColour);
 		if ( BitsPerPixel <= 8 )
 		{
@@ -651,22 +652,20 @@ TRACEUSER( "Jonathan", _T("PNG write: TransColour = %d\n"),TransparentColour);
 				// 0 is fully transparent, 255 is fully opaque, regardless of image bit depth
 				// We will only create as many as we require, i.e. up to the transparent colour entry
 				// rather a full palettes worth
-				INT32 NumEntries = TransparentColour + 1;
-				info_ptr->trans				= (png_byte *)CCMalloc(NumEntries * sizeof (png_byte));
-				if (info_ptr->trans)
-				{
-					// Set the number of transparent entries
-					info_ptr->num_trans			= NumEntries;
-					png_byte * pTransEntry		= info_ptr->trans;
-					// info_ptr->valid |= PNG_INFO_tRNS;
-					for (INT32 i = 0; i < TransparentColour; i++)
-					{
-						*pTransEntry = 255;	// set it fully opaque
-						pTransEntry++;
-					}
-					// We should now be at the transparent entry so set it fully transparent
-					*pTransEntry = 0;
-				}
+			  INT32 NumEntries = TransparentColour + 1;
+			  trans = (png_byte *)CCMalloc(NumEntries * sizeof (png_byte));
+			  if (trans) {
+			    // Set the number of transparent entries
+			    num_trans = NumEntries;
+			    png_byte * pTransEntry = trans;
+			    // info_ptr->valid |= PNG_INFO_tRNS;
+			    for (INT32 i = 0; i < TransparentColour; i++) {
+			      *pTransEntry = 255;	// set it fully opaque
+			      pTransEntry++;
+			    }
+			    // We should now be at the transparent entry so set it fully transparent
+			    *pTransEntry = 0;
+			  }
 			}
 		}
 		else if (BitsPerPixel == 24)
@@ -720,8 +719,9 @@ TRACEUSER( "Jonathan", _T("PNG write: TransColour = %d\n"),TransparentColour);
 		png_set_PLTE(png_ptr, info_ptr, palette, num_palette);
 
 
-		// png_set_tRNS(png_ptr, info_ptr, trans_alpha,
-		// 	     num_trans, trans_color)
+
+		png_set_tRNS(png_ptr, info_ptr, trans,
+			     num_trans, NULL);
 
 
 TRACEUSER( "Jonathan", _T("PNG write: bit_depth = %d color_type = %d\n"),bit_depth,color_type);
@@ -823,10 +823,10 @@ BOOL OutputPNG::CleanUpPngStructures() {
 				CCFree(palette);
 				palette = NULL;
 			}
-			if (info_ptr->trans)
+			if (trans)
 			{
-				CCFree(info_ptr->trans);
-				info_ptr->trans = NULL;
+				CCFree(trans);
+				trans = NULL;
 			}
 		}
 
