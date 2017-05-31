@@ -589,8 +589,15 @@ TRACEUSER( "Jonathan", _T("PNG write: Width = %d Height = %d\n"),Width,Height);
 
 		BitsPerPixel = pInfo->biBitCount;
 TRACEUSER( "Jonathan", _T("PNG write: Bitdepth = %d\n"),BitsPerPixel);
-		info_ptr->palette			= NULL;
-		info_ptr->num_palette		= 0;
+
+
+
+
+//png_const_colorp
+//typedef const png_color * png_const_colorp;
+
+ png_color * palette = NULL;
+ int num_palette = 0;
 		//info_ptr->trans_values	= 0;	// - transparent pixel for non-paletted images
 		info_ptr->trans				= NULL;	// - array of transparent entries for paletted images
 		info_ptr->num_trans			= 0;	// - number of transparent entries
@@ -601,14 +608,14 @@ TRACEUSER( "Jonathan", _T("PNG write: TransColour = %d\n"),TransparentColour);
 			color_type = PNG_COLOR_TYPE_PALETTE;	// - describes the channels and what they mean
 												// see the PNG_COLOR_TYPE_ defines for more information
 			// set the palette if there is one
-			info_ptr->valid |= PNG_INFO_PLTE;
+			// info_ptr->valid |= PNG_INFO_PLTE;
 			INT32 PaletteEntries = pInfo->biClrUsed;
-			info_ptr->palette = (png_color_struct *)CCMalloc(PaletteEntries * sizeof (png_color));
-			if (info_ptr->palette == NULL)
+			palette = (png_color_struct *)CCMalloc(PaletteEntries * sizeof (png_color));
+			if (palette == NULL)
 				File->GotError( _R(IDS_OUT_OF_MEMORY) );
 
-			info_ptr->num_palette = PaletteEntries;
-			png_color_struct * pPNGPalette = info_ptr->palette;
+			num_palette = PaletteEntries;
+			png_color_struct * pPNGPalette = palette;
 			// ... set palette colors ...
 	 		if (pQuadPalette && PaletteEntries > 0)
 			{
@@ -651,7 +658,7 @@ TRACEUSER( "Jonathan", _T("PNG write: TransColour = %d\n"),TransparentColour);
 					// Set the number of transparent entries
 					info_ptr->num_trans			= NumEntries;
 					png_byte * pTransEntry		= info_ptr->trans;
-					info_ptr->valid |= PNG_INFO_tRNS;
+					// info_ptr->valid |= PNG_INFO_tRNS;
 					for (INT32 i = 0; i < TransparentColour; i++)
 					{
 						*pTransEntry = 255;	// set it fully opaque
@@ -709,6 +716,12 @@ TRACEUSER( "Jonathan", _T("PNG write: TransColour = %d\n"),TransparentColour);
 
 
 		png_set_pHYs(png_ptr, info_ptr, res_x, res_y, unit_type);
+
+		png_set_PLTE(png_ptr, info_ptr, palette, num_palette);
+
+
+		// png_set_tRNS(png_ptr, info_ptr, trans_alpha,
+		// 	     num_trans, trans_color)
 
 
 TRACEUSER( "Jonathan", _T("PNG write: bit_depth = %d color_type = %d\n"),bit_depth,color_type);
@@ -794,18 +807,21 @@ TRACEUSER( "Jonathan", _T("PNG write: rowbytes %d color_type %d\n"),png_ptr->row
 
 ********************************************************************************************/
 
-BOOL OutputPNG::CleanUpPngStructures()
-{
+BOOL OutputPNG::CleanUpPngStructures() {
+  png_color * palette;
+  int num_palette;
+  png_get_PLTE(png_ptr, info_ptr, &palette,
+	       &num_palette);
 	// If our structures are present then clean them out
 	if (png_ptr)
 	{
 		if (info_ptr)
 		{
 			// They do not seem to have catered for the palette and transparency structures
-			if (info_ptr->palette)
+			if (palette)
 			{
-				CCFree(info_ptr->palette);
-				info_ptr->palette = NULL;
+				CCFree(palette);
+				palette = NULL;
 			}
 			if (info_ptr->trans)
 			{
