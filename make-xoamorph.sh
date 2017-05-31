@@ -42,7 +42,7 @@ function build_wx_from_git {
     fi
     mkdir buildgtk
     cd buildgtk
-    ../configure --with-gtk --debug=yes --enable-unicode --with-libpng=builtin
+    ../configure --with-gtk --enable-debug --enable-unicode --with-libpng=builtin
     make -j 8
     sudo make install
     sudo ldconfig
