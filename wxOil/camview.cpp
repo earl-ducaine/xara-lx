@@ -2020,7 +2020,7 @@ BOOL CCamView::GetCurrentMousePos(OilCoord* pMousePos) {
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
   // If the mouse is outside the view then we can do nothing more.
-  if (!CurrentSize.Inside(pt)) {
+  if (!CurrentSize.Contains(pt)) {
     return FALSE;
   }
 #pragma GCC diagnostic pop
@@ -2898,7 +2898,7 @@ void CCamView::OnLButtonDown( wxMouseEvent &event ) {
 	INT32 TimeDelay = (ThisClickTime - TimeOfLastClick);
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
-	if( ClickBounds.Inside( point ) && ( TimeDelay <= (INT32)ClickGap ) ) {
+	if( ClickBounds.Contains( point ) && ( TimeDelay <= (INT32)ClickGap ) ) {
 		ThisSingleIsTriple = TRUE;
 	} else {
 		ThisSingleIsTriple = FALSE;
@@ -3141,7 +3141,7 @@ void CCamView::OnLButtonDblClk(wxMouseEvent &event) {
   INT32 TimeDelay = (ThisClickTime - TimeOfLastClick);
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
-  if (ClickBounds.Inside( point ) && (TimeDelay <= (INT32)ClickGap)) {
+  if (ClickBounds.Contains( point ) && (TimeDelay <= (INT32)ClickGap)) {
     ThisDoubleIsQuad = TRUE;
   } else {
     ThisDoubleIsQuad = FALSE;
@@ -4781,7 +4781,7 @@ void CCamView::HandleDragScrolling(wxPoint point) {
 #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
     // If the mouse is within the window, and we are performing
     // deferred-scrolling then we can change over to auto-scrolling.
-    if (!wrSize.IsEmpty() && wrSize.Inside(point)) {
+    if (!wrSize.IsEmpty() && wrSize.Contains(point)) {
       CurrentDragType = DRAGTYPE_AUTOSCROLL;
       AutoScrollExcludeRulers = TRUE;
     }
@@ -4797,12 +4797,12 @@ void CCamView::HandleDragScrolling(wxPoint point) {
   // Has the mouse moved outside there bounds?
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
-  if (!wrSize.IsEmpty() && !wrSize.Inside(point)) {
+  if (!wrSize.IsEmpty() && !wrSize.Contains(point)) {
     BOOL bCalcDeltas = TRUE;
 #if !defined(EXCLUDE_FROM_XARALX)
     WinRect Outer = wrSize;
     if (CurrentDragType == DRAGTYPE_OLESCROLL) {
-      if (Outer.Inside(point)) {		// and still inside visible window
+      if (Outer.Contains(point)) {		// and still inside visible window
 	// If we've not been in the OLE scroll region for long enough
 	if (!m_OLELastOutTime.Elapsed(100)) {
 	  bCalcDeltas = FALSE;
@@ -5170,10 +5170,10 @@ bool CCamView::OnDropFiles(wxCoord x, wxCoord y, const wxArrayString& filenames)
 		// This should mean that this code will not interfere if someone
 		// fixes wxWidgets
 		UINT32 i = 0;
-		while (TempStr[i] != 0 && (TempStr[i] & 0xFF) == TempStr[i])
+		while (TempStr.mb_str()[i] != 0 && (TempStr.mb_str()[i] & 0xFF) == TempStr.mb_str()[i])
 			i++;
 
-		if (TempStr[i] == 0)
+		if (TempStr.mb_str()[i] == 0)
 		{
 			// All the chars are bytes so try sticking them into a char array
 			// and converting them with wxConvFileName
@@ -5181,9 +5181,9 @@ bool CCamView::OnDropFiles(wxCoord x, wxCoord y, const wxArrayString& filenames)
 			if (pBuf)
 			{
 				i = 0;
-				while (TempStr[i] != 0)
+				while (TempStr.mb_str()[i] != 0)
 				{
-					pBuf[i] = (char)(TempStr[i] & 0xFF);
+					pBuf[i] = (char)(TempStr.mb_str()[i] & 0xFF);
 					i++;
 				}
 				pBuf[i] = 0;

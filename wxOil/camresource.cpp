@@ -998,7 +998,7 @@ BOOL CamResource::AddBitmaps(wxString &Path)
 					delete pBitmap;
 				}
 #else
-				(*pBitmapHash)[camStrdup(LeafName.c_str())]=NULL; // Mark as there, but needs to be loaded
+				(*pBitmapHash)[camStrdup(LeafName.wx_str())]=NULL; // Mark as there, but needs to be loaded
 #endif
 			}
 		}
@@ -1225,7 +1225,7 @@ void CamResource::MakeVariantBitmaps(ResourceStringToBitmap::iterator * it)
 										ERROR3("Unsupported automatic variant");
 										break;
 								}
-								NewHash[camStrdup(gfn.c_str())] = pBitmap;
+								NewHash[camStrdup(gfn.wx_str())] = pBitmap;
 							}
 						}	
 					}

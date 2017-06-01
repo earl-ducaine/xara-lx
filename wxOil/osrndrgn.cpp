@@ -1998,7 +1998,7 @@ void OSRenderRegion::DrawDragRect(DocRect* RectToDraw)
 void OSRenderRegion::DrawDragBounds(DocRect *RectToRender)
 {
 	INT32 OurOldBkMode = RenderDC->GetBackgroundMode() ;
-	INT32 OurOldDrawingMode = RenderDC->GetLogicalFunction();
+	wxRasterOperationMode OurOldDrawingMode = RenderDC->GetLogicalFunction();
 	wxPen OurOldPen = RenderDC->GetPen() ;
 
 	wxPen DotPen(CalcEORColour(RR_STROKECOLOUR()),1,wxDOT);
@@ -2042,7 +2042,7 @@ void OSRenderRegion::DrawDragBounds(DocRect *RectToRender)
 void OSRenderRegion::DrawDashLine(const DocCoord &StartPoint, const DocCoord &EndPoint)
 {
 	INT32 OurOldBkMode = RenderDC->GetBackgroundMode() ;
-	INT32 OurOldDrawingMode = RenderDC->GetLogicalFunction();
+	wxRasterOperationMode OurOldDrawingMode = RenderDC->GetLogicalFunction();
 	wxPen OurOldPen = RenderDC->GetPen() ;
 
 	wxPen DotPen(CalcEORColour(RR_STROKECOLOUR()),1,wxDOT);

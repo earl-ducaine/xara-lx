@@ -265,7 +265,7 @@ protected:
 	TabType m_TabType;
 	virtual wxBookCtrlBase* CreateBookCtrl()
 	{
-		INT32 style = wxCLIP_CHILDREN | wxBC_DEFAULT;
+		INT32 style = wxCLIP_CHILDREN | wxBK_DEFAULT;
 		wxBookCtrlBase* pBook = NULL;
 
 		switch (m_TabType)
@@ -842,7 +842,7 @@ void DialogManager::EnsurePanePreferenceDeclared(wxString key)
 		// Detect first-time run and make Open File dialog default to Examples folder
 		if (Camelot.DeclareSection(_T("BarPositions"), 10))
 		{
-			Camelot.DeclarePref( NULL, (TCHAR *)(key.c_str()), &(i->second) );
+			Camelot.DeclarePref( NULL, (TCHAR *)(key.wx_str()), &(i->second) );
 		}
 	}
 }
@@ -1284,7 +1284,7 @@ void DialogManager::Event (DialogEventHandler *pEvtHandler, wxEvent &event) {
 	   (EventType == wxEVT_COMMAND_RADIOBOX_SELECTED) ||
 	   (EventType == wxEVT_COMMAND_VLBOX_SELECTED) ||
 	   (EventType == wxEVT_COMMAND_COMBOBOX_SELECTED) ||
-	   (EventType == wxEVT_COMMAND_SPINCTRL_UPDATED) ||
+	   // (EventType == wxEVT_COMMAND_SPINCTRL_UPDATED) ||
 	   ((
 	     (EventType == wxEVT_SCROLL_CHANGED) || 
 	     (EventType == wxEVT_SCROLL_THUMBTRACK) || 
@@ -4309,7 +4309,7 @@ String_256 DialogManager::GetStringGadgetValue(CWindowID WindowID,
 	String = pGadget->GetLabel();
 
 out:
-	StrVal = String.c_str();
+	StrVal = String.wx_str();
 	return StrVal;
 
 invalid:
@@ -5979,7 +5979,8 @@ public:
 	{	
 		if ( m_stringValue )
 		{
-			if( !CheckValidator() ) return false;			/*TYPENOTE: Correct*/
+		  // validity of the validator is now always checked (?) no need to call it directly.
+		  //if( !CheckValidator() ) return false;			/*TYPENOTE: Correct*/
 			wxTextCtrl *control = (wxTextCtrl *) m_validatorWindow;
 			control->SetValue(* m_stringValue);
 		}
@@ -5989,7 +5990,8 @@ public:
 	{
 		if ( m_stringValue )
 		{
-			if( !CheckValidator() )	return false;			/*TYPENOTE: Correct*/
+		  // validity of the validator is now always checked (?) no need to call it directly.
+		  // if( !CheckValidator() )	return false;			/*TYPENOTE: Correct*/
 			wxTextCtrl *control = (wxTextCtrl *) m_validatorWindow;
 			*m_stringValue = control->GetValue();
 		}
