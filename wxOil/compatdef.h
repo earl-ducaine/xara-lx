@@ -99,6 +99,8 @@ service marks of Xara Group Ltd. All rights in these marks are reserved.
 #ifndef INC_COMPATDEF
 #define INC_COMPATDEF
 
+#define SIZEOF_CHAR 1
+
 // The following line makes normalize.pl skip this file
 /* SKIPFIXTYPES: START */
 

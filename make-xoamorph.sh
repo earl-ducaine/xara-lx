@@ -24,6 +24,7 @@ function build_wx {
     cd ..
 
 }
+
 function build_wx_from_git {
     # https://github.com/wxWidgets/wxWidgets.git
     VERSION=$1
@@ -35,9 +36,9 @@ function build_wx_from_git {
 	cd buildgtk
 	sudo make uninstall
 	cd ..
-	rm -rf buildgtk
+	sudo rm -rf buildgtk
     fi
-    rm -rf *
+    sudo rm -rf *
     git fetch --tags
     git checkout -f $VERSION
     mkdir buildgtk
@@ -53,8 +54,17 @@ function build_wx_from_git {
 function run_build_wx_from_git {
     # WX_2_8_12 772c594b16fc6a713dd2d0ab70ae7a05a65725ff
     # 83ef06d42e
-    # d180df5c431d4dc9e788141794fd51fe1f39ad3e Dec 2 23:49:48 2012
-    build_wx_from_git d180df5c431d4dc9e788141794fd51fe1f39ad3e
+    # '*' indicates bad build
+    # d180df5c431d4dc9e788141794fd51fe1f39ad3e  Dec  2 23:49:48 2012
+    # 91d98deb2f91                              Dec 31 19:38:49 2010
+    # f203de0cc435ab836505ad32b88cda5dc318db68  Jul 22 12:09:04 2010 *
+    # 0e601bf087b54ee4f216e538dd2a767ddc937d77  Jul 18 13:39:16 2010 *
+    # 05a09b0b9f9d93cd2a149efc0c1ccc0790cdc82c  Oct 22 08:22:33 2007 *
+    # WX_2_9_0                                  Sep  7 04:53:58 2009 *
+    # WX_2_9_1                                                       *
+    # WX_2_9_2                                                       *
+    # WX_2_9_3                                                       
+    build_wx_from_git WX_2_9_3
 }
 
 
