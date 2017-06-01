@@ -280,7 +280,8 @@ work with it set. Used to fix the filenames up when switching to a new filter.
 
 BaseFileDialog::BaseFileDialog(BOOL IsFileOpen, DWORD dwFlags, LPCTSTR lpszFilter, wxWindow* pParentWnd)
   :	wxFileDialog( (pParentWnd != NULL) ? pParentWnd : pParentWnd = GetMainFrame(), _T("Choose a file"),
-		_T(""), _T(""), lpszFilter, dwFlags | ( IsFileOpen ? wxOPEN : wxSAVE) )
+		_T(""), _T(""), lpszFilter, dwFlags |
+		      ( IsFileOpen ? wxFD_OPEN : wxFD_SAVE) )
 // 	IsFileOpen, NULL, NULL, dwFlags | ((CCamApp::IsNewWindowsUI()) ? OFN_EXPLORER : OFN_SHOWHELP) | OFN_ENABLEHOOK,
 //	lpszFilter, )
 {
@@ -989,7 +990,9 @@ BOOL BaseFileDialog::IsValidFilename()
 
 	// fill in the %s field with the filename
 	TCHAR ErrorMsg[256];
-	camSnprintf( ErrorMsg, sizeof(ErrorMsg) / sizeof(ErrorMsg[0]), strPrompt, 
+	camSnprintf( ErrorMsg,
+		     sizeof(ErrorMsg) / sizeof(ErrorMsg[0]),
+		     (TCHAR*)strPrompt, 
 		(const TCHAR*)Name );
 	Error::SetError( 0, ErrorMsg, 0 );
 	SetNextMsgHelpContext(_R(IDM_OVERWRITE));
@@ -2241,7 +2244,7 @@ BOOL DestroyOSRenderRegion(RenderRegion* pRender)
 ********************************************************************************************/
 
 OpenFileDialog::OpenFileDialog(LPCTSTR FilterString)
-  : BaseFileDialog( TRUE, wxFILE_MUST_EXIST, FilterString )
+  : BaseFileDialog( TRUE, wxFD_FILE_MUST_EXIST, FilterString )
 {
 	// Set some defaults
 	NativeFilterPos = 0;
@@ -2549,7 +2552,7 @@ TCHAR* OpenFileDialog::BuildFilterString(INT32* NativeFilterPos)
 ********************************************************************************************/
 
 SaveFileDialog::SaveFileDialog(LPCTSTR FilterString, const String_256& DefPath, const String_256& DefName)
-  : BaseFileDialog( FALSE, wxFILE_MUST_EXIST, FilterString )
+  : BaseFileDialog( FALSE, wxFD_FILE_MUST_EXIST, FilterString )
 //  : BaseFileDialog(FALSE, OFN_HIDEREADONLY | OFN_PATHMUSTEXIST, FilterString)
 {
 	// Make a note of this lot
@@ -2589,7 +2592,7 @@ SaveFileDialog::SaveFileDialog(LPCTSTR FilterString, const String_256& DefPath, 
 	const String_256& DocumentName)
 PORTNOTE("other", "Disabled template stuff" )
 //	: BaseFileDialog( FALSE, ((CCamApp::IsNewWindowsUI()) ? OFN_ENABLETEMPLATE : 0) | OFN_HIDEREADONLY | OFN_PATHMUSTEXIST, FilterString)
-	: BaseFileDialog( FALSE, wxFILE_MUST_EXIST, FilterString )
+	: BaseFileDialog( FALSE, wxFD_FILE_MUST_EXIST, FilterString )
 {
 	// Make a note of this lot
 	DefaultName = DefName;
@@ -2998,7 +3001,7 @@ URLs to be typed into the "File name" field, but it was stopping wildcard search
 ImportFileDialog::ImportFileDialog(LPCTSTR lpszFilter)
 //  :	BaseFileDialog(TRUE, ((CCamApp::IsNewWindowsUI()) ? OFN_ENABLETEMPLATE : 0) | 
 //			OFN_FILEMUSTEXIST | OFN_HIDEREADONLY, lpszFilter, NULL)
-	: BaseFileDialog( TRUE, wxFILE_MUST_EXIST, lpszFilter, NULL )
+	: BaseFileDialog( TRUE, wxFD_FILE_MUST_EXIST, lpszFilter, NULL )
 {
 PORTNOTE("other", "Disabled template stuff" )
 #if !defined(EXCLUDE_FROM_XARALX)

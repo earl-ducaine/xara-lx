@@ -165,8 +165,8 @@ struct ExtraUnicode
 	{CAMKEY(INSERT), 	CAMELOT_UNICODE_BASE + 27},
 	{CAMKEY(HOME),   	CAMELOT_UNICODE_BASE + 29},
 	{CAMKEY(END),    	CAMELOT_UNICODE_BASE + 30},
-	{CAMKEY(PRIOR),  	CAMELOT_UNICODE_BASE + 31},		// Page up
-	{CAMKEY(NEXT),   	CAMELOT_UNICODE_BASE + 32},		// Page down
+	{CAMKEY(PAGEUP),  	CAMELOT_UNICODE_BASE + 31},		// Page up
+	{CAMKEY(PAGEDOWN),   	CAMELOT_UNICODE_BASE + 32},		// Page down
 
 	{CAMKEY(LEFT),   	CAMELOT_UNICODE_BASE + 33},		// Cursor left
 	{CAMKEY(UP),   		CAMELOT_UNICODE_BASE + 34},		// Cursor up
@@ -422,8 +422,8 @@ FilePath KeyPress::GetHotKeysFilename()
 {
 	FilePath result;
 
-	wxStandardPaths		Paths;
-	wxString	strPath( Paths.GetUserConfigDir() );
+	wxStandardPaths Paths = wxStandardPaths::Get();
+	wxString strPath( Paths.GetUserConfigDir() );
 	strPath += _T("/.xaralx/hotkeys");
 
 	if (wxFile::Exists(strPath))

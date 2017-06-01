@@ -1632,14 +1632,15 @@ INT32 ImagemapFilter::WritePreamble(TCHAR* pcBuffer)
 	{
 		//Hint line for novice users
 		nChars = camStrlen(pcBuffer);
-		camStrcpy(pcBuffer+nChars*sizeof(TCHAR), temp);
+		camStrcpy(pcBuffer + nChars * sizeof(TCHAR), (TCHAR*)temp);
 
 		//Image Path and filename...
 		nChars = camStrlen(pcBuffer);
-		camStrcpy(pcBuffer+nChars*sizeof(TCHAR), _T("<img src=\"file:///"));
+		camStrcpy(pcBuffer + nChars*sizeof(TCHAR), _T("<img src=\"file:///"));
 
 		nChars = camStrlen(pcBuffer);
-		camStrcpy(pcBuffer+nChars*sizeof(TCHAR), ms_Options.m_GraphicPath.GetPath() ); // the path and file name of the graphic
+		camStrcpy(pcBuffer + nChars * sizeof(TCHAR),
+			  (const TCHAR*)ms_Options.m_GraphicPath.GetPath()); // the path and file name of the graphic
 
 		nChars = camStrlen(pcBuffer);
 		camStrcpy(pcBuffer+nChars*sizeof(TCHAR), _T("\""));
@@ -1688,7 +1689,8 @@ INT32 ImagemapFilter::WritePreamble(TCHAR* pcBuffer)
 		camStrcpy(pcBuffer+nChars*sizeof(TCHAR), _T(" usemap=\"#"));
 
 		nChars = camStrlen(pcBuffer);
-		camStrcpy(pcBuffer+nChars*sizeof(TCHAR), ms_Options.GetImagemapName() );
+		camStrcpy(pcBuffer+nChars*sizeof(TCHAR),
+			  (TCHAR*)ms_Options.GetImagemapName());
 
 		nChars = camStrlen(pcBuffer);
 		camStrcpy(pcBuffer+nChars*sizeof(TCHAR), _T("\" border=\"0\">\r\n"));
@@ -1700,11 +1702,11 @@ INT32 ImagemapFilter::WritePreamble(TCHAR* pcBuffer)
 	}
 
 	//Hint line for novice users
-	nChars += camStrlen(temp);
+	nChars += camStrlen((TCHAR*)temp);
 
 	//Image Path and filename...
 	nChars += camStrlen(_T("<img src=\"file:///"));
-	nChars += camStrlen( ms_Options.m_GraphicPath.GetPath() ); // the path and file name of the graphic
+	nChars += camStrlen((const TCHAR*)ms_Options.m_GraphicPath.GetPath()); // the path and file name of the graphic
 	nChars += camStrlen(_T("\""));
 
 /************************************************************************************
@@ -1741,7 +1743,7 @@ INT32 ImagemapFilter::WritePreamble(TCHAR* pcBuffer)
 
 	//Now the remaining details...
 	nChars += camStrlen(_T(" usemap=\"#"));
-	nChars += camStrlen( ms_Options.GetImagemapName() );
+	nChars += camStrlen((const TCHAR*)ms_Options.GetImagemapName());
 	nChars += camStrlen(_T("\" border=\"0\">\r\n"));
 
 	return nChars*sizeof(TCHAR);

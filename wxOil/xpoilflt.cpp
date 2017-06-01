@@ -432,7 +432,7 @@ BOOL PluginOILFilter::GetImportFile(CCLexFile* pFile, CCLexFile** ppNewFile)
 	wxString sCommand(m_DoImport);
 	sCommand.Replace(_T("%IN%"), (LPCTSTR)FileName.GetPath());
 
-	TRACEUSER("Gerry", _T("Running '%s'"), sCommand.wx_str());
+	TRACEUSER("Gerry", _T("Running '%s'"), sCommand.c_str());
 
 	// Create a process with the TempFile as the stdout
 	PluginFilterProcess* pTheProc = new PluginFilterProcess((PluginNativeFilter*)Parent, NULL, &TempFile);
@@ -1640,7 +1640,7 @@ void PluginFilterProcess::ProcessStdErr()
 //					TRACEUSER("Gerry", _T("XPFProgress:%s"), rest.c_str());
 					if (m_pFilter)
 					{
-						unsigned long /*TYPENOTE: Correct*/ Val = wxStrtoul(rest.c_str(), NULL, 10);
+						unsigned long /*TYPENOTE: Correct*/ Val = wxStrtoul(rest.wx_str(), NULL, 10);
 						if (Val > 0)
 						{
 //							TRACEUSER("Gerry", _T("Setting progress to %d"), Val);

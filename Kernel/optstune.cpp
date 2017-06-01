@@ -967,7 +967,7 @@ PORTNOTE("other", "Disabled Library Thumbnails preference")
 	Camelot.GetPrefValue(TEXT("Cache"), TEXT("CacheRAMPercent"), &iCacheRAMPercent);
 	TCHAR Str[32];
 	String_32 temp(_R(IDS_PERCENT_FORMAT));
-	camSnprintf(Str, 32, temp, iCacheRAMPercent);
+	camSnprintf(Str, 32, (TCHAR*)temp, iCacheRAMPercent);
 	String_32 PercentStr(Str);
 	pPrefsDlg->SetStringGadgetValue(_R(IDC_EDIT_CACHE_SIZE), PercentStr);
 
@@ -981,7 +981,7 @@ PORTNOTE("other", "Disabled Library Thumbnails preference")
 		String_32 temp(_R(IDS_PERCENT_OF_FORMAT));
 		String_32 strCacheSize;
 		Convert::BytesToString(&strCacheSize, (UINT32)pCache->GetMaximumDataSize());
-		camSnprintf(Str, 32, temp, iCacheUsagePercent, (TCHAR*)strCacheSize);
+		camSnprintf(Str, 32, (TCHAR*)temp, iCacheUsagePercent, (TCHAR*)strCacheSize);
 		String_32 PercentStr(Str);
 		pPrefsDlg->SetStringGadgetValue(_R(IDC_EDIT_CURRENTCACHE), PercentStr);
 

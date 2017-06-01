@@ -113,8 +113,8 @@ void wxKeyMap::GenerateMap()
 	wxKeyMap::keymap[TEXT("WXK_MENU")]=WXK_MENU;
 	wxKeyMap::keymap[TEXT("WXK_PAUSE")]=WXK_PAUSE;
 	wxKeyMap::keymap[TEXT("WXK_CAPITAL")]=WXK_CAPITAL;
-	wxKeyMap::keymap[TEXT("WXK_PRIOR")]=WXK_PRIOR;
-	wxKeyMap::keymap[TEXT("WXK_NEXT")]=WXK_NEXT;
+	// 	wxKeyMap::keymap[TEXT("WXK_PRIOR")]=WXK_PRIOR;
+	// 	wxKeyMap::keymap[TEXT("WXK_NEXT")]=WXK_NEXT;
 	wxKeyMap::keymap[TEXT("WXK_END")]=WXK_END;
 	wxKeyMap::keymap[TEXT("WXK_HOME")]=WXK_HOME;
 	wxKeyMap::keymap[TEXT("WXK_LEFT")]=WXK_LEFT;
@@ -181,9 +181,12 @@ void wxKeyMap::GenerateMap()
 	wxKeyMap::keymap[TEXT("WXK_NUMPAD_UP")]=WXK_NUMPAD_UP;
 	wxKeyMap::keymap[TEXT("WXK_NUMPAD_RIGHT")]=WXK_NUMPAD_RIGHT;
 	wxKeyMap::keymap[TEXT("WXK_NUMPAD_DOWN")]=WXK_NUMPAD_DOWN;
-	wxKeyMap::keymap[TEXT("WXK_NUMPAD_PRIOR")]=WXK_NUMPAD_PRIOR;
+
+	// obsolete > v2.6, use WXK_NUMPAD_PAGEUP, WXK_NUMPAD_PAGEDOWN
+	// wxKeyMap::keymap[TEXT("WXK_NUMPAD_PRIOR")]=WXK_NUMPAD_PRIOR;
+	// wxKeyMap::keymap[TEXT("WXK_NUMPAD_NEXT")]=WXK_NUMPAD_NEXT;
+
 	wxKeyMap::keymap[TEXT("WXK_NUMPAD_PAGEUP")]=WXK_NUMPAD_PAGEUP;
-	wxKeyMap::keymap[TEXT("WXK_NUMPAD_NEXT")]=WXK_NUMPAD_NEXT;
 	wxKeyMap::keymap[TEXT("WXK_NUMPAD_PAGEDOWN")]=WXK_NUMPAD_PAGEDOWN;
 	wxKeyMap::keymap[TEXT("WXK_NUMPAD_END")]=WXK_NUMPAD_END;
 	wxKeyMap::keymap[TEXT("WXK_NUMPAD_BEGIN")]=WXK_NUMPAD_BEGIN;

@@ -533,7 +533,7 @@ OpDescriptor* OpDescriptor::FindOpDescriptor(LPCTCHAR Token)
 	while (CurrentItem != NULL)
 	{
 		// if we have found a match, return a pointer to it
-		if (camStrcmp( CurrentItem -> pOpDesc -> Token, Token ) == 0)
+	  if (camStrcmp((TCHAR*)CurrentItem->pOpDesc->Token, Token) == 0)
 			return CurrentItem->pOpDesc;
 
 		CurrentItem = GetNextDescriptor( CurrentItem );		// next item in the list

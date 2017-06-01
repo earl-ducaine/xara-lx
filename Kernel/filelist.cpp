@@ -240,7 +240,7 @@ OpState FileListOp::GetState(String_256* Title, OpDescriptor* pOp)
 	// Get the first 2 chars of the opdescriptors description as this holds the
 	// file number of the recent file.
 	TCHAR FileNum[3];
-	camStrncpy(FileNum, pOp->Token, 2);
+	camStrncpy(FileNum, (TCHAR*)pOp->Token, 2);
 	FileNum[2] = 0;
 
 	// make sure that it contains digits.
@@ -290,7 +290,7 @@ void FileListOp::Do(OpDescriptor* pOpDesc)
 	// file number of the recent file.
 	TCHAR FileNum[3];
 	BOOL WorkedOK = FALSE;
-	camStrncpy(FileNum, pOpDesc->Token, 2);
+	camStrncpy(FileNum, (TCHAR*)pOpDesc->Token, 2);
 	FileNum[2] = 0;
 
 	TRACEUSER( "jlh92", _T("Op = %s\n"), FileNum );

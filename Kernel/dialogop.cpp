@@ -1035,7 +1035,7 @@ void DialogOp::SetResDropListValue(const CGadgetID DropListID,
 
 			TCHAR str[32];
 			String_32 strTemp(_R(IDS_RES_PPI_FORMAT));
-			camSnprintf( str, 32, strTemp, iValue );
+			swprintf((TCHAR*)str, 32, strTemp, iValue);
 			String_32 strPPI(str);
 			SetStringGadgetValue(DropListID, strPPI, FALSE, -1);
 		}

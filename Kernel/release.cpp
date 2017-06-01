@@ -187,7 +187,7 @@ const TCHAR *ReleaseInfo::GetInfo()
 
 	String_256 jcf;
 	jcf.MakeMsg(_R(IDS_RELEASE_INFO_FORMAT), ReleaseInfo::GetLicensee(), ReleaseInfo::GetSerialNumber());
-	camStrcpy(buf, jcf);
+	camStrcpy(buf, (TCHAR*)jcf);
 
 #else
 	camStrcpy(buf, PublicInfo.Name);
