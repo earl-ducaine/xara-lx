@@ -109,10 +109,14 @@ class	DialogManager;
 class	DialogOp;
 
 // Need a type for the hash data or we get duplicate const error
-typedef const TCHAR * EventNameString;
+typedef const TCHAR* EventNameString;
 
 // Declare the hash map from ResourceID to String
-WX_DECLARE_HASH_MAP( WXTYPE, EventNameString, wxIntegerHash, wxIntegerEqual, EventNumberToName );
+// wxString
+// WX_DECLARE_HASH_MAP(WXTYPE, EventNameString, wxIntegerHash, wxIntegerEqual, EventNumberToName);
+// WX_DECLARE_HASH_MAP(WXTYPE, wxString, wxIntegerHash, wxIntegerEqual, EventNumberToName);
+WX_DECLARE_HASH_MAP(int, wxString, wxIntegerHash, wxIntegerEqual, EventNumberToName);
+// WX_DECLARE_STRING_HASH_MAP(int, EventNumberToName);
 
 class DialogEventHandler;
 
@@ -179,16 +183,31 @@ public:
 
 	void GrimReaperEvent(wxCamDialogEvent &event);
 
-	UINT32 AddTimer(DialogOp * pDialogOp, UINT32 nIDEvent, UINT32 nElapse, void (* lpfnTimer)(void *) =  NULL, void * param=NULL, BOOL OneShot=FALSE);
+	UINT32 AddTimer(DialogOp* pDialogOp,
+			UINT32 nIDEvent,
+			UINT32 nElapse,
+			void (*lpfnTimer)(void *) = NULL,
+			void* param = NULL,
+			BOOL OneShot = FALSE);
+	
 	BOOL DeleteTimer(UINT32 nIDEvent);
 
-	static inline const TCHAR * GetEventName(WXTYPE EventNum) // Return the EventName
-	{
-		if (!pHash) return DefaultString;
-		EventNumberToName::iterator i=pHash->find(EventNum);
-		const TCHAR * text = (const TCHAR *)((i==pHash->end())?NULL:i->second);
-		return text?text:DefaultString;
-	};
+	// Return the EventName
+	static inline wxString GetEventName(WXTYPE EventNum)  {
+	  if (!pHashEventNumberToName) {
+	    return DefaultString;
+	  }
+	  EventNumberToName::iterator i =
+	    pHashEventNumberToName->find(EventNum);
+	  // const wxString text =
+	  //   (i == pHashEventNumberToName->end()) ? NULL : i->second;
+	  // return text ? text : DefaultString;
+	  if (i == pHashEventNumberToName->end()) {
+	    return DefaultString;
+	  } else {
+	    return i->second;
+	  }
+	}
 
 	static BOOL Init();
 	static void DeInit();
@@ -204,7 +223,7 @@ private:
 
 	IntegerToKernelTimer m_TimerHash;
 
-	static EventNumberToName * pHash;
+	static EventNumberToName * pHashEventNumberToName;
 	static const TCHAR * DefaultString;
 
 	static DialogEventHandler * m_GrimReaper;

@@ -1,7 +1,7 @@
 // $Id: camresource.cpp 1702 2006-08-16 15:21:09Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
- 
+
                Xara LX, a vector drawing and manipulation program.
                     Copyright (C) 1993-2006 Xara Group Ltd.
        Copyright on certain contributions may be held in joint with their
@@ -32,7 +32,7 @@ ADDITIONAL RIGHTS
 
 Conditional upon your continuing compliance with the GNU General Public
 License described above, Xara Group Ltd grants to you certain additional
-rights. 
+rights.
 
 The additional rights are to use, modify, and distribute the software
 together with the wxWidgets library, the wxXtra library, and the "CDraw"
@@ -169,7 +169,7 @@ wxImage					imageZoomTool;
 	Author:		Alex_Bligh <alex@alex.org.uk>
 	Created:	02/12/2005
 	Inputs:		Resource - textual name of the resource to lookup
-	Outputs:	
+	Outputs:
 	Returns:	the resource ID of the resource
 	Purpose:	Converts a textual resource identified (_R(IDS_BLOBBY) or whatever) to a numeric
 				resource ID. This ALWAYS succeeds as it creates a new one if there is not
@@ -188,7 +188,7 @@ wxImage					imageZoomTool;
 	Author:		Alex_Bligh <alex@alex.org.uk>
 	Created:	02/12/2005
 	Inputs:		Resource - resource ID of text to look up
-	Outputs:	
+	Outputs:
 	Returns:	the text of the resource, or a default string
 	Purpose:	Converts a ResourceID to a text string, returning a default string on failure
 	Errors:		-
@@ -204,7 +204,7 @@ wxImage					imageZoomTool;
 	Author:		Alex_Bligh <alex@alex.org.uk>
 	Created:	02/12/2005
 	Inputs:		Resource - resource ID of text to look up
-	Outputs:	
+	Outputs:
 	Returns:	the text of the resource, or 0 if not found
 	Purpose:	Converts a ResourceID to a text string, returning NULL on failure
 	Errors:		-
@@ -220,7 +220,7 @@ wxImage					imageZoomTool;
 	Author:		Alex_Bligh <alex@alex.org.uk>
 	Created:	02/12/2005
 	Inputs:		Resource - resource ID of object name to look up
-	Outputs:	
+	Outputs:
 	Returns:	the object name of the resource, or a default string
 	Purpose:	Converts a ResourceID to an object name, returning a default string on failure
 	Errors:		-
@@ -236,7 +236,7 @@ wxImage					imageZoomTool;
 	Author:		Alex_Bligh <alex@alex.org.uk>
 	Created:	02/12/2005
 	Inputs:		Resource - resource ID of object name to look up
-	Outputs:	
+	Outputs:
 	Returns:	the object name of the resource, or 0 if not found
 	Purpose:	Converts a ResourceID to an object name, returning NULL on failure
 	Errors:		-
@@ -266,7 +266,7 @@ public:
 	}
 
 	typedef CamResourceFixNameEntry * pCamResourceFixNameEntry;
-	
+
 	static const TCHAR * Find(const TCHAR * from, const TCHAR * to = NULL)
 	{
 		// Ensure we have an array
@@ -319,7 +319,7 @@ public:
 	const TCHAR * MapFrom;
 	const TCHAR * MapTo;
 	CamResourceFixNameEntry * pNext;
-	
+
 	static pCamResourceFixNameEntry *pArray;
 
 	CamResourceFixNameEntry() {MapFrom =NULL ; MapTo = NULL ; pNext = NULL;}
@@ -335,7 +335,7 @@ CamResourceFixNameEntry::pCamResourceFixNameEntry *CamResourceFixNameEntry::pArr
 	Author:		Alex_Bligh <alex@alex.org.uk>
 	Created:	02/12/2005
 	Inputs:		ObjectName - the object name of the resource to fix up
-	Outputs:	
+	Outputs:
 	Returns:	The fixed up object name
 	Purpose:	Renames some of the resources from Windows to wx Style
 				This must match the mapping in rc2xml.pl. This allows wx to do
@@ -377,7 +377,7 @@ const TCHAR * CamResource::FixObjectName(const TCHAR * ObjectName)
 		FNOMAP("IDYES", "wxID_YES"); //NORESOURCEFIX
 		FNOMAP("IDNO", "wxID_NO"); //NORESOURCEFIX
 		FNOMAP("IDHELP", "wxID_HELP"); //NORESOURCEFIX
-		
+
 		CamResourceFixNameEntry::MakeResources();
 	}
 	const TCHAR * ret= CamResourceFixNameEntry::Find(ObjectName);
@@ -416,9 +416,9 @@ void CamResource::RememberDuringStaticInit(const TCHAR * ObjectName)
 	if (!text) return;	// we can't error, we can't trace, so meekly forget it
 	CamResourceRemember * pRem = new CamResourceRemember;
 	if (!pRem) return;	// we can't error, we can't trace, so meekly forget it
-	
+
 	pRem->text = text;	// fill in text
-	
+
 	// Now add to our linked list, and return
 	pRem->next = pFirstRemember?pFirstRemember:NULL;
 	pFirstRemember=pRem;
@@ -482,15 +482,13 @@ void CamResource::AddStringResource(const TCHAR * name, const TCHAR * text, Reso
 			if (t!=tcopy)
 			{
 				ERROR3("Resource string does not match local copy");
-			}		
+			}
 		}
 	}
 }
 
-/********************************************************************************************
-
+/**************************************************************************
 >	static BOOL CamResource::ReadStringTableFile()
-
 
 	Author:		Alex_Bligh <alex@alex.org.uk>
 	Created:	02/12/2005
@@ -502,143 +500,115 @@ void CamResource::AddStringResource(const TCHAR * name, const TCHAR * text, Reso
 	SeeAlso:	-
 
 We can't use the CCLexFile stuff because it has not yet been initiated.
+***************************************************************************/
 
-********************************************************************************************/
-
-BOOL CamResource::ReadStringTableFile()
-{
-	TRACET(_T("ReadStringTableFile() called"));
-	CamResource res;
-	INT32 count=0;
-
-	wxFSFile* f = res.OpenwxFSFile(_T("strings.lst"));	// NB destructor of 'res' deletes this
-	if (!f)
-	{
-		TRACE(_T("Could not load strings.lst"));
-		return FALSE;
-	}
-
-	wxInputStream * s = f->GetStream();
-	if (!s)
-	{
-		TRACE(_T("Could not load strings.lst - no stream"));
-		return FALSE;
-	}
-
-	while (!s->Eof())
-	{
+BOOL CamResource::ReadStringTableFile() {
+  TRACET(_T("ReadStringTableFile() called"));
+  CamResource res;
+  INT32 count = 0;
+  // NB destructor of 'res' deletes this
+  wxFSFile* f = res.OpenwxFSFile(_T("strings.lst"));
+  if (!f) {
+    TRACE(_T("Could not load strings.lst"));
+    return FALSE;
+  }
+  wxInputStream * s = f->GetStream();
+  if (!s) {
+    TRACE(_T("Could not load strings.lst - no stream"));
+    return FALSE;
+  }
+  while (!s->Eof()) {
 #define MAX_TAG_LENGTH 1024
-		char buf[MAX_TAG_LENGTH];
-		
-		char c=0;		// Deliberate - file is not Unicode for now
-		INT32 l=0;
-		while (!s->Eof() && (c=s->GetC()) && (c != '\n') && (c != '\t') && (l<MAX_TAG_LENGTH))
-		{
-			buf[l++]=c;
-		}
-		buf[l++]=0;
-		buf[MAX_TAG_LENGTH-1]=0;
-		if (buf[0])
-		{
-			wxString name(buf, wxConvUTF8);
-	
-			if (c == '\n')
-			{
-				buf[0]=0;
-			}
-			else
-			{
-				l=0;
-				while (!s->Eof() && (c=s->GetC()) && (c != '\n') && (l<MAX_TAG_LENGTH))
-				{
-					buf[l++]=c;
-				}
-				buf[MAX_TAG_LENGTH-1]=0;
-			}
-			buf[l++]=0;
-			wxString text(buf, wxConvUTF8);
-
-			// Now de-XMLize it
-			wxString otext;
-			UINT32 n=0;
-			while (n<text.Length())
-			{
-				wxChar tc=text.GetChar(n++);
-				if (tc==_T('&'))
-				{
-					// It's an ampersand escape sequence. Read till a semicolon
-					wxString seq;
-					while (tc !=_T(';') && n<text.Length())
-					{
-						tc=text.GetChar(n++);
-						seq+=tc;
-					}
-					
-					if (seq == _T("amp;"))
-					{
-						tc=_T('&');
-					}
-					else if (seq == _T("lt;"))
-					{
-						tc=_T('<');
-					}
-					else if (seq == _T("gt;"))
-					{
-						tc=_T('>');
-					}
-					else if (seq == _T("quot;"))
-					{
-						tc=_T('"');
-					}
-					else if ((seq.Length()>3) && (seq.GetChar(0)==_T('#')) && (seq.GetChar(1)==_T('x')))
-					{
-						tc=_T('?');
-						UINT32 code=tc;
-						// It's an alphanumeric form of a unicode character in hex
-#if wxUSE_UNICODE
-						sscanf((const char*)seq.mb_str(wxConvUTF8), "#x%x;", &code);
-#else
-						sscanf((const char*)seq.c_str(), "#x%x;", &code);	
-#endif
-						tc=(TCHAR)(code);
-					}
-					else if ((seq.Length()>2) && (seq.GetChar(0)==_T('#')) && ((seq.GetChar(1)>=_T('0')) && (seq.GetChar(1)<=_T('9'))))
-					{
-						tc=_T('?');
-						UINT32 code=tc;
-						// It's an alphanumeric form of a unicode character in decimal
-#if wxUSE_UNICODE
-						sscanf((const char*)seq.mb_str(wxConvUTF8), "#%d;", &code);
-#else
-						sscanf((const char*)seq.c_str(), "#%d;", &code);						
-#endif
-						tc=(TCHAR)(code);
-					}
-					else
-					{
-						TRACE(_T("CamResource::ReadStringTableFile - Unknown XML escape sequence [&%s] in %s, %s"),seq.c_str(),name.c_str(),text.c_str());
-						otext+=_T('&')+seq;
-						tc=0; // don't add
-					}
-				}
-				if (tc)
-				{
-					otext+=tc;
-				}
-			}
-
-			// Here we could translate it using wxGetTranslation
-			// Or we could muck around on non UTF-8 encodings
-			// but that would be really boring.
-			count++;
-			AddStringResource(name.c_str(), ::wxGetTranslation(otext.c_str()));
-		}
+    char buf[MAX_TAG_LENGTH];
+    char c=0;		// Deliberate - file is not Unicode for now
+    INT32 l=0;
+    while (!s->Eof() && (c=s->GetC()) && (c != '\n') && (c != '\t') && (l<MAX_TAG_LENGTH)) {
+      buf[l++]=c;
+    }
+    buf[l++]=0;
+    buf[MAX_TAG_LENGTH-1]=0;
+    if (buf[0]) {
+      wxString name(buf, wxConvUTF8);
+      if (c == '\n') {
+	buf[0]=0;
+      } else {
+	l=0;
+	while (!s->Eof() && (c=s->GetC()) && (c != '\n') && (l<MAX_TAG_LENGTH)) {
+	  buf[l++]=c;
 	}
-
-	TRACE(_T("Added %d strings"),count);
-	if (count<1000) return FALSE; // some bad thing has happened.
-
-	return TRUE;
+	buf[MAX_TAG_LENGTH-1]=0;
+      }
+      buf[l++]=0;
+      wxString text(buf, wxConvUTF8);
+      // Now de-XMLize it
+      wxString otext;
+      UINT32 n=0;
+      while (n<text.Length()) {
+	wxChar tc=text.GetChar(n++);
+	if (tc==_T('&')) {
+	  // It's an ampersand escape sequence. Read till a semicolon
+	  wxString seq;
+	  while (tc !=_T(';') && n<text.Length()) {
+	    tc=text.GetChar(n++);
+	    seq+=tc;
+	  }
+	  if (seq == _T("amp;")) {
+	    tc=_T('&');
+	  } else if (seq == _T("lt;")) {
+	    tc=_T('<');
+	  } else if (seq == _T("gt;")) {
+	    tc=_T('>');
+	  } else if (seq == _T("quot;")) {
+	    tc=_T('"');
+	  } else if ((seq.Length()>3) && (seq.GetChar(0)==_T('#')) && (seq.GetChar(1)==_T('x'))) {
+	    tc=_T('?');
+	    UINT32 code=tc;
+	    // It's an alphanumeric form of a unicode character in hex
+#if wxUSE_UNICODE
+	    sscanf((const char*)seq.mb_str(wxConvUTF8), "#x%x;", &code);
+#else
+	    sscanf((const char*)seq.c_str(), "#x%x;", &code);
+#endif
+	    tc=(TCHAR)(code);
+	  } else if ((seq.Length()>2) &&
+		     (seq.GetChar(0)==_T('#')) &&
+		     ((seq.GetChar(1)>=_T('0')) &&
+		      (seq.GetChar(1)<=_T('9')))) {
+	    tc = _T('?');
+	    UINT32 code=tc;
+	    // It's an alphanumeric form of a unicode character in decimal
+#if wxUSE_UNICODE
+	    sscanf((const char*)seq.mb_str(wxConvUTF8), "#%d;", &code);
+#else
+	    sscanf((const char*)seq.c_str(), "#%d;", &code);
+#endif
+	    tc=(TCHAR)(code);
+	  } else {
+	    TRACE(_T("CamResource::ReadStringTableFile - Unknown XML escape sequence [&%s] in %s, %s"),
+		  seq.c_str(),
+		  name.c_str(),
+		  text.c_str());
+	    otext+=_T('&')+seq;
+	    tc = 0; // don't add
+	  }
+	}
+	if (tc) {
+	  otext+=tc;
+	}
+      }
+      // Here we could translate it using wxGetTranslation Or we could
+      // muck around on non UTF-8 encodings but that would be really
+      // boring.
+      count++;
+      AddStringResource(name.c_str(), ::wxGetTranslation(otext.c_str()));
+    }
+  }
+  TRACE(_T("Added %d strings"),count);
+   // some bad thing has happened.
+  if (count<1000) {
+    return FALSE;
+  }
+  return TRUE;
 }
 
 /********************************************************************************************
@@ -723,35 +693,36 @@ BOOL CamResource::InitXmlResource()
 	return true;
 }
 
-/********************************************************************************************
-
->	static wxString CamResource::GetResourceFilePath( const wxString &str, BOOL AllowOverride = TRUE )
-
+/***************************************************************************
+>	static wxString CamResource::GetResourceFilePath(const wxString &str,
+                                                         BOOL AllowOverride = TRUE)
 
 	Author:		Alex_Bligh <alex@alex.org.uk>
 	Created:	02/12/2005
 	Inputs:		str - the string to look up
-	Outputs:	
+	Outputs:
 	Returns:	the path to load it from
 	Purpose:	Destructor
 	Errors:		-
 	SeeAlso:	-
 
-By default this will return the MemoryFS path, however, if & when we support overriding
-of resources in a resource directory, this will under the appopriate circumstances
-use a differnt path. Note this can only be called AFTER the resource system is initialized.
+By default this will return the MemoryFS path, however, if & when we
+support overriding of resources in a resource directory, this will
+under the appopriate circumstances use a differnt path. Note this can
+only be called AFTER the resource system is initialized.
 
-If an empty string is specified, it returns the overridden resource path (if one exists)
-(so long as the override is set to TRUE), or failing that the memory resource path
+If an empty string is specified, it returns the overridden resource
+path (if one exists) (so long as the override is set to TRUE), or
+failing that the memory resource path
+***************************************************************************/
 
-********************************************************************************************/
-
-wxString CamResource::GetResourceFilePath( const wxString &str, BOOL AllowOverride)
-{
+wxString CamResource::GetResourceFilePath(const wxString &str, BOOL AllowOverride) {
   // If we are given a full path, then return. For the time being
   // that's anything with a colon or a slash in it as the resources
   // file is flat
-  if (((str.Find(_T(':')))>=0) || ((str.Find(_T('/')))>=0) || ((str.Find(_T('\\')))>=0)) {
+  if (((str.Find(_T(':')))>=0) ||
+      ((str.Find(_T('/')))>=0) ||
+      ((str.Find(_T('\\')))>=0)) {
     return str;
   }
   wxString mfn = _T("memory:resources.xrs#zip:");
@@ -834,7 +805,7 @@ void * CamResource::LoadFile( const wxString &str1, UINT32* pSize )
 
 	memset(mem1, 0, size1);
 	pStream1->Read(mem1, size1); // throws exceptions if can't read
-	
+
 	delete (pTwxFSFile1); // Closes it
 
 	if (pSize)
@@ -850,7 +821,7 @@ void * CamResource::LoadFile( const wxString &str1, UINT32* pSize )
 	Author:		Alex_Bligh <alex@alex.org.uk>
 	Created:	02/12/2005
 	Inputs:		str1, str2 - filenames to check
-	Outputs:	
+	Outputs:
 	Returns:	TRUE if the files are identical, else false
 	Purpose:	-
 	Errors:		-
@@ -884,8 +855,11 @@ BOOL CamResource::CheckResourcePath( const wxString &str1, const wxString &str2 
 
 	if (!same && s_GenerateXRCCheck)
 	{
-		wxMessageBox(_T("You have requested XaraLX to generate a checksum for resources which may not match the binary in question. "
-						"A checksum will be generated, but the program may not be stable."), _T("XaraLX Resource system warning"));
+	  wxMessageBox(_T("You have requested XaraLX to generate a checksum"
+			  "for resources which may not match the binary in "
+			  "question. A checksum will be generated, but the "
+			  "program may not be stable."),
+		       _T("XaraLX Resource system warning"));
 
 		wxFile f;
 		f.Create(str2, wxFile::write);
@@ -916,7 +890,7 @@ BOOL CamResource::CheckResourcePath( const wxString &str1, const wxString &str2 
 	Author:		Alex_Bligh <alex@alex.org.uk>
 	Created:	02/12/2005
 	Inputs:		str - the string to set
-	Outputs:	
+	Outputs:
 	Returns:	the path to load it from
 	Purpose:	Destructor
 	Errors:		-
@@ -979,16 +953,16 @@ BOOL CamResource::AddBitmaps(wxString &Path)
 
 		if (IsBitmapName(LeafName))
 		{
-	
+
 			ResourceStringToBitmap::iterator i=pBitmapHash->find(LeafName);
-	
+
 			if (i==pBitmapHash->end())	// ignore if we already have an entry
 			{
-#if PRELOAD_BITMAPS	
+#if PRELOAD_BITMAPS
 				wxImage * pBitmap=new wxImage;
 				if (!pBitmap)
 					return FALSE;
-	
+
 	//			TRACE(_T("Loading bitmap %s"),fn.c_str());
 				if (LoadwxImage(*pBitmap, LeafName))
 					(*pBitmapHash)[camStrdup(LeafName.c_str())]=pBitmap;
@@ -1002,7 +976,7 @@ BOOL CamResource::AddBitmaps(wxString &Path)
 #endif
 			}
 		}
-	
+
 		fn = pwxFileSystem->FindNext();
 	}
 	return TRUE;
@@ -1171,13 +1145,13 @@ void CamResource::MakeVariantBitmaps(ResourceStringToBitmap::iterator * it)
 			// a convenient place to store the new grey bitmaps without breaking the iterator
 			ResourceStringToBitmap NewHash;
 			NewHash.clear();
-		
+
 			ResourceStringToBitmap::iterator current;
 			if (it)
 				current=*it;
 			else
 				current = pBitmapHash->begin();
-	
+
 			// iterate through the old hash (if needs be)
 			while (current != pBitmapHash->end())
 			{
@@ -1185,7 +1159,7 @@ void CamResource::MakeVariantBitmaps(ResourceStringToBitmap::iterator * it)
 				{
 					wxString fn(current->first);
 					//TRACEUSER("amb",_T("Trying to grey bitmap %s"),fn.c_str());
-		
+
 					// If it's a .png, but without the particular flag set
 					if (IsBitmapName(fn) && !(CamArtProvider::GetBitmapFlags(fn) & flag))
 					{
@@ -1227,10 +1201,10 @@ void CamResource::MakeVariantBitmaps(ResourceStringToBitmap::iterator * it)
 								}
 								NewHash[camStrdup(gfn.wx_str())] = pBitmap;
 							}
-						}	
+						}
 					}
 				}
-		
+
 				if (it)
 				{
 					break; // jump out loop
@@ -1240,7 +1214,7 @@ void CamResource::MakeVariantBitmaps(ResourceStringToBitmap::iterator * it)
 					++current;
 				}
 			}
-		
+
 			// Now dump the new hash into the old hash
 			for( current = NewHash.begin(); current != NewHash.end(); ++current )
 				(*pBitmapHash)[current->first]=current->second;
@@ -1250,10 +1224,8 @@ void CamResource::MakeVariantBitmaps(ResourceStringToBitmap::iterator * it)
 	return;
 }
 
-/********************************************************************************************
-
+/***************************************************************************
 >	static wxImage* CamResource::GetCachedBitmap(const TCHAR * pName)
-
 
 	Author:		Alex_Bligh <alex@alex.org.uk>
 	Created:	01/01/2005
@@ -1263,85 +1235,78 @@ void CamResource::MakeVariantBitmaps(ResourceStringToBitmap::iterator * it)
 	Purpose:	Returns a pointer to the preloaded bitmap
 	Errors:		via wxMessageBox
 	SeeAlso:	-
+***************************************************************************/
 
-********************************************************************************************/
-
-wxImage* CamResource::GetCachedBitmap(const TCHAR * pName)
-{
-	if (!pBitmapHash) return NULL;
-	ResourceStringToBitmap::iterator i=pBitmapHash->find(pName);
-	if (i==pBitmapHash->end())
-	{
-		// We know this file does not exist in the resources. However, we might be able to
-		// make one if it's greyed and we can get the ungreyed version
-
-		wxString fn(pName);
-
-		// Clear each of the flags in sequence
-		BOOL Found=FALSE;
-		// Do this entire lot for each flag
-		CamArtFlags flag=CAF_CACHE_MAX;
-		while ((flag=(CamArtFlags)(flag>>1)) !=0 )
-		{
-			if ((flag==CAF_GREYED) || (flag!=CAF_SELECTED)) // We don't know how to produce anything else, so ignore
-			{
-
-				if (IsBitmapName(fn) && (CamArtProvider::GetBitmapFlags(fn) & flag))
-				{
-					// Find the ungreyed name of the bitmap
-					wxString ugfn=MakeBitmapString(GetBitmapBaseName(fn),
-												CamArtProvider::MakeBitmapFlagString((CamArtFlags)
-																						(CamArtProvider::GetBitmapFlags(fn) &
-																						~flag)),
-																						GetBitmapExtension(fn));
-					Found = TRUE; // we should at least look for another bitmap
-	
-					// Recursively call ourself to load the ungreyed bitmap. We don't care about the result, but this
-					// will insert the greyed version into the cache as a byproduct
-	
+wxImage* CamResource::GetCachedBitmap(const TCHAR* pName) {
+  if (!pBitmapHash) return NULL;
+  ResourceStringToBitmap::iterator i=pBitmapHash->find(pName);
+  if (i == pBitmapHash->end()) {
+    // We know this file does not exist in the resources. However,
+    // we might be able to make one if it's greyed and we can get
+    // the ungreyed version
+    wxString fn(pName);
+    // Clear each of the flags in sequence
+    BOOL Found=FALSE;
+    // Do this entire lot for each flag
+    CamArtFlags flag=CAF_CACHE_MAX;
+    while ((flag=(CamArtFlags)(flag>>1)) !=0 ) {
+      // We don't know how to produce anything else, so ignore
+      if ((flag==CAF_GREYED) || (flag!=CAF_SELECTED)) {
+	if (IsBitmapName(fn) && (CamArtProvider::GetBitmapFlags(fn) & flag)) {
+	  // Find the ungreyed name of the bitmap
+	  wxString ugfn =
+	    MakeBitmapString(GetBitmapBaseName(fn),
+			     CamArtProvider::MakeBitmapFlagString((CamArtFlags)
+								  (CamArtProvider::GetBitmapFlags(fn) &
+								   ~flag)),
+			     GetBitmapExtension(fn));
+	  // we should at least look for another bitmap
+	  Found = TRUE;
+	  // Recursively call ourself to load the ungreyed
+	  // bitmap. We don't care about the result, but this will
+	  // insert the greyed version into the cache as a byproduct
 #ifdef _DEBUG
-					static INT32 recursion=0;
-					recursion++;
-					ERROR3IF(recursion>16,"Too much recursion in CamResource::GetCachedBitmap");
+	  static INT32 recursion=0;
+	  recursion++;
+	  ERROR3IF(recursion > 16,
+		   "Too much recursion in CamResource::GetCachedBitmap");
 #endif
-					GetCachedBitmap(ugfn.c_str());
+	  GetCachedBitmap(ugfn.c_str());
 #ifdef _DEBUG
-					recursion--;
+	  recursion--;
 #endif
-				}
-			}
-		}
-		if (!Found)
-			return NULL;
-
-		i=pBitmapHash->find(pName); // reset iterator
-		if (i==pBitmapHash->end())
-			return NULL; // we couldn't find a greyed version
 	}
-
-	if (!i->second)
-	{
-		// There is no bitmap there, but the name is there. We must be demand loading
-
-		wxImage * pBitmap = new wxImage;
-		if (!pBitmap) return NULL;
-
-		if (!LoadwxImage(*pBitmap, pName))
-		{
-			ERROR3_PF((_T("Could not load bitmap %s"), pName));
-			delete pBitmap;
-			return NULL;
-		}
-
-		// Add it to the cache
-		i->second=pBitmap;
-
-		// Generate variant versions if we should
-		MakeVariantBitmaps(&i);
-
-		return pBitmap;
-	}
-	return i->second;
+      }
+    }
+    if (!Found) {
+      return NULL;
+    }
+    // reset iterator
+    i = pBitmapHash->find(pName);
+    // we couldn't find a greyed version
+    if (i==pBitmapHash->end()) {
+      return NULL;
+    }
+  }
+  if (!i->second) {
+    // There is no bitmap there, but the name is there. We must be
+    // demand loading
+    wxImage * pBitmap = new wxImage;
+    if (!pBitmap) {
+      return NULL;
+    }
+    if (!LoadwxImage(*pBitmap, pName)) {
+      ERROR3_PF((_T("Could not load bitmap %s"), pName));
+      delete pBitmap;
+      return NULL;
+    }
+    // Add it to the cache
+    i->second = pBitmap;
+    // Generate variant versions if we should
+    MakeVariantBitmaps(&i);
+    return pBitmap;
+  }
+  return i->second;
 }
 
 
@@ -1379,10 +1344,8 @@ BOOL CamResource::LoadBitmaps()
 
 #endif
 
-/********************************************************************************************
-
+/***************************************************************************
 >	static BOOL CamResource::Init()
-
 
 	Author:		Alex_Bligh <alex@alex.org.uk>
 	Created:	02/12/2005
@@ -1392,213 +1355,199 @@ BOOL CamResource::LoadBitmaps()
 	Purpose:	Initialize resources
 	Errors:		via wxMessageBox
 	SeeAlso:	-
+***************************************************************************/
 
-********************************************************************************************/
-
-BOOL CamResource::Init()
-{
-	void * pFile=NULL;
-	UINT32 Length=0;
-
-	TRACET(_T("CamResource::Init() called"));
-
-	pHash = new (ResIDToString);
-	if (!pHash) return FALSE;
-	pHash->clear();
-
-	pObjectNameHash = new (ResIDToString);
-	if (!pObjectNameHash) return FALSE;
-	pObjectNameHash->clear();
-
+BOOL CamResource::Init() {
+  void * pFile=NULL;
+  UINT32 Length=0;
+  TRACET(_T("CamResource::Init() called"));
+  pHash = new (ResIDToString);
+  if (!pHash) {
+    return FALSE;
+  }
+  pHash->clear();
+  pObjectNameHash = new (ResIDToString);
+  if (!pObjectNameHash) {
+    return FALSE;
+  }
+  pObjectNameHash->clear();
 #if !defined(EXCLUDE_FROM_XARLIB)
-	pBitmapHash = new (ResourceStringToBitmap);
-	if (!pBitmapHash) return FALSE;
-	pBitmapHash->clear();
+  pBitmapHash = new (ResourceStringToBitmap);
+  if (!pBitmapHash) return FALSE;
+  pBitmapHash->clear();
 #endif
-
-	// Now go through ID's translated before we got here
-	CamResourceRemember * pRem = pFirstRemember;
-	pFirstRemember = NULL;
-	while (pRem)
-	{
-		if (pRem->text)
-		{
-			// Do not comment out the next line. It does something useful (make the inverse object
-			// map work for static text)
-			/*ResourceID r =*/ GetResourceID(pRem->text);
-//			TRACEUSER("amb",_T("Fixed up static init translation from %s to %d"),pRem->text,r);
-			free (pRem->text);
-		}
-		CamResourceRemember * pORem = pRem;
-		pRem = pRem->next;
-		delete pORem;
-	}
-
-	// Initialize the handlers
-	wxXmlResource::Get()->InitAllHandlers();
+  // Now go through ID's translated before we got here
+  CamResourceRemember * pRem = pFirstRemember;
+  pFirstRemember = NULL;
+  while (pRem) {
+    if (pRem->text) {
+      // Do not comment out the next line. It does something
+      // useful (make the inverse object map work for static
+      // text) ResourceID r =
+      GetResourceID(pRem->text);
+      // TRACEUSER("amb",
+      // 	      _T("Fixed up static init translation from %s to %d"),
+      // 	      pRem->text,
+      // 	      r);
+      free (pRem->text);
+    }
+    CamResourceRemember * pORem = pRem;
+    pRem = pRem->next;
+    delete pORem;
+  }
+  // Initialize the handlers
+  wxXmlResource::Get()->InitAllHandlers();
 #if !defined(EXCLUDE_FROM_XARLIB)
-	wxXmlResource::Get()->AddHandler(new wxCamArtControlXmlHandler);
-	wxXmlResource::Get()->AddHandler(new wxCamDrawControlXmlHandler);
+  wxXmlResource::Get()->AddHandler(new wxCamArtControlXmlHandler);
+  wxXmlResource::Get()->AddHandler(new wxCamDrawControlXmlHandler);
 #ifdef wxXTRA_XH_ODCOMBO
-	wxXmlResource::Get()->AddHandler(new wxOwnerDrawnComboBoxXmlHandler);
-//	wxXmlResource::Get()->AddHandler(new wxComboControlXmlHandler);
+  wxXmlResource::Get()->AddHandler(new wxOwnerDrawnComboBoxXmlHandler);
+  //	wxXmlResource::Get()->AddHandler(new wxComboControlXmlHandler);
 #endif
 #ifdef wxXTRA_XH_SLIDERCOMBO
-	wxXmlResource::Get()->AddHandler(new wxSliderComboXmlHandler);
+  wxXmlResource::Get()->AddHandler(new wxSliderComboXmlHandler);
 #endif
 #if WXXTRA_TREEBOOK
-	wxXmlResource::Get()->AddHandler(new wxTreebookXmlHandler);
+  wxXmlResource::Get()->AddHandler(new wxTreebookXmlHandler);
 #endif
-	wxXmlResource::Get()->AddHandler(new wxGridComboXmlHandler);
+  wxXmlResource::Get()->AddHandler(new wxGridComboXmlHandler);
 #endif
 
-	if (!pwxFileSystem) pwxFileSystem = new wxFileSystem;
-	if (!pwxFileSystem)
-	{
-		TRACE(_T("Failed to allocate file system"));
-		return FALSE;
-	}
+  if (!pwxFileSystem) pwxFileSystem = new wxFileSystem;
+  if (!pwxFileSystem)
+    {
+      TRACE(_T("Failed to allocate file system"));
+      return FALSE;
+    }
 
-	// Check for memory FS. If not present, load the handler:
-	// No idea for the reason for the additional braces, but let's keep them ther
-	{
-		wxMemoryFSHandler::AddFile(_T("XRC_resource/dummy_file"), _T("dummy one"));
-		wxFSFile *f = pwxFileSystem->OpenFile(_T("memory:XRC_resource/dummy_file"));
-		wxMemoryFSHandler::RemoveFile(_T("XRC_resource/dummy_file"));
-		if (f) delete f;
-		else wxFileSystem::AddHandler(new wxMemoryFSHandler);
-	}
+  // Check for memory FS. If not present, load the handler:
+  // No idea for the reason for the additional braces, but let's keep them ther
+  {
+    wxMemoryFSHandler::AddFile(_T("XRC_resource/dummy_file"), _T("dummy one"));
+    wxFSFile *f = pwxFileSystem->OpenFile(_T("memory:XRC_resource/dummy_file"));
+    wxMemoryFSHandler::RemoveFile(_T("XRC_resource/dummy_file"));
+    if (f) delete f;
+    else wxFileSystem::AddHandler(new wxMemoryFSHandler);
+  }
 
-	TRACET(_T("CamResource::Init() added MemoryFSHandler"));
+  TRACET(_T("CamResource::Init() added MemoryFSHandler"));
 
-	wxFileSystem::AddHandler(new wxZipFSHandler);
+  wxFileSystem::AddHandler(new wxZipFSHandler);
 
-	TRACET(_T("CamResource::Init() added Zip handler, now doing AddFile() on resources"));
+  TRACET(_T("CamResource::Init() added Zip handler, now doing AddFile() on resources"));
 
-	GetBinaryFileInfo(&pFile, &Length);
+  GetBinaryFileInfo(&pFile, &Length);
 
-	// Do not use a file extension, as unbelievably this adds 3 seconds to startup time pre-splash box
-	// This is because it tries to initialize the MIME system (sigh)
-	wxMemoryFSHandler::AddFile(_T("resources.xrs"), pFile, Length); // Irritatingly does not return errors
+  // Do not use a file extension, as unbelievably this adds 3 seconds to startup time pre-splash box
+  // This is because it tries to initialize the MIME system (sigh)
+  wxMemoryFSHandler::AddFile(_T("resources.xrs"), pFile, Length); // Irritatingly does not return errors
 
-	wxXmlResource::Get()->SetFlags(wxXRC_NO_RELOADING); // reloading fails with assert due to missing timestamps
+  wxXmlResource::Get()->SetFlags(wxXRC_NO_RELOADING); // reloading fails with assert due to missing timestamps
 
 #if !defined(EXCLUDE_FROM_XARLIB)
-	// Add bitmap extenstions
-	BitmapExtensions.Add(_T("png"));
-	BitmapExtensions.Add(_T("cur"));
+  // Add bitmap extenstions
+  BitmapExtensions.Add(_T("png"));
+  BitmapExtensions.Add(_T("cur"));
 #endif
 
-	// Initialize locale
-	m_pLocale = new wxLocale();
-	if (!m_pLocale) return FALSE;
-	m_pLocale->Init(wxLANGUAGE_DEFAULT, wxLOCALE_LOAD_DEFAULT | wxLOCALE_CONV_ENCODING);
-	m_pLocale->AddCatalogLookupPathPrefix(GetResourceFilePath(_T("")));
-	m_pLocale->AddCatalog(_T("XaraLX"));
+  // Initialize locale
+  m_pLocale = new wxLocale();
+  if (!m_pLocale) {
+    return FALSE;
+  }
+  m_pLocale->Init(wxLANGUAGE_DEFAULT, wxLOCALE_LOAD_DEFAULT);
+  m_pLocale->AddCatalogLookupPathPrefix(GetResourceFilePath(_T("")));
+  m_pLocale->AddCatalog(_T("XaraLX"));
 
 #if !defined(EXCLUDE_FROM_XARLIB)
-	TRACET(_T("CamResource::Init() launching splash screen"));
-	if (!Splash()) return FALSE;
+  TRACET(_T("CamResource::Init() launching splash screen"));
+  if (!Splash()) return FALSE;
 #endif
 
 #ifdef XML_STRINGS
-	TRACET(_T("CamResource::Init() now loading internal resources, calling InitXmlResource"));
-	// Load the internal resources
-	// We should offer the possibility of loading them from a non-XML file here
-	if (!InitXmlResource()) return FALSE;
-
-	wxYield(); // yield again to allow repaint
-
-	TRACET(_T("CamResource::Init() starting to load string table dialog"));
-
-	// Read the string table into the hash map
-	wxDialog * pStringTable = wxXmlResource::Get()->LoadDialog(NULL, _T("STRINGTABLE"));
-	if (!pStringTable)
-	{
-		// We can hardly internationalize the message box, as we have no strings to play with yet.
-		wxMessageBox(_T("Could not load resources: Failed to locate string table"), _T("Resource loading error"));
-		return FALSE;
-	}	
-	wxYield(); // yield again to allow repaint
-
-	TRACET(_T("CamResource::Init() starting to process string table"));
-
-	// Now do a depth-first search of this window's children
-	ProcessWindowAndChildren(pStringTable);
-
-	wxYield(); // yield again to allow repaint
-
-	TRACET(_T("CamResource::Init() and deleting the dialog"));
-
-	delete pStringTable;
+  TRACET(_T("CamResource::Init() now loading internal "
+	    "resources, calling InitXmlResource"));
+  // Load the internal resources
+  // We should offer the possibility of loading them from a non-XML file here
+  if (!InitXmlResource()) return FALSE;
+  // yield again to allow repaint
+  wxYield(); 
+  TRACET(_T("CamResource::Init() starting to load string table dialog"));
+  // Read the string table into the hash map
+  wxDialog * pStringTable = wxXmlResource::Get()->LoadDialog(NULL, _T("STRINGTABLE"));
+  if (!pStringTable) {
+    // We can hardly internationalize the message box, as we have no strings to play with yet.
+    wxMessageBox(_T("Could not load resources: Failed to locate string table"), _T("Resource loading error"));
+    return FALSE;
+  }
+  wxYield(); // yield again to allow repaint
+  TRACET(_T("CamResource::Init() starting to process string table"));
+  // Now do a depth-first search of this window's children
+  ProcessWindowAndChildren(pStringTable);
+  wxYield(); // yield again to allow repaint
+  TRACET(_T("CamResource::Init() and deleting the dialog"));
+  delete pStringTable;
 #else
-
-	TRACET(_T("CamResource::Init() now loading internal resources, calling ReadStringTableFile()"));
-	if (!ReadStringTableFile())
-	{
-		// We can hardly internationalize the message box, as we have no strings to play with yet.
-		wxMessageBox(_T("Could not load resources: Failed to locate string table"), _T("Resource loading error"));
-		return FALSE;
-	}	
+  TRACET(_T("CamResource::Init() now loading internal resources, "
+	    "calling ReadStringTableFile()"));
+  if (!ReadStringTableFile()) {
+      // We can hardly internationalize the message box, as we have no
+      // strings to play with yet.
+      wxMessageBox(_T("Could not load resources: "
+		      "Failed to locate string table"),
+		   _T("Resource loading error"));
+      return FALSE;
+    }
 
 #endif
-
-	TRACET(_T("CamResource::Init() done processing string table, starting to load bitmaps"));
-
-	wxYield(); // yield again to allow repaint
-
+  TRACET(_T("CamResource::Init() done processing string table, "
+	    "starting to load bitmaps"));
+  wxYield(); // yield again to allow repaint
 #if !defined(EXCLUDE_FROM_XARLIB)
-	// Note this won't actually load the bitmaps if we are demand loading, but it will at least get a list of them
-	if (!LoadBitmaps())
-		return FALSE;
-
-	TRACET(_T("CamResource::Init() done processing bitmaps, starting to load toolbar images"));
-
-	wxYield(); // yield again to allow repaint
-
-#if 0
-	LoadwxImage(imageBevelTool, _T("lbeveltool32.png") );
-	LoadwxImage(imageBezTool, _T("lbeztool32.png") );
-	LoadwxImage(imageBlendTool, _T("lblendtool32.png") );
-	LoadwxImage(imageContourTool, _T("lcontourtool32.png") );
-	LoadwxImage(imageElipTool, _T("leliptool32.png") );
-	LoadwxImage(imageFHandTool, _T("lfhandtool32.png") );
-	LoadwxImage(imageGradTool, _T("lgradtool32.png") );
-	LoadwxImage(imageLiveEffectTool, _T("lliveeffecttool32.png") );
-	LoadwxImage(imageMouldTool, _T("lmouldtool32.png") );
-	LoadwxImage(imagePenTool, _T("lpentool32.png") );
-	LoadwxImage(imagePush, _T("lpushtool32.png") );
-	LoadwxImage(imageRectTool, _T("lrecttool32.png") );
-	LoadwxImage(imageRegShapeTool, _T("lregshapetool32.png") );
-	LoadwxImage(imageSelTool, _T("lselrtool32.png") );
-	LoadwxImage(imageShadrwTool, _T("lsoftshadowtool32.png") );
-	LoadwxImage(imageSlicetool, _T("lslicetool32.png") );
-	LoadwxImage(imageTextTool, _T("ltexttool32.png") );
-	LoadwxImage(imageTransTool, _T("ltransptool32.png") );
-	LoadwxImage(imageZoomTool, _T("lzoomtool32.png") );
-
-	TRACET(_T("CamResource::Init() Added images"));
-
-	wxYield(); // yield again to allow repaint
+  // Note this won't actually load the bitmaps if we are demand
+  // loading, but it will at least get a list of them
+  if (!LoadBitmaps()) {
+    return FALSE;
+  }
+  TRACET(_T("CamResource::Init() done processing bitmaps, "
+	    "starting to load toolbar images"));
+  // yield again to allow repaint
+  wxYield(); 
+//   LoadwxImage(imageBevelTool, _T("lbeveltool32.png") );
+//   LoadwxImage(imageBezTool, _T("lbeztool32.png") );
+//   LoadwxImage(imageBlendTool, _T("lblendtool32.png") );
+//   LoadwxImage(imageContourTool, _T("lcontourtool32.png") );
+//   LoadwxImage(imageElipTool, _T("leliptool32.png") );
+//   LoadwxImage(imageFHandTool, _T("lfhandtool32.png") );
+//   LoadwxImage(imageGradTool, _T("lgradtool32.png") );
+//   LoadwxImage(imageLiveEffectTool, _T("lliveeffecttool32.png") );
+//   LoadwxImage(imageMouldTool, _T("lmouldtool32.png") );
+//   LoadwxImage(imagePenTool, _T("lpentool32.png") );
+//   LoadwxImage(imagePush, _T("lpushtool32.png") );
+//   LoadwxImage(imageRectTool, _T("lrecttool32.png") );
+//   LoadwxImage(imageRegShapeTool, _T("lregshapetool32.png") );
+//   LoadwxImage(imageSelTool, _T("lselrtool32.png") );
+//   LoadwxImage(imageShadrwTool, _T("lsoftshadowtool32.png") );
+//   LoadwxImage(imageSlicetool, _T("lslicetool32.png") );
+//   LoadwxImage(imageTextTool, _T("ltexttool32.png") );
+//   LoadwxImage(imageTransTool, _T("ltransptool32.png") );
+//   LoadwxImage(imageZoomTool, _T("lzoomtool32.png") );
+//   TRACET(_T("CamResource::Init() Added images"));
+//   wxYield(); // yield again to allow repaint
+  m_pHelpProvider = new wxHelpControllerHelpProvider;
+  if (!m_pHelpProvider) {
+    return FALSE;
+  }
+  wxHelpProvider::Set(m_pHelpProvider);
+  if (!wxXmlResource::Get()->Load(GetResourceFilePath(_T("dialogs.xrc")))) {
+    TRACE(_T("Could not load dialogs.xrc"));
+    return FALSE;
+  }
+  TRACET(_T("CamResource::Init - loaded dialogs"));
+  // yield again to allow repaint
+  wxYield(); 
 #endif
-
-	m_pHelpProvider = new wxHelpControllerHelpProvider;
-	if (!m_pHelpProvider)	
-		return FALSE;
-	wxHelpProvider::Set(m_pHelpProvider);
-
-	if (!wxXmlResource::Get()->Load(GetResourceFilePath(_T("dialogs.xrc"))))
-	{
-		TRACE(_T("Could not load dialogs.xrc"));
-		return FALSE;
-	}
-
-	TRACET(_T("CamResource::Init - loaded dialogs"));
-
-	wxYield(); // yield again to allow repaint
-#endif
-
-	return TRUE;
+  return TRUE;
 }
 
 
@@ -1694,7 +1643,7 @@ BOOL CamResource::DeInit()
 		}
 		// for good measure
 		pHash->clear();
-		
+
 		delete (pHash);
 		pHash = NULL;
 	}
@@ -1712,7 +1661,7 @@ BOOL CamResource::DeInit()
 		}
 		// for good measure
 		pObjectNameHash->clear();
-		
+
 		delete (pObjectNameHash);
 		pObjectNameHash = NULL;
 	}
@@ -1763,7 +1712,7 @@ BOOL CamResource::Splash() {
   if (pSplashBitmap) {
     delete pSplashBitmap;
   }
-  pSplashBitmap=NULL;
+  pSplashBitmap = NULL;
   pSplashBitmap = new wxBitmap();
   if (!pSplashBitmap) {
     return FALSE;
@@ -1786,11 +1735,9 @@ BOOL CamResource::Splash() {
 			  wxDefaultPosition,
 			  wxDefaultSize,
 			  wxNO_BORDER
-#if 0 && !defined (_DEBUG)
-			  | wxSTAY_ON_TOP // Only stay on top in
-			  // non-debug builds -
-			  // too annoying for
-			  // preinit debugging
+#if 0 && !defined (_DEBUG) | wxSTAY_ON_TOP
+ // Only stay on top in non-debug builds - too annoying for preinit
+ // debugging
 #endif
 			  );
   if (!pSplashScreen) {
@@ -1801,8 +1748,7 @@ BOOL CamResource::Splash() {
 }
 #endif	// EXCLUDE_FROM_XARLIB
 
-/********************************************************************************************
-
+/***************************************************************************
 >	static BOOL CamResource::DoneInit(BOOL CanYield=TRUE)
 
 
@@ -1811,33 +1757,33 @@ BOOL CamResource::Splash() {
 	Inputs:		None
 	Outputs:	None
 	Returns:	TRUE if succeeded, FALSE if fails
-	Purpose:	Signals to the resouce system initialization is completed. The splah
-				screen can thus be removed
+	Purpose:        Signals to the resouce system initialization is
+			completed. The splah screen can thus be
+			removed
 	Errors:		via wxMessageBox
 	SeeAlso:	-
+***************************************************************************/
 
-********************************************************************************************/
-
-BOOL CamResource::DoneInit(BOOL CanYield /*=TRUE*/)
-{
-	TRACET(_T("CamResource::DoneInit() called"));
+BOOL CamResource::DoneInit(BOOL CanYield /*=TRUE*/) {
+  TRACET(_T("CamResource::DoneInit() called"));
 #if !defined(EXCLUDE_FROM_XARLIB)
-	if (pSplashScreen)
-	{
-        if (CanYield)
-			::wxYield();
-		pSplashScreen->Destroy();
-		pSplashScreen = NULL;
-		if (CanYield)
-	        ::wxYield();
-	}
-	if (pSplashBitmap)
-	{
-		delete (pSplashBitmap);
-		pSplashBitmap = NULL;
-	}
+  if (pSplashScreen && CanYield) {
+    ::wxYield();
+  }
+  // make sure we weren't destroyed during yield.
+  if (pSplashScreen) {
+    pSplashScreen->Destroy();
+    pSplashScreen = NULL;
+    if (CanYield) {
+      ::wxYield();
+    }
+  }
+  if (pSplashBitmap) {
+    delete (pSplashBitmap);
+    pSplashBitmap = NULL;
+  }
 #endif	// EXCLUDE_FROM_XARLIB
-	return TRUE;
+  return TRUE;
 }
 
 /********************************************************************************************
@@ -1874,13 +1820,12 @@ our Close mechanism, or let the destructor take its course.
 
 ********************************************************************************************/
 
-CamResource::CamResource()
-{
-	Size = 0;
-	pMemory = NULL;
-	pFile = NULL;
-	pwxFSFile = NULL;
-	return;
+CamResource::CamResource() {
+  Size = 0;
+  pMemory = NULL;
+  pFile = NULL;
+  pwxFSFile = NULL;
+  return;
 }
 
 
@@ -1921,25 +1866,22 @@ CamResource::~CamResource()
 
 ********************************************************************************************/
 
-void CamResource::Close()
-{
-	if (pFile)
-	{
-		pFile->close();
-		delete (pFile);
-		pFile = NULL;
-	}
-
-	if (pwxFSFile)
-	{
-		delete (pwxFSFile);
-		pwxFSFile=NULL;
-	}
-
-	if (pMemory) free(pMemory);
-	pMemory = NULL;
-
-	Size = 0; // leave in tidy state
+void CamResource::Close() {
+  if (pFile) {
+    pFile->close();
+    delete (pFile);
+    pFile = NULL;
+  }
+  if (pwxFSFile) {
+    delete (pwxFSFile);
+    pwxFSFile=NULL;
+  }
+  if (pMemory) {
+    free(pMemory);
+  }
+  pMemory = NULL;
+   // leave in tidy state
+  Size = 0;
 }
 
 /********************************************************************************************
@@ -1996,7 +1938,7 @@ CCLexFile * CamResource::Open( const TCHAR * pFileName, BOOL ErrorReporting, BOO
 
 	memset(newmem, 0, newsize);
 	pStream->Read(newmem, newsize); // throws exceptions if can't read
-	
+
 	delete (pTwxFSFile);	// which closes it
 
 	CCMemFile * pMemFile=new CCMemFile (newmem, newsize, CCMemRead, ErrorReporting, ExceptionThrowing);
@@ -2036,30 +1978,25 @@ CCLexFile * CamResource::Open( ResourceID ID, BOOL ErrorReporting, BOOL Exceptio
 	return Open(GetText(ID), (BOOL) ErrorReporting, (BOOL) ExceptionThrowing);
 }
 
-/********************************************************************************************
-
+/**************************************************************************
 >	wxFSFile * CamResource::OpenwxFSFile( ResourceID ID);
-
 
 	Author:		Alex_Bligh <alex@alex.org.uk>
 	Created:	02/12/2005
 	Inputs:		ResourceID of the file in question
 	Outputs:	-
-	Returns:	Pointer to the open file stream, or NULL for a failure
+	Returns:	Pointer to the open file stream, or NULL for failure
 	Purpose:	Return a pointer to the open file
 	Errors:		-
 	SeeAlso:	-
-
-********************************************************************************************/
+***************************************************************************/
 
 wxFSFile* CamResource::OpenwxFSFile(ResourceID id) {
 	return OpenwxFSFile(GetText(id));
 }
 
-/********************************************************************************************
-
+/***************************************************************************
 >	wxFSFile * CamResource::OpenwxFSFile( const TCHAR * pFileName );
-
 
 	Author:		Alex_Bligh <alex@alex.org.uk>
 	Created:	02/12/2005
@@ -2069,20 +2006,17 @@ wxFSFile* CamResource::OpenwxFSFile(ResourceID id) {
 	Purpose:	Return a pointer to the open file
 	Errors:		-
 	SeeAlso:	-
-
-********************************************************************************************/
+***************************************************************************/
 
 wxFSFile* CamResource::OpenwxFSFile(const TCHAR * pFileName) {
   wxFSFile* pTwxFSFile =
     pwxFileSystem->OpenFile(GetResourceFilePath(pFileName));
-  if (!pTwxFSFile)
-    {
-      return NULL;
-    }
-  pwxFSFile=pTwxFSFile;
+  if (!pTwxFSFile) {
+    return NULL;
+  }
+  pwxFSFile = pTwxFSFile;
   return pwxFSFile;
 }
-
 
 #if !defined(EXCLUDE_FROM_XARLIB)
 
@@ -2093,7 +2027,7 @@ wxFSFile* CamResource::OpenwxFSFile(const TCHAR * pFileName) {
 	Author:		Alex_Bligh <alex@alex.org.uk>
 	Created:	02/12/2005
 	Inputs:		Image - Image to make grey
-	Outputs:	
+	Outputs:
 	Returns:	-
 	Purpose:	Static function to grey an image
 	Errors:		-
@@ -2114,7 +2048,7 @@ void CamResource::MakeGreyImage (wxImage & rImage)
 
 	UINT8 * p = rImage.GetData();
 	UINT8 * alpha = rImage.GetAlpha();
-	
+
 	INT32 w=rImage.GetWidth();
 	INT32 h=rImage.GetHeight();
 
@@ -2169,7 +2103,7 @@ void CamResource::MakeGreyImage (wxImage & rImage)
 	Author:		Alex_Bligh <alex@alex.org.uk>
 	Created:	02/12/2005
 	Inputs:		Image - Image to make hot
-	Outputs:	
+	Outputs:
 	Returns:	-
 	Purpose:	Static function to make a hot version of an image
 	Errors:		-
@@ -2192,7 +2126,7 @@ void CamResource::MakeHotImage (wxImage & rImage)
 
 	UINT8 * p = rImage.GetData();
 	UINT8 * alpha = rImage.GetAlpha();
-	
+
 	INT32 w=rImage.GetWidth();
 	INT32 h=rImage.GetHeight();
 
@@ -2218,35 +2152,73 @@ void CamResource::MakeHotImage (wxImage & rImage)
 
 }
 
-/********************************************************************************************
+/***************************************************************************
+>	static BOOL CamResource::GetImageType (wxString fileName)
 
->	static BOOL CamResource::LoadwxImage (wxImage & rImage, const TCHAR * pFileName, BOOL Grey=FALSE)
+	Author:
+	Created:	02/12/2005
+	Inputs:		fileName - Image to alter. pFileName - pointer to the LEAF filename
+				Grey - to grey the image
+	Outputs:
+	Returns:	Success or otherwise
+	Purpose:	Static function to load a bitmap
+	Errors:		-
+	SeeAlso:	-
+***************************************************************************/
+
+wxBitmapType CamResource::GetImageTypeFromFileName(wxString fileName) {
+  if (!fileName.AfterLast('.').CmpNoCase("png")) {
+    return wxBITMAP_TYPE_PNG;
+  } else if (!fileName.AfterLast('.').CmpNoCase("bmp")) {
+    return wxBITMAP_TYPE_BMP;
+  } else if (!fileName.AfterLast('.').CmpNoCase("ico")) {
+    return wxBITMAP_TYPE_ICO;
+  } else if (!fileName.AfterLast('.').CmpNoCase("cur")) {
+    return wxBITMAP_TYPE_CUR;
+  } else if (!fileName.AfterLast('.').CmpNoCase("xpm")) {
+    return wxBITMAP_TYPE_XPM;
+  } else if (!fileName.AfterLast('.').CmpNoCase("gif")) {
+    return wxBITMAP_TYPE_GIF;
+  } else {
+    return wxBITMAP_TYPE_ANY;
+  }
+}
+
+/***************************************************************************
+>	static BOOL CamResource::LoadwxImage (wxImage& rImage,
+                                              const TCHAR* pFileName,
+                                              BOOL Grey=FALSE)
 
 	Author:		Alex_Bligh <alex@alex.org.uk>
 	Created:	02/12/2005
 	Inputs:		Image - Image to alter. pFileName - pointer to the LEAF filename
 				Grey - to grey the image
-	Outputs:	
+	Outputs:
 	Returns:	Success or otherwise
 	Purpose:	Static function to load a bitmap
 	Errors:		-
 	SeeAlso:	-
+***************************************************************************/
 
-********************************************************************************************/
-
-BOOL CamResource::LoadwxImage (wxImage & rImage, const TCHAR * pFileName, BOOL Grey)
-{
-	CamResource Resource;
-	wxFSFile* f=Resource.OpenwxFSFile(pFileName);
-	if (!f) return FALSE;
-	wxInputStream * pStream=f->GetStream();
-	if (!pStream) return FALSE;
-	if (!rImage.LoadFile(*pStream, wxBITMAP_TYPE_ANY)) return FALSE;
-
-	// Grey the image if required
-	if (Grey) MakeGreyImage(rImage);
-
-	return TRUE;
+BOOL CamResource::LoadwxImage (wxImage & rImage, const TCHAR * pFileName,
+			       BOOL Grey) {
+  CamResource resource;
+  wxFSFile* f = resource.OpenwxFSFile(pFileName);
+  if (!f) {
+    return FALSE;
+  }
+  wxInputStream* pStream = f->GetStream();
+  if (!pStream) {
+    return FALSE;
+  }
+  if (!rImage.LoadFile(*pStream, GetImageTypeFromFileName(pFileName))) {
+    return FALSE;
+  }
+  // Grey the image if required
+  if (Grey) {
+    MakeGreyImage(rImage);
+  }
+  return TRUE;
 }
 
 /********************************************************************************************
@@ -2257,7 +2229,7 @@ BOOL CamResource::LoadwxImage (wxImage & rImage, const TCHAR * pFileName, BOOL G
 	Created:	02/12/2005
 	Inputs:		Image - Image to alter. pFileName - pointer to the LEAF filename
 				Grey - to Grey the image
-	Outputs:	
+	Outputs:
 	Returns:	Success or otherwise
 	Purpose:	Static function to load a bitmap
 	Errors:		-
@@ -2288,7 +2260,6 @@ BOOL CamResource::LoadwxBitmap (wxBitmap & rBitmap, const TCHAR * pFileName, BOO
 	// Load strings into our string table
 	// InitStringTable();
 
-
 	// Calculate the absolute path to resources
 	m_strResourcePath = argv[0];
 #if defined(__WXMSW__)
@@ -2300,7 +2271,7 @@ BOOL CamResource::LoadwxBitmap (wxBitmap & rBitmap, const TCHAR * pFileName, BOO
 		m_strResourcePath = m_strResourcePath.BeforeLast( _T('/') ) + _T("/Resources/");
 	{
 		wxString	strRes( m_strResourcePath + _T("deffill.bmp") );
-		
+
 #if 0 == wxUSE_UNICODE
 		FILE *fpResFile = _tfopen( (const TCHAR *)strRes.c_str(), "rb");
 #else
@@ -2309,19 +2280,16 @@ BOOL CamResource::LoadwxBitmap (wxBitmap & rBitmap, const TCHAR * pFileName, BOO
 		size_t				cchTmp = camWcstombs( NULL, strRes.c_str(), 0 ) + 1;
 		PSTR				pszTmp = PSTR( alloca( cchTmp ) );
 		camWcstombs( pszTmp, strRes.c_str(), cchTmp );
-	
-		FILE *fpResFile = fopen( pszTmp, "rb" );
+		FILE *fpResFile = fopen(pszTmp, "rb");
 #endif
-
-		if( NULL == fpResFile )
-		{
+		if( NULL == fpResFile ) {
 			wxMessageBox( _T("In order for the  toolbar resources to be locatable "
 				"you must either run the XaraLX executable from the current directory or "
 				"specify the entire path to it."), _T("Resource loading error") );
-			
+
 			return FALSE;
 		}
-		
+
 		fclose( fpResFile );
 	}
 #endif

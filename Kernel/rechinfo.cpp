@@ -220,7 +220,7 @@ BOOL DocInfoRecordHandler::HandleRecord(CXaraFileRecord* pCXaraFileRecord)
 
 		default:
 			ok = FALSE;
-			ERROR3_PF(("DocInfoRecordHandler::HandleRecord I don't handle records with the tag (%d)\n",Tag));
+			ERROR3_PF((_T("DocInfoRecordHandler::HandleRecord I don't handle records with the tag (%d)\n"),Tag));
 			break;
 	}
 

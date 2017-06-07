@@ -506,12 +506,14 @@ private:
 
 	static wxString UserName;
 
-	static void TraceWrite(const TCHAR * buf, va_list args);
+	static void TraceWrite(wxString buf, va_list args);
 	static void FixFormat (const TCHAR * fmt, TCHAR * fmt2);
 #if 0 != wxUSE_UNICODE
-	// In UNICODE builds ONLY we allow an additional char * version of which copes with old code
-	// that does ERROR3PF("foo", ...), not ERROR3PF(_T("foo", ....). We don't include these
-	// in the non-Unicode version as they clash with the TCHAR stuff
+	// In UNICODE builds ONLY we allow an additional char *
+	// version of which copes with old code that does
+	// ERROR3PF("foo", ...), not ERROR3PF(_T("foo", ....). We
+	// don't include these in the non-Unicode version as they
+	// clash with the TCHAR stuff
 	static void FixFormat (const char * fmt, TCHAR * fmt2);
 #endif
 
@@ -566,28 +568,42 @@ public:
 	static void CDECL XSetErrorC();
 	static void CDECL XSetError(const TCHAR *fmt, ...);
 #if 0 != wxUSE_UNICODE
-	// In UNICODE builds ONLY we allow an additional char * version of which copes with old code
-	// that does ERROR3PF("foo", ...), not ERROR3PF(_T("foo", ....). We don't include these
-	// in the non-Unicode version as they clash with the TCHAR stuff
+	// In UNICODE builds ONLY we allow an additional char *
+	// version of which copes with old code that does
+	// ERROR3PF("foo", ...), not ERROR3PF(_T("foo", ....). We
+	// don't include these in the non-Unicode version as they
+	// clash with the TCHAR stuff
 	static void CDECL XSetError(const char *fmt, ...);
 #endif
 	static void CDECL XSetError(UINT32, ...);
 	static void CDECL ReleaseTrace(LPCTSTR, ...);
-#ifdef _DEBUG
 	static void CDECL XComplain(const TCHAR* fmt, ...);
 # if 0 != wxUSE_UNICODE
-	// In UNICODE builds ONLY we allow an additional char * version of which copes with old code
-	// that does ERROR3PF("foo", ...), not ERROR3PF(_T("foo", ....). We don't include these
-	// in the non-Unicode version as they clash with the TCHAR stuff
-	static void CDECL XComplain(const char* fmt, ...);
+	// In UNICODE builds ONLY we allow an additional char *
+	// version of which copes with old code that does
+	// ERROR3PF("foo", ...), not ERROR3PF(_T("foo", ....). We
+	// don't include these in the non-Unicode version as they
+	// clash with the TCHAR stuff
+	// static void CDECL XComplain(const char* fmt, ...);
+# endif
+
+	
+#ifdef _DEBUG
+# if 0 != wxUSE_UNICODE
+	// In UNICODE builds ONLY we allow an additional char *
+	// version of which copes with old code that does
+	// ERROR3PF("foo", ...), not ERROR3PF(_T("foo", ....). We
+	// don't include these in the non-Unicode version as they
+	// clash with the TCHAR stuff
+	// static void CDECL XComplain(const char* fmt, ...);
 # endif
 	static void CDECL TraceUser(const char *, LPCTSTR, ...);
-	static void CDECL TraceAll(LPCTSTR, ...);
+	static void CDECL TraceAll(wxString, ...);
 	static void CDECL TraceTime(const TCHAR * t);
 #else
 	static void CDECL TraceUser(const char *, LPCTSTR, ...) { }
-	static void CDECL TraceAll(LPCTSTR, ...) { }
-	static void CDECL TraceTime(const TCHAR *) { }
+	static void CDECL TraceAll(wxString, ...) { }
+	static void CDECL TraceTime(const TCHAR*) { }
 #endif
 
 	// Stack walking stuff
@@ -763,39 +779,60 @@ UINT32 Error::GetErrorModule()
 #define	ERROR2_PF( retvalue, args )					do { MARKWHERE; Error::XSetError args ; return (retvalue); } while(0)
 #define	ERROR2IF_PF( condition, retvalue, args )	do { if (condition) ERROR2_PF( retvalue, args ); } while (0)
 
-#define	ERROR3(literal)								do { MARKWHERE; Error::XComplain( literal ); } while(0)
+#define	ERROR3(literal) do { MARKWHERE; Error::XComplain((TCHAR*)literal ); } while(0)
 
 #define	ERROR3IF(condition, literal) do { if (condition) ERROR3(literal); } while(0)
 
 #define	ERROR3_PF(args)								do { MARKWHERE; Error::XComplain args; } while(0)
-#define	ERROR3IF_PF(condition, args)				do { if (condition) ERROR3_PF(args); } while(0)
-#define	TRACEUSER									Error::TraceUser
-#define	TRACEALL									TRACE
-#define RELTRACE									Error::ReleaseTrace
-#define TRACE										Error::TraceAll
-#define TRACET										Error::TraceTime
-#define TRACE0										Error::TraceAll
-#define ASSERT										wxASSERT
+
+#define	ERROR3IF_PF(condition, args) \
+  do { if (condition) ERROR3_PF(args); } while(0)
+
+#define	TRACEUSER Error::TraceUser
+#define	TRACEALL TRACE
+#define RELTRACE Error::ReleaseTrace
+#define TRACE Error::TraceAll
+#define TRACET Error::TraceTime
+#define TRACE0 Error::TraceAll
+#define ASSERT wxASSERT
 
 #else // _DEBUG
 
 #define	ERROR2RAW( literal )						do { MARKWHERE; Error::XSetErrorC(); } while(0)
 #define	ERROR2( retvalue, literal )					do { MARKWHERE; Error::XSetErrorC(); return (retvalue); } while(0)
 #define	ERROR2IF( condition, retvalue, literal )	do { if (condition) ERROR2( retvalue, literal ); } while(0)
-#define	ERROR2_PF( retvalue, args )					do { MARKWHERE; Error::XSetError args ; return (retvalue); } while(0)
-#define	ERROR2IF_PF( condition, retvalue, args )	do { if (condition) ERROR2_PF( retvalue, args ); } while(0)
 
-#define	ERROR3(literal)								do { } while (0)
-#define	ERROR3IF(condition, literal)				do { } while (0)
-#define	ERROR3_PF(args)								do { } while (0)
-#define	ERROR3IF_PF(condition, args)				do { } while (0)
-#define TRACEUSER									1 ? (void)0 : Error::TraceUser
-#define	TRACEALL									TRACE
-#define RELTRACE									Error::ReleaseTrace
+#define	ERROR2_PF(retvalue, args) \
+  do { MARKWHERE; Error::XSetError args ; return (retvalue); } while(0)
 
-#define TRACE										1 ? (void)0 : Error::TraceAll
-#define TRACE0										1 ? (void)0 : Error::TraceAll
-#define TRACET										1 ? (void)0 : Error::TraceAll
+#define	ERROR2IF_PF(condition, retvalue, args) \
+  do { if (condition) ERROR2_PF(retvalue, args); } while(0)
+
+#define	ERROR3(literal) \
+  do { } while (0)
+
+#define	ERROR3IF(condition, literal) \
+  do { } while (0)
+
+#define	ERROR3_PF(args)				\
+  do { } while (0)
+
+#define	ERROR3IF_PF(condition, args) \
+  do { } while (0)
+
+#define TRACEUSER 1 ? (void)0 : Error::TraceUser
+#define	TRACEALL TRACE
+#define RELTRACE Error::ReleaseTrace
+
+#define TRACE \
+  1 ? (void)0 : Error::TraceAll
+
+#define TRACE0 \
+  1 ? (void)0 : Error::TraceAll
+
+#define TRACET					\
+  1 ? (void)0 : Error::TraceAll
+
 // #define ASSERT(condition)							do { } while (0)
 #define ASSERT(expr) do { (void)(expr); } while (0)
 

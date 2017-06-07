@@ -287,7 +287,7 @@ String_256 PrintControl::BuildPrintInfoStr()
 		case PRINTFIT_CUSTOM:	Str = String_256(_R(IDS_PRINT_CUSTOMFIT)); 	break;
 		case PRINTFIT_MULTIPLE:	Str = String_256(_R(IDS_PRINT_MULTIPLEFIT));break;
 		case PRINTFIT_BESTPAPER:Str = String_256(_R(IDS_PRINT_BESTFITPAPER)); 	break;
-		default: ERROR3_PF(("Unknown fit type (%d)",FitType)); break;
+	default: ERROR3_PF((_T("Unknown fit type (%d)"),FitType)); break;
 	}
 
 	const TCHAR* format = _T("%.2lf%%");
@@ -307,7 +307,7 @@ String_256 PrintControl::BuildPrintInfoStr()
 	{
 		case PRINTORIENTATION_UPRIGHT:	Str += String_256(_R(IDS_PRINT_UPRIGHT));	break;
 		case PRINTORIENTATION_SIDEWAYS:	Str += String_256(_R(IDS_PRINT_SIDEWAYS));	break;
-		default: ERROR3_PF(("Unknown orientation (%d)",Orient)); break;
+	default: ERROR3_PF((_T("Unknown orientation (%d)"),Orient)); break;
 	}
 
 	// If no print area set up, then assume we have no printer connected
@@ -1246,7 +1246,7 @@ BOOL PrintControl::CalcFit()
 			break;
 
 		default:
-			ERROR3_PF(("Unknown fit type (%d)",FitType));
+		  ERROR3_PF((_T("Unknown fit type (%d)"),FitType));
 			IgnoreCall = FALSE;
 			return FALSE;
 	}
@@ -2165,7 +2165,7 @@ BOOL PrintControl::GetNextPatch(PrintPatchInfo* pPatchInfo)
 			break;
 
 			default:
-				ERROR3_PF(("Unknown fit type : %d",FitType));
+			  ERROR3_PF((_T("Unknown fit type : %d"),FitType));
 				break;
 		}
 
@@ -2469,7 +2469,7 @@ void PrintControl::RenderPrintBorder(RenderRegion* pRRegion)
 			break;
 
 		default:
-			ERROR3_PF(("Unknown fit type (%d)",FitType));
+		  ERROR3_PF((_T("Unknown fit type (%d)"),FitType));
 			break;
 	}
 

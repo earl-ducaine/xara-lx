@@ -98,7 +98,7 @@ service marks of Xara Group Ltd. All rights in these marks are reserved.
 
 // Contains useful routines for compressing a bitmap out to a PNG format file and
 // routines to load that file back in.
-
+#define PNG_PEDANTIC_WARNINGS 1
 #include "camtypes.h"
 #include "pngutil.h"
 #include "pngprgrs.h"
@@ -225,396 +225,349 @@ PNGUtil::~PNGUtil()
 BOOL PNGUtil::ReadFromFile( CCLexFile *File, LPBITMAPINFO *Info, LPBYTE *Bits,
 							INT32 *TransColour,
 							String_64 *ProgressString,
-							BaseCamelotFilter *pFilter)
-{
-	TRACEUSER( "Jonathan", _T("PNG read: Start\n"));
-	*Info = NULL;		// in case of early exit
-	*Bits = NULL;
-	pFile = File;
-	Transparent 	= -1;
-	*TransColour 	= -1;	// in case of early exit set to none
+			    BaseCamelotFilter *pFilter) {
+  TRACEUSER( "Jonathan", _T("PNG read: Start\n"));
+  // in case of early exit
+  *Info = NULL;
+  *Bits = NULL;
+  pFile = File;
+  Transparent 	= -1;
+  // in case of early exit set to none
+  *TransColour 	= -1;
+  UINT32 sig_read = 0;
+  png_uint_32 width, height;
+  INT32 bit_depth, color_type, interlace_type;
+  BOOL OldThrowingState = File->SetThrowExceptions( TRUE );
+  BOOL OldReportingState = File->SetReportErrors( FALSE );
+  // Must be zero to avoid bad free in case of exception
+  png_structp png_ptr = 0;
+  // Must be zero to avoid bad free in case of exception
+  png_infop info_ptr = 0;
+  png_bytepp ppbRowPointers= 0;	// Must be zero to avoid bad free in case of exception
+  try {
+    // Create and initialize the png_struct with the desired error
+    // handler functions.  If you want to use the default stderr and
+    // longjump method, you can supply NULL for the last three
+    // parameters.  We also supply the the compiler header file
+    // version, so that we know if the application was compiled with a
+    // compatible version of the library.  REQUIRED
+    //
+    // From libpng-1.2.57.txt
+    //
+    //   png_structp png_ptr = png_create_read_struct_2
+    //     (PNG_LIBPNG_VER_STRING, (png_voidp)user_error_ptr,
+    //      user_error_fn, user_warning_fn, (png_voidp)
+    //      user_mem_ptr, user_malloc_fn, user_free_fn);
+    png_ptr =
+      png_create_read_struct_2(PNG_LIBPNG_VER_STRING, 0, camelot_png_error,
+			       camelot_png_warning, 0, camelot_png_malloc,
+			       camelot_png_free);
+    if (png_ptr == NULL) {
+      File->GotError( _R(IDS_OUT_OF_MEMORY) );
+    }
+    // Allocate/initialize the memory for image information.  REQUIRED.
+    info_ptr = png_create_info_struct(png_ptr);
+    if (info_ptr == NULL)
+      {
+	png_destroy_read_struct(&png_ptr, (png_infopp)NULL, (png_infopp)NULL);
+	File->GotError( _R(IDS_OUT_OF_MEMORY) );
+      }
+    /* Set up the input control if you are using standard C streams */
+    iostream* pFStream = File->GetIOFile();
+    // Should use our own IO functions eg.
+    png_set_read_fn(png_ptr, pFStream, camelot_png_read_data);
+    //   png_init_io(png_ptr, pFStream);
+    /* If we have already read some of the signature */
+    // Not sure about this - JP
+    png_set_sig_bytes(png_ptr, sig_read);
+    /* The call to png_read_info() gives us all of the information from the
+     * PNG file before the first IDAT (image data chunk).  REQUIRED */
+    png_read_info(png_ptr, info_ptr);
+    png_get_IHDR(png_ptr, info_ptr, &width, &height, &bit_depth, &color_type,
+		 &interlace_type, NULL, NULL);
+    TRACEUSER( "Jonathan", _T("PNG read: Start transforms: %d channels of %d bits\n"),
+	       png_get_channels(png_ptr, info_ptr),
+	       png_get_bit_depth(png_ptr, info_ptr));
+    /* tell libpng to strip 16 bit/color files down to 8 bits/color */
+    png_set_strip_16(png_ptr);
+    /* Expand grayscale images to the full 8 bits from 1, 2, or 4 bits/pixel */
+    /* JP - Changed so just 2 bit images are expanded */
+    if (color_type == PNG_COLOR_TYPE_GRAY && bit_depth == 2)
+      png_set_expand(png_ptr);
+    /* Expand paletted images to the full 8 bits from 2 bits/pixel */
+    if (color_type == PNG_COLOR_TYPE_PALETTE && bit_depth == 2)
+      png_set_expand(png_ptr);
+    if (color_type == PNG_COLOR_TYPE_GRAY_ALPHA)
+      png_set_gray_to_rgb(png_ptr);
+    /* Note that screen gamma is the display_exponent, which includes
+     * the CRT_exponent and any correction for viewing conditions */
+    /* A good guess for a PC monitors in a dimly lit room is 2.2 */
+    const double screen_gamma = 2.2;
+    png_set_invert_alpha(png_ptr);
+    INT32 intent;
 
-	UINT32 sig_read = 0;
-	png_uint_32 width, height;
-	INT32 bit_depth, color_type, interlace_type;
+    if (png_get_sRGB(png_ptr, info_ptr, &intent)) {
+      png_set_gamma(png_ptr, screen_gamma, 0.45455);
+    } else {
+      double image_gamma;
+      if (png_get_gAMA(png_ptr, info_ptr, &image_gamma)) {
+	png_set_gamma(png_ptr, screen_gamma, image_gamma);
+      } else {
+	png_set_gamma(png_ptr, screen_gamma, 0.45455);
+      }
+    }
+    /* flip the RGB pixels to BGR (or RGBA to BGRA) */
+    if (color_type & PNG_COLOR_MASK_COLOR) {
+      png_set_bgr(png_ptr);
+    }
+    /* Scan the palletes */
+    png_colorp pPalette;
+    INT32 num_palette;
+    if (png_get_valid(png_ptr, info_ptr, PNG_INFO_PLTE)) {
+      png_get_PLTE(png_ptr, info_ptr, &pPalette, &num_palette);
+    }
+    // TRACEUSER( "Jonathan", _T("PNG read: Number of palette colours = %d\n"), num_palette);
+    png_bytep pTrans;
+    INT32 num_trans = 0; // if the 'if' statement is falue 0 is the correct value
+    png_color_16p trans_values;
+    if (png_get_valid(png_ptr, info_ptr, PNG_INFO_tRNS)) {
+      png_get_tRNS(png_ptr, info_ptr, &pTrans, &num_trans, &trans_values);
+    }
+    TRACEUSER( "Jonathan", _T("PNG read: Number of transparent colours = %d\n"), num_trans);
+    /* Take a look at the transparency list and see it there is only one
+       colour which is not opaque and that that colour is fully transparent
+       (so the exported bitmap can have one-bit transparency).  If this
+       condition is not meet, convert the bitmap up to full alpha transparency
+       (should really give a bitmap that has paletted RGBA but the interface
+       to the PNG stuff appears to limit our options).
 
-   	BOOL OldThrowingState = File->SetThrowExceptions( TRUE );
-	BOOL OldReportingState = File->SetReportErrors( FALSE );
+       Warning: If the PNG reading code is asked for 256 colour with a
+       transparent colour, it must do this, otherwise the export dialog
+       will go wrong when it re-imports the file for preview as it can not find
+       a palette. */
 
-	png_structp png_ptr		= 0;	// Must be zero to avoid bad free in case of exception
-	png_infop info_ptr		= 0;	// Must be zero to avoid bad free in case of exception
+    if (png_get_bit_depth(png_ptr, info_ptr) * png_get_channels(png_ptr, info_ptr) <= 8
+	&& png_get_color_type(png_ptr, info_ptr) == PNG_COLOR_TYPE_PALETTE) {
+      if (num_trans > 0) {
+	// See if the palette has the format
+	//		Opaque (=256)
+	//		Opaque (=256)
+	//		Opaque (=256)
+	//		....
+	//		Fully transparent (=0)
+	//	so we can use a one bit transparency paletted RGB image
+	INT32 i = 0;
+	png_byte * pCurrentTransEntry = pTrans;
 
-	png_bytepp ppbRowPointers= 0;	// Must be zero to avoid bad free in case of exception
+	// Scan throught opaque entrys
+	while (i <= num_trans && pCurrentTransEntry[i] == 255)
+	  i++;
 
-	try {
-	/* Create and initialize the png_struct with the desired error handler
-    * functions.  If you want to use the default stderr and longjump method,
-    * you can supply NULL for the last three parameters.  We also supply the
-    * the compiler header file version, so that we know if the application
-    * was compiled with a compatible version of the library.  REQUIRED
-		*/
-		//   png_ptr = png_create_read_struct(PNG_LIBPNG_VER_STRING,
-		//      png_voidp user_error_ptr, user_error_fn, user_warning_fn);
-		png_ptr = png_create_read_struct_2(
-			PNG_LIBPNG_VER_STRING,	// Version of libpng
-			0,						// Optional pointer to be sent with errors
-			camelot_png_error,		// Function called in case of error
-			camelot_png_warning,		// Function called for warnings
-			0,						// Optional pointer to be sent with mem ops
-			camelot_png_malloc,		// Function called to alloc memory
-			camelot_png_free			// Function called to free memory
-			);
+	// This looks like a good bet for transparent colour
+	if (pCurrentTransEntry[i] == 0)
+	  *TransColour = i;
 
-		if (png_ptr == NULL)
-			File->GotError( _R(IDS_OUT_OF_MEMORY) );
+	// Check any entrys after this to make sure they are not transparent
+	if (i < num_trans)
+	  i++;
 
-		/* Allocate/initialize the memory for image information.  REQUIRED. */
-		info_ptr = png_create_info_struct(png_ptr);
-		if (info_ptr == NULL)
-		{
-			png_destroy_read_struct(&png_ptr, (png_infopp)NULL, (png_infopp)NULL);
-			File->GotError( _R(IDS_OUT_OF_MEMORY) );
-		}
+	while (i <= num_trans && pCurrentTransEntry[i] == 255)
+	  i++;
 
-		/* Set up the input control if you are using standard C streams */
-		iostream* pFStream = File->GetIOFile();
-		// Should use our own IO functions eg.
-		png_set_read_fn(png_ptr, pFStream, camelot_png_read_data);
-		//   png_init_io(png_ptr, pFStream);
+	// Check we got to the end of the palette without finding any other
+	// transparent colours
+	if (i != num_trans)
+	  {
+	    // There are other transparent colours so convert to RGBA
+	    *TransColour = -1;
 
-		/* If we have already read some of the signature */
-		// Not sure about this - JP
-		png_set_sig_bytes(png_ptr, sig_read);
+	    // Expand paletted or RGB images with transparency to full alpha channels
+	    // so the data will be available as RGBA quartets.
+	    if (png_get_valid(png_ptr, info_ptr, PNG_INFO_tRNS))
+	      png_set_expand(png_ptr);
+	    TRACEUSER( "Jonathan", _T("PNG read: Transparency: Converted to RGBA as there where multiple transparent colours\n"));
+	  }
+	else
+	  {
+	    TRACEUSER( "Jonathan", _T("PNG read: Transparency: Only one transparent colour so keep the images as paletted\n"));
+	  }
+      } else {
+	TRACEUSER( "Jonathan", _T("PNG read: Transparency: No work needed as no transparency\n"));
+      }
+    } else {
+      TRACEUSER( "Jonathan", _T("PNG read: Transparency: No work needed as no palette\n"));
+    }
+    TRACEUSER( "Jonathan", _T("PNG read: transparent colour = %d\n"), *TransColour);
+    Transparent = *TransColour;
+    /* Optional call to gamma correct and add the background to the palette
+     * and update info structure.  REQUIRED if you are expecting libpng to
+     * update the palette for you (ie you selected such a transform above). */
+    png_read_update_info(png_ptr, info_ptr);
+    /* Turn on interlace handling.  REQUIRED if you are not using
+     * png_read_image().  To see how to handle interlacing passes,
+     * see the png_read_row() method below: */
+    //   INT32 number_passes = png_set_interlace_handling(png_ptr);
+    TRACEUSER( "Jonathan", _T("PNG read: End transforms: %d channels of %d bits\n"),
+	       png_get_channels(png_ptr, info_ptr),
+	       png_get_bit_depth(png_ptr, info_ptr));
+    /* Allocate the memory to hold the image using the fields of info_ptr. */
+    INT32 bits_per_pixel =
+      png_get_bit_depth(png_ptr, info_ptr) *
+      png_get_channels(png_ptr, info_ptr);
+    if (bits_per_pixel == 1 ||
+	bits_per_pixel == 4 ||
+	bits_per_pixel == 8 ||
+	bits_per_pixel == 16 ||
+	bits_per_pixel == 24 ||
+	bits_per_pixel == 32) {
+      *Info = AllocDIB(width, height, png_get_bit_depth(png_ptr, info_ptr) * png_get_channels(png_ptr, info_ptr), Bits, NULL);
+    } else {
+      // This should never happen!
+      File->GotError( _R(IDS_UNKNOWN_PNG_ERROR) );
+    }
+    if (*Info == NULL || *Bits == NULL) {
+      File->GotError(_R(IDS_OUT_OF_MEMORY));
+    }
+    /* Set the bitmap DPI */
+    png_uint_32 x_res, y_res;
+    INT32 unit_type;
+    png_get_pHYs(png_ptr, info_ptr, &x_res, &y_res, &unit_type);
+    TRACEUSER( "Jonathan", _T("PNG read: X dpi: %d, Y dpi %d, DPI type %d\n"),
+	       x_res, y_res, unit_type);
+    // If the unit type is in meters then use it
+    if (unit_type == PNG_RESOLUTION_METER) {
+      (*Info)->bmiHeader.biXPelsPerMeter = x_res;
+      (*Info)->bmiHeader.biYPelsPerMeter = y_res;
+    }
+    // Check if we require a palette if we are on low bpp images.
+    // If so then allocate one
+    if ((png_get_bit_depth(png_ptr, info_ptr) *
+	 png_get_channels(png_ptr, info_ptr) <=
+	 8)
+	&& (png_get_color_type(png_ptr, info_ptr) == PNG_COLOR_TYPE_PALETTE)) {
+      // Palette is at info_ptr->palette
+      png_get_IHDR(png_ptr, info_ptr, &width, &height, &bit_depth, &color_type,
+		   &interlace_type, NULL, NULL);
+      // TODO ed -- untested
+      // INT32 PaletteSize = 1 << info_ptr->bit_depth;
+      INT32 PaletteSize = 1 << bit_depth;
+      // Read in palette into the palette of the DIB
+      LPRGBQUAD lpPalette = (*Info)->bmiColors;
+      TRACEUSER( "Jonathan", _T("PNG read: allocate palette and copy size %d\n"),PaletteSize);
+      // Get our function to read the palette from the PNG
+      // definition to the one we are going to apply to the bitmap.
+      if (lpPalette == NULL ||
+	  !ReadColourMap(num_palette, pPalette, PaletteSize, lpPalette)) {
+	File->GotError(_R(IDS_PNG_ERR_READ_PALETTE)); // Should be bad palette error
+      }
+    } else if ((png_get_bit_depth(png_ptr, info_ptr) *
+		png_get_channels(png_ptr, info_ptr) <= 8)
+	       && (png_get_color_type(png_ptr, info_ptr) == PNG_COLOR_TYPE_GRAY)) {
+      // We have a greyscale image and so generate a greyscale palette
+      // Palette is at info_ptr->palette
+      // TODO ed -- untested
+      // INT32 PaletteSize = 1 << info_ptr->bit_depth;
+      INT32 PaletteSize = 1 << bit_depth;
+      TRACEUSER( "Jonathan",
+		 _T("PNG read: Greyscale, so set up a "
+		    "greyscale palette for the DIB size %d\n"),
+		 PaletteSize);
+      // Read in palette into the palette of the DIB
+      LPRGBQUAD lpPalette = (*Info)->bmiColors;
+      // Get our function to read the palette from the PNG definition
+      // to the one we are going to apply to the bitmap.
+      if (lpPalette == NULL || !GenerateGreyPalette(PaletteSize, lpPalette)) {
+	File->GotError( _R(IDS_PNG_ERR_READ_PALETTE) ); // Should be bad palette error
+      }
+    }
+    /* and allocate memory for an array of row-pointers */
+    if ((ppbRowPointers = (png_bytepp)
+	 png_malloc(png_ptr, (height) * sizeof(png_bytep))) ==
+	NULL) {
+      File->GotError(_R(IDS_OUT_OF_MEMORY));
+    }
+    // set the individual row-pointers to point at the correct offsets
+    UINT32 ulRowBytes = png_get_rowbytes(png_ptr, info_ptr);
+    /* make the row finish on a word boundry */
+    if (ulRowBytes % 4 != 0)
+      ulRowBytes += 4 - (ulRowBytes % 4);
 
-		/* The call to png_read_info() gives us all of the information from the
-		* PNG file before the first IDAT (image data chunk).  REQUIRED */
-		png_read_info(png_ptr, info_ptr);
-
-		png_get_IHDR(png_ptr, info_ptr, &width, &height, &bit_depth, &color_type,
-			&interlace_type, NULL, NULL);
-
-		TRACEUSER( "Jonathan", _T("PNG read: Start transforms: %d channels of %d bits\n"),
-			png_get_channels(png_ptr, info_ptr),
-			png_get_bit_depth(png_ptr, info_ptr));
-
-		/* tell libpng to strip 16 bit/color files down to 8 bits/color */
-		png_set_strip_16(png_ptr);
-
-		/* Expand grayscale images to the full 8 bits from 1, 2, or 4 bits/pixel */
-		/* JP - Changed so just 2 bit images are expanded */
-		if (color_type == PNG_COLOR_TYPE_GRAY && bit_depth == 2)
-			png_set_expand(png_ptr);
-
-		/* Expand paletted images to the full 8 bits from 2 bits/pixel */
-		if (color_type == PNG_COLOR_TYPE_PALETTE && bit_depth == 2)
-			png_set_expand(png_ptr);
-
-		if (color_type == PNG_COLOR_TYPE_GRAY_ALPHA)
-			png_set_gray_to_rgb(png_ptr);
-
-			/* Note that screen gamma is the display_exponent, which includes
-		* the CRT_exponent and any correction for viewing conditions */
-		/* A good guess for a PC monitors in a dimly lit room is 2.2 */
-		const double screen_gamma = 2.2;
-
-		png_set_invert_alpha(png_ptr);
-
-		INT32 intent;
-
-		if (png_get_sRGB(png_ptr, info_ptr, &intent))
-			png_set_gamma(png_ptr, screen_gamma, 0.45455);
-		else
-		{
-			double image_gamma;
-			if (png_get_gAMA(png_ptr, info_ptr, &image_gamma))
-				png_set_gamma(png_ptr, screen_gamma, image_gamma);
-			else
-				png_set_gamma(png_ptr, screen_gamma, 0.45455);
-		}
-
-		/* flip the RGB pixels to BGR (or RGBA to BGRA) */
-		if (color_type & PNG_COLOR_MASK_COLOR)
-			png_set_bgr(png_ptr);
-
-		/* Scan the palletes */
-		png_colorp pPalette;
-		INT32 num_palette;
-		if (png_get_valid(png_ptr, info_ptr, PNG_INFO_PLTE))
-			png_get_PLTE(png_ptr, info_ptr, &pPalette, &num_palette);
-
-//		TRACEUSER( "Jonathan", _T("PNG read: Number of palette colours = %d\n"), num_palette);
-
-		png_bytep pTrans;
-		INT32 num_trans = 0; // if the 'if' statement is falue 0 is the correct value
-		png_color_16p trans_values;
-		if (png_get_valid(png_ptr, info_ptr, PNG_INFO_tRNS))
-			png_get_tRNS(png_ptr, info_ptr, &pTrans, &num_trans, &trans_values);
-
-		TRACEUSER( "Jonathan", _T("PNG read: Number of transparent colours = %d\n"), num_trans);
-
-
-		/* Take a look at the transparency list and see it there is only one
-		colour which is not opaque and that that colour is fully transparent
-		(so the exported bitmap can have one-bit transparency).  If this
-		condition is not meet, convert the bitmap up to full alpha transparency
-		(should really give a bitmap that has paletted RGBA but the interface
-		to the PNG stuff appears to limit our options).
-
-		Warning: If the PNG reading code is asked for 256 colour with a
-		transparent colour, it must do this, otherwise the export dialog
-		will go wrong when it re-imports the file for preview as it can not find
-		a palette. */
-
-		if (
-			png_get_bit_depth(png_ptr, info_ptr) * png_get_channels(png_ptr, info_ptr) <= 8
-			&& png_get_color_type(png_ptr, info_ptr) == PNG_COLOR_TYPE_PALETTE
-			)
-		{
-			if (num_trans > 0)
-			{
-				// See if the palette has the format
-				//		Opaque (=256)
-				//		Opaque (=256)
-				//		Opaque (=256)
-				//		....
-				//		Fully transparent (=0)
-				//	so we can use a one bit transparency paletted RGB image
-				INT32 i = 0;
-				png_byte * pCurrentTransEntry = pTrans;
-
-				// Scan throught opaque entrys
-				while (i <= num_trans && pCurrentTransEntry[i] == 255)
-					i++;
-
-				// This looks like a good bet for transparent colour
-				if (pCurrentTransEntry[i] == 0)
-					*TransColour = i;
-
-				// Check any entrys after this to make sure they are not transparent
-				if (i < num_trans)
-					i++;
-
-				while (i <= num_trans && pCurrentTransEntry[i] == 255)
-					i++;
-
-				// Check we got to the end of the palette without finding any other
-				// transparent colours
-				if (i != num_trans)
-				{
-					// There are other transparent colours so convert to RGBA
-					*TransColour = -1;
-
-					// Expand paletted or RGB images with transparency to full alpha channels
-					// so the data will be available as RGBA quartets.
-					if (png_get_valid(png_ptr, info_ptr, PNG_INFO_tRNS))
-						png_set_expand(png_ptr);
-					TRACEUSER( "Jonathan", _T("PNG read: Transparency: Converted to RGBA as there where multiple transparent colours\n"));
-				}
-				else
-				{
-					TRACEUSER( "Jonathan", _T("PNG read: Transparency: Only one transparent colour so keep the images as paletted\n"));
-				}
-			}
-			else
-			{
-				TRACEUSER( "Jonathan", _T("PNG read: Transparency: No work needed as no transparency\n"));
-			}
-		}
-		else
-		{
-			TRACEUSER( "Jonathan", _T("PNG read: Transparency: No work needed as no palette\n"));
-		}
-
-		TRACEUSER( "Jonathan", _T("PNG read: transparent colour = %d\n"), *TransColour);
-
-		Transparent = *TransColour;
-
-		/* Optional call to gamma correct and add the background to the palette
-		* and update info structure.  REQUIRED if you are expecting libpng to
-		* update the palette for you (ie you selected such a transform above). */
-		png_read_update_info(png_ptr, info_ptr);
-
-		/* Turn on interlace handling.  REQUIRED if you are not using
-		* png_read_image().  To see how to handle interlacing passes,
-		* see the png_read_row() method below: */
-		//   INT32 number_passes = png_set_interlace_handling(png_ptr);
-
-
-		TRACEUSER( "Jonathan", _T("PNG read: End transforms: %d channels of %d bits\n"),
-			png_get_channels(png_ptr, info_ptr),
-			png_get_bit_depth(png_ptr, info_ptr));
-
-		/* Allocate the memory to hold the image using the fields of info_ptr. */
-		INT32 bits_per_pixel = png_get_bit_depth(png_ptr, info_ptr) * png_get_channels(png_ptr, info_ptr);
-		if (bits_per_pixel == 1 || bits_per_pixel == 4 || bits_per_pixel == 8 ||  bits_per_pixel == 16 || bits_per_pixel == 24 || bits_per_pixel == 32)
-			*Info = AllocDIB(width, height, png_get_bit_depth(png_ptr, info_ptr) * png_get_channels(png_ptr, info_ptr), Bits, NULL);
-		else
-			// This should never happen!
-			File->GotError( _R(IDS_UNKNOWN_PNG_ERROR) );
-
-		if (*Info == NULL || *Bits == NULL)
-			File->GotError( _R(IDS_OUT_OF_MEMORY) );
-
-		/* Set the bitmap DPI */
-		png_uint_32 x_res, y_res;
-		INT32 unit_type;
-		png_get_pHYs(png_ptr, info_ptr, &x_res, &y_res, &unit_type);
-		TRACEUSER( "Jonathan", _T("PNG read: X dpi: %d, Y dpi %d, DPI type %d\n"),
-			x_res, y_res, unit_type);
-
-		// If the unit type is in meters then use it
-		if (unit_type == PNG_RESOLUTION_METER)
-		{
-			(*Info)->bmiHeader.biXPelsPerMeter = x_res;
-			(*Info)->bmiHeader.biYPelsPerMeter = y_res;
-		}
-
-		// Check if we require a palette if we are on low bpp images.
-		// If so then allocate one
-		if (
-			png_get_bit_depth(png_ptr, info_ptr) * png_get_channels(png_ptr, info_ptr) <= 8
-			&& png_get_color_type(png_ptr, info_ptr) == PNG_COLOR_TYPE_PALETTE
-			)
-		{
-			// Palette is at info_ptr->palette
-			INT32 PaletteSize = 1 << info_ptr->bit_depth;
-			// Read in palette into the palette of the DIB
-			LPRGBQUAD lpPalette = (*Info)->bmiColors;
-			TRACEUSER( "Jonathan", _T("PNG read: allocate palette and copy size %d\n"),PaletteSize);
-
-			// Get our function to read the palette from the PNG definition to the one we are
-			// going to apply to the bitmap.
-			if (
-				lpPalette == NULL ||
-				!ReadColourMap(num_palette, pPalette, PaletteSize, lpPalette)
-				)
-			{
-				File->GotError( _R(IDS_PNG_ERR_READ_PALETTE) ); // Should be bad palette error
-			}
-		}
-		else if (png_get_bit_depth(png_ptr, info_ptr) * png_get_channels(png_ptr, info_ptr) <= 8
-			&& png_get_color_type(png_ptr, info_ptr) == PNG_COLOR_TYPE_GRAY)
-		{
-			// We have a greyscale image and so generate a greyscale palette
-			// Palette is at info_ptr->palette
-			INT32 PaletteSize = 1 << info_ptr->bit_depth;
-			TRACEUSER( "Jonathan", _T("PNG read: Greyscale, so set up a greyscale palette for the DIB size %d\n"),PaletteSize);
-			// Read in palette into the palette of the DIB
-			LPRGBQUAD lpPalette = (*Info)->bmiColors;
-			// Get our function to read the palette from the PNG definition to the one we are
-			// going to apply to the bitmap.
-			if (lpPalette == NULL || !GenerateGreyPalette(PaletteSize, lpPalette))
-				File->GotError( _R(IDS_PNG_ERR_READ_PALETTE) ); // Should be bad palette error
-		}
-
-		/* and allocate memory for an array of row-pointers */
-		if ((ppbRowPointers = (png_bytepp) png_malloc(png_ptr, (height) * sizeof(png_bytep))) == NULL)
-			File->GotError(_R(IDS_OUT_OF_MEMORY));
-
-		/* set the individual row-pointers to point at the correct offsets */
-		UINT32 ulRowBytes = png_get_rowbytes(png_ptr, info_ptr);
-
-		/* make the row finish on a word boundry */
-		if (ulRowBytes % 4 != 0)
-			ulRowBytes += 4 - (ulRowBytes % 4);
-
-		for (UINT32 i = 0; i < height; i++)
-			ppbRowPointers[height - 1 - i] = *Bits + i * ulRowBytes;
-
-		//bool interlace;
-		switch (png_get_interlace_type(png_ptr, info_ptr))
-		{
-		case PNG_INTERLACE_NONE:
-		  //interlace = false;
-			break;
-
-		case PNG_INTERLACE_ADAM7:
-		  //interlace = true;
-			break;
-
-		default:
-			File->GotError(_R(IDS_PNG_ERROR_BAD_INTERLACE));
-			break;
-		}
-
-		/* Set up the progress bar */
-PORTNOTE("other","PNGUtil::ReadFromFile - removed progressbar")
+    for (UINT32 i = 0; i < height; i++) {
+      ppbRowPointers[height - 1 - i] = *Bits + i * ulRowBytes;
+    }
+    //bool interlace;
+    switch (png_get_interlace_type(png_ptr, info_ptr))
+      {
+      case PNG_INTERLACE_NONE:
+	//interlace = false;
+	break;
+      case PNG_INTERLACE_ADAM7:
+	//interlace = true;
+	break;
+      default:
+	File->GotError(_R(IDS_PNG_ERROR_BAD_INTERLACE));
+	break;
+      }
+    /* Set up the progress bar */
+    PORTNOTE("other","PNGUtil::ReadFromFile - removed progressbar")
 #ifndef EXCLUDE_FROM_XARALX
-		PNGProgressBar ProgressBar(ProgressString, interlace, height);
-		png_progress_bar_read = &ProgressBar;
+      PNGProgressBar ProgressBar(ProgressString, interlace, height);
+    png_progress_bar_read = &ProgressBar;
 #endif
-		png_set_read_status_fn(png_ptr, camelot_png_read_row_callback);
-
-		/* now we can go ahead and just read the whole image */
-		png_read_image(png_ptr, ppbRowPointers);
-
+    png_set_read_status_fn(png_ptr, camelot_png_read_row_callback);
+    /* now we can go ahead and just read the whole image */
+    png_read_image(png_ptr, ppbRowPointers);
 #ifndef EXCLUDE_FROM_XARALX
-		png_progress_bar_read = 0;
+    png_progress_bar_read = 0;
 #endif
-
-		png_free(png_ptr, ppbRowPointers);
-
-		/* read rest of file, and get additional chunks in info_ptr - REQUIRED */
-		png_read_end(png_ptr, info_ptr);
-
-		/* At this point the entire image has been read */
-
-		/* clean up after the read, and free any memory allocated - REQUIRED */
-		png_destroy_read_struct(&png_ptr, &info_ptr, (png_infopp)NULL);
-
-		png_ptr = NULL;
-
-		/* Must set the exception throwing and reporting flags back to their entry states */
-		File->SetThrowExceptions( OldThrowingState );
-		File->SetReportErrors( OldReportingState );
-
-		/* Reset the file pointer back to null for safety */
-		pFile = NULL;
-
-		TRACEUSER( "Jonathan", _T("PNG read: Finshed\n"));
-
-		/* that's it */
-		return (OK);
-   }
-   catch( CFileException )
-   {
-	   // catch our form of a file exception
-	   TRACE( _T("PNGUtil::ReadFromFile CC catch handler\n"));
-
-//GAT	png_progress_bar_read = 0;
-
-		if (ppbRowPointers != 0)
-			png_free(png_ptr, ppbRowPointers);
-
-		/* clean up after the read, and free any memory allocated */
-		png_destroy_read_struct(&png_ptr, &info_ptr, (png_infopp)NULL);
-
-		png_ptr = NULL;
-
-	   // Now our Camelot related bits
-	   if (*Info != NULL && *Bits != NULL)
-		   FreeDIB( *Info, *Bits );							// free any alloced memory
-	   *Info = NULL;										// and NULL the pointers
-	   *Bits = NULL;
-
-	   // Free up the bit of memory for a palette we grabbed, if present
-	   //if (lpGlobalPalette)
-	   //{
-	   //	CCFree(lpGlobalPalette);
-	   //		lpGlobalPalette = NULL;
-	   //}
-
-	   // Must set the exception throwing and reporting flags back to their entry states
-	   File->SetThrowExceptions( OldThrowingState );
-	   File->SetReportErrors( OldReportingState );
-
-	   // Reset the file pointer back to null for safety
-	   pFile = NULL;
-
-	   return FALSE;
-   }
-
-   ERROR2( FALSE, "Escaped exception clause somehow" );
+    png_free(png_ptr, ppbRowPointers);
+    /* read rest of file, and get additional chunks in info_ptr - REQUIRED */
+    png_read_end(png_ptr, info_ptr);
+    /* At this point the entire image has been read */
+    /* clean up after the read, and free any memory allocated - REQUIRED */
+    png_destroy_read_struct(&png_ptr, &info_ptr, (png_infopp)NULL);
+    png_ptr = NULL;
+    /* Must set the exception throwing and reporting flags back to their entry states */
+    File->SetThrowExceptions( OldThrowingState );
+    File->SetReportErrors( OldReportingState );
+    /* Reset the file pointer back to null for safety */
+    pFile = NULL;
+    TRACEUSER( "Jonathan", _T("PNG read: Finshed\n"));
+    /* that's it */
+    return (OK);
+  }
+  catch( CFileException ) {
+    // catch our form of a file exception
+    TRACE( _T("PNGUtil::ReadFromFile CC catch handler\n"));
+    //GAT	png_progress_bar_read = 0;
+    if (ppbRowPointers != 0) {
+      png_free(png_ptr, ppbRowPointers);
+    }
+    /* clean up after the read, and free any memory allocated */
+    png_destroy_read_struct(&png_ptr, &info_ptr, (png_infopp)NULL);
+    png_ptr = NULL;
+    // Now our Camelot related bits
+    if (*Info != NULL && *Bits != NULL) {
+      // free any alloced memory
+      FreeDIB( *Info, *Bits );
+    }
+    // and NULL the pointers
+    *Info = NULL;
+    *Bits = NULL;
+    // Free up the bit of memory for a palette we grabbed, if present
+    //if (lpGlobalPalette)
+    //{
+    //	CCFree(lpGlobalPalette);
+    //		lpGlobalPalette = NULL;
+    //}
+    // Must set the exception throwing and reporting flags back to their entry states
+    File->SetThrowExceptions( OldThrowingState );
+    File->SetReportErrors( OldReportingState );
+    // Reset the file pointer back to null for safety
+    pFile = NULL;
+    return FALSE;
+  }
+  ERROR2( FALSE, "Escaped exception clause somehow" );
 }
 
 

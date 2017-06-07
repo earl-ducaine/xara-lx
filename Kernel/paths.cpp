@@ -2820,7 +2820,7 @@ void Path::InitialiseFlags(PathVerb* pVerbs, PathFlags* pFlags, const INT32 Len)
 				break;
 
 			default:
-				ERROR3_PF(("Illegal path verb found : %c",Verb));
+			  ERROR3_PF((_T("Illegal path verb found : %c"),Verb));
 				break;
 		}
 	}
@@ -9142,7 +9142,7 @@ BOOL Path::ChangeStartElement(INT32 StartIndex)
 {
 	if (StartIndex < 1 || StartIndex >= UsedSlots)
 	{
-		ERROR3_PF(("StartIndex out of range : %ld",StartIndex));
+	  ERROR3_PF((_T("StartIndex out of range : %ld"),StartIndex));
 		return FALSE;
 	}
 

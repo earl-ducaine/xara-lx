@@ -831,7 +831,7 @@ BOOL GuidesPropertiesTab::DeleteClicked()
 				else
 				{
 					pGuidelineList[i] = NULL;
-					ERROR3_PF(("List item at index [%d] is NULL",i));
+					ERROR3_PF((_T("List item at index [%d] is NULL"),i));
 				}
 			}
 
@@ -922,7 +922,7 @@ BOOL GuidesPropertiesTab::PropertiesClicked()
 				ERROR3("GuidesPropertiesTab::PropertiesClicked() - OpDescriptor::FindOpDescriptor(OPTOKEN_EDITGUIDELINEPROPDLG) failed");
 		}
 		else
-			ERROR3_PF(("Unable to find guideline item at index (%d)",Index));
+		  ERROR3_PF((_T("Unable to find guideline item at index (%d)"),Index));
 	}
 
 	return TRUE;	

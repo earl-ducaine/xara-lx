@@ -1,7 +1,7 @@
 // $Id: clikmods.cpp 1282 2006-06-09 09:46:49Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
- 
+
                Xara LX, a vector drawing and manipulation program.
                     Copyright (C) 1993-2006 Xara Group Ltd.
        Copyright on certain contributions may be held in joint with their
@@ -32,7 +32,7 @@ ADDITIONAL RIGHTS
 
 Conditional upon your continuing compliance with the GNU General Public
 License described above, Xara Group Ltd grants to you certain additional
-rights. 
+rights.
 
 The additional rights are to use, modify, and distribute the software
 together with the wxWidgets library, the wxXtra library, and the "CDraw"
@@ -468,9 +468,9 @@ PORTNOTE("other", "Check use of wxSYS_SWAP_BUTTONS")
 	nFlags |= (state.AltDown()			? MK_ALT : 0);
 
 	// Note: wxMouseState.LeftDown is equivalent to wxMouseEvent.LeftIsDown
-	nFlags |= (state.LeftDown() 		? (swapped ? MK_RBUTTON : MK_LBUTTON) : 0);
-	nFlags |= (state.MiddleDown() 		? MK_MBUTTON : 0);
-	nFlags |= (state.RightDown() 		? (swapped ? MK_LBUTTON : MK_RBUTTON) : 0);
+	nFlags |= (state.LeftIsDown() 		? (swapped ? MK_RBUTTON : MK_LBUTTON) : 0);
+	nFlags |= (state.MiddleIsDown() 		? MK_MBUTTON : 0);
+	nFlags |= (state.RightIsDown() 		? (swapped ? MK_LBUTTON : MK_RBUTTON) : 0);
 
 	return nFlags;
 }
@@ -664,6 +664,3 @@ void ClickModifiers::GetModsFromPrefs(ButtonFunction buttfunc)
 			ERROR3("Shouldn't ever get here, but there's no harm if it does");
 	}
 }
-
-
-

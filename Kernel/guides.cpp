@@ -1352,7 +1352,7 @@ void OpGuideline::DoWithParam(OpDescriptor* pOpDesc,OpParam* pParam)
 			break;
 			//-----------------------------------
 			default:
-				ERROR3_PF(("Unknown OpGuideline method : %d",pGuidelineParam->Method));
+			  ERROR3_PF((_T("Unknown OpGuideline method : %d"),pGuidelineParam->Method));
 				break;
 		}
 	}

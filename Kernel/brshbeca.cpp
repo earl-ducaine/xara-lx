@@ -219,8 +219,10 @@ BOOL HandleBrushBecomeA::Passback(Path* pPath, CCAttrMap* pAttrMap, UINT32 StepN
 	ERROR2IF(pAttrMap == NULL, FALSE, "pAttrMap is NULL in HandleBecomeA::Passback");
 	ERROR2IF(m_pBecomeA == NULL, FALSE, "BecomeA is NULL in HandleBecomeA::Passback");
 
-	BOOL ValidReason = (m_pBecomeA->GetReason() == BECOMEA_REPLACE || m_pBecomeA->GetReason() == BECOMEA_PASSBACK);
-	ERROR3IF_PF(!ValidReason,("Unkown BecomeA reason %d",m_pBecomeA->GetReason()));
+	BOOL ValidReason = (m_pBecomeA->GetReason() == BECOMEA_REPLACE ||
+			    m_pBecomeA->GetReason() == BECOMEA_PASSBACK);
+	ERROR3IF_PF(!ValidReason,
+		    (_T("Unkown BecomeA reason %d"), m_pBecomeA->GetReason()));
 	if (!ValidReason) return FALSE;
 
 	if (m_pBecomeA->GetReason()== BECOMEA_REPLACE)

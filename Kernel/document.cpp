@@ -4101,7 +4101,7 @@ BOOL Document::ExportStateInfo(EPSExportDC *pDC)
 				break;	// Stop here. Version 0 was the first
 		
 			default:
-				ERROR3_PF(("Dont know how to write this version for the state flags %d",Version));
+			  ERROR3_PF((_T("Dont know how to write this version for the state flags %d"), Version));
 				break;
 		}
 

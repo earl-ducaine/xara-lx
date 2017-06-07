@@ -209,7 +209,7 @@ MessageHandler::MessageHandler(CCRuntimeClass* Class, BOOL SendMessages)
 			// this test can go off when someone forgot to register a class. It can also
 			// go off in DLL builds if a default parameter of CC_RUNTIME_CLASS is used
 			// as the compiler screws up the function call
-			ERROR3_PF( ("Class %s not registered for MessageHandler", Class->GetClassName() ) );
+		  ERROR3_PF( (_T("Class %s not registered for MessageHandler"), Class->GetClassName() ) );
 
 			AddMessageHandlerList = new MessageHandlerList(Class); 
 			MessageHandlerClassList.AddHead(AddMessageHandlerList); 

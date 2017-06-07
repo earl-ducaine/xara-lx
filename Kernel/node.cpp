@@ -5058,7 +5058,7 @@ void Node::SetOpPermission(OpPermissionState NewState,BOOL AndParents)
 			break;
 
 		default:
-			ERROR3_PF(("Unknown OpPermissionState (%d)",NewState));
+		  ERROR3_PF((_T("Unknown OpPermissionState (%d)"),NewState));
 			break;
 	}
 

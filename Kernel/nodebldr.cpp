@@ -2254,7 +2254,7 @@ void NodeBlender::SetPathFlags(PathVerb* pVerbs,PathFlags* pFlags,UINT32 Len)
 				break;
 
 			default:
-				ERROR3_PF(("Illegal path verb found : %c",Verb));
+			  ERROR3_PF((_T("Illegal path verb found : %c"),Verb));
 				break;
 		}
 	}
@@ -3264,7 +3264,7 @@ BOOL NodeBlender::CalcObjIndex(NodeRenderableInk* pInkNode,INT32* pObjIndex)
 
 NodeRenderableInk* NodeBlender::FindObjIndexedNode(INT32 ObjIndex)
 {
-	ERROR3IF_PF(ObjIndex < 0,("ObjIndex is -ve!! (%ld)",ObjIndex));
+  ERROR3IF_PF(ObjIndex < 0,(_T("ObjIndex is -ve!! (%ld)"),ObjIndex));
 	if (ObjIndex < 0) return NULL;
 
 	Node* pParent = this->FindParent();
@@ -6729,7 +6729,7 @@ BOOL HandleBecomeA::PassBack(Path* pBlendedPath,CCAttrMap* pBlendedAttrMap,UINT3
 	// This lump checks that the Reason is one that we understand
 	// It also makes sure that we don't have a NULL UndoOp ptr
 	BOOL ValidReason = (pBecomeA->GetReason() == BECOMEA_REPLACE || pBecomeA->GetReason() == BECOMEA_PASSBACK);
-	ERROR3IF_PF(!ValidReason,("Unkown BecomeA reason %d",pBecomeA->GetReason()));
+	ERROR3IF_PF(!ValidReason,(_T("Unkown BecomeA reason %d"),pBecomeA->GetReason()));
 	if (!ValidReason) return FALSE;
 
 	// pBecomeA->Reason is one that we understand.

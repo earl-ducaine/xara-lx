@@ -172,7 +172,7 @@ BOOL BitmapPropertiesRecordHandler::IsStreamed(UINT32 Tag)
 			break;
 		default:
 			Streamed = FALSE;
-			ERROR3_PF(("BitmapPropertiesRecordHandler::IsStreamed I don't handle records with the tag (%d)\n", Tag));
+			ERROR3_PF((_T("BitmapPropertiesRecordHandler::IsStreamed I don't handle records with the tag (%d)\n"), Tag));
 			break;
 	}
 
@@ -328,10 +328,10 @@ BOOL BitmapPropertiesRecordHandler::HandleStreamedRecord(CXaraFile * pCXFile, UI
 
 	if (Tag!=TAG_XPE_BITMAP_PROPERTIES)
 	{
-		ERROR3_PF(("BitmapPropertiesRecordHandler::HandleStreamedRecord I don't handle records with the tag (%d)\n", Tag));
+	  ERROR3_PF((_T("BitmapPropertiesRecordHandler::HandleStreamedRecord I don't handle records with the tag (%d)\n"), Tag));
 		return FALSE;
 	}
-	ERROR3_PF(("Unimplemented!", Tag));
+	ERROR3_PF((_T("Unimplemented!"), Tag));
 
 	return TRUE;
 }

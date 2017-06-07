@@ -2707,7 +2707,7 @@ BOOL ClipViewRecordHandler::HandleRecord(CXaraFileRecord* pCXaraFileRecord)
 
 		default:
 			ok = FALSE;
-			ERROR3_PF(("ClipView file record handler - unrecognised tag: %d", Tag));
+			ERROR3_PF((_T("ClipView file record handler - unrecognised tag: %d"), Tag));
 			break;
 	}
 

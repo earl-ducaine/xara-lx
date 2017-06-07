@@ -87,7 +87,7 @@ public:
     // warning: most of subsequent methods are currently only implemented in
     //          wxMSW under Win95 and are silently ignored on other platforms
 
-    void SetTickFreq(int n, int pos);
+    void SetTickFreq(int n);
     int GetTickFreq() const;
     void ClearTicks();
     void SetTick(int tickPos);

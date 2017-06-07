@@ -216,7 +216,7 @@ BOOL BitmapRecordHandler::IsStreamed(UINT32 Tag)
 			break;
 		default:
 			Streamed = FALSE;
-			ERROR3_PF(("BitmapRecordHandler::IsStreamed I don't handle records with the tag (%d)\n", Tag));
+			ERROR3_PF((_T("BitmapRecordHandler::IsStreamed I don't handle records with the tag (%d)\n"), Tag));
 			break;
 	}
 
@@ -267,7 +267,7 @@ BOOL BitmapRecordHandler::HandleRecord(CXaraFileRecord* pCXaraFileRecord)
 		
 		default:
 			ok = FALSE;
-			ERROR3_PF(("BitmapRecordHandler::HandleRecord I don't handle records with the tag (%d)\n", Tag));
+			ERROR3_PF((_T("BitmapRecordHandler::HandleRecord I don't handle records with the tag (%d)\n"), Tag));
 			break;
 	}
 
@@ -345,7 +345,7 @@ BOOL BitmapRecordHandler::HandleStreamedRecord(CXaraFile * pCXFile, UINT32 Tag,U
 
 		default:
 			ok = FALSE;
-			ERROR3_PF(("BitmapRecordHandler::HandleStreamedRecord I don't handle records with the tag (%d)\n", Tag));
+			ERROR3_PF((_T("BitmapRecordHandler::HandleStreamedRecord I don't handle records with the tag (%d)\n"), Tag));
 			break;
 	}
 
@@ -455,7 +455,7 @@ BOOL BitmapRecordHandler::HandleNodeBitmap(CXaraFileRecord* pCXaraFileRecord, IN
 
 		default:
 			ok = FALSE;
-			ERROR3_PF(("BitmapRecordHandler::HandleNodeBitmap I don't handle records with the tag (%d)\n", Tag));
+			ERROR3_PF((_T("BitmapRecordHandler::HandleNodeBitmap I don't handle records with the tag (%d)\n"), Tag));
 			break;
 	}
 

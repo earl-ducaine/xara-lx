@@ -1946,7 +1946,7 @@ BOOL Range::FindNextXOROutlineNode(Node **OriginalNode, DocRect *pClipRect)
 				break;
 
 		 	default:
-		 		ERROR3_PF( ("** FindNextDragBlobNode - Illegal rendering pass %d. Tell Jason", RenderingPass) );
+			  ERROR3_PF( (_T("** FindNextDragBlobNode - Illegal rendering pass %d. Tell Jason"), RenderingPass) );
  				break;
 		}
 	} while (!DoRender);	

@@ -356,7 +356,7 @@ void OpCombineShapes::GetOpName(String_256* OpName)
 		case COMBINE_SLICE:		IDS = _R(IDBBL_COMBINE_SLICE); 		break;
 
 		default:
-			ERROR3_PF(("Unknown combine reason : %d",Reason));
+		  ERROR3_PF((_T("Unknown combine reason : %d"),Reason));
 			break;
 	}
 
@@ -506,7 +506,7 @@ void OpCombineShapes::Do(OpDescriptor*)
 			break;
 
 		default:
-			ERROR3_PF(("Unknown combine reason : %d",Reason));
+		  ERROR3_PF((_T("Unknown combine reason : %d"),Reason));
 			ok = FALSE;
 			break;
 	}
@@ -1776,7 +1776,7 @@ BOOL OpCombineShapes::CreateSelObjPathLists(BOOL bCombineEffectBitmaps)
 
 		if (Count < MinCount)
 		{
-			ERROR3_PF(("Less than %d of the selected objects could become paths",MinCount));
+		  ERROR3_PF((_T("Less than %d of the selected objects could become paths"),MinCount));
 			return FALSE;
 		}
 	}

@@ -1017,7 +1017,7 @@ BOOL NodeMould::DoBecomeA(BecomeA* pBecomeA)
 		break;
 
 		default:
-			ERROR3_PF(("Unknown BecomeA reason %d",pBecomeA->GetReason()));
+		  ERROR3_PF((_T("Unknown BecomeA reason %d"),pBecomeA->GetReason()));
 			break;
 	}
 	
@@ -2888,7 +2888,7 @@ BOOL MouldRecordHandler::HandleRecord(CXaraFileRecord* pCXaraFileRecord)
 
 		default:
 			ok = FALSE;
-			ERROR3_PF(("I don't handle records with the tag (%d)\n",pCXaraFileRecord->GetTag()));
+			ERROR3_PF((_T("I don't handle records with the tag (%d)\n"),pCXaraFileRecord->GetTag()));
 			break;
 	}
 

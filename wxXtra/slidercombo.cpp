@@ -247,9 +247,9 @@ int wxSliderCombo::GetThumbLength() const
     return m_slider->GetThumbLength();
 }
 
-void wxSliderCombo::SetTickFreq(int n, int pos)
+void wxSliderCombo::SetTickFreq(int n)
 {
-    m_slider->SetTickFreq(n, pos);
+    m_slider->SetTickFreq(n);
 }
 
 int wxSliderCombo::GetTickFreq() const

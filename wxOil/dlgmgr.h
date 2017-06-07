@@ -1,7 +1,7 @@
 // $Id: dlgmgr.h 1769 2007-06-17 19:33:43Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
- 
+
                Xara LX, a vector drawing and manipulation program.
                     Copyright (C) 1993-2006 Xara Group Ltd.
        Copyright on certain contributions may be held in joint with their
@@ -32,7 +32,7 @@ ADDITIONAL RIGHTS
 
 Conditional upon your continuing compliance with the GNU General Public
 License described above, Xara Group Ltd grants to you certain additional
-rights. 
+rights.
 
 The additional rights are to use, modify, and distribute the software
 together with the wxWidgets library, the wxXtra library, and the "CDraw"
@@ -103,11 +103,11 @@ service marks of Xara Group Ltd. All rights in these marks are reserved.
 */
 
 #ifndef INC_DLGMGR
-#define INC_DLGMGR         
+#define INC_DLGMGR
 
 //------------------------------------------------------------------------------------------
 // Include files
- 
+
 //#include "ccobject.h"  - in camtypes.h [AUTOMATICALLY REMOVED]
 //#include "dlgtypes.h"  // Dialog types         - in camtypes.h [AUTOMATICALLY REMOVED]
 //#include "listitem.h" - in camtypes.h [AUTOMATICALLY REMOVED]
@@ -124,17 +124,17 @@ class DialogColourInfo;
 class CustomComboBoxControlDataItem;
 class DialogEventHandler;
 
-#define WM_CTL_COMMIT 	WM_USER + 211 	// Message sent by subclassed edit/combo boxed when enter or 
+#define WM_CTL_COMMIT 	WM_USER + 211 	// Message sent by subclassed edit/combo boxed when enter or
 										// control is pressed.
 
 #define WM_CTL_SETFOCUS WM_USER + 212 	// Message sent by subclassed edit/combo boxed to parent tool bar
 										// to indicate  gaining or losing the focus.
 
-  
+
 //------------------------------------------------------------------------------------------
 
 ////////////////////////////////////////////////
-//     SPECIAL TYPES FOR MERGING DIALOGS      // 
+//     SPECIAL TYPES FOR MERGING DIALOGS      //
 ////////////////////////////////////////////////
 
 // Special typedefs for WIN16 as these only exist in header files under NT.
@@ -155,7 +155,7 @@ typedef struct
     WORD  cy;
 } DLGTEMPLATE;
 
-typedef struct 
+typedef struct
 {
     WORD  x;
     WORD  y;
@@ -179,9 +179,9 @@ WX_DECLARE_STRING_HASH_MAP( String_256, IdToSerializedPaneInfo );
 	Author:		Simon_Maneggio (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	8/9/93
 	Purpose:	DialogPosition ListItem's are stored in the DialogManager's DialogPositionList
-				they record the position of a dialog box before it is destroyed. They are 
-				used to restore the position of the dialog when it is created the next time. 
-				 
+				they record the position of a dialog box before it is destroyed. They are
+				used to restore the position of the dialog when it is created the next time.
+
 	SeeAlso:	DialogManager
 
 ********************************************************************************************/
@@ -189,10 +189,10 @@ WX_DECLARE_STRING_HASH_MAP( String_256, IdToSerializedPaneInfo );
 
 class DialogPosition: public ListItem
 {
-public:                       
-	CDlgResID DlgResourceID; // Resource ID of the dialog   
+public:
+	CDlgResID DlgResourceID; // Resource ID of the dialog
 	List DlgWinList;         // A list of all live dialogs created from the DlgResourceID
-	INT32 LastX; 				 // Last X position  
+	INT32 LastX; 				 // Last X position
 	INT32 LastY; 				 // Last Y position
 	CDlgResID ActivePage;	 // We remember the active page in a tabbed dialog.
 	INT32 ActivePageIndex;	 // The active page's index
@@ -227,8 +227,8 @@ public:
 	Purpose:	An ActiveDlgStateStack holds ActiveDlgStateItems. Whenever a MODAL dialog is
 				closed we will need to restore the previously active window. What's more if
 				the previously active window is a MODAL dialog , then we must disable
-				the mainframe and other popups owned by the mainframe; so that the dialog 
-				continues to behave modally. This stack stores this information. 
+				the mainframe and other popups owned by the mainframe; so that the dialog
+				continues to behave modally. This stack stores this information.
 
 	SeeAlso:	ActiveDlgStateItem
 	SeeAlso:	DialogManager
@@ -237,7 +237,7 @@ public:
 
 class ActiveDlgStateStack: public Stack
 {
-	
+
 };
 
 
@@ -313,12 +313,12 @@ private:
 
 	Author:		Simon_Maneggio (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	16/8/93
-	Purpose:	There will only ever be one instance of the DialogManager. It resides in the 
-				oil layer and is used to perform all platform specific dialog box operations. 
+	Purpose:	There will only ever be one instance of the DialogManager. It resides in the
+				oil layer and is used to perform all platform specific dialog box operations.
 				It calls and is called by DialogOp. The interface to this object should be the
 				same no matter what platform it is ported to. That is with the exception of the
-				SendDialogMessage function which requires system specific types as its arguments. 
-				
+				SendDialogMessage function which requires system specific types as its arguments.
+
 	SeeAlso:	-
 
 ********************************************************************************************/
@@ -326,19 +326,19 @@ private:
 class wxPropertySheetDialog;
 
 class DialogBarOp;
-               
-class DialogManager: public CCObject  
+
+class DialogManager: public CCObject
 {
 	friend class DialogEventHandler;
-	friend class wxPropertySheetDialog; // Is a friend because when a property sheet is created 
+	friend class wxPropertySheetDialog; // Is a friend because when a property sheet is created
 							   // it needs to call PostCreate.
-public: 
+public:
 
 	DialogManager();	 // Constructor
-   
+
 	// The DialogManager's create function creates a DialogOp window
-   	static BOOL Create(DialogOp* DlgOp, /* HINSTANCE MainInstance, */ CDlgResID MainDlgID, 
-					 /*HINSTANCE SubInstance, */ CDlgResID SubDlgID, 
+   	static BOOL Create(DialogOp* DlgOp, /* HINSTANCE MainInstance, */ CDlgResID MainDlgID,
+					 /*HINSTANCE SubInstance, */ CDlgResID SubDlgID,
 						CDlgMode Mode = MODELESS, INT32 OpeningPage = -1, CWindowID ParentWnd = NULL);
 private:
 
@@ -353,17 +353,17 @@ private:
 	static BOOL PostCreate(DialogOp * pDialogOp, INT32 OpeningPage);
 
 public:
-	// This should eventually be the only Create method that we require. If the DialogOp is 
-	// a BarDialogOp then it will create a window of the correct type and attach it to the 
-	// relevant docking bar. Otherwise it will create a regular modeless dialog. 
-	CWindowID Create(DialogOp* DialogOp); 
+	// This should eventually be the only Create method that we require. If the DialogOp is
+	// a BarDialogOp then it will create a window of the correct type and attach it to the
+	// relevant docking bar. Otherwise it will create a regular modeless dialog.
+	CWindowID Create(DialogOp* DialogOp);
 
-	// The open method displays the dialog box on the display. 
-	static void Open(CWindowID WindowID, DialogOp* DlgOp); 
+	// The open method displays the dialog box on the display.
+	static void Open(CWindowID WindowID, DialogOp* DlgOp);
 
-	// The close method removes the dialog from the display but keeps all system 	 
-	// resources associated with it. It hides the dialog.  
-	static void Close(CWindowID WindowID, DialogOp* DlgOp); 
+	// The close method removes the dialog from the display but keeps all system
+	// resources associated with it. It hides the dialog.
+	static void Close(CWindowID WindowID, DialogOp* DlgOp);
 
 	// Place dialog above or below exist controls in dialog
 	static BOOL MergeDialogs( CWindowID Dialog, CWindowID Mergee, bool fAbove );
@@ -374,17 +374,17 @@ public:
 	// Get the book control
 	static wxBookCtrlBase * GetBookControl(CWindowID WindowID, CGadgetID Gadget =0 );
 
-	// Function to determine if a gadget is of a type that can be ticked 
-	static BOOL IsGadgetTickable(CWindowID WindowID, 
+	// Function to determine if a gadget is of a type that can be ticked
+	static BOOL IsGadgetTickable(CWindowID WindowID,
 						 		 CGadgetID Gadget);
 
 	// Used to abort the dragging of the custom colour picker control
 	// from within the colour editor
 	static BOOL ColourPickerAbort(CWindowID WindowID, CGadgetID Gadget, WPARAM wParam = 0);
 
-	// The delete method will delete all system resources associated with the Dialog 
-	// box and any information which is being kept about the dialog.  
-	static void Delete(CWindowID WindowID, DialogOp* DlgOp);   
+	// The delete method will delete all system resources associated with the Dialog
+	// box and any information which is being kept about the dialog.
+	static void Delete(CWindowID WindowID, DialogOp* DlgOp);
 
 	// Called by SendDialogMessage to send messages for mouse events - for cc_DialogDraw
 	// controls, this then sends an extra chunk of useful information to the owning Dlg,
@@ -392,74 +392,74 @@ public:
 	static void ProcessMouseEvent(CDlgMessage DialogMessageType,
 									wxWindow *pDlg, UINT32 wParam, INT32 lParam);
 
-	// The following functions are called by same named functions in the DialogOp 	
-	// class. The DialogOp functions are provided for ease of use and do not have a 
-	// CWindowID argument. 
+	// The following functions are called by same named functions in the DialogOp
+	// class. The DialogOp functions are provided for ease of use and do not have a
+	// CWindowID argument.
 
 
-	static wxWindow * GetGadget(CWindowID WindowID, CGadgetID Gadget);
-
+	static wxWindow* GetGadget(CWindowID WindowID, int Gadget);
+	static  wxWindow* GetToolGadget(CWindowID WindowID, CGadgetID Gadget);
 	static OpDescriptor * GetGadgetOpDescriptor(CWindowID WindowID, CGadgetID Gadget);
 
-    // -------------------------------------------------------------------------------------         
-	// Methods to set gadget values                                                        
-	
-	static BOOL SetUnitGadgetValue( CWindowID WindowID,
-						 CGadgetID Gadget, 
-					     UnitType Unit, 
-			             MILLIPOINT value, 
-			             BOOL EndOfList = TRUE, 
-			     		 INT32 ListPos = 0
-			             ); 
+    // -------------------------------------------------------------------------------------
+	// Methods to set gadget values
 
-	static BOOL SetDimensionUnitGadgetValue(CWindowID WindowID, 
-											CGadgetID Gadget, 
-											UnitType  units, 
+	static BOOL SetUnitGadgetValue( CWindowID WindowID,
+						 CGadgetID Gadget,
+					     UnitType Unit,
+			             MILLIPOINT value,
+			             BOOL EndOfList = TRUE,
+			     		 INT32 ListPos = 0
+			             );
+
+	static BOOL SetDimensionUnitGadgetValue(CWindowID WindowID,
+											CGadgetID Gadget,
+											UnitType  units,
 											double    value,
 											Node*     pNode,
 											BOOL      IncludeUnitSpecifier = TRUE,
-											BOOL      EndOfList = FALSE, 
-											INT32       ListPos   = 0); 
+											BOOL      EndOfList = FALSE,
+											INT32       ListPos   = 0);
 
-	static BOOL SetLongGadgetValue(CWindowID WindowID, 
-							CGadgetID Gadget, 
-							INT32 value, 
-							BOOL EndOfList = TRUE, 
-			     			INT32 ListPos = 0);   
-			     			
-	static BOOL SetDoubleGadgetValue(CWindowID WindowID, 
-							CGadgetID Gadget, 
-							double value, 
-							BOOL EndOfList = TRUE, 
-			     			INT32 ListPos = 0);   
-			     			
+	static BOOL SetLongGadgetValue(CWindowID WindowID,
+							CGadgetID Gadget,
+							INT32 value,
+							BOOL EndOfList = TRUE,
+			     			INT32 ListPos = 0);
+
+	static BOOL SetDoubleGadgetValue(CWindowID WindowID,
+							CGadgetID Gadget,
+							double value,
+							BOOL EndOfList = TRUE,
+			     			INT32 ListPos = 0);
+
 	static BOOL SetStringGadgetValue(CWindowID WindowID,
-							  CGadgetID Gadget, 
-							  UINT32 IDStrID, 
-							  BOOL EndOfList = TRUE, 
-			     			  INT32 ListPos = 0);   
-			     			    
+							  CGadgetID Gadget,
+							  UINT32 IDStrID,
+							  BOOL EndOfList = TRUE,
+			     			  INT32 ListPos = 0);
+
 	static BOOL SetStringGadgetValue(CWindowID WindowID,
-							  CGadgetID Gadget, 
-							  const StringBase& StrVal, 
-							  BOOL EndOfList = TRUE, 
-			     			  INT32 ListPos = 0);    
+							  CGadgetID Gadget,
+							  const StringBase& StrVal,
+							  BOOL EndOfList = TRUE,
+			     			  INT32 ListPos = 0);
 
 	static BOOL SetCustomComboGadgetValue(CWindowID WindowID,
-									 CGadgetID Gadget, 
-									 CustomComboBoxControlDataItem* TheItem,   
-									 BOOL EndOfList = TRUE, 
+									 CGadgetID Gadget,
+									 CustomComboBoxControlDataItem* TheItem,
+									 BOOL EndOfList = TRUE,
 			     					 INT32 ListPos = 0);
 
 	static BOOL SelectCustomComboGadgetValueOnString (CWindowID WindowID,
-													  CGadgetID Gadget, 
+													  CGadgetID Gadget,
 													  StringBase* StrVal);
-			     			  
-	static BOOL SetGadgetRange(CWindowID WindowID, 
-					    CGadgetID Gadget, 
-					    INT32 Min, 
-					    INT32 Max, 
-					    INT32 PageInc = 1);   
+
+	static BOOL SetGadgetRange(CWindowID WindowID,
+					    CGadgetID Gadget,
+					    INT32 Min,
+					    INT32 Max,
+					    INT32 PageInc = 1);
 
 	static BOOL SetListBoxSelection( CWindowID WindowID, CGadgetID Gadget, INT32 Index, BOOL SelectIt, BOOL SingleSelection );
 
@@ -467,9 +467,9 @@ public:
 								CGadgetID Gadget,
 								BOOL IsSelected,
 								INT32 ListPos = 0);
-					    
-	static BOOL SetSelectedValueIndex(CWindowID WindowID, 
-			    			   CGadgetID Gadget, 
+
+	static BOOL SetSelectedValueIndex(CWindowID WindowID,
+			    			   CGadgetID Gadget,
 						  	   INT32 Index);
 
 	static BOOL SetSelectedValueRange(CWindowID WindowID,
@@ -477,53 +477,53 @@ public:
 								WORD StartIndex,
 								WORD EndIndex,
 								BOOL Selected = TRUE);
-	
-	static BOOL SetDimensionGadgetValue( CWindowID WindowID, 
-						 CGadgetID Gadget, 
+
+	static BOOL SetDimensionGadgetValue( CWindowID WindowID,
+						 CGadgetID Gadget,
 			             MILLIPOINT value,
 						 Node* pNode,
 						 BOOL IncludeUnitSpecifier = TRUE,
-			             BOOL EndOfList = FALSE, 
+			             BOOL EndOfList = FALSE,
 			     		 INT32 ListPos = -1
-			             ); 
+			             );
 
-	static BOOL SetMemoryGadgetValue( CWindowID WindowID, 
-									  CGadgetID Gadget, 
-									  UINT32 value, 
-									  BOOL EndOfList = TRUE, 
+	static BOOL SetMemoryGadgetValue( CWindowID WindowID,
+									  CGadgetID Gadget,
+									  UINT32 value,
+									  BOOL EndOfList = TRUE,
 									  INT32 ListPos = 0
-			 						); 
+			 						);
 
-	static BOOL SetGadgetHelp( CWindowID WindowID, 
-		  					   CGadgetID Gadget, 
-					    	   UINT32 BubbleID, 
-					    	   UINT32 StatusID, 
-					    	   UINT32 ModuleID = 0);   
+	static BOOL SetGadgetHelp( CWindowID WindowID,
+		  					   CGadgetID Gadget,
+					    	   UINT32 BubbleID,
+					    	   UINT32 StatusID,
+					    	   UINT32 ModuleID = 0);
 
-	// -------------------------------------------------------------------------------------      
-	// Methods to get gadget values                                                         
-	
+	// -------------------------------------------------------------------------------------
+	// Methods to get gadget values
+
 	static MILLIPOINT GetUnitGadgetValue(CWindowID WindowID,
-							  CGadgetID Gadget,  
+							  CGadgetID Gadget,
 				       		  UnitType DefaultType,
-			        	      MILLIPOINT StartRange, 
+			        	      MILLIPOINT StartRange,
 			                  MILLIPOINT EndRange,
-			                  UINT32 IDSInvalidMsg = 0,  
+			                  UINT32 IDSInvalidMsg = 0,
 			                  BOOL* Valid = NULL);
-	
+
 	static INT32 GetLongGadgetValue(CWindowID WindowID,
-								   CGadgetID Gadget, 
-			            		   INT32 StartRange, 
-			            		   INT32 EndRange, 
-		           	    		   UINT32 IDSInvalidMsg = 0, 
+								   CGadgetID Gadget,
+			            		   INT32 StartRange,
+			            		   INT32 EndRange,
+		           	    		   UINT32 IDSInvalidMsg = 0,
 		           	    		   BOOL* Valid = NULL,
 								   Convert::PFNSTRINGTOINT32 pfnParser = Convert::StringToLong);
 
 	static double GetDoubleGadgetValue(CWindowID WindowID,
-								   CGadgetID Gadget, 
-			            		   double StartRange, 
-			            		   double EndRange, 
-		           	    		   UINT32 IDSInvalidMsg = 0, 
+								   CGadgetID Gadget,
+			            		   double StartRange,
+			            		   double EndRange,
+		           	    		   UINT32 IDSInvalidMsg = 0,
 		           	    		   BOOL* Valid = NULL,
 								   Convert::PFNSTRINGTODOUBLE pfnParser = Convert::StringToDouble);
 
@@ -531,20 +531,20 @@ public:
 						CGadgetID Gadget,
 		           	    UINT32 IDSInvalidMsg = 0,
 		           	    BOOL* Valid = NULL,
-		           	    INT32 ListPos = 0); 
+		           	    INT32 ListPos = 0);
 
 	static String_256 GetStringGadgetValue(CWindowID WindowID,
 										   CGadgetID Gadget,
 										   BOOL* Valid = NULL,
 										   INT32 ListPos = -1);
-	
-	static BOOL GetGadgetRange(CWindowID WindowID, 
-					    CGadgetID Gadget, 
-					    INT32* Min, 
+
+	static BOOL GetGadgetRange(CWindowID WindowID,
+					    CGadgetID Gadget,
+					    INT32* Min,
 					    INT32* Max);
-	
-	static MILLIPOINT GetDimensionGadgetValue( CWindowID WindowID, 
-						 				CGadgetID Gadget, 
+
+	static MILLIPOINT GetDimensionGadgetValue( CWindowID WindowID,
+						 				CGadgetID Gadget,
 										Node* pNode,
 										BOOL* Valid = NULL,
 										INT32 ListPos = -1);
@@ -557,44 +557,44 @@ public:
 											Node*     pNode);
 
 	static UINT32 GetMemoryGadgetValue(CWindowID WindowID,
-									  CGadgetID Gadget,  
-			        				  UINT32 StartRange, 
+									  CGadgetID Gadget,
+			        				  UINT32 StartRange,
 									  UINT32 EndRange,
-			   						  UINT32 IDSInvalidMsg = 0,  
+			   						  UINT32 IDSInvalidMsg = 0,
 			         				  BOOL* Valid = NULL);
-	
+
 	// -------------------------------------------------------------------------------------
-					    
-	static BOOL DeleteAllValues(CWindowID WindowID, 
+
+	static BOOL DeleteAllValues(CWindowID WindowID,
 					 	CGadgetID Gadget);
 
-	static BOOL DeleteValue(CWindowID WindowID, 
-					 CGadgetID Gadget, 
-					 BOOL EndOfList = TRUE, 
-					 INT32 ListPos = 0);     
-					 
-	static BOOL GetValueCount(CWindowID WindowID, 
-					   CGadgetID Gadget, 
-					   INT32* Count); 
-	
-	static BOOL GetValueIndex(CWindowID WindowID, 
-					   CGadgetID Gadget, 
-					   INT32* Index);     
+	static BOOL DeleteValue(CWindowID WindowID,
+					 CGadgetID Gadget,
+					 BOOL EndOfList = TRUE,
+					 INT32 ListPos = 0);
 
-	static BOOL GetValueIndex(CWindowID WindowID, 
-					   CGadgetID Gadget, 
-					   WORD* Index);     
+	static BOOL GetValueCount(CWindowID WindowID,
+					   CGadgetID Gadget,
+					   INT32* Count);
+
+	static BOOL GetValueIndex(CWindowID WindowID,
+					   CGadgetID Gadget,
+					   INT32* Index);
+
+	static BOOL GetValueIndex(CWindowID WindowID,
+					   CGadgetID Gadget,
+					   WORD* Index);
 
 	static INT32 GetSelectedCount(CWindowID WindowID, CGadgetID Gadget);
 	static INT32 GetFirstSelectedItem(CWindowID WindowID, CGadgetID Gadget);
 	static INT32* GetSelectedItems(CWindowID WindowID, CGadgetID Gadget);
-    
-    // ------------------------------------------------------------------------------------- 
-    // Functions for changing a gadgets state 
+
+    // -------------------------------------------------------------------------------------
+    // Functions for changing a gadgets state
 	static BOOL EnableGadget(CWindowID WindowID, CGadgetID Gadget, BOOL Enabled);
 	static BOOL IsGadgetEnabled( CWindowID WindowID, CGadgetID Gadget );
 	static BOOL SetGadgetWritable(CWindowID id, CGadgetID Gadget, BOOL enable);
-	static BOOL HideGadget(CWindowID WindowID, CGadgetID Gadget, BOOL Hide); 
+	static BOOL HideGadget(CWindowID WindowID, CGadgetID Gadget, BOOL Hide);
 	static BOOL GadgetRedraw(CWindowID WindowID, CGadgetID Gadget, BOOL Redraw);
 	static void Layout(CWindowID WindowID, BOOL CanYield=FALSE);
 
@@ -602,16 +602,16 @@ public:
 	// so the dialog can be resized
 	static void RelayoutDialog(DialogTabOp* DlgOp);
 
-    // ------------------------------------------------------------------------------------- 
+    // -------------------------------------------------------------------------------------
     // Setting the keyboard input focus.
 	static BOOL SetKeyboardFocus(CWindowID WindowID, CGadgetID Gadget);
 	static BOOL DefaultKeyboardFocus();
 	static BOOL HighlightText(CWindowID WindowID, CGadgetID Gadget, INT32 nStart = 0, INT32 nEnd = -1);
 	static BOOL CaptureMouse(CWindowID WindowID, CGadgetID Gadget);
 	static BOOL ReleaseMouse(CWindowID WindowID, CGadgetID Gadget);
-	
-    // ------------------------------------------------------------------------------------- 
-	// Immediately updates gadget's appearance    
+
+    // -------------------------------------------------------------------------------------
+	// Immediately updates gadget's appearance
 	static void PaintGadgetNow(CWindowID WindowID, CGadgetID gid);
 	static void InvalidateGadget(CWindowID WindowID, CGadgetID Gadget, BOOL EraseBackround=TRUE);
 
@@ -628,20 +628,20 @@ public:
 				// Gets information on a cc_DislogDraw gadget
 	static BOOL GetKernelRenderedGadgetInfo(CWindowID WindowID, CGadgetID Gadget,
 											ReDrawInfoType *Result);
-	
-                                        
-    // -------------------------------------------------------------------------------------                                        
-	// Methods for setting the types of edit fields      
+
+
+    // -------------------------------------------------------------------------------------
+	// Methods for setting the types of edit fields
 	static void SetEditGadgetType(CWindowID WindowID, CGadgetID Gadget, EditGadgetType Type);
-	static void SetEditGadgetType(CWindowID WindowID, CGadgetID, UINT32 IDSValidChar); 
-   
-    static void DualFunctionButton(CWindowID DialogWnd, 
-							CGadgetID ButtonGadget);  
-			
+	static void SetEditGadgetType(CWindowID WindowID, CGadgetID, UINT32 IDSValidChar);
+
+    static void DualFunctionButton(CWindowID DialogWnd,
+							CGadgetID ButtonGadget);
+
 	// -------------------------------------------------------------------------------------
-	// Method for making a listbox dragable 						
-	static BOOL MakeListBoxDragable(CWindowID WindowID, 
-							 CGadgetID Gadget);                                  
+	// Method for making a listbox dragable
+	static BOOL MakeListBoxDragable(CWindowID WindowID,
+							 CGadgetID Gadget);
 
 	static void SetComboListLength(CWindowID WindowID,CGadgetID Gadget);
 
@@ -651,9 +651,9 @@ public:
 	static void SetGadgetBitmap(CWindowID WindowID, CGadgetID Gadget, ResourceID Bitmap);
 	static ResourceID GetGadgetBitmap(CWindowID WindowID, CGadgetID Gadget);
 
-	/* specific to the cc_BitmapButton control, allows you to specify both 
+	/* specific to the cc_BitmapButton control, allows you to specify both
 	selected and unselected bitmaps */
-	static void SetBitmapButtonIndexes(CWindowID WindowID, CGadgetID Gadget, 
+	static void SetBitmapButtonIndexes(CWindowID WindowID, CGadgetID Gadget,
 									UINT32 UnselectedIndex, UINT32 SelectedIndex);
 
 //	static void SetGadgetBitmaps( wxWindow *pGadget,
@@ -662,9 +662,9 @@ public:
 //								  INT32 UnselectedIndex = -1 );
 	static UINT32 GetGadgetImageCount(CWindowID wnd, CGadgetID Gadget);
 
-	static void DeInit(); 
+	static void DeInit();
 
-    ~DialogManager(); 
+    ~DialogManager();
 
 	// This function called by CCamApp::PreTranslateMessage
 	static BOOL IsADialogWindow(wxWindow *pWnd);
@@ -684,7 +684,7 @@ public:
 	// --------------------------------------------------------------------------------------
 	// Functions which are specific to Tabbed dialogs
 	// This function adds a page to a tabbed dialog
-	static BOOL AddAPage(DialogTabOp* pDialogTabOp, CDlgResID DialogResID, CGadgetID Gadget=0); 
+	static BOOL AddAPage(DialogTabOp* pDialogTabOp, CDlgResID DialogResID, CGadgetID Gadget=0);
 
 	// This function maps a property sheet window ID, and a PageID to a Page window ID
 	static CWindowID GetPageWindow(CWindowID Win, CDlgResID PageID,  INT32* PageIndex = NULL);
@@ -695,10 +695,10 @@ public:
     // When a dialog becomes active its window ID is assigned to hDlgCurrent. This is required
 	// for IsDialogMessage handling
 
-	static wxWindow *pDlgCurrent; 
+	static wxWindow *pDlgCurrent;
 
 	// Used to determine if there is an open modal dialog
-	static BOOL ModalDialogOpen(DialogOp** pModal = NULL); 
+	static BOOL ModalDialogOpen(DialogOp** pModal = NULL);
 
 	// Used to test the visibility status of the window
 	static BOOL IsWindowVisible(CWindowID Win);
@@ -713,7 +713,7 @@ public:
 
 	// This routine comes in handy when we create a modal dialog box. If any modeless dialogs
 	// exist then they need disabling. a modal dialog only disables its parent ! (Learnt from MSDN)
-	static void EnableAllDialogs(BOOL Enable, wxWindow *pExceptMe = NULL); 
+	static void EnableAllDialogs(BOOL Enable, wxWindow *pExceptMe = NULL);
 
 	// Functions to Save and restore the active dialog state
 	static BOOL RecordActiveDialogState();
@@ -752,56 +752,56 @@ private:
 	static void DeletePropShtDetails(DialogTabOp* pOp);
 
 	// Merges two dialog resources together
-	static DLGTEMPLATE *MergeDialog( /*HINSTANCE MainInst, */  CDlgResID Main, 
+	static DLGTEMPLATE *MergeDialog( /*HINSTANCE MainInst, */  CDlgResID Main,
 									 /*HINSTANCE OtherInst, */ CDlgResID Other );
-	
+
 	static void SetGadgetIDToFocus(wxWindow *pDialogWnd);
 	static List *GetControlList( CWindowID );
 	static void DeleteControlList( CWindowID );
-	
+
 	// Helper functions for merging dialogs.
 	static LPWSTR MovePastWideStr(LPWSTR pWideStr);
 	static size_t SizeDlgHeader(DLGTEMPLATE *pHeader);
 	static size_t SizeCtrlData(DLGITEMTEMPLATE *pData);
 
-    // DiscardStrList holds a pointer to all strings which must be deleted after the dialog 
-    // has been deleted. 
-	static List DiscardStrList; 
-	
+    // DiscardStrList holds a pointer to all strings which must be deleted after the dialog
+    // has been deleted.
+	static List DiscardStrList;
+
 	// Stores a list of the DialogPositions of all dialogs which have ever been created using the
-	// Dialog Manager. Initially when a dialog is created the dialog is positioned centrally 
-	// on the display. When the dialog is destroyed its position is recorded so that if it is 
-	// ever created again it can have its position restored. 
-	static List DialogPositionList; 
-                            
-    // The ScrollPageIncList holds a list of all scroll bars along with their page increment 
-    // values which are specified by the SetGadgetRange function.                         
-	static List ScrollPageIncList; 	
+	// Dialog Manager. Initially when a dialog is created the dialog is positioned centrally
+	// on the display. When the dialog is destroyed its position is recorded so that if it is
+	// ever created again it can have its position restored.
+	static List DialogPositionList;
+
+    // The ScrollPageIncList holds a list of all scroll bars along with their page increment
+    // values which are specified by the SetGadgetRange function.
+	static List ScrollPageIncList;
 
 	static wxPropertySheetDialog* GetPropertySheetFromOp( DialogTabOp* pDialogTabOp );
-	
-	static BOOL HandleScrollBarMsg(wxWindow *pScrollWnd, 
-											      UINT32 wParam, 
-											      INT32 lParam,   
+
+	static BOOL HandleScrollBarMsg(wxWindow *pScrollWnd,
+											      UINT32 wParam,
+											      INT32 lParam,
 									   			  WORD CurrentThumbPos);
 
 	static DialogPosition* FindDialogPositionRecord(CDlgResID DialogID);
 
-									   			  
+
 	// -------------------------------------------------------------------------------------
 	//Control subclass procs
-	  
+
 	// Proc to enable edit controls to restrict their range of valid characters
-	static INT32 FAR PASCAL EXPORT ValidateEditGadgetProc(wxWindow *pwnd, 
-				 									     UINT32 message, 
-											  			 UINT32 wParam, 
-											   			 INT32 lParam); 
-                             
-	// Proc to enable a control to react to a right mouse button click                              
-	static INT32 FAR PASCAL EXPORT RgtMouseButtonProc(wxWindow *pwnd, 
-				 									 UINT32 message, 
-											  		 UINT32 wParam, 
-											   		 INT32 lParam); 
+	static INT32 FAR PASCAL EXPORT ValidateEditGadgetProc(wxWindow *pwnd,
+				 									     UINT32 message,
+											  			 UINT32 wParam,
+											   			 INT32 lParam);
+
+	// Proc to enable a control to react to a right mouse button click
+	static INT32 FAR PASCAL EXPORT RgtMouseButtonProc(wxWindow *pwnd,
+				 									 UINT32 message,
+											  		 UINT32 wParam,
+											   		 INT32 lParam);
 
 	static UINT32 MsgDragList; // Drag list message as used by the Drag list box common control
 	static UINT32 MsgSlaveDrawItem;	// Used to field WM_DRAWITEM messages back to the controls which need them
@@ -827,7 +827,7 @@ protected:
 
 public:
 	static void FreePaneInfoHash();
-};         
+};
 
 
 
@@ -839,19 +839,19 @@ public:
 
 	Author:		Simon_Maneggio (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	6/9/93
-	Purpose:	ScrollPageInc records the number of units a scroll bars thumb should move 
-				for a page up or down scrollbar action. A ScrollPageInc is created and added 
-				to the DialogManager's ScrollPageIncList whenever the 
-				DialogManager::SetGadgetRange is called for a scrollbar or trackbar control. 
-				
+	Purpose:	ScrollPageInc records the number of units a scroll bars thumb should move
+				for a page up or down scrollbar action. A ScrollPageInc is created and added
+				to the DialogManager's ScrollPageIncList whenever the
+				DialogManager::SetGadgetRange is called for a scrollbar or trackbar control.
+
 	SeeAlso:	DialogManager
 
 ********************************************************************************************/
-                       
+
 class ScrollPageInc: public ListItem
-{  
-public: 
-	wxWindow		   *pDlgWindow;    // The dialog's window 
+{
+public:
+	wxWindow		   *pDlgWindow;    // The dialog's window
 	wxWindow		   *pScrollBarWnd; // The scroll bars window
 	INT32					PageInc; 	   // Scroll bar page up/down unit increase
 };
@@ -864,18 +864,18 @@ public:
 
 	Author:		Simon_Maneggio (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	6/9/93
-	Purpose:	This simple class holds a pointer to a string which must be deleted when a 
-				dialog is deleted. 
+	Purpose:	This simple class holds a pointer to a string which must be deleted when a
+				dialog is deleted.
 	SeeAlso:	DialogManager
 
 ********************************************************************************************/
 
 class DlgDiscardString: public ListItem
-{                         
+{
 public:
-	wxWindow		   *DlgWindow; 
-	StringBase		   *pStr; 
-};                 
+	wxWindow		   *DlgWindow;
+	StringBase		   *pStr;
+};
 
 
 
@@ -885,43 +885,43 @@ public:
 
 	Author:		Simon_Maneggio (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	6/9/93
-	Purpose:	A list of  ConrolInfo ListItem's are stored 'in' a dialog box. They are used 
+	Purpose:	A list of  ConrolInfo ListItem's are stored 'in' a dialog box. They are used
 				to store information which is required in a subclassed controls proc. Currently
-			    Edit controls and Button controls create a ControlInfo item when they 
-				are subclassed.  
+			    Edit controls and Button controls create a ControlInfo item when they
+				are subclassed.
 	SeeAlso:	DialogManager
 
 ********************************************************************************************/
 
 class ControlInfo: public ListItem
-{      
-public:   
-	~ControlInfo();   
+{
+public:
+	~ControlInfo();
 	wxWindow *pControlWnd;      // The windows control (Identifier)
     UINT32 IDSValidCh;      // Resource ID of the valid characters allowed in an edit control
  	FARPROC lpfnOldProc;  // Pointer to the old proc of the control before it was subclassed
- 						  // this is generally called at the end of the new proc. 
-};           
+ 						  // this is generally called at the end of the new proc.
+};
 
 
-                                      
+
 /********************************************************************************************
 
 >	class CWindowIDItem: public ListItem
 
 	Author:		Simon_Maneggio (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	11/10/93
-	Purpose:	A very simple class which contains a CWindowID. A list of CWindowIDItems are 
-				stored in the DialogPosition list.   
+	Purpose:	A very simple class which contains a CWindowID. A list of CWindowIDItems are
+				stored in the DialogPosition list.
 	SeeAlso:	DialogPosition
 
 ********************************************************************************************/
-                                    
+
 class CWindowIDItem: public ListItem
-{                 
+{
 	public:
 	CWindowID DlgWin; // Dialog window
-}; 
+};
 
 
 

@@ -1881,7 +1881,7 @@ BOOL ImagesettingAttrRecordHandler::HandleRecord(CXaraFileRecord *pCXaraFileReco
 			break;
 
 		default:
-			ERROR3_PF(("I don't handle records with the tag (%d)\n",pCXaraFileRecord->GetTag()));
+		  ERROR3_PF((_T("I don't handle records with the tag (%d)\n"),pCXaraFileRecord->GetTag()));
 			break;
 	}
 

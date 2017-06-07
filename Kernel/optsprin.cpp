@@ -1761,7 +1761,7 @@ BOOL PrintLayoutTab::ShowDetails(CGadgetID* pGadgetIDList, CGadgetID Exclude)
 		}
 		else
 		{
-			ERROR3_PF(("Unknown gadget ID (%D)",pGadgetIDList));
+		  ERROR3_PF((_T("Unknown gadget ID (%D)"),pGadgetIDList));
 		}
 	}
 

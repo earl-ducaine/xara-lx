@@ -304,54 +304,41 @@ MenuItem *GetMenuPreferences(UINT32 ResourceID)
 	return pMenu;	
 }
 
-/********************************************************************************************
-
->	MenuItem *CreateMenuItem(TCHAR *OpToken, UINT32 ParentId, BOOL Separator)
+/***************************************************************************
+>	MenuItem *CreateMenuItem(TCHAR *OpToken, UINT32 ParentId, 
+                                 BOOL Separator)
 
 	Author:		Mario_Shamtani (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	29/9/93
 	Inputs:		OpToken used to get the appropriate operation
-				Parent Identifier
-				Separator Boolean 
+			ParentId
+			Separator
 	Returns:	MenuItem if created ok else NULL
 	Purpose:	Creates a MenuItem given an Optoken.
+***************************************************************************/
 
-********************************************************************************************/
-
-MenuItem *CreateMenuItem(const TCHAR *OpToken, UINT32 ParentId, BOOL Separator)
-{
-	OpDescriptor *Operation = OpDescriptor::FindOpDescriptor(OpToken);
-
-PORTNOTE( "other", "Use DO_NOTHING op for menuitem, if optoken not found" );
+MenuItem *CreateMenuItem(const TCHAR *OpToken, UINT32 ParentId, BOOL Separator) {
+  OpDescriptor* Operation = OpDescriptor::FindOpDescriptor(OpToken);
+  PORTNOTE( "other", "Use DO_NOTHING op for menuitem, if optoken not found" );
 #if defined(EXCLUDE_FROM_XARALX)
-	if( NULL == Operation )
-		Operation = OpDescriptor::FindOpDescriptor( OPTOKEN_DO_NOTHING );
+  if( NULL == Operation )
+    Operation = OpDescriptor::FindOpDescriptor( OPTOKEN_DO_NOTHING );
 #endif
-	
-	if (!Operation)
-	{
-		String_256 ErrorMsg(_R(IDE_OPNOTFOUND));
-		ErrorMsg += OpToken;	
-
- 		Error::SetError(_R(IDE_OPNOTFOUND), ErrorMsg, 0);
-		InformError();
-
-    	return NULL;
-    }
-    else	
-	{
-	    MenuItem *pMenuItem;
-	
-		// Create an instance of a MenuItem
-		pMenuItem = new MenuItem(	ParentId,
-									Operation,
-									Separator
-								);
-    
-		ERROR3IF( pMenuItem==NULL, "CreateMenuItem failed" );
-		
-		return pMenuItem;
-    }
+  if (!Operation) {
+    String_256 ErrorMsg(_R(IDE_OPNOTFOUND));
+    ErrorMsg += OpToken;	
+    Error::SetError(_R(IDE_OPNOTFOUND), ErrorMsg, 0);
+    InformError();
+    return NULL;
+  } else {
+    MenuItem *pMenuItem;
+    // Create an instance of a MenuItem
+    pMenuItem = new MenuItem(ParentId,
+			     Operation,
+			     Separator);
+    ERROR3IF( pMenuItem==NULL, "CreateMenuItem failed" );
+    return pMenuItem;
+  }
 }
 
 /********************************************************************************************

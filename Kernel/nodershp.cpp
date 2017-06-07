@@ -3449,7 +3449,7 @@ void NodeRegularShape::SetNumSides(UINT32 NewNumSides)
 	}
 	else
 	{
-		ERROR3_PF(("Attempted to set %d number of sides",NewNumSides));
+	  ERROR3_PF((_T("Attempted to set %d number of sides"),NewNumSides));
 	}
 }		       
 

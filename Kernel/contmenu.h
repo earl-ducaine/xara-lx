@@ -163,10 +163,10 @@ public:
 	BOOL 				BuildTransferCommands(BOOL NodeCommands);
 	BOOL				BuildEffectCommands();
 	BOOL 				BuildCommand(const TCHAR* pOpToken,
-									 BOOL Separator = FALSE,
-									 MenuItem* pRootMenu = NULL,
-									 const String& strNewText = String( _T("") ),
-									 OpMenuParam* pParam = NULL);
+						     BOOL Separator = FALSE,
+						     MenuItem* pRootMenu = NULL,
+						     const String& strNewText = String( _T("") ),
+						     OpMenuParam* pParam = NULL);
 	MenuItem*			GetLastItem();
 
 protected:

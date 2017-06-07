@@ -2267,7 +2267,7 @@ BOOL FeatherRecordHandler::HandleRecord(CXaraFileRecord* pCXaraFileRecord)
 
 		default:
 			ok = FALSE;
-			ERROR3_PF(("Incorrect tag supplied to HandleRecord. Tag = (%d)\n",pCXaraFileRecord->GetTag()));
+			ERROR3_PF((_T("Incorrect tag supplied to HandleRecord. Tag = (%d)\n"),pCXaraFileRecord->GetTag()));
 			break;
 	}
 

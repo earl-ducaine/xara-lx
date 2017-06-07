@@ -158,12 +158,12 @@ class RulerBase;
 // The op tokens for each of the tools
 // A tool's op token is "TOOL" with the tool ID appended on the end
 
-#define TOOL_OPTOKEN_PUSH       _T("TOOL3")
-#define TOOL_OPTOKEN_ZOOM       _T("TOOL4")
-#define TOOL_OPTOKEN_RECTANGLE  _T("TOOL5")
-#define TOOL_OPTOKEN_FREEHAND   _T("TOOL6")
-#define TOOL_OPTOKEN_SELECTOR   _T("TOOL7")
-#define TOOL_OPTOKEN_RECT       _T("TOOL8")
+#define TOOL_OPTOKEN_PUSH _T("TOOL3")
+#define TOOL_OPTOKEN_ZOOM _T("TOOL4")
+#define TOOL_OPTOKEN_RECTANGLE _T("TOOL5")
+#define TOOL_OPTOKEN_FREEHAND _T("TOOL6")
+#define TOOL_OPTOKEN_SELECTOR _T("TOOL7")
+#define TOOL_OPTOKEN_RECT _T("TOOL8")
 #define TOOL_OPTOKEN_ROTATE     _T("TOOL9")
 #define TOOL_OPTOKEN_GRID       _T("TOOL10")
 #define TOOL_OPTOKEN_BEZTOOL    _T("TOOL11")

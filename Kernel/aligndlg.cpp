@@ -653,7 +653,7 @@ void ArrangeAlignment::DialogOKed()
 	if (Align.h!=AlignNone || Align.v!=AlignNone)
 	{
 		OpDescriptor* pOpDesc=OpDescriptor::FindOpDescriptor(OPTOKEN_OPALIGN);
-		ERROR3IF_PF(pOpDesc==NULL,("Couldn't find OPTOKEN_OPALIGN op descriptor"));
+		ERROR3IF_PF(pOpDesc==NULL,(_T("Couldn't find OPTOKEN_OPALIGN op descriptor")));
 		pOpDesc->Invoke((OpParam*)&Align);
 	}
 }

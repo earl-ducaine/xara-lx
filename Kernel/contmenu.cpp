@@ -501,34 +501,33 @@ BOOL ContextMenu::BuildEffectCommands()
 
 ********************************************************************************************/
 
-BOOL ContextMenu::BuildCommand(const TCHAR* pOpToken, BOOL Separator, MenuItem* pRootMenu, const String& strNewText, OpMenuParam* pParam)
-{
-	MenuItem* pNewItem;
-
-	// If caller hasn't specified a root menu use the root of the whole thing...
-	if (pRootMenu == NULL)
-		pRootMenu = pRootItem;
-
-	// Create a new kernel menu item...
-	pNewItem = CreateMenuItem(pOpToken, pRootMenu->GetMenuId(), Separator);
-
-	// If that worked, add it to the root menu. Else flag failure.
-	if (pNewItem)
-	{
-		pLastItem = pNewItem;
-
-		if (!strNewText.IsEmpty())
-			pNewItem->SetMenuText(strNewText);
-
-		if (pParam)
-			pNewItem->SetMenuParam(pParam);
-
-		pRootMenu->AddMenuItem(pNewItem);
-
-		return TRUE;
-	}
-	else
-		return FALSE;
+BOOL ContextMenu::BuildCommand(const TCHAR* pOpToken,
+			       BOOL Separator,
+			       MenuItem* pRootMenu,
+			       const String& strNewText,
+			       OpMenuParam* pParam) {
+  MenuItem* pNewItem;
+  // If caller hasn't specified a root menu use the root of the whole thing...
+  if (pRootMenu == NULL) {
+    pRootMenu = pRootItem;
+  }
+  // Create a new kernel menu item...
+  pNewItem = CreateMenuItem(pOpToken, pRootMenu->GetMenuId(), Separator);
+  // If that worked, add it to the root menu. Else flag failure.
+  if (pNewItem) {
+      pLastItem = pNewItem;
+      if (!strNewText.IsEmpty()) {
+	pNewItem->SetMenuText(strNewText);
+      }
+      if (pParam) {
+	pNewItem->SetMenuParam(pParam);
+      }
+      pRootMenu->AddMenuItem(pNewItem);
+      return TRUE;
+    }
+  else {
+    return FALSE;
+  }
 }
 
 

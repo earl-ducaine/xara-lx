@@ -689,7 +689,7 @@ BOOL PreferenceSection::AddPref(OILPreferences* OILPrefs,
 #ifdef _DEBUG
   pChunk = (PreferenceChunk *) ChunkList.GetHead();
   while (pChunk != NULL) {
-    ERROR3IF_PF((pChunk->PrefExists(Pref) != FALSE), ( "Preference '%s' in section '%s' declared more than once", Pref, Section ) );
+    ERROR3IF_PF((pChunk->PrefExists(Pref) != FALSE), ( _T("Preference '%s' in section '%s' declared more than once"), Pref, Section ) );
     pChunk = (PreferenceChunk *) ChunkList.GetNext(pChunk);
   }
 #endif
