@@ -1,7 +1,7 @@
 // $Id: camresource.h 1184 2006-05-23 19:27:20Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
- 
+
                Xara LX, a vector drawing and manipulation program.
                     Copyright (C) 1993-2006 Xara Group Ltd.
        Copyright on certain contributions may be held in joint with their
@@ -32,7 +32,7 @@ ADDITIONAL RIGHTS
 
 Conditional upon your continuing compliance with the GNU General Public
 License described above, Xara Group Ltd grants to you certain additional
-rights. 
+rights.
 
 The additional rights are to use, modify, and distribute the software
 together with the wxWidgets library, the wxXtra library, and the "CDraw"
@@ -159,7 +159,7 @@ class CamResourceRemember;
 	Created:	02/12/2005
 	Purpose:	To control the translation of resources within Camelot
 	Notes:		In the OIL
-	See Also:	
+	See Also:
 
 This is a class composed of static member functions which rapidly translates resources,
 and a dynamic object which provides capabilities of loading from the disk.
@@ -228,6 +228,7 @@ public:
 // The static stuff
 
 private:
+	static wxBitmapType GetImageTypeFromFileName (wxString fileName);
 	static void AddStringResource(const TCHAR * name, const TCHAR * text, ResourceID r=0);
 	static void RememberDuringStaticInit(const TCHAR * ObjectName);
 	static BOOL ReadStringTableFile();
@@ -264,21 +265,27 @@ public:
 	static void MakeGreyImage (wxImage & rImage);
 	static void MakeHotImage (wxImage & rImage);
 
-	static inline ResourceID GetResourceID(const TCHAR * ObjectName) // Implement the _R macro
-	{
-		const TCHAR * fObjectName=FixObjectName(ObjectName);
-		ResourceID Resource = wxXmlResource::GetXRCID(fObjectName);
-		// need to record it in the hash that goes the other way lest we be asked. Note this will always
-		// work as the caller to GetObjectName can't have a ResourceID without _R()'ing it (or at least
-		// cannot legally have one).
-		if (pObjectNameHash)	// skip on static initialization phase or we'll be dead
-		{
-			ResIDToString::iterator i=pObjectNameHash->find(Resource);
-			if (i==pObjectNameHash->end()) (*pObjectNameHash)[Resource]=camStrdup(fObjectName);
-		}
-		else RememberDuringStaticInit(fObjectName); // add it to the hash later
-		return Resource;
-	} 	
+	// Implement the _R macro
+	static inline ResourceID GetResourceID(const TCHAR * ObjectName)  {
+	  const TCHAR * fObjectName=FixObjectName(ObjectName);
+	  ResourceID Resource = wxXmlResource::GetXRCID(fObjectName);
+	  // need to record it in the hash that goes the other way
+	  // lest we be asked. Note this will always work as the
+	  // caller to GetObjectName can't have a ResourceID without
+	  // _R()'ing it (or at least cannot legally have one).
+	  // skip on static initialization phase or we'll be dead
+	  if (pObjectNameHash)	 {
+	    ResIDToString::iterator i=pObjectNameHash->find(Resource);
+	    if (i == pObjectNameHash->end()) {
+	      (*pObjectNameHash)[Resource] = camStrdup(fObjectName);
+	    }
+	  } else {
+	    // add it to the hash later
+	    RememberDuringStaticInit(fObjectName); 
+	  }
+	  return Resource;
+	}
+	
 	static inline const TCHAR * GetTextFail(ResourceID Resource)
 	{
 		if (!pHash) return NULL;
@@ -348,4 +355,3 @@ private:
 
 
 #endif
-

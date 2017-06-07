@@ -961,7 +961,7 @@ BOOL CamelotEPSFilter::ProcessToken()
 					break;
 
 				default:
-					ERROR3_PF(("Unknown fill effect type (%d) in EPS", EffectType));
+				  ERROR3_PF((_T("Unknown fill effect type (%d) in EPS"), EffectType));
 			}
 			break;
 		}

@@ -583,7 +583,7 @@ void BlendTool::OnClick( DocCoord PointerPos, ClickType Click, ClickModifiers Cl
 {
 	if (ClickMods.Menu) return;							// Don't do anything if the user clicked the Menu button
 
-	ERROR3IF_PF(pSpread==NULL,("pSpread is NULL"));
+	ERROR3IF_PF(pSpread==NULL,(_T("pSpread is NULL")));
 
 	if (Click == CLICKTYPE_DRAG)
 	{
@@ -644,7 +644,7 @@ void BlendTool::OnClick( DocCoord PointerPos, ClickType Click, ClickModifiers Cl
 
 void BlendTool::OnMouseMove(DocCoord PointerPos,Spread* pSpread,ClickModifiers ClickMods)
 {
-	ERROR3IF_PF(pSpread==NULL,("pSpread is NULL"));
+  ERROR3IF_PF(pSpread==NULL,(_T("pSpread is NULL")));
 
 	pRefEnd->Reset();
 	UpdateRef(pRefStart,pSpread,PointerPos,FALSE);
@@ -779,8 +779,8 @@ BOOL BlendTool::EditBlendEnd(Spread* pSpread, DocCoord PointerPos)
 
 void BlendTool::UpdateRef(BlendToolRef* pRef,Spread* pSpread, DocCoord PointerPos,BOOL CheckNodeUnderPoint)
 {
-	ERROR3IF_PF(pRef   ==NULL,("pRef is NULL"));
-	ERROR3IF_PF(pSpread==NULL,("pSpread is NULL"));
+  ERROR3IF_PF(pRef   ==NULL,(_T("pRef is NULL")));
+  ERROR3IF_PF(pSpread==NULL,(_T("pSpread is NULL")));
 
 	// Reset the reference
 	pRef->Reset();
@@ -848,8 +848,8 @@ void BlendTool::UpdateRef(BlendToolRef* pRef,Spread* pSpread, DocCoord PointerPo
 
 void BlendTool::UpdateCursorAndStatus()
 {
-	ERROR3IF_PF(pRefStart==NULL,("pRefStart is NULL"));
-	ERROR3IF_PF(pRefEnd  ==NULL,("pRefEnd   is NULL"));
+  ERROR3IF_PF(pRefStart==NULL,(_T("pRefStart is NULL")));
+  ERROR3IF_PF(pRefEnd  ==NULL,(_T("pRefEnd   is NULL_T(")));
 
 	// Default to standard pointer and status line text
 	Cursor* pcNewCursor = pcNormalCursor;
@@ -1104,8 +1104,8 @@ BOOL BlendTool::IsPointOverBlendBlob(DocCoord* pPointerPos,BlendToolRef* pRef)
 
 void BlendTool::CheckNodeRemapping(BlendToolRef* pRefStart, BlendToolRef* pRefEnd)
 {
-	ERROR3IF(pRefStart == NULL,"pRefStart == NULL");
-	ERROR3IF(pRefEnd   == NULL,"pRefEnd == NULL");
+  ERROR3IF(pRefStart == NULL,_T("pRefStart == NULL"));
+  ERROR3IF(pRefEnd   == NULL,_T("pRefEnd == NULL"));
 	if (pRefStart == NULL || pRefEnd == NULL)
 		return;
 
@@ -4239,10 +4239,10 @@ BOOL OpBlendNodes::DoBlendObjects()
 	OpType = BLENDOPTYPE_NEW;
 
 	// Are we going mad? Better check our onions...
-	ERROR3IF_PF(pRefStart        == NULL,("pRefStart == NULL"));
-	ERROR3IF_PF(pRefEnd          == NULL,("pRefEnd == NULL"));
-	ERROR3IF_PF(pRefStart->pNode == NULL,("pRefStart->pNode == NULL"));
-	ERROR3IF_PF(pRefEnd  ->pNode == NULL,("pRefEnd->pNode == NULL"));
+	ERROR3IF_PF(pRefStart        == NULL,(_T("pRefStart == NULL")));
+	ERROR3IF_PF(pRefEnd          == NULL,(_T("pRefEnd == NULL")));
+	ERROR3IF_PF(pRefStart->pNode == NULL,(_T("pRefStart->pNode == NULL")));
+	ERROR3IF_PF(pRefEnd  ->pNode == NULL,(_T("pRefEnd->pNode == NULL")));
 
 	BOOL ok = DeterminBlendObjectsProcessorHit ();
 
@@ -4658,7 +4658,7 @@ BOOL OpBlendNodes::Undo()
 		case BLENDOPTYPE_BLENDBLENDONPATH:
 			break;
 		default:
-			ERROR3_PF(("Unknown blend OpType (%d)",OpType));
+		  ERROR3_PF((_T("Unknown blend OpType (%d)"),OpType));
 			break;
 	}
 
@@ -4726,7 +4726,7 @@ BOOL OpBlendNodes::Redo()
 		case BLENDOPTYPE_BLENDBLENDONPATH:
 			break;
 		default:
-			ERROR3_PF(("Unknown blend OpType (%d)",OpType));
+		  ERROR3_PF((_T("Unknown blend OpType (%d)"),OpType));
 			break;
 	}
 	SelRange* pSel = GetApplication()->FindSelection();
@@ -7422,7 +7422,7 @@ void OpChangeBlend::GetOpName(String_256* OpName)
 		case CHANGEBLEND_TANGENTIAL:		IDS = _R(IDS_TANGENTIAL_UNDO);  	break;
 		case CHANGEBLEND_OBJECTPROFILE:		IDS = _R(IDS_POSITIONPROFILE_UNDO);	break;
 		case CHANGEBLEND_ATTRPROFILE:		IDS = _R(IDS_ATTRPROFILE_UNDO);		break;
-		default: ERROR3_PF(("Unknown flag type (%d)",ChangeType));  break;
+	default: ERROR3_PF((_T("Unknown flag type (%d)"),ChangeType));  break;
 	}
 
 	*OpName = String_256(IDS);

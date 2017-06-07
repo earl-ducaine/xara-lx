@@ -406,8 +406,9 @@ BOOL OpDescriptor::DelinkDescriptor( OpDescriptor* pThisOp )
 							  USE WITH CAUTION (this must be tested on an Op by Op
 							  basis).  By default TRUE, ie. make undo info.
 
-	Purpose:	This Function uses the Operation runtime class to create an instance of the
-				operation object and call its DO function.
+	Purpose:        This Function uses the Operation runtime class to
+			create an instance of the operation object and
+			call its DO function.
 
 	Errors:		As a safeguard before the operation is invoked its GetState fn is invoked
 				to make sure that the Operation is executable.
@@ -424,91 +425,78 @@ BOOL OpDescriptor::DelinkDescriptor( OpDescriptor* pThisOp )
 	SeeAlso:	Operation::DoWithParam
 
 ********************************************************************************************/
-
-void OpDescriptor::Invoke(OpParam* pOpParam, BOOL fWithUndo)
-{
-	// Before we invoke the operation we call the operation's GetState fn to make sure
-	// that it is executable.
-	String_256 Dummy;
-	OpState State = GetOpsState(&Dummy);
-	if (!State.Greyed)
-	{
-
-		Operation* Op;
-		CCRuntimeClass* TheOpClass;
-
-		// Find out which operation this OpDesc should invoke, i.e. has it been aliased
-		if (Aliased)
-		{
-			if (AliasOpClass != NULL)
-				TheOpClass = AliasOpClass;
-			else
-				TheOpClass = OpClass;
-		}
-		else
-			TheOpClass = OpClass;
-
-		// Use the TheOpClass pointer to a runtime class in order to generate an instance of
-		// the appropriate operation object
-		Op = (Operation*) TheOpClass->CreateObject();
-
-		if (Op)
-		{
+void OpDescriptor::Invoke(OpParam* pOpParam, BOOL fWithUndo) {
+  // Before we invoke the operation we call the operation's
+  // GetState fn to make sure that it is executable.
+  String_256 Dummy;
+  OpState State = GetOpsState(&Dummy);
+  if (!State.Greyed) {
+    Operation* Op;
+    CCRuntimeClass* TheOpClass;
+    // Find out which operation this OpDesc should invoke, i.e. has it
+    // been aliased
+    if (Aliased) {
+      if (AliasOpClass != NULL) {
+	TheOpClass = AliasOpClass;
+      } else {
+	TheOpClass = OpClass;
+      }
+    } else {
+      TheOpClass = OpClass;
+    }
+    // Use the TheOpClass pointer to a runtime class in order to
+    // generate an instance of the appropriate operation object
+    Op = (Operation*) TheOpClass->CreateObject();
+    if (Op) {
 #if !defined(EXCLUDE_FROM_RALPH)
-			// Update the state of the bars
-			DialogBarOp::SetSystemStateChanged(TRUE);
-
-			// If the op has not got its own way of showing the progress
-			BOOL ShowProgressIndicator = !(Op->GetOpFlgs().HasOwnTimeIndicator);
-		    if (ShowProgressIndicator)
-			{
-				// Bring up the progress indicator (This has been made re-enterant)
-		    	BeginSlowJob();
-			}
+      // Update the state of the bars
+      DialogBarOp::SetSystemStateChanged(TRUE);
+      // If the op has not got its own way of showing the progress
+      BOOL ShowProgressIndicator = !(Op->GetOpFlgs().HasOwnTimeIndicator);
+      if (ShowProgressIndicator) {
+	// Bring up the progress indicator (This has been made
+	// re-enterant)
+	BeginSlowJob();
+      }
 #endif
-			// On all but OpExit, send around an OpMsg::START.
-			if (!IS_A(Op, OpExit)) BROADCAST_TO_ALL(OpMsg(Op, OpMsg::BEGIN));
-
-			// Discard undo information if appropriate.
-			if (!fWithUndo) Op->SucceedAndDiscard();
-
-			// Call either parameterised or default Do function.
-			if (pOpParam == 0)
-				Op->Do(this);
-			else
-				Op->DoWithParam(this, pOpParam);
-
+      // On all but OpExit, send around an OpMsg::START.
+      if (!IS_A(Op, OpExit)) {
+	BROADCAST_TO_ALL(OpMsg(Op, OpMsg::BEGIN));
+      }
+      // Discard undo information if appropriate.
+      if (!fWithUndo) {
+	Op->SucceedAndDiscard();
+      }
+      // Call either parameterised or default Do function.
+      if (pOpParam == 0) {
+	Op->Do(this);
+      } else {
+	Op->DoWithParam(this, pOpParam);
+      }
 #if !defined(EXCLUDE_FROM_RALPH)
-			if (ShowProgressIndicator)
-			{
-				EndSlowJob();
-			}
+      if (ShowProgressIndicator) {
+	EndSlowJob();
+      }
 #endif
-		}
-	}
-	else
-	{
+    }
+  } else {
 #if !defined(EXCLUDE_FROM_RALPH)
-		// The operation is disabled. This means that DialogBarOp::UpdateStateOfAllBars
-		// was not called after a change in the state of the system.
-
-		// If ShouldUpdateBarState returns TRUE then the operation was probably invoked before
-		// the Idle event had a chance to update it.
-
-		// If this ENSURE goes bang it indicates  that SetSystemStateChanged was not called when it
-		// should have been.
-		ENSURE(DialogBarOp::ShouldUpdateBarState(), "Trying to execute operation which should be disabled");
-
-		// This ENSURE does not indicate a real error but I think its worth keeping it in as it indicates
-		// that the idle update processing may not be frequent enough.
-		//ENSURE(FALSE, "Trying to execute Operation before we have had a chance to disable it");
-
-		// Update the bar state and leave
-		DialogBarOp::SetSystemStateChanged();
-		DialogBarOp::UpdateStateOfAllBars();
-//		Beep(); // Just to annoy him !
+    // The operation is disabled. This means that DialogBarOp::UpdateStateOfAllBars
+    // was not called after a change in the state of the system.
+    // If ShouldUpdateBarState returns TRUE then the operation was probably invoked before
+    // the Idle event had a chance to update it.
+    // If this ENSURE goes bang it indicates  that SetSystemStateChanged was not called when it
+    // should have been.
+    ENSURE(DialogBarOp::ShouldUpdateBarState(), "Trying to execute operation which should be disabled");
+    // This ENSURE does not indicate a real error but I think its worth keeping it in as it indicates
+    // that the idle update processing may not be frequent enough.
+    //ENSURE(FALSE, "Trying to execute Operation before we have had a chance to disable it");
+    // Update the bar state and leave
+    DialogBarOp::SetSystemStateChanged();
+    DialogBarOp::UpdateStateOfAllBars();
+    //		Beep(); // Just to annoy him !
 #endif
-	}
+  }
 }
 
 

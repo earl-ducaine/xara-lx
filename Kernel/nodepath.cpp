@@ -870,51 +870,43 @@ BOOL NodePath::OnClick( DocCoord PointerPos, ClickType Click,
 
 ********************************************************************************************/
 
-BOOL NodePath::OnBlobPopUp(Spread* pSpread, DocCoord PointerPos, ContextMenu* pMenu)
-{
+BOOL NodePath::OnBlobPopUp(Spread* pSpread, DocCoord PointerPos,
+			   ContextMenu* pMenu) {
 #if !defined(EXCLUDE_FROM_RALPH)
-	DocRect    BlobRect;
-//	DocCoord*  Coords = InkPath.GetCoordArray();
-//	PathFlags* Flags  = InkPath.GetFlagArray();
-//	PathVerb*  Verbs  = InkPath.GetVerbArray();
-
-	// Should always be able to get selected view
-	DocView *pDocView = DocView::GetSelected();
-	ERROR3IF(pDocView == NULL, "NodePath::OnClick: Could not get selected DocView");
-	if (pDocView == NULL)
-		return FALSE;
-
-	// If there are no selected points we won't put up our menu because its
-	// items are entirely to do with points (a useful thing in a Blobs menu!).
-	if (!InkPath.IsSubSelection())
-		return FALSE;
-
-//	INT32 NumCoords = InkPath.GetNumCoords();
-	INT32 i;
-	if (InkPath.FindNearestPoint(	PointerPos, 
-									POINTFLAG_ENDPOINTS | 
-									POINTFLAG_CONTROLPOINTS | 
-									POINTFLAG_ENDSFIRST,
-									&i)
-		)
-	{
-		pMenu->BuildCommand(TOOL_OPTOKEN_BEZTOOL, TRUE);
-
-		pMenu->BuildCommand(OPTOKEN_MAKELINESOP);
-		pMenu->BuildCommand(OPTOKEN_MAKECURVESOP, TRUE);
-
-		pMenu->BuildCommand(OPTOKEN_DELETEPOINTSOP);
-		pMenu->BuildCommand(OPTOKEN_BREAKATPOINTS, TRUE);
-
-		pMenu->BuildCommand(OPTOKEN_SELECTALLPATHPOINTS);
-		pMenu->BuildCommand(OPTOKEN_DESELECTALLPATHPOINTS, TRUE);
-
-		return TRUE;
-	}
-
+  DocRect    BlobRect;
+  //	DocCoord*  Coords = InkPath.GetCoordArray();
+  //	PathFlags* Flags  = InkPath.GetFlagArray();
+  //	PathVerb*  Verbs  = InkPath.GetVerbArray();
+  // Should always be able to get selected view
+  DocView *pDocView = DocView::GetSelected();
+  ERROR3IF(pDocView == NULL, "NodePath::OnClick: Could not get selected DocView");
+  if (pDocView == NULL) {
+    return FALSE;
+  }
+  // If there are no selected points we won't put up our menu because its
+  // items are entirely to do with points (a useful thing in a Blobs menu!).
+  if (!InkPath.IsSubSelection()) {
+    return FALSE;
+  }
+  //	INT32 NumCoords = InkPath.GetNumCoords();
+  INT32 i;
+  if (InkPath.FindNearestPoint(PointerPos, 
+			       POINTFLAG_ENDPOINTS | 
+			       POINTFLAG_CONTROLPOINTS | 
+			       POINTFLAG_ENDSFIRST,
+			       &i)) {
+    pMenu->BuildCommand(TOOL_OPTOKEN_BEZTOOL, TRUE);
+    pMenu->BuildCommand(OPTOKEN_MAKELINESOP);
+    pMenu->BuildCommand(OPTOKEN_MAKECURVESOP, TRUE);
+    pMenu->BuildCommand(OPTOKEN_DELETEPOINTSOP);
+    pMenu->BuildCommand(OPTOKEN_BREAKATPOINTS, TRUE);
+    pMenu->BuildCommand(OPTOKEN_SELECTALLPATHPOINTS);
+    pMenu->BuildCommand(OPTOKEN_DESELECTALLPATHPOINTS, TRUE);
+    return TRUE;
+  }
 #endif
-	// we do not want to claim the click, so return FALSE
-	return FALSE;
+  // we do not want to claim the click, so return FALSE
+  return FALSE;
 }
 
 
@@ -3186,7 +3178,7 @@ BOOL PathRecordHandler::HandleRecord(CXaraFileRecord* pCXaraFileRecord)
 
 		default:
 			ok = FALSE;
-			ERROR3_PF(("I don't handle records with the tag (%d)\n",pCXaraFileRecord->GetTag()));
+			ERROR3_PF((_T("I don't handle records with the tag (%d)\n"),pCXaraFileRecord->GetTag()));
 			break;
 	}
 

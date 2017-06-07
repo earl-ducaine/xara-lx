@@ -3299,9 +3299,9 @@ void CCamView::OnMouseMove( wxMouseEvent &event )
 	// Make a number representing the current button and control key state - we don't use this for anything
 	// other than seeing whether it has changed
 	INT32 CurrentMouseState =
-		(WXCMS.LeftDown()	?1:0) |
-		(WXCMS.MiddleDown()	?2:0) |
-		(WXCMS.RightDown()	?4:0) |
+		(WXCMS.LeftIsDown()	?1:0) |
+		(WXCMS.MiddleIsDown()	?2:0) |
+		(WXCMS.RightIsDown()	?4:0) |
 		(WXCMS.ControlDown()?8:0) |
 		(WXCMS.ShiftDown()	?16:0) |
 		(WXCMS.AltDown()	?32:0) |
@@ -4202,7 +4202,11 @@ PORTNOTE("other","Removed reading of keyboard autorepeat rate")
 	{
 		OpDescriptor* pOpDesc = OpDescriptor::FindOpDescriptor(DragOpToken);
 
-		ERROR3IF_PF(pOpDesc == NULL,("FindOpDescriptor(%s) failed",(TCHAR*)DragOpToken));
+
+		TCHAR failed[] = _T("FindOpDescriptor(%s) failed");
+		ERROR3IF_PF(pOpDesc == NULL,
+			    (failed,
+			     (TCHAR*)DragOpToken));
 
 		if (pOpDesc != NULL)
 			pOpDesc->Invoke(pDragOpParam);

@@ -1099,22 +1099,18 @@ PORTNOTE("printing", "Make printer always appear to be postscript")
 
 ********************************************************************************************/
 
-BOOL CCPrintDialog::LookUpPaperSize(UINT32 PaperSizeID,wxSize* pPaperSize)
-{
-	ERROR2IF(pPaperSize == NULL,FALSE,"pPaperSize is NULL");
-
-	for(INT32 i=0;pPaperSizes[i].ID != wxPAPER_LISTEND;i++)
-	{
-		if (pPaperSizes[i].ID == PaperSizeID)
-		{
-			*pPaperSize = wxSize(pPaperSizes[i].Width, pPaperSizes[i].Height);
-			return TRUE;
-		}
-	}
-
-	ERROR3_PF(("Couldn't find paper size for paper ID %d",PaperSizeID));
-
-	return FALSE;
+BOOL CCPrintDialog::LookUpPaperSize(UINT32 PaperSizeID,wxSize* pPaperSize) {
+  ERROR2IF(pPaperSize == NULL,FALSE,"pPaperSize is NULL");
+  for(INT32 i=0;pPaperSizes[i].ID != wxPAPER_LISTEND;i++) {
+    if (pPaperSizes[i].ID == PaperSizeID) {
+      *pPaperSize = wxSize(pPaperSizes[i].Width, pPaperSizes[i].Height);
+      return TRUE;
+    }
+  }
+  TCHAR couldnt_find_paper_size[] =
+    _T("Couldn't find paper size for paper ID %d");
+  ERROR3_PF((couldnt_find_paper_size, PaperSizeID));
+  return FALSE;
 }
 
 /********************************************************************************************

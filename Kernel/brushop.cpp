@@ -266,7 +266,7 @@ void OpChangeBrushDefinition::GetOpName(String_256* OpName)
 		case CHANGEBRUSH_TIMESTAMP:			IDS = _R(IDS_TIMESTAMP_PERIOD);		break;
 		case CHANGEBRUSH_REGEN:				break;
 		
-		default: ERROR3_PF(("Unknown flag type (%d)",ChangeType));  break;
+	default: ERROR3_PF((_T("Unknown flag type (%d)"),ChangeType));  break;
 	}
 
 	*OpName = String_256(IDS);

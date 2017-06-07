@@ -1,7 +1,7 @@
 // $Id: camdoc.cpp 1777 2007-07-04 10:37:58Z luke $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
- 
+
                Xara LX, a vector drawing and manipulation program.
                     Copyright (C) 1993-2006 Xara Group Ltd.
        Copyright on certain contributions may be held in joint with their
@@ -32,7 +32,7 @@ ADDITIONAL RIGHTS
 
 Conditional upon your continuing compliance with the GNU General Public
 License described above, Xara Group Ltd grants to you certain additional
-rights. 
+rights.
 
 The additional rights are to use, modify, and distribute the software
 together with the wxWidgets library, the wxXtra library, and the "CDraw"
@@ -214,7 +214,7 @@ CCamDoc::~CCamDoc()
 	m_pKernelDoc->SetCurrent();
 	delete m_pKernelDoc;
 	m_pKernelDoc = NULL;
-	
+
 	// Under OLE 2.0 we must release our claim on the OLE libraries.
 #if (_OLE_VER >= 0x200)
 	AfxOleUnlockApp();
@@ -277,7 +277,7 @@ bool CCamDoc::GeneralOpenDocument( CCLexFile *pFile, UINT32 nPrefFilter )
 		// Find out what the old doc was
 		Document* pDoc = NULL;
 		if (pOldSelView != NULL) pDoc = pOldSelView->GetDoc();
-		
+
 		// Set the old document and view up and fail.
 		Document::SetSelectedViewAndSpread(pDoc, pOldSelView, NULL);
 		return FALSE;
@@ -285,7 +285,7 @@ bool CCamDoc::GeneralOpenDocument( CCLexFile *pFile, UINT32 nPrefFilter )
 
 	// Make this document the selected document (this used to be done in document::Init but
 	// was moved here for technical reasons
-	Document::SetSelectedViewAndSpread(m_pKernelDoc, 0, 0);	
+	Document::SetSelectedViewAndSpread(m_pKernelDoc, 0, 0);
 
 	// If we had a doc, make sure that the Operation History is emptied out
 	if (m_pKernelDoc != NULL && !m_pKernelDoc->EmptyOperationHistory()) return FALSE;
@@ -311,7 +311,7 @@ bool CCamDoc::LoadDefaultDocument()
 #if (_OLE_VER >= 0x200)
 	BOOL fQuarterDoc = FALSE;
 #endif
-	
+
 	//Graham 22/10/97: First get the path of the template
 	PathName			pathTemplateToUse = GetTemplate();
 
@@ -330,7 +330,7 @@ bool CCamDoc::LoadDefaultDocument()
 		if (f)
 			Filename = (TCHAR*) Path;
 	}
-#if (_OLE_VER >= 0x200)		
+#if (_OLE_VER >= 0x200)
 	else if (IsEmbedded())
 	{
 		// Try to load the normal one instead and quarter it's size
@@ -339,7 +339,7 @@ bool CCamDoc::LoadDefaultDocument()
 		Path = Location;
 		Path += File;
 //		TRACEUSER( "JustinF", _T("\t- trying template doc %s\n"), (LPCTSTR) Path);
-	
+
 		// See if the file exists
 		CFileStatus Status;
 		if (CFile::GetStatus((TCHAR*) Path, Status) != 0)
@@ -356,7 +356,7 @@ bool CCamDoc::LoadDefaultDocument()
 
 	// Hide the user's preferred filter.
 #if !defined(EXCLUDE_FROM_RALPH) && !defined(EXCLUDE_FROM_XARALX)
-	INT32 nOldVal = BaseFileDialog::SelectedFilter; 
+	INT32 nOldVal = BaseFileDialog::SelectedFilter;
 	BaseFileDialog::SelectedFilter = 0;
 #endif
 
@@ -374,10 +374,10 @@ bool CCamDoc::LoadDefaultDocument()
 	}
 	else
 	{
-		// Previously, Xara X (in Corel Xara times) would load a default template 
+		// Previously, Xara X (in Corel Xara times) would load a default template
 		// from its resources (defdoc.ppp) when it could not find the real default
-		// template.  For a variety of reasons, this does not work in Xara X.  The new 
-		// behaviour shows an error message requesting that the user fix the problem 
+		// template.  For a variety of reasons, this does not work in Xara X.  The new
+		// behaviour shows an error message requesting that the user fix the problem
 		// (by saving a new default template).  - Jonathan 4/9/2000
 		ERROR1(FALSE, _R(IDS_TEMPLATE_NOT_FOUND));
 	}
@@ -396,7 +396,7 @@ bool CCamDoc::LoadDefaultDocument()
 //		delete pFile; - Freeing CamResource does this
 		ERROR1(FALSE, _R(IDT_IMPORT_NOTFOUND));
 	}
-	
+
 	// Do the load.
 	m_pKernelDoc->SetTemplateLoading(TRUE);
 	//	TRACEUSER( "JustinF", _T("\t- about to call CCamDoc::GeneralOpenDocument\n"));
@@ -526,14 +526,14 @@ PathName CCamDoc::GetNextTemplateToUse()
 			return ms_pathNextTemplateToUse;
 		}
 	}
-	
+
 	PathName			pathToReturn( CTemplateManager::GetDefaultDrawingTemplate() );
 	return pathToReturn;
 
 }
 
 /********************************************************************************************
->	static void CCamDoc::SetNextTemplateToUse(const PathName& pathToSet) 
+>	static void CCamDoc::SetNextTemplateToUse(const PathName& pathToSet)
 
 	Author:		Graham_Walmsley (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	22/10/97
@@ -542,7 +542,7 @@ PathName CCamDoc::GetNextTemplateToUse()
 	SeeAlso:	CCamDoc::LoadDefaultDocument
 ********************************************************************************************/
 
-void CCamDoc::SetNextTemplateToUse(const PathName& pathToSet) 
+void CCamDoc::SetNextTemplateToUse(const PathName& pathToSet)
 {
 	ms_pathNextTemplateToUse=pathToSet;
 }
@@ -644,7 +644,7 @@ bool CCamDoc::OnNewDocument()
 	// we should now broadcast a message to this effect. This is so that things
 	// like the options system can then update itself in the knowledge that
 	// everything is fine and fabby rather than just sitting on doc selection
-	// messages and wondering why it doesn't recieve a last one to say that 
+	// messages and wondering why it doesn't recieve a last one to say that
 	// everything has been set up..
 	m_pKernelDoc->SetStable(TRUE);
 	BROADCAST_TO_ALL(DocChangingMsg(m_pKernelDoc, DocChangingMsg::BORNANDSTABLE));
@@ -724,11 +724,11 @@ PORTNOTE("other", "Disabled OLE")
 	#ifdef _DEBUG
 		if (IsUserName("JustinF"))
 		{
-			TRACE( _T("In CCamDoc::OnSaveDocument("));	
+			TRACE( _T("In CCamDoc::OnSaveDocument("));
 			if (pcszPathName)
 				TRACE( _T("FILE %s"), (LPCTSTR) pcszPathName);
 			else
-				TRACE( _T("STORAGE 0x%p"), (LPVOID) m_lpRootStg);	
+				TRACE( _T("STORAGE 0x%p"), (LPVOID) m_lpRootStg);
 			TRACE( _T(", %s)\n", (LPCTSTR) (m_bSameAsLoad ? TEXT("SAVE"))
 													  : (m_bRemember ? TEXT("SAVE AS")
 																	 : TEXT("SAVE COPY"))));
@@ -830,7 +830,7 @@ bool CCamDoc::OnOpenDocument(const wxString& strFilename) {
 #ifdef _DEBUG
   if (IsUserName("JustinF"))
     {
-      TRACE( _T("In CCamDoc::OnOpenDocument("));	
+      TRACE( _T("In CCamDoc::OnOpenDocument("));
       if (pcszPathName)
 	TRACE( _T("FILE %s)\n"), (LPCTSTR) pcszPathName);
       else
@@ -888,7 +888,7 @@ bool CCamDoc::OnOpenDocument(const wxString& strFilename) {
 	  // always output a trace (it is just an FYI -- not generally fatal)
 	  TRACEUSER( "JustinF", _T("Warning: unable to register moniker '%s' as running\n"),
 		     (LPCTSTR) pcszPathName);
-	}	
+	}
     }
 #endif
   // Record the path we opened in a preference so it survives sessions
@@ -905,7 +905,7 @@ bool CCamDoc::OnOpenDocument(const wxString& strFilename) {
   // we should now broadcast a message to this effect. This is so that things
   // like the options system can then update itself in the knowledge that
   // everything is fine and fabby rather than just sitting on doc selection
-  // messages and wondering why it doesn't recieve a last one to say that 
+  // messages and wondering why it doesn't recieve a last one to say that
   // everything has been set up..
   m_pKernelDoc->SetStable( TRUE );
   BROADCAST_TO_ALL( DocChangingMsg( m_pKernelDoc, DocChangingMsg::BORNANDSTABLE ) );
@@ -970,7 +970,7 @@ bool CCamDoc::DoOpenDocument( const wxString &strFilename )
 		// constructed document would be used.
 		// Only returns False if a problem happened in the testing and loading process.
 		// -- Standalone
-		// Don't do it on a standalone version otherwise the items get loaded on top of the  
+		// Don't do it on a standalone version otherwise the items get loaded on top of the
 		// document with all the info on rather than a blank page.
 		// Note the selected document before we start anything
 //		DocView* pOldSelView = DocView::GetSelected();
@@ -981,7 +981,7 @@ bool CCamDoc::DoOpenDocument( const wxString &strFilename )
 			return FALSE;
 		}
 	#endif
-		
+
 		// Try to load the file.
 		m_pKernelDoc->SetTemplateLoading(FALSE); // Note that it is not a template being loaded
 		fOK = GeneralOpenDocument(pFile, FILTERID_USERCHOICE);
@@ -1029,7 +1029,7 @@ bool CCamDoc::DoOpenDocument( const wxString &strFilename )
 				loading process before we decide what filter is required and hence would be
 				calling effectively the same code re-enterantly!
 				Only returns False if a problem happened in the testing and loading process.
-		
+
 	Errors:		-
 	SeeAlso:	CCamDoc::GeneralOpenDocument; CCamDoc::OnOpenDocument;
 				Filter::IsDefaultDocRequired;
@@ -1075,7 +1075,7 @@ bool CCamDoc::DefaultDocumentRequired( CCLexFile *pFile, UINT32 nPrefFilter )
 		while (pFilter != NULL)
 		{
 			// This is the filter?
-			if (pFilter->GetFlags().CanImport && 
+			if (pFilter->GetFlags().CanImport &&
 				pFilter->pOILFilter->Position == SelectedPos)
 					break;
 
@@ -1083,7 +1083,7 @@ bool CCamDoc::DefaultDocumentRequired( CCLexFile *pFile, UINT32 nPrefFilter )
 			pFilter = Filter::GetNext(pFilter);
 		}
 	}
-	
+
 	// Check that the Filter existed
 	if (pFilter == NULL)
 	{
@@ -1319,12 +1319,12 @@ void CCamDoc::SetModified( bool fState )
 
 /*	TRACEUSER( "JustinF", _T("In CCamDoc::SetModified(%s)\n"),
 				(LPCTSTR) (fState ? TEXT("TRUE") : TEXT("FALSE")));
-*/	
+*/
 	// Do stuff only when the doc's state is changed.
 	if (fState != IsModified())
 	{
 		// Set the flag & update the flags in the title
-		SetModifiedFlag( fState );		
+		SetModifiedFlag( fState );
 		UpdateTitle();
 	}
 
@@ -1474,7 +1474,7 @@ bool CCamDoc::IsModifiable() const
 
     Author: 	Tim_Browse (Xara Group Ltd) <camelotdev@xara.com>
     Created:	19/5/93
-	Inputs:		- 
+	Inputs:		-
     Outputs:    -
     Returns:   	Pointer to the Document object associated with this object.
     Purpose:    Find the Kernel document associated with this Oil document.
@@ -1521,7 +1521,7 @@ bool CCamDoc::OnSaveModified()
 	// Don't save (to file) embedded documents, they always save into a storage.
 	if (IsEmbedded()) return CCamDocBase::SaveModified();
 #endif
-	
+
 	// Don't save docs that haven't been changed since last being saved.
 	if (!IsModified()) return TRUE;
 
@@ -1530,7 +1530,7 @@ bool CCamDoc::OnSaveModified()
 	if (name.IsEmpty())
 	{
 		// No path means untitled, so use the made-up name instead.
-		name = (const TCHAR*)m_TitlePrefix;	
+		name = (const TCHAR*)m_TitlePrefix;
 	}
 	else
 	{
@@ -1587,7 +1587,7 @@ bool CCamDoc::OnSaveModified()
 				// If so, either Save or Update, as appropriate
 				if (!DoSave(m_strPathName))
 					return FALSE;       // don't continue
-				
+
 				// fall through . . .
 
 			case _R(IDB_DONTSAVE):
@@ -1639,160 +1639,134 @@ bool CCamDoc::OnSaveModified()
 
 /********************************************************************************************
 
-This overrides the default wxDocument SaveAs behaviour, initially to tell user that save 
+This overrides the default wxDocument SaveAs behaviour, initially to tell user that save
 doesn't work, but in the longer term it will play host to the real SaveAs code
 
 ********************************************************************************************/
 
-bool CCamDoc::SaveAs()
-{
-//	return wxDocument::SaveAs();
-    wxDocTemplate *docTemplate = GetDocumentTemplate();
-    if (!docTemplate)
-        return false;
-
+bool CCamDoc::SaveAs() {
+  //	return wxDocument::SaveAs();
+  wxDocTemplate *docTemplate = GetDocumentTemplate();
+  if (!docTemplate) {
+    return false;
+  }
 #if defined(__WXMSW__) || defined(__WXGTK__) || defined(__WXMAC__)
-    wxString filter = docTemplate->GetDescription() + wxT(" (") + docTemplate->GetFileFilter() + wxT(")|") + docTemplate->GetFileFilter();
-
-    // Now see if there are some other template with identical view and document
-    // classes, whose filters may also be used.
-
-    if (docTemplate->GetViewClassInfo() && docTemplate->GetDocClassInfo())
-    {
-        wxList::compatibility_iterator node = wxDocManager::GetDocumentManager()->GetTemplates().GetFirst();
-        while (node)
-        {
-            wxDocTemplate *t = (wxDocTemplate*) node->GetData();
-
-            if (t->IsVisible() && t != docTemplate &&
-                t->GetViewClassInfo() == docTemplate->GetViewClassInfo() &&
-                t->GetDocClassInfo() == docTemplate->GetDocClassInfo())
-            {
-                // add a '|' to separate this filter from the previous one
-                if ( !filter.empty() )
-                    filter << wxT('|');
-
-                filter << t->GetDescription() << wxT(" (") << t->GetFileFilter() << wxT(") |")
-                       << t->GetFileFilter();
-            }
-
-            node = node->GetNext();
-        }
+  wxString filter =
+    docTemplate->GetDescription() +
+    wxT(" (") +
+    docTemplate->GetFileFilter() +
+    wxT(")|") +
+    docTemplate->GetFileFilter();
+  // Now see if there are some other template with identical view and
+  // document classes, whose filters may also be used.
+  if (docTemplate->GetViewClassInfo() && docTemplate->GetDocClassInfo()) {
+    wxList::compatibility_iterator node = wxDocManager::GetDocumentManager()->GetTemplates().GetFirst();
+    while (node) {
+      wxDocTemplate *t = (wxDocTemplate*) node->GetData();
+	  if (t->IsVisible() && t != docTemplate &&
+	      t->GetViewClassInfo() == docTemplate->GetViewClassInfo() &&
+	      t->GetDocClassInfo() == docTemplate->GetDocClassInfo()) {
+	      // add a '|' to separate this filter from the previous one
+	    if ( !filter.empty()) {
+		filter << wxT('|');
+	    }
+	    filter << t->GetDescription() << wxT(" (") << t->GetFileFilter() << wxT(") |")
+		   << t->GetFileFilter();
+	  }
+	  node = node->GetNext();
     }
+  }
 #else
-    wxString filter = docTemplate->GetFileFilter() ;
+  wxString filter = docTemplate->GetFileFilter() ;
 #endif
-
-    wxString strPath;
-	wxString strName;
-	wxString strExt;
-
-	// If this document already has a path, make Save As default to that path
-	wxString tmp = GetFilename();
-	if (!tmp.IsEmpty())
-	{
-	    wxSplitPath(tmp, &strPath, &strName, &strExt);
-	}
-
-	if (strPath.IsEmpty())
-//		strPath = docTemplate->GetDirectory();
-		strPath = (LPCTSTR) BaseFileDialog::DefaultSaveFilePath;
-
-	// We want to force the use of the .xar extension...
-	strExt = docTemplate->GetDefaultExtension();
-
-	// We can't use wxOVERWRITE_PROMPT because is doesn't conform to our UI guidelines
-	// So we must run that logic ourselves...
-	BOOL bShowFileSelectorAgain = FALSE;
-	do
-	{
-		wxString title(CamResource::GetText(_R(IDS_SAVEAS)));
-		tmp = wxFileSelector(title,
-							strPath,
-							strName,
-							strExt,
-							filter,
-							wxFD_SAVE,
-							GetDocumentWindow());
-
-		if (tmp.IsEmpty())
-			return false;
-
-		if (wxFileExists(tmp))
-		{
-			ErrorInfo Info;
-			Info.ErrorMsg = _R(IDS_SAVEAS_OVERWRITE);
-			Info.Button[0] = _R(IDS_OVERWRITE);
-			Info.Button[1] = _R(IDB_SAVEAS);
-			Info.Button[2] = _R(IDS_CANCEL);
-
-			UINT32 Answer = AskQuestion(&Info);
-
-			if (Answer==_R(IDS_OVERWRITE))
-			{
-				// Just use the name the user selected to overwite the existing file
-				bShowFileSelectorAgain = FALSE;
-			}
-			else if (Answer== _R(IDB_SAVEAS))
-			{
-				// User wants to save as some other name
-				wxSplitPath(tmp, &strPath, &strName, &strExt);
-				strName = wxFileNameFromPath(tmp);
-				tmp = _T("");
-				bShowFileSelectorAgain = TRUE;
-			}
-			else if (Answer==_R(IDS_CANCEL))
-			{
-				// User has chosen to abort the operation
-				return FALSE;
-			}
-			else
-				ERROR3("Unknown Answer from AskQuestion");
-		}
-	}
-	while (bShowFileSelectorAgain);
-
-    wxString fileName(tmp);
-    wxSplitPath(fileName, &strPath, &strName, &strExt);
-
-    if (strExt.IsEmpty())
-    {
-        fileName += wxT(".");
-        fileName += docTemplate->GetDefaultExtension();
+  wxString strPath;
+  wxString strName;
+  wxString strExt;
+  // If this document already has a path, make Save As default to that path
+  wxString tmp = GetFilename();
+  if (!tmp.IsEmpty()) {
+    wxFileName wx_file_name;
+    wx_file_name.SplitPath(tmp, &strPath, &strName, &strExt);
+  }
+  if (strPath.IsEmpty())
+    //		strPath = docTemplate->GetDirectory();
+    strPath = (LPCTSTR) BaseFileDialog::DefaultSaveFilePath;
+  // We want to force the use of the .xar extension...
+  strExt = docTemplate->GetDefaultExtension();
+  // We can't use wxOVERWRITE_PROMPT because is doesn't conform to our
+  // UI guidelines So we must run that logic ourselves...
+  BOOL bShowFileSelectorAgain = FALSE;
+  do {
+    wxString title(CamResource::GetText(_R(IDS_SAVEAS)));
+    tmp = wxFileSelector(title,
+			 strPath,
+			 strName,
+			 strExt,
+			 filter,
+			 wxFD_SAVE,
+			 GetDocumentWindow());
+    if (tmp.IsEmpty()) {
+      return false;
     }
-
-    SetFilename(fileName);
-    SetTitle(wxFileNameFromPath(fileName));
-
-    // Notify the views that the filename has changed
-    wxList::compatibility_iterator node = m_documentViews.GetFirst();
-    while (node)
-    {
-        wxView *view = (wxView *)node->GetData();
-        view->OnChangeFilename();
-        node = node->GetNext();
+    if (wxFileExists(tmp)) {
+      ErrorInfo Info;
+      Info.ErrorMsg = _R(IDS_SAVEAS_OVERWRITE);
+      Info.Button[0] = _R(IDS_OVERWRITE);
+      Info.Button[1] = _R(IDB_SAVEAS);
+      Info.Button[2] = _R(IDS_CANCEL);
+      UINT32 Answer = AskQuestion(&Info);
+      if (Answer==_R(IDS_OVERWRITE)) {
+	// Just use the name the user selected to overwite the existing file
+	bShowFileSelectorAgain = FALSE;
+      } else if (Answer== _R(IDB_SAVEAS)) {
+	wxFileName wx_file_name;
+	// User wants to save as some other name
+	wx_file_name.SplitPath(tmp, &strPath, &strName, &strExt);
+	strName = wxFileNameFromPath(tmp);
+	tmp = _T("");
+	bShowFileSelectorAgain = TRUE;
+      }
+      else if (Answer==_R(IDS_CANCEL)) {
+	// User has chosen to abort the operation
+	return FALSE;
+      }
+      else {
+	ERROR3("Unknown Answer from AskQuestion");
+      }
     }
-
-    // Files that were not saved correctly are not added to the FileHistory.
-    if (!OnSaveDocument(m_documentFile))
-        return false;
-
-	// Record the path we saved in a preference so it survives sessions
-	BaseFileDialog::DefaultSaveFilePath = strPath;
-
-	// A file that doesn't use the default extension of its document template cannot be opened
-	// via the FileHistory, so we do not add it.
-	if (docTemplate->FileMatchesTemplate(fileName))
-	{
-		GetDocumentManager()->AddFileToHistory(fileName);
-	}
-	else
-	{
-		// The user will probably not be able to open the file again, so
-		// we could warn about the wrong file-extension here.
-	}
-
-	return true;
+  } while (bShowFileSelectorAgain);
+  wxString fileName(tmp);
+  wxFileName wx_file_name_alt = fileName;
+  wx_file_name_alt.SplitPath(fileName, &strPath, &strName, &strExt);
+  if (strExt.IsEmpty()) {
+    fileName += wxT(".");
+    fileName += docTemplate->GetDefaultExtension();
+  }
+  SetFilename(fileName);
+  SetTitle(wxFileNameFromPath(fileName));
+  // Notify the views that the filename has changed
+  wxList::compatibility_iterator node = m_documentViews.GetFirst();
+  while (node) {
+    wxView *view = (wxView *)node->GetData();
+    view->OnChangeFilename();
+    node = node->GetNext();
+  }
+  // Files that were not saved correctly are not added to the FileHistory.
+  if (!OnSaveDocument(m_documentFile)) {
+    return false;
+  }
+  // Record the path we saved in a preference so it survives sessions
+  BaseFileDialog::DefaultSaveFilePath = strPath;
+  // A file that doesn't use the default extension of its document
+  // template cannot be opened via the FileHistory, so we do not add
+  // it.
+  if (docTemplate->FileMatchesTemplate(fileName)) {
+    GetDocumentManager()->AddFileToHistory(fileName);
+  } else {
+    // The user will probably not be able to open the file again, so
+    // we could warn about the wrong file-extension here.
+  }
+  return true;
 }
 
 
@@ -1927,7 +1901,7 @@ bool CCamDoc::DoSave(LPCTSTR lpszPathName, BOOL bReplace)
 		// As a Result we have to do the tests ourselves afterwards under win95
 		// by default we do not need to put the dialog up
 		BOOL WeNeedToPutSaveAsDialogUpAgain = FALSE;
-		
+
 		// try the dialog
 		do
 		{
@@ -1936,8 +1910,8 @@ bool CCamDoc::DoSave(LPCTSTR lpszPathName, BOOL bReplace)
 
 			// Create and display prepare the dialog
 			SaveFileDialog SaveDialog(FilterString, LowxString, NameString, DocName);
-			SaveDialog.PrepareDialog();		
-	
+			SaveDialog.PrepareDialog();
+
 			// Display the dialog
 			TRACE( _T("Display the dialog\n"));
 			BOOL Result = SaveDialog.OpenAndGetFileName();
@@ -1970,15 +1944,15 @@ bool CCamDoc::DoSave(LPCTSTR lpszPathName, BOOL bReplace)
 
 		// Put the file name into the var set aside for it
 		newName = (const char*) Str;
-	
+
 	}
 
-		
+
 	// Check that the document isn't already open. NOTE: this is only relevant
 	//	to OLE documents, as attempting to save a document with the same name as
-	//	an existing, open doc will stuff up the OLE registration code in the 
+	//	an existing, open doc will stuff up the OLE registration code in the
 	//	CCamDoc::OnSaveDocument function, after overwriting the file itself...
-	
+
 	BOOL isDocumentOpen = FALSE;
 
 PORTNOTETRACE("other","CCamDoc::DoSave - remove OLE usage");
@@ -2030,7 +2004,7 @@ PORTNOTETRACE("other","CCamDoc::DoSave - remove OLE usage");
 		// get the old filename
 		String_256 BakFileName(newName);
 		String_256 OldFileName = BakFileName;
-		
+
 		// Change the extension on NewFileName...
 		PathName NewPathName = BakFileName;
 
@@ -2044,7 +2018,7 @@ PORTNOTETRACE("other","CCamDoc::DoSave - remove OLE usage");
 		if (pTempName!=NULL)
 		{
 			TempFileName = String_256(pTempName);
-			
+
 			// See if we have a backslash
 			String_8 LastChar;
 			TempFileName.Right(&LastChar, 1);
@@ -2064,7 +2038,7 @@ PORTNOTETRACE("other","CCamDoc::DoSave - remove OLE usage");
 		// Get these as strings we can use
 		TCHAR* pBakName = NULL;
 		TCHAR* pOldName = (TCHAR*) OldFileName;
-		
+
 		// If the user want .bak files then use a local name,
 		// otherwise put the bak file in the temp directory
 		if ((BaseFileDialog::MakeBakFiles) || (pTempName==NULL))
@@ -2086,7 +2060,7 @@ PORTNOTETRACE("other","CCamDoc::DoSave - remove OLE usage");
 				TRACEUSER( "Neville", _T("deleteing %s\n"), pBakName);
 				unlink(pBakName);
 			}
-		
+
 			// Now rename the original file (but only if the old filename exists)
 			TRACEUSER( "Neville", _T("Check to see if %s exists\n"), pOldName);
 			if (_taccess(pOldName, 0)==0)
@@ -2176,7 +2150,7 @@ PORTNOTETRACE("other","CCamDoc::DoSave - remove OLE usage");
 					TRACEUSER( "Neville", _T("Deleting %s\n"), pBakName);
 					unlink(pBakName);
 				}
-			}		
+			}
 		}
 
 		// Once we have saved the document ok, then ensure that the user is not asked again
@@ -2187,7 +2161,7 @@ PORTNOTETRACE("other","CCamDoc::DoSave - remove OLE usage");
 		{
 			// If we have just changed the name of the document, then get rid of the copy flag
 			SetCopy(FALSE);
-		
+
 			// We saved the file under a new name, as opposed to a copy of the file, so it is
 			// no longer "dirty".
 			SetModified(FALSE);
@@ -2338,11 +2312,11 @@ String_256 CCamDoc::GetKernelTitle()
 	Author:		Neville_Humphrys (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	20/3/95
 	Inputs:		MaxSize	maximum size in characters of the requried pathname.
-				Zero indicates return the full pathname, which it defaults to. 
+				Zero indicates return the full pathname, which it defaults to.
 	Returns:	String_256 containing the current document pathname
 	Purpose:	Good for finding out the pathname of the document.
 	SeeAlso:	Document::GetPathName;
-	
+
 ********************************************************************************************/
 
 String_256 CCamDoc::GetKernelPathName(UINT32 MaxSize)
@@ -2380,12 +2354,12 @@ PORTNOTE("other","Removed AbbreviateName usage")
 	Author:		Neville_Humphrys (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	20/3/95
 	Inputs:		MaxSize	maximum size in characters of the requried location.
-				Zero indicates return the full location, which it defaults to. 
+				Zero indicates return the full location, which it defaults to.
 	Returns:	String_256 containing the current document location
 	Purpose:	Good for finding out the location of the document. This is the pathname minus
 				the filename.
 	SeeAlso:	Document::GetLocation
-	
+
 ********************************************************************************************/
 
 String_256 CCamDoc::GetKernelLocation(UINT32 MaxSize)
@@ -2399,7 +2373,7 @@ String_256 CCamDoc::GetKernelLocation(UINT32 MaxSize)
 	// if the pathname is blank then return it directly to the caller.
 	if ( KernelString.IsEmpty() )
 		return KernelString;
-		
+
 	// We will use the pathname class to try and truncate this to a more reasonable
 	// pathname if it will not fit into the required space as this knows all about
 	// what makes up paths etc.
@@ -2412,7 +2386,7 @@ String_256 CCamDoc::GetKernelLocation(UINT32 MaxSize)
 		Error::ClearError();
 		return KernelString;
 	}
-	
+
 	return KernelPathName.GetTruncatedLocation(MaxSize);
 }
 
@@ -2548,14 +2522,14 @@ CCLexFile *CCamDoc::CreateCCFile( LPCTSTR lpcszPath, INT32 nOpenMode )
 				hr = m_lpRootStg->OpenStream(pszOldStreamName, 0,
 											 STGM_READ | STGM_SHARE_EXCLUSIVE,
 											 0, &pIStream);
-				
+
 				if (SUCCEEDED(hr))
 				{
 					// Try to modernise the old stream's name.
 					HRESULT hr2 = m_lpRootStg->RenameElement(pszOldStreamName, pszStreamName);
 					TRACEUSER( "JustinF", _T("\t- tried to rename v1.5 stream (HRESULT 0x%lX)\n"),
 													(UINT32) hr2);
-					
+
 					// Pass any error along if there's not a good reason for it.
 					if (FAILED(hr2) &&
 						hr2 != STG_E_DISKISWRITEPROTECTED &&
@@ -2586,7 +2560,7 @@ CCLexFile *CCamDoc::CreateCCFile( LPCTSTR lpcszPath, INT32 nOpenMode )
 			return 0;
 		}
 
-#ifdef WEBSTER		
+#ifdef WEBSTER
 		// WEBSTER-Martin-29/12/96
 		// no accusoft stuff so wrap a boring old CCOleStream around it
 		pFile = new CCOleStream(pIStream, nOpenMode, filebuf::sh_none);

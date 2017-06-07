@@ -1296,7 +1296,7 @@ MsgResult TraceDlg::Message( Msg* Message)
 					param.pTraceControl = pTraceControl;
 		
 					OpDescriptor* pOpDesc=OpDescriptor::FindOpDescriptor(_T("TraceOp"));
-					ERROR3IF_PF(pOpDesc==NULL,("Couldn't find OPTOKEN_OPTRACEOP op descriptor"));
+					ERROR3IF_PF(pOpDesc==NULL,(_T("Couldn't find OPTOKEN_OPTRACEOP op descriptor")));
 					pOpDesc->Invoke((OpParam*)&param);
 				}
 

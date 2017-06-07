@@ -1,7 +1,7 @@
 // $Id: errors.cpp 1783 2007-10-21 21:58:59Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
- 
+
                Xara LX, a vector drawing and manipulation program.
                     Copyright (C) 1993-2006 Xara Group Ltd.
        Copyright on certain contributions may be held in joint with their
@@ -32,7 +32,7 @@ ADDITIONAL RIGHTS
 
 Conditional upon your continuing compliance with the GNU General Public
 License described above, Xara Group Ltd grants to you certain additional
-rights. 
+rights.
 
 The additional rights are to use, modify, and distribute the software
 together with the wxWidgets library, the wxXtra library, and the "CDraw"
@@ -109,7 +109,7 @@ service marks of Xara Group Ltd. All rights in these marks are reserved.
 #include "gdraw.h"
 #include "cversion.h"
 //#include "ensure.h" - in camtypes.h [AUTOMATICALLY REMOVED]
-#include "wxmbstowcs.h"			    
+#include "wxmbstowcs.h"
 #include <wx/xml/xml.h>
 
 #if !defined(EXCLUDE_FROM_XARLIB)
@@ -204,13 +204,13 @@ HRESULT Error::ErrIDToHRESULT(UINT32 ErrID)
 	Author:		Chris_Snook (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	23/05/94
 	Purpose:	ERROR1 - No local reporting -pass the mapped Error code to the harness
-				ERROR2 - Report the Error locally - don't pass to handler 
-				ERROR3 - Report as ERROR2's - won't occur in retails - 
+				ERROR2 - Report the Error locally - don't pass to handler
+				ERROR3 - Report as ERROR2's - won't occur in retails -
 
 ********************************************************************************************/
 HRESULT Error::GetRalphError()
 {
-	
+
 	UINT32 Err = Error::GetRalphErrorNumber();
 	wxString ErrStr( Error::GetErrorString() );
 	HRESULT hr = S_OK;
@@ -225,7 +225,7 @@ HRESULT Error::GetRalphError()
 #endif
 			// make sure we clear ERROR2's 'cause we report them now
 			Error::ClearError();
-		}	
+		}
 	}
 
 	//ERROR1
@@ -233,7 +233,7 @@ HRESULT Error::GetRalphError()
 	{
 		// Do Mapping
 		hr = ErrIDToHRESULT(Err);
-	
+
 	}
 	// ERROR 2's 3's
 	if(Err==0)
@@ -241,22 +241,22 @@ HRESULT Error::GetRalphError()
 		if(!ErrStr.IsEmpty())
 		   hr = RALPH_E_INTERNAL;
 	}
-	
+
 	return hr;
 }
 
 
 /********************************************************************************************
 
->	INT32 InformGeneral(UINT32 Error, UINT32 ModID, UINT32 ErrorMsg, 
+>	INT32 InformGeneral(UINT32 Error, UINT32 ModID, UINT32 ErrorMsg,
 					  UINT32 Butt1, UINT32 Butt2, UINT32 Butt3, UINT32 Butt4,
 					  UINT32 OK, UINT32 Cancel)
 
 	Author:		Rik_Heywood (Xara Group Ltd) <camelotdev@xara.com> (then Andy)
 	Created:	15/6/93
-	Inputs:		Error - either ERRORTYPE_NORMAL, 
-							   ERRORTYPE_ERROR, 
-							   ERRORTYPE_WARNING or 
+	Inputs:		Error - either ERRORTYPE_NORMAL,
+							   ERRORTYPE_ERROR,
+							   ERRORTYPE_WARNING or
 							   ERRORTYPE_SERIOUS
 				ModID - Module ID to obtain messages (0=Kernel).
 				ErrorMsg - The Error Message to display. 0 means use static Error
@@ -266,21 +266,21 @@ HRESULT Error::GetRalphError()
 				Cancel - button should be the 'Cancel' button (and hence responds to Esc).
 	Returns:	The number of the button used to close the dialog.
 	Purpose:	The underlying function for [Tool-Module]Inform[Warning-Error].
-	SeeAlso:	InformWarning; InformGeneral; ToolInformWarning; ToolInformError; 
+	SeeAlso:	InformWarning; InformGeneral; ToolInformWarning; ToolInformError;
 				ModuleInformWarning; ModuleInformError
 
 ********************************************************************************************/
 #ifdef RALPH
 // **RALPH** error reporting
 
-INT32 InformGeneral(UINT32 Error, UINT32 modID, UINT32 ErrorMsg, 
+INT32 InformGeneral(UINT32 Error, UINT32 modID, UINT32 ErrorMsg,
 				  UINT32 Butt1, UINT32 Butt2, UINT32 Butt3, UINT32 Butt4,
 				  UINT32 OK, UINT32 Cancel)
-{    
-	
+{
+
 	// ** this is the RALPH version of  InformError **
 	// it's job is to report the error back to ralph's current harness
-	
+
 
 	// get a pointer to the kernel document
 	Document *pkDoc = Document::GetCurrent();
@@ -301,7 +301,7 @@ INT32 InformGeneral(UINT32 Error, UINT32 modID, UINT32 ErrorMsg,
 	}
 
 	// Make sure we haven't already reported this error!
-/*	ENSURE((!ErrorHasBeenReported), 
+/*	ENSURE((!ErrorHasBeenReported),
 		   "Ralph InformGeneral: This error has already been reported!");
 */
 	if ( Error::IsInRenderThread() )
@@ -316,7 +316,7 @@ INT32 InformGeneral(UINT32 Error, UINT32 modID, UINT32 ErrorMsg,
 		Error::RenderThreadReset();
 		CamProfile::AtBase(CAMPROFILE_OTHER);
 	}
-	
+
 	// if we're outside a ralph method
 	// pass ERROR1's back to the harness
 	// and report other errors immediately
@@ -348,25 +348,25 @@ INT32 InformGeneral(UINT32 Error, UINT32 modID, UINT32 ErrorMsg,
 class wxCamDebugReport : public wxDebugReport
 {
 public:
-	virtual void DoAddCustomContext(wxXmlNode * nodeRoot)
-	{
-		wxString			strMessage;
+  virtual void DoAddCustomContext(wxXmlNode * nodeRoot) {
+    wxString			strMessage;
 
 #if FALSE == wxUSE_UNICODE
-		TCHAR*			pszCDrawVer = GDraw_GetSvnVersion();
+    TCHAR* pszCDrawVer = GDraw_GetSvnVersion();
 #else
-		TCHAR			pszCDrawVer[32];
-		camMbstowcs( pszCDrawVer, GDraw_GetSvnVersion(), 31 );
+    TCHAR pszCDrawVer[32];
+    camMbstowcs( pszCDrawVer, GDraw_GetSvnVersion(), 31 );
 #endif
-		// Add the applications version information
-		wxXmlNode *nodeVersion = new wxXmlNode(wxXML_ELEMENT_NODE, _T("camelot"));
-		nodeVersion->AddProperty(_T("xtremeversion"), wxString(g_pszAppVersion));
-		nodeVersion->AddProperty(_T("xtremerevision"), wxString(g_pszSvnVersion));
-		nodeVersion->AddProperty(_T("xaradrawversion"), wxString::Format(_T("%d.03d"), HIWORD(GDraw_GetVersion()), LOWORD(GDraw_GetVersion())));
-		nodeVersion->AddProperty(_T("xaradrawrevision"), pszCDrawVer);
-		nodeVersion->AddProperty(_T("builddate"), CAMELOT_BUILD_DATE);
-		nodeRoot->AddChild(nodeVersion);
-	}
+    // Add the applications version information
+    wxXmlNode *nodeVersion = new wxXmlNode(wxXML_ELEMENT_NODE, _T("camelot"));
+    nodeVersion->AddAttribute(_T("xtremeversion"), wxString(g_pszAppVersion));
+    nodeVersion->AddAttribute(_T("xtremerevision"), wxString(g_pszSvnVersion));
+    nodeVersion->AddAttribute(_T("xaradrawversion"),
+			      wxString::Format(_T("%d.03d"), HIWORD(GDraw_GetVersion()), LOWORD(GDraw_GetVersion())));
+    nodeVersion->AddAttribute(_T("xaradrawrevision"), pszCDrawVer);
+    nodeVersion->AddAttribute(_T("builddate"), CAMELOT_BUILD_DATE);
+    nodeRoot->AddChild(nodeVersion);
+  }
 };
 #endif
 
@@ -405,9 +405,9 @@ public:
 #ifdef HAVE_DEBUGREPORT
 			wxCamDebugReport report;
 			wxDebugReportPreviewStd preview;
-		
+
 			report.AddAll();
-		
+
 			if ( preview.Show(report) )
 				report.Process();
 #else
@@ -433,11 +433,11 @@ BEGIN_EVENT_TABLE( CamErrorDialog, wxDialog )
 END_EVENT_TABLE()
 
 
-// **CAMELOT Error reporting** 
-INT32 InformGeneral(UINT32 Error, UINT32 modID, UINT32 ErrorMsg, 
+// **CAMELOT Error reporting**
+INT32 InformGeneral(UINT32 Error, UINT32 modID, UINT32 ErrorMsg,
 				  UINT32 Butt1, UINT32 Butt2, UINT32 Butt3, UINT32 Butt4,
 				  UINT32 OK, UINT32 Cancel)
-{    
+{
 	// Make sure there is at least one valid button.
 	if (Butt1 == 0) Butt1 = _R(IDS_OK);
 
@@ -460,7 +460,7 @@ INT32 InformGeneral(UINT32 Error, UINT32 modID, UINT32 ErrorMsg,
 	}
 
 	// Make sure we haven't already reported this error!
-	ENSURE((!ErrorHasBeenReported), 
+	ENSURE((!ErrorHasBeenReported),
 		   "InformGeneral: This error has already been reported!");
 
 	// In retail builds, we report the error anyway, just in case - it's better to have
@@ -628,7 +628,7 @@ INT32 InformGeneral(UINT32 Error, UINT32 modID, UINT32 ErrorMsg,
 	if (CanHelpUser(Error::GetErrorNumber()))
 		butres[5]=_R(IDS_HELP);
 #endif
-	
+
 	INT32 butt;
 	for (butt=0; butt<EB_MAXBUTS; butt++)
 	{
@@ -726,7 +726,7 @@ INT32 InformGeneral(UINT32 Error, UINT32 modID, UINT32 ErrorMsg,
 	// We don't want to report this error again.
 	ErrorHasBeenReported = TRUE;
 	Error::ClearError();
-		
+
 	Error::ErrorBoxRecurse--;
 
 	// if we were in a drag operation, cancel it (to prevent invalid drag state) fixes #11455
@@ -749,7 +749,7 @@ INT32 InformGeneral(UINT32 Error, UINT32 modID, UINT32 ErrorMsg,
 	Returns:	ID of the button that was pressed (NB. NOT the index of the button - i.e.
 				it returns a resource ID).
 	Purpose:	The underlying function for [Tool-Module]Inform[Warning-Error].
-	SeeAlso:	InformWarning; InformGeneral; ToolInformWarning; ToolInformError; 
+	SeeAlso:	InformWarning; InformGeneral; ToolInformWarning; ToolInformError;
 				ModuleInformWarning; ModuleInformError
 
 ********************************************************************************************/
@@ -757,11 +757,11 @@ INT32 InformGeneral(UINT32 Error, UINT32 modID, UINT32 ErrorMsg,
 INT32 InformGeneral(UINT32 Error, ErrorInfo* pInfo, UINT32 ModID)
 {
 	if (!pInfo) return _R(IDS_OK); // Catch this early
-	INT32 num = InformGeneral(Error,ModID, pInfo->ErrorMsg, 
+	INT32 num = InformGeneral(Error,ModID, pInfo->ErrorMsg,
 				  pInfo->Button[0],pInfo->Button[1],pInfo->Button[2],pInfo->Button[3],
 				  pInfo->OK,pInfo->Cancel);
 	return num?pInfo->Button[num-1]:_R(IDS_OK);
-	
+
 }
 
 
@@ -796,8 +796,8 @@ void InformLastError(UINT32)
 
 /********************************************************************************************
 
->	INT32 InformError(UINT32 ErrorMsg = 0, 
-					UINT32 Butt1 = 0, UINT32 Butt2 = 0, UINT32 Butt3 = 0, UINT32 Butt4 = 0, 
+>	INT32 InformError(UINT32 ErrorMsg = 0,
+					UINT32 Butt1 = 0, UINT32 Butt2 = 0, UINT32 Butt3 = 0, UINT32 Butt4 = 0,
 					UINT32 OK = 1, UINT32 Cancel = 2)
 
 	INT32 ToolInformError(UINT32 ToolID, <as above>)
@@ -805,7 +805,7 @@ void InformLastError(UINT32)
 	INT32	ModuleInformError(UINT32 ModuleID, <as above>)
 
 
-	INT32 InformSeriousError(UINT32 ErrorMsg = 0, 
+	INT32 InformSeriousError(UINT32 ErrorMsg = 0,
 						   UINT32 Butt1 = 0, UINT32 Butt2 = 0, UINT32 Butt3 = 0, UINT32 Butt4 = 0,
 						   UINT32 OK = 1, UINT32 Cancel = 2)
 
@@ -814,7 +814,7 @@ void InformLastError(UINT32)
 	INT32	ModuleInformSeriousError(UINT32 ModuleID, <as above>)
 
 
-	INT32 InformMessage(UINT32 ErrorMsg = 0, 
+	INT32 InformMessage(UINT32 ErrorMsg = 0,
 					  UINT32 Butt1 = 0, UINT32 Butt2 = 0, UINT32 Butt3 = 0, UINT32 Butt4 = 0,
 					  UINT32 OK = 1, UINT32 Cancel = 2)
 
@@ -836,7 +836,7 @@ void InformLastError(UINT32)
 				when an error occurs that the user could make a decision about eg. Camelot
 				failed to save the file, so give them the option to give up, try again or
 				try a new filename/path etc.
-				If ErrorMsg is zero, the box will use the last error returned by a function 
+				If ErrorMsg is zero, the box will use the last error returned by a function
 				with the RETURNERROR macro.
 				ToolInformError takes an additional parameter on the front of the Tool ID.
 				ModuleInformError takes a module ID. Both of these will try to find the strings
@@ -865,7 +865,7 @@ void InformLastError(UINT32)
 	Returns:	The number of the button used to close the dialog
 	Purpose:	To display a dialog that gives a warning message of some description. Up
 				to 3 buttons can be defined for the user to select. If ErrorMsg is zero
-				the error string will be taken from the static Error variables, bringing 
+				the error string will be taken from the static Error variables, bringing
 				up the last error that was set by a function calling RETURNERROR.
 	SeeAlso:	InformError
 
@@ -901,10 +901,10 @@ const char* Error::LastErrorFile = "Unknown.File";	// ptr to filename of last er
 				who must succeed in setting the error regardless.
 	Outputs:	-
 	Returns:	-
-	Purpose:	Called before exiting a routine that failed, this function sets up the static 
+	Purpose:	Called before exiting a routine that failed, this function sets up the static
 				variables which allow the calling routine to see what the error was.
 				If the errstring parameter is passed, the module UINT32 is stored, but not used. This
-				form of the function would usually be used for routines which want to build up an 
+				form of the function would usually be used for routines which want to build up an
 				error string on the fly. If the errstring is absent, the routine uses the UINT32 to
 				identify the module, and loads a string from the appropriate resources.
 	Errors:		-
@@ -950,12 +950,12 @@ void Error::SetError(UINT32 number, const TCHAR* errstring, UINT32 module)
 	ErrorHasBeenReported = FALSE;
 	TRACE( _T("Setting error: ID = %u: %s\n"), ErrorID, ErrorString);
 	InSetError--;
-}                          
+}
 
 void Error::SetErrorSerious( const TCHAR* errstring )
 {
 	// this must succeed. In particular it must NOT cause any other errors or ENSUREs
-	ErrorID = 0; 
+	ErrorID = 0;
 	ModuleID = 0;
 	InSetError = 0;
 	ErrStatus = ERRORSTAT_TEXT;
@@ -996,7 +996,7 @@ void Error::SetError(UINT32 number, UINT32 module)
 	{
 		camSnprintf( ErrorString, 256, _T("Error Number %u from module ID %u"), ErrorID, ModuleID );
 	}
-	
+
 	TRACE( _T("Setting error: ID = %d: \"%s\"\n"), ErrorID, ErrorString);
 	InSetError--;
 }
@@ -1070,56 +1070,52 @@ MARKERROR_BODY( LineNumber, Filename )
 
 BOOL Error::IsUserName(const char *wanted)
 {
-	// CmpNoCase returns 0 for a match
+  // CmpNoCase returns 0 for a match
+  if (!UserName.CmpNoCase(_T("ALL"))) {
+    return TRUE;
+  }
+  if (!UserName.CmpNoCase(_T("")))
+    return FALSE;
+  wxString target (wanted, wxConvUTF8);
 
-	if (!UserName.CmpNoCase(_T("ALL")))
-		return TRUE;
+  if (!target.CmpNoCase(_T("ALL")))
+    return TRUE;
 
-	if (!UserName.CmpNoCase(_T("")))
-		return FALSE;
-
-	wxString target (wanted, wxConvUTF8);
-
-	if (!target.CmpNoCase(_T("ALL")))
-		return TRUE;
-
-	return (!UserName.CmpNoCase(target));
+  return (!UserName.CmpNoCase(target));
 }
 
 #ifdef _DEBUG
 
-void Error::TraceWrite(const TCHAR * bufp, va_list args)
-{
-	// wxWidgets doesn't expect newlines in the string, but Camelot source provides them. So we print each bit
-	// separately
-# if 1
-	// replace \n by a space - the real solution is to remove the \n from all the trace statements (yawn)
-	TCHAR buf[MAXERRORFORMATLENGTH];
-	camStrncpy(buf, bufp, MAXERRORFORMATLENGTH);
-	buf[MAXERRORFORMATLENGTH-1]=0;
-	TCHAR * b=buf;
-	do
-	{
-		if (*b == '\n') *b=' ';
-	} while(*b++);
-	wxVLogDebug(buf, args);
-
-# else
-	// this way is bad as it doesn't work with args either side of the newline
-
-	TCHAR * newline;
-
-	do
-	{
-		newline = camStrchr(bufp, _T('\n'));
-		if (newline) *newline++=0;
-		// We really should pass only the args before the newline here, but...
-		wxVLogDebug(bufp, args);
-
-		bufp=newline;
-	} while (bufp && *bufp);
-# endif
-}	
+void Error::TraceWrite(wxString bufp, va_list args) {
+  // wxWidgets doesn't expect newlines in the string, but
+  // Camelot source provides them. So we print each bit
+  // separately
+  // # if 1
+  // replace \n by a space - the real solution is to remove the \n
+  // from all the trace statements (yawn)
+  // TCHAR buf[MAXERRORFORMATLENGTH];
+  // camStrncpy(buf, bufp, MAXERRORFORMATLENGTH);
+  // buf[MAXERRORFORMATLENGTH-1]=0;
+  // TCHAR* b = buf;
+  // do {
+  //   if (*b == '\n') {
+  //     *b=' ';
+  //   }
+  // } while(*b++);
+  wxVLogDebug(bufp, args);
+// # else
+//   // this way is bad as it doesn't work with args either side of the
+//   // newline
+//   TCHAR* newline;
+//   do {
+//     newline = camStrchr(bufp, _T('\n'));
+//     if (newline) *newline++=0;
+//     // We really should pass only the args before the newline here, but...
+//     wxVLogDebug(bufp, args);
+//     bufp=newline;
+//   } while (bufp && *bufp);
+// # endif
+}
 
 # if 0 != wxUSE_UNICODE
 // wxWidgets does this if we let it use the vsnprintf in wxLogDebug
@@ -1164,13 +1160,12 @@ void CDECL Error::TraceUser(const char *User, LPCTSTR fmt, ...)
 	va_end( marker );
 }
 
-void CDECL Error::TraceAll(LPCTSTR fmt, ...)
-{
+void CDECL Error::TraceAll(wxString fmt, ...) {
 	va_list marker;
-	va_start( marker, fmt );
+	va_start(marker, fmt);
 //	wxVLogDebug(fmt, marker);
 	TraceWrite(fmt, marker);
-	va_end( marker );
+	va_end(marker);
 }
 
 void CDECL Error::TraceTime (const TCHAR* t) {
@@ -1238,7 +1233,7 @@ static void CalcInternalMessage( LPTCHAR result, UINT32 Line, const TCHAR* Filen
 		*p++ = Dot[-1];
 		*p = 0;
 
-		Filename = CodedFile; 
+		Filename = CodedFile;
 	}
 
 	// this message should not be translated
@@ -1278,7 +1273,7 @@ void CDECL Error::XSetError( const TCHAR *fmt, ...)
 	va_start( marker, fmt );
 	camVsnprintf( buf, 256, fmt2, marker );
 	va_end( marker );
-	
+
 	// in debug builds we put up an ensure box
 	EnsureFailedLine( buf, LastErrorFile, LastErrorLine );		// put up box
 
@@ -1300,7 +1295,7 @@ void CDECL Error::XSetError( const char *fmt, ...)
 	va_start( marker, fmt );
 	camVsnprintf( buf, 256, fmt2, marker );
 	va_end( marker );
-	
+
 	// in debug builds we put up an ensure box
 	EnsureFailedLine( buf, LastErrorFile, LastErrorLine );		// put up box
 
@@ -1444,7 +1439,7 @@ void CDECL Error::XSetError( UINT32 errID, ...)
 	// trace output because SetErrorSerious doesn't bother
 	TRACE( wxT("Setting error: ID = %d: \"%s\"\n"), errID, ErrorString);
 
-	// then tidy up	
+	// then tidy up
 	va_end( marker );
 
 	ResetWhere();
@@ -1464,30 +1459,34 @@ void CDECL Error::XSetError( UINT32 errID, ...)
 
 ********************************************************************************************/
 
+// #ifdef _DEBUG
+// void CDECL Error::XComplain( const TCHAR *fmt, ...)
+// {
+//   #ifdef _DEBUG
+// 	TCHAR				buf[256];
+
+// #if 0 != wxUSE_UNICODE
+// 	TCHAR	fmt2[MAXERRORFORMATLENGTH];
+// 	FixFormat(fmt, fmt2);
+// #else
+// 	const TCHAR * fmt2=fmt;
+// #endif
+
+// 	va_list marker;
+// 	va_start( marker, fmt );
+// 	camVsnprintf( buf, 256, fmt2, marker );								// convert the args
+// 	va_end( marker );
+
+// 	EnsureFailedLine( buf, LastErrorFile, LastErrorLine );		// put up box
+// 	ResetWhere();
+// #endif
+// }
+
+#if 0 != wxUSE_UNICODE
+void CDECL Error::XComplain(const TCHAR* fmt, ...)
+{
 #ifdef _DEBUG
-void CDECL Error::XComplain( const TCHAR *fmt, ...)
-{
-	TCHAR				buf[256];
 
-#if 0 != wxUSE_UNICODE
-	TCHAR	fmt2[MAXERRORFORMATLENGTH];
-	FixFormat(fmt, fmt2);
-#else
-	const TCHAR * fmt2=fmt;
-#endif
-
-	va_list marker;
-	va_start( marker, fmt );
-	camVsnprintf( buf, 256, fmt2, marker );								// convert the args
-	va_end( marker );
-
-	EnsureFailedLine( buf, LastErrorFile, LastErrorLine );		// put up box
-	ResetWhere();
-}
-
-#if 0 != wxUSE_UNICODE
-void CDECL Error::XComplain( const char *fmt, ...)
-{
 	TCHAR				buf[256];
 	TCHAR	fmt2[MAXERRORFORMATLENGTH];
 	FixFormat(fmt, fmt2);
@@ -1499,16 +1498,18 @@ void CDECL Error::XComplain( const char *fmt, ...)
 
 	EnsureFailedLine( buf, LastErrorFile, LastErrorLine );		// put up box
 	ResetWhere();
+#endif
+
 }
 #endif
 
-#endif
+// #endif
 
 
 #if !defined(EXCLUDE_FROM_XARLIB)
 INT32 InformError(UINT32 ErrorMsg, UINT32 Butt1, UINT32 Butt2, UINT32 Butt3, UINT32 Butt4, UINT32 OK,	UINT32 Cancel)
 {
-	return InformGeneral(ERRORTYPE_ERROR, 0, ErrorMsg, 
+	return InformGeneral(ERRORTYPE_ERROR, 0, ErrorMsg,
 						 Butt1, Butt2, Butt3, Butt4,
 						 OK, Cancel);
 
@@ -1517,7 +1518,7 @@ INT32 InformError(UINT32 ErrorMsg, UINT32 Butt1, UINT32 Butt2, UINT32 Butt3, UIN
 
 INT32 ToolInformError(UINT32 ToolID, UINT32 ErrorMsg,	UINT32 Butt1, UINT32 Butt2, UINT32 Butt3, UINT32 Butt4,	UINT32 OK, UINT32 Cancel)
 {
-	return InformGeneral(ERRORTYPE_ERROR, Tool::GetModuleID(ToolID), ErrorMsg, 
+	return InformGeneral(ERRORTYPE_ERROR, Tool::GetModuleID(ToolID), ErrorMsg,
 						 Butt1, Butt2, Butt3, Butt4, OK, Cancel);
 
 }
@@ -1525,7 +1526,7 @@ INT32 ToolInformError(UINT32 ToolID, UINT32 ErrorMsg,	UINT32 Butt1, UINT32 Butt2
 
 INT32 ModuleInformError(UINT32 ModID, UINT32 ErrorMsg, UINT32 Butt1, UINT32 Butt2, UINT32 Butt3, UINT32 Butt4, UINT32 OK, UINT32 Cancel)
 {
-	return InformGeneral(ERRORTYPE_ERROR, ModID, ErrorMsg, 
+	return InformGeneral(ERRORTYPE_ERROR, ModID, ErrorMsg,
 						 Butt1, Butt2, Butt3, Butt4, OK, Cancel);
 
 }
@@ -1551,21 +1552,21 @@ INT32 ModuleInformError(UINT32 ModID, ErrorInfo *pInfo)
 
 INT32 InformSeriousError(UINT32 ErrorMsg, UINT32 Butt1, UINT32 Butt2, UINT32 Butt3, UINT32 Butt4, UINT32 OK, UINT32 Cancel)
 {
-	return InformGeneral(ERRORTYPE_SERIOUS, 0, ErrorMsg, 
+	return InformGeneral(ERRORTYPE_SERIOUS, 0, ErrorMsg,
 						 Butt1, Butt2, Butt3, Butt4, OK, Cancel);
 }
 
 
 INT32 ToolInformSeriousError(UINT32 ToolID, UINT32 ErrorMsg, UINT32 Butt1, UINT32 Butt2, UINT32 Butt3, UINT32 Butt4, UINT32 OK, UINT32 Cancel)
 {
-	return InformGeneral(ERRORTYPE_SERIOUS, Tool::GetModuleID(ToolID), ErrorMsg, 
+	return InformGeneral(ERRORTYPE_SERIOUS, Tool::GetModuleID(ToolID), ErrorMsg,
 						 Butt1, Butt2, Butt3, Butt4, OK, Cancel);
 }
 
 
 INT32 ModuleInformSeriousError(UINT32 ModID, UINT32 ErrorMsg, UINT32 Butt1, UINT32 Butt2, UINT32 Butt3, UINT32 Butt4, UINT32 OK, UINT32 Cancel)
 {
-	return InformGeneral(ERRORTYPE_SERIOUS, ModID, ErrorMsg, 
+	return InformGeneral(ERRORTYPE_SERIOUS, ModID, ErrorMsg,
 						 Butt1, Butt2, Butt3, Butt4, OK, Cancel);
 }
 
@@ -1588,19 +1589,19 @@ INT32 ModuleInformSeriousError(UINT32 ModID, ErrorInfo *pInfo)
 INT32 InformWarning(UINT32 ErrorMsg, UINT32 Butt1, UINT32 Butt2, UINT32 Butt3, UINT32 Butt4, UINT32 OK, UINT32 Cancel)
 {
 
-	return InformGeneral(ERRORTYPE_WARNING, 0, ErrorMsg, 
+	return InformGeneral(ERRORTYPE_WARNING, 0, ErrorMsg,
 						 Butt1, Butt2, Butt3, Butt4, OK, Cancel);
 }
 
 INT32 ToolInformWarning(UINT32 ToolID, UINT32 ErrorMsg, UINT32 Butt1, UINT32 Butt2, UINT32 Butt3, UINT32 Butt4, UINT32 OK, UINT32 Cancel)
 {
-	return InformGeneral(ERRORTYPE_WARNING, Tool::GetModuleID(ToolID), ErrorMsg, 
+	return InformGeneral(ERRORTYPE_WARNING, Tool::GetModuleID(ToolID), ErrorMsg,
 						 Butt1, Butt2, Butt3, Butt4, OK, Cancel);
 }
 
 INT32 ModuleInformWarning(UINT32 ModID, UINT32 ErrorMsg, UINT32 Butt1, UINT32 Butt2, UINT32 Butt3, UINT32 Butt4, UINT32 OK, UINT32 Cancel)
 {
-	return InformGeneral(ERRORTYPE_WARNING, ModID, ErrorMsg, 
+	return InformGeneral(ERRORTYPE_WARNING, ModID, ErrorMsg,
 						 Butt1, Butt2, Butt3, Butt4, OK, Cancel);
 }
 
@@ -1625,13 +1626,13 @@ INT32 ModuleInformWarning(UINT32 ModID, ErrorInfo *pInfo)
 
 UINT32 AskQuestion(UINT32 ErrorMsg, UINT32 Butt1, UINT32 Butt2, UINT32 Butt3, UINT32 Butt4, UINT32 OK, UINT32 Cancel)
 {
-	return InformGeneral(ERRORTYPE_QUESTION, 0, ErrorMsg, 
+	return InformGeneral(ERRORTYPE_QUESTION, 0, ErrorMsg,
 						 Butt1, Butt2, Butt3, Butt4, OK, Cancel);
 }
 
 UINT32 ToolAskQuestion(UINT32 ToolID, UINT32 ErrorMsg, UINT32 Butt1, UINT32 Butt2, UINT32 Butt3, UINT32 Butt4, UINT32 OK, UINT32 Cancel)
 {
-	return InformGeneral(ERRORTYPE_QUESTION, Tool::GetModuleID(ToolID), ErrorMsg, 
+	return InformGeneral(ERRORTYPE_QUESTION, Tool::GetModuleID(ToolID), ErrorMsg,
 						 Butt1, Butt2, Butt3, Butt4, OK, Cancel);
 }
 
@@ -1639,7 +1640,7 @@ UINT32 ToolAskQuestion(UINT32 ToolID, UINT32 ErrorMsg, UINT32 Butt1, UINT32 Butt
 
 INT32 ModuleAskQuestion(UINT32 ModID, UINT32 ErrorMsg, UINT32 Butt1, UINT32 Butt2, UINT32 Butt3, UINT32 Butt4, UINT32 OK, UINT32 Cancel)
 {
-	return InformGeneral(ERRORTYPE_QUESTION, ModID, ErrorMsg, 
+	return InformGeneral(ERRORTYPE_QUESTION, ModID, ErrorMsg,
 						 Butt1, Butt2, Butt3, Butt4, OK, Cancel);
 }
 
@@ -1665,7 +1666,7 @@ INT32 ModuleAskQuestion(UINT32 ModID, ErrorInfo *pInfo)
 
 INT32 InformMessage(UINT32 ErrorMsg, UINT32 Butt1, UINT32 Butt2, UINT32 Butt3, UINT32 Butt4, UINT32 OK, UINT32 Cancel)
 {
-	return InformGeneral(ERRORTYPE_NORMAL, 0, ErrorMsg, 
+	return InformGeneral(ERRORTYPE_NORMAL, 0, ErrorMsg,
 						 Butt1, Butt2, Butt3, Butt4, OK, Cancel);
 
 }
@@ -1673,7 +1674,7 @@ INT32 InformMessage(UINT32 ErrorMsg, UINT32 Butt1, UINT32 Butt2, UINT32 Butt3, U
 
 INT32 ToolInformMessage(UINT32 ToolID, UINT32 ErrorMsg, UINT32 Butt1, UINT32 Butt2, UINT32 Butt3, UINT32 Butt4, UINT32 OK, UINT32 Cancel)
 {
-	return InformGeneral(ERRORTYPE_NORMAL, Tool::GetModuleID(ToolID), ErrorMsg, 
+	return InformGeneral(ERRORTYPE_NORMAL, Tool::GetModuleID(ToolID), ErrorMsg,
 						 Butt1, Butt2, Butt3, Butt4, OK, Cancel);
 
 }
@@ -1681,7 +1682,7 @@ INT32 ToolInformMessage(UINT32 ToolID, UINT32 ErrorMsg, UINT32 Butt1, UINT32 But
 
 INT32 ModuleInformMessage(UINT32 ModID, UINT32 ErrorMsg, UINT32 Butt1, UINT32 Butt2, UINT32 Butt3, UINT32 Butt4, UINT32 OK, UINT32 Cancel)
 {
-	return InformGeneral(ERRORTYPE_NORMAL, ModID, ErrorMsg, 
+	return InformGeneral(ERRORTYPE_NORMAL, ModID, ErrorMsg,
 						 Butt1, Butt2, Butt3, Butt4, OK, Cancel);
 }
 

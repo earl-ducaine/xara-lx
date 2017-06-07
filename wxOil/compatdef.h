@@ -266,17 +266,18 @@ typedef unsigned short		UINT16;
 #endif
 
 #if SIZEOF_INT == 4
-typedef unsigned int		DWORD;
-typedef signed int			INT32;
-typedef unsigned int		UINT32;
+typedef unsigned int DWORD;
+typedef signed int INT32;
+typedef unsigned int UINT32;
+
 // Should be defined in stdint.h
 // #define INT32_MAX INT_MAX
 // #define INT32_MIN INT_MIN
 // #define UINT32_MAX UINT_MAX
 // #define UINT32_MIN UINT_MIN
 #elif SIZEOF_LONG == 4
-typedef unsigned long		DWORD;
-typedef signed long			INT32;
+typedef unsigned long DWORD;
+typedef signed long INT32;
 typedef unsigned long		UINT32;
 #define INT32_MAX LONG_MAX
 #define INT32_MIN LONG_MIN

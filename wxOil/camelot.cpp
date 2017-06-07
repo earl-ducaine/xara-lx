@@ -140,7 +140,7 @@ service marks of Xara Group Ltd. All rights in these marks are reserved.
 
 #include "camprocess.h"
 #include "wxmbstowcs.h"
-			    
+
 //
 // Define FILELIST for recent file list on file menu.
 // Note that this currently seems to be rather unreliable.
@@ -614,45 +614,32 @@ BOOL CCamApp::OnSecondInstance(wxChar** argv, INT32 argc)
 	return TRUE;
 }
 
-
-
-
-
 bool CCamApp::OnInit() {
-  InInitOrDeInit = TRUE; // Don't allow the user to try carrying on working
+  // Don't allow the user to try carrying on working
+  InInitOrDeInit = TRUE;
   ::wxHandleFatalExceptions(TRUE);
-  //
   // Parse command line. We do this early so we get flags which
   // are useful for init, such as -u
-  //
   wxCmdLineParser parser(argc,argv);
   parser.SetDesc(cmdLineDesc);
-  if (parser.Parse()) // Handles help automatically
-    {
-      return FALSE;
+  // Handles help automatically
+  if (parser.Parse()) {
+    return FALSE;
+  }
+  wxString ResourceDir = "";
+  if (parser.Found(_T("r"), &ResourceDir)) {
+    if (!ResourceDir.IsEmpty()) {
+      CamResource::SetResourceFilePath(ResourceDir);
     }
-
-  wxString ResourceDir = _T("");
-  if (parser.Found(_T("r"), &ResourceDir))
-    {
-      if (!ResourceDir.IsEmpty())
-	{
-	  CamResource::SetResourceFilePath(ResourceDir);
-	}
-
-      if ( parser.Found( _T("x") ) )
-	{
-	  CamResource::SetGenerateXRCCheck(TRUE);
-	}
-    }
-
-  if( parser.Found( _T("v") ) )
-    {
+    if ( parser.Found( _T("x"))) {
+	CamResource::SetGenerateXRCCheck(TRUE);
+      }
+  }
+  if( parser.Found( _T("v"))) {
       wxString			strMessage;
-
 #if defined(__WXMSW__)
-      strMessage = wxString::Format( wxT("Xara Xtreme\nVersion: %s\nCDraw Version: %d.%03d\n"),
-				     g_pszAppVersion, HIWORD(GDraw_GetVersion()), LOWORD(GDraw_GetVersion()) );
+      strMessage = wxString::Format(wxT("Xara Xtreme\nVersion: %s\nCDraw Version: %d.%03d\n"),
+				    g_pszAppVersion, HIWORD(GDraw_GetVersion()), LOWORD(GDraw_GetVersion()) );
 #else
 #if FALSE == wxUSE_UNICODE
       TCHAR*			pszCDrawVer = GDraw_GetSvnVersion();
@@ -663,173 +650,128 @@ bool CCamApp::OnInit() {
       strMessage = wxString::Format( wxT("Xara Xtreme\nVersion: %s (%s)\nCDraw Version: %d.%03d (%s)\nBuild date: %s\n"),
 				     g_pszAppVersion, g_pszSvnVersion, HIWORD(GDraw_GetVersion()), LOWORD(GDraw_GetVersion()), pszCDrawVer, CAMELOT_BUILD_DATE );
 #endif
-
       camPrintf( strMessage.c_str() );
-
       return FALSE;
     }
-
 #if defined(_DEBUG)
   if (parser.Found(_T("m"))) SimpleCCObject::CheckMemoryFlag=1;
-
   long listlevel; // TYPENOTE: Correct - wxWidgets doesn't know about INT32 etc.
   if (parser.Found(_T("l"), &listlevel))
     {
       List::ListDebugLevel = listlevel;
     }
-
   // Set up the username for tracing
   // We should default this to the environment setting for (say) LOGNAME
   wxString Username = _T("");
-
   // Overwrite with LOGNAME if it is set
   wxGetEnv(_T("LOGNAME"), &Username);
-
   // Overwrite with -u option if it is set
   parser.Found(_T("u"), &Username);
-
   Error::SetUserName(Username);
-
-  if (Username==_T(""))
-    {
-      TRACEUSER("ALL", _T("No user specific trace output\n"));
-    }
-  else
-    {
-      //		TRACEUSER("ALL",_T("Tracing output where user is %s\n"),(const char *)Username.mb_str(wxConvUTF8));
-      TRACEUSER("ALL",_T("Tracing output where user is %s\n"),(const TCHAR *)Username.c_str());
-    }
-
+  if (Username==_T("")) {
+    TRACEUSER("ALL", _T("No user specific trace output\n"));
+  } else {
+    //		TRACEUSER("ALL",_T("Tracing output where user is %s\n"),(const char *)Username.mb_str(wxConvUTF8));
+    TRACEUSER("ALL",_T("Tracing output where user is %s\n"),(const TCHAR *)Username.c_str());
+  }
   TRACEUSER("ALL",_T("Memory debugging %d, List debugging %d\n"), SimpleCCObject::CheckMemoryFlag, List::ListDebugLevel);
-
 #endif
-
-  // OK, now we've handled the help case, and some VERY early init, we should see if another instance
-  // is running.
-
-  // Set and check for single instance running
-  wxString SIname = wxString(_T(".XARA-XTREME-WX-"))	+GetAppName()+wxString::Format(_T("-%s"), wxGetUserId().c_str());
-  wxFileName IPCfn(wxGetHomeDir(),SIname+_T(".ipc"));
+  // OK, now we've handled the help case, and some VERY early init, we
+  // should see if another instance is running.  Set and check for
+  // single instance running
+  wxString SIname = wxString(".XARA-XTREME-WX-") +
+    GetAppName() +
+    wxString::Format("-%s.ipc", wxGetUserId());
+  wxFileName IPCfn(wxGetHomeDir(), SIname);
   wxString IPCname = IPCfn.GetFullPath();
-
   m_pSingleInstanceChecker = NULL;
   m_pServer = NULL;
-
 #ifdef _DEBUG
   BOOL SingleInstanceCheck = FALSE;
 #else
   BOOL SingleInstanceCheck = TRUE;
 #endif
-
-  if (SingleInstanceCheck)
-    {
-      // Create a single instance checker at that location
-      m_pSingleInstanceChecker = new wxSingleInstanceChecker(SIname);
-      if (!m_pSingleInstanceChecker)
-	{
-	  ERROR2(FALSE, "Failed to create single instance checker");
-	}
-
-      // Now see if another is running
-      if (m_pSingleInstanceChecker->IsAnotherRunning())
-	{
-	  wxClient Client;
-	  wxConnectionBase * Connection = Client.MakeConnection(wxEmptyString, IPCname, camIPC_START);
-
-	  // If there is no connection, perhaps the other end is dead. We will start up anyway.
-	  if (Connection)
-	    {
-	      INT32 len=1; // terminating null
-	      INT32 i;
-
-	      wxArrayString docs;
-	      INT32 doccount = parser.GetParamCount()+1; // add one for the dummy
-
-	      // Add all docs with a dummy argv[0]
-	      for ( i=0 ; i<doccount; i++ )
-		{
-		  wxString docname;
-		  if (i)
-		    {
-		      docname = parser.GetParam(i-1);
-		      wxFileName fn(docname);
-		      fn.Normalize(wxPATH_NORM_ALL);
-		      docname=fn.GetFullPath();
-		    }
-		  else
-		    {
-		      docname=argv[0];
-		    }
-		  len+=docname.length()+1; // include the trailing zero
-		  docs.Add(docname);
-		}
-
-	      wxChar * Data = new wxChar[len];
-	      if (!Data)
-		{
-		  ERROR2(FALSE, "Failed to create single instance checker data");
-		}
-
-	      // Copy the
-	      wxChar * p = Data;
-	      for (i = 0; i < doccount; i++)
-		{
-		  wxStrcpy(p, docs[i]);
-		  p+=docs[i].length()+1; // move past string and terminating NULL
-		}
-	      *p = _T('\0'); // add a final terminating NULL
-
-	      // Now send the data over the connection
-	      if (Connection->Execute (Data, len*sizeof(wxChar)))
-		{
-		  delete [] Data;
-		  delete Connection;
-
-		  //.Free up the single instance checker
-		  delete m_pSingleInstanceChecker;
-		  m_pSingleInstanceChecker = NULL;
-
-		  // We're out of here...
-		  return FALSE;
-		}
-
-	      // Hmmmm, it didn't want to execute it. perhaps the other process is stuck. We'll run anyway
-	      delete [] Data;
-	      delete Connection;
-	    }
-	}
+  if (SingleInstanceCheck) {
+    // Create a single instance checker at that location
+    m_pSingleInstanceChecker = new wxSingleInstanceChecker(SIname);
+    if (!m_pSingleInstanceChecker) {
+      ERROR2(FALSE, "Failed to create single instance checker");
     }
-
+    // Now see if another is running
+    if (m_pSingleInstanceChecker->IsAnotherRunning()) {
+      wxClient Client;
+      wxConnectionBase * Connection = Client.MakeConnection(wxEmptyString, IPCname, camIPC_START);
+      // If there is no connection, perhaps the other end is dead. We will start up anyway.
+      if (Connection) {
+	INT32 len=1; // terminating null
+	INT32 i;
+	wxArrayString docs;
+	INT32 doccount = parser.GetParamCount()+1; // add one for the dummy
+	// Add all docs with a dummy argv[0]
+	for ( i=0 ; i<doccount; i++ ) {
+	  wxString docname;
+	  if (i) {
+	    docname = parser.GetParam(i-1);
+	    wxFileName fn(docname);
+	    fn.Normalize(wxPATH_NORM_ALL);
+	    docname=fn.GetFullPath();
+	  } else {
+	    docname=argv[0];
+	  }
+	  len+=docname.length()+1; // include the trailing zero
+	  docs.Add(docname);
+	}
+	wxChar * Data = new wxChar[len];
+	if (!Data) {
+	  ERROR2(FALSE, "Failed to create single instance checker data");
+	}
+	// Copy the
+	wxChar * p = Data;
+	for (i = 0; i < doccount; i++) {
+	  wxStrcpy(p, docs[i]);
+	  p+=docs[i].length()+1; // move past string and terminating NULL
+	}
+	*p = _T('\0'); // add a final terminating NULL
+	// Now send the data over the connection
+	if (Connection->Execute (Data, len*sizeof(wxChar))) {
+	  delete [] Data;
+	  delete Connection;
+	  //.Free up the single instance checker
+	  delete m_pSingleInstanceChecker;
+	  m_pSingleInstanceChecker = NULL;
+	  // We're out of here...
+	  return FALSE;
+	}
+	// Hmmmm, it didn't want to execute it. perhaps the other process is stuck. We'll run anyway
+	delete [] Data;
+	delete Connection;
+      }
+    }
+  }
   // OK, we are the only instance running. Delete any stale socket (ours has not been created yet).
-  ::wxRemoveFile(IPCname);
-
+  if (::wxFileExists(IPCname)) {
+    ::wxRemoveFile(IPCname);
+  }
   // Register the image handler which loads CURs (used for Cursors, obviously)
   wxImage::AddHandler( new wxCURHandler );
-
   // Register the image handler which loads PNGs (used for TBs)
   wxImage::AddHandler( new wxPNGHandler );
-
   // Init the BinReloc stuff (we don't really care if this fails, since it
   // fails safe)
   BrInitError	error;
   br_init( &error );
-
   // Useful debug tracing enablers, left here for next debug session...
   //	wxLog::AddTraceMask( _T("focus") );
   //	wxLog::AddTraceMask( _T("keyevent") );
-
   // Initialise the MonotonicTime class
   MonotonicTime::Init();
-
   // We initialize profiling here to allow the rest of the app to be profiled
   CamProfile::Init();
   // Don't start profiling until Alex has finished the code!
   CamProfile::ActivateProfiling(TRUE);
   // Indicate time from now on should be assigned to "OTHER"
   CamProfile::AtBase(CAMPROFILE_OTHER);
-
   TRACET(_T("CCamApp::OnInit first available time to trace"));
-
   // Initialize resources system
   if (!CamResource::Init()) return FALSE;
   // Initialize the art provider - needed for dialogs
@@ -838,22 +780,17 @@ bool CCamApp::OnInit() {
   // We need this pretty early so we can handle ERROR boxes etc
   if (!DialogEventHandler::Init()) return FALSE;
   if (!ControlList::Init()) return FALSE;
-
   TRACET(_T("CCamApp::Calling Camelot.Init"));
-
   // Initialise the kernel application object & Prefs
   if( !Camelot.Init() )
     return false;
-
   // --------------------------------------------------------------------------
   // Detect first-time run and make Open File dialog default to Examples folder
   wchar_t preferences[] = TEXT("Preferences");
-  if (Camelot.DeclareSection(preferences, 10))
-    {
-      wchar_t first_run[] = TEXT("FirstRun");
-      Camelot.DeclarePref(NULL, first_run, &bFirstRun, 0, 1);
-    }
-
+  if (Camelot.DeclareSection(preferences, 10)) {
+    wchar_t first_run[] = TEXT("FirstRun");
+    Camelot.DeclarePref(NULL, first_run, &bFirstRun, 0, 1);
+  }
   // Check the resource dir exists
   Camelot.DeclarePref( NULL, TEXT("ResourceDirOverride"), &m_strResourceDirPathOverride );
   m_strResourceDirPath = m_strResourceDirPathOverride; // this way, the path we find never gets put within the preferences
@@ -883,22 +820,17 @@ bool CCamApp::OnInit() {
 #endif
     }
   TRACEUSER( "luke", _T("ResDir = %s\n"), PCTSTR(m_strResourceDirPath) );
-
   // Get the media replay application setting
   Camelot.DeclarePref( NULL, TEXT("MediaApplication"), &m_strMediaApplication );
-
   TRACET(_T("CCamApp::Calling InitKernel"));
   // then initialise the kernel (and almost everything else)
   if( !InitKernel() )
     return false;
-
   if( !Camelot.LateInit() )
     return false;
-
   TRACET(_T("CCamApp::Calling GRenderRegion::Init"));
   if (!GRenderRegion::Init(true))
     return false;
-
   // Declare the prefs for the window size and state
   if (Camelot.DeclareSection(TEXT("Windows"), 10))
     {
@@ -906,21 +838,14 @@ bool CCamApp::OnInit() {
       Camelot.DeclarePref(NULL, TEXT("MainWndMin"), &MainWndMinimized, 0, 1);
       Camelot.DeclarePref(NULL, TEXT("MainWndPos"), &MainWndPosString);
     }
-
   TRACET(_T("CCamApp::Making Doc Manager"));
-
   // Create the document manager and register our doc template
   m_docManager = std::auto_ptr<wxDocManager>( new wxDocManager() );
-
-
   // #define TODO(x) __pragma(message("TODO: "_STR(x) " :: " __FILE__ "@" STR(__LINE__)))
-
-
   //in code somewhere
 #define DO_PRAGMA(x) _Pragma (#x)
 #define TODO(x) DO_PRAGMA(message ("TODO - " #x))
   TODO("Creating a new CCamDocTemplate seems to do nothing.")
-
     new CCamDocTemplate(
 			m_docManager.get(), wxT("Xara"), wxT("*.xar;*.web"), wxT(""), wxT("xar"), wxT("Xara document"),
 			wxT("Text View"),
@@ -931,7 +856,6 @@ bool CCamApp::OnInit() {
   //		wxT("Text View"),
   //		CLASSINFO(CCamDoc),
   //		CLASSINFO(ScreenCamView) );
-
   // Reload the file history (9 entries)
   wxFileHistory*		pFileHist = m_docManager->GetFileHistory();
   for( UINT32 ord = 0; ord < 9; ++ord )
@@ -939,36 +863,27 @@ bool CCamApp::OnInit() {
       // This is safe since we control all variables!
       TCHAR			pszTag[8];
       camSprintf( pszTag, _T("File%d"), ord );
-
       String_256		strFileName;
       Camelot.GetPrefDirect( _T("Recent File list"), pszTag, &strFileName );
-
       if( strFileName != _T("") )
 	pFileHist->AddFileToHistory( PCTSTR(strFileName) );
     }
-
-  if (bFirstRun)
-    {
-      // Set File Open dialog location to our Examples folder
-      wxString	strConfigPath( (TCHAR*)m_strResourceDirPath );
-      strConfigPath += _T("/Examples");
-
+  if (bFirstRun) {
+    // Set File Open dialog location to our Examples folder
+    wxString	strConfigPath( (TCHAR*)m_strResourceDirPath );
+    strConfigPath += _T("/Examples");
 #if defined(_DEBUG)
-      // Debug-only fallback
-      if (!wxDir::Exists(strConfigPath))
-	strConfigPath = _T("/usr/share/xaralx/Examples");
+    // Debug-only fallback
+    if (!wxDir::Exists(strConfigPath))
+      strConfigPath = _T("/usr/share/xaralx/Examples");
 #endif
-
-      if (wxDir::Exists(strConfigPath))
-	BaseFileDialog::DefaultOpenFilePath = strConfigPath;
-    }
-
+    if (wxDir::Exists(strConfigPath))
+      BaseFileDialog::DefaultOpenFilePath = strConfigPath;
+  }
   // NOTE! Set bFirstRun = FALSE in OnExit handler below
   // --------------------------------------------------------------------------
-
   // Set idles to only get sent to windows that want them
   wxIdleEvent::SetMode(wxIDLE_PROCESS_SPECIFIED);
-
   // Create the Frame window
   //
   // get user preference info for main window
@@ -1014,154 +929,116 @@ bool CCamApp::OnInit() {
   // after loading a document.
   //
   wxMenu* pFileMenu = new wxMenu;
-
   pFileMenu->Append( wxID_NEW,  wxT("&New...") );
   pFileMenu->Append( wxID_OPEN, wxT("&Open...") );
-
 #if defined(FILELIST)
   wxMenu* pRecentFilesMenu = new wxMenu;
   m_docManager->FileHistoryUseMenu(pRecentFilesMenu);
   m_docManager->FileHistoryAddFilesToMenu(pRecentFilesMenu);
-
   pFileMenu->AppendSeparator();
   pFileMenu->Append( -1, wxT("&Recent files"),pRecentFilesMenu );
 #endif //defiend(FILELIST)
-
   pFileMenu->AppendSeparator();
   pFileMenu->Append( wxID_EXIT, wxT("E&xit") );
-
   // Build help menu
   wxMenu			   *pHelpMenu = new wxMenu;
   pHelpMenu->Append( _R(DOCVIEW_ABOUT), wxT("&About...") );
-
   // Place menus into the menu bar
   wxMenuBar		   *pMenuBar = new wxMenuBar;
   pMenuBar->Append( pFileMenu, wxT("File") );
   pMenuBar->Append( pHelpMenu, wxT("Help") );
-
 #ifdef __WXMAC__
   wxMenuBar::MacSetCommonMenuBar( pMenuBar );
 #endif //def __WXMAC__
-
   // Set up menu bar...
   m_pMainFrame->SetMenuBar( pMenuBar );
-
 #else
-
 #ifdef __WXMAC__
   wxMenuBar::MacSetCommonMenuBar( WinMDIMenu );
 #endif //def __WXMAC__
-
   // Set up menu bar...
   m_pMainFrame->SetMenuBar( WinMDIMenu );
   WinMDIMenu->ClearAccelTable();
-
 #endif
-
   // We don't want auto-accelerators, this is done using our hotkeys
   // I don't know how to do this yet, but I'm looking....
   //	wxAcceleratorTable* pAccelTable = pMenuBar->GetAccelTable();
   //	*pAccelTable = wxAcceleratorTable();
-
   TRACET(_T("CCamApp::Init Setting mainframe as top window"));
-
   m_pMainFrame->CreateToolbars();
   m_pMainFrame->UpdateFrameManager();
-
   // Show the main frame window
   // make maximized if thats what we were last time, unless overridden by user
-  if (MainWndMaximized)
-    {
-      m_pMainFrame->Maximize();
-    }
-  if (MainWndMinimized)
-    {
-      m_pMainFrame->Iconize();
-    }
+  if (MainWndMaximized) {
+    m_pMainFrame->Maximize();
+  }
+  if (MainWndMinimized) {
+    m_pMainFrame->Iconize();
+  }
   SetTopWindow( m_pMainFrame );
   ::wxYield(); // allow resizing to take place
   m_pMainFrame->Show( true );
   ::wxYield(); // allow resizing to take place
   wxPlatformDependent::Get()->FixUpdate(m_pMainFrame); // Force the main frame to be redrawn properly
   ::wxYield(); // allow resizing to take place
-
 #ifndef EXCLUDE_FROM_XARALX
   m_pMainFrame->CacheNormalPlaceMode();
   m_pMainFrame->CheckFullScreenMode();
 
   // if the splash box is up, draw our window behind it (will be a big pending WM_PAINT)
   // IT MUST NOT BE ACTIVE else palette problems
-  if (AfxOleGetUserCtrl())
-    {
-      if (m_nCmdShow == SW_SHOWMINIMIZED || m_nCmdShow == SW_SHOWMINNOACTIVE)
-	{
-	  pMainFrame->ShowWindow(SW_SHOWMINNOACTIVE);
-	}
-      else
-	{
-	  if (m_nCmdShow == SW_SHOWMAXIMIZED)
-	    m_pMainWnd->ShowWindow(SW_SHOWMAXIMIZED);
-	  else
-	    pMainFrame->ShowWindow(SW_SHOWNOACTIVATE);
-
-	  // the ShowWindow() above has made the main window active so make the splash box active, else
-	  // we get nasty palette problems later on
-	  pSplashbox->SetActiveWindow();
-	}
+  if (AfxOleGetUserCtrl()) {
+    if (m_nCmdShow == SW_SHOWMINIMIZED || m_nCmdShow == SW_SHOWMINNOACTIVE) {
+      pMainFrame->ShowWindow(SW_SHOWMINNOACTIVE);
+    } else {
+      if (m_nCmdShow == SW_SHOWMAXIMIZED) {
+	m_pMainWnd->ShowWindow(SW_SHOWMAXIMIZED);
+      } else {
+	pMainFrame->ShowWindow(SW_SHOWNOACTIVATE);
+      }
+      // the ShowWindow() above has made the main window active so make the splash box active, else
+      // we get nasty palette problems later on
+      pSplashbox->SetActiveWindow();
     }
+  }
 #endif
-
   Tool::SelectFirstTool();
-
   // Go through the command line and load documents
   TRACET(_T("CCamApp::Init Loading docs (if any) from command line"));
-
-  if( 0 == parser.GetParamCount() )
+  if( 0 == parser.GetParamCount() ) {
     m_docManager->CreateDocument( _T(""), wxDOC_NEW );
-  else
-    {
-      for ( UINT32 i=0 ; i<parser.GetParamCount() ; i++ )
-	m_docManager->CreateDocument(parser.GetParam(i),wxDOC_SILENT);
+  } else {
+    for ( UINT32 i=0 ; i<parser.GetParamCount() ; i++ ) {
+      m_docManager->CreateDocument(parser.GetParam(i),wxDOC_SILENT);
     }
-
+  }
   // Remove the splash screen
   CamResource::DoneInit();
-
   CXMLUtils::Initialise();
-
-  if (SingleInstanceCheck)
-    {
-      // We are able to load documents, so now start our own IPC server
-      m_pServer = new CamIPCServer();
-      if (!m_pServer)
-	{
-	  delete (m_pSingleInstanceChecker);
-	  m_pSingleInstanceChecker = NULL;
-	  ERROR2(FALSE, "Failed to create IPC server");
-	}
-
-      // and initialize it
-      if (!(m_pServer->Create(IPCname)))
-	{
-	  delete m_pServer;
-	  m_pServer = NULL;
-
-	  delete (m_pSingleInstanceChecker);
-	  m_pSingleInstanceChecker = NULL;
-	  ERROR2(FALSE, "Failed to init IPC server");
-	}
+  if (SingleInstanceCheck) {
+    // We are able to load documents, so now start our own IPC server
+    m_pServer = new CamIPCServer();
+    if (!m_pServer) {
+      delete (m_pSingleInstanceChecker);
+      m_pSingleInstanceChecker = NULL;
+      ERROR2(FALSE, "Failed to create IPC server");
     }
-
+    // and initialize it
+    if (!(m_pServer->Create(IPCname))) {
+      delete m_pServer;
+      m_pServer = NULL;
+      delete (m_pSingleInstanceChecker);
+      m_pSingleInstanceChecker = NULL;
+      ERROR2(FALSE, "Failed to init IPC server");
+    }
+  }
   // Give focus to any child that will take it, parent can't have it since
   // it's a frame (see gtk_widget_grab_focus)
   GiveFocusToFocusableOffspring( m_pMainFrame );
-
   // Create timer used for background rendering.
   //	m_Timer.SetOwner(this,CAM_TIMER_ID);
   //	m_Timer.Start(CAM_TIMER_FREQUENCY);
-
   InInitOrDeInit = FALSE; // Now allow the user a chance to save their work on a SEGV
-
   return true;
 }
 
@@ -1170,118 +1047,115 @@ bool CCamApp::OnInit() {
 // Deinitialisation.
 //
 
-INT32 CCamApp::OnExit( void )
-{
-	InInitOrDeInit = TRUE; // Don't allow them to save their work on a SEGV
-	// We can no longer stop the closedown, so flag this fact
-	Camelot.ShuttingDown(TRUE);
+INT32 CCamApp::OnExit( void ) {
+  InInitOrDeInit = TRUE; // Don't allow them to save their work on a SEGV
+  // We can no longer stop the closedown, so flag this fact
+  Camelot.ShuttingDown(TRUE);
 
-	// Dump the file history (9 entries as for Xtreme 4 Win)
-	wxFileHistory*		pFileHist = m_docManager->GetFileHistory();
-	UINT32				cRecent   = UINT32(pFileHist->GetCount());
-	for( UINT32 ord = 0; ord < 9; ++ord )
+  // Dump the file history (9 entries as for Xtreme 4 Win)
+  wxFileHistory*		pFileHist = m_docManager->GetFileHistory();
+  UINT32				cRecent   = UINT32(pFileHist->GetCount());
+  for( UINT32 ord = 0; ord < 9; ++ord )
+    {
+      // This is safe since we control all variables!
+      TCHAR			pszTag[8];
+      camSprintf( pszTag, _T("File%d"), ord );
+
+      if( ord < cRecent )
 	{
-		// This is safe since we control all variables!
-		TCHAR			pszTag[8];
-		camSprintf( pszTag, _T("File%d"), ord );
-
-		if( ord < cRecent )
-		{
-			wxString	strFileName( pFileHist->GetHistoryFile( ord ) );
-			Camelot.SetPrefDirect( _T("Recent File list"), pszTag, PCTSTR(strFileName), TRUE );
-		}
-		else
-			Camelot.SetPrefDirect( _T("Recent File list"), pszTag, _T(""), TRUE );
+	  wxString	strFileName( pFileHist->GetHistoryFile( ord ) );
+	  Camelot.SetPrefDirect( _T("Recent File list"), pszTag, PCTSTR(strFileName), TRUE );
 	}
+      else
+	Camelot.SetPrefDirect( _T("Recent File list"), pszTag, _T(""), TRUE );
+    }
 
-	// we can't load documents any more - delete IPC server
-	if (m_pServer)
-	{
-		delete m_pServer;
-		m_pServer = NULL;
-	}
+  // we can't load documents any more - delete IPC server
+  if (m_pServer)
+    {
+      delete m_pServer;
+      m_pServer = NULL;
+    }
 
-	// delete single instance checked
-	if (m_pSingleInstanceChecker)
-	{
-		delete m_pSingleInstanceChecker;
-		m_pSingleInstanceChecker = NULL;
-	}
+  // delete single instance checked
+  if (m_pSingleInstanceChecker)
+    {
+      delete m_pSingleInstanceChecker;
+      m_pSingleInstanceChecker = NULL;
+    }
 
-	// Rendering is back on idle events for now as it actually works
-//	m_Timer.Stop();
+  // Rendering is back on idle events for now as it actually works
+  //	m_Timer.Stop();
 
 #if defined(FILELIST)
-	{
-		m_docManager->FileHistorySave(Preferences::GetOilPrefs());
-	}
+  {
+    m_docManager->FileHistorySave(Preferences::GetOilPrefs());
+  }
 #endif
-	m_docManager = std::auto_ptr<wxDocManager>( NULL );
+  m_docManager = std::auto_ptr<wxDocManager>( NULL );
 
-	bFirstRun = FALSE;
+  bFirstRun = FALSE;
 
-	// Now deinit everything
+  // Now deinit everything
 
-	CXMLUtils::DeInitialise();
+  CXMLUtils::DeInitialise();
 
-	DeinitKernel();
+  DeinitKernel();
 
 #if CUSTOM_INONE == 2
-	DLLControlClass::DeinitAllControls();
+  DLLControlClass::DeinitAllControls();
 #endif
 
-	GRenderRegion::DeInit();						// tidy up GDraw
+  GRenderRegion::DeInit();						// tidy up GDraw
 
-PORTNOTE("other","Removed GDI+, filelist and profilename support")
+  PORTNOTE("other","Removed GDI+, filelist and profilename support")
 #ifndef EXCLUDE_FROM_XARALX
-	Gdiplus::GdiplusShutdown(gdiplusToken);
+    Gdiplus::GdiplusShutdown(gdiplusToken);
 
-	// Finished with preferences/registry so remove the allocated ProfileName. Was not here before 18/2/97
-	if (m_pszProfileName != NULL)
+  // Finished with preferences/registry so remove the allocated ProfileName. Was not here before 18/2/97
+  if (m_pszProfileName != NULL)
     {
-		free((void *) m_pszProfileName);
-		m_pszProfileName = NULL;
+      free((void *) m_pszProfileName);
+      m_pszProfileName = NULL;
     }
 #endif
 
-	ControlList::DeInit();
-	DialogEventHandler::DeInit();
-	// Kill of art provider
-	CamArtProvider::DeInit();
-	wxPlatformDependent::DeInit();
-	// Kill of resources
-	CamResource::DeInit();
+  ControlList::DeInit();
+  DialogEventHandler::DeInit();
+  // Kill of art provider
+  CamArtProvider::DeInit();
+  wxPlatformDependent::DeInit();
+  // Kill of resources
+  CamResource::DeInit();
 
-	// Kill off profiling
-	CamProfile::ActivateProfiling(FALSE);
+  // Kill off profiling
+  CamProfile::ActivateProfiling(FALSE);
 
 #if DUMP_MEM_AT_END
-	MemoryState.DumpAllObjectsSince();
+  MemoryState.DumpAllObjectsSince();
 #endif
 
-	// We want a memory dump on Debug builds only
+  // We want a memory dump on Debug builds only
 #ifdef _DEBUG
-	SimpleCCObject::MemoryDump();
-	DumpCCMallocTrace();
+  SimpleCCObject::MemoryDump();
+  DumpCCMallocTrace();
 #endif
 
-PORTNOTE("other","Removed 3D, Extras and UserHelp support")
+  PORTNOTE("other","Removed 3D, Extras and UserHelp support")
 #ifndef EXCLUDE_FROM_XARALX
-	// For fabby 3D
-	if (Is3dWanted())
-		pCtl3dUnregister(AfxGetInstanceHandle());
+    // For fabby 3D
+    if (Is3dWanted())
+      pCtl3dUnregister(AfxGetInstanceHandle());
 
-	OILModule::DeinitExtras();							// free all DLLs (e.g. ctl3d)
+  OILModule::DeinitExtras();							// free all DLLs (e.g. ctl3d)
 
-	// Last of all, deinit the help system now that there's very little else to go wrong.
-	DeInitUserHelp();
+  // Last of all, deinit the help system now that there's very little else to go wrong.
+  DeInitUserHelp();
 #endif
-
-	// zap this after we know all windows have gone
-	wxWindowDeletionWatcher::DeInit();
-
-	::wxHandleFatalExceptions(FALSE);
-	return wxApp::OnExit();
+  // zap this after we know all windows have gone
+  wxWindowDeletionWatcher::DeInit();
+  ::wxHandleFatalExceptions(FALSE);
+  return wxApp::OnExit();
 }
 
 //  WEBSTER-ranbirr-12/11/96

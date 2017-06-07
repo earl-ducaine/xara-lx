@@ -24,13 +24,12 @@ function build_wx {
     cd ..
 }
 
- 
 function build_wx_30 {
     if [ ! -d wxWidgets-3.0.3 ]; then
 	if [ ! -f wxGTK-3.0.3.tar.gz ]; then
 	    curl -LO https://github.com/wxWidgets/wxWidgets/releases/download/v3.0.3/wxWidgets-3.0.3.tar.bz2
 	fi
-	tar xf wxWidgets-3.0.3.tar.bz2 
+	tar xf wxWidgets-3.0.3.tar.bz2
     fi
     cd wxWidgets-3.0.3
     if [ -d buildgtk ]; then
@@ -48,8 +47,6 @@ function build_wx_30 {
     cd ..
     cd ..
 }
-
-
 
 function build_wx_from_git {
     # https://github.com/wxWidgets/wxWidgets.git
@@ -69,7 +66,7 @@ function build_wx_from_git {
     fi
     mkdir buildgtk
     cd buildgtk
-    ../configure --with-gtk --debug=yes --enable-unicode --with-libpng=builtin
+    ../configure --with-gtk --enable-debug --enable-unicode --with-libpng=builtin
     make -j 8
     sudo make install
     sudo ldconfig
@@ -82,13 +79,13 @@ function run_build_wx_from_git {
 }
 
 function build_png {
-    if [ ! -d libpng-1.2.57 ]; then
-	if [ ! -f libpng-1.2.57.tar.gz ]; then
-	    curl -LO https://superb-sea2.dl.sourceforge.net/project/libpng/libpng12/1.2.57/libpng-1.2.57.tar.gz
+    if [ ! -d libpng-1.6.29 ]; then
+	if [ ! -f libpng-1.6.29.tar.gz ]; then
+	    curl -LO https://superb-sea2.dl.sourceforge.net/project/libpng/libpng16/1.6.29/libpng-1.6.29.tar.gz
 	fi
-	tar xf libpng-1.2.57.tar.gz
+	tar xf libpng-1.6.29.tar.gz
     fi
-    cd libpng-1.2.57
+    cd libpng-1.6.29
     ./configure
     make -j 2
     cd ..
@@ -100,17 +97,19 @@ function build_xoamorph {
     # cd libs/x86_64
     #  ar -s -r libCDraw.a *.o
     # cd ../..
-    # ar -xv libCDraw.a 
-    # export PATH="/usr/lib/ccache:$PATH"; make -j 4 1> make-out.txt 2>make-error.txt
-    make -j 4
+    # ar -xv libCDraw.a
+    export PATH="/usr/lib/ccache:$PATH"; make -j 4 1> make-out.txt 2>make-error.txt
     # make -j 4
 }
 
-function last_step {
-    g++ -no-pie -Wl,--start-group Kernel/libKernel.a wxOil/libwxOil.a tools/libTools.a wxXtra/libwxXtra.a -Wl,--end-group --debug -L./libs/x86_64 -L./libs/x86_64/cdraw-alt  -L/usr/local/lib -pthread -lwx_gtk2u_aui-3.0 -lwx_gtk2u_xrc-3.0 -lwx_gtk2u_html-3.0 -lwx_gtk2u_qa-3.0 -lwx_gtk2u_adv-3.0 -lwx_gtk2u_core-3.0 -lwx_baseu_xml-3.0 -lwx_baseu_net-3.0 -lwx_baseu-3.0    -lxml2 -ljpeg -lCDraw -lCDraw-alt -lgtk-x11-2.0 -lgdk-x11-2.0 -latk-1.0 -lgio-2.0 -lpangoft2-1.0 -lpangocairo-1.0 -lgdk_pixbuf-2.0 -lcairo -lpango-1.0 -lfreetype -lfontconfig -lgobject-2.0 -lglib-2.0 ./libpng-1.2.57/.libs/libpng.a -lz -o XaraLX
+function make_tags {
+    find . -name "*.c" -o -name "*.cpp" -o -name "*.h" -print | xargs etags -a
 }
 
 
-function make_tags {
-    find . -name "*.c" -o -name "*.cpp" -o -name "*.h" -print | xargs etags -a
+function create_apply_patch_from_alt_branch {
+    git --no-pager diff rewrite-cdraw
+    FILE=$1
+    git --no-pager diff diff rewrite-cdraw  "wxOil/$FILE" > "$FILE.patch"
+    git apply -R "$FILE".patch; make -j 8
 }

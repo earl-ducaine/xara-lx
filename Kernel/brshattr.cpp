@@ -4599,76 +4599,76 @@ UINT32 *BrushAttrRecordHandler::GetTagList()
 
 ********************************************************************************************/
 
-BOOL BrushAttrRecordHandler::HandleRecord(CXaraFileRecord *pCXaraFileRecord)
-{
-	ERROR3IF(pCXaraFileRecord == NULL, "pCXaraFileRecord is NULL");
+BOOL BrushAttrRecordHandler::HandleRecord(CXaraFileRecord *pCXaraFileRecord) {
+  ERROR3IF(pCXaraFileRecord == NULL, "pCXaraFileRecord is NULL");
 
-//	NodeAttribute* pNewNode = NULL;
-	BOOL RetVal = TRUE;
-	switch (pCXaraFileRecord->GetTag())
-	{
-		case TAG_BRUSHDEFINITION:
-		{
-			// get the brush component from the document
-			Document* pDoc = Document::GetCurrent();
-			ERROR2IF(pDoc == NULL, FALSE, "Wheres the document?");
-			BrushComponent* pBrushComp = (BrushComponent*)pDoc->GetDocComponent(CC_RUNTIME_CLASS(BrushComponent));
-			ERROR2IF(pBrushComp == NULL, FALSE, "No brush component");
-			UINT32 ImportHandle = 0;		
-			BOOL ok = pCXaraFileRecord->ReadUINT32(&ImportHandle);
+  //	NodeAttribute* pNewNode = NULL;
+  BOOL RetVal = TRUE;
+  switch (pCXaraFileRecord->GetTag())
+    {
+    case TAG_BRUSHDEFINITION:
+      {
+	// get the brush component from the document
+	Document* pDoc = Document::GetCurrent();
+	ERROR2IF(pDoc == NULL, FALSE, "Wheres the document?");
+	BrushComponent* pBrushComp = (BrushComponent*)pDoc->GetDocComponent(CC_RUNTIME_CLASS(BrushComponent));
+	ERROR2IF(pBrushComp == NULL, FALSE, "No brush component");
+	UINT32 ImportHandle = 0;		
+	BOOL ok = pCXaraFileRecord->ReadUINT32(&ImportHandle);
 			
-			if (ok) 
-				RetVal =  pBrushComp->StartImportBrush(this, pCXaraFileRecord, ImportHandle);
-		}
-		break;
-		case TAG_BRUSHDATA:
-			RetVal =  HandleBrushDataRecord(pCXaraFileRecord);
-			break;
-		case TAG_BRUSHATTR:
-			RetVal = HandleBrushAttributeRecord(pCXaraFileRecord);
-			break;
-		case TAG_MOREBRUSHDATA:
-			RetVal =  HandleMoreBrushDataRecord(pCXaraFileRecord);
-			break;
-		case TAG_MOREBRUSHATTR:
-			RetVal =  HandleMoreBrushAttrRecord(pCXaraFileRecord);
-			break;
-		case TAG_EVENMOREBRUSHDATA:
-			RetVal = HandleEvenMoreBrushData(pCXaraFileRecord);
-			break;
-		case TAG_EVENMOREBRUSHATTR:
-			RetVal = HandleEvenMoreBrushAttr(pCXaraFileRecord);
-			break;
-		case TAG_TIMESTAMPBRUSHDATA:
-			RetVal = HandleTimeStampData(pCXaraFileRecord);
-			break;
-		case TAG_BRUSHPRESSUREINFO:
-			RetVal = HandlePressureInfo(pCXaraFileRecord);
-			break;
-		case TAG_BRUSHATTRPRESSUREINFO:
-			RetVal = HandleAttrPressureInfo(pCXaraFileRecord);
-			break;
-		case TAG_BRUSHPRESSUREDATA:
-			RetVal = HandlePressureData(pCXaraFileRecord);
-			break;
-		case TAG_BRUSHPRESSURESAMPLEDATA:
-			RetVal = HandlePressureSampleData(pCXaraFileRecord);
-			break;
-		case TAG_BRUSHATTRFILLFLAGS:
-			RetVal = HandleAttrFillFlags(pCXaraFileRecord);
-			break;
-		case TAG_BRUSHTRANSPINFO:
-			RetVal = HandleTranspInfo(pCXaraFileRecord);
-			break;
-		case TAG_BRUSHATTRTRANSPINFO:
-			RetVal = HandleAttrTranspInfo(pCXaraFileRecord);
-			break;
-		default:
-			ERROR3_PF(("I don't handle records with the tag (%d)\n", pCXaraFileRecord->GetTag()));
-			break;
-	}
+	if (ok) 
+	  RetVal =  pBrushComp->StartImportBrush(this, pCXaraFileRecord, ImportHandle);
+      }
+      break;
+    case TAG_BRUSHDATA:
+      RetVal =  HandleBrushDataRecord(pCXaraFileRecord);
+      break;
+    case TAG_BRUSHATTR:
+      RetVal = HandleBrushAttributeRecord(pCXaraFileRecord);
+      break;
+    case TAG_MOREBRUSHDATA:
+      RetVal =  HandleMoreBrushDataRecord(pCXaraFileRecord);
+      break;
+    case TAG_MOREBRUSHATTR:
+      RetVal =  HandleMoreBrushAttrRecord(pCXaraFileRecord);
+      break;
+    case TAG_EVENMOREBRUSHDATA:
+      RetVal = HandleEvenMoreBrushData(pCXaraFileRecord);
+      break;
+    case TAG_EVENMOREBRUSHATTR:
+      RetVal = HandleEvenMoreBrushAttr(pCXaraFileRecord);
+      break;
+    case TAG_TIMESTAMPBRUSHDATA:
+      RetVal = HandleTimeStampData(pCXaraFileRecord);
+      break;
+    case TAG_BRUSHPRESSUREINFO:
+      RetVal = HandlePressureInfo(pCXaraFileRecord);
+      break;
+    case TAG_BRUSHATTRPRESSUREINFO:
+      RetVal = HandleAttrPressureInfo(pCXaraFileRecord);
+      break;
+    case TAG_BRUSHPRESSUREDATA:
+      RetVal = HandlePressureData(pCXaraFileRecord);
+      break;
+    case TAG_BRUSHPRESSURESAMPLEDATA:
+      RetVal = HandlePressureSampleData(pCXaraFileRecord);
+      break;
+    case TAG_BRUSHATTRFILLFLAGS:
+      RetVal = HandleAttrFillFlags(pCXaraFileRecord);
+      break;
+    case TAG_BRUSHTRANSPINFO:
+      RetVal = HandleTranspInfo(pCXaraFileRecord);
+      break;
+    case TAG_BRUSHATTRTRANSPINFO:
+      RetVal = HandleAttrTranspInfo(pCXaraFileRecord);
+      break;
+    default:
+      TCHAR i_dont_handle_records[] = _T("I don't handle records with the tag (%d)\n");
+      ERROR3_PF((i_dont_handle_records, pCXaraFileRecord->GetTag()));
+      break;
+    }
 
-	return(RetVal);
+  return(RetVal);
 }
 
 

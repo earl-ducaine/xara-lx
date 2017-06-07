@@ -370,7 +370,12 @@ protected:
 	virtual void CleanUpAfterExport();
 
 	virtual BOOL DoExportDoc(Operation*, CCLexFile*, PathName*, Document*,
-							 UINT32, double, const SelectionType&, BOOL UseExistingPalette = FALSE);
+				 UINT32, double, const SelectionType&,
+				 BOOL UseExistingPalette = FALSE);
+
+	virtual BOOL DoExportDoc_old(Operation*, CCLexFile*, PathName*, Document*,
+				 UINT32, double, const SelectionType&,
+				 BOOL UseExistingPalette = FALSE);
 
 	virtual UINT32 GetNumReservedColours();
 

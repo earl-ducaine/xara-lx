@@ -673,112 +673,105 @@ BOOL CALLBACK EnumChildProc(wxWindow* hChild, LPARAM lParam )
 }
 #endif						
 
-/********************************************************************************************
+/***************************************************************************
 >	BOOL BmapPrevDlg::OnCreate()
+
 	Author:		Stefan_Stoykov (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	8/7/97
-	Purpose:	Handles the DIM_CREATE message. Creates the preview dialog and moves the tabs, 
-				so the preview dialog goes above them.
+	Purpose:        Handles the DIM_CREATE message. Creates the preview
+			dialog and moves the tabs, so the preview
+			dialog goes above them.
 	Returns:	TRUE, if successful, FALSE otherwise
-	NOTE:		The window movement code is oily code and should become part of the dialog manager
-				along with the above function, EnumChildProc.
-********************************************************************************************/
-BOOL BmapPrevDlg::OnCreate()
-{
-	// If we need to add a preview section then go and do it now
-	if ((m_FilterType == JPEG) || (m_pExportOptions->GetSelectionType() != ABITMAP))
-	{
-PORTNOTETRACE("other","Preview section NOT setup");
+	NOTE:           The window movement code is oily code and should become
+		        part of the dialog manager along with the
+		        above function, EnumChildProc.
+***************************************************************************/
+BOOL BmapPrevDlg::OnCreate() {
+  // If we need to add a preview section then go and do it now
+  if ((m_FilterType == JPEG) || (m_pExportOptions->GetSelectionType() != ABITMAP)) {
+      PORTNOTETRACE("other","Preview section NOT setup");
 #ifndef EXCLUDE_FROM_XARALX
-		//First get the size of the current window
-		wxRect Rect;
-		GetWindowRect(WindowID, &Rect);
+      //First get the size of the current window
+      wxRect Rect;
+      GetWindowRect(WindowID, &Rect);
 #endif
+      //Now, the current window contains only the Tabs section of the
+      //dialog. We need to insert the Preview section of the dialog
+      //above the Tabs section. This means doing the following:
+      //1. Increasing the height of the dialog by the height of the
+      //   Preview section
+      //2. Moving the Tabs section downwards, by a distance equal to
+      //   the height of the Preview section
+      //3. Inserting the Preview section at the top of the dialog
+      //Also, if this is the first time the dialog has been created,
+      //we must recentre the dialog on screen to compensate for the
+      //fact that the Preview section has been added. We do this at
+      //the same time as step 1.
+      //
+      //So...
+      //
+      //First, we need to get the height of the Preview section To do
+      //this, we create the Preview dialog object
+      m_pPreviewDlg = new BitmapExportPreviewDialog(WindowID);
+      ERROR2IF(m_pPreviewDlg == NULL, FALSE, "No preview dialog!");
 
-		//Now, the current window contains only the Tabs
-		//section of the dialog. We need to insert the Preview
-		//section of the dialog above the Tabs section. This
-		//means doing the following:
+      //And start the dialog up
+      m_pPreviewDlg->InitPreviewDialog(this, m_pBmpFilter);
 
-		//1. Increasing the height of the dialog by the
-		//	 height of the Preview section
-		//2. Moving the Tabs section downwards, by a distance
-		//	 equal to the height of the Preview section
-		//3. Inserting the Preview section at the top of the
-		//	 dialog
-
-		//Also, if this is the first time the dialog
-		//has been created, we must recentre the dialog on 
-		//screen to compensate for the fact that the Preview
-		//section has been added. We do this at the same
-		//time as step 1.
-
-		//So...
-
-		//First, we need to get the height of the 
-		//Preview section
-
-		//To do this, we create the Preview dialog object
-		m_pPreviewDlg = new BitmapExportPreviewDialog(WindowID);
-		ERROR2IF(m_pPreviewDlg == NULL, FALSE, "No preview dialog!");
-
-		//And start the dialog up
-		m_pPreviewDlg->InitPreviewDialog(this, m_pBmpFilter);
-
-		// Get the window ID
-		m_DialogWnd = m_pPreviewDlg->WindowID;
-		ERROR2IF(m_DialogWnd == NULL, FALSE, "No preview dialog!");
+      // Get the window ID
+      m_DialogWnd = m_pPreviewDlg->WindowID;
+      ERROR2IF(m_DialogWnd == NULL, FALSE, "No preview dialog!");
 	
-		DialogManager::MergeDialogs( WindowID, m_pPreviewDlg->WindowID, true );
+      DialogManager::MergeDialogs( WindowID, m_pPreviewDlg->WindowID, true );
 
-		// enable our window (which has been disabled when the preview window was created)
-		WindowID->Enable( TRUE );
-	}
+      // enable our window (which has been disabled when the preview window was created)
+      WindowID->Enable( TRUE );
+    }
 
-	// set the title bar
-	if (m_FilterType != MAKE_BITMAP_FILTER) 
-	{
-		// Set up the title of the dialog box according to the passed in string which
-		// is the name of the filter plus export bitmap options.
-		String_256 Temp = ""; //*(m_pExportOptions->GetFilterName());
-		Temp.Load(m_pExportOptions->GetFilterNameStrID()); // which is safer than the ptr into whatever
-		Temp += String_256(_R(IDN_EXPORTBMPOPTS));
+  // set the title bar
+  if (m_FilterType != MAKE_BITMAP_FILTER) 
+    {
+      // Set up the title of the dialog box according to the passed in string which
+      // is the name of the filter plus export bitmap options.
+      String_256 Temp = ""; //*(m_pExportOptions->GetFilterName());
+      Temp.Load(m_pExportOptions->GetFilterNameStrID()); // which is safer than the ptr into whatever
+      Temp += String_256(_R(IDN_EXPORTBMPOPTS));
 
-		DialogManager::SetTitlebarName(WindowID, &Temp); // set the title bar for the window
-	}
-	else
-	{
-		// set up the title string for the MakeBitmap filter
-		String_256 Temp(_R(IDS_MAKEBMPOPTS));
-		DialogManager::SetTitlebarName(WindowID, &Temp); // set the title bar
-	}
+      DialogManager::SetTitlebarName(WindowID, &Temp); // set the title bar for the window
+    }
+  else
+    {
+      // set up the title string for the MakeBitmap filter
+      String_256 Temp(_R(IDS_MAKEBMPOPTS));
+      DialogManager::SetTitlebarName(WindowID, &Temp); // set the title bar
+    }
 
-	// set the OK and preview button
-	SetButtonsText();
+  // set the OK and preview button
+  SetButtonsText();
 
-	// calculate a dpi value if dpi is not supported
-	if (!m_bDpiSupported)							// Doesn't support dpi...
-	{
-		// and ensure that its always the number of dpi as defined by a pixel unit
-		DocUnitList* pDocUnitList =	DocUnitList::GetCurrentDocUnitList();
-		ERROR3IF(pDocUnitList == 0, "BmapPrevDlg::OnCreate - no pDocUnitList!");
-		Unit* pPixelUnit = pDocUnitList->FindUnit(PIXELS);
-		ERROR3IF(pPixelUnit == 0, "BmapPrevDlg::OnCreate - no pixel units!");
-		Unit* pInchUnit = pDocUnitList->FindUnit(INCHES);
-		ERROR3IF(pInchUnit == 0, "BmapPrevDlg::OnCreate - no inch units!");
-		double newDpi = (pPixelUnit->GetMillipoints() > 0)
-							? pInchUnit->GetMillipoints() / pPixelUnit->GetMillipoints()
-							: 96.0;
-		m_pExportOptions->SetDPI(newDpi);
-	}
+  // calculate a dpi value if dpi is not supported
+  if (!m_bDpiSupported)							// Doesn't support dpi...
+    {
+      // and ensure that its always the number of dpi as defined by a pixel unit
+      DocUnitList* pDocUnitList =	DocUnitList::GetCurrentDocUnitList();
+      ERROR3IF(pDocUnitList == 0, "BmapPrevDlg::OnCreate - no pDocUnitList!");
+      Unit* pPixelUnit = pDocUnitList->FindUnit(PIXELS);
+      ERROR3IF(pPixelUnit == 0, "BmapPrevDlg::OnCreate - no pixel units!");
+      Unit* pInchUnit = pDocUnitList->FindUnit(INCHES);
+      ERROR3IF(pInchUnit == 0, "BmapPrevDlg::OnCreate - no inch units!");
+      double newDpi = (pPixelUnit->GetMillipoints() > 0)
+	? pInchUnit->GetMillipoints() / pPixelUnit->GetMillipoints()
+	: 96.0;
+      m_pExportOptions->SetDPI(newDpi);
+    }
 
-	AddControlsToHelper();
+  AddControlsToHelper();
 
-	UpdateCurrentTab();
+  UpdateCurrentTab();
 
-	m_PaletteControl.Init(GetReadWriteWindowID());
+  m_PaletteControl.Init(GetReadWriteWindowID());
 
-	return TRUE;
+  return TRUE;
 }
 
 /******************************************************************************************
@@ -1470,171 +1463,141 @@ void BmapPrevDlg::InitPaletteSortList()
 	SetComboListLength( _R(IDC_T2_SORT_LIST) );
 }
 
-/********************************************************************************************
+/***************************************************************************
 >	void BmapPrevDlg::HandlePaletteOptionsTabMsg(DialogMsg* Msg)
 	Author:		Stefan_Stoykov (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	9/7/97
 	Inputs:		Msg: The message sent from page 1 of the dialog
-	Purpose:	All messages generated from the tabbed dialog's palette tab get processed here
-********************************************************************************************/
-void BmapPrevDlg::HandlePaletteTabMsg(DialogMsg* Msg)
-{
-	CDlgResID PageID = GetCurrentPageID();	// Get currently selected Tab id
-	TalkToPage(_R(IDD_PALETTE_TAB));  // The Coords Page identifier
-	switch (Msg->DlgMsg)
-	{
-		case DIM_CREATE:
-		{
-			InitPaletteTab();
-			break;
-		}
-		case DIM_SELECTION_CHANGED:
-		{
-			if( Msg->GadgetID == _R(IDC_DITHERING_COMBO) )
-				HandlePaletteDitheringListChange();
-			else
-			if( Msg->GadgetID == _R(IDC_PALETTE_COMBO) )
-				HandlePalettePaletteListChange();
-			else
-			if( Msg->GadgetID == _R(IDC_COLOUR_DEPTH_COMBO) )
-				HandlePaletteColourDepthListChange();
-			else
-			if( Msg->GadgetID == _R(IDC_T2_SORT_LIST) )
-				HandlePaletteSortListChange();
-			else
-			if( Msg->GadgetID == _R(IDC_COLOR_MODEL_LIST) )
-				HandlePaletteColourModelListChange();
-
-			RefreshPaletteOptionsTab();	// Changes may have had an effect other controls
-			break;
-		}
-
-		case DIM_TEXT_CHANGED:
-			if (PageID != _R(IDD_PALETTE_TAB) || m_LockSizeUpdates)
-				break;
-
-		case DIM_KILL_FOCUS:
-		{
-			if (Msg->GadgetID == _R(IDC_COLOURS_USED_EDIT))
-			{
-				HandlePaletteColoursUsedChange();
-				RefreshPaletteLinkedControls();
-			}
-			else
-			if (Msg->GadgetID == _R(IDC_RED_EDIT) || Msg->GadgetID == _R(IDC_GREEN_EDIT) || Msg->GadgetID == _R(IDC_BLUE_EDIT))
-			{
-				HandlePaletteColourEditChange(Msg->GadgetID);
-				ReDrawInfoType info;
-				GetKernelRenderedGadgetInfo(_R(IDC_T2_PALETTE_CONTROL), &info);
-				m_PaletteControl.RedrawSelectedCell(&info);
-			}
-			TalkToPage(PageID);
-			break;
-		}
-
-		case DIM_REDRAW:
-		{
-			if (Msg->GadgetID == _R(IDC_T2_PALETTE_CONTROL))
-				m_PaletteControl.Render(reinterpret_cast<ReDrawInfoType *>(Msg->DlgMsgParam));
-			TalkToPage(PageID);
-			break;
-		}
-
-		case DIM_MOUSE_MOVE:
-		{
-			// Need to tell the palette about mouse movement both inside and outsite of the palette control
-			// (so it knows when to remove the highlight thing)
-
-			INT32 startColour	= m_PaletteControl.GetMouseOverColour();
-			INT32 endColour	= BitmapExportPaletteControl::INVALID_COLOUR_VALUE;
-
-			if (Msg->GadgetID == _R(IDC_T2_PALETTE_CONTROL))
-			{
-				m_MouseInsidePaletteControl = true;
-				m_PaletteControl.MsgMouseMove(reinterpret_cast<ReDrawInfoType *>(Msg->DlgMsgParam));
-				endColour = m_PaletteControl.GetMouseOverColour();
-			}
-			else if (m_MouseInsidePaletteControl == true)
-			{
-				// This is the first mouse move message since the mouse has left the palette
-				m_MouseInsidePaletteControl = false;
-				ReDrawInfoType info;
-				GetKernelRenderedGadgetInfo(_R(IDC_T2_PALETTE_CONTROL), &info);
-				m_PaletteControl.SetHighlightedCell(&info, BitmapExportPaletteControl::INVALID_COLOUR_VALUE);
-			}
-
-			if (startColour != endColour)
-				RefreshPaletteColoursEdit();
-
-			TalkToPage(PageID);
-			break;
-		}
-
-		case DIM_LFT_BN_DOWN:
-		{
-			if (Msg->GadgetID == _R(IDC_T2_PALETTE_CONTROL))
-			{
-				if (m_PaletteControl.MsgMouseLeftButtonDown(reinterpret_cast<ReDrawInfoType *>(Msg->DlgMsgParam)))
-				{
-					// The message resulted in a change to the selection
-					RefreshPaletteLinkedControls();
-				}
-			}
-			break;
-		}
-
-		case DIM_LFT_BN_CLICKED:
-		{
-			if( Msg->GadgetID == _R(IDC_T2_LOCKED_COLOUR) )
-				HandlePaletteLockedColourButtonChange();
-			else
-			if( Msg->GadgetID == _R(IDC_T2_WEB_SAFE_COLOUR) )
-				HandlePaletteWebSafeColourButtonChange();
-			else
-			if( Msg->GadgetID == _R(IDC_T2_TRANSPARENT_BACKGROUND) )
-				HandlePaletteTransparentBackgroundButtonChange();
-			else
-			if( Msg->GadgetID == _R(IDC_T2_TRANSPARENT_COLOUR) )
-				HandlePaletteTransparentColourButtonChange();
-			else
-			if( Msg->GadgetID == _R(IDC_T2_DELETE_COLOUR) )
-				HandlePaletteDeleteColourButtonChnage();
-			else
-			if( Msg->GadgetID == _R(IDC_T2_RESTORE_COLOUR) )
-				HandlePaletteRestoreColourButtonChange();
-			else
-			if( Msg->GadgetID == _R(IDC_T2_SYSTEM_COLOURS) )
-				HandlePaletteSystemColoursButtonChnage();
-
-			RefreshPaletteOptionsTab();	// Changes may have had an effect other controls
-			break;
-		}
-
-		case DIM_RGT_BN_UP:
-		{
-		/*	
-			I have disabled the palette right click menu as some of the manipulations it does on the palette are
-			a bit iffy, for example toggling lockedness only does half the things it needes to (see the handler
-			for the locking button).  -- Jonathan 22/12/2000
-
-
-			if (Msg->GadgetID == _R(IDC_T2_PALETTE_CONTROL))
-			{
-				m_PaletteControl.MsgMouseRightButtonUp(reinterpret_cast<ReDrawInfoType *>(Msg->DlgMsgParam), this);
-				RefreshPaletteLinkedControls();
-			}
-		*/
-			break;
-		}
-
-		case DIM_SET_ACTIVE:
-			UpdateCurrentTab();
-			break;
-
-		default:
-			TalkToPage(PageID);
-			break;
-	};
+	Purpose:        All messages generated from the tabbed dialog's
+	                palette tab get processed here
+***************************************************************************/
+void BmapPrevDlg::HandlePaletteTabMsg(DialogMsg* Msg) {
+  // Get currently selected Tab id
+  CDlgResID PageID = GetCurrentPageID();
+  // The Coords Page identifier
+  TalkToPage(_R(IDD_PALETTE_TAB));
+  switch (Msg->DlgMsg) {
+  case DIM_CREATE: {
+    InitPaletteTab();
+    break;
+  }
+  case DIM_SELECTION_CHANGED: {
+    if( Msg->GadgetID == _R(IDC_DITHERING_COMBO)) {
+      HandlePaletteDitheringListChange();
+    } else if( Msg->GadgetID == _R(IDC_PALETTE_COMBO)) {
+      HandlePalettePaletteListChange();
+    } else if( Msg->GadgetID == _R(IDC_COLOUR_DEPTH_COMBO)) {
+      HandlePaletteColourDepthListChange();
+    } else if( Msg->GadgetID == _R(IDC_T2_SORT_LIST)) {
+      HandlePaletteSortListChange();
+    } else if( Msg->GadgetID == _R(IDC_COLOR_MODEL_LIST) ) {
+      HandlePaletteColourModelListChange();
+    }
+    // Changes may have had an effect other controls
+    RefreshPaletteOptionsTab();	
+    break;
+  }
+  case DIM_TEXT_CHANGED:
+    // ????
+    if (PageID != _R(IDD_PALETTE_TAB) || m_LockSizeUpdates) {      
+      break;
+    }
+  case DIM_KILL_FOCUS: {
+    if (Msg->GadgetID == _R(IDC_COLOURS_USED_EDIT)) {
+      HandlePaletteColoursUsedChange();
+      RefreshPaletteLinkedControls();
+    } else if (Msg->GadgetID == _R(IDC_RED_EDIT) ||
+	       Msg->GadgetID == _R(IDC_GREEN_EDIT) ||
+	       Msg->GadgetID == _R(IDC_BLUE_EDIT)) {
+      HandlePaletteColourEditChange(Msg->GadgetID);
+      ReDrawInfoType info;
+      GetKernelRenderedGadgetInfo(_R(IDC_T2_PALETTE_CONTROL), &info);
+      m_PaletteControl.RedrawSelectedCell(&info);
+    }
+    TalkToPage(PageID);
+    break;
+  }
+  case DIM_REDRAW: {
+    if (Msg->GadgetID == _R(IDC_T2_PALETTE_CONTROL)) {
+      m_PaletteControl.Render(reinterpret_cast<ReDrawInfoType *>(Msg->DlgMsgParam));
+    }
+    TalkToPage(PageID);
+    break;
+  }
+  case DIM_MOUSE_MOVE: {
+    // Need to tell the palette about mouse movement both inside and
+    // outsite of the palette control (so it knows when to remove
+    // the highlight thing)
+    INT32 startColour	= m_PaletteControl.GetMouseOverColour();
+    INT32 endColour	= BitmapExportPaletteControl::INVALID_COLOUR_VALUE;
+    if (Msg->GadgetID == _R(IDC_T2_PALETTE_CONTROL)) {
+      m_MouseInsidePaletteControl = true;
+      m_PaletteControl.MsgMouseMove
+	(reinterpret_cast<ReDrawInfoType *>(Msg->DlgMsgParam));
+      endColour = m_PaletteControl.GetMouseOverColour();
+    } else if (m_MouseInsidePaletteControl == true) {
+      // This is the first mouse move message since the mouse has left the palette
+      m_MouseInsidePaletteControl = false;
+      ReDrawInfoType info;
+      GetKernelRenderedGadgetInfo(_R(IDC_T2_PALETTE_CONTROL), &info);
+      m_PaletteControl.SetHighlightedCell
+	(&info, BitmapExportPaletteControl::INVALID_COLOUR_VALUE);
+    }
+    if (startColour != endColour) {
+      RefreshPaletteColoursEdit();
+    }
+    TalkToPage(PageID);
+    break;
+  }
+  case DIM_LFT_BN_DOWN: {
+    if (Msg->GadgetID == _R(IDC_T2_PALETTE_CONTROL)) {
+      if (m_PaletteControl.MsgMouseLeftButtonDown
+	  (reinterpret_cast<ReDrawInfoType*>(Msg->DlgMsgParam))) {
+	// The message resulted in a change to the selection
+	RefreshPaletteLinkedControls();
+      }
+    }
+    break;
+  }
+  case DIM_LFT_BN_CLICKED: {
+    if( Msg->GadgetID == _R(IDC_T2_LOCKED_COLOUR)){
+      HandlePaletteLockedColourButtonChange();
+    } else if( Msg->GadgetID == _R(IDC_T2_WEB_SAFE_COLOUR)) {
+      HandlePaletteWebSafeColourButtonChange();
+    } else if( Msg->GadgetID == _R(IDC_T2_TRANSPARENT_BACKGROUND)) {
+      HandlePaletteTransparentBackgroundButtonChange();
+    } else if( Msg->GadgetID == _R(IDC_T2_TRANSPARENT_COLOUR)) {
+      HandlePaletteTransparentColourButtonChange();
+    } else if( Msg->GadgetID == _R(IDC_T2_DELETE_COLOUR)) {
+      HandlePaletteDeleteColourButtonChnage();
+    } else if( Msg->GadgetID == _R(IDC_T2_RESTORE_COLOUR)) {
+      HandlePaletteRestoreColourButtonChange();
+    } else if(Msg->GadgetID == _R(IDC_T2_SYSTEM_COLOURS)) {
+      HandlePaletteSystemColoursButtonChnage();
+    }
+    RefreshPaletteOptionsTab();	// Changes may have had an effect other controls
+    break;
+  }
+  case DIM_RGT_BN_UP: {
+    // I have disabled the palette right click menu as some
+    // of the manipulations it does on the palette are a bit
+    // iffy, for example toggling lockedness only does half
+    // the things it needes to (see the handler for the
+    // locking button).  -- Jonathan 22/12/2000
+    // if (Msg->GadgetID == _R(IDC_T2_PALETTE_CONTROL)) {
+    // 	m_PaletteControl.MsgMouseRightButtonUp
+    // 	  (reinterpret_cast<ReDrawInfoType*>(Msg->DlgMsgParam), this);
+    // 	RefreshPaletteLinkedControls();
+    // }
+    break;
+  }
+  case DIM_SET_ACTIVE: 
+    UpdateCurrentTab();
+    break;
+  default:
+    TalkToPage(PageID);
+    break;
+  };
 }
 
 /******************************************************************************************

@@ -4774,7 +4774,7 @@ BOOL LiveEffectRecordHandler::IsStreamed(UINT32 Tag)
 			break;
 		default:
 			Streamed = FALSE;
-			ERROR3_PF(("LiveEffectRecordHandler::IsStreamed I don't handle records with the tag (%d)\n", Tag));
+			ERROR3_PF((_T("LiveEffectRecordHandler::IsStreamed I don't handle records with the tag (%d)\n"), Tag));
 			break;
 	}
 
@@ -4988,7 +4988,7 @@ PORTNOTETRACE("other","LiveEffectRecordHandler::HandleRecord - removed use of XM
 #endif
 
 	default:
-		ERROR3_PF(("I don't handle records with the tag (%d)\n", pCXaraFileRecord->GetTag()));
+	  ERROR3_PF((_T("I don't handle records with the tag (%d)\n"), pCXaraFileRecord->GetTag()));
 		break;
 	}
 
@@ -5021,7 +5021,7 @@ BOOL LiveEffectRecordHandler::HandleStreamedRecord(CXaraFile * pCXFile, UINT32 T
 {
 	ERROR2IF(pCXFile == NULL,FALSE,"BitmapRecordHandler::HandleStreamedRecord pCXFile is NULL");
 
-	ERROR3_PF(("Unimplemented!", Tag));
+	ERROR3_PF((_T("Unimplemented!"), Tag));
 
 	return TRUE;
 }

@@ -179,7 +179,7 @@ BOOL CompressionRecordHandler::HandleRecord(CXaraFileRecord* pCXaraFileRecord)
 
 		default:
 			ok = FALSE;
-			ERROR3_PF(("CompressionRecordHandler::HandleRecord I don't handle records with the tag (%d)\n",pCXaraFileRecord->GetTag()));
+			ERROR3_PF((_T("CompressionRecordHandler::HandleRecord I don't handle records with the tag (%d)\n"),pCXaraFileRecord->GetTag()));
 			break;
 	}
 
@@ -225,7 +225,7 @@ BOOL CompressionRecordHandler::HandleStreamedRecord(CXaraFile * pCXFile, UINT32 
 
 		default:
 			ok = FALSE;
-			ERROR3_PF(("CompressionRecordHandler::HandleStreamedRecord I don't handle records with the tag (%d)\n",Tag));
+			ERROR3_PF((_T("CompressionRecordHandler::HandleStreamedRecord I don't handle records with the tag (%d)\n"),Tag));
 			break;
 	}
 

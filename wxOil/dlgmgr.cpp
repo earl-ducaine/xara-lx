@@ -1,7 +1,7 @@
 // $Id: dlgmgr.cpp 1770 2007-06-17 19:42:21Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
- 
+
                Xara LX, a vector drawing and manipulation program.
                     Copyright (C) 1993-2006 Xara Group Ltd.
        Copyright on certain contributions may be held in joint with their
@@ -32,7 +32,7 @@ ADDITIONAL RIGHTS
 
 Conditional upon your continuing compliance with the GNU General Public
 License described above, Xara Group Ltd grants to you certain additional
-rights. 
+rights.
 
 The additional rights are to use, modify, and distribute the software
 together with the wxWidgets library, the wxXtra library, and the "CDraw"
@@ -149,7 +149,7 @@ service marks of Xara Group Ltd. All rights in these marks are reserved.
 #include "statline.h"
 #include <wx/imaglist.h>
 #include <wx/spinctrl.h>
-			    
+
 DECLARE_SOURCE("$Revision: 1770 $");
 
 CC_IMPLEMENT_DYNAMIC(CGadgetImageList, CCObject);
@@ -304,13 +304,13 @@ protected:
 			case TABTYPE_TABS:
 			default:
 				pBook = new wxNotebook(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, style );
-					
+
 PORTNOTE("dialog", "This should probably be applied to all controls eventually")
 				// Fabricate a Xara standard font and associate it with notebook control
 				wxFont	fontDefault = wxSystemSettings::GetFont( wxSYS_DEFAULT_GUI_FONT );
 				fontDefault.SetPointSize( 8 );
 				pBook->SetFont( fontDefault );
-				
+
 				break;
 		}
 
@@ -318,228 +318,231 @@ PORTNOTE("dialog", "This should probably be applied to all controls eventually")
 	}
 };
 
+// original types used were Microsoft HINSTANCEs
+// 
+// HINSTANCE MainInstance,
+// HINSTANCE SubInstance,
 BOOL DialogManager::Create(DialogOp* DlgOp,
-						/* HINSTANCE MainInstance, */ CDlgResID MainDlgID,
-						/* HINSTANCE SubInstance, */  CDlgResID SubDlgID,
-						CDlgMode Mode, INT32 OpeningPage, CWindowID ParentWnd)
-{
-	ERROR2IF(!DlgOp, FALSE, _T("Create Passed Null DialogOp"));
-	ERROR2IF(DlgOp->pEvtHandler, FALSE, _T("Window has already been created. Having two is greedy"));
-
-	DlgOp->pEvtHandler = new DialogEventHandler(DlgOp);
-	ERRORIF(!DlgOp->pEvtHandler || !DlgOp->pEvtHandler->pDialogOp, FALSE, _R(IDE_CANNOT_CREATE_DIALOG));
-
-	BOOL wxAUImanaged = FALSE;
-	if ( DlgOp->IsABar() || DlgOp->IsAGallery() )
-	{
-		BOOL modal = DlgOp->IsModal();
-		ERROR2IF(modal, FALSE, "Attempting to create a wxAUImanaged Dialog that is modal");
-		// They wanted a bar. Well, the main difference to us is we let wxAUI manage it.
-		wxAUImanaged = TRUE;
-	}
-
-//	ERROR2IF( DlgOp->IS_KIND_OF(DialogBarOp), FALSE, _T("Bar creation not yet supported"));
-//	ERROR2IF( DlgOp->IS_KIND_OF(DialogTabOp), FALSE, _T("Tabbed dialogs not yet supported"));
-	ERROR2IF( SubDlgID !=0, FALSE, _T("Merging of dialogs not yet supported"));
-
-	// if no parent dialog window specified use the main frame window
-	if ((ParentWnd == NULL) || wxAUImanaged)
-		ParentWnd = GetMainFrame();
-
-	const TCHAR*	pDialogName = NULL;
-	wxWindow*		pDialogWnd = NULL;
-
-	if( DlgOp->IS_KIND_OF(DialogTabOp) && !(((DialogTabOp*)DlgOp)->LoadFrameFromResources()))
-	{
-		// ok first try and create the property sheet
-		wxDynamicPropertySheetDialog* pPropertySheet;
-
-		// error handling done later
-		pPropertySheet = new wxDynamicPropertySheetDialog();
-		if (pPropertySheet)
-		{
-			pPropertySheet->SetTabType(((DialogTabOp*)DlgOp)->GetTabType());
-			if (!pPropertySheet->Create((wxWindow *)ParentWnd, wxID_ANY, (TCHAR*) (*((DialogTabOp*)DlgOp)->GetName()) ))
-			{
-				delete pPropertySheet;
-				pPropertySheet=NULL; // error handling done below
-			}
-			else
-			{
-				wxStdDialogButtonSizer *sizer = new wxStdDialogButtonSizer();
-				wxButton * ok=new wxButton(pPropertySheet, wxID_OK);
-				sizer->AddButton(ok); // Add an OK button
-				sizer->AddButton(new wxButton(pPropertySheet, wxID_CANCEL)); // Add a Cancel button
-				sizer->AddButton(new wxButton(pPropertySheet, wxID_APPLY)); // Add an Apply button
-				sizer->AddButton(new wxButton(pPropertySheet, wxID_HELP)); // Add a Help button
-				ok->SetDefault();
-				ok->SetFocus();
-				pPropertySheet->SetAffirmativeId(wxID_OK);
-				sizer->Realize();
-			    pPropertySheet->GetInnerSizer()->Add( sizer, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxTOP|wxBOTTOM|wxLEFT|wxRIGHT, 2);
-    			pPropertySheet->GetInnerSizer()->AddSpacer(2);
-			}
-		}
-		pDialogWnd=pPropertySheet;
-	}
-	else
-	{
-		pDialogName=CamResource::GetObjectNameFail(MainDlgID);
-		ERROR1IF(pDialogName == NULL, FALSE, _R(IDE_CANNOT_CREATE_DIALOG));
-
-PORTNOTE("dialog","A more general scheme is needed to allow creation of a panel for non-toolbar type dialog")
-		if (wxAUImanaged || _R(IDD_BITMAPPREVIEWDIALOG) == MainDlgID )
-			pDialogWnd = wxXmlResource::Get()->LoadPanel((wxWindow *)ParentWnd, pDialogName);
-		else
-			pDialogWnd = wxXmlResource::Get()->LoadDialog((wxWindow *)ParentWnd, pDialogName);
-	}
-
-	ERROR1IF(pDialogWnd == NULL, FALSE, _R(IDE_CANNOT_CREATE_DIALOG));
-
-	pDialogWnd->Hide();
-	CamArtProvider::Get()->EnsureChildBitmapsLoaded(pDialogWnd);
-
-	// On the Mac, panels etc. are by default transparent; fix them up
+			   CDlgResID MainDlgID,
+			   CDlgResID SubDlgID,
+			   CDlgMode Mode,
+			   INT32 OpeningPage,
+			   CWindowID ParentWnd) {
+  ERROR2IF(!DlgOp, FALSE, _T("Create Passed Null DialogOp"));
+  ERROR2IF(DlgOp->pEvtHandler,
+	   FALSE,
+	   _T("Window has already been created. Having two is greedy"));
+  DlgOp->pEvtHandler = new DialogEventHandler(DlgOp);
+  ERRORIF(!DlgOp->pEvtHandler || !DlgOp->pEvtHandler->pDialogOp,
+	  FALSE,
+	  _R(IDE_CANNOT_CREATE_DIALOG));
+  BOOL wxAUImanaged = FALSE;
+  if ( DlgOp->IsABar() || DlgOp->IsAGallery() ) {
+    BOOL modal = DlgOp->IsModal();
+    ERROR2IF(modal, FALSE, "Attempting to create a wxAUImanaged Dialog that is modal");
+    // They wanted a bar. Well, the main difference to us is we let wxAUI manage it.
+    wxAUImanaged = TRUE;
+  }
+  // ERROR2IF( DlgOp->IS_KIND_OF(DialogBarOp),
+  // 	    FALSE,
+  // 	    _T("Bar creation not yet supported"));
+  // ERROR2IF(DlgOp->IS_KIND_OF(DialogTabOp),
+  // 	   FALSE,
+  // 	   _T("Tabbed dialogs not yet supported"));
+  ERROR2IF( SubDlgID !=0, FALSE, _T("Merging of dialogs not yet supported"));
+  // if no parent dialog window specified use the main frame window
+  if ((ParentWnd == NULL) || wxAUImanaged) {
+    ParentWnd = GetMainFrame();
+  }
+  const TCHAR*	pDialogName = NULL;
+  wxWindow* pDialogWnd = NULL;
+  if( DlgOp->IS_KIND_OF(DialogTabOp) &&
+      !(((DialogTabOp*)DlgOp)->LoadFrameFromResources())) {
+    // ok first try and create the property sheet
+    wxDynamicPropertySheetDialog* pPropertySheet;
+    // error handling done later
+    pPropertySheet = new wxDynamicPropertySheetDialog();
+    if (pPropertySheet) {
+      pPropertySheet->SetTabType(((DialogTabOp*)DlgOp)->GetTabType());
+      if (!pPropertySheet->Create((wxWindow *)ParentWnd,
+				  wxID_ANY,
+				  (TCHAR*) (*((DialogTabOp*)DlgOp)->GetName()))) {
+	delete pPropertySheet;
+	// error handling done below
+	pPropertySheet = NULL;
+      } else {
+	wxStdDialogButtonSizer* sizer = new wxStdDialogButtonSizer();
+	wxButton* ok = new wxButton(pPropertySheet, wxID_OK);
+	sizer->AddButton(ok); // Add an OK button
+	sizer->AddButton(new wxButton(pPropertySheet, wxID_CANCEL)); // Add a Cancel button
+	sizer->AddButton(new wxButton(pPropertySheet, wxID_APPLY)); // Add an Apply button
+	sizer->AddButton(new wxButton(pPropertySheet, wxID_HELP)); // Add a Help button
+	ok->SetDefault();
+	ok->SetFocus();
+	pPropertySheet->SetAffirmativeId(wxID_OK);
+	sizer->Realize();
+	pPropertySheet->GetInnerSizer()->Add
+	  (sizer,
+	   0,
+	   wxGROW|wxALIGN_CENTER_VERTICAL|wxTOP|wxBOTTOM|wxLEFT|wxRIGHT,
+	   2);
+	pPropertySheet->GetInnerSizer()->AddSpacer(2);
+      }
+    }
+    pDialogWnd=pPropertySheet;
+  } else {
+    pDialogName=CamResource::GetObjectNameFail(MainDlgID);
+    ERROR1IF(pDialogName == NULL, FALSE, _R(IDE_CANNOT_CREATE_DIALOG));
+    PORTNOTE("dialog",
+	     "A more general scheme is needed to allow creation of a "
+	     "panel for non-toolbar type dialog")
+      if (wxAUImanaged || _R(IDD_BITMAPPREVIEWDIALOG) == MainDlgID) {
+	pDialogWnd = wxXmlResource::Get()->LoadPanel((wxWindow *)ParentWnd, pDialogName);
+      } else {
+	pDialogWnd = wxXmlResource::Get()->LoadDialog((wxWindow *)ParentWnd, pDialogName);
+      }
+  }
+  ERROR1IF(pDialogWnd == NULL, FALSE, _R(IDE_CANNOT_CREATE_DIALOG));
+  pDialogWnd->Hide();
+  CamArtProvider::Get()->EnsureChildBitmapsLoaded(pDialogWnd);
+  // On the Mac, panels etc. are by default transparent; fix them up
 #ifdef __WXMAC__
-	pDialogWnd->SetBackgroundStyle(wxBG_STYLE_COLOUR);
-	pDialogWnd->SetBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOW));
+  pDialogWnd->SetBackgroundStyle(wxBG_STYLE_COLOUR);
+  pDialogWnd->SetBackgroundColour
+    (wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOW));
 #endif
+  // Note that we might one day want to create (say) wxPanels, or
+  // wxToolbars instead above It deosn't matter to us, we just want a
+  // wxWindow
+  DlgOp->pEvtHandler->pwxWindow = pDialogWnd;
+  DlgOp->pEvtHandler->wxAUImanaged = wxAUImanaged;
+  DlgOp->pEvtHandler->ID = MainDlgID;
+  // Set the DialogOp's WindowID
+  DlgOp->WindowID = (CWindowID)pDialogWnd;
+  pDialogWnd->PushEventHandler(DlgOp->pEvtHandler);
+  if (DlgOp->IS_KIND_OF(DialogTabOp)) {
+      // on balance we might be best ignoring errors here - we are
+      // really now past the point of no return, and the dialog can be
+      // closed cleanly by the user but let's try anyway
+    if (!CreateTabbedDialog((DialogTabOp*)DlgOp,
+			    Mode,
+			    OpeningPage,
+			    MainDlgID)) {
+      // try using our own tolerant delete mechanism
+      Delete(pDialogWnd, DlgOp);
+      ERROR1(FALSE, _R(IDE_CANNOT_CREATE_DIALOG));
+    }
+  }
+  CreateRecursor(pDialogWnd);
+  // Register all the child controls
+  ControlList::Get()->RegisterWindowAndChildren(pDialogWnd, DlgOp);
+  // Might as well do the processing before the bar / dialog appears
+  ControlList::Get()->ReflectAllStates();
+  // we call this directly now
+  BOOL ok = PostCreate(DlgOp, OpeningPage);
 
-	// Note that we might one day want to create (say) wxPanels, or wxToolbars instead above
-	// It deosn't matter to us, we just want a wxWindow
-
-	DlgOp->pEvtHandler->pwxWindow = pDialogWnd;
-	DlgOp->pEvtHandler->wxAUImanaged = wxAUImanaged;
-	DlgOp->pEvtHandler->ID =MainDlgID;
-	// Set the DialogOp's WindowID
-	DlgOp->WindowID = (CWindowID)pDialogWnd;
-	pDialogWnd->PushEventHandler(DlgOp->pEvtHandler);
-
-	if (DlgOp->IS_KIND_OF(DialogTabOp))
-	{
-		// on balance we might be best ignoring errors here - we are really now past
-		// the point of no return, and the dialog can be closed cleanly by the user
-		// but let's try anyway
-		if (!CreateTabbedDialog( (DialogTabOp*)DlgOp, Mode, OpeningPage, MainDlgID ))
-		{
-			// try using our own tolerant delete mechanism
-			Delete(pDialogWnd, DlgOp);
-			ERROR1(FALSE, _R(IDE_CANNOT_CREATE_DIALOG));
-		}
-	}
-
-	CreateRecursor(pDialogWnd);
-
-	// Register all the child controls
-	ControlList::Get()->RegisterWindowAndChildren(pDialogWnd, DlgOp);
-
-	ControlList::Get()->ReflectAllStates(); // might as well do the processing before the bar / dialog appears
-
-	// we call this directly now
-	BOOL ok = PostCreate(DlgOp, OpeningPage);
-
-	if( ok && 
-		Mode == MODAL && 
-		pDialogWnd->IsKindOf( CLASSINFO(wxDialog) ) )
-	{
-		((wxDialog *) pDialogWnd)->ShowModal();
-	}
+  if( ok &&
+      Mode == MODAL &&
+      pDialogWnd->IsKindOf( CLASSINFO(wxDialog) ) )
+    {
+      ((wxDialog *) pDialogWnd)->ShowModal();
+    }
 
 #ifdef USE_WXAUI
-	if (wxAUImanaged)
+  if (wxAUImanaged)
+    {
+      wxString Title = wxEmptyString;
+      if (pDialogWnd->IsKindOf(CLASSINFO(wxDialog)))
+	Title=((wxDialog *)pDialogWnd)->GetTitle();
+      if (Title.IsEmpty()) Title = pDialogWnd->GetLabel(); // because wxPanel doesn't seem to support a title
+      if (Title.IsEmpty())
 	{
-		wxString Title = wxEmptyString;
-		if (pDialogWnd->IsKindOf(CLASSINFO(wxDialog)))
-			Title=((wxDialog *)pDialogWnd)->GetTitle();
-		if (Title.IsEmpty()) Title = pDialogWnd->GetLabel(); // because wxPanel doesn't seem to support a title
-		if (Title.IsEmpty())
-		{
-			const TCHAR * ResString=CamResource::GetTextFail(pDialogWnd->GetId());
-			if (ResString)
-				Title=wxString(ResString);
-		}
-		if (Title.IsEmpty())
-		{
-			// Finally, in desperation, we (mis-)use the tooltip string because now the wx folks have removed
-			// the label, even though it's needed for accessibility. Aarrghh
-			wxToolTip* pTip = pDialogWnd->GetToolTip();
-			if (pTip) Title=pTip->GetTip();
-		}
-		if (Title.IsEmpty())
-			Title = wxString(CamResource::GetText(_R(IDS_ANONYMOUSBARTITLE)));
-
-
-		// We really should take a wxPaneInfo() as an additional parameter to this function to allow this sort
-		// of stuff to be specified. Or try and retrieve it from the DialogBarOp or similar. Anyway, for now
-		// give it some default parameters
-		wxAuiPaneInfo paneinfo;
-		if (!DlgOp->IsABar())
-		{
-			// default galleries to 300 deep. Specifying -1 as a width doesn't seem to work
-			paneinfo.FloatingSize(100,300);
-		}
-		LoadPaneInfo(wxString(CamResource::GetObjectName(pDialogWnd->GetId())), paneinfo);
-		paneinfo.DestroyOnClose(FALSE);
-		if (DlgOp->IsABar())
-		{			
-			if (DlgOp->IsKindOf(CC_RUNTIME_CLASS(StatusLine)))
-				paneinfo.Bottom().Layer(1).Row(2).LeftDockable(FALSE).RightDockable(FALSE).Floatable(FALSE).Movable(FALSE).Gripper(FALSE).CaptionVisible(FALSE).PaneBorder(FALSE);
-			else	
-			{
-				paneinfo.ToolbarPane().Fixed();
-				if (DlgOp->IsVertical())
-				{
-					paneinfo.Left().Layer(0).GripperTop().TopDockable(FALSE).BottomDockable(FALSE);
-				}
-				else
-				{
-					paneinfo.Top().Layer(1).Row(2).LeftDockable(FALSE).RightDockable(FALSE);
-				}
-			}
-		}
-		else
-		{
-			// Gallery
-			paneinfo.Layer(3).GripperTop().TopDockable(FALSE).BottomDockable(FALSE).Float().Dockable(FALSE); // temporarilly stop galleries from docking
-		}
-
-		if (DlgOp->IsKindOf(CC_RUNTIME_CLASS(InformationBarOp)))
-		{
-			paneinfo.Floatable(FALSE);	// temporarilly do not allow Info Bars to float as they can be closed
-										// which means they can't be reopened (no UI), and wxAUI rightly objects to the
-										// tool switch that deletes them deleting the window.
-		}
-
-		paneinfo.Name(pDialogName).Caption(Title).PinButton(TRUE);
-
-		wxSizer * pSizer = pDialogWnd->GetSizer();
-		if (pSizer)
-		{
-			pSizer->SetSizeHints(pDialogWnd);
-			pDialogWnd->SetSizerAndFit(pSizer);
-		}
-
-		// Ensure the main frame is shown if the pane is floating, or it can get "behind"
-		// the main frame on wxGTK
-		if (paneinfo.IsFloating() && !CCamFrame::GetFrameManager()->GetManagedWindow()->IsShown())
-			CCamFrame::GetFrameManager()->GetManagedWindow()->Show();
-
-		CCamFrame::GetFrameManager()->AddPane(pDialogWnd, paneinfo);
-
-		CCamFrame::GetMainFrame()->UpdateFrameManager();
-
-		// Make sure newly created floating panes are at the top in an attempt to fix
-		// Bugzilla bug 1393 (can't duplicate here...)
-		wxWindow * pTLW = pDialogWnd;
-		while (pTLW->GetParent())
-			pTLW=pTLW->GetParent();
-		if (pTLW->IsKindOf(CLASSINFO(wxAuiFloatingFrame)))
-			pTLW->Raise();
-
+	  const TCHAR * ResString=CamResource::GetTextFail(pDialogWnd->GetId());
+	  if (ResString)
+	    Title=wxString(ResString);
 	}
+      if (Title.IsEmpty())
+	{
+	  // Finally, in desperation, we (mis-)use the tooltip string because now the wx folks have removed
+	  // the label, even though it's needed for accessibility. Aarrghh
+	  wxToolTip* pTip = pDialogWnd->GetToolTip();
+	  if (pTip) Title=pTip->GetTip();
+	}
+      if (Title.IsEmpty())
+	Title = wxString(CamResource::GetText(_R(IDS_ANONYMOUSBARTITLE)));
+
+
+      // We really should take a wxPaneInfo() as an additional parameter to this function to allow this sort
+      // of stuff to be specified. Or try and retrieve it from the DialogBarOp or similar. Anyway, for now
+      // give it some default parameters
+      wxAuiPaneInfo paneinfo;
+      if (!DlgOp->IsABar())
+	{
+	  // default galleries to 300 deep. Specifying -1 as a width doesn't seem to work
+	  paneinfo.FloatingSize(100,300);
+	}
+      LoadPaneInfo(wxString(CamResource::GetObjectName(pDialogWnd->GetId())), paneinfo);
+      paneinfo.DestroyOnClose(FALSE);
+      if (DlgOp->IsABar())
+	{
+	  if (DlgOp->IsKindOf(CC_RUNTIME_CLASS(StatusLine)))
+	    paneinfo.Bottom().Layer(1).Row(2).LeftDockable(FALSE).RightDockable(FALSE).Floatable(FALSE).Movable(FALSE).Gripper(FALSE).CaptionVisible(FALSE).PaneBorder(FALSE);
+	  else
+	    {
+	      paneinfo.ToolbarPane().Fixed();
+	      if (DlgOp->IsVertical())
+		{
+		  paneinfo.Left().Layer(0).GripperTop().TopDockable(FALSE).BottomDockable(FALSE);
+		}
+	      else
+		{
+		  paneinfo.Top().Layer(1).Row(2).LeftDockable(FALSE).RightDockable(FALSE);
+		}
+	    }
+	}
+      else
+	{
+	  // Gallery
+	  paneinfo.Layer(3).GripperTop().TopDockable(FALSE).BottomDockable(FALSE).Float().Dockable(FALSE); // temporarilly stop galleries from docking
+	}
+
+      if (DlgOp->IsKindOf(CC_RUNTIME_CLASS(InformationBarOp)))
+	{
+	  paneinfo.Floatable(FALSE);	// temporarilly do not allow Info Bars to float as they can be closed
+	  // which means they can't be reopened (no UI), and wxAUI rightly objects to the
+	  // tool switch that deletes them deleting the window.
+	}
+
+      paneinfo.Name(pDialogName).Caption(Title).PinButton(TRUE);
+
+      wxSizer * pSizer = pDialogWnd->GetSizer();
+      if (pSizer)
+	{
+	  pSizer->SetSizeHints(pDialogWnd);
+	  pDialogWnd->SetSizerAndFit(pSizer);
+	}
+
+      // Ensure the main frame is shown if the pane is floating, or it can get "behind"
+      // the main frame on wxGTK
+      if (paneinfo.IsFloating() && !CCamFrame::GetFrameManager()->GetManagedWindow()->IsShown())
+	CCamFrame::GetFrameManager()->GetManagedWindow()->Show();
+
+      CCamFrame::GetFrameManager()->AddPane(pDialogWnd, paneinfo);
+
+      CCamFrame::GetMainFrame()->UpdateFrameManager();
+
+      // Make sure newly created floating panes are at the top in an attempt to fix
+      // Bugzilla bug 1393 (can't duplicate here...)
+      wxWindow * pTLW = pDialogWnd;
+      while (pTLW->GetParent())
+	pTLW=pTLW->GetParent();
+      if (pTLW->IsKindOf(CLASSINFO(wxAuiFloatingFrame)))
+	pTLW->Raise();
+
+    }
 #endif
 
-	return ok;
+  return ok;
 }
 
 /********************************************************************************************
@@ -581,180 +584,166 @@ void DialogManager::CreateRecursor(wxWindow * pwxWindow)
 }
 
 
-/********************************************************************************************
-
+/***************************************************************************
 >	BOOL DialogManager::PostCreate(DialogOp * pDialogOp);
 
 	Author:		Simon_Maneggio (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	6/9/94
-	Inputs:		DialogWnd: The dialogs window ID, NULL if dialog failed to be created
+	Inputs:		DialogWnd: The dialogs window ID, NULL if dialog 
+                        failed to be created
 	Returns:	-
-	Purpose:	This function will get called after a dialog has been created. If a modeless
-				dialog has been created then it gets called directly from the Create method.
-				For a modal dialog however it gets called after receiving a WM_INIT_DIALOG
-				message. It completes the creation process.
-
-				(for now on wxWindows we are simply calling it from Create)
-
+	Purpose:        This function posts the creation event to dialog for
+		        any activities that need to be done after its
+		        containing window has been created.  Make sure
+		        that 1) all needed initialization activities
+		        have been accomplished and 2) that this is
+		        conceptually asyncronous so beware about
+		        creating race conditions by performing
+		        activities after this.  ToDo: sometime make
+		        none modeless dialogs run based on wx event
+		        rather than being explicitly ed
 	Scope:		private
-
-********************************************************************************************/
-
-BOOL DialogManager::PostCreate(DialogOp * pDialogOp, INT32 OpeningPage)
-{
-	ERROR2IF( !pDialogOp || !pDialogOp->pEvtHandler || !pDialogOp->pEvtHandler->pwxWindow,
-			FALSE, _T("Bad DialogOp / EvtHandler in DialogManager::PostCreate()"));
-
-	wxWindow * pDialogWnd = pDialogOp->pEvtHandler->pwxWindow;
-
-	// If the dialog has been created before then its position will have to be reset
-	INT32 DlgX=0; // Dialog box X position
-	INT32 DlgY=0; // Dialog box Y position
-	CDlgResID ActivePage=0; // Active page for tabbed dialogs
-	UINT32 ActivePageIndex=0;
-
-	BOOL CreatedBefore = FALSE; // TRUE if the dialog has been created before
-
-	wxBookCtrlBase * pBook=NULL;
-	// Only do special processing for DialogTabOp
-	if (pDialogOp->IS_KIND_OF(DialogTabOp))
-		pBook=GetBookControl(pDialogWnd);
-
-	ResourceID BookGadget=pBook?pBook->GetId():0;
-
-	if (pBook && (OpeningPage>=0))
-	{
-		ActivePage = pBook->GetPage(OpeningPage)->GetId();
-		ActivePageIndex = OpeningPage;
-	}
-
-	// Search the DialogPositionList to see if the dialog has been created before
-	DialogPosition* DlgPos = FindDialogPositionRecord(pDialogOp->pEvtHandler->ID);
-	if (DlgPos != NULL)
-	{
-		DlgX = DlgPos->LastX;
-		DlgY = DlgPos->LastY;
-
-		// Find the last active page if there was one
-		if (OpeningPage<0)
-		{
-			ActivePage = DlgPos->ActivePage;
-			ActivePageIndex = DlgPos->ActivePageIndex;
-		}
-		CreatedBefore = TRUE;
-	}
-
-	if (pBook && ((ActivePageIndex<0) ||
-					(ActivePageIndex >= pBook->GetPageCount()) ||
-					((UINT32)(pBook->GetPage(ActivePageIndex)->GetId()) != ActivePage)
-				))
-	{
-		ActivePageIndex=0;
-		ActivePage = pBook->GetPage(0)->GetId();
-	}
-
-	// Get the size of the dialog box (Required for the SetWindowPos function)
-	wxRect	DialogRect( pDialogWnd->GetRect() );
-	INT32	DialogWidth  = DialogRect.GetWidth();
-	INT32	DialogHeight = DialogRect.GetHeight();
-
-	// Create the WindowIDItem which will be stored in the DialogPosition.
-	CWindowIDItem *pWinID = new CWindowIDItem;
-	if( NULL == pWinID )
-	{
-		// We need to destroy the dialog window
-		pDialogWnd->PopEventHandler(FALSE);
-		pDialogOp->pEvtHandler->Destroy();
-		pDialogWnd->Destroy();
-		ERROR1(FALSE, _R(IDS_OUT_OF_MEMORY));
-	}
-
-
-	if (!CreatedBefore) // If this is the first time the dialog has been created then position
-						// it centrally on the screen
-	{
-		// Get the size of the screen
-		INT32			ScreenWidth  = wxSystemSettings::GetMetric( wxSYS_SCREEN_X );
-		INT32			ScreenHeight = wxSystemSettings::GetMetric( wxSYS_SCREEN_Y );
-
-		// Centre the dialog box
-		DlgX = (ScreenWidth - DialogWidth) / 2;
-		DlgY = (ScreenHeight - DialogHeight) / 2;
-
-		// Create a DialogPosition record
-		DlgPos = new DialogPosition;
-		if (DlgPos == NULL)
-		{
-			// We need to destroy the dialog window
-			pDialogWnd->PopEventHandler(FALSE);
-			pDialogOp->pEvtHandler->Destroy();
-			pDialogWnd->Destroy();
-			return FALSE; // Failed to created DialogPosition record
-		}
-		DlgPos->DlgResourceID = pDialogOp->pEvtHandler->ID;
-
-		// Even though the position is recorded when the dialog is deleted. It is neccessary
-		// to record it here also because another dialog with the same resource ID could be
-		// created before this dialog is deleted.
-		DlgPos->LastX = DlgX;
-		DlgPos->LastY = DlgY;
-
-		DlgPos->ActivePage = 0;
-		DlgPos->ActivePageIndex=0;
-
-		if (pBook)
-		{
-			// Record the active page.
-			DlgPos->ActivePage = ActivePage;
-			DlgPos->ActivePageIndex = ActivePageIndex;
-		}
-		// Add the position record to the DialogPositionList
-		DialogPositionList.AddHead((ListItem*)DlgPos);
-	}
-
-	// Store the Dialog window handle in the position record.
-	pWinID->DlgWin = pDialogWnd;
-	DlgPos->DlgWinList.AddTail( pWinID );
-
-		// Position the dialog
-	pDialogWnd->SetSize(DlgX, DlgY, DialogWidth, DialogHeight);
-
-		// In japan we need to set the font so it dosen't use the default ANSI MS San Serif
-PORTNOTE("dialog","Removed FontFactory usage")
+***************************************************************************/
+BOOL DialogManager::PostCreate(DialogOp* pDialogOp, INT32 OpeningPage) {
+  ERROR2IF( !pDialogOp || !pDialogOp->pEvtHandler || !pDialogOp->pEvtHandler->pwxWindow,
+	    FALSE,
+	    _T("Bad DialogOp / EvtHandler in DialogManager::PostCreate()"));
+  wxWindow* pDialogWnd = pDialogOp->pEvtHandler->pwxWindow;
+  // If the dialog has been created before then its position will have
+  // to be reset
+  INT32 DlgX = 0; // Dialog box X position
+  INT32 DlgY = 0; // Dialog box Y position
+  CDlgResID ActivePage = 0; // Active page for tabbed dialogs
+  UINT32 ActivePageIndex = 0;
+  // TRUE if the dialog has been created before
+  BOOL CreatedBefore = FALSE; 
+  wxBookCtrlBase* pBook=NULL;
+  // Only do special processing for DialogTabOp
+  if (pDialogOp->IS_KIND_OF(DialogTabOp)) {
+    pBook = GetBookControl(pDialogWnd);
+  }
+  ResourceID BookGadget = pBook ? pBook->GetId() : 0;
+  if (pBook && (OpeningPage>=0)) {
+    ActivePage = pBook->GetPage(OpeningPage)->GetId();
+    ActivePageIndex = OpeningPage;
+  }
+  // Search the DialogPositionList to see if the dialog has been
+  // created before
+  DialogPosition* DlgPos =
+    FindDialogPositionRecord(pDialogOp->pEvtHandler->ID);
+  if (DlgPos != NULL) {
+    DlgX = DlgPos->LastX;
+    DlgY = DlgPos->LastY;
+    // Find the last active page if there was one
+    if (OpeningPage<0) {
+      ActivePage = DlgPos->ActivePage;
+      ActivePageIndex = DlgPos->ActivePageIndex;
+    }
+    CreatedBefore = TRUE;
+  }
+  if (pBook &&
+      ((ActivePageIndex<0) ||
+       (ActivePageIndex >= pBook->GetPageCount()) ||
+       ((UINT32)(pBook->GetPage(ActivePageIndex)->GetId()) != ActivePage))) {
+    ActivePageIndex=0;
+    ActivePage = pBook->GetPage(0)->GetId();
+  }
+  // Get the size of the dialog box (Required for the SetWindowPos
+  // function)
+  wxRect DialogRect( pDialogWnd->GetRect());
+  INT32	DialogWidth  = DialogRect.GetWidth();
+  INT32	DialogHeight = DialogRect.GetHeight();
+  // Create the WindowIDItem which will be stored in the
+  // DialogPosition.
+  CWindowIDItem *pWinID = new CWindowIDItem;
+  if(NULL == pWinID) {
+    // We need to destroy the dialog window
+    pDialogWnd->PopEventHandler(FALSE);
+    pDialogOp->pEvtHandler->Destroy();
+    pDialogWnd->Destroy();
+    ERROR1(FALSE, _R(IDS_OUT_OF_MEMORY));
+  }
+   // If this is the first time the dialog has been created then position
+  if (!CreatedBefore) {
+    // it centrally on the screen
+    // Get the size of the screen
+    INT32 ScreenWidth  = wxSystemSettings::GetMetric(wxSYS_SCREEN_X);
+    INT32 ScreenHeight = wxSystemSettings::GetMetric(wxSYS_SCREEN_Y);
+    // Centre the dialog box
+    DlgX = (ScreenWidth - DialogWidth) / 2;
+    DlgY = (ScreenHeight - DialogHeight) / 2;
+    // Create a DialogPosition record
+    DlgPos = new DialogPosition;
+    if (DlgPos == NULL) {
+      // We need to destroy the dialog window
+      pDialogWnd->PopEventHandler(FALSE);
+      pDialogOp->pEvtHandler->Destroy();
+      pDialogWnd->Destroy();
+      return FALSE; // Failed to created DialogPosition record
+    }
+    DlgPos->DlgResourceID = pDialogOp->pEvtHandler->ID;
+    // Even though the position is recorded when the dialog is
+    // deleted. It is neccessary to record it here also because
+    // another dialog with the same resource ID could be created
+    // before this dialog is deleted.
+    DlgPos->LastX = DlgX;
+    DlgPos->LastY = DlgY;
+    DlgPos->ActivePage = 0;
+    DlgPos->ActivePageIndex = 0;
+    if (pBook) {
+      // Record the active page.
+      DlgPos->ActivePage = ActivePage;
+      DlgPos->ActivePageIndex = ActivePageIndex;
+    }
+    // Add the position record to the DialogPositionList
+    DialogPositionList.AddHead((ListItem*)DlgPos);
+  }
+  // Store the Dialog window handle in the position record.
+  pWinID->DlgWin = pDialogWnd;
+  DlgPos->DlgWinList.AddTail(pWinID);
+  // Position the dialog
+  pDialogWnd->SetSize(DlgX, DlgY, DialogWidth, DialogHeight);
+  // In japan we need to set the font so it dosen't use the default
+  // ANSI MS San Serif.
+  PORTNOTE("dialog", "Removed FontFactory usage")
 #ifndef EXCLUDE_FROM_XARALX
-	if( UnicodeManager::IsDBCSOS() )
-		FontFactory::ApplyFontToWindow( DialogWnd, STOCKFONT_DIALOG ); */
+    if(UnicodeManager::IsDBCSOS()) {
+      FontFactory::ApplyFontToWindow(DialogWnd, STOCKFONT_DIALOG); 
+    }
 #endif
-
-	// Inform the Dialog that it has been created so that it can be initialised
-	// Note that for DialogTabOp's seperate Create messages are sent for each page
-	// from the wxNotebookPage OnCreate handler.
-	// Alex moved this inside the if statement
-	BROADCAST_TO_CLASS( DialogMsg( pDialogOp->WindowID, DIM_CREATE, 0 ), DialogOp );
-
-	if (pBook)
-	{
-		// BROADCAST a create message to each page
-		UINT32 i;
-		for (i=0; i<pBook->GetPageCount(); i++)
-		{
-			BROADCAST_TO_CLASS(DialogMsg(pDialogOp->WindowID, DIM_CREATE, BookGadget, 0, pBook->GetPage(i)->GetId()) ,DialogOp);
-		}
-
-		// And tell the active page which is active
-		BROADCAST_TO_CLASS( DialogMsg( pDialogOp->WindowID, DIM_SET_ACTIVE, BookGadget, 0, ActivePage ), DialogOp );
-		pBook->SetSelection(ActivePageIndex);
-	}
-
-	// If the dialog which has just been created is modal then disable all other
-	// dialogs.
-
-	if( !GetMainFrame()->IsEnabled() )
-	{
-		EnableAllDialogs(FALSE, pDialogWnd);
-	}
-
-	return TRUE; // Success
+    // Inform the Dialog that it has been created so that it can be
+    // initialised Note that for DialogTabOp's seperate Create
+    // messages are sent for each page from the wxNotebookPage
+    // OnCreate handler.  Alex moved this inside the if statement
+  BROADCAST_TO_CLASS(DialogMsg(pDialogOp->WindowID, DIM_CREATE, 0),
+		     DialogOp);
+  if (pBook) {
+    // BROADCAST a create message to each page
+    UINT32 i;
+    for (i = 0; i < pBook->GetPageCount(); i++) {
+      BROADCAST_TO_CLASS(DialogMsg(pDialogOp->WindowID,
+				   DIM_CREATE,
+				   BookGadget,
+				   0,
+				   pBook->GetPage(i)->GetId()),
+			 DialogOp);
+    }
+    // And tell the active page which is active
+    BROADCAST_TO_CLASS(DialogMsg(pDialogOp->WindowID,
+				 DIM_SET_ACTIVE,
+				 BookGadget,
+				 0,
+				 ActivePage ),
+		       DialogOp);
+    pBook->SetSelection(ActivePageIndex);
+  }
+  // If the dialog which has just been created is modal then disable
+  // all other dialogs.
+  if(!GetMainFrame()->IsEnabled()) {
+    EnableAllDialogs(FALSE, pDialogWnd);
+  }
+  // Success
+  return TRUE;
 }
 
 /********************************************************************************************
@@ -1110,12 +1099,17 @@ BOOL DialogManager::BringToTop(CWindowID WindowID, DialogOp* pDlgOp)
 
 void DialogManager::Event (DialogEventHandler *pEvtHandler, wxEvent &event) {
   WXTYPE EventType = event.GetEventType();
+  //  if (event.IsCommandEvent()) {
+  wxCommandEvent commandEvent = (event.IsCommandEvent()) ?
+    static_cast<wxCommandEvent&>(event):
+    NULL;
+    // }
   //	CDlgMessage DIM = DIM_NONE;
-  ResourceID id = event.GetId();
+  int id = event.GetId();
   UINT_PTR DlgMsgParam = 0;
   INT32 PageID = 0;
-  BOOL HandleMessage=FALSE;
-  BOOL Defer=TRUE;
+  BOOL HandleMessage = FALSE;
+  BOOL Defer = TRUE;
   if (!pEvtHandler->pwxWindow || !pEvtHandler->pDialogOp) {
     // We are in the process of destruction
     event.Skip();
@@ -1127,17 +1121,20 @@ void DialogManager::Event (DialogEventHandler *pEvtHandler, wxEvent &event) {
     // We posted this event and asked it to come back later, and it duly has
     wxCamDialogEvent * pDialogEvent = (wxCamDialogEvent *)(&event);
     // this ensures we are using a valid window pointer
-    pDialogEvent->msg.DlgWndID = pEvtHandler->pwxWindow; 
+    pDialogEvent->msg.DlgWndID = pEvtHandler->pwxWindow;
     // Send it around
     BROADCAST_TO_CLASS( DialogMsg(pDialogEvent->msg), DialogOp );
     return;
   }
-  wxWindow * pGadget = NULL;
+  wxWindow* pGadget = NULL;
   if (id) {
     pGadget = GetGadget(pEvtHandler->pwxWindow, id);
   }
-  // We tend to get this second-hand from our child, we handle this differently
-  if( !pGadget && (event.GetEventObject() != pEvtHandler->pwxWindow)) {
+  // We tend to get this second-hand from our child, we handle this
+  // differently
+  if(!pGadget &&
+     // event.GetEventObject() &&
+     (event.GetEventObject() != pEvtHandler->pwxWindow)) {
     pGadget = (wxWindow *)event.GetEventObject();
     id = pGadget->GetId();
   }
@@ -1146,7 +1143,7 @@ void DialogManager::Event (DialogEventHandler *pEvtHandler, wxEvent &event) {
     // pEvtHandler->pwxWindow maybe our immediate wxPanel\wxDialog, but won't
     // be in case of tabbed dialog
     wxWindow*	pDialog = pGadget->GetParent();
-    while( NULL != pDialog && !pDialog->IsKindOf( CLASSINFO(wxDialog) ) && 
+    while( NULL != pDialog && !pDialog->IsKindOf( CLASSINFO(wxDialog) ) &&
 	   !pDialog->IsKindOf( CLASSINFO(wxPanel) ) )
       {
 	pDialog = pDialog->GetParent();
@@ -1156,7 +1153,7 @@ void DialogManager::Event (DialogEventHandler *pEvtHandler, wxEvent &event) {
       // A parent of type wxBookCtrlBase would synch it
       wxWindow *pDialogParent = pDialog->GetParent();
       if( NULL != pDialogParent && pDialogParent->IsKindOf( CLASSINFO(wxBookCtrlBase) ) ) {
-	  
+
 	PageID = pDialog->GetId();
       }
     }
@@ -1199,7 +1196,7 @@ void DialogManager::Event (DialogEventHandler *pEvtHandler, wxEvent &event) {
 	      MouseDown->SetEventType(wxEVT_RIGHT_DOWN);
 	      MouseUp->SetEventType(wxEVT_RIGHT_UP);
 	    }
-			
+
 	  //MouseDown.SetEventObject(pEvtHandler->pwxWindow);
 	  // MouseUp.SetEventObject(pEvtHandler->pwxWindow);
 	  // set it for processing later
@@ -1208,7 +1205,7 @@ void DialogManager::Event (DialogEventHandler *pEvtHandler, wxEvent &event) {
 	}
       if (MouseDown) delete MouseDown;
       if (MouseUp) delete MouseUp;
-    }	
+    }
 
   /* Here is a list of possible command events
      wxEVT_COMMAND_BUTTON_CLICKED
@@ -1256,7 +1253,7 @@ void DialogManager::Event (DialogEventHandler *pEvtHandler, wxEvent &event) {
 	  msg.DlgMsg = DIM_CANCEL;
 	  // Do not defer processing of clicks on the close button because the default handler may destroy the window on
 	  // exit from this call
-	  Defer=FALSE; 
+	  Defer=FALSE;
 	  HandleMessage = TRUE;
 	}
       else if (id == _R(wxID_HELP))
@@ -1287,8 +1284,8 @@ void DialogManager::Event (DialogEventHandler *pEvtHandler, wxEvent &event) {
 	   (EventType == wxEVT_COMMAND_COMBOBOX_SELECTED) ||
 	   (EventType == wxEVT_COMMAND_SPINCTRL_UPDATED) ||
 	   ((
-	     (EventType == wxEVT_SCROLL_CHANGED) || 
-	     (EventType == wxEVT_SCROLL_THUMBTRACK) || 
+	     (EventType == wxEVT_SCROLL_CHANGED) ||
+	     (EventType == wxEVT_SCROLL_THUMBTRACK) ||
 	     (EventType == wxEVT_SCROLL_THUMBRELEASE) ||
 	     (EventType == wxEVT_SCROLL_LINEUP) ||
 	     (EventType == wxEVT_SCROLL_LINEDOWN) ||
@@ -1327,7 +1324,7 @@ void DialogManager::Event (DialogEventHandler *pEvtHandler, wxEvent &event) {
 	     (EventType == wxEVT_SCROLL_LINEDOWN) ||
 	     (EventType == wxEVT_SCROLL_PAGEUP) ||
 	     (EventType == wxEVT_SCROLL_PAGEDOWN)
-	     ) && (pGadget && ( pGadget->IsKindOf(CLASSINFO(wxSlider)) || pGadget->IsKindOf(CLASSINFO(wxSliderCombo)) ))) || 
+	     ) && (pGadget && ( pGadget->IsKindOf(CLASSINFO(wxSlider)) || pGadget->IsKindOf(CLASSINFO(wxSliderCombo)) ))) ||
 	  FALSE) // Handle slider movements - note SCROLL_CHANGED always comes later
     {
       msg.DlgMsg = DIM_SLIDER_POS_CHANGING;
@@ -1365,63 +1362,63 @@ void DialogManager::Event (DialogEventHandler *pEvtHandler, wxEvent &event) {
     {
       msg.DlgMsg = DIM_LFT_BN_DOWN;
       HandleMessage = TRUE;
-    }	
+    }
   else if (
 	   (EventType == wxEVT_LEFT_UP) ||
 	   FALSE)
     {
       msg.DlgMsg = DIM_LFT_BN_UP;
       HandleMessage = TRUE;
-    }	
+    }
   else if (
 	   (EventType == wxEVT_RIGHT_DOWN) ||
 	   FALSE)
     {
       msg.DlgMsg = DIM_RGT_BN_DOWN;
       HandleMessage = TRUE;
-    }	
+    }
   else if (
 	   (EventType == wxEVT_RIGHT_UP) ||
 	   FALSE)
     {
       msg.DlgMsg = DIM_RGT_BN_UP;
       HandleMessage = TRUE;
-    }	
+    }
   else if (
 	   (EventType == wxEVT_MIDDLE_DOWN) ||
 	   FALSE)
     {
       msg.DlgMsg = DIM_MID_BN_DOWN;
       HandleMessage = TRUE;
-    }	
+    }
   else if (
 	   (EventType == wxEVT_MIDDLE_UP) ||
 	   FALSE)
     {
       msg.DlgMsg = DIM_MID_BN_UP;
       HandleMessage = TRUE;
-    }	
+    }
   else if (
 	   (EventType == wxEVT_MOTION) ||
 	   FALSE)
     {
       msg.DlgMsg = ((wxMouseEvent *)&event)->Dragging()?DIM_MOUSE_DRAG:DIM_MOUSE_MOVE;
       HandleMessage = TRUE;
-    }	
+    }
   else if (
 	   (EventType == wxEVT_MOUSEWHEEL) ||
 	   FALSE)
     {
       msg.DlgMsg = (((wxMouseEvent *)&event)->GetWheelRotation()>0)?DIM_MOUSEWHEEL_UP:DIM_MOUSEWHEEL_DOWN;
       HandleMessage = TRUE;
-    }	
+    }
   else if (
 	   (EventType == wxEVT_MOVE) ||
 	   FALSE)
     {
       msg.DlgMsg = DIM_DLG_MOVED;
       HandleMessage = TRUE;
-    }	
+    }
   else if (
 	   (EventType == wxEVT_SIZE) ||
 	   FALSE)
@@ -1430,7 +1427,7 @@ void DialogManager::Event (DialogEventHandler *pEvtHandler, wxEvent &event) {
 	{
 	  Defer = FALSE;
 	  msg.DlgMsg = DIM_CTRL_RESIZED;
-	  HandleMessage = TRUE;	
+	  HandleMessage = TRUE;
 	}
       else
 	{
@@ -1498,25 +1495,25 @@ void DialogManager::Event (DialogEventHandler *pEvtHandler, wxEvent &event) {
 		  ClipRect = wxRect(WindowSize);
 		  Stop = TRUE; // cease drawing after this one
 		}
-				
+
 	      DocRect DocClipRect;
-			
+
 	      // Convert to millipoints, Also need to flip the y coords to get a
 	      // rectangle in with the origin in the bottom left.
 	      DocClipRect.lo.x = (ClipRect.GetLeft() * 72000) / ExtraInfo.Dpi;
 	      DocClipRect.lo.y = ExtraInfo.dy - ((ClipRect.GetBottom() * 72000) / ExtraInfo.Dpi);
-			
+
 	      DocClipRect.hi.x = (ClipRect.GetRight() * 72000) / ExtraInfo.Dpi;
 	      DocClipRect.hi.y = ExtraInfo.dy - ((ClipRect.GetTop() * 72000) / ExtraInfo.Dpi);
-			
+
 	      // Set the pointer in the extra info structure
 	      ExtraInfo.pClipRect = &DocClipRect;
-			
+
 	      // Build the message and send it to the dialog op
 	      // It is up to the dialog op to build a render region etc and attach the CCDC to it
 	      // and to tidy the region up after it has finished drawing in it CDlgMessage
 	      BROADCAST_TO_CLASS(DialogMsg(pEvtHandler->pwxWindow, DIM_REDRAW, id, (UINT_PTR)(void *)&ExtraInfo, PageID), DialogOp);
-				
+
 	      upd ++ ;
 	    }
 	  // if (OldPalette)
@@ -1550,21 +1547,21 @@ void DialogManager::Event (DialogEventHandler *pEvtHandler, wxEvent &event) {
 
 	    // HDC hDC = pInfo->PaintInfo.hdc;
 	    // HPALETTE OldPalette = PaletteManager::StartPaintPalette(hDC);
-			
+
 	    ReDrawInfoType ExtraInfo;
-			
+
 	    ExtraInfo.pMousePos = NULL;		// No mouse position info for redraw events
-		
-		
+
+
 	    // Build a CC dc out of it for rendering to the screen
 	    // Get a MFC CDC to put the DC in
 	    CCPaintDC MyDc(pGadget);
-		
+
 	    ExtraInfo.pDC = NULL;
-			
+
 	    // The devices DPI
 	    ExtraInfo.Dpi = OSRenderRegion::GetFixedDCPPI(MyDc).GetHeight();
-		
+
 	    // How big the window is
 	    wxSize WindowSize = pGadget->GetClientSize();
 	    ExtraInfo.dx = (((INT32)WindowSize.GetWidth())*72000) / ExtraInfo.Dpi;
@@ -1574,7 +1571,7 @@ void DialogManager::Event (DialogEventHandler *pEvtHandler, wxEvent &event) {
 	    // Note that the Y value is flipped, as the kernel-origin is at the bottom left
 	    INT32 XPos = ((wxMouseEvent *)(&event))->GetX();
 	    INT32 YPos = ((wxMouseEvent *)(&event))->GetY();
-	
+
 	    DocCoord MousePos;
 	    MousePos.x = (XPos * 72000) / ExtraInfo.Dpi;
 	    MousePos.y = ExtraInfo.dy - ((YPos * 72000) / ExtraInfo.Dpi);
@@ -2145,7 +2142,7 @@ void DialogManager::SetGadgetBitmaps(CWindowID WindowID, CGadgetID Gadget, const
 
 			pItem = imagelist.FindNextBitmap(pItem, &resID);
 		}
-		
+
 		((wxTreeCtrl*)pGadget)->AssignImageList(plist);		// Tree control takes ownership of the list
 
 		return;
@@ -2766,33 +2763,57 @@ BOOL DialogManager::SetStringGadgetValue(CWindowID WindowID,
 	return (SetStringGadgetValue(WindowID, Gadget, *StrVal, EndOfList, ListPos));
 }
 
-/********************************************************************************************
+void get_descendants(CWindowID WindowID) {
+  wxWindowList children = WindowID->GetChildren();
+  wxWindowList::compatibility_iterator node = children.GetFirst();
+  wxString trace_string;
+  while (node) {
+    //TRACE("PORTNOTE");
+    trace_string <<
+      "Window Name: " <<
+      (node->GetData())->GetName() <<
+      ", WindowID: " <<
+      (node->GetData())->GetId() <<
+      "\n";
+    node = node->GetNext();
+  }
+  TRACE(trace_string);
+  // TRACE(_T("PORTNOTE[") _T(section) _T("]: ") _T(text));
+}
 
->	static wxWindow * DialogManager::GetGadget(CWindowID WindowID, CGadgetID Gadget)
+/***************************************************************************
+>	static wxWindow * DialogManager::GetGadget(CWindowID WindowID,
+                          CGadgetID Gadget)
 
 	Author:		Alex Bligh (alex@alex.org.uk)
 	Created:	20/12/2005
 	Inputs:		WindowID: Dialog box window identifier
-				Gadget: Gadget identifier
-				StrID: 	  Resource ID of string
+		        Gadget: Gadget identifier
+        Returns:        Gadget as wxWindow
+***************************************************************************/
 
-********************************************************************************************/
-
-wxWindow * DialogManager::GetGadget(CWindowID WindowID, CGadgetID Gadget)
-{
-	ERROR2IF(!WindowID || !WindowID->IsKindOf(CLASSINFO(wxWindow)), FALSE, "Bad Window ID passed");
-	wxWindow * pGadget=WindowID->FindWindow(Gadget);
-//	TRACEUSER("amb",_T("pwxDialog=0x%016llx Gadget=%d(%s) pGadget=0x%016llx"), WindowID, Gadget, CamResource::GetObjectName((ResourceID)Gadget), pGadget);
-	if (!pGadget)
-	{
-		// Some dialogs seem to consciously do this, EG galleries
-//		ERROR3_PF((_T("Bad Gadget ID %d(%s) passed"), Gadget, CamResource::GetObjectName((ResourceID)Gadget)));
-		return NULL;
-	}
-#if 0
-	const TCHAR * pGadgetClassName = (const TCHAR *) pGadget->GetClassInfo()->GetClassName();
-	TRACEUSER("amb",_T("Gadget is a %s"),pGadgetClassName);
-#endif
+wxWindow* DialogManager::GetGadget(CWindowID WindowID, int Gadget) {
+  ERROR2IF(!WindowID || !WindowID->IsKindOf(CLASSINFO(wxWindow)),
+	   FALSE, "Bad Window ID passed");
+  // get_descendants(WindowID);
+  wxWindow* pGadget = WindowID->FindWindow(Gadget);
+  // TRACEUSER("amb",_T("pwxDialog=0x%016llx Gadget=%d(%s) pGadget=0x%016llx"),
+  // 	    WindowID,
+  // 	    Gadget,
+  // 	    CamResource::GetObjectName((ResourceID)Gadget),
+  // 	    pGadget);
+  if (!pGadget) {
+    // Some dialogs seem to consciously do this, EG galleries
+    // ERROR3_PF((_T("Bad Gadget ID %d(%s) passed"),
+    // 	       Gadget,
+    // 	       CamResource::GetObjectName((ResourceID)Gadget)));
+    return NULL;
+  }
+// #if 0
+// 	const TCHAR* pGadgetClassName =
+// 	  (const TCHAR *) pGadget->GetClassInfo()->GetClassName();
+// 	TRACEUSER("amb",_T("Gadget is a %s"),pGadgetClassName);
+// #endif
 	return pGadget;
 }
 
@@ -3295,7 +3316,7 @@ BOOL DialogManager::SetListBoxSelection( CWindowID WindowID, CGadgetID Gadget, I
 				{
 					((wxListBox *)pGadget)->Deselect(i);
 				}
-			}			
+			}
 		}
 	}
 
@@ -3348,20 +3369,20 @@ BOOL DialogManager::SetBoolGadgetSelected(CWindowID WindowID, CGadgetID Gadget,
 		pGadget->IsKindOf(CLASSINFO(wxOwnerDrawnComboBox)) ||
 		pGadget->IsKindOf(CLASSINFO(wxChoice))
 		)
-	{	
+	{
 		// Support listboxes with multiple selections
 		if (pGadget->IsKindOf(CLASSINFO(wxListBox)))
 		{
 			return SetListBoxSelection(WindowID, Gadget, Index, SelectIt, FALSE);
 		}
-		
+
 		if (Index>=0)
 		{
 			if (SelectIt)
 			{
 				if (pGadget->IsKindOf(CLASSINFO(wxOwnerDrawnComboBox)))
 					((wxOwnerDrawnComboBox *)pGadget)->SetSelection(Index);
-				else	
+				else
 					((wxControlWithItems *)pGadget)->SetSelection(Index);
 			}
 			else
@@ -3376,7 +3397,7 @@ BOOL DialogManager::SetBoolGadgetSelected(CWindowID WindowID, CGadgetID Gadget,
 				{
 					if (((wxControlWithItems *)pGadget)->GetSelection() == Index)
 						((wxControlWithItems *)pGadget)->SetSelection(wxNOT_FOUND);
-				}	
+				}
 			}
 			return TRUE;
 		}
@@ -3408,8 +3429,8 @@ BOOL DialogManager::SetBoolGadgetSelected(CWindowID WindowID, CGadgetID Gadget,
 	// The following types are cannot be ticked /.unticked. OpDescriptors
 	// do this then break the control setting
 	if ( pGadget->IsKindOf(CLASSINFO(wxScrollBar))
-		|| pGadget->IsKindOf(CLASSINFO(wxSlider)) 
-		|| pGadget->IsKindOf(CLASSINFO(wxSliderCombo)) 
+		|| pGadget->IsKindOf(CLASSINFO(wxSlider))
+		|| pGadget->IsKindOf(CLASSINFO(wxSliderCombo))
 		|| pGadget->IsKindOf(CLASSINFO(wxGauge))  )
 		return TRUE;
 
@@ -5194,7 +5215,7 @@ BOOL DialogManager::IsGadgetEnabled( CWindowID WindowID, CGadgetID Gadget )
 	wxWindow*			pGadget = GetGadget(WindowID, Gadget);
 	if (!pGadget)
 		return FALSE;
-	
+
 	return pGadget->IsEnabled();
 }
 
@@ -5999,7 +6020,7 @@ public:
 	~wxTextValidatorFixed(){}
 	virtual wxObject *Clone() const { return new wxTextValidatorFixed(*this); }
 	virtual bool TransferToWindow(void)	/*TYPENOTE: Correct*/
-	{	
+	{
 		if ( m_stringValue )
 		{
 		  // validity of the validator is now always checked (?) no need to call it directly.
@@ -7002,7 +7023,7 @@ BOOL DialogManager::AddAPage(DialogTabOp* pDialogTabOp, CDlgResID DialogResID, C
 	wxString Title = wxEmptyString;
 	if (pNewPage->IsKindOf(CLASSINFO(wxDialog)))
 		Title=((wxDialog *)pNewPage)->GetTitle();
-	if (Title.IsEmpty()) 
+	if (Title.IsEmpty())
 		Title = pNewPage->GetLabel(); // because wxPanel doesn't seem to support a title
 	if( Title.IsEmpty() )
 	{
@@ -7027,7 +7048,7 @@ BOOL DialogManager::AddAPage(DialogTabOp* pDialogTabOp, CDlgResID DialogResID, C
 	// Add images if present
 	if (pDialogTabOp->HasImages())
 	{
-		// Get the image list 
+		// Get the image list
 		pImageList = pNoteBook->GetImageList();
 
 		wxBitmap * pBitmap = CamArtProvider::Get()->FindBitmap(DialogResID);
@@ -7415,7 +7436,7 @@ BOOL DialogManager::RecordActiveDialogState()
 	BOOL IsModal = !(ActiveDlgStack.GetTop() == NULL);
 	// Which window is currently active
 	wxWindow * ActiveWindow = wxWindow::FindFocus();
-	
+
 	// I think we need to look upwards here till we find a TLW
 	while (ActiveWindow && !ActiveWindow->IsKindOf(CLASSINFO(wxTopLevelWindow)) && ActiveWindow->GetParent())
 	{
@@ -9302,8 +9323,7 @@ UINT32 DialogManager::GetTreeGadgetChildrenCount(CWindowID wnd, CGadgetID Gadget
 
 
 
-/********************************************************************************************
-
+/***************************************************************************
 >	UINT32 DialogManager::GetGadgetImageCount(CWindowID wnd, CGadgetID Gadget)
 
 	Author:		Phil_Martin (Xara Group Ltd) <camelotdev@xara.com>
@@ -9314,10 +9334,9 @@ UINT32 DialogManager::GetTreeGadgetChildrenCount(CWindowID wnd, CGadgetID Gadget
 	Returns:	Number of images in tree control
 	Purpose:	To get the number of images set in the trree control
 
-********************************************************************************************/
+***************************************************************************/
 
-UINT32 DialogManager::GetGadgetImageCount(CWindowID wnd, CGadgetID Gadget)
-{
+UINT32 DialogManager::GetGadgetImageCount(CWindowID wnd, CGadgetID Gadget) {
 	ERROR3("Unimplemented!");
 	return 0;
 }
@@ -9403,5 +9422,3 @@ ListItem* CGadgetImageList::FindNextBitmap(ListItem* pContextItem, ResourceID* p
 
 	return (ListItem*)pItem;
 }
-
-

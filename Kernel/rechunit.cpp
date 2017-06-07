@@ -212,7 +212,7 @@ BOOL UnitsRecordHandler::HandleRecord(CXaraFileRecord* pCXaraFileRecord)
 
 		default:
 			ok = FALSE;
-			ERROR3_PF(("UnitsRecordHandler::HandleRecord I don't handle records with the tag (%d)\n",pCXaraFileRecord->GetTag()));
+			ERROR3_PF((_T("UnitsRecordHandler::HandleRecord I don't handle records with the tag (%d)\n"),pCXaraFileRecord->GetTag()));
 			break;
 	}
 

@@ -752,7 +752,7 @@ void ContourTool::OnClick( DocCoord PointerPos, ClickType Click, ClickModifiers 
 #ifndef NO_ADVANCED_TOOLS
 	if (ClickMods.Menu) return;							// Don't do anything if the user clicked the Menu button
 
-	ERROR3IF_PF(pSpread==NULL,("pSpread is NULL"));
+	ERROR3IF_PF(pSpread==NULL,(_T("pSpread is NULL")));
 
 //	NodeCompound * pCompound = NULL;
 
@@ -856,7 +856,7 @@ void ContourTool::OnMouseMove(DocCoord PointerPos,Spread* pSpread,ClickModifiers
 {
 // Stub out this function if the tool isn't wanted
 #ifndef NO_ADVANCED_TOOLS
-	ERROR3IF_PF(pSpread==NULL,("pSpread is NULL"));
+  ERROR3IF_PF(pSpread==NULL,(_T("pSpread is NULL")));
 
 //	BlobManager * pBlobMgr = GetApplication()->GetBlobManager();
 //	INT32 BlobSize = pBlobMgr->GetBlobSize();
@@ -917,8 +917,8 @@ void ContourTool::OnMouseMove(DocCoord PointerPos,Spread* pSpread,ClickModifiers
 
 void ContourTool::UpdateRef(BlendToolRef* pRef,Spread* pSpread, DocCoord PointerPos,BOOL CheckNodeUnderPoint)
 {
-	ERROR3IF_PF(pRef   ==NULL,("pRef is NULL"));
-	ERROR3IF_PF(pSpread==NULL,("pSpread is NULL"));
+  ERROR3IF_PF(pRef   ==NULL,(_T("pRef is NULL")));
+  ERROR3IF_PF(pSpread==NULL,(_T("pSpread is NULL")));
 
 	// Set the spread and pointer pos members
 	pRef->pSpread    = pSpread;
@@ -950,8 +950,8 @@ void ContourTool::UpdateRef(BlendToolRef* pRef,Spread* pSpread, DocCoord Pointer
 
 void ContourTool::UpdateCursorAndStatus()
 {
-	ERROR3IF_PF(pRefStart==NULL,("pRefStart is NULL"));
-	ERROR3IF_PF(pRefEnd  ==NULL,("pRefEnd   is NULL"));
+  ERROR3IF_PF(pRefStart==NULL,(_T("pRefStart is NULL")));
+  ERROR3IF_PF(pRefEnd  ==NULL,(_T("pRefEnd   is NULL")));
 
 	DisplayStatusBarHelp(StatusID);
 }

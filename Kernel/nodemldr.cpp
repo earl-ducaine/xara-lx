@@ -1262,7 +1262,7 @@ BOOL NodeMoulder::DoBecomeA(BecomeA* pBecomeA)
 		break;
 
 		default:
-			ERROR3_PF(("Unknown BecomeA reason %d",pBecomeA->GetReason()));
+		  ERROR3_PF((_T("Unknown BecomeA reason %d"),pBecomeA->GetReason()));
 			break;
 	}
 

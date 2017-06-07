@@ -1,7 +1,7 @@
 // $Id: pngfiltr.cpp 1282 2006-06-09 09:46:49Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
- 
+
                Xara LX, a vector drawing and manipulation program.
                     Copyright (C) 1993-2006 Xara Group Ltd.
        Copyright on certain contributions may be held in joint with their
@@ -32,7 +32,7 @@ ADDITIONAL RIGHTS
 
 Conditional upon your continuing compliance with the GNU General Public
 License described above, Xara Group Ltd grants to you certain additional
-rights. 
+rights.
 
 The additional rights are to use, modify, and distribute the software
 together with the wxWidgets library, the wxXtra library, and the "CDraw"
@@ -96,7 +96,7 @@ service marks of Xara Group Ltd. All rights in these marks are reserved.
 =================================XARAHEADEREND============================
  */
 
-// A ImageMagick import/export filter 
+// A ImageMagick import/export filter
 
 #include "camtypes.h"
 
@@ -111,12 +111,12 @@ service marks of Xara Group Ltd. All rights in these marks are reserved.
 //#include "dibutil.h" - in camtypes.h [AUTOMATICALLY REMOVED]
 #include "grndbmp.h"
 #include "nodebmp.h"
-//#include "wbitmap.h"	// Windows specific bitmap information	 
+//#include "wbitmap.h"	// Windows specific bitmap information
 //#include "andy.h"
 //#include "resource.h"	// Inform Warning _R(IDS_OK)
 //#include "filtrres.h"	// Filter ids
 //#include "will3.h"		// for _R(IDS_GENOPTPALMSGID)
-#include "outptpng.h"	// ImageMagick filter type, includes imglib.h 
+#include "outptpng.h"	// ImageMagick filter type, includes imglib.h
 //#include "fixmem.h" - in camtypes.h [AUTOMATICALLY REMOVED]
 #include "maskfilt.h"	// MaskedFilter class
 #include "bmapprev.h"	// tab preview dialog
@@ -137,7 +137,7 @@ CC_IMPLEMENT_DYNCREATE(ImageMagickExportOptions, MaskedFilterExportOptions)
 	#define DEFAULT_IMAGEMAGICK_PATH "convert"
 #endif
 
-#define DIP_QUOTE(x) _T(x) 
+#define DIP_QUOTE(x) _T(x)
 
 OutputPNG 	ImageMagickFilter::DestImageMagick;
 FilterType 	ImageMagickFilter::s_FilterType = IMAGEMAGICK;	// Type of filter in use (ImageMagick .. ImageMagick_TRANSINTER)
@@ -190,7 +190,7 @@ ImageMagickExportOptions::ImageMagickExportOptions(const FilterType FilterID, co
 		UINT32 * pPref = GetConfigPtr((const TCHAR *)(*pFilterName));
 		ERROR3IF(!pPref, "Config did not stick");
 		if (pPref)
-		{	
+		{
 			if (Camelot.DeclareSection(_T("Filters"), 10))
 			{
 				String_256 PrefName = *pFilterName;
@@ -302,7 +302,7 @@ BOOL ImageMagickFilter::Init()
 
 /********************************************************************************************
 
->	INT32 ImageMagickFilter::HowCompatible(PathName& Filename, ADDR HeaderStart, UINT32 HeaderSize, 
+>	INT32 ImageMagickFilter::HowCompatible(PathName& Filename, ADDR HeaderStart, UINT32 HeaderSize,
 								UINT32 FileSize)
 
 	Author:		Neville_Humphrys (Xara Group Ltd) <camelotdev@xara.com>
@@ -316,7 +316,7 @@ BOOL ImageMagickFilter::Init()
 	Purpose:	Determine if this filter can load the specified file.
 
 ********************************************************************************************/
-INT32 ImageMagickFilter::HowCompatible(PathName& Filename, ADDR HeaderStart, UINT32 HeaderSize, 
+INT32 ImageMagickFilter::HowCompatible(PathName& Filename, ADDR HeaderStart, UINT32 HeaderSize,
 							UINT32 FileSize)
 {
 	// We need to remember what we thought of this file in our class variable.
@@ -357,7 +357,7 @@ BOOL ImageMagickFilter::IsThisBppOk(UINT32 Bpp)
 	Inputs:		pOilBitmap	pointer to the oil bitmap data to be filled in
 				pFilter			- the BaseCamelotFilter which provides functions like progress update
 				pFile			- the CCFile class to use to read the data from
-				IsCompressed	- Flag to say the bitmap is compressed or not.  
+				IsCompressed	- Flag to say the bitmap is compressed or not.
 	Outputs:	Will have filled in BMInfo	pointer to the bitmap header to fill in
 									BMBytes	pointer to the bitmap data to fill in
 	Purpose:	Actually does the process of reading a bitmap from a file.
@@ -367,7 +367,7 @@ BOOL ImageMagickFilter::IsThisBppOk(UINT32 Bpp)
 				IsCompressed is only used for BMP/BMPZIP type bitmaps at present.
 				Assumes:
 					pFile has already been opened up for reading
-					pFilter has been set up for reading the data e.g. progress bar 
+					pFilter has been set up for reading the data e.g. progress bar
 	Returns:	TRUE if worked, FALSE if failed.
 
 ********************************************************************************************/
@@ -380,14 +380,14 @@ BOOL ImageMagickFilter::ReadFromFile( OILBitmap* pOilBitmap, BaseCamelotFilter* 
 
 	// Try to import bitmap as usual binary BMP file.
 	CWxBitmap* pWBitmap = (CWxBitmap*)pOilBitmap;
-	
+
 	LPBITMAPINFO *pInfo = &(pWBitmap->BMInfo);
 	LPBYTE *pBytes = &(pWBitmap->BMBytes);
 
 	INT32 TransColour = -1;
 
 	// Read from file,using pFilter for progress bar updates
-	BOOL ok = ConvertToTempFile(pFile); 
+	BOOL ok = ConvertToTempFile(pFile);
 	if (ok)
 		ok = PNGUtil::ReadFromFile(TempFile, pInfo, pBytes, &TransColour, NULL, pFilter);
 	TidyTempFile();
@@ -426,31 +426,31 @@ BOOL ImageMagickFilter::ReadFromFile( OILBitmap* pOilBitmap, BaseCamelotFilter* 
 									BMBytes	pointer to the bitmap data to fill in
 	Purpose:	Actually does the process of reading a bitmap from a file.
 				Inherited classes override this to read in different file formats.
-				
+
 	Returns:	TRUE if worked, FALSE if failed.
 
 ********************************************************************************************/
 BOOL ImageMagickFilter::ReadFromFile(OILBitmap* pOilBitmap)
 {
 	ERROR2IF(pOilBitmap == NULL,FALSE,"ImageMagickFilter::ReadFromFile null OilBitmap pointer");
-	
-	// Try to import the bitmap as a ImageMagick file.		
+
+	// Try to import the bitmap as a ImageMagick file.
 	CCLexFile *pImportFile = GetImportFile();
 	ERROR2IF(pImportFile==NULL,FALSE,"ImageMagickFilter::ReadFromFile - No import file");
 
-	UINT32 ImportMsgId = GetImportMsgID();		
+	UINT32 ImportMsgId = GetImportMsgID();
 	String_64 ProgressString(ImportMsgId);
 	ProgressString = GetImportProgressString(pImportFile, ImportMsgId);
 
 	CWxBitmap* pWBitmap = (CWxBitmap*)pOilBitmap;
-	
+
 	LPBITMAPINFO *pInfo = &(pWBitmap->BMInfo);
 	LPBYTE *pBytes = &(pWBitmap->BMBytes);
-	
+
 	INT32 TransColour = -1;
 
 	// The ImageMagick filter liked it very much and so use it, showing progress bar
-	BOOL ok = ConvertToTempFile(pImportFile); 
+	BOOL ok = ConvertToTempFile(pImportFile);
 	if (ok)
 		ok = PNGUtil::ReadFromFile(TempFile, pInfo, pBytes, &TransColour, &ProgressString);
 	TidyTempFile();
@@ -463,7 +463,7 @@ BOOL ImageMagickFilter::ReadFromFile(OILBitmap* pOilBitmap)
 		pOilBitmap->SetTransparencyIndex(TransColour);
 
 	SetLastBitmap();		// can only import one bitmap at the moment
-	
+
 	return TRUE;
 }
 
@@ -518,9 +518,9 @@ BOOL ImageMagickFilter::GetExportOptions(BitmapExportOptions* pOptions)
 		Ok = BmapPrevDlg::m_bClickedOnExport;
 	}
 	else
-	{	
+	{
 		ERROR3("Unable to find OPTOKEN_BMAPPREVDLG");
-	} 
+	}
 
 	// Return with the ok/cancel state used on the dialog box
 	return Ok;
@@ -540,7 +540,7 @@ void ImageMagickFilter::PostGetExportOptions(BitmapExportOptions* pOptions)
 	MaskedFilter::PostGetExportOptions(pOptions);
 
 	// do the specific to this class options
-	// Filter type can be changed by the export options dialog box from say 
+	// Filter type can be changed by the export options dialog box from say
 
 	s_OutputTransparent = pImageMagickOptions->WantTransparent();
 	s_OutputInterlaced = pImageMagickOptions->WantInterlaced();
@@ -580,7 +580,7 @@ void ImageMagickFilter::CleanUpAfterExport()
 	{
 		FreeDIB( pDestBMInfo, pDestBMBytes );
 		pDestBMInfo = NULL;
-		pDestBMBytes = NULL;	
+		pDestBMBytes = NULL;
 	}
 
 	// the depth we ask GDraw to render is always 32-bit, so we can get transparency
@@ -697,7 +697,7 @@ BOOL ImageMagickFilter::EndWriteToFile()
 	if (SaveDataOut && !BadExportRender)
 	{
 		ok = CreateTempFile();
-	
+
 		if (ok)
 		{
 			// Now that we know the transparent index we can output the ImageMagick header
@@ -714,7 +714,7 @@ BOOL ImageMagickFilter::EndWriteToFile()
 			String_64 ProgressString(ExportingMsgID);
 			ProgressString = GetExportProgressString(TempFile, ExportingMsgID);
 			BeginSlowJob(100, FALSE, &ProgressString);
-			
+
 			ok = DestImageMagick.OutputPNGBits(TempFile, DestImageMagick.GetDestBitmapBits());
 			DestImageMagick.TidyUp();
 			if (ok)
@@ -736,7 +736,7 @@ BOOL ImageMagickFilter::EndWriteToFile()
 	ERROR1IF(!ok, FALSE, _R(IDE_IMAGEMAGICK_ERROR));
 
 	TidyTempFile();
-	
+
 	return TRUE;
 }
 
@@ -755,7 +755,7 @@ BOOL ImageMagickFilter::EndWriteToFile()
 	Purpose:	Physically put the bitmap into the disk.
 				NOTE - ONLY COPES WITH End=TRUE currently
 				AtEnd is ignored now and should always be set to TRUE.
-				Unused at present due to static problems when cretaing the 1bpp bitmap. 
+				Unused at present due to static problems when cretaing the 1bpp bitmap.
 	SeeAlso:	WriteToFile(); AccusoftFilters::WriteToFile; AccusoftFilters::WriteDataToFile;
 
 ********************************************************************************************/
@@ -821,7 +821,7 @@ BOOL ImageMagickFilter::WriteBitmapToFile(KernelBitmap* pKernelBitmap, double Dp
 		for(UINT32 i = 0; i < BmpSize; i+=4)
 			pBytes[i+3] = ~pBytes[i+3];
 	}
-	
+
 	return ok;
 }
 
@@ -871,7 +871,7 @@ BOOL ImageMagickFilter::WriteBitmapToFile(KernelBitmap* pKernelBitmap, BaseCamel
 	INT32 Transparent = -1;	// colour or -1 = no transparency
 	if (Bpp <= 8)
 		pOilBitmap->GetTransparencyIndex(&Transparent);
-	
+
 	if(Info->bmiHeader.biBitCount == 32)
 	{
 		// If we`re exporting a 32Bit BMP then we need to make sure that we convert the
@@ -881,10 +881,10 @@ BOOL ImageMagickFilter::WriteBitmapToFile(KernelBitmap* pKernelBitmap, BaseCamel
 		for(UINT32 i = 0; i < BmpSize; i+=4)
 			Bytes[i+3] = ~Bytes[i+3];
 	}
-	
+
 	// Write to file, no header and using pFilter for progress bar updates
 	ok = WriteToFile(pFile, Info, Bytes, Interlace, Transparent, pFilter);
-	
+
 	return ok;
 }
 
@@ -914,8 +914,8 @@ BOOL ImageMagickFilter::WriteBitmapToFile(KernelBitmap* pKernelBitmap, BaseCamel
 				***Errors on 16-bit builds***
 				A progress hourglass can be shown if required using the BaseCamelotFilter as
 				the controlling influence.
-				
-				This function is used by the new native/web  file format to do a straight save of 
+
+				This function is used by the new native/web  file format to do a straight save of
 				the data into the file.
 
 				(caller should close file)
@@ -938,7 +938,7 @@ BOOL ImageMagickFilter::WriteToFile( CCLexFile* File, LPBITMAPINFO Info, LPBYTE 
 	//		RGBQUAD             bmiColors[1];
 	LPBITMAPINFOHEADER pInfoHeader = &Info->bmiHeader;
 	ERROR2IF(pInfoHeader==NULL,FALSE,"ImageMagickFilter::WriteToFile BitmapInfoHeader pointer is null");
-		
+
 	LPRGBQUAD pPalette = &(Info->bmiColors[0]);
 	ERROR2IF(pPalette==NULL,FALSE,"ImageMagickFilter::WriteToFile palette pointer is null");
 
@@ -957,7 +957,7 @@ BOOL ImageMagickFilter::WriteToFile( CCLexFile* File, LPBITMAPINFO Info, LPBYTE 
 	{
 		// Output a ImageMagick header for this file, using the RGBQUAD palette rather than a LOGPALETTE
 		DestImageMagick.OutputPNGHeader(TempFile, pInfoHeader, Interlace, TransparentColour, NULL, pPalette);
-	
+
 		// Now write out the bitmap data itself.
 		DestImageMagick.OutputPNGBits(TempFile, Bits, TRUE, pFilter);
 		// The above has set the OutputFile member variable of DestImageMagick. We desperately need to
@@ -993,7 +993,7 @@ BOOL ImageMagickFilter::WriteToFile( CCLexFile* File, LPBITMAPINFO Info, LPBYTE 
 				Info	BITMAPINFO structure for the dib.
 				Bits	The bitmap data itself
 				ProgressString allows the user to specify whether they require a progress
-						hourglass or not. If NULL then none is shown, otherwise an progress	bar 
+						hourglass or not. If NULL then none is shown, otherwise an progress	bar
 						is shown using the text supplied. Defaults to NULL i.e. no progress bar.
 	Outputs:	-
 	Returns:	TRUE if worked, FALSE if failed (error will be set accordingly but not reported)
@@ -1029,7 +1029,7 @@ BOOL ImageMagickFilter::WriteToFile( CCLexFile* File, LPBITMAPINFO Info, LPBYTE 
 	//		RGBQUAD             bmiColors[1];
 	LPBITMAPINFOHEADER pInfoHeader = &Info->bmiHeader;
 	ERROR2IF(pInfoHeader==NULL,FALSE,"ImageMagickFilter::WriteToFile BitmapInfoHeader pointer is null");
-		
+
 	LPRGBQUAD pPalette = &(Info->bmiColors[0]);
 	ERROR2IF(pPalette==NULL,FALSE,"ImageMagickFilter::WriteToFile palette pointer is null");
 
@@ -1058,8 +1058,8 @@ BOOL ImageMagickFilter::WriteToFile( CCLexFile* File, LPBITMAPINFO Info, LPBYTE 
 				Transparent = i;
 				TRACEUSER( "Neville", _T("ImageMagick output with transp index of %d\n"),Transparent);
 				break;
-			}		
-		}	
+			}
+		}
 	}
 
 	BOOL ok = CreateTempFile();
@@ -1274,7 +1274,7 @@ BOOL ImageMagickFilter::CreateTempFile()
 	wxFile dummyFile; // to prevent deletion race condition
 	TempFileName = wxFileName::CreateTempFileName(wxEmptyString, &dummyFile);
 	PathName pthFileName=String_256(TempFileName);
-	
+
 	if (!(TempFile->open(pthFileName, ios::out | ios::trunc | ios::binary)))
 	{
 		::wxRemoveFile(TempFileName);
@@ -1314,14 +1314,14 @@ BOOL ImageMagickFilter::ConvertFromTempFile(CCLexFile * File)
 	// get filename in usable form
 	wxString cam_str_dup_cifn(camStrdup(wxString(_T("png:")) +
 					    TempFileName ));
-	
+
 	// cifn = camStrdup(wxString(_T("png:")) + TempFileName );
 	cifn = cam_str_dup_cifn.wx_str();
 
 	wxString cam_str_dup_cofn(camStrdup(GetTag()+
 				       _T(":")+
 				       (const TCHAR *)(OutputPath.GetPath())));
-	
+
 	cofn = cam_str_dup_cofn.wx_str();
 
 	// Now convert the file
@@ -1344,7 +1344,7 @@ BOOL ImageMagickFilter::ConvertFromTempFile(CCLexFile * File)
 
 	TidyTempFile(); // ensures filename zapped so it isn't removed later
 
-	return TRUE;		
+	return TRUE;
 }
 
 
@@ -1381,12 +1381,12 @@ BOOL ImageMagickFilter::ConvertToTempFile(CCLexFile * File)
 	const wxChar* cdpi = NULL;
 
 	// get filename in usable form
-	
+
 	cifn = (new wxString(camStrdup(GetTag() +
 				       _T(":") +
 				       (const TCHAR *)(InputPath.GetPath()) +
 				       _T("[0]"))))->wx_str();
-	
+
 	cofn = (new wxString(camStrdup(wxString(_T("png:")) +
 				       TempFileName )))->wx_str();
 
@@ -1403,7 +1403,7 @@ BOOL ImageMagickFilter::ConvertToTempFile(CCLexFile * File)
 		UINT32	uHorzDpi = UINT32( m_ImportDPI ? m_ImportDPI : DefaultDPI.GetWidth() );
 		UINT32	uVertDpi = UINT32( m_ImportDPI ? m_ImportDPI : DefaultDPI.GetHeight() );
 		cdpi = (new wxString(camStrdup( wxString::Format( _T("%dx%d"), uHorzDpi, uVertDpi ) )))->wx_str();
-		IMargv[p++]=cdpi;	
+		IMargv[p++]=cdpi;
 	}
 	IMargv[p++]=cifn;
 	IMargv[p++]=cofn;
@@ -1439,7 +1439,7 @@ BOOL ImageMagickFilter::ConvertToTempFile(CCLexFile * File)
 		ERROR1(FALSE, _R(IDE_IMAGEMAGICK_ERROR));
 	}
 
-	return TRUE;		
+	return TRUE;
 }
 
 /********************************************************************************************
@@ -1487,57 +1487,51 @@ BOOL ImageMagickFilter::TidyTempFile(BOOL Delete/*=TRUE*/)
 
 ********************************************************************************************/
 
-BOOL ImageMagickFilter::CheckPath()
-{
-	if (s_HaveCheckedPath)
-		return s_HaveImageMagick;
-
-	s_HaveImageMagick = FALSE;
-	s_HaveCheckedPath = TRUE;
-
-	BOOL ok = Camelot.DeclareSection(_T("Filters"), 10)
-			&& Camelot.DeclarePref( NULL, _T("ImageMagickDisable"), &ImageMagickFilter::s_Disable, 0, 1 )
-			&& Camelot.DeclarePref( NULL, _T("ImageMagickWarning"), &ImageMagickFilter::s_DoWarning, 0, 1 )
-			&& Camelot.DeclarePref( NULL, _T("ImageMagickPath"), &ImageMagickFilter::s_ImageMagickPath );
-
-	if (!ok || s_Disable)
-		return s_HaveImageMagick;
-
-	if (s_ImageMagickPath == _T(""))
-		s_ImageMagickPath = DIP_QUOTE(DEFAULT_IMAGEMAGICK_PATH);
-
-	wxArrayString output;
-	long /*TYPENOTE: Correct*/ ret=::wxExecute(wxString((const TCHAR *)s_ImageMagickPath)+_T(" --version"), output, wxEXEC_SYNC | wxEXEC_NODISABLE);
-	if (!ret && output.GetCount()>0)
-	{
-		wxString check = output[0];
-		wxString version;
-		if (check.StartsWith(_T("Version: ImageMagick "),&version))
-		{
-			wxStringTokenizer tk(version, _T(".:- "));
-			if (tk.CountTokens()>=3)
-			{
-				long /*TYPENOTE: Correct*/ v1,v2,v3=0;
-				tk.GetNextToken().ToLong(&v1);
-				tk.GetNextToken().ToLong(&v2);
-				tk.GetNextToken().ToLong(&v3);
-				double version = v1*10000.0+v2*100.0+v3;
-				if (version>=060000.0)
-				{
-					s_HaveImageMagick = TRUE;
-					s_DoWarning = TRUE; // warn them again if it ever goes away
-				}
-			}
-		}
+BOOL ImageMagickFilter::CheckPath() {
+  if (s_HaveCheckedPath) {
+    return s_HaveImageMagick;
+  }
+  s_HaveImageMagick = FALSE;
+  s_HaveCheckedPath = TRUE;
+  BOOL ok = Camelot.DeclareSection(_T("Filters"), 10)
+    && Camelot.DeclarePref( NULL, _T("ImageMagickDisable"), &ImageMagickFilter::s_Disable, 0, 1 )
+    && Camelot.DeclarePref( NULL, _T("ImageMagickWarning"), &ImageMagickFilter::s_DoWarning, 0, 1 )
+    && Camelot.DeclarePref( NULL, _T("ImageMagickPath"), &ImageMagickFilter::s_ImageMagickPath );
+  if (!ok || s_Disable) {
+    return s_HaveImageMagick;
+  }
+  if (s_ImageMagickPath == _T("")) {
+    s_ImageMagickPath = DIP_QUOTE(DEFAULT_IMAGEMAGICK_PATH);
+  }
+  wxArrayString output;
+  /*TYPENOTE: Correct*/
+  long ret = ::wxExecute(wxString((const TCHAR *)s_ImageMagickPath)+
+			 _T(" --version"),
+			 output,
+			 wxEXEC_SYNC | wxEXEC_NODISABLE);
+  if (!ret && output.GetCount()>0) {
+    wxString check = output[0];
+    wxString version;
+    if (check.StartsWith(_T("Version: ImageMagick "),&version)) {
+      wxStringTokenizer tk(version, _T(".:- "));
+      if (tk.CountTokens()>=3) {
+	long /*TYPENOTE: Correct*/ v1,v2,v3=0;
+	tk.GetNextToken().ToLong(&v1);
+	tk.GetNextToken().ToLong(&v2);
+	tk.GetNextToken().ToLong(&v3);
+	double version = v1*10000.0+v2*100.0+v3;
+	if (version>=060000.0) {
+	  s_HaveImageMagick = TRUE;
+	  s_DoWarning = TRUE; // warn them again if it ever goes away
 	}
-
-	if (!s_HaveImageMagick && s_DoWarning)
-	{
-		InformWarning(_R(IDS_WARN_NOIMAGEMAGICK), _R(IDS_OK));
-		s_DoWarning = FALSE; // disable the warning on subsequent runs
-	}
-
-	return s_HaveImageMagick;		
+      }
+    }
+  }
+  if (!s_HaveImageMagick && s_DoWarning) {
+    InformWarning(_R(IDS_WARN_NOIMAGEMAGICK), _R(IDS_OK));
+    s_DoWarning = FALSE; // disable the warning on subsequent runs
+  }
+  return s_HaveImageMagick;
 }
 
 /********************************************************************************************
@@ -1556,4 +1550,4 @@ ImageMagickOILFilter::ImageMagickOILFilter(Filter* pFilter, ResourceID FilterNam
 {
 	FilterName.Load(FilterNameID);
 	FilterExt.Load(FilterExtID);
-} 
+}

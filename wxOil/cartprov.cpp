@@ -102,6 +102,7 @@ service marks of Xara Group Ltd. All rights in these marks are reserved.
 #include "cartprov.h"
 #include "camframe.h"
 #include "cartctl.h"
+#include "rendbits.h"
 
 CamArtProvider * CamArtProvider::m_ArtProvider = NULL;
 
@@ -996,10 +997,12 @@ wxString CamArtProvider::GetTextInfoOrDraw(ResourceID r, CamArtFlags f, wxDC &dc
 
       if (!tcname)
 	{
-	  // If this goes off, then somehow we've been passed a resource ID without a reverse
-	  // bitmap lookup. This can normally only happen if the resource ID is corrupted, or
+	  // If this goes off, then somehow we've been passed a
+	  // resource ID without a reverse bitmap lookup. This can
+	  // normally only happen if the resource ID is corrupted, or
 	  // the resources are corrupted
-	  ERROR3_PF(("Cannot get text for resource %d", r));
+	  TCHAR cannot_get_text_resources[] = _T("Cannot get text for resource %d");
+	  ERROR3_PF((cannot_get_text_resources, r));
 	  return wxEmptyString;
 	}
     }
@@ -1144,14 +1147,15 @@ wxImage * CamArtProvider::MakeBitmap(ResourceIDWithFlags ResWithFlags)
 		tcname = CamResource::GetObjectNameFail(r);
 	}
 
-	if (!tcname)
-	{
-		// If this goes off, then somehow we've been passed a resource ID without a reverse
-		// bitmap lookup. This can normally only happen if the resource ID is corrupted, or
-		// the resources are corrupted
-		Error::XComplain("Cannot get bitmap name for resource %d", r);
-		delete pBitmap;
-		return FALSE;
+	if (!tcname) {
+	  // If this goes off, then somehow we've been passed a
+	  // resource ID without a reverse bitmap lookup. This can
+	  // normally only happen if the resource ID is corrupted, or
+	  // the resources are corrupted
+	  TCHAR cannot_get_bitmap[] = _T("Cannot get bitmap name for resource %d");
+	  Error::XComplain(cannot_get_bitmap, r);
+	  delete pBitmap;
+	  return FALSE;
 	}
 
 	wxString basename(tcname);

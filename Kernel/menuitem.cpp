@@ -720,36 +720,30 @@ MenuItem *MenuItem::GetNextMenuItem(MenuItem* CurrItem)
 		return (MenuItem*)(SubMenuItems->GetNext(CurrItem));
 }
 
-/********************************************************************************************
-
+/***************************************************************************
 >	BOOL MenuItem::AddMenuItem(MenuItem newItem)
 
 	Author:		Mario_Shamtani (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	17/6/93
 	Inputs:		New MenuItem
 	Outputs:	None
-	Returns:	True if MenuItem is added successfully
-				False if MenuItem isn't added 
+	Returns:        True if MenuItem is added successfully False if
+			MenuItem isn't added
 	Purpose:	Adds a MenuItem to a MenuItem. 
 	Errors:		None
+***************************************************************************/
 
-********************************************************************************************/
-
-BOOL MenuItem::AddMenuItem(MenuItem *newItem)
-{
-	if (SubMenuItems == NULL)     
-	{
-		SubMenuItems = new List();
-		ERRORIF(!SubMenuItems, _R(IDE_NOMORE_MEMORY), FALSE);
-	}
-
-	if (SubMenuItems->FindPosition(newItem) <= NOT_IN_LIST)
-	{
-		SubMenuItems->AddTail(newItem);
-		return TRUE;
-	}
-	else
-		return FALSE;
+BOOL MenuItem::AddMenuItem(MenuItem *newItem) {
+  if (SubMenuItems == NULL) {
+    SubMenuItems = new List();
+    ERRORIF(!SubMenuItems, _R(IDE_NOMORE_MEMORY), FALSE);
+  }
+  if (SubMenuItems->FindPosition(newItem) <= NOT_IN_LIST) {
+    SubMenuItems->AddTail(newItem);
+    return TRUE;
+  } else {
+    return FALSE;
+  }
 }
 
 /********************************************************************************************

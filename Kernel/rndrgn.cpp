@@ -1512,7 +1512,7 @@ void RenderRegion::SetTextAttributes(ChangeFillAttrType Type)
 			break;
 
 		default:
-			ERROR3_PF(("Invalid attribute type (%d) in SetFillAttributes", Type));
+		  ERROR3_PF((_T("Invalid attribute type (%d) in SetFillAttributes"), Type));
 			break;
 	}
 }
@@ -1603,7 +1603,7 @@ void RenderRegion::SetLineAttributes(ChangeLineAttrType Type)
 			break;
 
 		default:
-			ERROR3_PF(("Invalid attribute type (%d) in SetLineAttributes", Type));
+		  ERROR3_PF((_T("Invalid attribute type (%d) in SetLineAttributes"), Type));
 			break;
 	}
 }
@@ -1683,7 +1683,7 @@ void RenderRegion::SetFillAttributes(ChangeAttrType Type)
 			break;
 
 		default:
-			ERROR3_PF(("Invalid attribute type (%d) in SetFillAttributes", Type));
+		  ERROR3_PF((_T("Invalid attribute type (%d) in SetFillAttributes"), Type));
 			break;
 	}
 }

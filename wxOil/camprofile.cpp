@@ -439,29 +439,27 @@ void CamProfile::UpdateOilTimes()
 ********************************************************************************************/
 
 
-void CamProfile::GetTimeString(TCHAR * pTime, UINT32 length)
-{
-	ERROR3IF(!Inited, "Profiling system not yet initialized");
-	UpdateOilTimes();
-	if ((length >= 26 + 6) && pCurrent && Running && !pCurrent->Zombie)
-	{
-		// Read from LastOilTime
-		UINT64 Time=LastOilTime;
-		// Time is now in microseconds since 1 Jan 1970
-		UINT64 uSecs = Time % 1000000;
-		UINT64 Secs = Time / 1000000;
-		time_t t = Secs;
-
-		//Ask wx for a string with the time
-		wxDateTime TheTime(t);
-		wxString sTime(TheTime.FormatISOTime());
-
-		// Now camSnprintf this into the string. This turns it into UNICODE if appropriate
-		camSnprintf (pTime, length, _T("%s.%06d"), sTime.c_str(), uSecs);
-	} else {
-	  camStrncpy(pTime, _T("[UNAVAILABLE]"), length);
-	}
-	pTime[length-1]=0; // ensure string terminated - string copy primatives do funny thing
+void CamProfile::GetTimeString(TCHAR * pTime, UINT32 length) {
+  ERROR3IF(!Inited, "Profiling system not yet initialized");
+  UpdateOilTimes();
+  if ((length >= 26 + 6) && pCurrent && Running && !pCurrent->Zombie) {
+    // Read from LastOilTime
+    UINT64 Time=LastOilTime;
+    // Time is now in microseconds since 1 Jan 1970
+    UINT64 uSecs = Time % 1000000;
+    UINT64 Secs = Time / 1000000;
+    time_t t = Secs;
+    //Ask wx for a string with the time
+    wxDateTime TheTime(t);
+    wxString sTime(TheTime.FormatISOTime());
+    // Now camSnprintf this into the string. This turns it into
+    // UNICODE if appropriate
+    camSnprintf (pTime, length, "%s.%06llu", sTime.c_str(), uSecs);
+  } else {
+    camStrncpy(pTime, _T("[UNAVAILABLE]"), length);
+  }
+  // ensure string terminated - string copy primatives do funny thing
+  pTime[length-1]=0;
 }
 
 

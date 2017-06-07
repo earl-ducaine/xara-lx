@@ -740,7 +740,7 @@ void BevelTool::ChangeCursor(Cursor* pCursor)
 void BevelTool::OnClick( DocCoord PointerPos, ClickType Click, ClickModifiers ClickMods,
 						Spread* pSpread )
 {
-	ERROR3IF_PF(pSpread==NULL,("pSpread is NULL"));
+  ERROR3IF_PF(pSpread==NULL,(_T("pSpread is NULL")));
 
 	if (ClickMods.Menu) return;							// Don't do anything if the user clicked the Menu button
 

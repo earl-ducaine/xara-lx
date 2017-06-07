@@ -2529,7 +2529,7 @@ void OpChangeBrush::GetOpName(String_256* OpName)
 		case CHANGEBRUSH_TRANSP_PRESSURE:	IDS = _R(IDS_BRUSHTRANSP_PRESSURE); break;
 		case CHANGEBRUSH_REGEN:				break;
 		
-		default: ERROR3_PF(("Unknown flag type (%d)",ChangeType));  break;
+	default: ERROR3_PF((_T("Unknown flag type (%d)"),ChangeType));  break;
 	}
 
 	*OpName = String_256(IDS);

@@ -451,17 +451,14 @@ BOOL PNGFilter::ReadFromFile(OILBitmap* pOilBitmap)
 	return TRUE;
 }
 
-/********************************************************************************************
-
+/**************************************************************************
 >	virtual BOOL PNGFilter::GetExportOptions(BitmapExportOptions* pOptions)
 
 	Author:		Colin_Barfoot (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	12/11/96
 	Purpose:	See BaseBitmapFilter for interface details
-
-********************************************************************************************/
-BOOL PNGFilter::GetExportOptions(BitmapExportOptions* pOptions)
-{
+***************************************************************************/
+BOOL PNGFilter::GetExportOptions(BitmapExportOptions* pOptions) {
 	ERROR2IF(pOptions == NULL, FALSE, "NULL Args");
 
 	PNGExportOptions* pPNGOptions = (PNGExportOptions*)pOptions;
@@ -639,78 +636,69 @@ UINT32 PNGFilter::GetExportMsgID()
 	return ExportingMsgID;
 }
 
-/********************************************************************************************
-
+/***************************************************************************
 >	BOOL PNGFilter::EndWriteToFile( )
 
 	Author:		Neville_Humphrys (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	14/5/96
 	Inputs:		-
-	Purpose:	Cleans up after writing the bitmap data out to a file. Inherited classes
-				override this to write in different file formats.
-				This is slightly different to most other bitmap filters in that it is here
-				that the data actually gets written out to file, after doing the transparency
-				translation, if required.
+	Purpose:        Cleans up after writing the bitmap data out to a
+			file. Inherited classes override this to write
+			in different file formats.  This is slightly
+			different to most other bitmap filters in that
+			it is here that the data actually gets written
+			out to file, after doing the transparency
+			translation, if required.
 	Returns:	TRUE if worked, FALSE if failed.
-
-********************************************************************************************/
-BOOL PNGFilter::EndWriteToFile()
-{
-	if (GeneratingOptimisedPalette())
-		return TRUE;		// No need to output anything
-
-	//  Can reset the band number now.
-	m_BandNumber = 0;
-
-	PNGExportOptions* pPNGOptions = (PNGExportOptions*)GetBitmapExportOptions();
-	ERROR2IF(pPNGOptions == NULL, FALSE, "NULL Args");
-	ERROR3IF(!pPNGOptions->IS_KIND_OF(PNGExportOptions), "pPNGOptions isn't");
-
-	// Do the transparency translation just before we write out the data as a PNG.
-	// This involves doing a 1 bpp export of the same area and using this to work
-	// out which areas are transparent or not.
-	// Only do this if the user has requested transparency and we outputting at 8bpp
-	BOOL ok = TRUE;
-	BOOL SaveDataOut = TRUE;
-
-	if (BadExportRender)
-	{
-		// Delete our whitearea bitmap
-		if (pTempBitmapMask != NULL)
-			CCFree(pTempBitmapMask);
-
-		pTempBitmapMask = NULL;
-	}
-
-	// Save the data out if required. Only if we exported ok.
-	if (SaveDataOut && !BadExportRender)
-	{
-		if (ok)
-		{
-			// Now that we know the transparent index we can output the PNG header
-			ok = DestPNG.OutputPNGHeader(OutputFile, NULL, pPNGOptions->WantInterlaced(),
-										pPNGOptions->GetTransparencyIndex(),
-										pPNGOptions->GetDepth() <= 8 ? pPNGOptions->GetLogicalPalette() : NULL);
-		}
-
-		// Actually write the destination bitmap out to the file showing an hourglass
-		// and/or progress bar as we go. Always show the Exporting message.
-		// Need to do in one go due to interlacing
-		if (ok)
-		{
-			String_64 ProgressString(ExportingMsgID);
-			ProgressString = GetExportProgressString(OutputFile, ExportingMsgID);
-			BeginSlowJob(100, FALSE, &ProgressString);
-			
-			DestPNG.OutputPNGBits(OutputFile, DestPNG.GetDestBitmapBits());
-			
-			EndSlowJob();
-		}
-	}
-
-	ASSERT(ok);
-	
-	return DestPNG.TidyUp();
+***************************************************************************/
+BOOL PNGFilter::EndWriteToFile() {
+  // No need to output anything
+  if (GeneratingOptimisedPalette()) {
+    return TRUE;
+  }
+  //  Can reset the band number now.
+  m_BandNumber = 0;
+  PNGExportOptions* pPNGOptions = (PNGExportOptions*)GetBitmapExportOptions();
+  ERROR2IF(pPNGOptions == NULL, FALSE, "NULL Args");
+  ERROR3IF(!pPNGOptions->IS_KIND_OF(PNGExportOptions), "pPNGOptions isn't");
+  // Do the transparency translation just before we write out the data
+  // as a PNG.  This involves doing a 1 bpp export of the same area
+  // and using this to work out which areas are transparent or not.
+  // Only do this if the user has requested transparency and we
+  // outputting at 8bpp
+  BOOL ok = TRUE;
+  BOOL SaveDataOut = TRUE;
+  if (BadExportRender) {
+    // Delete our whitearea bitmap
+    if (pTempBitmapMask != NULL) {
+      CCFree(pTempBitmapMask);
+    }
+    pTempBitmapMask = NULL;
+  }
+  // Save the data out if required. Only if we exported ok.
+  if (SaveDataOut && !BadExportRender) {
+    //if (ok) {
+      // Now that we know the transparent index we can output the PNG header
+      ok = DestPNG.OutputPNGHeader
+	(OutputFile,
+	 NULL,
+	 pPNGOptions->WantInterlaced(),
+	 pPNGOptions->GetTransparencyIndex(),
+	 pPNGOptions->GetDepth() <= 8 ? pPNGOptions->GetLogicalPalette() : NULL);
+      //}
+    // Actually write the destination bitmap out to the file showing
+    // an hourglass and/or progress bar as we go. Always show the
+    // Exporting message.  Need to do in one go due to interlacing
+    if (ok) {
+      String_64 ProgressString(ExportingMsgID);
+      ProgressString = GetExportProgressString(OutputFile, ExportingMsgID);
+      BeginSlowJob(100, FALSE, &ProgressString);
+      DestPNG.OutputPNGBits(OutputFile, DestPNG.GetDestBitmapBits());
+      EndSlowJob();
+    }
+  }
+  ASSERT(ok);
+  return DestPNG.TidyUp();
 }
 
 /********************************************************************************************

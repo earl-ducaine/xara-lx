@@ -52,7 +52,7 @@ endif
 XaraLX_LDFLAGS		= --debug -L$(srcdir)/$(CDRAW_LIB_DIR) -L$(srcdir)/$(CDRAW_LIB_ALT_DIR)  $(WX_LIBS) $(LIBS) $(LIBXML2_LIBS) -ljpeg -lCDraw -lCDraw-alt \
 			  -lgtk-x11-2.0 -lgdk-x11-2.0 -latk-1.0 -lgio-2.0 -lpangoft2-1.0 -lpangocairo-1.0 \
 			  -lgdk_pixbuf-2.0 -lcairo -lpango-1.0 -lfreetype -lfontconfig -lgobject-2.0 -lglib-2.0 \
-			  $(srcdir)/$(PNG_LIB_DIR)/libpng.a -lz
+			  $(srcdir)/$(PNG_LIB_DIR)/libpng16.a -lz
 #			  -lpng
 XaraLX_LD			?= $(CXX)
 
