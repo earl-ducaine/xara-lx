@@ -655,7 +655,7 @@ BOOL DialogManager::PostCreate(DialogOp* pDialogOp, INT32 OpeningPage) {
   INT32	DialogHeight = DialogRect.GetHeight();
   // Create the WindowIDItem which will be stored in the
   // DialogPosition.
-  CWindowIDItem *pWinID = new CWindowIDItem;
+  CWindowIDItem* pWinID = new CWindowIDItem;
   if(NULL == pWinID) {
     // We need to destroy the dialog window
     pDialogWnd->PopEventHandler(FALSE);
@@ -7762,7 +7762,7 @@ BOOL DialogManager::CreateTabbedDialog(DialogTabOp* pTabDlgOp,
   if (OpeningPage != -1) {
     // Determine if this dialog has been created before
     DialogPosition* pPosDetails = FindDialogPositionRecord( mainDlgID );
-n    if (pPosDetails != NULL) {
+    if (pPosDetails != NULL) {
       // The dialog has been created before so check if the specified page was the
       // last active one. If it was then everything should be ok.
       // if (OpeningPage != pPosDetails->ActivePageIndex)

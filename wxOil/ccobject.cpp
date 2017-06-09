@@ -463,7 +463,7 @@ Allocated:
 // We'll remove the label as well (to get rid of the warning)
 #endif
 	// if the pointer is NULL then we should set the error handler
-	if (pStart==NULL)
+	if (pStart == NULL)
 	{
 		TRACE( wxT("ALERT! ALERT! new is about to return NULL, Watch out for unhandled errors\n") );
 		Error::SetError(_R(IDS_OUT_OF_MEMORY));
