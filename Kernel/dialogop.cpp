@@ -284,18 +284,16 @@ DialogOp::DialogOp()
 
 // The Create fn should only need to take a DialogOp param when the Bar system is complete
 // and the current infobar merging stuff removed 
-BOOL DialogOp::Create() 
-{                                      
-	// Create an instance of the dialog by calling the dialog managers Create method. The 
-
-	// The WindowID will be set by this call
-	BOOL Created = DlgMgr->Create(this, /*MainDlgInst,*/ DlgResID, /*SubDlgInst,*/ SubDlgID, DlgMode, 
-																	PageToOpen, ParentDlgWnd);
-	
-	ERRORIF(!Created, _R(IDT_DIALOG_CREATEFAIL), FALSE);
-
-	// It all worked
-	return TRUE;
+BOOL DialogOp::Create() {                                      
+  // Create an instance of the dialog by calling the dialog managers
+  // Create method. The The WindowID will be set by this call
+  //
+  // old vars used: MainDlgInst, SubDlgInst, 
+  BOOL Created = DlgMgr->Create(this, DlgResID, SubDlgID, DlgMode, PageToOpen,
+				ParentDlgWnd);
+  ERRORIF(!Created, _R(IDT_DIALOG_CREATEFAIL), FALSE);
+  // It all worked
+  return TRUE;
 }
 
 /********************************************************************************************

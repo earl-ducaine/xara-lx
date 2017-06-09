@@ -330,115 +330,101 @@ class DialogBarOp;
 class DialogManager: public CCObject
 {
 	friend class DialogEventHandler;
-	friend class wxPropertySheetDialog; // Is a friend because when a property sheet is created
-							   // it needs to call PostCreate.
+	// Is a friend because when a property sheet is created it
+	// needs to call PostCreate.
+	friend class wxPropertySheetDialog; 
 public:
-
-	DialogManager();	 // Constructor
-
-	// The DialogManager's create function creates a DialogOp window
-   	static BOOL Create(DialogOp* DlgOp, /* HINSTANCE MainInstance, */ CDlgResID MainDlgID,
-					 /*HINSTANCE SubInstance, */ CDlgResID SubDlgID,
-						CDlgMode Mode = MODELESS, INT32 OpeningPage = -1, CWindowID ParentWnd = NULL);
-private:
-
+	// Constructor
+	DialogManager();	 
+	// The DialogManager's create function creates a DialogOp
+	// window
+   	static BOOL Create(DialogOp* DlgOp,
+			   CDlgResID MainDlgID,
+			   CDlgResID SubDlgID,
+			   CDlgMode Mode = MODELESS,
+			   INT32 OpeningPage = -1,
+			   CWindowID ParentWnd = NULL);
+ private:
 	static void CreateRecursor(wxWindow * pwxWindow);
-
 	// Creates a DialogBarOp
 	static BOOL CreateBar(DialogBarOp* DlgOp);
-	static BOOL CreateTabbedDialog(DialogTabOp* pTabDlgOp, CDlgMode Mode, INT32 OpeningPage, CDlgResID MainDlgID );
-
-
-	// Post create gets called after a dialog window has been created.
+	static BOOL CreateTabbedDialog(DialogTabOp* pTabDlgOp, CDlgMode Mode,
+				       INT32 OpeningPage, CDlgResID MainDlgID );
+	// Post create gets called after a dialog window has been
+	// created.
 	static BOOL PostCreate(DialogOp * pDialogOp, INT32 OpeningPage);
-
 public:
-	// This should eventually be the only Create method that we require. If the DialogOp is
-	// a BarDialogOp then it will create a window of the correct type and attach it to the
-	// relevant docking bar. Otherwise it will create a regular modeless dialog.
+	// This should eventually be the only Create method that we
+	// require. If the DialogOp is a BarDialogOp then it will
+	// create a window of the correct type and attach it to the
+	// relevant docking bar. Otherwise it will create a regular
+	// modeless dialog.
 	CWindowID Create(DialogOp* DialogOp);
-
 	// The open method displays the dialog box on the display.
 	static void Open(CWindowID WindowID, DialogOp* DlgOp);
-
 	// The close method removes the dialog from the display but keeps all system
 	// resources associated with it. It hides the dialog.
 	static void Close(CWindowID WindowID, DialogOp* DlgOp);
-
 	// Place dialog above or below exist controls in dialog
 	static BOOL MergeDialogs( CWindowID Dialog, CWindowID Mergee, bool fAbove );
-
 	// Brings a dialog to the top-most z-order position
 	static BOOL BringToTop(CWindowID WindowID, DialogOp* pDlgOp);
-
 	// Get the book control
-	static wxBookCtrlBase * GetBookControl(CWindowID WindowID, CGadgetID Gadget =0 );
-
+	static wxBookCtrlBase* GetBookControl(CWindowID WindowID, CGadgetID Gadget =0 );
 	// Function to determine if a gadget is of a type that can be ticked
-	static BOOL IsGadgetTickable(CWindowID WindowID,
-						 		 CGadgetID Gadget);
-
-	// Used to abort the dragging of the custom colour picker control
-	// from within the colour editor
+	static BOOL IsGadgetTickable(CWindowID WindowID, CGadgetID Gadget);
+	// Used to abort the dragging of the custom colour picker
+	// control from within the colour editor
 	static BOOL ColourPickerAbort(CWindowID WindowID, CGadgetID Gadget, WPARAM wParam = 0);
-
-	// The delete method will delete all system resources associated with the Dialog
-	// box and any information which is being kept about the dialog.
+	// The delete method will delete all system resources
+	// associated with the Dialog box and any information which is
+	// being kept about the dialog.
 	static void Delete(CWindowID WindowID, DialogOp* DlgOp);
-
-	// Called by SendDialogMessage to send messages for mouse events - for cc_DialogDraw
-	// controls, this then sends an extra chunk of useful information to the owning Dlg,
-	// so that it can handle the click intelligently.
+	// Called by SendDialogMessage to send messages for mouse
+	// events - for cc_DialogDraw controls, this then sends an
+	// extra chunk of useful information to the owning Dlg, so
+	// that it can handle the click intelligently.
 	static void ProcessMouseEvent(CDlgMessage DialogMessageType,
-									wxWindow *pDlg, UINT32 wParam, INT32 lParam);
-
-	// The following functions are called by same named functions in the DialogOp
-	// class. The DialogOp functions are provided for ease of use and do not have a
-	// CWindowID argument.
-
-
+				      wxWindow *pDlg,
+				      UINT32 wParam,
+				      INT32 lParam);
+	// The following functions are called by same named functions
+	// in the DialogOp class. The DialogOp functions are provided
+	// for ease of use and do not have a CWindowID argument.
 	static wxWindow* GetGadget(CWindowID WindowID, int Gadget);
 	static  wxWindow* GetToolGadget(CWindowID WindowID, CGadgetID Gadget);
-	static OpDescriptor * GetGadgetOpDescriptor(CWindowID WindowID, CGadgetID Gadget);
-
-    // -------------------------------------------------------------------------------------
+	static OpDescriptor * GetGadgetOpDescriptor(CWindowID WindowID,
+						    CGadgetID Gadget);
 	// Methods to set gadget values
-
 	static BOOL SetUnitGadgetValue( CWindowID WindowID,
-						 CGadgetID Gadget,
-					     UnitType Unit,
-			             MILLIPOINT value,
-			             BOOL EndOfList = TRUE,
-			     		 INT32 ListPos = 0
-			             );
-
+					CGadgetID Gadget,
+					UnitType Unit,
+					MILLIPOINT value,
+					BOOL EndOfList = TRUE,
+					INT32 ListPos = 0);
 	static BOOL SetDimensionUnitGadgetValue(CWindowID WindowID,
-											CGadgetID Gadget,
-											UnitType  units,
-											double    value,
-											Node*     pNode,
-											BOOL      IncludeUnitSpecifier = TRUE,
-											BOOL      EndOfList = FALSE,
-											INT32       ListPos   = 0);
-
+						CGadgetID Gadget,
+						UnitType units,
+						double value,
+						Node* pNode,
+						BOOL IncludeUnitSpecifier = TRUE,
+						BOOL EndOfList = FALSE,
+						INT32 ListPos = 0);
 	static BOOL SetLongGadgetValue(CWindowID WindowID,
-							CGadgetID Gadget,
-							INT32 value,
-							BOOL EndOfList = TRUE,
-			     			INT32 ListPos = 0);
-
+				       CGadgetID Gadget,
+				       INT32 value,
+				       BOOL EndOfList = TRUE,
+				       INT32 ListPos = 0);
 	static BOOL SetDoubleGadgetValue(CWindowID WindowID,
-							CGadgetID Gadget,
-							double value,
-							BOOL EndOfList = TRUE,
-			     			INT32 ListPos = 0);
-
+					 CGadgetID Gadget,
+					 double value,
+					 BOOL EndOfList = TRUE,
+					 INT32 ListPos = 0);
 	static BOOL SetStringGadgetValue(CWindowID WindowID,
-							  CGadgetID Gadget,
-							  UINT32 IDStrID,
-							  BOOL EndOfList = TRUE,
-			     			  INT32 ListPos = 0);
-
+					 CGadgetID Gadget,
+					 UINT32 IDStrID,
+					 BOOL EndOfList = TRUE,
+					 INT32 ListPos = 0);
 	static BOOL SetStringGadgetValue(CWindowID WindowID,
 							  CGadgetID Gadget,
 							  const StringBase& StrVal,

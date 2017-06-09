@@ -861,632 +861,629 @@ void RemoveUneededReportedErrors()
 	Errors:		Various. Get reported to the user.
 ********************************************************************************************/
 
-void OpMenuExport::DoWithParam(OpDescriptor*, OpParam* pParam)
-{
-	// DMc - need to do this so that compound nodes are treated appropriately
-	SaveSelection();
-	NormaliseSelection();
+void OpMenuExport::DoWithParam(OpDescriptor*, OpParam* pParam) {
+  // DMc - need to do this so that compound nodes are treated appropriately
+  SaveSelection();
+  NormaliseSelection();
 
-//Webster-Ranbirr-12\11\96
+  //Webster-Ranbirr-12\11\96
 #ifdef WEBSTER
-	// Temp. variable to store the filter type.
-	INT32 BitmapFilter = 0;
+  // Temp. variable to store the filter type.
+  INT32 BitmapFilter = 0;
 #endif //webster
 
-	// zero is a bad state for this to be in so ensure its not in that state
-	if (SelectedFilter == 0) SelectedFilter = -1;
-	if (SelectedBitmapFilter == 0) SelectedBitmapFilter = -1;
+  // zero is a bad state for this to be in so ensure its not in that state
+  if (SelectedFilter == 0) SelectedFilter = -1;
+  if (SelectedBitmapFilter == 0) SelectedBitmapFilter = -1;
 	
-	ERROR3IF(pParam != 0 && !pParam->IS_KIND_OF(BitmapExportParam),
-		"OpMenuExport::DoWithParam: OpParam passed is not a BitmapExportParam");
+  ERROR3IF(pParam != 0 && !pParam->IS_KIND_OF(BitmapExportParam),
+	   "OpMenuExport::DoWithParam: OpParam passed is not a BitmapExportParam");
 
-	// Check whether a parameter has been specified 
-	UINT32 Bpp = 0;
-	BitmapExportParam* pExportParam = (BitmapExportParam*) pParam;
-	if (pExportParam != 0)
+  // Check whether a parameter has been specified 
+  UINT32 Bpp = 0;
+  BitmapExportParam* pExportParam = (BitmapExportParam*) pParam;
+  if (pExportParam != 0)
+    {
+      // At present, this is only used to export the specifed bitmap so use a list
+      // of bitmap filters. We need to limit the bitmap filters to ones that can support
+      // the colour depth of the specified bitmap.
+      // Recover the bitmap pointer from the parameter passed in
+      KernelBitmap* pTheBitmap;
+      if (pExportParam->GetBitmapCount() == 0 ||
+	  (pTheBitmap = pExportParam->GetBitmap(0)) == 0)
 	{
-		// At present, this is only used to export the specifed bitmap so use a list
-		// of bitmap filters. We need to limit the bitmap filters to ones that can support
-		// the colour depth of the specified bitmap.
-		// Recover the bitmap pointer from the parameter passed in
-		KernelBitmap* pTheBitmap;
-		if (pExportParam->GetBitmapCount() == 0 ||
-			(pTheBitmap = pExportParam->GetBitmap(0)) == 0)
-		{
-			ERROR2RAW("OpMenuExport::DoWithParam: no bitmaps, or null pointer");
-			FailAndExecute();
-			RestoreSelection();
-			End();
-			return;
-		}
-
-		// If it is a 32 bpp bitmap then we do a conversion to 24. So really we should ask
-		// the filters whether they like 24bpp files. Otherwise, just the BMP filter will say
-		// yes.
-		Bpp = pTheBitmap->GetBPP();
-//		if (Bpp == 32) Bpp = 24;
-
-	//Webster-Ranbirr-12\11\96
-/*	#ifndef WEBSTER
+	  ERROR2RAW("OpMenuExport::DoWithParam: no bitmaps, or null pointer");
+	  FailAndExecute();
+	  RestoreSelection();
+	  End();
+	  return;
+	}
+      // If it is a 32 bpp bitmap then we do a conversion to 24. So
+      // really we should ask the filters whether they like 24bpp
+      // files. Otherwise, just the BMP filter will say yes.
+      Bpp = pTheBitmap->GetBPP();
+      // if (Bpp == 32) Bpp = 24;
+      //Webster-Ranbirr-12\11\96
+      /*	#ifndef WEBSTER
 		FilterString = BaseFileDialog::BuildFilterString(
-								FALSE,
-								DefaultBitmapFilterID,
-								&SelectedBitmapFilter,
-								CC_RUNTIME_CLASS(BitmapFilter),
-								Bpp,
-								pExportParam->GetBitmapCount());
-	#else
-*/		// Save a reference to the last selected Filter, in case Cancel is entered.
-		//BitmapFilter = SelectedBitmapFilter;
+		FALSE,
+		DefaultBitmapFilterID,
+		&SelectedBitmapFilter,
+		CC_RUNTIME_CLASS(BitmapFilter),
+		Bpp,
+		pExportParam->GetBitmapCount());
+		#else
+      */		// Save a reference to the last selected Filter, in case Cancel is entered.
+      //BitmapFilter = SelectedBitmapFilter;
 			
-		// Is this bitmap a compressed JPEG?
-		BitmapSource* pSource = 0;
-		BaseBitmapFilter* pDummyFilter;
+      // Is this bitmap a compressed JPEG?
+      BitmapSource* pSource = 0;
+      BaseBitmapFilter* pDummyFilter;
 
-		BOOL OriginalSourcePresent = pTheBitmap->GetOriginalSource(&pSource,&pDummyFilter); 
-		if (OriginalSourcePresent)
-		{
-			DefaultBitmapFilterID = FILTERID_EXPORT_JPEG;
-			SelectedBitmapFilter = 0; //FILTER_JPEG;
-		}
-		else
-		{
-
-		}
-
-		FilterString = BaseFileDialog::BuildFilterString(
-								FALSE,
-								DefaultBitmapFilterID,
-								&SelectedBitmapFilter,
-								CC_RUNTIME_CLASS(BitmapFilter),
-								Bpp,
-								pExportParam->GetBitmapCount());
-//	#endif //webster
-	}
-	else
+      BOOL OriginalSourcePresent = pTheBitmap->GetOriginalSource(&pSource,&pDummyFilter); 
+      if (OriginalSourcePresent)
 	{
-		// Get the list of export filters using all filters available
-		FilterString = BaseFileDialog::BuildFilterString(
-								FALSE,
-								SelectedFilterID,
-								&SelectedFilter);
+	  DefaultBitmapFilterID = FILTERID_EXPORT_JPEG;
+	  SelectedBitmapFilter = 0; //FILTER_JPEG;
 	}
-
-	if (FilterString == 0)
+      else
 	{
-		// Unable to build filter string - report error and finish operation.
-		InformError();
-		FailAndExecute();
 
-		// Finished the operation
-		RestoreSelection();
-		End();
-		return;
 	}
 
-	// Create the dialog box
-	ExportFileDialog FDialog(FilterString);
-	INT32 TheSelectedFilter = -1;
-	String_256 DefaultName;
+      FilterString = BaseFileDialog::BuildFilterString(
+						       FALSE,
+						       DefaultBitmapFilterID,
+						       &SelectedBitmapFilter,
+						       CC_RUNTIME_CLASS(BitmapFilter),
+						       Bpp,
+						       pExportParam->GetBitmapCount());
+      //	#endif //webster
+    }
+  else
+    {
+      // Get the list of export filters using all filters available
+      FilterString = BaseFileDialog::BuildFilterString(
+						       FALSE,
+						       SelectedFilterID,
+						       &SelectedFilter);
+    }
+
+  if (FilterString == 0)
+    {
+      // Unable to build filter string - report error and finish operation.
+      InformError();
+      FailAndExecute();
+
+      // Finished the operation
+      RestoreSelection();
+      End();
+      return;
+    }
+
+  // Create the dialog box
+  ExportFileDialog FDialog(FilterString);
+  INT32 TheSelectedFilter = -1;
+  String_256 DefaultName;
 	
-	FDialog.SetTitle(_R(IDT_EXPORT_TITLE));
+  FDialog.SetTitle(_R(IDT_EXPORT_TITLE));
 
-	// Note this ptr for use in JPEG export.
-//	KernelBitmap* pBitmap = pExportParam->GetBitmap(0);
-//	JPEGExportOptions::SetKernelBitmap(pBitmap);
+  // Note this ptr for use in JPEG export.
+  //	KernelBitmap* pBitmap = pExportParam->GetBitmap(0);
+  //	JPEGExportOptions::SetKernelBitmap(pBitmap);
 	
-	if (pExportParam == 0)
-		TheSelectedFilter = SelectedFilter;		   	// Using all available filters
-	else
-	{
-		// Exporting as a bitmap so fill in the name of the bitmap
-		KernelBitmap* pTheBitmap = pExportParam->GetBitmap(0);
+  if (pExportParam == 0)
+    TheSelectedFilter = SelectedFilter;		   	// Using all available filters
+  else
+    {
+      // Exporting as a bitmap so fill in the name of the bitmap
+      KernelBitmap* pTheBitmap = pExportParam->GetBitmap(0);
 
-		if (pTheBitmap->ActualBitmap)
-			DefaultName = pTheBitmap->ActualBitmap->GetName();
-		else
-			SetBitmapName(pTheBitmap, &DefaultName, pExportParam);
+      if (pTheBitmap->ActualBitmap)
+	DefaultName = pTheBitmap->ActualBitmap->GetName();
+      else
+	SetBitmapName(pTheBitmap, &DefaultName, pExportParam);
 		
-		// Pass this name onto the dialog box
-		FDialog.SetDefaultFileName(DefaultName);
-		FDialog.ExportABitmap(TRUE, pTheBitmap);
+      // Pass this name onto the dialog box
+      FDialog.SetDefaultFileName(DefaultName);
+      FDialog.ExportABitmap(TRUE, pTheBitmap);
 
-		// Now work out the selected index, if there is one
-		TheSelectedFilter = SelectedBitmapFilter;
-	}
+      // Now work out the selected index, if there is one
+      TheSelectedFilter = SelectedBitmapFilter;
+    }
 
-	// Select the desired filter, if the default i.e. -1 then set 1 as this is the first valid index.
-	FDialog.SetSelectedFilterIndex(TheSelectedFilter != -1 ? TheSelectedFilter : 1);
+  // Select the desired filter, if the default i.e. -1 then set 1 as this is the first valid index.
+  FDialog.SetSelectedFilterIndex(TheSelectedFilter != -1 ? TheSelectedFilter : 1);
 
-	// Select the desired path
-	if (DefaultExportFilterPath.Length() > 0)
-		FDialog.SetInitialDirectory(DefaultExportFilterPath);
+  // Select the desired path
+  if (DefaultExportFilterPath.Length() > 0)
+    FDialog.SetInitialDirectory(DefaultExportFilterPath);
 
-	// We maybe asking uses to specify a file name more than
-	// once if theie first guess already exists
-	PathName Path;
-	Filter* pFilter;
-	do
+  // We maybe asking uses to specify a file name more than
+  // once if theie first guess already exists
+  PathName Path;
+  Filter* pFilter;
+  do
+    {
+      // 'Do' the dialog and get that filename that we require
+      BOOL DlgResult = FDialog.OpenAndGetFileName();
+      if (!DlgResult)
 	{
-		// 'Do' the dialog and get that filename that we require
-		BOOL DlgResult = FDialog.OpenAndGetFileName();
-		if (!DlgResult)
-		{
-		//Webster-Ranbirr-12\11\96	
-		#ifdef WEBSTER
-			// If cancel is entered then ensure that our filter 
-			// is set to the previous selected filter.
-			SelectedBitmapFilter = BitmapFilter; 
-		#endif //webster
+	  //Webster-Ranbirr-12\11\96	
+#ifdef WEBSTER
+	  // If cancel is entered then ensure that our filter 
+	  // is set to the previous selected filter.
+	  SelectedBitmapFilter = BitmapFilter; 
+#endif //webster
 
-			CCFree(FilterString);
-			FilterString = 0;
-			RestoreSelection();
-			End();
-			return;
-		}
-
-		// Remember the filter for next time.
-		TheSelectedFilter = FDialog.GetSelectedFilterIndex();
-		if (pExportParam == 0)
-			SelectedFilter = TheSelectedFilter; 		// Using all available filters
-		else
-			SelectedBitmapFilter = TheSelectedFilter; 	// Exporting as a bitmap only
-
-		// Get the filename.
-		FDialog.GetChosenFileName(&Path);
-
-		// Find the filter that the user chose
-		for (pFilter = Filter::GetFirst();
-			 pFilter != 0;
-			 pFilter = Filter::GetNext(pFilter))
-		{
-			if( NULL == pFilter->pOILFilter )
-				continue;
-
-			if (pFilter->GetFlags().CanExport && 
-				pFilter->pOILFilter->Position == TheSelectedFilter)
-					// This is the filter!
-					break;
-		}
-
-		if (pFilter == 0)
-		{
-			InformError(_R(IDT_CANT_FIND_FILTER));
-
-			// Get rid of the filter string buffer
-			CCFree(FilterString);
-			FilterString = 0;
-			RestoreSelection();
-			FailAndExecute(); 
-			End();
-			return;
-		}
-
-		// This is now taken care of in FileDlgs.cpp on the ok as it then checks if the file
-		// exists or not. If we do it here then this does not happen.
-		// Unfortunately, chnages made to the string in the dialog do not filter through
-		// and so we must fix it up here as well.
-		// Always make sure that the filter's default extension is on if the user has not
-		// specified an extension.
-		// Get the OILFilter class to check the extension for the selected or default filter
-		// matches
-		if (!pFilter->pOILFilter->DoesExtensionOfPathNameMatch(&Path))
-		{	
-			// Extension is either blank or does not match the one supplied by the filter
-			// Ask the OILFilter class to fix it for us
-			pFilter->pOILFilter->FixExtensionOfPathName(&Path);
-		}
-
-		// Ensure that the path is valid
-		if (!Path.IsValid())
-		{
-			InformError();
-
-			// Get rid of the filter string buffer
-			CCFree(FilterString);
-			FilterString = 0;
-			FailAndExecute(); 
-			RestoreSelection();
-			End();
-			return;
-		}
-
-		// We must manually check the file doesn't exit here
-		if( SGLibOil::FileExists( &Path ) )
-		{
-			ErrorInfo Info;
-			Info.ErrorMsg = _R(IDS_SAVEAS_OVERWRITE);
-			Info.Button[0] = _R(IDS_OVERWRITE);
-			Info.Button[1] = _R(IDB_SAVEAS);
-			Info.Button[2] = _R(IDS_CANCEL);
-
-			UINT32 Answer = AskQuestion(&Info);
-
-			if (Answer==_R(IDS_OVERWRITE))
-			{
-				// Just use the name the user selected to overwite the existing file
-				break;
-			}
-			else if (Answer== _R(IDB_SAVEAS))
-			{
-				// User wants to save as some other name
-				continue;
-			}
-			else if (Answer==_R(IDS_CANCEL))
-			{
-				// User has chosen to abort the operation
-				End();
-				return;
-			}
-			else
-				ERROR3("Unknown Answer from AskQuestion");
-		}
+	  CCFree(FilterString);
+	  FilterString = 0;
+	  RestoreSelection();
+	  End();
+	  return;
 	}
-	while( SGLibOil::FileExists( &Path ) ); 
 
-PORTNOTE("other", "Removed BmapPrevDlg usage" )
+      // Remember the filter for next time.
+      TheSelectedFilter = FDialog.GetSelectedFilterIndex();
+      if (pExportParam == 0)
+	SelectedFilter = TheSelectedFilter; 		// Using all available filters
+      else
+	SelectedBitmapFilter = TheSelectedFilter; 	// Exporting as a bitmap only
+
+      // Get the filename.
+      FDialog.GetChosenFileName(&Path);
+
+      // Find the filter that the user chose
+      for (pFilter = Filter::GetFirst();
+	   pFilter != 0;
+	   pFilter = Filter::GetNext(pFilter))
+	{
+	  if( NULL == pFilter->pOILFilter )
+	    continue;
+
+	  if (pFilter->GetFlags().CanExport && 
+	      pFilter->pOILFilter->Position == TheSelectedFilter)
+	    // This is the filter!
+	    break;
+	}
+
+      if (pFilter == 0)
+	{
+	  InformError(_R(IDT_CANT_FIND_FILTER));
+
+	  // Get rid of the filter string buffer
+	  CCFree(FilterString);
+	  FilterString = 0;
+	  RestoreSelection();
+	  FailAndExecute(); 
+	  End();
+	  return;
+	}
+
+      // This is now taken care of in FileDlgs.cpp on the ok as it then checks if the file
+      // exists or not. If we do it here then this does not happen.
+      // Unfortunately, chnages made to the string in the dialog do not filter through
+      // and so we must fix it up here as well.
+      // Always make sure that the filter's default extension is on if the user has not
+      // specified an extension.
+      // Get the OILFilter class to check the extension for the selected or default filter
+      // matches
+      if (!pFilter->pOILFilter->DoesExtensionOfPathNameMatch(&Path))
+	{	
+	  // Extension is either blank or does not match the one supplied by the filter
+	  // Ask the OILFilter class to fix it for us
+	  pFilter->pOILFilter->FixExtensionOfPathName(&Path);
+	}
+
+      // Ensure that the path is valid
+      if (!Path.IsValid())
+	{
+	  InformError();
+
+	  // Get rid of the filter string buffer
+	  CCFree(FilterString);
+	  FilterString = 0;
+	  FailAndExecute(); 
+	  RestoreSelection();
+	  End();
+	  return;
+	}
+
+      // We must manually check the file doesn't exit here
+      if( SGLibOil::FileExists( &Path ) )
+	{
+	  ErrorInfo Info;
+	  Info.ErrorMsg = _R(IDS_SAVEAS_OVERWRITE);
+	  Info.Button[0] = _R(IDS_OVERWRITE);
+	  Info.Button[1] = _R(IDB_SAVEAS);
+	  Info.Button[2] = _R(IDS_CANCEL);
+
+	  UINT32 Answer = AskQuestion(&Info);
+
+	  if (Answer==_R(IDS_OVERWRITE))
+	    {
+	      // Just use the name the user selected to overwite the existing file
+	      break;
+	    }
+	  else if (Answer== _R(IDB_SAVEAS))
+	    {
+	      // User wants to save as some other name
+	      continue;
+	    }
+	  else if (Answer==_R(IDS_CANCEL))
+	    {
+	      // User has chosen to abort the operation
+	      End();
+	      return;
+	    }
+	  else
+	    ERROR3("Unknown Answer from AskQuestion");
+	}
+    }
+  while( SGLibOil::FileExists( &Path ) ); 
+
+  PORTNOTE("other", "Removed BmapPrevDlg usage" )
 #if !defined(EXCLUDE_FROM_XARALX)
-	// Need to set the path for the export dialog (used for image map stuff etc)
-	BmapPrevDlg::m_pthExport = Path;
+    // Need to set the path for the export dialog (used for image map stuff etc)
+    BmapPrevDlg::m_pthExport = Path;
 #endif
 	
-	// Extract directory name (minus terminating backslash) and remember for next time.
-	DefaultExportFilterPath = Path.GetLocation(FALSE);
+  // Extract directory name (minus terminating backslash) and remember for next time.
+  DefaultExportFilterPath = Path.GetLocation(FALSE);
 			
-	UINT32 TheSelectedFilterID = pFilter->FilterID;
-	if (pExportParam == 0)
-		SelectedFilterID = TheSelectedFilterID;			// Using all available filters
-	else	
-		DefaultBitmapFilterID = TheSelectedFilterID;	// Exporting as a bitmap only
+  UINT32 TheSelectedFilterID = pFilter->FilterID;
+  if (pExportParam == 0)
+    SelectedFilterID = TheSelectedFilterID;			// Using all available filters
+  else	
+    DefaultBitmapFilterID = TheSelectedFilterID;	// Exporting as a bitmap only
 
-	// If we are exporting using an EPS based filter and not the CamelotEPS or NativeEPS
-	// filters then must warn the user that the EPS data does not save all info and question
-	// whether they want to continue or not.
-	// This used to use IS_KIND_OF VectorFilter before 29/4/96 but of course this
-	// really wants to be for all the eps based filters and not all vector filters
-	// Graeme (11-4-00) - Added FILTERID_AIEPS to stop the warnings when doing an
-	// AI format export. After all, the AIEPS filter is probably better specified
-	// these days than the other EPS filters.
-	if (TheSelectedFilterID != FILTERID_CAMELOT_EPS &&
-		TheSelectedFilterID != FILTERID_NATIVE_EPS &&
-		TheSelectedFilterID != FILTERID_AIEPS
-		&& pFilter->IS_KIND_OF ( EPSFilter )
-		)
+  // If we are exporting using an EPS based filter and not the CamelotEPS or NativeEPS
+  // filters then must warn the user that the EPS data does not save all info and question
+  // whether they want to continue or not.
+  // This used to use IS_KIND_OF VectorFilter before 29/4/96 but of course this
+  // really wants to be for all the eps based filters and not all vector filters
+  // Graeme (11-4-00) - Added FILTERID_AIEPS to stop the warnings when doing an
+  // AI format export. After all, the AIEPS filter is probably better specified
+  // these days than the other EPS filters.
+  if (TheSelectedFilterID != FILTERID_CAMELOT_EPS &&
+      TheSelectedFilterID != FILTERID_NATIVE_EPS &&
+      TheSelectedFilterID != FILTERID_AIEPS
+      && pFilter->IS_KIND_OF ( EPSFilter )
+      )
+    {
+      // Warn the user that they are not exporting in Camelot EPS or native
+      // format, and get them to confirm that this is what they want to do.
+      // (We only do this for vector formats)
+      ErrorInfo Info;
+      Info.ErrorMsg = _R(IDT_EXPQUERY_NOTSURE);
+      Info.Button[0] = _R(IDB_EXPQUERY_EXPORT);
+      Info.Button[1] = _R(IDB_EXPQUERY_DONTEXPORT);
+      if (UINT32(AskQuestion(&Info)) == _R(IDB_EXPQUERY_DONTEXPORT))
 	{
-		// Warn the user that they are not exporting in Camelot EPS or native
-		// format, and get them to confirm that this is what they want to do.
-		// (We only do this for vector formats)
-		ErrorInfo Info;
-		Info.ErrorMsg = _R(IDT_EXPQUERY_NOTSURE);
-		Info.Button[0] = _R(IDB_EXPQUERY_EXPORT);
-		Info.Button[1] = _R(IDB_EXPQUERY_DONTEXPORT);
-		if (UINT32(AskQuestion(&Info)) == _R(IDB_EXPQUERY_DONTEXPORT))
-		{
-			// User decided not to export - abort.
-			CCFree(FilterString);
-			FilterString = 0;
-			FailAndExecute();
-			RestoreSelection();
-			End();
-			return;
-		}
+	  // User decided not to export - abort.
+	  CCFree(FilterString);
+	  FilterString = 0;
+	  FailAndExecute();
+	  RestoreSelection();
+	  End();
+	  return;
 	}
+    }
 
-	BOOL fExportedOk = FALSE;
+  BOOL fExportedOk = FALSE;
 
-///////////////////////////////////////////////////////////////////////////////
-	// for the future "Options" button handling
+  ///////////////////////////////////////////////////////////////////////////////
+  // for the future "Options" button handling
 
-	// get the export options
-	// what we need is for the export dlg to appear and give the user the chance
-	// to fill in the export options
-	// SMFIX
+  // get the export options
+  // what we need is for the export dlg to appear and give the user the chance
+  // to fill in the export options
+  // SMFIX
 
-	BitmapExportOptions* pOptions = NULL;
-	if (pFilter->IS_KIND_OF(BaseBitmapFilter)) 
+  BitmapExportOptions* pOptions = NULL;
+  if (pFilter->IS_KIND_OF(BaseBitmapFilter)) 
+    {
+      if (BmapPrevDlg::m_pExportOptions)
 	{
-		if (BmapPrevDlg::m_pExportOptions)
-		{
-			delete BmapPrevDlg::m_pExportOptions;
-			BmapPrevDlg::m_pExportOptions = 0;
-		}
+	  delete BmapPrevDlg::m_pExportOptions;
+	  BmapPrevDlg::m_pExportOptions = 0;
+	}
 		
-		// only if it is a raster type and we are not saving from the gallery
-		if (pExportParam == 0)
-		{
-			// set up with default attrib for this filter
-			// and get the user to edit these default params in the export dlg (thats the FALSE param)
-PORTNOTE("other", "Use SetUpExportOptions to get defaults only and not do dialog" )
-			((BaseBitmapFilter*) pFilter)->SetUpExportOptions(&pOptions, FALSE);
-//			((BaseBitmapFilter*) pFilter)->SetUpExportOptions(&pOptions, TRUE);
-			// the dlg has been up and the user may have the graphic type
-			// ask the dlg for the type that it used
-			if (BmapPrevDlg::m_pExportOptions)
-				pOptions = BmapPrevDlg::m_pExportOptions;
-			// take responsibility for the export options away from the bmp preview dlg
-			BmapPrevDlg::m_pExportOptions = 0;
-			// the filter we want to export with will change too if the export options have changed type
-			if (pOptions)
-			{
-				Filter * pOldFilter = pFilter;
-				pFilter = pOptions->FindBitmapFilterForTheseExportOptions();
-				// change the export extent if we have changed filters
-				if (pFilter && pFilter != pOldFilter)
-				{
-					// set the path extention
-					Path.SetType(BmapPrevDlg::m_pthExport.GetType());
-				}
-				else pFilter = pOldFilter;
-			}
-
-			if (!pOptions || !pFilter)
-			{
-				// User decided not to export - abort.
-				RemoveUneededReportedErrors();
-				CCFree(FilterString);
-				FilterString = 0;
-				FailAndExecute();
-				RestoreSelection();
-				End();
-				return;
-			}
-
-			// do the odd details that a filter may need setting before it is ready to go (sjk 5/12/00)
-			((BaseBitmapFilter*) pFilter)->PostGetExportOptions(pOptions);
-		}
-	}
-
-	BOOL bFinished = FALSE;
-
-	// check if we can simply rename the temp file created during preview
-	if (pOptions != 0 && pOptions->HasTempFile() && !pOptions->GetSeparateLayerFiles())
+      // only if it is a raster type and we are not saving from the gallery
+      if (pExportParam == 0)
 	{
-		// get the temp file name
-		PathName TempPath = pOptions->GetPathName();
-		String_256 FinalName = Path.GetPath();
-		String_256 TempName = TempPath.GetPath();
-
-		// delete the empty file, if one was created, and try to rename the file
-		FileUtil::DeleteFile(&Path);
-/*		
-#if defined(__WXGTK__) && FALSE != wxUSE_UNICODE
-		char pszTempName[256];
-		char pszFinalName[256];
-		wcstombs( pszTempName, TempName, 256 );
-		wcstombs( pszFinalName, FinalName, 256 );		
-#else
-		char* pszTempName = TempName;
-		char* pszFinalName = FinalName;
-#endif		
-		bFinished = !rename(pszTempName, pszFinalName);
-*/
-		// This should do the trick but I've left the old code in case
-		bFinished = !camRename(TempName, FinalName);
-
-		if (bFinished)
+	  // set up with default attrib for this filter
+	  // and get the user to edit these default params in the export dlg (thats the FALSE param)
+	  PORTNOTE("other", "Use SetUpExportOptions to get defaults only and not do dialog" )
+	    ((BaseBitmapFilter*) pFilter)->SetUpExportOptions(&pOptions, FALSE);
+	  //			((BaseBitmapFilter*) pFilter)->SetUpExportOptions(&pOptions, TRUE);
+	  // the dlg has been up and the user may have the graphic type
+	  // ask the dlg for the type that it used
+	  if (BmapPrevDlg::m_pExportOptions)
+	    pOptions = BmapPrevDlg::m_pExportOptions;
+	  // take responsibility for the export options away from the bmp preview dlg
+	  BmapPrevDlg::m_pExportOptions = 0;
+	  // the filter we want to export with will change too if the export options have changed type
+	  if (pOptions)
+	    {
+	      Filter * pOldFilter = pFilter;
+	      pFilter = pOptions->FindBitmapFilterForTheseExportOptions();
+	      // change the export extent if we have changed filters
+	      if (pFilter && pFilter != pOldFilter)
 		{
-			fExportedOk = TRUE;
-			// Only tell them if not special user cancelled error message
-			RemoveUneededReportedErrors();
+		  // set the path extention
+		  Path.SetType(BmapPrevDlg::m_pthExport.GetType());
 		}
+	      else pFilter = pOldFilter;
+	    }
+
+	  if (!pOptions || !pFilter)
+	    {
+	      // User decided not to export - abort.
+	      RemoveUneededReportedErrors();
+	      CCFree(FilterString);
+	      FilterString = 0;
+	      FailAndExecute();
+	      RestoreSelection();
+	      End();
+	      return;
+	    }
+
+	  // do the odd details that a filter may need setting before it is ready to go (sjk 5/12/00)
+	  ((BaseBitmapFilter*) pFilter)->PostGetExportOptions(pOptions);
 	}
+    }
 
-	// Set flag telling exporter that we are NOT exporting a temporary file!
-	if(pOptions)
-		pOptions->SetTempFileFlag(FALSE);
+  BOOL bFinished = FALSE;
 
-PORTNOTE( "export", "Removed image map code" )
+  // check if we can simply rename the temp file created during preview
+  if (pOptions != 0 && pOptions->HasTempFile() && !pOptions->GetSeparateLayerFiles())
+    {
+      // get the temp file name
+      PathName TempPath = pOptions->GetPathName();
+      String_256 FinalName = Path.GetPath();
+      String_256 TempName = TempPath.GetPath();
+
+      // delete the empty file, if one was created, and try to rename the file
+      FileUtil::DeleteFile(&Path);
+      /*		
+			#if defined(__WXGTK__) && FALSE != wxUSE_UNICODE
+			char pszTempName[256];
+			char pszFinalName[256];
+			wcstombs( pszTempName, TempName, 256 );
+			wcstombs( pszFinalName, FinalName, 256 );		
+			#else
+			char* pszTempName = TempName;
+			char* pszFinalName = FinalName;
+			#endif		
+			bFinished = !rename(pszTempName, pszFinalName);
+      */
+      // This should do the trick but I've left the old code in case
+      bFinished = !camRename(TempName, FinalName);
+
+      if (bFinished)
+	{
+	  fExportedOk = TRUE;
+	  // Only tell them if not special user cancelled error message
+	  RemoveUneededReportedErrors();
+	}
+    }
+
+  // Set flag telling exporter that we are NOT exporting a temporary file!
+  if(pOptions)
+    pOptions->SetTempFileFlag(FALSE);
+
+  PORTNOTE( "export", "Removed image map code" )
 #if !defined(EXCLUDE_FROM_XARALX)
-	// Now export the image map if required
-	if (pOptions && pOptions->GetSupportsImageMap() && pFilter->IS_KIND_OF(BaseBitmapFilter))
-		static_cast<BaseBitmapFilter *>(pFilter)->ExportImagemap(this, &Path, GetWorkingDoc());
+    // Now export the image map if required
+    if (pOptions && pOptions->GetSupportsImageMap() && pFilter->IS_KIND_OF(BaseBitmapFilter))
+      static_cast<BaseBitmapFilter *>(pFilter)->ExportImagemap(this, &Path, GetWorkingDoc());
 #endif
 
-	if (pOptions != NULL)
-	{
-		//And if we should be exporting an HTML tag to the clipboard
-		if (pOptions->ShouldPutHTMLTagOnClipboard() && pFilter->IS_KIND_OF(BaseBitmapFilter))
-			static_cast<BaseBitmapFilter *>(pFilter)->ExportHTMLTag(&Path);
+  if (pOptions != NULL)
+    {
+      //And if we should be exporting an HTML tag to the clipboard
+      if (pOptions->ShouldPutHTMLTagOnClipboard() && pFilter->IS_KIND_OF(BaseBitmapFilter))
+	static_cast<BaseBitmapFilter *>(pFilter)->ExportHTMLTag(&Path);
 
-PORTNOTE("other", "Removed DreamWeaver DesignNote code" )
+      PORTNOTE("other", "Removed DreamWeaver DesignNote code" )
 #if 0
-		// Do we want to make the extra dream weaver design notes file?
-		if (pOptions->GetCanUseDesignNotes() && UsesDesignNotes())
-		{
-			if( !lstrcmpi( Path.GetType(), _T("gif") ) || !lstrcmpi( Path.GetType(), _T("jpg") ) || 
-				!lstrcmpi( Path.GetType(), _T("bmp") ) || !lstrcmpi( Path.GetType(), _T("png") ) )
-			{
-				wxString DocName( (TCHAR *)Document::GetCurrent()->GetLocation() );	
-				DocName += _T("\\");
-				DocName += (TCHAR *)Document::GetCurrent()->GetPathName();
+	// Do we want to make the extra dream weaver design notes file?
+	if (pOptions->GetCanUseDesignNotes() && UsesDesignNotes())
+	  {
+	    if( !lstrcmpi( Path.GetType(), _T("gif") ) || !lstrcmpi( Path.GetType(), _T("jpg") ) || 
+		!lstrcmpi( Path.GetType(), _T("bmp") ) || !lstrcmpi( Path.GetType(), _T("png") ) )
+	      {
+		wxString DocName( (TCHAR *)Document::GetCurrent()->GetLocation() );	
+		DocName += _T("\\");
+		DocName += (TCHAR *)Document::GetCurrent()->GetPathName();
 
-				if (DocName != _T("\\") )
-				{
-					wxString GraphicFile( (const TCHAR *)Path.GetPath() );
+		if (DocName != _T("\\") )
+		  {
+		    wxString GraphicFile( (const TCHAR *)Path.GetPath() );
 
-					// create or modify a .mno forward source file
-					CreateDesignNoteWithForwardSource(GraphicFile, DocName);
-				}
-				else
-				{
-					InformWarning (_R(IDS_NOTES_WARNING));
-				}
-			}
-		}
-#endif
-	}
-
-	if (!bFinished)
-	{
-		// either no temp file, or failed to rename it, do normal export
-
-///////////////////////////////////////////////////////////////////////////////
-
-	// First off, we have to try and open the file
-	CCDiskFile theDiskFile(1024, FALSE, TRUE);
-	try
-	{
-		/* File now opened up, if not already opened inside the DoExport functions in the filters
-		// themselves. This means this is done after the export options and so the file is not trashed
-		// until we start doing something to it.
-		// Open up the file. This will create a zero length file just to make sure that it
-		// is possible, i.e. we have write access.
-		// Opened up here so that the filters do not need to know about opening the files and
-		// closing them and so the preview filter can easily be used to append data into the
-		// middle of the native and eps files.
-		// Added 27/9/95 ios::trunc as exporting a bitmap or eps file to the same file twice
-		// appended the data to the end of the file on Windows 95.
-		if (!theDiskFile.open(Path, ios::in | ios::out | ios::binary | ios::trunc))
-		{
-			// Failed to open the file...
-			InformError(_R(IDT_EXPORT_NOTFOUND));
-			FailAndExecute();
-			End();
-			return;
-		} */
-
-		// Do we want a Preview Bitmap?
-		if (pFilter->CanIncludePreviewBmp()) pFilter->IncludePreviewBmp(TRUE);
-
-		// Export the file
-		if (pExportParam != 0)
-		{
-			ERROR3IF(!pFilter->IS_KIND_OF(BaseBitmapFilter),
-										"OpMenuExport::not a bitmap filter");
-			BaseBitmapFilter* pBitmapFilter = (BaseBitmapFilter*) pFilter;
-
-			if (pExportParam->GetBitmapCount() != 1)
-				fExportedOk = pBitmapFilter->DoExportBitmaps(
-									this, 				// Export bitmaps
-									&theDiskFile,
-									&Path,
-									pExportParam);
-			else
-			{
-///////////////////////////////////////////////////////////////////////////////
-	// for the future "Options" button handling
-
-				if (pFilter->IS_KIND_OF(BaseBitmapFilter) && pOptions)
-					fExportedOk = 
-						pBitmapFilter->DoExportBitmapWithOptions(
-										this,			// Export bitmap
-										&theDiskFile, 
-										&Path,
-										pExportParam->GetBitmap(0),
-										pOptions);
-				else
-///////////////////////////////////////////////////////////////////////////////
-
-				fExportedOk = pBitmapFilter->DoExportBitmap(
-									this,				// Export bitmap
-									&theDiskFile,
-									&Path,
-									pExportParam->GetBitmap(0)); 
-
-			}
-		}
+		    // create or modify a .mno forward source file
+		    CreateDesignNoteWithForwardSource(GraphicFile, DocName);
+		  }
 		else
-		{
-///////////////////////////////////////////////////////////////////////////////
-	// for the future "Options" button handling
+		  {
+		    InformWarning (_R(IDS_NOTES_WARNING));
+		  }
+	      }
+	  }
+#endif
+    }
 
-			if (pFilter->IS_KIND_OF(BaseBitmapFilter) && pOptions/*&& CCamApp::IsNewWindowsUI()*/)
-				fExportedOk = ((BaseBitmapFilter*) pFilter)->DoExportWithOptions(
-												this,		// Export drawing
-												&theDiskFile, 
-												&Path, 
-												GetWorkingDoc(), 
-												pOptions);	
-			else
-				fExportedOk = pFilter->DoExport(this, 		// Export drawing
-											&theDiskFile, 
-											&Path, 
-											GetWorkingDoc());
-		}
+  if (!bFinished)
+    {
+      // either no temp file, or failed to rename it, do normal export
 
-		if (!fExportedOk)
-		{
-			if (Error::GetErrorNumber() == _R(IDN_USER_CANCELLED))
-				// Suppress the error if it was the 'user has cancelled one'.
-			 	Error::ClearError();
-			else
-			{
-				// Something went a bit wrong - tell the user what it was.
-				InformError();
-				pFilter->DeleteExportFile(&theDiskFile);
-			}
-		}
+      ///////////////////////////////////////////////////////////////////////////////
 
-		// We had better tell the filter we no longer want Previews
-		if (pFilter->CanIncludePreviewBmp()) pFilter->IncludePreviewBmp(FALSE);
-
-		// close the file
-		if (theDiskFile.isOpen()) theDiskFile.close();
-	}
-
-	// See if there was a file io error
-	catch( CFileException e )
+      // First off, we have to try and open the file
+      CCDiskFile theDiskFile(1024, FALSE, TRUE);
+      try
 	{
-		// Report the error if no one else did
-		RemoveUneededReportedErrors();
+	  /* File now opened up, if not already opened inside the DoExport functions in the filters
+	  // themselves. This means this is done after the export options and so the file is not trashed
+	  // until we start doing something to it.
+	  // Open up the file. This will create a zero length file just to make sure that it
+	  // is possible, i.e. we have write access.
+	  // Opened up here so that the filters do not need to know about opening the files and
+	  // closing them and so the preview filter can easily be used to append data into the
+	  // middle of the native and eps files.
+	  // Added 27/9/95 ios::trunc as exporting a bitmap or eps file to the same file twice
+	  // appended the data to the end of the file on Windows 95.
+	  if (!theDiskFile.open(Path, ios::in | ios::out | ios::binary | ios::trunc))
+	  {
+	  // Failed to open the file...
+	  InformError(_R(IDT_EXPORT_NOTFOUND));
+	  FailAndExecute();
+	  End();
+	  return;
+	  } */
 
-		// Make sure that the file is closed and deleted
-		try
+	  // Do we want a Preview Bitmap?
+	  if (pFilter->CanIncludePreviewBmp()) pFilter->IncludePreviewBmp(TRUE);
+
+	  // Export the file
+	  if (pExportParam != 0)
+	    {
+	      ERROR3IF(!pFilter->IS_KIND_OF(BaseBitmapFilter),
+		       "OpMenuExport::not a bitmap filter");
+	      BaseBitmapFilter* pBitmapFilter = (BaseBitmapFilter*) pFilter;
+
+	      if (pExportParam->GetBitmapCount() != 1)
+		fExportedOk = pBitmapFilter->DoExportBitmaps(
+							     this, 				// Export bitmaps
+							     &theDiskFile,
+							     &Path,
+							     pExportParam);
+	      else
 		{
-			// First try and delete it (tries to close it first) and
-			// double check to make sure it is closed.
-			if (pFilter) pFilter->DeleteExportFile(&theDiskFile);
-			if (theDiskFile.isOpen()) theDiskFile.close();
+		  ///////////////////////////////////////////////////////////////////////////////
+		  // for the future "Options" button handling
+
+		  if (pFilter->IS_KIND_OF(BaseBitmapFilter) && pOptions)
+		    fExportedOk = 
+		      pBitmapFilter->DoExportBitmapWithOptions(
+							       this,			// Export bitmap
+							       &theDiskFile, 
+							       &Path,
+							       pExportParam->GetBitmap(0),
+							       pOptions);
+		  else
+		    ///////////////////////////////////////////////////////////////////////////////
+
+		    fExportedOk = pBitmapFilter->DoExportBitmap(
+								this,				// Export bitmap
+								&theDiskFile,
+								&Path,
+								pExportParam->GetBitmap(0)); 
+
 		}
-		catch(CFileException e)
+	    }
+	  else
+	    {
+	      ///////////////////////////////////////////////////////////////////////////////
+	      // for the future "Options" button handling
+
+	      if (pFilter->IS_KIND_OF(BaseBitmapFilter) && pOptions/*&& CCamApp::IsNewWindowsUI()*/)
+		fExportedOk = ((BaseBitmapFilter*) pFilter)->DoExportWithOptions(
+										 this,		// Export drawing
+										 &theDiskFile, 
+										 &Path, 
+										 GetWorkingDoc(), 
+										 pOptions);	
+	      else
+		fExportedOk = pFilter->DoExport(this, 		// Export drawing
+						&theDiskFile, 
+						&Path, 
+						GetWorkingDoc());
+	    }
+
+	  if (!fExportedOk)
+	    {
+	      if (Error::GetErrorNumber() == _R(IDN_USER_CANCELLED))
+		// Suppress the error if it was the 'user has cancelled one'.
+		Error::ClearError();
+	      else
 		{
-			// Failed to close the file - not much we can do about it really
-			TRACE( _T("Failed to close file\n"));
+		  // Something went a bit wrong - tell the user what it was.
+		  InformError();
+		  pFilter->DeleteExportFile(&theDiskFile);
 		}
+	    }
 
-		fExportedOk = FALSE;
+	  // We had better tell the filter we no longer want Previews
+	  if (pFilter->CanIncludePreviewBmp()) pFilter->IncludePreviewBmp(FALSE);
+
+	  // close the file
+	  if (theDiskFile.isOpen()) theDiskFile.close();
 	}
 
-///////////////////////////////////////////////////////////////////////////////
-	// for the future "Options" button handling
-	}
-///////////////////////////////////////////////////////////////////////////////
-
-	// Get rid of the filter string buffer and restore the original selection.
-	CCFree(FilterString);
-	FilterString = 0;
-	RestoreSelection();
-
-	if (!fExportedOk)
+      // See if there was a file io error
+      catch( CFileException e )
 	{
-		// delete the export options
-		if (pOptions)
-			delete pOptions;
+	  // Report the error if no one else did
+	  RemoveUneededReportedErrors();
 
-		FailAndExecute();
-		End();
-		return;
+	  // Make sure that the file is closed and deleted
+	  try
+	    {
+	      // First try and delete it (tries to close it first) and
+	      // double check to make sure it is closed.
+	      if (pFilter) pFilter->DeleteExportFile(&theDiskFile);
+	      if (theDiskFile.isOpen()) theDiskFile.close();
+	    }
+	  catch(CFileException e)
+	    {
+	      // Failed to close the file - not much we can do about it really
+	      TRACE( _T("Failed to close file\n"));
+	    }
+
+	  fExportedOk = FALSE;
 	}
 
-	// TODO: did we export only the selection?
-	BOOL fExportedSelection = FALSE;
-	if (pFilter->IS_KIND_OF(BaseBitmapFilter) && pParam == 0 && pOptions)
-	{
-		fExportedSelection = (pOptions->GetSelectionType() == SELECTION);
-	}
+      ///////////////////////////////////////////////////////////////////////////////
+      // for the future "Options" button handling
+    }
+  ///////////////////////////////////////////////////////////////////////////////
 
-	// Make named export sets from the user's exported selections.
-	if (fExportedSelection)
-		CreateNamedSet(pFilter, Path);		// this will call Fail or Succeed
-	else
-		SucceedAndDiscard();
+  // Get rid of the filter string buffer and restore the original selection.
+  CCFree(FilterString);
+  FilterString = 0;
+  RestoreSelection();
 
-	// delete the export options
-	if (pOptions)
-		delete pOptions;
+  if (!fExportedOk)
+    {
+      // delete the export options
+      if (pOptions)
+	delete pOptions;
 
-	End();
+      FailAndExecute();
+      End();
+      return;
+    }
+
+  // TODO: did we export only the selection?
+  BOOL fExportedSelection = FALSE;
+  if (pFilter->IS_KIND_OF(BaseBitmapFilter) && pParam == 0 && pOptions)
+    {
+      fExportedSelection = (pOptions->GetSelectionType() == SELECTION);
+    }
+
+  // Make named export sets from the user's exported selections.
+  if (fExportedSelection)
+    CreateNamedSet(pFilter, Path);		// this will call Fail or Succeed
+  else
+    SucceedAndDiscard();
+
+  // delete the export options
+  if (pOptions)
+    delete pOptions;
+
+  End();
 }
 
 
