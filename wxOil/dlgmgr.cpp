@@ -354,7 +354,7 @@ BOOL DialogManager::Create(DialogOp* DlgOp,
   if ((ParentWnd == NULL) || wxAUImanaged) {
     ParentWnd = GetMainFrame();
   }
-  const TCHAR*	pDialogName = NULL;
+  const TCHAR* pDialogName = NULL;
   wxWindow* pDialogWnd = NULL;
   if( DlgOp->IS_KIND_OF(DialogTabOp) &&
       !(((DialogTabOp*)DlgOp)->LoadFrameFromResources())) {
@@ -623,7 +623,7 @@ BOOL DialogManager::PostCreate(DialogOp* pDialogOp, INT32 OpeningPage) {
     pBook = GetBookControl(pDialogWnd);
   }
   ResourceID BookGadget = pBook ? pBook->GetId() : 0;
-  if (pBook && (OpeningPage>=0)) {
+  if (pBook && (OpeningPage >= 0)) {
     ActivePage = pBook->GetPage(OpeningPage)->GetId();
     ActivePageIndex = OpeningPage;
   }
@@ -642,7 +642,7 @@ BOOL DialogManager::PostCreate(DialogOp* pDialogOp, INT32 OpeningPage) {
     CreatedBefore = TRUE;
   }
   if (pBook &&
-      ((ActivePageIndex<0) ||
+      ((ActivePageIndex < 0) ||
        (ActivePageIndex >= pBook->GetPageCount()) ||
        ((UINT32)(pBook->GetPage(ActivePageIndex)->GetId()) != ActivePage))) {
     ActivePageIndex=0;
@@ -655,7 +655,7 @@ BOOL DialogManager::PostCreate(DialogOp* pDialogOp, INT32 OpeningPage) {
   INT32	DialogHeight = DialogRect.GetHeight();
   // Create the WindowIDItem which will be stored in the
   // DialogPosition.
-  CWindowIDItem *pWinID = new CWindowIDItem;
+  CWindowIDItem* pWinID = new CWindowIDItem;
   if(NULL == pWinID) {
     // We need to destroy the dialog window
     pDialogWnd->PopEventHandler(FALSE);

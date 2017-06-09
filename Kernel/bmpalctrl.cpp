@@ -336,17 +336,18 @@ bool BitmapExportPaletteControl::SetHighlightedCellFromSortedIndex(ReDrawInfoTyp
 	return true;
 }
 
-/********************************************************************************************
+/***************************************************************************
 >	void BitmapExportPaletteControl::RenderSoon()
 	Author:		Jonathan_Payne (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	19/12/2000
 	Purpose:	This function redraws the palette control by invaldating it so it is drawn
 				latter.  This is useful for functions that can't get a DC in the pInfo
 				struct.
-********************************************************************************************/
+***************************************************************************/
 void BitmapExportPaletteControl::RenderSoon()
 {
-	// Check the selection and mouse over colour are valid as the palette has probably changed
+	// Check the selection and mouse over colour are valid as the
+	// palette has probably changed
 	if (m_SelectedCell > m_Palette.GetNumberOfColours())
 		m_SelectedCell = INVALID_COLOUR_VALUE;
 	if (m_MouseOverCell > m_Palette.GetNumberOfColours())

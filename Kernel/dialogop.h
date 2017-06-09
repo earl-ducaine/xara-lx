@@ -150,30 +150,28 @@ class DialogOp: public Operation
 	CC_DECLARE_DYNCREATE( DialogOp )  
 public:      
 	// The Constructor of the DialogOp class simply sets the resource ID of the dialog
-	// and its modality. 
-	DialogOp(CDlgResID DialogResID, CDlgMode Mode, CDlgResID SubDialogID = 0,
-			 /*HINSTANCE MainInst = 0, HINSTANCE SubInst= 0, */
-			 CCRuntimeClass* Class = CC_RUNTIME_CLASS(DialogOp),
-			 INT32 OpeningPage = -1, CWindowID ParentWnd = NULL);
-
+	// and its modality.
+	// In Windows:
+	// HINSTANCE MainInst = 0, HINSTANCE SubInst= 0,
+	DialogOp(CDlgResID DialogResID,
+		 CDlgMode Mode,
+		 CDlgResID SubDialogID = 0,
+		 CCRuntimeClass* Class = CC_RUNTIME_CLASS(DialogOp),
+		 INT32 OpeningPage = -1,
+		 CWindowID ParentWnd = NULL);
 	virtual BOOL IsABar() { return FALSE; }
 	virtual BOOL IsAGallery() {return FALSE; }
 	virtual BOOL IsVertical() { return FALSE; }
-  			
-	// The create method reserves everything needed to guarantee that the dialog will 
-	// appear (it does not show the dialog). 
+	// The create method reserves everything needed to guarantee
+	// that the dialog will appear (it does not show the dialog).
 	virtual BOOL Create(); 
-
 	// The open method displays the dialog box on the display. 
 	void Open(); 
-
 	// The close method removes the dialog from the display but keeps all system 	 	
 	// resources associated with it. It hides the dialog.  
 	void Close(); 
-
 	// BODGE *** Don't use this it's marked for destruction
 	BOOL IsOpen();
-
 	// Is the DialogOp's window visible	(replaces the old IsOpen)
 	BOOL IsWindowVisible();
 

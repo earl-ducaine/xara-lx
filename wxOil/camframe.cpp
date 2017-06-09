@@ -511,7 +511,7 @@ PORTNOTE("other","Removed ExternalClipboard usage")
 
 /***************************************************************************************************************************/
 
-CCamFrame *GetMainFrame(void)
+CCamFrame* GetMainFrame(void)
 {
 	return CCamFrame::m_pMainFrame;
 }
