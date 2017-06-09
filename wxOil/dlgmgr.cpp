@@ -318,10 +318,16 @@ PORTNOTE("dialog", "This should probably be applied to all controls eventually")
 	}
 };
 
+// original types used were Microsoft HINSTANCEs
+// 
+// HINSTANCE MainInstance,
+// HINSTANCE SubInstance,
 BOOL DialogManager::Create(DialogOp* DlgOp,
-			   /* HINSTANCE MainInstance, */ CDlgResID MainDlgID,
-			   /* HINSTANCE SubInstance, */  CDlgResID SubDlgID,
-			   CDlgMode Mode, INT32 OpeningPage, CWindowID ParentWnd) {
+			   CDlgResID MainDlgID,
+			   CDlgResID SubDlgID,
+			   CDlgMode Mode,
+			   INT32 OpeningPage,
+			   CWindowID ParentWnd) {
   ERROR2IF(!DlgOp, FALSE, _T("Create Passed Null DialogOp"));
   ERROR2IF(DlgOp->pEvtHandler,
 	   FALSE,
@@ -344,100 +350,94 @@ BOOL DialogManager::Create(DialogOp* DlgOp,
   // 	   FALSE,
   // 	   _T("Tabbed dialogs not yet supported"));
   ERROR2IF( SubDlgID !=0, FALSE, _T("Merging of dialogs not yet supported"));
-
   // if no parent dialog window specified use the main frame window
-  if ((ParentWnd == NULL) || wxAUImanaged)
+  if ((ParentWnd == NULL) || wxAUImanaged) {
     ParentWnd = GetMainFrame();
-
+  }
   const TCHAR*	pDialogName = NULL;
-  wxWindow*		pDialogWnd = NULL;
-
-  if( DlgOp->IS_KIND_OF(DialogTabOp) && !(((DialogTabOp*)DlgOp)->LoadFrameFromResources()))
-    {
-      // ok first try and create the property sheet
-      wxDynamicPropertySheetDialog* pPropertySheet;
-
-      // error handling done later
-      pPropertySheet = new wxDynamicPropertySheetDialog();
-      if (pPropertySheet)
-	{
-	  pPropertySheet->SetTabType(((DialogTabOp*)DlgOp)->GetTabType());
-	  if (!pPropertySheet->Create((wxWindow *)ParentWnd, wxID_ANY, (TCHAR*) (*((DialogTabOp*)DlgOp)->GetName()) ))
-	    {
-	      delete pPropertySheet;
-	      pPropertySheet=NULL; // error handling done below
-	    }
-	  else
-	    {
-	      wxStdDialogButtonSizer *sizer = new wxStdDialogButtonSizer();
-	      wxButton * ok=new wxButton(pPropertySheet, wxID_OK);
-	      sizer->AddButton(ok); // Add an OK button
-	      sizer->AddButton(new wxButton(pPropertySheet, wxID_CANCEL)); // Add a Cancel button
-	      sizer->AddButton(new wxButton(pPropertySheet, wxID_APPLY)); // Add an Apply button
-	      sizer->AddButton(new wxButton(pPropertySheet, wxID_HELP)); // Add a Help button
-	      ok->SetDefault();
-	      ok->SetFocus();
-	      pPropertySheet->SetAffirmativeId(wxID_OK);
-	      sizer->Realize();
-	      pPropertySheet->GetInnerSizer()->Add( sizer, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxTOP|wxBOTTOM|wxLEFT|wxRIGHT, 2);
-	      pPropertySheet->GetInnerSizer()->AddSpacer(2);
-	    }
-	}
-      pDialogWnd=pPropertySheet;
+  wxWindow* pDialogWnd = NULL;
+  if( DlgOp->IS_KIND_OF(DialogTabOp) &&
+      !(((DialogTabOp*)DlgOp)->LoadFrameFromResources())) {
+    // ok first try and create the property sheet
+    wxDynamicPropertySheetDialog* pPropertySheet;
+    // error handling done later
+    pPropertySheet = new wxDynamicPropertySheetDialog();
+    if (pPropertySheet) {
+      pPropertySheet->SetTabType(((DialogTabOp*)DlgOp)->GetTabType());
+      if (!pPropertySheet->Create((wxWindow *)ParentWnd,
+				  wxID_ANY,
+				  (TCHAR*) (*((DialogTabOp*)DlgOp)->GetName()))) {
+	delete pPropertySheet;
+	// error handling done below
+	pPropertySheet = NULL;
+      } else {
+	wxStdDialogButtonSizer* sizer = new wxStdDialogButtonSizer();
+	wxButton* ok = new wxButton(pPropertySheet, wxID_OK);
+	sizer->AddButton(ok); // Add an OK button
+	sizer->AddButton(new wxButton(pPropertySheet, wxID_CANCEL)); // Add a Cancel button
+	sizer->AddButton(new wxButton(pPropertySheet, wxID_APPLY)); // Add an Apply button
+	sizer->AddButton(new wxButton(pPropertySheet, wxID_HELP)); // Add a Help button
+	ok->SetDefault();
+	ok->SetFocus();
+	pPropertySheet->SetAffirmativeId(wxID_OK);
+	sizer->Realize();
+	pPropertySheet->GetInnerSizer()->Add
+	  (sizer,
+	   0,
+	   wxGROW|wxALIGN_CENTER_VERTICAL|wxTOP|wxBOTTOM|wxLEFT|wxRIGHT,
+	   2);
+	pPropertySheet->GetInnerSizer()->AddSpacer(2);
+      }
     }
-  else
-    {
-      pDialogName=CamResource::GetObjectNameFail(MainDlgID);
-      ERROR1IF(pDialogName == NULL, FALSE, _R(IDE_CANNOT_CREATE_DIALOG));
-
-      PORTNOTE("dialog","A more general scheme is needed to allow creation of a panel for non-toolbar type dialog")
-	if (wxAUImanaged || _R(IDD_BITMAPPREVIEWDIALOG) == MainDlgID )
-	  pDialogWnd = wxXmlResource::Get()->LoadPanel((wxWindow *)ParentWnd, pDialogName);
-	else
-	  pDialogWnd = wxXmlResource::Get()->LoadDialog((wxWindow *)ParentWnd, pDialogName);
-    }
-
+    pDialogWnd=pPropertySheet;
+  } else {
+    pDialogName=CamResource::GetObjectNameFail(MainDlgID);
+    ERROR1IF(pDialogName == NULL, FALSE, _R(IDE_CANNOT_CREATE_DIALOG));
+    PORTNOTE("dialog",
+	     "A more general scheme is needed to allow creation of a "
+	     "panel for non-toolbar type dialog")
+      if (wxAUImanaged || _R(IDD_BITMAPPREVIEWDIALOG) == MainDlgID) {
+	pDialogWnd = wxXmlResource::Get()->LoadPanel((wxWindow *)ParentWnd, pDialogName);
+      } else {
+	pDialogWnd = wxXmlResource::Get()->LoadDialog((wxWindow *)ParentWnd, pDialogName);
+      }
+  }
   ERROR1IF(pDialogWnd == NULL, FALSE, _R(IDE_CANNOT_CREATE_DIALOG));
-
   pDialogWnd->Hide();
   CamArtProvider::Get()->EnsureChildBitmapsLoaded(pDialogWnd);
-
   // On the Mac, panels etc. are by default transparent; fix them up
 #ifdef __WXMAC__
   pDialogWnd->SetBackgroundStyle(wxBG_STYLE_COLOUR);
-  pDialogWnd->SetBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOW));
+  pDialogWnd->SetBackgroundColour
+    (wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOW));
 #endif
-
-  // Note that we might one day want to create (say) wxPanels, or wxToolbars instead above
-  // It deosn't matter to us, we just want a wxWindow
-
+  // Note that we might one day want to create (say) wxPanels, or
+  // wxToolbars instead above It deosn't matter to us, we just want a
+  // wxWindow
   DlgOp->pEvtHandler->pwxWindow = pDialogWnd;
   DlgOp->pEvtHandler->wxAUImanaged = wxAUImanaged;
-  DlgOp->pEvtHandler->ID =MainDlgID;
+  DlgOp->pEvtHandler->ID = MainDlgID;
   // Set the DialogOp's WindowID
   DlgOp->WindowID = (CWindowID)pDialogWnd;
   pDialogWnd->PushEventHandler(DlgOp->pEvtHandler);
-
-  if (DlgOp->IS_KIND_OF(DialogTabOp))
-    {
-      // on balance we might be best ignoring errors here - we are really now past
-      // the point of no return, and the dialog can be closed cleanly by the user
-      // but let's try anyway
-      if (!CreateTabbedDialog( (DialogTabOp*)DlgOp, Mode, OpeningPage, MainDlgID ))
-	{
-	  // try using our own tolerant delete mechanism
-	  Delete(pDialogWnd, DlgOp);
-	  ERROR1(FALSE, _R(IDE_CANNOT_CREATE_DIALOG));
-	}
+  if (DlgOp->IS_KIND_OF(DialogTabOp)) {
+      // on balance we might be best ignoring errors here - we are
+      // really now past the point of no return, and the dialog can be
+      // closed cleanly by the user but let's try anyway
+    if (!CreateTabbedDialog((DialogTabOp*)DlgOp,
+			    Mode,
+			    OpeningPage,
+			    MainDlgID)) {
+      // try using our own tolerant delete mechanism
+      Delete(pDialogWnd, DlgOp);
+      ERROR1(FALSE, _R(IDE_CANNOT_CREATE_DIALOG));
     }
-
+  }
   CreateRecursor(pDialogWnd);
-
   // Register all the child controls
   ControlList::Get()->RegisterWindowAndChildren(pDialogWnd, DlgOp);
-
-  ControlList::Get()->ReflectAllStates(); // might as well do the processing before the bar / dialog appears
-
+  // Might as well do the processing before the bar / dialog appears
+  ControlList::Get()->ReflectAllStates();
   // we call this directly now
   BOOL ok = PostCreate(DlgOp, OpeningPage);
 
@@ -584,180 +584,166 @@ void DialogManager::CreateRecursor(wxWindow * pwxWindow)
 }
 
 
-/********************************************************************************************
-
+/***************************************************************************
 >	BOOL DialogManager::PostCreate(DialogOp * pDialogOp);
 
 	Author:		Simon_Maneggio (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	6/9/94
-	Inputs:		DialogWnd: The dialogs window ID, NULL if dialog failed to be created
+	Inputs:		DialogWnd: The dialogs window ID, NULL if dialog 
+                        failed to be created
 	Returns:	-
-	Purpose:	This function will get called after a dialog has been created. If a modeless
-				dialog has been created then it gets called directly from the Create method.
-				For a modal dialog however it gets called after receiving a WM_INIT_DIALOG
-				message. It completes the creation process.
-
-				(for now on wxWindows we are simply calling it from Create)
-
+	Purpose:        This function posts the creation event to dialog for
+		        any activities that need to be done after its
+		        containing window has been created.  Make sure
+		        that 1) all needed initialization activities
+		        have been accomplished and 2) that this is
+		        conceptually asyncronous so beware about
+		        creating race conditions by performing
+		        activities after this.  ToDo: sometime make
+		        none modeless dialogs run based on wx event
+		        rather than being explicitly ed
 	Scope:		private
-
-********************************************************************************************/
-
-BOOL DialogManager::PostCreate(DialogOp * pDialogOp, INT32 OpeningPage)
-{
-	ERROR2IF( !pDialogOp || !pDialogOp->pEvtHandler || !pDialogOp->pEvtHandler->pwxWindow,
-			FALSE, _T("Bad DialogOp / EvtHandler in DialogManager::PostCreate()"));
-
-	wxWindow * pDialogWnd = pDialogOp->pEvtHandler->pwxWindow;
-
-	// If the dialog has been created before then its position will have to be reset
-	INT32 DlgX=0; // Dialog box X position
-	INT32 DlgY=0; // Dialog box Y position
-	CDlgResID ActivePage=0; // Active page for tabbed dialogs
-	UINT32 ActivePageIndex=0;
-
-	BOOL CreatedBefore = FALSE; // TRUE if the dialog has been created before
-
-	wxBookCtrlBase * pBook=NULL;
-	// Only do special processing for DialogTabOp
-	if (pDialogOp->IS_KIND_OF(DialogTabOp))
-		pBook=GetBookControl(pDialogWnd);
-
-	ResourceID BookGadget=pBook?pBook->GetId():0;
-
-	if (pBook && (OpeningPage>=0))
-	{
-		ActivePage = pBook->GetPage(OpeningPage)->GetId();
-		ActivePageIndex = OpeningPage;
-	}
-
-	// Search the DialogPositionList to see if the dialog has been created before
-	DialogPosition* DlgPos = FindDialogPositionRecord(pDialogOp->pEvtHandler->ID);
-	if (DlgPos != NULL)
-	{
-		DlgX = DlgPos->LastX;
-		DlgY = DlgPos->LastY;
-
-		// Find the last active page if there was one
-		if (OpeningPage<0)
-		{
-			ActivePage = DlgPos->ActivePage;
-			ActivePageIndex = DlgPos->ActivePageIndex;
-		}
-		CreatedBefore = TRUE;
-	}
-
-	if (pBook && ((ActivePageIndex<0) ||
-					(ActivePageIndex >= pBook->GetPageCount()) ||
-					((UINT32)(pBook->GetPage(ActivePageIndex)->GetId()) != ActivePage)
-				))
-	{
-		ActivePageIndex=0;
-		ActivePage = pBook->GetPage(0)->GetId();
-	}
-
-	// Get the size of the dialog box (Required for the SetWindowPos function)
-	wxRect	DialogRect( pDialogWnd->GetRect() );
-	INT32	DialogWidth  = DialogRect.GetWidth();
-	INT32	DialogHeight = DialogRect.GetHeight();
-
-	// Create the WindowIDItem which will be stored in the DialogPosition.
-	CWindowIDItem *pWinID = new CWindowIDItem;
-	if( NULL == pWinID )
-	{
-		// We need to destroy the dialog window
-		pDialogWnd->PopEventHandler(FALSE);
-		pDialogOp->pEvtHandler->Destroy();
-		pDialogWnd->Destroy();
-		ERROR1(FALSE, _R(IDS_OUT_OF_MEMORY));
-	}
-
-
-	if (!CreatedBefore) // If this is the first time the dialog has been created then position
-						// it centrally on the screen
-	{
-		// Get the size of the screen
-		INT32			ScreenWidth  = wxSystemSettings::GetMetric( wxSYS_SCREEN_X );
-		INT32			ScreenHeight = wxSystemSettings::GetMetric( wxSYS_SCREEN_Y );
-
-		// Centre the dialog box
-		DlgX = (ScreenWidth - DialogWidth) / 2;
-		DlgY = (ScreenHeight - DialogHeight) / 2;
-
-		// Create a DialogPosition record
-		DlgPos = new DialogPosition;
-		if (DlgPos == NULL)
-		{
-			// We need to destroy the dialog window
-			pDialogWnd->PopEventHandler(FALSE);
-			pDialogOp->pEvtHandler->Destroy();
-			pDialogWnd->Destroy();
-			return FALSE; // Failed to created DialogPosition record
-		}
-		DlgPos->DlgResourceID = pDialogOp->pEvtHandler->ID;
-
-		// Even though the position is recorded when the dialog is deleted. It is neccessary
-		// to record it here also because another dialog with the same resource ID could be
-		// created before this dialog is deleted.
-		DlgPos->LastX = DlgX;
-		DlgPos->LastY = DlgY;
-
-		DlgPos->ActivePage = 0;
-		DlgPos->ActivePageIndex=0;
-
-		if (pBook)
-		{
-			// Record the active page.
-			DlgPos->ActivePage = ActivePage;
-			DlgPos->ActivePageIndex = ActivePageIndex;
-		}
-		// Add the position record to the DialogPositionList
-		DialogPositionList.AddHead((ListItem*)DlgPos);
-	}
-
-	// Store the Dialog window handle in the position record.
-	pWinID->DlgWin = pDialogWnd;
-	DlgPos->DlgWinList.AddTail( pWinID );
-
-		// Position the dialog
-	pDialogWnd->SetSize(DlgX, DlgY, DialogWidth, DialogHeight);
-
-		// In japan we need to set the font so it dosen't use the default ANSI MS San Serif
-PORTNOTE("dialog","Removed FontFactory usage")
+***************************************************************************/
+BOOL DialogManager::PostCreate(DialogOp* pDialogOp, INT32 OpeningPage) {
+  ERROR2IF( !pDialogOp || !pDialogOp->pEvtHandler || !pDialogOp->pEvtHandler->pwxWindow,
+	    FALSE,
+	    _T("Bad DialogOp / EvtHandler in DialogManager::PostCreate()"));
+  wxWindow* pDialogWnd = pDialogOp->pEvtHandler->pwxWindow;
+  // If the dialog has been created before then its position will have
+  // to be reset
+  INT32 DlgX = 0; // Dialog box X position
+  INT32 DlgY = 0; // Dialog box Y position
+  CDlgResID ActivePage = 0; // Active page for tabbed dialogs
+  UINT32 ActivePageIndex = 0;
+  // TRUE if the dialog has been created before
+  BOOL CreatedBefore = FALSE; 
+  wxBookCtrlBase* pBook=NULL;
+  // Only do special processing for DialogTabOp
+  if (pDialogOp->IS_KIND_OF(DialogTabOp)) {
+    pBook = GetBookControl(pDialogWnd);
+  }
+  ResourceID BookGadget = pBook ? pBook->GetId() : 0;
+  if (pBook && (OpeningPage>=0)) {
+    ActivePage = pBook->GetPage(OpeningPage)->GetId();
+    ActivePageIndex = OpeningPage;
+  }
+  // Search the DialogPositionList to see if the dialog has been
+  // created before
+  DialogPosition* DlgPos =
+    FindDialogPositionRecord(pDialogOp->pEvtHandler->ID);
+  if (DlgPos != NULL) {
+    DlgX = DlgPos->LastX;
+    DlgY = DlgPos->LastY;
+    // Find the last active page if there was one
+    if (OpeningPage<0) {
+      ActivePage = DlgPos->ActivePage;
+      ActivePageIndex = DlgPos->ActivePageIndex;
+    }
+    CreatedBefore = TRUE;
+  }
+  if (pBook &&
+      ((ActivePageIndex<0) ||
+       (ActivePageIndex >= pBook->GetPageCount()) ||
+       ((UINT32)(pBook->GetPage(ActivePageIndex)->GetId()) != ActivePage))) {
+    ActivePageIndex=0;
+    ActivePage = pBook->GetPage(0)->GetId();
+  }
+  // Get the size of the dialog box (Required for the SetWindowPos
+  // function)
+  wxRect DialogRect( pDialogWnd->GetRect());
+  INT32	DialogWidth  = DialogRect.GetWidth();
+  INT32	DialogHeight = DialogRect.GetHeight();
+  // Create the WindowIDItem which will be stored in the
+  // DialogPosition.
+  CWindowIDItem *pWinID = new CWindowIDItem;
+  if(NULL == pWinID) {
+    // We need to destroy the dialog window
+    pDialogWnd->PopEventHandler(FALSE);
+    pDialogOp->pEvtHandler->Destroy();
+    pDialogWnd->Destroy();
+    ERROR1(FALSE, _R(IDS_OUT_OF_MEMORY));
+  }
+   // If this is the first time the dialog has been created then position
+  if (!CreatedBefore) {
+    // it centrally on the screen
+    // Get the size of the screen
+    INT32 ScreenWidth  = wxSystemSettings::GetMetric(wxSYS_SCREEN_X);
+    INT32 ScreenHeight = wxSystemSettings::GetMetric(wxSYS_SCREEN_Y);
+    // Centre the dialog box
+    DlgX = (ScreenWidth - DialogWidth) / 2;
+    DlgY = (ScreenHeight - DialogHeight) / 2;
+    // Create a DialogPosition record
+    DlgPos = new DialogPosition;
+    if (DlgPos == NULL) {
+      // We need to destroy the dialog window
+      pDialogWnd->PopEventHandler(FALSE);
+      pDialogOp->pEvtHandler->Destroy();
+      pDialogWnd->Destroy();
+      return FALSE; // Failed to created DialogPosition record
+    }
+    DlgPos->DlgResourceID = pDialogOp->pEvtHandler->ID;
+    // Even though the position is recorded when the dialog is
+    // deleted. It is neccessary to record it here also because
+    // another dialog with the same resource ID could be created
+    // before this dialog is deleted.
+    DlgPos->LastX = DlgX;
+    DlgPos->LastY = DlgY;
+    DlgPos->ActivePage = 0;
+    DlgPos->ActivePageIndex = 0;
+    if (pBook) {
+      // Record the active page.
+      DlgPos->ActivePage = ActivePage;
+      DlgPos->ActivePageIndex = ActivePageIndex;
+    }
+    // Add the position record to the DialogPositionList
+    DialogPositionList.AddHead((ListItem*)DlgPos);
+  }
+  // Store the Dialog window handle in the position record.
+  pWinID->DlgWin = pDialogWnd;
+  DlgPos->DlgWinList.AddTail(pWinID);
+  // Position the dialog
+  pDialogWnd->SetSize(DlgX, DlgY, DialogWidth, DialogHeight);
+  // In japan we need to set the font so it dosen't use the default
+  // ANSI MS San Serif.
+  PORTNOTE("dialog", "Removed FontFactory usage")
 #ifndef EXCLUDE_FROM_XARALX
-	if( UnicodeManager::IsDBCSOS() )
-		FontFactory::ApplyFontToWindow( DialogWnd, STOCKFONT_DIALOG ); */
+    if(UnicodeManager::IsDBCSOS()) {
+      FontFactory::ApplyFontToWindow(DialogWnd, STOCKFONT_DIALOG); 
+    }
 #endif
-
-	// Inform the Dialog that it has been created so that it can be initialised
-	// Note that for DialogTabOp's seperate Create messages are sent for each page
-	// from the wxNotebookPage OnCreate handler.
-	// Alex moved this inside the if statement
-	BROADCAST_TO_CLASS( DialogMsg( pDialogOp->WindowID, DIM_CREATE, 0 ), DialogOp );
-
-	if (pBook)
-	{
-		// BROADCAST a create message to each page
-		UINT32 i;
-		for (i=0; i<pBook->GetPageCount(); i++)
-		{
-			BROADCAST_TO_CLASS(DialogMsg(pDialogOp->WindowID, DIM_CREATE, BookGadget, 0, pBook->GetPage(i)->GetId()) ,DialogOp);
-		}
-
-		// And tell the active page which is active
-		BROADCAST_TO_CLASS( DialogMsg( pDialogOp->WindowID, DIM_SET_ACTIVE, BookGadget, 0, ActivePage ), DialogOp );
-		pBook->SetSelection(ActivePageIndex);
-	}
-
-	// If the dialog which has just been created is modal then disable all other
-	// dialogs.
-
-	if( !GetMainFrame()->IsEnabled() )
-	{
-		EnableAllDialogs(FALSE, pDialogWnd);
-	}
-
-	return TRUE; // Success
+    // Inform the Dialog that it has been created so that it can be
+    // initialised Note that for DialogTabOp's seperate Create
+    // messages are sent for each page from the wxNotebookPage
+    // OnCreate handler.  Alex moved this inside the if statement
+  BROADCAST_TO_CLASS(DialogMsg(pDialogOp->WindowID, DIM_CREATE, 0),
+		     DialogOp);
+  if (pBook) {
+    // BROADCAST a create message to each page
+    UINT32 i;
+    for (i = 0; i < pBook->GetPageCount(); i++) {
+      BROADCAST_TO_CLASS(DialogMsg(pDialogOp->WindowID,
+				   DIM_CREATE,
+				   BookGadget,
+				   0,
+				   pBook->GetPage(i)->GetId()),
+			 DialogOp);
+    }
+    // And tell the active page which is active
+    BROADCAST_TO_CLASS(DialogMsg(pDialogOp->WindowID,
+				 DIM_SET_ACTIVE,
+				 BookGadget,
+				 0,
+				 ActivePage ),
+		       DialogOp);
+    pBook->SetSelection(ActivePageIndex);
+  }
+  // If the dialog which has just been created is modal then disable
+  // all other dialogs.
+  if(!GetMainFrame()->IsEnabled()) {
+    EnableAllDialogs(FALSE, pDialogWnd);
+  }
+  // Success
+  return TRUE;
 }
 
 /********************************************************************************************
@@ -2809,7 +2795,7 @@ void get_descendants(CWindowID WindowID) {
 wxWindow* DialogManager::GetGadget(CWindowID WindowID, int Gadget) {
   ERROR2IF(!WindowID || !WindowID->IsKindOf(CLASSINFO(wxWindow)),
 	   FALSE, "Bad Window ID passed");
-  get_descendants(WindowID);
+  // get_descendants(WindowID);
   wxWindow* pGadget = WindowID->FindWindow(Gadget);
   // TRACEUSER("amb",_T("pwxDialog=0x%016llx Gadget=%d(%s) pGadget=0x%016llx"),
   // 	    WindowID,

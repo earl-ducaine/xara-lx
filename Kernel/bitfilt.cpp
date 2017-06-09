@@ -1733,8 +1733,7 @@ BOOL BaseBitmapFilter::SetPixelHeight(const BMP_SIZE& Height)
 	Scope: 		protected
 
 ********************************************************************************************/
-BOOL BaseBitmapFilter::GetExportOptions(BitmapExportOptions* pOptions)
-{
+BOOL BaseBitmapFilter::GetExportOptions(BitmapExportOptions* pOptions) {
 #if !defined(EXCLUDE_FROM_RALPH)
 	ERROR2IF(pOptions == NULL, FALSE, "NULL Args");
 
@@ -2536,262 +2535,313 @@ PORTNOTE("spread", "Multi-spread warning!")
 	return ok;
 }
 
+/***************************************************************************
+>	virtual BOOL BaseBitmapFilter::DoExportDoc(Operation* pOp, 
+                                                   CCLexFile* pFile, 
+                                                   PathName* pPath,
+						   Document* pDoc,	
+						   UINT32 Depth, 
+						   double DPI,
+						   const SelectionType& Selection, 
+						   BOOL UseExistingPalette)
 
-/********************************************************************************************
-
->	virtual BOOL BaseBitmapFilter::DoExportDoc(Operation* pOp, CCLexFile* pFile, PathName* pPath,
-											   Document* pDoc,	UINT32 Depth, double DPI,
-											   const SelectionType& Selection , BOOL UseExistingPalette)
 	Author:		Gerry_Iles (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	12/6/96
-	Purpose:	Actually does the work of DoExport() above
-				Code split out for use by DoExportBitmaps() function
-				This DOES NOT call CleanUpAfterExport() if it fails
-				If the call returns FALSE then the caller must call CleanUpAfterExport()
+	Purpose:        Final call in, in this class, of the series: 
+                        - BaseBitmapFilter::DoExportWithOptions
+                        - BaseBitmapFilter::DoExportHelper
+                        - BaseBitmapFilter::DoExportDoc
+                        - PNGFilter::WritePostFrame
 	Returns:	TRUE if worked, FALSE if failed.
 	Scope:		protected
-	SeeAlso:	GetExportOptions; PrepareToExport; ExportRenderNodes; CleanUpAfterExport;
-	Additional information( ap ) - Added 'UseExistingPalette'. If this is TRUE, then the 
-	existing palette in BmapPrevDlg is used instead of a newly generated one. This variable 
-	is given the default value of FALSE.
+	SeeAlso:	GetExportOptions; PrepareToExport; ExportRenderNodes; 
+                        CleanUpAfterExport;
 
-********************************************************************************************/
+	Additional information( ap ) - Added 'UseExistingPalette'. If
+	this is TRUE, then the existing palette in BmapPrevDlg is used
+	instead of a newly generated one. This variable is given the
+	default value of FALSE.
+***************************************************************************/
+BOOL BaseBitmapFilter::DoExportDoc(Operation* pOp,
+				   CCLexFile* pFile,
+				   PathName* pPath,
+				   Document* pDoc,
+				   UINT32 RenderDepth,
+				   double DPI,
+				   const SelectionType& Selection ,
+				   BOOL UseExistingPalette) {
+  if (!WritePreFrame()) {
+    return(FALSE);
+  }
+  //  Only try to do the exact palette if we are using an 8 bit
+  //  optimised palette
+  if ((PaletteType == 1) && (GetBitmapExportOptions()->GetDepth() == 8)) {
+    GRenderOptPalette::UseOldPalette = FALSE;
+  } else {
+    GRenderOptPalette::UseOldPalette = TRUE;
+  }
+  // Set up device context and render region for this export.  This
+  // will show a progress hourglass for the objects being rendered
+  // This will now also write the data out to file via our
+  // ExportRenderNodes function
+  if (!PrepareToExport(pSpread, RenderDepth, DPI, Selection)) {
+    return FALSE;
+  }
+  RenderInStrips = TRUE;
+  if (!ExportRender(ExportRegion)) {
+    m__StripStart = 0;
+    return FALSE;
+  }
+  if (!WritePostFrame()) {
+    m__StripStart = 0;
+    return FALSE;
+  }
+  m__StripStart = 0;
+  return TRUE;
+}
 
-BOOL BaseBitmapFilter::DoExportDoc(Operation* pOp, CCLexFile* pFile, PathName* pPath,
-								   Document* pDoc, UINT32 RenderDepth, double DPI,
-								   const SelectionType& Selection , BOOL UseExistingPalette)
-{
+/***************************************************************************
+>	virtual BOOL BaseBitmapFilter::DoExportDoc(Operation* pOp, 
+                                                   CCLexFile* pFile, 
+                                                   PathName* pPath,
+						   Document* pDoc,	
+						   UINT32 Depth, 
+						   double DPI,
+						   const SelectionType& Selection, 
+						   BOOL UseExistingPalette)
+
+	Author:		Gerry_Iles (Xara Group Ltd) <camelotdev@xara.com>
+	Created:	12/6/96
+	Purpose:        Actually does the work of DoExport() above Code split
+			out for use by DoExportBitmaps() function This
+			DOES NOT call CleanUpAfterExport() if it fails
+			If the call returns FALSE then the caller must
+			call CleanUpAfterExport()
+	Returns:	TRUE if worked, FALSE if failed.
+	Scope:		protected
+	SeeAlso:	GetExportOptions; PrepareToExport; ExportRenderNodes; 
+                        CleanUpAfterExport;
+
+	Additional information( ap ) - Added 'UseExistingPalette'. If
+	this is TRUE, then the existing palette in BmapPrevDlg is used
+	instead of a newly generated one. This variable is given the
+	default value of FALSE.
+***************************************************************************/
+BOOL BaseBitmapFilter::DoExportDoc_old(Operation* pOp,
+				   CCLexFile* pFile,
+				   PathName* pPath,
+				   Document* pDoc,
+				   UINT32 RenderDepth,
+				   double DPI,
+				   const SelectionType& Selection ,
+				   BOOL UseExistingPalette) {
 #ifdef DO_EXPORT
-	if (!WritePreFrame()) return(FALSE);
+  if (!WritePreFrame()) {
+    return(FALSE);
+  }
+  //  Only try to do the exact palette if we are using an 8 bit optimised palette
+  if ((PaletteType == 1) && (GetBitmapExportOptions()->GetDepth() == 8)) {
+    GRenderOptPalette::UseOldPalette = FALSE;
+  } else {
+    GRenderOptPalette::UseOldPalette = TRUE;
+  }
+  // Set up device context and render region for this export.  This
+  // will show a progress hourglass for the objects being rendered
+  // This will now also write the data out to file via our
+  // ExportRenderNodes function
+  if (!PrepareToExport(pSpread, RenderDepth, DPI, Selection)) {
+    return FALSE;
+  }
+  // SMFIX
+  // this is where we will build up the palette from the export
+  // options IF the one that is already in the export options is NOT
+  // valid the fn bellow export render needs the palette to be valid
+  // m_pExportOptions->CreateValidPalette();
+  // this call sets this palette in the lower reaches of the code from
+  // the palette held in the export options
+  // AlterPaletteContents(m_pExportOptions->GetLogicalPalette());
+  // Export the data to the file ensuring we render in strips, if required.
+  RenderInStrips = TRUE;
+  if (!ExportRender(ExportRegion)) {
+    // SMFIX - Make sure we reset the StripStart as it could stuff up further operations.
+    m__StripStart = 0;
+    return FALSE;
+  }
+  // SMFIX was calling	AlterPaletteContents( lpPalette ); on a palette that it built here
+  // Ask the filter if it requires a second pass export render. This
+  // might be used for say preparing a mask for transparency or
+  // something. Used by the GIF filter for this purpose.
+  /*
+    if (IsSecondPassRequired())
+    {
+    WritePreSecondPass();
 
-	/*
-	//  Only try to do the exact palette if we are using an 8 bit optimised palette
-	if( ( PaletteType == 1 ) && ( GetBitmapExportOptions()->GetDepth() == 8 ) )
-		GRenderOptPalette::UseOldPalette = FALSE;
-	else
-		GRenderOptPalette::UseOldPalette = TRUE;
-	*/
+    // Set up device context and render region for this export.
+    // This will show a progress hourglass for the objects being rendered
+    // This will now also write the data out to file via our ExportRenderNodes function
+    if (!PrepareToExport(pSpread, RenderDepth, DPI, Selection))
+    {
+    return FALSE;
+    }
 
-	// Set up device context and render region for this export.
-	// This will show a progress hourglass for the objects being rendered
-	// This will now also write the data out to file via our ExportRenderNodes function
-	if (!PrepareToExport(pSpread, RenderDepth, DPI, Selection))
-	{
-		return FALSE;
-	}
-
-	// SMFIX
-	// this is where we will build up the palette from the export options IF the one
-	// that is already in the export options is NOT valid
-	// the fn bellow export render needs the palette to be valid
-//	m_pExportOptions->CreateValidPalette();
-
-	// this call sets this palette in the lower reaches of the code from the palette held in the export options
-//	AlterPaletteContents(m_pExportOptions->GetLogicalPalette());
-
-	// Export the data to the file ensuring we render in strips, if required.
-	RenderInStrips = TRUE;
-	if (!ExportRender(ExportRegion))
-	{
-		// SMFIX - Make sure we reset the StripStart as it could stuff up further operations.
-		m__StripStart = 0;
-		return FALSE;
-	}
-
-	
-	//SMFIX was calling	AlterPaletteContents( lpPalette ); on a palette that it built here
-
-
-
-	// Ask the filter if it requires a second pass export render. This might be used for
-	// say preparing a mask for transparency or something. Used by the GIF filter for this
-	// purpose.
-	/*
-	if (IsSecondPassRequired())
-	{
-		WritePreSecondPass();
-
-		// Set up device context and render region for this export.
-		// This will show a progress hourglass for the objects being rendered
-		// This will now also write the data out to file via our ExportRenderNodes function
-		if (!PrepareToExport(pSpread, RenderDepth, DPI, Selection))
-		{
-			return FALSE;
-		}
-
-		// Export the data to the file esnuring we render in strips, if required.
-		RenderInStrips = TRUE;
-		if (!ExportRender(ExportRegion))
-		{
-			return FALSE;
-		}
-	}
-	*/
-	
-	if (!WritePostFrame())
-	{
-		// SMFIX - Make sure we reset the StripStart as it could stuff up further operations.
-		m__StripStart = 0;
-		return FALSE;
-	}
-
-	// SMFIX - Make sure we reset the StripStart as it could stuff up further operations.
-	m__StripStart = 0;
+    // Export the data to the file esnuring we render in strips, if required.
+    RenderInStrips = TRUE;
+    if (!ExportRender(ExportRegion))
+    {
+    return FALSE;
+    }
+    }
+  */
+  if (!WritePostFrame()) {
+    // SMFIX - Make sure we reset the StripStart as it could stuff up
+    // further operations.
+    m__StripStart = 0;
+    return FALSE;
+  }
+  // SMFIX - Make sure we reset the StripStart as it could stuff up
+  // further operations.
+  m__StripStart = 0;
 #endif
-	return TRUE;
+  return TRUE;
 }
 
 
 
 
-/********************************************************************************************
-
->	BOOL BaseBitmapFilter::DoExportBitmap(Operation* pOp, CCLexFile* pFile, PathName* pPath,
-										  KernelBitmap* pBitmap)
+/************************************************************
+>	BOOL BaseBitmapFilter::DoExportBitmap(Operation* pOp, 
+                                              CCLexFile* pFile, 
+                                              PathName* pPath,
+                                              KernelBitmap* pBitmap)
 
 	Author:		Neville_Humphrys (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	25/4/95
 	Inputs:			
-	Purpose:	Exports the specified bitmap straight out to file with none of the rendering
-				that DoExport does. Uses the virtual fns of the	inherited class.
-				Do not override unless really necessary.
+
+	Purpose:        Exports the specified bitmap straight out to file
+			with none of the rendering that DoExport
+			does. Uses the virtual fns of the inherited
+			class. Do not override unless really necessary.
+
 	Returns:	TRUE if worked, FALSE if failed.
-
-********************************************************************************************/
-
-BOOL BaseBitmapFilter::DoExportBitmap(Operation* pOp, CCLexFile* pFile, PathName* pPath,
-									  KernelBitmap* pBitmap)
-{
+************************************************************/
+BOOL BaseBitmapFilter::DoExportBitmap(Operation* pOp, CCLexFile* pFile,
+				      PathName* pPath,KernelBitmap* pBitmap) {
 #ifdef DO_EXPORT
-	ERROR2IF(pBitmap == NULL,FALSE,"BaseBitmapFilter::DoExportBitmap null bitmap pointer specified");
-
-	// Note this pointer for later use
-	pExportBitmap = pBitmap;
-
-	// Note this ptr for use in JPEG export.
-	JPEGExportOptions::SetKernelBitmap(pBitmap);
-	
-	// Get a pointer to the actual bitmap so that we can get some details from it.
-	OILBitmap *pOilBitmap = pBitmap->ActualBitmap;
-	ERROR2IF(pOilBitmap == NULL,FALSE,"BaseBitmapFilter::DoExportBitmap null oil bitmap pointer");
-
-	// Create a record of information about the export
-	m_pExportOptions = CreateExportOptions();
-
-	if (m_pExportOptions == NULL)
-	{
-		return FALSE;
+  ERROR2IF(pBitmap == NULL,
+	   FALSE,
+	   "BaseBitmapFilter::DoExportBitmap null bitmap pointer specified");
+  // Note this pointer for later use
+  pExportBitmap = pBitmap;
+  // Note this ptr for use in JPEG export.
+  JPEGExportOptions::SetKernelBitmap(pBitmap);
+  // Get a pointer to the actual bitmap so that we can get some
+  // details from it.
+  OILBitmap *pOilBitmap = pBitmap->ActualBitmap;
+  ERROR2IF(pOilBitmap == NULL,
+	   FALSE,
+	   "BaseBitmapFilter::DoExportBitmap null oil bitmap pointer");
+  // Create a record of information about the export
+  m_pExportOptions = CreateExportOptions();
+  if (m_pExportOptions == NULL) {
+    return FALSE;
+  }
+  // Get the default settings
+  GetBitmapExportOptions()->RetrieveDefaults();
+  // Specify to the user what the export options for depth etc
+  // are going to be
+  GetBitmapExportOptions()->SetSelectionType(ABITMAP);
+  // Get the details from the specified bitmap
+  BitmapInfo BmInfo;
+  pOilBitmap->GetInfo(&BmInfo);
+  // get the bitmaps bpp
+  GetBitmapExportOptions()->SetDepth(BmInfo.PixelDepth);	
+  // Should really save the dpi when we load the file itself
+  // rather than doing all this conversion with possible
+  // rounding errors.  Use the original size that has been
+  // calculated in the info header
+  UINT32 PixWidth  = BmInfo.PixelWidth;
+  //	UINT32 PixHeight = BmInfo.PixelHeight;
+  MILLIPOINT	RecWidth = BmInfo.RecommendedWidth;
+  //	MILLIPOINT	RecHeight = BmInfo.RecommendedHeight;
+  if (PixWidth > 0) {
+    GetBitmapExportOptions()->
+      SetDPI((PixWidth * 72000.0)/(double)RecWidth);
+  }
+  // WEBSTER - markn 5/2/97 If the bitmap has a transparent
+  // colour index, store it in the options object -1 means no
+  // transparent colour
+  INT32 TransIndex = -1;
+  if (!pBitmap->GetTransparencyIndex(&TransIndex)) {
+    TransIndex = -1;
+  }
+  GetBitmapExportOptions()->SetTransparencyIndex(TransIndex);
+  BOOL ok = TRUE;
+  // It used to call the export options dlg here - but why bother just export as is
+  // BOOL ok = GetExportOptions(GetBitmapExportOptions());
+  // if (!ok) {
+  //   delete m_pExportOptions;
+  //   m_pExportOptions = 0;
+  //   // Expects error set on cancel
+  //   Error::SetError(_R(IDN_USER_CANCELLED),0);
+  //   // if cancelled
+  //   return FALSE;
+  // }
+  // if (GetBitmapExportOptions()->HasTempFile()) {
+  //   // the export options preview dialog has produced a temp
+  //   // file, so just rename that get the temp file name
+  //   PathName TempPath = GetBitmapExportOptions()->GetPathName();
+  //   String_256 FinalName = pPath->GetPath();
+  //   String_256 TempName = TempPath.GetPath();
+  //   if (pFile->isOpen()) {
+  //     pFile->close();
+  //   }
+  //   // delete the empty file, if one was created
+  //   FileUtil::DeleteFile(pPath);
+  //   // try to rename the file
+  //   if (_trename(TempName, FinalName) != 0) {
+  //     ok = FALSE;
+  //   } else {
+  //     ok = TRUE;
+  //   }
+  // }
+  // else
+  {
+    // Used to open the file up before starting DoExport. But this meant a cancel on the export
+    // options dialog had filled the file, if it was already present. So now up up here if
+    // not open already. In the PreviewBitmap case the file will already be open.
+    if (!pFile->isOpen()) {
+      if (pFile->IsKindOf(CC_RUNTIME_CLASS(CCDiskFile))) {
+	ok = OpenExportFile((CCDiskFile*) pFile, pPath);
+	if (!ok) {
+	  return FALSE;
 	}
-
-	// Get the default settings
-	GetBitmapExportOptions()->RetrieveDefaults();
-
-	// Specify to the user what the export options for depth etc are going to be
-	GetBitmapExportOptions()->SetSelectionType(ABITMAP);
-
-	// Get the details from the specified bitmap
-	BitmapInfo BmInfo;
-	pOilBitmap->GetInfo(&BmInfo);
-	GetBitmapExportOptions()->SetDepth(BmInfo.PixelDepth);	// get the bitmaps bpp
-	
-	// Should really save the dpi when we load the file itself rather than doing
-	// all this conversion with possible rounding errors.
-	// Use the original size that has been calculated in the info header
-	UINT32 PixWidth  = BmInfo.PixelWidth;
-//	UINT32 PixHeight = BmInfo.PixelHeight;
-	MILLIPOINT	RecWidth = BmInfo.RecommendedWidth;
-//	MILLIPOINT	RecHeight = BmInfo.RecommendedHeight;
-
-	if (PixWidth > 0)
-	{
-		GetBitmapExportOptions()->SetDPI((PixWidth * 72000.0)/(double)RecWidth);
-	}
-
-	// WEBSTER - markn 5/2/97
-	// If the bitmap has a transparent colour index, store it in the options object
-	// -1 means no transparent colour
-	INT32 TransIndex = -1;
-	if (!pBitmap->GetTransparencyIndex(&TransIndex)) TransIndex = -1;
-	GetBitmapExportOptions()->SetTransparencyIndex(TransIndex);
-
-	BOOL ok = TRUE;
-
-/* It used to call the export options dlg here - but why bother just export as is
-	BOOL ok = GetExportOptions(GetBitmapExportOptions());
-	if (!ok)
-	{
-		delete m_pExportOptions;
-		m_pExportOptions = 0;
-
-		Error::SetError(_R(IDN_USER_CANCELLED),0);			// Expects error set on cancel
-		return FALSE;									// if cancelled
-	}
-
-	if (GetBitmapExportOptions()->HasTempFile())
-	{
-		// the export options preview dialog has produced a temp file, so just rename that
-
-		// get the temp file name
-		PathName TempPath = GetBitmapExportOptions()->GetPathName();
-
-		String_256 FinalName = pPath->GetPath();
-		String_256 TempName = TempPath.GetPath();
-
-		if (pFile->isOpen())
-			pFile->close();
-
-		// delete the empty file, if one was created
-		FileUtil::DeleteFile(pPath);
-					 
-		// try to rename the file
-		if (_trename(TempName, FinalName) != 0)
-			ok = FALSE;
-		else
-			ok = TRUE;
-	}
-	else */
-	{
-		// Used to open the file up before starting DoExport. But this meant a cancel on the export
-		// options dialog had filled the file, if it was already present. So now up up here if
-		// not open already. In the PreviewBitmap case the file will already be open.
-		if (!pFile->isOpen())
-		{
-			if (pFile->IsKindOf(CC_RUNTIME_CLASS(CCDiskFile)))
-			{
-				ok = OpenExportFile((CCDiskFile*) pFile, pPath);
-				if (!ok) return FALSE;
-			}
-			else
-			{
-				TRACEUSER( "JustinF", _T("Tried to open non-CCDiskFile in BaseBitmapFilter::DoExportBitmap\n") );
-				return FALSE;
-			}
-		}
-
-		// Make a note of the Disk file we are to use
-		OutputFile = pFile;
-
-		// We do not use an export region so specify null.
-		ExportRegion = NULL;
-		
-		// Actually write to the file, showing progress hourglass as we go
-		ok = WriteBitmapToFile(pBitmap, GetBitmapExportOptions()->GetDPI());
-
-		if (ok)
-			WriteFileEnd();
-	}
-
-	// All done - deallocate dynamic objects, stop the progress display/hourglass
-	// and return success. (Also closes file).
-	CleanUpAfterExport();
-
-	// we created these here so we should delete them
-	delete m_pExportOptions;
-	m_pExportOptions = NULL;
-
-	return ok;
-#else
+      } else {
+	TRACEUSER("JustinF",
+		  _T("Tried to open non-CCDiskFile in "
+		     "BaseBitmapFilter::DoExportBitmap\n"));
 	return FALSE;
+      }
+    }
+    // Make a note of the Disk file we are to use
+    OutputFile = pFile;
+    // We do not use an export region so specify null.
+    ExportRegion = NULL;
+    // Actually write to the file, showing progress hourglass as we go
+    ok = WriteBitmapToFile(pBitmap, GetBitmapExportOptions()->GetDPI());
+    if (ok) {
+      WriteFileEnd();
+    }
+  }
+  // All done - deallocate dynamic objects, stop the progress display/hourglass
+  // and return success. (Also closes file).
+  CleanUpAfterExport();
+  // we created these here so we should delete them
+  delete m_pExportOptions;
+  m_pExportOptions = NULL;
+  return ok;
+#else
+  return FALSE;
 #endif
 }
 
@@ -2983,303 +3033,283 @@ PORTNOTE("spread", "Multi-spread warning!")
 
 
 
-/********************************************************************************************
-
->	BOOL BaseBitmapFilter::SetUpExportOptions(BitmapExportOptions **ppExportOptions, 
-												BOOL OnlyDefaults = FALSE)
+/***************************************************************************
+>	BOOL BaseBitmapFilter::SetUpExportOptions(BitmapExportOptions **ppExportOptions,
+                                                  BOOL OnlyDefaults = FALSE)
 
 	Author:		Stefan_Stoykov (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	12/5/97
 	Inputs:		
-	Outputs:	ppExportOptions - pointer, where a pointer to the export options object 
-				will be returned
-	Purpose:	Displays the export options dialog for this bitmap filter. This allows export
-				options to be obtained by somebody else then the filter
+
+	Outputs:        ppExportOptions - pointer, where a pointer to the
+			export options object will be returned
+
+	Purpose:        Displays the export options dialog for this bitmap
+			filter. This allows export options to be
+			obtained by somebody else then the filter
+
 	Returns:	TRUE if worked, FALSE if failed.
 
-  NB. SMFIX sjk this function will if you pass it a NULL ptr new the correct options for the filter for
-	the calling function. This is great. However in this case the caller function has responsibility
-	to delete this export object when they are finished with it. They receive the export object through
-	the static member variable BmapPrevDlg::m_pExportOptions which is a ptr to the base class BitmapExportOptions,
-	rather than just filling in the users structure, since if the graphic type has changed the users class will have
-	been deleted and the export object could be a different class derived from BitmapExportOptions.
-
-********************************************************************************************/
-
-BOOL BaseBitmapFilter::SetUpExportOptions(BitmapExportOptions **ppExportOptions, BOOL OnlyDefaults)
-{
-	ERROR2IF(ppExportOptions == NULL, FALSE,"BaseBitmapFilter::Can't Set up export options");
-
-	Document *pDoc = Document::GetCurrent();
-
-	// Get pointer to the spread to export.
-PORTNOTE("spread", "Multi-spread warning!")
-	pSpread = GetFirstSpread(pDoc);
-	ERROR2IF(pSpread == NULL, FALSE,"BaseCamelotFilter::DoExport no spread to export");
-
-	// We must now check if there is a selection present so that we can set up whether the
-	// user gets the choice of exporting the selection, drawing or spread if there is a 
-	// selection present OR just a choice between the spread or drawing if no selection is
-	// present.
-	// If have a caret selected in a text story then the selection will be almost zero so trap
-	// this case as well. 
-	DocRect ClipRect = GetApplication()->FindSelection()->GetBoundingRect(TRUE);
-	SelectionType Selection = DRAWING;
- 	if (
- 		ClipRect.IsEmpty() ||
- 		ClipRect.Width() < MinExportSize || ClipRect.Height() < MinExportSize
- 	   )
-		Selection = DRAWING;		// no selection present, so choose drawing by default
-	else
-		Selection = SELECTION;		// selection present, so choose this by default
-
-	if (Selection == DRAWING)
-	{
-		// Work out the size of the rectangle encompassing the drawing (visible layers only)
-		ClipRect = GetSizeOfDrawing(pSpread);
-
-		// Check that that cliprect is ok, if not then set the spread as the export type
- 		if (
- 			ClipRect.IsEmpty() ||
- 			ClipRect.Width() < MinExportSize || ClipRect.Height() < MinExportSize
- 		   )
-			Selection = SPREAD;
-	}
-	
-
-	// If there is no selection then warn the user that exporting the current spread may
-	// take a lot of disc space, but only if this is not a Preview Bitmap.
-	if ((!IsPreviewBitmap) && (Selection == SPREAD))
-	{
-		// Warn the user that there is no selection = large export
-		ErrorInfo Info;
-		Info.ErrorMsg = _R(IDT_BMPEXP_NOSELECTION);
-		Info.Button[0] = _R(IDB_EXPQUERY_EXPORT);
-		Info.Button[1] = _R(IDB_EXPQUERY_DONTEXPORT);
-		if ((ResourceID)AskQuestion(&Info) == _R(IDB_EXPQUERY_DONTEXPORT))
-		{
-			Error::SetError(_R(IDN_USER_CANCELLED),0);		// Expects error set on cancel
-			return FALSE;								// if cancelled
-		}
-	}
-
-	// Create a record of information about the export
-	*ppExportOptions = CreateExportOptions();
-	if (*ppExportOptions == NULL)
-	{
-		return FALSE;
-	}
-
-	(*ppExportOptions)->RetrieveDefaults();
-
-	(*ppExportOptions)->SetSelectionType(Selection);
-
-	// check whether only the defaults are needed
-	if (OnlyDefaults)
-		return TRUE;
-
-	// get the user options for depth etc here
-	BOOL ok = GetExportOptions( *ppExportOptions );
-
-	// remember this ptr and make it externally available
-	// dont do this any more the above call brings up the export dlg and sets the BmapPrevDlg::m_pExportOptions
-	// even when the user has messed around with them
-	//BmapPrevDlg::m_pExportOptions = *ppExportOptions;
-	// so rather the *ppExportOptions should reflect the state that the dlg left them in
-	if (BmapPrevDlg::m_pExportOptions)
-		*ppExportOptions = BmapPrevDlg::m_pExportOptions;
-
-	if (!ok)
-	{
-		if (*ppExportOptions != NULL)
-		{
-			delete *ppExportOptions;
-			*ppExportOptions = NULL;
-		}
-		Error::SetError(_R(IDN_USER_CANCELLED),0);			// Expects error set on cancel
-		BmapPrevDlg::m_pExportOptions = NULL;	// we have no export options
-
-		return FALSE;									// if cancelled
-	}
-
-	return TRUE;
+        Note, SMFIX sjk this function will if you pass it a NULL ptr
+	new the correct options for the filter for the calling
+	function. This is great. However in this case the caller
+	function has responsibility to delete this export object when
+	they are finished with it. They receive the export object
+	through the static member variable
+	BmapPrevDlg::m_pExportOptions which is a ptr to the base class
+	BitmapExportOptions, rather than just filling in the users
+	structure, since if the graphic type has changed the users
+	class will have been deleted and the export object could be a
+	different class derived from BitmapExportOptions.
+***************************************************************************/
+BOOL BaseBitmapFilter::SetUpExportOptions(BitmapExportOptions**ppExportOptions,
+					  BOOL OnlyDefaults) {
+  ERROR2IF(ppExportOptions == NULL, FALSE,
+	   "BaseBitmapFilter::Can't Set up export options");
+  Document *pDoc = Document::GetCurrent();
+  // Get pointer to the spread to export.
+  PORTNOTE("spread", "Multi-spread warning!")
+    pSpread = GetFirstSpread(pDoc);
+  ERROR2IF(pSpread == NULL, FALSE,"BaseCamelotFilter::DoExport no spread to export");
+  // We must now check if there is a selection present so that we can
+  // set up whether the user gets the choice of exporting the
+  // selection, drawing or spread if there is a selection present OR
+  // just a choice between the spread or drawing if no selection is
+  // present.
+  // If have a caret selected in a text story then the selection will
+  // be almost zero so trap this case as well.
+  DocRect ClipRect = GetApplication()->FindSelection()->GetBoundingRect(TRUE);
+  SelectionType Selection = DRAWING;
+  if (ClipRect.IsEmpty() ||
+      ClipRect.Width() < MinExportSize || ClipRect.Height() < MinExportSize) {
+    Selection = DRAWING;		// no selection present, so choose drawing by default
+  } else {
+    Selection = SELECTION;		// selection present, so choose this by default
+  }
+  if (Selection == DRAWING) {
+    // Work out the size of the rectangle encompassing the drawing
+    // (visible layers only)
+    ClipRect = GetSizeOfDrawing(pSpread);
+    // Check that that cliprect is ok, if not then set the spread as
+    // the export type
+    if (ClipRect.IsEmpty() ||
+	ClipRect.Width() < MinExportSize ||
+	ClipRect.Height() < MinExportSize) {
+      Selection = SPREAD;
+    }
+  }
+  // If there is no selection then warn the user that exporting the
+  // current spread may take a lot of disc space, but only if this is
+  // not a Preview Bitmap.
+  if ((!IsPreviewBitmap) && (Selection == SPREAD)) {
+    // Warn the user that there is no selection = large export
+    ErrorInfo Info;
+    Info.ErrorMsg = _R(IDT_BMPEXP_NOSELECTION);
+    Info.Button[0] = _R(IDB_EXPQUERY_EXPORT);
+    Info.Button[1] = _R(IDB_EXPQUERY_DONTEXPORT);
+    if ((ResourceID)AskQuestion(&Info) == _R(IDB_EXPQUERY_DONTEXPORT)) {
+      // Expects error set on cancel if cancelled
+      Error::SetError(_R(IDN_USER_CANCELLED), 0);
+      return FALSE;				
+    }
+  }
+  // Create a record of information about the export
+  *ppExportOptions = CreateExportOptions();
+  if (*ppExportOptions == NULL) {
+    return FALSE;
+  }
+  (*ppExportOptions)->RetrieveDefaults();
+  (*ppExportOptions)->SetSelectionType(Selection);
+  // check whether only the defaults are needed
+  if (OnlyDefaults) {
+    return TRUE;
+  }
+  // get the user options for depth etc here
+  BOOL ok = GetExportOptions(*ppExportOptions);
+  // remember this ptr and make it externally available dont do this
+  // any more the above call brings up the export dlg and sets the
+  // BmapPrevDlg::m_pExportOptions even when the user has messed
+  // around with them BmapPrevDlg::m_pExportOptions =
+  // *ppExportOptions; so rather the *ppExportOptions should reflect
+  // the state that the dlg left them in
+  if (BmapPrevDlg::m_pExportOptions) {
+    *ppExportOptions = BmapPrevDlg::m_pExportOptions;
+  }
+  if (!ok) {
+    if (*ppExportOptions != NULL) {
+      delete *ppExportOptions;
+      *ppExportOptions = NULL;
+    }
+    // Expects error set on cancel we have no export options if
+    // cancelled
+    Error::SetError(_R(IDN_USER_CANCELLED), 0); 
+    BmapPrevDlg::m_pExportOptions = NULL;
+    return FALSE;
+  }
+  return TRUE;
 }
 
-
-
-
-/********************************************************************************************
-
->	virtual BOOL BaseBitmapFilter::DoExportWithOptions(Operation* pOp, CCLexFile* pFile, 
-							PathName* pPath, Document* pDoc, BitmapExportOptions *pOptions)
+/***************************************************************************
+>	virtual BOOL BaseBitmapFilter::DoExportWithOptions(Operation* pOp, 
+                                                           CCLexFile* pFile, 
+                                                           PathName* pPath, 
+                                                           Document* pDoc, 
+                                                           BitmapExportOptions *pOptions)
 
 	Author:		Stefan_Stoykov (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	12/5/97
-	Inputs:		pOp - the operation that started the export off
-				pFile - the file to put the exported data into
-				pPath - the pathname of the file to be exported to
-				pDoc - the document to export
-				pOptions - the bitmap export options to use when exporting. The options are 
-				deleted after the export, so if you want to keep them make a copy first.
-	Purpose:	Exports the document by using the export options passed as parameter, rather 
-				then invoking an options dialog box to obtain them.
+	Inputs:         pOp - the operation that started the export off pFile
+			- the file to put the exported data into pPath
+			- the pathname of the file to be exported to
+			pDoc - the document to export pOptions - the
+			bitmap export options to use when
+			exporting. The options are deleted after the
+			export, so if you want to keep them make a
+			copy first.
+	Purpose:        Exports the document by using the export options
+			passed as parameter, rather then invoking an
+			options dialog box to obtain them.
 	Returns:	TRUE if worked, FALSE if failed.
-
-********************************************************************************************/
-
-BOOL BaseBitmapFilter::DoExportWithOptions(Operation* pOp, CCLexFile* pFile, PathName* pPath,
-								   Document* pDoc, BitmapExportOptions *pOptions, DocRect *pRect)
-{
-	ERROR2IF(pOp == NULL, FALSE,"BaseBitmapFilter::DoExport no export operation");
-	ERROR2IF(pFile == NULL, FALSE,"BaseBitmapFilter::DoExport no file to export to");
-	ERROR2IF(pPath == NULL, FALSE,"BaseBitmapFilter::DoExport no export pathname");
-	ERROR2IF(pDoc == NULL, FALSE,"BaseBitmapFilter::DoExport no document to export");
-
-	// Have any valid export options been passed in?
-	if (pOptions == NULL)
-	{
-		// Create a record of information about the export.
-		SetUpExportOptions(&m_pExportOptions, TRUE);
-		if (m_pExportOptions == NULL)
-			return FALSE;
+***************************************************************************/
+BOOL BaseBitmapFilter::DoExportWithOptions(Operation* pOp,
+					   CCLexFile* pFile,
+					   PathName* pPath,
+					   Document* pDoc,
+					   BitmapExportOptions *pOptions,
+					   DocRect *pRect) {
+  ERROR2IF(pOp == NULL, FALSE,
+	   "BaseBitmapFilter::DoExport no export operation");
+  ERROR2IF(pFile == NULL, FALSE,
+	   "BaseBitmapFilter::DoExport no file to export to");
+  ERROR2IF(pPath == NULL, FALSE,
+	   "BaseBitmapFilter::DoExport no export pathname");
+  ERROR2IF(pDoc == NULL, FALSE,
+	   "BaseBitmapFilter::DoExport no document to export");
+  // Have any valid export options been passed in?
+  if (pOptions == NULL) {
+    // Create a record of information about the export.
+    SetUpExportOptions(&m_pExportOptions, TRUE);
+    if (m_pExportOptions == NULL) {
+      return FALSE;
+    }
+  } else {
+    // rather point at the options passed in
+    m_pExportOptions = pOptions;
+  }
+  // set up the pSpread
+  PORTNOTE("spread", "Multi-spread warning!")
+    pSpread = GetFirstSpread(pDoc);
+  // deal with no selection
+  SelRange* pSelection = GetApplication()->FindSelection();
+  // deal with exporting no selection as the drawing
+  if ((pRect == NULL) &&
+      (pSelection->Count() == 0) &&
+      (m_pExportOptions->GetSelectionType() == SELECTION)) {
+    m_pExportOptions->SetSelectionType(DRAWING);
+  }
+  // Force the cliping rect for the image to be the one passed in
+  if (pRect != NULL) {
+    // and not just defined by the selection! sjk
+    ClipRect = *pRect;
+  } else {
+    // reassign the clipping rectangle to the selection's bounding
+    // rect
+    SetUpClippingRectangleForExport(pSpread,
+				    m_pExportOptions->GetSelectionType());
+    // Set the page limits to drawing if thats whats requested
+    if (pSpread && m_pExportOptions->IsClipToPage() ) {
+      Page *pPage = pSpread->FindFirstPageInSpread(); 
+      if (pPage) {
+	ClipRect = pPage->GetPageRect();
+      }
+    }	
+    // to use SJK's new fiddle the rect to maintain the antialiasing
+    // as seen on screen call the function bellow If you want it to
+    // work like it did in CX2 comment the line out
+    if( m_pExportOptions->GetAntiAliasing() == MAINTAIN_SCREEN_AA ) {
+      PixelAlignedFiddle(&ClipRect);
+    }
+  }
+  BOOL ok = TRUE;
+  // Always export the whole thing into one composite file
+  ok = DoExportHelper(pOp, pFile, pPath, pDoc);
+  if (!IsPreviewBitmap && m_pExportOptions->CanExportSeparateLayers()) {
+    // We need to export each layer as a separate file
+    Layer* pLayer = pSpread->FindFirstLayer();
+    while (ok && pLayer!=NULL) {
+      if (pLayer->IsVisible()
+	  && !pLayer->IsGuide()
+	  && pLayer->HasLayerGotRenderableChildren()) {
+	SetSoleLayer(pLayer);
+	PathName pathLayer = pLayer->MakeExportLayerName(*pPath);
+	CCLexFile* pLayerFile =
+	  new CCDiskFile(pathLayer, ios::in | ios::out | ios::binary | ios::trunc);
+	if (ok) {
+	  ok = DoExportHelper(pOp, pLayerFile, &pathLayer, pDoc);
 	}
-	else
-	{
-		// Copy the existing export options.
-		//m_pExportOptions = pOptions->MakeCopy ();
-		m_pExportOptions = pOptions; // rather point at the options passed in
-	}
-
-	// set up the pSpread
-PORTNOTE("spread", "Multi-spread warning!")
-	pSpread = GetFirstSpread(pDoc);
-
-	// deal with no selection
-	SelRange* pSelection = GetApplication()->FindSelection();
-	// deal with exporting no selection as the drawing
-	if (pRect == NULL && pSelection->Count() == 0 && (m_pExportOptions->GetSelectionType() == SELECTION))
-		m_pExportOptions->SetSelectionType(DRAWING);
-
-	if (pRect != NULL)	// Force the cliping rect for the image to be the one passed in
-						// and not just defined by the selection! sjk
-	{
-		ClipRect = *pRect;
-	}
-	else
-	{
-		// reassign the clipping rectangle to the selection's bounding rect
-		SetUpClippingRectangleForExport(pSpread, m_pExportOptions->GetSelectionType());
-
-		// Set the page limits to drawing if thats whats requested
-		if (pSpread && m_pExportOptions->IsClipToPage() )
-		{
-			Page *pPage = pSpread->FindFirstPageInSpread(); 
-			if (pPage)
-				ClipRect = pPage->GetPageRect();
-		}	
-
-		// to use SJK's new fiddle the rect to maintain the antialiasing
-		// as seen on screen call the function bellow
-		// If you want it to work like it did in CX2 comment the line out
-		if( m_pExportOptions->GetAntiAliasing() == MAINTAIN_SCREEN_AA )
-			PixelAlignedFiddle(&ClipRect);
-	}
-
-	BOOL ok = TRUE;
-
-	// Always export the whole thing into one composite file
-	ok = DoExportHelper(pOp, pFile, pPath, pDoc);
-
-	if (!IsPreviewBitmap && m_pExportOptions->CanExportSeparateLayers())
-	{
-		// We need to export each layer as a separate file
-		Layer* pLayer = pSpread->FindFirstLayer();
-		while (ok && pLayer!=NULL)
-		{
-			if (pLayer->IsVisible()
-				&& !pLayer->IsGuide()
-				&& pLayer->HasLayerGotRenderableChildren()
-				)
-			{
-				SetSoleLayer(pLayer);
-
-				PathName pathLayer = pLayer->MakeExportLayerName(*pPath);
-				CCLexFile* pLayerFile = new CCDiskFile(pathLayer, ios::in | ios::out | ios::binary | ios::trunc);
-
-				if (ok) ok = DoExportHelper(pOp, pLayerFile, &pathLayer, pDoc);
-
-				delete pLayerFile;
-
-				SetSoleLayer(NULL);
-			}
-
-			pLayer = pLayer->FindNextLayer();
-		}
-	}
-
-	// Delete the newly created export options ONLY if we did create them
-	if (pOptions == NULL)
-	{
-		delete m_pExportOptions;
-		m_pExportOptions = NULL;
-	}
-
-	// Restore the file.
-	OutputFile = pFile;
-
-	return ok;
+	delete pLayerFile;
+	SetSoleLayer(NULL);
+      }
+      pLayer = pLayer->FindNextLayer();
+    }
+  }
+  // Delete the newly created export options ONLY if we did create them
+  if (pOptions == NULL) {
+    delete m_pExportOptions;
+    m_pExportOptions = NULL;
+  }
+  // Restore the file.
+  OutputFile = pFile;
+  return ok;
 }
 
 
 
-/********************************************************************************************
-
+/**************************************************************************
 >	virtual BOOL BaseBitmapFilter::DoExportWithOptions(Operation* pOp,
-													   CCLexFile* pFile,
-													   PathName* pPath,
-													   Document* pDoc)
+							   CCLexFile* pFile,
+							   PathName* pPath,
+							   Document* pDoc)
 
 	Author:		Phil_Martin (Xara Group Ltd) <camelotdev@xara.com> (from Stefan)
 	Created:	24/03/2004
 	Inputs:		pOp - the operation that started the export off
-				pFile - the file to put the exported data into
-				pPath - the pathname of the file to be exported to
-				pDoc - the document to export
-	Purpose:	Exports the document by using the export options passed as parameter, rather 
-				then invoking an options dialog box to obtain them.
+			pFile - the file to put the exported data into
+			pPath - the pathname of the file to be exported to
+			pDoc - the document to export
+	Purpose:        Exports the document by using the export options
+			passed as parameter, rather then invoking an
+			options dialog box to obtain them.
 	Returns:	TRUE if worked, FALSE if failed.
-
-********************************************************************************************/
-
+**************************************************************************/
 BOOL BaseBitmapFilter::DoExportHelper(Operation* pOp,
-									  CCLexFile* pFile,
-									  PathName* pPath,
-									  Document* pDoc)
-{
-	// Used to open the file up before starting DoExport. But this meant a cancel on the export
-	// options dialog had filled the file, if it was already present. So now up up here if
-	// not open already. In the PreviewBitmap case the file will already be open.
+				      CCLexFile* pFile,
+				      PathName* pPath,
+				      Document* pDoc) {
+	// Used to open the file up before starting DoExport. But this
+	// meant a cancel on the export options dialog had filled the
+	// file, if it was already present. So now up up here if not
+	// open already. In the PreviewBitmap case the file will
+	// already be open.
 	if ( !pFile->isOpen() && 
-		 pFile->IsKindOf ( CC_RUNTIME_CLASS ( CCDiskFile ) ) &&
-		 !OpenExportFile ( static_cast<CCDiskFile*> ( pFile ), pPath) )
-	{
-		 return FALSE;
+	     pFile->IsKindOf (CC_RUNTIME_CLASS (CCDiskFile)) &&
+	     !OpenExportFile (static_cast<CCDiskFile*> (pFile), pPath)) {
+	  return FALSE;
 	}
-	
 	WrittenHeader = 0;
 	SetDepthToRender(32);
-	
-	// set the palette type which might get changed during the preview
-	if (m_pExportOptions->IS_KIND_OF(BMPExportOptions))
-	{
-		PaletteType = ((BMPExportOptions *)m_pExportOptions)->GetPalette() ? 1 : 0;	// 1 for an optimised palette
-		BMPFilter::SetDefaultExportDPI(m_pExportOptions->GetDPI());
-		BMPFilter::SetDefaultExportDepth(m_pExportOptions->GetDepth());
-PORTNOTE("filter", "Removed use fo GIFFilter")
+	// set the palette type which might get changed during the
+	// preview
+	if (m_pExportOptions->IS_KIND_OF(BMPExportOptions)) {
+	  // 1 for an optimised palette
+	  PaletteType = ((BMPExportOptions*)m_pExportOptions)->GetPalette() ? 1 : 0;
+	  BMPFilter::SetDefaultExportDPI(m_pExportOptions->GetDPI());
+	  BMPFilter::SetDefaultExportDepth(m_pExportOptions->GetDepth());
+	  PORTNOTE("filter", "Removed use fo GIFFilter")
 #ifndef EXCLUDE_FROM_XARALX
-		// Need to set the dither for the accusoft filter here, otherwise the dither
-		// changes by the user will not have any effect
-		AccusoftFilters::SetDitherToUse(m_pExportOptions->GetDither());
+	    // Need to set the dither for the accusoft filter here, otherwise the dither
+	    // changes by the user will not have any effect
+	    AccusoftFilters::SetDitherToUse(m_pExportOptions->GetDither());
 #endif
 	}
 	else if (m_pExportOptions->IS_KIND_OF(MaskedFilterExportOptions))
@@ -4394,19 +4424,19 @@ UINT32 BaseBitmapFilter::GetExportMsgID()
 
 ********************************************************************************************/
 
-BOOL BaseBitmapFilter::GenerateOptimisedPalette(Spread *pSpread, UINT32 Depth, double DPI, BOOL SnapToBrowserPalette, UINT32 NumColsInPalette, BOOL UsePrimaryCols)
-{
+BOOL BaseBitmapFilter::GenerateOptimisedPalette(Spread *pSpread,
+						UINT32 Depth,
+						double DPI,
+						BOOL SnapToBrowserPalette,
+						UINT32 NumColsInPalette,
+						BOOL UsePrimaryCols) {
 #ifdef DO_EXPORT
-	if (Depth > 8)
-	{
-		pOptimisedPalette = NULL;
-		return TRUE;
-	}
-
+  if (Depth > 8) {
+    pOptimisedPalette = NULL;
+    return TRUE;
+  }
 	TRACEUSER( "Neville", _T("Trying to generate an optimised palette ...\n") );
-
 	WeAreGeneratingOptPalette = TRUE;
-
 	// Don't use rendering matrix when exporting BMPs as it uses coordinates as is
 	Matrix Identity;
 

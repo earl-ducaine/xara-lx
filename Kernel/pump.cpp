@@ -425,156 +425,127 @@ MessageHandler::~MessageHandler()
 ********************************************************************************************/
 
 
-MsgResult MessageHandler::Broadcast(Msg* Message, CCRuntimeClass* Class)
-{
-	// If the DeathMsg has been sent to all MessageHandlers then we won't allow any more
-	// broadcasts...
-	if (PostDeath)
-	{
-		delete Message;
-		return (OK);
-	} 
-
-	// Indicate we may need to refresh button states on exit
-//	ControlList::Get()->Changed();
-
-/*	Document* pOldCurDoc = Document::GetCurrent();
-	View* pOldCurView = View::GetCurrent();
-*/
-	if (Class == NULL)
-	{
-		// Send the message to all Message Handlers
-		Class = CC_RUNTIME_CLASS(MessageHandler); 
-	};
-	 
-	MessageHandlerList* CurrentMessageHandlerList = 
-		(MessageHandlerList*)(MessageHandlerClassList.GetHead()); 
-	ListItem* CurrentMessageHandler; 
-	ListItem* NextMessageHandler; 
-	BOOL Result; 
-
-	#ifdef _DEBUG
-	BOOL FoundClassGrp = FALSE; 
-	#endif
-	
-	BOOL Failed = FALSE;  // Set to TRUE if a Message fn returns FAIL
-	String_256 FirstErrStr;  // Used to save the first error description set
-	UINT32 FirstErrMod=0; 
-	
-	while (CurrentMessageHandlerList != NULL)
-	{	
-		// Determine if we should send messages to the objects in the 
-		// list
-		const CCRuntimeClass* GroupClass = CurrentMessageHandlerList-> MessageHandlerClass; 
-		while (GroupClass != NULL)
-		{
-			if (GroupClass == Class)
-			{  
-				#ifdef _DEBUG
-				FoundClassGrp = TRUE; 
-				#endif
-				// GroupClass is equal to or derived from Class
-				// Send the message to every MessageHandler in the list
-				CurrentMessageHandler = CurrentMessageHandlerList->m_List.GetHead(); 
-				while (CurrentMessageHandler != NULL)
-				{   
-					// Get the next message handler now cos there is no guarantee that 
-					// CurrentMessageHandler will survive. 
-					NextMessageHandler = (MessageHandlerList*)
-						(CurrentMessageHandlerList->m_List.GetNext(CurrentMessageHandler)); 
-
-					Result = ((MessageHandler*)CurrentMessageHandler)->
-							  Message(Message); // Send the message 
-
-					if (Result == EAT_MSG) 
-					{
-						delete Message;
-/*
-						// We need to restore the old current doc and view's,
-						// but they may have been deleted, so we must first
-						// check that they are still in the doc list.
-						Document *pDoc = (Document *) Camelot.Documents.GetHead();
-						while (pDoc != NULL)
-						{
-							if (pDoc == pOldCurDoc)
-							{
-								// Restore the old current values
-								if (pOldCurView)
-									pOldCurView->SetCurrent();
-								else
-									View::SetNoCurrent();
-								if (pOldCurDoc)
-									pOldCurDoc->SetCurrent();
-								else
-									Document::SetNoCurrent();
-
-								break;
-							}
-
-							pDoc = (Document *) Camelot.Documents.GetNext(pDoc);
-						}
-*/
-						return EAT_MSG; 	// The message has been eaten
-					}
-					if (Result == FAIL)
-					{
-						// If we have failed previously then we need not do anything special
-						if (!Failed)
-						{
-							// Record the error which was set, we will restore this value prior
-							// to returning from the function. 
-							FirstErrStr = Error::GetErrorString(); 
-							FirstErrMod = Error::GetErrorModule(); 
-							Failed = TRUE; // So we don't record the error again	
-						}
-						// Continue to send the message on to other MessageHandlers
-					}
-					// Get the next Message Handler
-					CurrentMessageHandler = NextMessageHandler;
-				}
-				break; 
-
-			}
-			GroupClass = GroupClass->GetBaseClass1();
-		}
-
-		CurrentMessageHandlerList = (MessageHandlerList*)
-			(MessageHandlerClassList.GetNext(CurrentMessageHandlerList)); 
+MsgResult MessageHandler::Broadcast(Msg* Message, CCRuntimeClass* Class) {
+  // If the DeathMsg has been sent to all MessageHandlers then we
+  // won't allow any more broadcasts...
+  if (PostDeath) {
+    delete Message;
+    return (OK);
+  } 
+  // Indicate we may need to refresh button states on exit
+  // ControlList::Get()->Changed();
+  // Document* pOldCurDoc = Document::GetCurrent();
+  // View* pOldCurView = View::GetCurrent();
+  if (Class == NULL) {
+    // Send the message to all Message Handlers
+    Class = CC_RUNTIME_CLASS(MessageHandler); 
+  }
+  MessageHandlerList* CurrentMessageHandlerList = 
+    (MessageHandlerList*)(MessageHandlerClassList.GetHead()); 
+  ListItem* CurrentMessageHandler; 
+  ListItem* NextMessageHandler; 
+  BOOL Result; 
+#ifdef _DEBUG
+  BOOL FoundClassGrp = FALSE; 
+#endif
+  // Set to TRUE if a Message fn returns FAIL
+  BOOL Failed = FALSE;
+  // Used to save the first error description set
+  String_256 FirstErrStr;
+  UINT32 FirstErrMod=0; 
+  while (CurrentMessageHandlerList != NULL) {	
+    // Determine if we should send messages to the objects in the list
+    const CCRuntimeClass* GroupClass = CurrentMessageHandlerList->MessageHandlerClass; 
+    while (GroupClass != NULL) {
+      if (GroupClass == Class) {  
+#ifdef _DEBUG
+	FoundClassGrp = TRUE; 
+#endif
+	// GroupClass is equal to or derived from Class Send the
+	// message to every MessageHandler in the list
+	CurrentMessageHandler = CurrentMessageHandlerList->m_List.GetHead(); 
+	while (CurrentMessageHandler != NULL) {   
+	  // Get the next message handler now cos there is no guarantee that 
+	  // CurrentMessageHandler will survive. 
+	  NextMessageHandler = (MessageHandlerList*)
+	    (CurrentMessageHandlerList->m_List.GetNext(CurrentMessageHandler));
+	  // Send the message 
+	  Result = ((MessageHandler*)CurrentMessageHandler)->
+	    Message(Message); 
+	  if (Result == EAT_MSG)  {
+	    delete Message;
+	    // We need to restore the old current doc and view's,
+	    // but they may have been deleted, so we must first
+	    // check that they are still in the doc list.
+	    // Document *pDoc = (Document *) Camelot.Documents.GetHead();
+	    // while (pDoc != NULL)
+	    //   {
+	    // 	if (pDoc == pOldCurDoc)
+	    // 	  {
+	    // 	    // Restore the old current values
+	    // 	    if (pOldCurView)
+	    // 	      pOldCurView->SetCurrent();
+	    // 	    else
+	    // 	      View::SetNoCurrent();
+	    // 	    if (pOldCurDoc)
+	    // 	      pOldCurDoc->SetCurrent();
+	    // 	    else
+	    // 	      Document::SetNoCurrent();
+	    // 	    break;
+	    // 	  }
+	    // 	pDoc = (Document *) Camelot.Documents.GetNext(pDoc);
+	    //   }
+	    return EAT_MSG; 	// The message has been eaten
+	  }
+	  if (Result == FAIL) {
+	    // If we have failed previously then we need not do
+	    // anything special
+	    if (!Failed) {
+	      // Record the error which was set, we will restore
+	      // this value prior to returning from the function.
+	      FirstErrStr = Error::GetErrorString(); 
+	      FirstErrMod = Error::GetErrorModule(); 
+	      Failed = TRUE; // So we don't record the error again	
+	    }
+	    // Continue to send the message on to other MessageHandlers
+	  }
+	  // Get the next Message Handler
+	  CurrentMessageHandler = NextMessageHandler;
 	}
-
-	// If we have just sent the DeathMsg then flag that we will allow no more!
-	CCRuntimeClass* MsgType = Message->GetRuntimeClass();
-	if (MsgType==CC_RUNTIME_CLASS(DeathMsg))
-	{
-		PostDeath = TRUE;
-	}
-
-	delete Message;
-	#ifdef _DEBUG 	
-	ENSURE(FoundClassGrp, "Message cannot be sent"); 
-	#endif
-
-/*	// Restore the old current values
-	if (pOldCurView)
-		pOldCurView->SetCurrent();
-	else
-		View::SetNoCurrent();
-	if (pOldCurDoc)
-		pOldCurDoc->SetCurrent();
-	else
-		Document::SetNoCurrent();
-*/
-	if (Failed)
-	{
-		// Restore the error
-		Error::SetError(0, FirstErrStr, FirstErrMod);
-		InformError();  
-		return FAIL; 
-	}
-	else
-	{
-		return OK;
-	}
+	break; 
+      }
+      GroupClass = GroupClass->GetBaseClass1();
+    }
+    CurrentMessageHandlerList = (MessageHandlerList*)
+      (MessageHandlerClassList.GetNext(CurrentMessageHandlerList)); 
+  }
+  // If we have just sent the DeathMsg then flag that we will allow no
+  // more!
+  CCRuntimeClass* MsgType = Message->GetRuntimeClass();
+  if (MsgType==CC_RUNTIME_CLASS(DeathMsg)) {
+    PostDeath = TRUE;
+  }
+  delete Message;
+#ifdef _DEBUG 	
+  ENSURE(FoundClassGrp, "Message cannot be sent"); 
+#endif
+  // Restore the old current values
+  // if (pOldCurView)
+  //   pOldCurView->SetCurrent();
+  // else
+  //   View::SetNoCurrent();
+  // if (pOldCurDoc)
+  //   pOldCurDoc->SetCurrent();
+  // else
+  //   Document::SetNoCurrent();
+  if (Failed) {
+    // Restore the error
+    Error::SetError(0, FirstErrStr, FirstErrMod);
+    InformError();  
+    return FAIL; 
+  } else {
+    return OK;
+  }
 }
 
 
