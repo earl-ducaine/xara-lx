@@ -20,6 +20,11 @@ AM_BINRELOC
 CFLAGS=$inCFLAGS
 CXXFLAGS=$inCXXFLAGS
 
+# libpng
+PKG_CHECK_MODULES([libpng], [libpng16])
+dnl AM_CFLAGS += $(libpng_CFLAGS)
+dnl LDADD += $(libpng_LIBS)
+
 # Process command line arguments
 AC_ARG_ENABLE(debug,
               AS_HELP_STRING([--enable-debug],
@@ -354,8 +359,8 @@ if test "$StaticEnable" = "yes"; then
 fi
 
 # pass the Pango, FreeType and GTK flags (required for wxGTK font rendering)
-CPPFLAGS="$CPPFLAGS  $WX_CPPFLAGS -I/home/rett/dev/xoamorph/xara-lx/libpng-1.6.29 $PANGO_CFLAGS $FT_CFLAGS $GTK_CFLAGS $LIBXML2_CFLAGS $RESOURCE_DIR_DEFINE"
-CXXFLAGS="$CXXFLAGS  $WX_CPPFLAGS -I/home/rett/dev/xoamorph/xara-lx/libpng-1.6.29 $PANGO_CFLAGS $FT_CFLAGS $GTK_CFLAGS $LIBXML2_CFLAGS $RESOURCE_DIR_DEFINE"
+CPPFLAGS="$CPPFLAGS  $WX_CPPFLAGS $PANGO_CFLAGS $FT_CFLAGS $GTK_CFLAGS $LIBXML2_CFLAGS $RESOURCE_DIR_DEFINE"
+CXXFLAGS="$CXXFLAGS  $WX_CPPFLAGS $PANGO_CFLAGS $FT_CFLAGS $GTK_CFLAGS $LIBXML2_CFLAGS $RESOURCE_DIR_DEFINE"
 
 AC_MSG_CHECKING([Linker])
 case $host in
@@ -444,5 +449,6 @@ AC_SUBST(PNG_LIB_DIR)
 AC_SUBST(LIBXML2_LIBS)
 AC_SUBST(PODIR)
 AC_SUBST(BUILDRESFLAGS)
+
 
 AC_OUTPUT(Makefile PreComp/Makefile Kernel/Makefile wxOil/Makefile tools/Makefile wxXtra/Makefile xarlib/Makefile libs/Makefile libs/x86_64/Makefile libs/x86_64/cdraw-alt/Makefile xarlib/Xar.pc po/Makefile.in)
