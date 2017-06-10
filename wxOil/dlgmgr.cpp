@@ -195,7 +195,7 @@ DialogManager::DialogManager()
 	// we must use a unique string so we don't clash with anyone else
 }
 
-/********************************************************************************************
+/***************************************************************************
 
 >	BOOL		DialogManager::Create(DialogOp* DlgOp,
 									HINSTANCE MainInstance, CDlgResID MainDlgID,
@@ -205,13 +205,15 @@ DialogManager::DialogManager()
 	Author:		Simon_Maneggio (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	17/8/93
 
-	Inputs:		DlgOp:			The DialogOp we are creating a window for
+	Inputs:         DlgOp: The DialogOp we are creating a window for The
+			following inputs may soon become defunct
 
-				The following inputs may soon become defunct
+			MainInstance: Instance handle of the module
+			that contains the dialog defined by MainDlgID.
 
-				MainInstance:	Instance handle of the module that contains the dialog
-								defined by MainDlgID.
-				MainDlgID:		Resource identifier of the main dialog box
+			MainDlgID: Resource identifier of the main
+			dialog box
+
 				SubInstance:	Instance handle of the module that contains the dialog
 								defined by SubDlgID.
 				SubDlgID:		Resource identifier of the secondary dialog box to merge
@@ -221,38 +223,38 @@ DialogManager::DialogManager()
 
 	Returns:	TRUE if the Dialog/Bar could be created, else FALSE
 
-	Purpose:	The create method creates a Dialog box and positions it
+	Purpose:        The create method creates a Dialog box and positions
+			it If the Dialog is Modal then the dialog is
+			displayed, to initialise the dialog you must
+			respond to the DIM_CREATE message.  If the
+			Dialog is Modeless then the Open method needs
+			to be called to make the dialog visible.  If
+			the dialog has not been created before then it
+			is positioned centrally on the
+			screen. Otherwise the dialog's position is
+			restored to the position it was at the last
+			time it was deleted.  If SubDlgID is non-0,
+			then this dialog is merged with the main one
+			during the creation of the dialog.  If it is
+			0, then no merging is done (the DialogOp()
+			function should take care of all this), and
+			SubInstance is ignored.  If it is a tabbed
+			dialog that is being created then we can now
+			specify the opening tab. Usually, this will be
+			the first one if this box has not been opened
+			before or the one selected when it was
+			closed. This parameter allows this to be
+			overriden.  Note that this function sets the
+			DialogOps window ID
 
-				If the Dialog is Modal then the dialog is displayed, to initialise the dialog
-				you must respond to the DIM_CREATE message.
-
-				If the Dialog is Modeless then the Open method needs to be called to make the
-				dialog visible.
-
-				If the dialog has not been created before then it is positioned centrally on
-				the screen. Otherwise the dialog's position is restored to the position it
-				was at the last time it was deleted.
-
-				If SubDlgID is non-0, then this dialog is merged with the main one during
-				the creation of the dialog.  If it is 0, then no merging is done (the
-				DialogOp() function should take care of all this), and SubInstance
-				is ignored.
-
-				If it is a tabbed dialog that is being created then we can now specify the
-				opening tab. Usually, this will be the first one if this box has not been
-				opened before or the one selected when it was closed. This parameter allows
-				this to be overriden.
-
-				Note that this function sets the DialogOps window ID
-
-
-				Note: It is important that all dialogs do not have the Visible property set.
+			Note: It is important that all dialogs do not
+			have the Visible property set.
 
 	Errors:		An Error will be set if this function fails
 
 	SeeAlso:	DialogOp::Create
 
-********************************************************************************************/
+***************************************************************************/
 
 // First a private class definition
 // as this is missing two-stage create we have to use a static variable. Yuck.
