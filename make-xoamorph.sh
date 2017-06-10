@@ -107,6 +107,17 @@ function make_tags {
 }
 
 
+function setup_alternatives {
+    sudo update-alternatives --remove-all gcc
+    sudo update-alternatives --remove-all g++
+
+    sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-5 10
+    sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-6 20
+
+    sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-5 10
+    sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-6 20
+}
+
 function create_apply_patch_from_alt_branch {
     git --no-pager diff rewrite-cdraw
     FILE=$1
