@@ -211,7 +211,7 @@ This is passed to the containing window's event handler for information
 void wxCamDrawControl::OnSize(wxSizeEvent& event) {
   wxWindow* pParent = GetParent();
   if (pParent) {
-    pParent->GetEventHandler()->ProcessEvent(event);
+    // pParent->GetEventHandler()->ProcessEvent(event);
   }
   // Pretend we didn't handle it
   event.Skip();
