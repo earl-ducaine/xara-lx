@@ -4,7 +4,12 @@ AC_CANONICAL_TARGET
 AM_INIT_AUTOMAKE([subdir-objects foreign])
 AC_DEFUN([AC_DATAROOTDIR_CHECKED])
 
-AC_PREFIX_PROGRAM( pkg-config )
+AC_PREFIX_PROGRAM(pkg-config)
+PKG_PROG_PKG_CONFIG([0.10.1])
+
+AM_OPTIONS_WXCONFIG
+reqwx=2.4.0
+
 
 # BinReloc sets CFLAGS and CXXFLAGS, so we have to undo this
 inCFLAGS=$CFLAGS
@@ -16,7 +21,6 @@ CFLAGS=$inCFLAGS
 CXXFLAGS=$inCXXFLAGS
 
 # Process command line arguments
-
 AC_ARG_ENABLE(debug,
               AS_HELP_STRING([--enable-debug],
                              [Enable debug information and checks]),
@@ -127,7 +131,6 @@ XRCINCLUDE=include
 # We don't need dlopen right now and it's not supported on Darwin
 # AC_LIBTOOL_DLOPEN
 AC_PROG_RANLIB
-
 AC_C_BIGENDIAN
 AC_CHECK_SIZEOF(void*)
 AC_CHECK_SIZEOF(long long)
