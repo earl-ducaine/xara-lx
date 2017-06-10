@@ -715,7 +715,9 @@ BOOL OutputPNG::OutputPNGHeader(CCLexFile *File, LPBITMAPINFOHEADER pInfo,
 
       png_set_pHYs(png_ptr, info_ptr, res_x, res_y, unit_type);
 
-      png_set_PLTE(png_ptr, info_ptr, palette, num_palette);
+      if (num_palette) {
+	png_set_PLTE(png_ptr, info_ptr, palette, num_palette);
+      }
 
       png_set_tRNS(png_ptr, info_ptr, trans,
 		   num_trans, NULL);
@@ -792,48 +794,41 @@ BOOL OutputPNG::OutputPNGHeader(CCLexFile *File, LPBITMAPINFOHEADER pInfo,
   ERROR2( FALSE, "Escaped exception clause somehow" );
 }
 
-/********************************************************************************************
-
+/***************************************************************************
 >	BOOL OutputPNG::CleanUpPngStructures()
 
 	Author:		Neville_Humphrys (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	12/7/96
 	Inputs:		-
 	Outputs:	-
-	Returns:	TRUE if worked, FALSE if failed (error will be set accordingly but not reported)
-	Purpose:	Clean up those bits that may have been claimed by the PNG bits.
-
-********************************************************************************************/
-
+	Returns:        TRUE if worked, FALSE if failed (error will be set
+	                accordingly but not reported)
+	Purpose:        Clean up those bits that may have been claimed by the
+	                PNG bits.
+****************************************************************************/
 BOOL OutputPNG::CleanUpPngStructures() {
   png_color * palette;
   int num_palette;
-  png_get_PLTE(png_ptr, info_ptr, &palette,
-	       &num_palette);
-	// If our structures are present then clean them out
-	if (png_ptr)
-	{
-		if (info_ptr)
-		{
-			// They do not seem to have catered for the palette and transparency structures
-			if (palette)
-			{
-				CCFree(palette);
-				palette = NULL;
-			}
-			if (trans)
-			{
-				CCFree(trans);
-				trans = NULL;
-			}
-		}
-
-		// clean up after the write, and free any memory allocated
-        png_destroy_write_struct(&png_ptr, &info_ptr);
-		png_ptr = NULL;
-	}
-
-	return TRUE;
+  png_get_PLTE(png_ptr, info_ptr, &palette, &num_palette);
+  // If our structures are present then clean them out
+  if (png_ptr) {
+    if (info_ptr) {
+      // They do not seem to have catered for the palette and
+      // transparency structures
+      if ((png_get_palette_max(png_ptr, info_ptr) > 0) && palette) {
+	CCFree(palette);
+	palette = NULL;
+      }
+      if (trans) {
+	CCFree(trans);
+	trans = NULL;
+      }
+    }
+    // clean up after the write, and free any memory allocated
+    png_destroy_write_struct(&png_ptr, &info_ptr);
+    png_ptr = NULL;
+  }
+  return TRUE;
 }
 
 /********************************************************************************************
