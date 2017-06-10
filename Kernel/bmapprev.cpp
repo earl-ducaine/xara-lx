@@ -767,9 +767,11 @@ BOOL BmapPrevDlg::OnCreate() {
 
   AddControlsToHelper();
 
+  m_PaletteControl.Init(GetReadWriteWindowID());
+  
   UpdateCurrentTab();
 
-  m_PaletteControl.Init(GetReadWriteWindowID());
+  // m_PaletteControl.Init(GetReadWriteWindowID());
 
   return TRUE;
 }
