@@ -39,8 +39,8 @@ MOSTLYCLEANFILES=wxOil/xrc/xrc.d wxOil/xrc/xrc.stamp Resources/*
 
 bin_PROGRAMS		= XaraLX
 
-XaraLX_CXXFLAGS = $(XARALXCXXFLAGS)
-XaraLX_CPPFLAGS = $(XARALXCPPFLAGS)
+XaraLX_CXXFLAGS = $(XARALXCXXFLAGS) $(AM_CFLAGS) $(libpng_CFLAGS)
+XaraLX_CPPFLAGS = $(XARALXCPPFLAGS) $(AM_CPPFLAGS) $(libpng_CPPFLAGS)
 
 if DARWIN_LINK
     XaraLX_SOURCES	= Kernel/*.o wxOil/*.o tools/*.o wxXtra/*.o
@@ -52,7 +52,10 @@ endif
 XaraLX_LDFLAGS		= --debug -L$(srcdir)/$(CDRAW_LIB_DIR) -L$(srcdir)/$(CDRAW_LIB_ALT_DIR)  $(WX_LIBS) $(LIBS) $(LIBXML2_LIBS) -ljpeg -lCDraw -lCDraw-alt \
 			  -lgtk-x11-2.0 -lgdk-x11-2.0 -latk-1.0 -lgio-2.0 -lpangoft2-1.0 -lpangocairo-1.0 \
 			  -lgdk_pixbuf-2.0 -lcairo -lpango-1.0 -lfreetype -lfontconfig -lgobject-2.0 -lglib-2.0 \
-			  $(srcdir)/$(PNG_LIB_DIR)/libpng16.a -lz
+			  $(libpng_LIBS) -lz
+
+
+#			  $(srcdir)/$(PNG_LIB_DIR)/libpng16.a -lz
 #			  -lpng
 XaraLX_LD			?= $(CXX)
 
@@ -67,3 +70,7 @@ resources:
 	( rm -rf Resources ; mkdir -p Resources ; cd Resources ; $(UNZIP) -q ../wxOil/xrc/resources.xrs )
 
 ACLOCAL_AMFLAGS = -I m4
+
+
+
+
