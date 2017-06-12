@@ -129,7 +129,7 @@ wxLocale * CamResource::m_pLocale = NULL;
 wxHelpProvider * CamResource::m_pHelpProvider = NULL;
 BOOL CamResource::s_GenerateXRCCheck = FALSE;
 
-ResourceStringToBitmap * CamResource::pBitmapHash = NULL;
+ResourceStringToBitmap* CamResource::pBitmapHash = NULL;
 
 TCHAR * CamResource::DefaultString = _T("[Resource string not found]");
 TCHAR * CamResource::DefaultObjectName = _T("[Object name not Found]");
@@ -1471,7 +1471,7 @@ BOOL CamResource::Init() {
   // We should offer the possibility of loading them from a non-XML file here
   if (!InitXmlResource()) return FALSE;
   // yield again to allow repaint
-  wxYield(); 
+  wxYield();
   TRACET(_T("CamResource::Init() starting to load string table dialog"));
   // Read the string table into the hash map
   wxDialog * pStringTable = wxXmlResource::Get()->LoadDialog(NULL, _T("STRINGTABLE"));
@@ -1512,7 +1512,7 @@ BOOL CamResource::Init() {
   TRACET(_T("CamResource::Init() done processing bitmaps, "
 	    "starting to load toolbar images"));
   // yield again to allow repaint
-  wxYield(); 
+  wxYield();
 //   LoadwxImage(imageBevelTool, _T("lbeveltool32.png") );
 //   LoadwxImage(imageBezTool, _T("lbeztool32.png") );
 //   LoadwxImage(imageBlendTool, _T("lblendtool32.png") );
@@ -1545,7 +1545,7 @@ BOOL CamResource::Init() {
   }
   TRACET(_T("CamResource::Init - loaded dialogs"));
   // yield again to allow repaint
-  wxYield(); 
+  wxYield();
 #endif
   return TRUE;
 }
@@ -1786,8 +1786,10 @@ BOOL CamResource::DoneInit(BOOL CanYield /*=TRUE*/) {
   return TRUE;
 }
 
-/********************************************************************************************
+//float CamResource::m_Scale = 2.0;
 
+
+/***************************************************************************
 >	CamResource::CamResource()
 
 
@@ -1800,28 +1802,26 @@ BOOL CamResource::DoneInit(BOOL CanYield /*=TRUE*/) {
 	Errors:		-
 	SeeAlso:	-
 
-Example of how to use this class:
+        Example of how to use this class:
 
-	CamResource myResource;								// Allocate a new resource object
+        // Allocate a new resource object
+	CamResource myResource;
+        // Open the BLOBBY bitmap Could have specified a string instead
+        // or whatever
+	CCLexFile * myFile = myResource.Open(_R(IDB_BLOBBY));
+	myFile->Read( ... )
 
-	CCLexFile * myFile = myResource.Open(_R(IDB_BLOBBY));	// Open the BLOBBY bitmap
-														// Could have specified a string
-														// instead
+        The user can either close the file, or not. However,
+        operations must NOT be done on the file once the corresponding
+        resource object is destroyed (as the resource object may have
+        allocated a memory copy of the image). To prevent damage, the
+        destructor will ALWAYS close the file and free the resources.
 
-	myFile->Read( ... )									// or whatever
-
-The user can either close the file, or not. However, operations must NOT be done on the
-file once the corresponding resource object is destroyed (as the resource object may have
-allocated a memory copy of the image). To prevent damage, the destructor will ALWAYS
-close the file and free the resources.
-
-The caller should NOT delete the open CCLexFile object that is returned. Either use
-our Close mechanism, or let the destructor take its course.
-
-********************************************************************************************/
-
-CamResource::CamResource() {
-  Size = 0;
+       The caller should NOT delete the open CCLexFile object that is
+       returned. Either use our Close mechanism, or let the destructor
+       take its course.
+***************************************************************************/
+CamResource::CamResource() : Size(0)  {
   pMemory = NULL;
   pFile = NULL;
   pwxFSFile = NULL;
@@ -2199,7 +2199,6 @@ wxBitmapType CamResource::GetImageTypeFromFileName(wxString fileName) {
 	Errors:		-
 	SeeAlso:	-
 ***************************************************************************/
-
 BOOL CamResource::LoadwxImage (wxImage & rImage, const TCHAR * pFileName,
 			       BOOL Grey) {
   CamResource resource;
@@ -2218,6 +2217,11 @@ BOOL CamResource::LoadwxImage (wxImage & rImage, const TCHAR * pFileName,
   if (Grey) {
     MakeGreyImage(rImage);
   }
+  // if (m_Scale != 1 && m_Scale > 0) {
+  //   int width = rImage.GetWidth() * m_Scale;
+  //   int height = rImage.GetHeight() * m_Scale;
+  //   rImage.Rescale(width, height);
+  // }
   return TRUE;
 }
 

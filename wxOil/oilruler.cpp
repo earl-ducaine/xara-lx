@@ -1391,7 +1391,8 @@ BOOL OILRuler::PaintMouseFollower(OilCoord OilPos, DocView* pDocView,
 		return ok;
 	}
 
-	wxPaintDC dc(this);
+	wxClientDC dc(this);
+	///wxPaintDC dc(this);
 	BOOL ok = DrawMouseFollower(OilPos, pDocView, RenderType, &dc);
 
 	return ok;

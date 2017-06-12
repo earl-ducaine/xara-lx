@@ -106,59 +106,72 @@ service marks of Xara Group Ltd. All rights in these marks are reserved.
 class DocColour;
 class ColourContext;
 
-/********************************************************************************************
-
+/***************************************************************************
 >	class GBrush : public ListItem
 
 	Author:		Andy_Pennell (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	5/4/94
-	Purpose:	A GBrush is a way of getting to Gavin-created brushes, when available.
-				It can supply GDI with better dithered brushes than it does normally.
-				Before use, you should call Init which tells you whether a GBrush is
-				available. If it is not, no further use can be made of it. If it is,
-				call Start on it (cv StartRender). It can then be used, until such time
-				as End is called on it. An in-line member function called Available can be
-				used to determine its functionality at any time. There can only be one active
-				GBrush in use at a time.
-
-********************************************************************************************/
-
+	Purpose:        A GBrush is a way of getting to Gavin-created
+			brushes, when available.  It can supply GDI
+			with better dithered brushes than it does
+			normally.  Before use, you should call Init
+			which tells you whether a GBrush is
+			available. If it is not, no further use can be
+			made of it. If it is, call Start on it (cv
+			StartRender). It can then be used, until such
+			time as End is called on it. An in-line member
+			function called Available can be used to
+			determine its functionality at any time. There
+			can only be one active GBrush in use at a
+			time.
+***************************************************************************/
 class GBrush : public ListItem
 {
 CC_DECLARE_MEMDUMP(GBrush);
+  
+  // Methods
 public:
-	GBrush();
-	~GBrush();
-	BOOL Init( wxDC* Ref );
-	void Start();
-	void Stop();
-	BOOL Available() { return Valid; }
-	void GetLogBrush( ColourContext *, DocColour &, wxBrush* );
-	void GetLogBrush( const COLORREF rgb, wxBrush* pBrush );
+  GBrush();
+  ~GBrush();
+  BOOL Init(wxDC* Ref);
+  void Start();
+  void Stop();
+  BOOL Available() {
+    return Valid;
+  }
+  void GetLogBrush(ColourContext *, DocColour &, wxBrush*);
+  void GetLogBrush(const COLORREF rgb, wxBrush* pBrush);
+  static BOOL InitGBrush(BOOL);
+  static void DeinitGBrush(void);
+  static void NewBrushState();
+  void SetSolidColours(BOOL UseSolid);
+  // Enables/disables solid colour override (to remove dithering)
+  static void ResetOnFatalError() {
+    if (Current) {
+      Current->Stop();
+    }
+  }
 
-	static BOOL InitGBrush(BOOL);
-	static void DeinitGBrush(void);
-	static void NewBrushState();
-
-	void SetSolidColours(BOOL UseSolid);
-		// Enables/disables solid colour override (to remove dithering)
-
-	static void ResetOnFatalError() {if (Current) Current->Stop();}
-
+  // Methods
 private:
-	inline void GetLogBrushInternal( const COLORREF rgb, wxBrush* pBrush );
+  inline void GetLogBrushInternal(const COLORREF rgb, wxBrush* pBrush);
 
-	BOOL Valid;											// TRUE if bitmap set up
-	BOOL CanUse;										// TRUE if will work
-
-	wxDC* ReferenceDC;									// reference device (for palette)
-
-	RGBQUAD RGBList[256];								// contains system palette (256 cols)
-
-	static List BrushList;								// list of all active brushes
-	static GBrush *Current;								// active brush
-
-	BOOL UseSolidColours;								// TRUE = solid, FALSE = dithered colours
+  // Properties
+private:  
+  // TRUE if bitmap set up
+  BOOL Valid;
+  // TRUE if will work
+  BOOL CanUse;
+  // reference device (for palette)
+  wxDC* ReferenceDC;
+  // contains system palette (256 cols)
+  RGBQUAD RGBList[256];		
+  // list of all active brushes
+  static List BrushList;
+  // active brush
+  static GBrush *Current;								
+  // TRUE = solid, FALSE = dithered colours
+  BOOL UseSolidColours;
 };
 
 /********************************************************************************************

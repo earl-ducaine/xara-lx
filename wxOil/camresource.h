@@ -185,173 +185,176 @@ Example usage:
 	const TCHAR * myString = CamResource::GetText(myResource); // Can't fail
 	... do something with the text of the entry ...
 
-Note that the _R() macros is clevere than you think. That's because it can be used
-as a static initializer (e.g. in wxWidgets event tables). What is happening here is
-that the GetXRCID() hash table gets initialized at static initialization time creating
-a map from the resource string (IDS_ etc.) to a unique integer value, and when the XML
-resources are loaded later, they are assigned that integer value.
+       Note that the _R() macros is cleverer than you think. That's
+       because it can be used as a static initializer (e.g. in
+       wxWidgets event tables). What is happening here is that the
+       GetXRCID() hash table gets initialized at static initialization
+       time creating a map from the resource string (IDS_ etc.) to a
+       unique integer value, and when the XML resources are loaded
+       later, they are assigned that integer value.
 
-Note this is a static class, and thus no constructors and destructors are offered.
-
+       Note this is a static class, and thus no constructors and
+       destructors are offered.
 ********************************************************************************************/
 
 
 class CamResource : public CCObject
 {
-	CC_DECLARE_DYNCREATE( CamResource )
+  CC_DECLARE_DYNCREATE(CamResource)
 
-// The per-object bits
-
+  // constructors & destructors
 public:
-	CamResource();
-	virtual ~CamResource();
+  CamResource();
+  virtual ~CamResource();
 
+  // properties
 private:
-	CCLexFile * pFile;
-	void * pMemory;
-	UINT32 Size;
-	wxFSFile * pwxFSFile;
-	static wxFileSystem * pwxFileSystem;
-	static wxLocale * m_pLocale;
-	static wxHelpProvider * m_pHelpProvider;
-	static BOOL s_GenerateXRCCheck;
+  CCLexFile * pFile;
+  void * pMemory;
+  UINT32 Size;
+  wxFSFile * pwxFSFile;
+  static wxFileSystem * pwxFileSystem;
+  static wxLocale * m_pLocale;
+  static wxHelpProvider * m_pHelpProvider;
+  static BOOL s_GenerateXRCCheck;
 
+  // properties
 public:
-	CCLexFile * Open ( ResourceID ID, BOOL ErrorReporting=TRUE, BOOL ExceptionThrowing=FALSE);
-	CCLexFile * Open ( const TCHAR * pFileName, BOOL ErrorReporting=TRUE, BOOL ExceptionThrowing=FALSE);
-	wxFSFile * OpenwxFSFile (ResourceID ID);
-	wxFSFile * OpenwxFSFile (const TCHAR * pFileName);
-	void Close();
-	CCLexFile * Get () {return pFile;}
-	wxFSFile * GetwxFSFile () {return pwxFSFile;}
+  //  static float m_Scale;
 
-// The static stuff
+  // methods
+public:
+  CCLexFile* Open (ResourceID ID, BOOL ErrorReporting=TRUE,
+		   BOOL ExceptionThrowing=FALSE);
+  CCLexFile* Open (const TCHAR * pFileName, BOOL ErrorReporting=TRUE,
+		   BOOL ExceptionThrowing=FALSE);
+  wxFSFile* OpenwxFSFile (ResourceID ID);
+  wxFSFile* OpenwxFSFile (const TCHAR* pFileName);
+  void Close();
+  CCLexFile* Get () {return pFile;}
+  wxFSFile* GetwxFSFile () {
+    return pwxFSFile;
+  }
 
+  // static methods
 private:
-	static wxBitmapType GetImageTypeFromFileName (wxString fileName);
-	static void AddStringResource(const TCHAR * name, const TCHAR * text, ResourceID r=0);
-	static void RememberDuringStaticInit(const TCHAR * ObjectName);
-	static BOOL ReadStringTableFile();
-	static void ProcessWindowAndChildren(wxWindow * pWindow);
-	static void GetBinaryFileInfo (void **pPtr, UINT32 *pSize);
-	static BOOL InitXmlResource();
-	static BOOL Splash();
-	static BOOL CheckResourcePath( const wxString &str1, const wxString &str2 );
-	static const TCHAR * FixObjectName(const TCHAR * ObjectName);
-	static BOOL AddBitmaps(wxString &Path);
-	static BOOL LoadBitmaps();
-	static void DeleteBitmapHashEntries();
-	static void MakeVariantBitmaps(ResourceStringToBitmap::iterator * it=NULL);
+  static wxBitmapType GetImageTypeFromFileName (wxString fileName);
+  static void AddStringResource(const TCHAR * name, const TCHAR * text, ResourceID r=0);
+  static void RememberDuringStaticInit(const TCHAR * ObjectName);
+  static BOOL ReadStringTableFile();
+  static void ProcessWindowAndChildren(wxWindow * pWindow);
+  static void GetBinaryFileInfo (void **pPtr, UINT32 *pSize);
+  static BOOL InitXmlResource();
+  static BOOL Splash();
+  static BOOL CheckResourcePath( const wxString &str1, const wxString &str2 );
+  static const TCHAR * FixObjectName(const TCHAR * ObjectName);
+  static BOOL AddBitmaps(wxString &Path);
+  static BOOL LoadBitmaps();
+  static void DeleteBitmapHashEntries();
+  static void MakeVariantBitmaps(ResourceStringToBitmap::iterator * it=NULL);
+  static ResIDToString * pHash;
+  static ResIDToString * pObjectNameHash;
+  static TCHAR * DefaultString;
+  static TCHAR * DefaultObjectName;
+  static wxString * pResourcePath;
+  static BOOL HaveCheckedResourcePath;
+  static CamResourceRemember * pFirstRemember;
+  static wxBitmap * pSplashBitmap;
+  static wxAdvSplashScreen * pSplashScreen;
+  static ResourceStringToBitmap * pBitmapHash;
 
-	static ResIDToString * pHash;
-	static ResIDToString * pObjectNameHash;
-	static TCHAR * DefaultString;
-	static TCHAR * DefaultObjectName;
-	static wxString * pResourcePath;
-	static BOOL HaveCheckedResourcePath;
-	static CamResourceRemember * pFirstRemember;
-
-	static wxBitmap * pSplashBitmap;
-	static wxAdvSplashScreen * pSplashScreen;
-
-	static ResourceStringToBitmap * pBitmapHash;
-
+  // static methods
 public:
-	static BOOL LoadwxImage (wxImage & rImage, const TCHAR * pFileName, BOOL Grey=FALSE);
-	static BOOL LoadwxBitmap (wxBitmap & rBitmap, const TCHAR * pFileName, BOOL Grey=FALSE);
+  static BOOL LoadwxImage (wxImage & rImage, const TCHAR * pFileName, BOOL Grey=FALSE);
+  static BOOL LoadwxBitmap (wxBitmap & rBitmap, const TCHAR * pFileName, BOOL Grey=FALSE);
+  static wxImage* GetCachedBitmap(const TCHAR * pName);
+  static void MakeGreyImage (wxImage & rImage);
+  static void MakeHotImage (wxImage & rImage);
 
-	static wxImage* GetCachedBitmap(const TCHAR * pName);
+  // Implement the _R macro
+  static inline ResourceID GetResourceID(const TCHAR * ObjectName)  {
+    const TCHAR * fObjectName=FixObjectName(ObjectName);
+    ResourceID Resource = wxXmlResource::GetXRCID(fObjectName);
+    // need to record it in the hash that goes the other way
+    // lest we be asked. Note this will always work as the
+    // caller to GetObjectName can't have a ResourceID without
+    // _R()'ing it (or at least cannot legally have one).
+    // skip on static initialization phase or we'll be dead
+    if (pObjectNameHash)	 {
+      ResIDToString::iterator i=pObjectNameHash->find(Resource);
+      if (i == pObjectNameHash->end()) {
+	(*pObjectNameHash)[Resource] = camStrdup(fObjectName);
+      }
+    } else {
+      // add it to the hash later
+      RememberDuringStaticInit(fObjectName);
+    }
+    return Resource;
+  }
 
-	static void MakeGreyImage (wxImage & rImage);
-	static void MakeHotImage (wxImage & rImage);
+  static inline const TCHAR * GetTextFail(ResourceID Resource)
+  {
+    if (!pHash) return NULL;
+    ResIDToString::iterator i=pHash->find(Resource);
+    return (const TCHAR *)((i==pHash->end())?NULL:i->second);
+  }
 
-	// Implement the _R macro
-	static inline ResourceID GetResourceID(const TCHAR * ObjectName)  {
-	  const TCHAR * fObjectName=FixObjectName(ObjectName);
-	  ResourceID Resource = wxXmlResource::GetXRCID(fObjectName);
-	  // need to record it in the hash that goes the other way
-	  // lest we be asked. Note this will always work as the
-	  // caller to GetObjectName can't have a ResourceID without
-	  // _R()'ing it (or at least cannot legally have one).
-	  // skip on static initialization phase or we'll be dead
-	  if (pObjectNameHash)	 {
-	    ResIDToString::iterator i=pObjectNameHash->find(Resource);
-	    if (i == pObjectNameHash->end()) {
-	      (*pObjectNameHash)[Resource] = camStrdup(fObjectName);
-	    }
-	  } else {
-	    // add it to the hash later
-	    RememberDuringStaticInit(fObjectName); 
-	  }
-	  return Resource;
-	}
-	
-	static inline const TCHAR * GetTextFail(ResourceID Resource)
-	{
-		if (!pHash) return NULL;
-		ResIDToString::iterator i=pHash->find(Resource);
-		return (const TCHAR *)((i==pHash->end())?NULL:i->second);
-	};
-	static inline const TCHAR * GetText(ResourceID Resource)
-	{
-		if (!pHash) return DefaultString;
-		ResIDToString::iterator i=pHash->find(Resource);
-		const TCHAR * text = (const TCHAR *)((i==pHash->end())?NULL:i->second);
-		return text?text:DefaultString;
-	};
-	static inline const TCHAR * GetObjectNameFail(ResourceID Resource)
-	{
-		if (!pObjectNameHash) return NULL;
-		ResIDToString::iterator i=pObjectNameHash->find(Resource);
-		return (const TCHAR *)((i==pObjectNameHash->end())?NULL:i->second);
-	};
-	static inline const TCHAR * GetObjectName(ResourceID Resource)
-	{
-		if (!pObjectNameHash) return DefaultString;
-		ResIDToString::iterator i=pObjectNameHash->find(Resource);
-		const TCHAR * text = (const TCHAR *)((i==pObjectNameHash->end())?NULL:i->second);
-		return text?text:DefaultString;
-	};
+  static inline const TCHAR * GetText(ResourceID Resource)
+  {
+    if (!pHash) return DefaultString;
+    ResIDToString::iterator i=pHash->find(Resource);
+    const TCHAR * text = (const TCHAR *)((i==pHash->end())?NULL:i->second);
+    return text?text:DefaultString;
+  }
 
-	static wxString GetResourceFilePath( const wxString &str, BOOL AllowOverride=TRUE );
-	static void SetResourceFilePath( const wxString &str );
+  static inline const TCHAR * GetObjectNameFail(ResourceID Resource)
+  {
+    if (!pObjectNameHash) return NULL;
+    ResIDToString::iterator i=pObjectNameHash->find(Resource);
+    return (const TCHAR *)((i==pObjectNameHash->end())?NULL:i->second);
+  }
 
-	// String manipulation functions for bitmaps
-	static BOOL IsBitmapName(const wxString &str);
-	static wxString GetBitmapExtension(const wxString &str);
-	static wxString GetBitmapBaseName(const wxString &str);
-	static wxString GetBitmapFlagString(const wxString & str);
-	static wxString MakeBitmapString(const wxString base, const wxString flags, const wxString ext)
-	{
-		if (flags.IsEmpty())
-			return base+wxString(_T("."))+ext;
-		else
-			return base+wxString(_T("-"))+flags+wxString(_T("."))+ext;
-	}
+  static inline const TCHAR * GetObjectName(ResourceID Resource)
+  {
+    if (!pObjectNameHash) return DefaultString;
+    ResIDToString::iterator i=pObjectNameHash->find(Resource);
+    const TCHAR * text = (const TCHAR *)((i==pObjectNameHash->end())?NULL:i->second);
+    return text?text:DefaultString;
+  }
 
-	static BOOL Init();
-	static BOOL DeInit();
+  static wxString GetResourceFilePath(const wxString &str,
+				      BOOL AllowOverride=TRUE);
+  static void SetResourceFilePath( const wxString &str);
+  // String manipulation functions for bitmaps
+  static BOOL IsBitmapName(const wxString &str);
+  static wxString GetBitmapExtension(const wxString &str);
+  static wxString GetBitmapBaseName(const wxString &str);
+  static wxString GetBitmapFlagString(const wxString & str);
+  static wxString MakeBitmapString(const wxString base, const wxString flags,
+				   const wxString ext) {
+    if (flags.IsEmpty()) {
+      return base+wxString(_T("."))+ext;
+    } else {
+      return base+wxString(_T("-"))+flags+wxString(_T("."))+ext;
+    }
+  }
 
-	static BOOL DoneInit(BOOL CanYield=TRUE);
-
-	static wxLocale * GetLocale() {return m_pLocale;}
-
-	static wxArrayString BitmapExtensions;
-
-	static void SetGenerateXRCCheck(BOOL flag) {s_GenerateXRCCheck=flag;}
-	static void * LoadFile( const wxString &str1, UINT32 * pSize );
+  static BOOL Init();
+  static BOOL DeInit();
+  static BOOL DoneInit(BOOL CanYield=TRUE);
+  static wxLocale * GetLocale() {return m_pLocale;}
+  static wxArrayString BitmapExtensions;
+  static void SetGenerateXRCCheck(BOOL flag) {s_GenerateXRCCheck=flag;}
+  static void * LoadFile( const wxString &str1, UINT32 * pSize );
 };
-
 
 class CamResourceRemember
 {
-	friend class CamResource;
+  friend class CamResource;
 
-private:
-	CamResourceRemember * next;
-	TCHAR * text;
+ private:
+  CamResourceRemember * next;
+  TCHAR * text;
 };
-
-
 
 #endif

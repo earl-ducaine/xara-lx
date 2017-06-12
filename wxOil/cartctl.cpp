@@ -1,7 +1,7 @@
 // $Id: cartctl.cpp 1410 2006-07-05 17:45:12Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
- 
+
                Xara LX, a vector drawing and manipulation program.
                     Copyright (C) 1993-2006 Xara Group Ltd.
        Copyright on certain contributions may be held in joint with their
@@ -32,7 +32,7 @@ ADDITIONAL RIGHTS
 
 Conditional upon your continuing compliance with the GNU General Public
 License described above, Xara Group Ltd grants to you certain additional
-rights. 
+rights.
 
 The additional rights are to use, modify, and distribute the software
 together with the wxWidgets library, the wxXtra library, and the "CDraw"
@@ -184,24 +184,24 @@ BOOL wxCamArtControl::Create( wxWindow * parent, wxWindowID id, const wxPoint& p
 
 ********************************************************************************************/
 
-wxSize wxCamArtControl::DoGetBestSize() const
-{
-	((wxCamArtControl *)this)->FindBitmap();
-
-	wxSize ret = m_BestSize; // ret( wxControl::DoGetBestSize() );
-
-	if ((GetStyle() & wxCACS_TEXT) && (!(GetStyle() & wxCACS_EXACTFIT)))
-	{
-		wxSize DefaultSize;
-		DefaultSize=wxButton::GetDefaultSize();
-		if (GetStyle() & wxCACS_HALFHEIGHT)
-			DefaultSize.y = (DefaultSize.y/2)-2;
-		if (ret.x < DefaultSize.x) ret.x = DefaultSize.x;
-		if (ret.y < DefaultSize.y) ret.y = DefaultSize.y;
-	}
-
-	CacheBestSize(ret);
-	return ret;
+wxSize wxCamArtControl::DoGetBestSize() const {
+  ((wxCamArtControl*)this)->FindBitmap();
+  wxSize ret = m_BestSize; // ret( wxControl::DoGetBestSize() );
+  if ((GetStyle() & wxCACS_TEXT) && (!(GetStyle() & wxCACS_EXACTFIT))) {
+    wxSize DefaultSize;
+    DefaultSize=wxButton::GetDefaultSize();
+    if (GetStyle() & wxCACS_HALFHEIGHT) {
+      DefaultSize.y = (DefaultSize.y/2)-2;
+    }
+    if (ret.x < DefaultSize.x) {
+      ret.x = DefaultSize.x;
+    }
+    if (ret.y < DefaultSize.y) {
+      ret.y = DefaultSize.y;
+    }
+  }
+  CacheBestSize(ret);
+  return ret;
 }
 
 /********************************************************************************************
@@ -534,9 +534,9 @@ bool wxCamArtControlXmlHandler::CanHandle(wxXmlNode *node)
   bool fOurClass =
     node->GetPropVal(wxT("class"), wxEmptyString) == wxT("wxCamArtControl");
   return fOurClass;
-  
+
   // This doesn't work on some compilers (although it is identical to
   // what's above just not in a function implemented in a header)
-  
+
   //	return (IsOfClass(node, wxT("wxCamArtControl")));
 }

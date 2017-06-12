@@ -202,8 +202,6 @@ WXRC=""
 vers=`echo $wxversion | $AWK 'BEGIN { FS = "."; } { printf "% d", ($1 * 1000 + $2) * 1000 + $3;}'`
 if test -n "$vers" && test "$vers" -ge 2006003; then
    	WX_CPPFLAGS="`$WXCONFIG --static=$StaticEnable --debug=$DebugEnable --unicode=yes --cppflags | sed -e 's/-I/-isystem /g'`"
-	# WX_CPPFLAGS="`$WXCONFIG --static=$StaticEnable --debug=$DebugEnable --unicode=yes --cxxflags | sed -e 's/-I/-isystem /g`"
-	# WX_CXXFLAGS="`$WXCONFIG --static=$StaticEnable --debug=$DebugEnable --unicode=yes --cxxflags | sed -e 's/-fno-exceptions//'`"
 	WX_CXXFLAGS="`$WXCONFIG --static=$StaticEnable --debug=$DebugEnable --unicode=yes --cxxflags | sed -e 's/-I/-isystem /g' | sed -e 's/-fno-exceptions//'`"
 	WX_LIBS="`$WXCONFIG --static=$StaticEnable --debug=$DebugEnable --unicode=yes --libs aui std`"
 	WX_LIBS2="`echo $WX_LIBS | sed -e 's/-pthread//g'`"
@@ -214,7 +212,7 @@ if test -n "$vers" && test "$vers" -ge 2006003; then
 	if echo $WX_CPPFLAGS | grep -q '__WXGTK__' ; then
 		WX_GTK="yes"
 		AC_MSG_RESULT([found])
-		PKG_CHECK_MODULES(GTK, [gtk+-2.0])
+		PKG_CHECK_MODULES(GTK, [gtk+-3.0])
 	else
 		AC_MSG_RESULT([not found])
 	fi
@@ -333,7 +331,7 @@ if test "$StaticEnable" = "yes"; then
 	if test "$PrecompileEnable" = "yes"; then
 		CPPFLAGS="$CPPFLAGS -ffunction-sections -fdata-sections"
 		CXXFLAGS="$CXXFLAGS -ffunction-sections -fdata-sections"
-		WX_LIBS="$WX_LIBS --gc-sections"
+		WX_LIBS="$WX_LIBS"
 	fi
 
 	# Force as much as possible to be statically linked

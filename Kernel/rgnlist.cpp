@@ -1,7 +1,7 @@
 // $Id: rgnlist.cpp 1328 2006-06-15 19:23:45Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
- 
+
                Xara LX, a vector drawing and manipulation program.
                     Copyright (C) 1993-2006 Xara Group Ltd.
        Copyright on certain contributions may be held in joint with their
@@ -32,7 +32,7 @@ ADDITIONAL RIGHTS
 
 Conditional upon your continuing compliance with the GNU General Public
 License described above, Xara Group Ltd grants to you certain additional
-rights. 
+rights.
 
 The additional rights are to use, modify, and distribute the software
 together with the wxWidgets library, the wxXtra library, and the "CDraw"
@@ -248,7 +248,7 @@ BOOL ViewList::IsViewOptimised(View *pView)
 
 	Author:		Tim_Browse (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	9/7/93
-	Purpose:	Initialises the RenderRegionList - in particular, the pointer to the 
+	Purpose:	Initialises the RenderRegionList - in particular, the pointer to the
 				last render region to be rendered.
 
 ********************************************************************************************/
@@ -277,14 +277,14 @@ RenderRegionList::RenderRegionList()
 RenderRegionList::~RenderRegionList()
 {
 	// Call destructors on all objects in the list
-	
+
 	RenderRegion *Item = (RenderRegion *) RemoveHead();
-	
+
 	while (Item != NULL)
 	{
 		// Delete the list item
 		delete Item;
-		
+
 		// Try the next item
 		Item = (RenderRegion *) RemoveHead();
 	}
@@ -302,7 +302,7 @@ RenderRegionList::~RenderRegionList()
 	Returns:	-
 	Purpose:	Add a render region object to the application's global list of render
 				regions.
-				
+
 	Errors:		-
 	SeeAlso:	-
 
@@ -316,7 +316,7 @@ Technical notes:
 	The New Rect is assumed to be in a Null RenderState (ie. it hasn't rendered yet)
 
 		Clip any Rectangles in List to new Client Area (and Chapter)
-	
+
 		For each Rectangle in the List,
 			If the Rect is in the same View as the New Rect,
 			And it is in the same Chapter as the New Rect,
@@ -327,7 +327,7 @@ Technical notes:
 				Ignoring the RenderState do they Intersect at all ?
 					Yes, then Split the Rect in the list into sub rects excluding the new
 					rect.
-		
+
 		Add the New Rect to the List.
     	Attempt to Compact the List.
 
@@ -428,9 +428,9 @@ void RenderRegionList::TidyUpAdjacentRegions(RenderRegion* pBrandNewRegion)
 				Node* OldContext = pCompare->GetRenderState();
 
 				// See if they can be merged
-				if ( (MergeView == OldView) && 
+				if ( (MergeView == OldView) &&
 					 (pRegion->GetRenderSpread()==pCompare->GetRenderSpread()) &&
-					 ((OldContext==NewContext) || 
+					 ((OldContext==NewContext) ||
 					 ((pRegion->CanBeMerged()) && (pCompare->CanBeMerged()))))
 				{
 					// So far so good. Just check that they are adjacent
@@ -508,11 +508,11 @@ void RenderRegionList::StrictMerge(RenderRegion* pRegionToMerge)
 			// Find this old render regions view
 			View* OldView = pOldRegion->GetRenderView();
 			Node* OldContext = pOldRegion->GetRenderState();
-		
+
 			// see if the two render regions can be merged
-			if ( (MergeView == OldView) && 
+			if ( (MergeView == OldView) &&
 				 (pOldRegion->GetRenderSpread()==pRegionToMerge->GetRenderSpread()) &&
-				 ((OldContext==NewContext) || 
+				 ((OldContext==NewContext) ||
 				 ((pOldRegion->CanBeMerged()) && (pRegionToMerge->CanBeMerged()))))
 			{
 				// Find this regions clip rect
@@ -557,14 +557,14 @@ void RenderRegionList::StrictMerge(RenderRegion* pRegionToMerge)
 	Purpose:	Attempts to find regions which can be merged together to make redrawing
 				more efficient.  At the moment, the two regions to be merged must satisfy
 				the following conditions:
-				
+
 				* They must be have got to the same node in the tree when they last stopped
 				  rendering.
-				
+
 				* They must be rendering into the same View and Chapter.
-				
+
 				* One of the regions must completely enclose or be adjacent to the other.
-				
+
 	Errors:		-
 	SeeAlso:	-
 
@@ -599,9 +599,9 @@ void RenderRegionList::MergeRenderRegions(RenderRegion* pRegionToMerge)
 			{
 				// Find this old render regions view
 				View* OldView = pOldRegion->GetRenderView();
-			
+
 				// see if the two render regions can be merged
-				if ( (MergeView == OldView) && 
+				if ( (MergeView == OldView) &&
 					 (pOldRegion->GetRenderSpread()==pRegionToMerge->GetRenderSpread()) &&
 					 (pOldRegion->CanBeMerged()) && (pRegionToMerge->CanBeMerged()))
 				{
@@ -629,7 +629,7 @@ void RenderRegionList::MergeRenderRegions(RenderRegion* pRegionToMerge)
 						Remove(pOldRegion);
 						delete pOldRegion;
 						Merged = TRUE;
-						break;					
+						break;
 					}
 					else
 					{
@@ -681,104 +681,102 @@ void RenderRegionList::MergeRenderRegions(RenderRegion* pRegionToMerge)
 	Created:	10/01/94
 	Inputs:		NewRenderRegion - pointer to the render region being added
 	Purpose:	Called when adding a new render region to the list. It checks the new
-				render region for overlap with all the old render regions and if it 
+				render region for overlap with all the old render regions and if it
 				overlapps any of them, the old region is slit up. This function should
 				guarantee that you never get render regions that overlap, so that the
 				EORed stuff does not get screwed up by getting rendered more than once.
 
 ********************************************************************************************/
 
-void RenderRegionList::RemoveRegionOverlap(RenderRegion* NewRenderRegion)
-{
-	// Find the clipping rect of the new render region
-	DocRect NewClipRect = NewRenderRegion->GetRegionRect();
-	DocRect OldClipRect;
+void RenderRegionList::RemoveRegionOverlap(RenderRegion* NewRenderRegion) {
+  // Find the clipping rect of the new render region
+  DocRect NewClipRect = NewRenderRegion->GetRegionRect();
+  DocRect OldClipRect;
 
-	// Find which view and spread the render region is to be rendering to
-	View* NewView = NewRenderRegion->GetRenderView();
-	Spread*  NewSpread  = NewRenderRegion->GetRenderSpread();
+  // Find which view and spread the render region is to be rendering to
+  View* NewView = NewRenderRegion->GetRenderView();
+  Spread*  NewSpread  = NewRenderRegion->GetRenderSpread();
 
-	// Get the first render region in the list
-	RenderRegion* pOldRegion = (RenderRegion*) GetHead();
+  // Get the first render region in the list
+  RenderRegion* pOldRegion = (RenderRegion*) GetHead();
 
-	while (pOldRegion != NULL)
+  while (pOldRegion != NULL)
+    {
+      // Get the old render regions clipping rectangle
+      OldClipRect = pOldRegion->GetRegionRect();
+
+      // Find which view and spread the render region is to be rendering to
+      View* OldView = pOldRegion->GetRenderView();
+      Spread*  OldSpread  = pOldRegion->GetRenderSpread();
+
+      // If they intersect, split the old rectangle up into bits
+      if ((OldView==NewView) && (OldSpread==NewSpread) &&
+	  (OldClipRect.IsIntersectedWith(NewClipRect)))
 	{
-		// Get the old render regions clipping rectangle
-		OldClipRect = pOldRegion->GetRegionRect();
+	  if (NewClipRect.ContainsRect(OldClipRect))
+	    {
+	      // The 2 regions were the same, so get rid of it, and go back around
+	      // the loop with the next region in the list.
+	      NewRenderRegion->SetBackmostChangedNode(pOldRegion->GetBackmostChangedNode());
+	      NewRenderRegion->NeedsOSPaper = NewRenderRegion->NeedsOSPaper && pOldRegion->NeedsOSPaper;
+	      RenderRegion *Tmp = pOldRegion;
+	      pOldRegion = (RenderRegion *) GetNext(pOldRegion);
+	      Remove(Tmp);
+	      delete Tmp;
+	      continue;
+	    }
+	  else
+	    {
+	      // Split the old rect into sub-rects and add the new one
+	      DocRect SubRects[4];
+	      INT32 RectCount = OldClipRect.SplitRect(NewClipRect, SubRects);
+	      ENSURE( RectCount!=0, "No rectangles found in SplitRect" );
 
-		// Find which view and spread the render region is to be rendering to
-		View* OldView = pOldRegion->GetRenderView();
-		Spread*  OldSpread  = pOldRegion->GetRenderSpread();
-	
-		// If they intersect, split the old rectangle up into bits
-		if ((OldView==NewView) && (OldSpread==NewSpread) && 
-		    (OldClipRect.IsIntersectedWith(NewClipRect)))
+	      // Change the clip rect of the region already in the list
+	      //				pOldRegion->ResizeRegion(SubRects[0]);
+	      //				pOldRegion->SetClipRect(SubRects[0]);
+	      pOldRegion->ResetRegion(SubRects[0]);
+
+	      // and create some new render regions if needed
+	      for (INT32 i=1; i<RectCount; i++)
 		{
-			if (NewClipRect.ContainsRect(OldClipRect))
-			{
-				// The 2 regions were the same, so get rid of it, and go back around
-				// the loop with the next region in the list.
-				NewRenderRegion->SetBackmostChangedNode(pOldRegion->GetBackmostChangedNode());
-				NewRenderRegion->NeedsOSPaper = NewRenderRegion->NeedsOSPaper && pOldRegion->NeedsOSPaper;
-				RenderRegion *Tmp = pOldRegion;
-				pOldRegion = (RenderRegion *) GetNext(pOldRegion);
-				Remove(Tmp);
-				delete Tmp;
-				continue;
-			}
-			else
-			{
-				// Split the old rect into sub-rects and add the new one
-	         	DocRect SubRects[4];
-	         	INT32 RectCount = OldClipRect.SplitRect(NewClipRect, SubRects);
-				ENSURE( RectCount!=0, "No rectangles found in SplitRect" );
+		  // Create a new render region.
+		  // NB. important to pass in View pointer so that we get correct bitmap depth.
+		  RenderRegion* SubRenderRegion =
+		    OSRenderRegion::Create(SubRects[i],
+					   pOldRegion->GetMatrix(),
+					   OldView->GetViewScale(),
+					   RENDERTYPE_SCREEN,
+					   NewView);
+		  //OSRenderRegion* SubRenderRegion = new OSRenderRegion(*(OSRenderRegion*)pOldRegion);
+		  ENSURE(	SubRenderRegion != NULL, "RenderRegionList::Merge: SubRenderRegion == 0");
+		  if (SubRenderRegion == NULL)
+		    return;
 
-				// Change the clip rect of the region already in the list
-//				pOldRegion->ResizeRegion(SubRects[0]);
-//				pOldRegion->SetClipRect(SubRects[0]);
-				pOldRegion->ResetRegion(SubRects[0]);
+		  // Set the new clip region and see if it joins exactly
+		  if (!SubRenderRegion->CopyRenderInfo(*pOldRegion))
+		    {
+		      // copying failed, so tidy up
+		      delete SubRenderRegion;
+		      TRACE( _T("CopyRenderInfo %d failed\n"), i);
+		      continue;								// carry on round loop
+		    }
 
-				// and create some new render regions if needed
-				for (INT32 i=1; i<RectCount; i++)
-				{
-					// Create a new render region.
-					// NB. important to pass in View pointer so that we get correct bitmap depth.
-					RenderRegion* SubRenderRegion = OSRenderRegion::Create(SubRects[i], 
-																		   pOldRegion->GetMatrix(), 
-																		   OldView->GetViewScale(), 
-																		   RENDERTYPE_SCREEN, 
-																		   NewView);
+		  // make sure the region is re-rendered
+		  //					SubRenderRegion->IsPaperRendered = FALSE;
+		  //					SubRenderRegion->IsInkRenderStarted = FALSE;
 
-					//OSRenderRegion* SubRenderRegion = new OSRenderRegion(*(OSRenderRegion*)pOldRegion);
-
-					ENSURE(	SubRenderRegion != NULL, "RenderRegionList::Merge: SubRenderRegion == 0");
-					if (SubRenderRegion == NULL)
-						return;
-
-					// Set the new clip region and see if it joins exactly
-					if (!SubRenderRegion->CopyRenderInfo(*pOldRegion))
-					{
-						// copying failed, so tidy up
-						delete SubRenderRegion;
-						TRACE( _T("CopyRenderInfo %d failed\n"), i);
-						continue;								// carry on round loop
-					}
-	
-					// make sure the region is re-rendered
-//					SubRenderRegion->IsPaperRendered = FALSE;
-//					SubRenderRegion->IsInkRenderStarted = FALSE;
-
-//					SubRenderRegion->SetClipRect(SubRects[i]);
-					SubRenderRegion->ResetRegion(SubRects[i]);
-//					SubRenderRegion->ResizeRegion(SubRects[i]);
-					StrictMerge(SubRenderRegion);
-	            }
-			}
+		  //					SubRenderRegion->SetClipRect(SubRects[i]);
+		  SubRenderRegion->ResetRegion(SubRects[i]);
+		  //					SubRenderRegion->ResizeRegion(SubRects[i]);
+		  StrictMerge(SubRenderRegion);
 		}
-
-		// Get the next region in the list
-		pOldRegion = (RenderRegion*) GetNext(pOldRegion);
+	    }
 	}
+
+      // Get the next region in the list
+      pOldRegion = (RenderRegion*) GetNext(pOldRegion);
+    }
 }
 
 
@@ -840,7 +838,7 @@ void RenderRegionList::ClipRectsToClient()
 
 		// Try the next item.
 		pRegion = (RenderRegion*) ((pRegion != NULL) ? GetNext(pRegion) : GetHead());
-	}	
+	}
 }
 
 /********************************************************************************************
@@ -863,7 +861,7 @@ void RenderRegionList::ClipRectsToClient()
 
 void RenderRegionList::Remove(RenderRegion *RegionToRemove)
 {
-	ENSURE( FindPosition(RegionToRemove) != NOT_IN_LIST, 
+	ENSURE( FindPosition(RegionToRemove) != NOT_IN_LIST,
 			"Could not find RenderRegion to Remove" );
 
 	// Is it the LastRendered one?
@@ -874,12 +872,12 @@ void RenderRegionList::Remove(RenderRegion *RegionToRemove)
 		// NULL, which is what we want - see BackgroundRender().
 		LastRendered = (RenderRegion *) GetPrev(RegionToRemove);
 	}
-	
+
 	// Remove the item from the list
 	RemoveItem((ListItem *) RegionToRemove);
 
 }
-	
+
 /********************************************************************************************
 
 >	void RenderRegionList::Remove(Document *pParentDoc)
@@ -943,7 +941,7 @@ void RenderRegionList::Remove(Document *pParentDoc)
 				// NULL, which is what we want - see BackgroundRender().
 				LastRendered = (RenderRegion *) GetPrev(Item);
 			}
-			
+
 			// Move to next region and remove this one from the list and delete it.
 			RenderRegion *Tmp = Item;
 			Item = (RenderRegion *) GetNext(Item);
@@ -961,7 +959,7 @@ void RenderRegionList::Remove(Document *pParentDoc)
 }
 
 #endif
-	
+
 /********************************************************************************************
 
 >	void RenderRegionList::Remove(View *pView)
@@ -994,7 +992,7 @@ void RenderRegionList::Remove(View *pView)
 				// NULL, which is what we want - see BackgroundRender().
 				LastRendered = (RenderRegion *) GetPrev(Item);
 			}
-			
+
 			// Move to next region and remove this one from the list and delete it.
 			RenderRegion *Tmp = Item;
 			Item = (RenderRegion *) GetNext(Item);
@@ -1006,7 +1004,7 @@ void RenderRegionList::Remove(View *pView)
 			Item = (RenderRegion *) GetNext(Item);
 	}
 }
-	
+
 /********************************************************************************************
 
 >	BOOL RenderRegionList::BackgroundRender()
@@ -1017,7 +1015,7 @@ void RenderRegionList::Remove(View *pView)
 	Outputs:	-
 	Returns:	TRUE if rendering was done, FALSE if no render regions to render.
 	Purpose:	Cycles through the members of the render region list, rendering each
-				one in turn.  Only one render region is rendered on each call to 
+				one in turn.  Only one render region is rendered on each call to
 				BackgroundRender().
 	Errors:		-
 	SeeAlso:	-
@@ -1083,10 +1081,10 @@ BOOL RenderRegionList::BackgroundRender()
 	// Work out which render region to render
 	if (LastRendered != NULL)
 		LastRendered = (RenderRegion*) GetNext(LastRendered);
-	
+
 	if (LastRendered == NULL)
 		LastRendered = (RenderRegion*) GetHead();
-			
+
 	if (LastRendered == NULL)
 	{
 //		TRACE( wxT("BGR - No last region\n") );
@@ -1107,7 +1105,7 @@ BOOL RenderRegionList::BackgroundRender()
 	if (GetApplication()->GetpStatusLine())
 		GetApplication()->GetpStatusLine()->SetRenderIndicator(Animate);
 	GetApplication()->BgRendering = TRUE;
-	
+
 	// Do the render.
 	Error::RenderThreadIn();			// Make errors close window
 	LastRendered->DefaultRender();
@@ -1200,7 +1198,7 @@ PORTNOTE("other", "Disabled ControlHelper")
 
 		if (pRegion->IsPrinting() == FALSE)
 		{
-			// If this render region's DocView does not have background rendering enabled, 
+			// If this render region's DocView does not have background rendering enabled,
 			// then it must be an immediate render region, so render it.
 			View *pView = pRegion->GetRenderView();
 			ENSURE(pView != NULL, "No DocView in ImmediateRender!");
@@ -1274,7 +1272,7 @@ void RenderRegionList::HandleNodeDeletion(Node* pNode)
 
 	Author:		Tim_Browse (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	07/12/94
-	Purpose:	For each DocView, try to union all the render regions, and see if the 
+	Purpose:	For each DocView, try to union all the render regions, and see if the
 				individual areas add up to more than 70% of the union area.  If they do
 				then we union all the regions together and just render one big one.
 	SeeAlso:	RenderRegionList::DoTotalUnion
@@ -1385,7 +1383,7 @@ void RenderRegionList::TryTotalUnion()
 
 /********************************************************************************************
 
->	void RenderRegionList::DoTotalUnion(RenderRegion *pRegion, View *pView, 
+>	void RenderRegionList::DoTotalUnion(RenderRegion *pRegion, View *pView,
 										DocRect TotalUnion)
 
 	Author:		Tim_Browse (Xara Group Ltd) <camelotdev@xara.com>
@@ -1401,7 +1399,7 @@ void RenderRegionList::TryTotalUnion()
 
 ********************************************************************************************/
 
-void RenderRegionList::DoTotalUnion(RenderRegion *pRegion, View *pView, 
+void RenderRegionList::DoTotalUnion(RenderRegion *pRegion, View *pView,
 									DocRect TotalUnion)
 {
 	pRegion->ResetRegion(TotalUnion);

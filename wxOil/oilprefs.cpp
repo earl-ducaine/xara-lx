@@ -410,6 +410,7 @@ BOOL OILPreferences::OpenOutput()
 
 ********************************************************************************************/
 
+
 BOOL OILPreferences::CloseOutput()
 {
 	Flush();

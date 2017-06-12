@@ -140,18 +140,21 @@ IMPLEMENT_DYNAMIC_CLASS( wxCamArtProviderEvent, wxEvent )
 
 ********************************************************************************************/
 
-CamArtProvider::CamArtProvider()
-{
-	m_pHash = NULL;
-	m_GetBitmapEventPending = FALSE;
-	m_InvalidateArtEventPending = FALSE;
-	m_pMissingImage = NULL;
-
-	m_pMissingImage = new wxImage; // if this returns NULL, all missing bitmaps will be blank. Oh well
-	if (m_pMissingImage) CamResource::LoadwxImage(*m_pMissingImage, _T("missing.png") );
-	if (m_pMissingImage) m_pMissingBitmap=new wxBitmap(*m_pMissingImage, -1);
-
-	m_pHash = new ResIDWithFlagsToBitmapPtr; // if this returns NULL, Init will whinge, so don't check
+CamArtProvider::CamArtProvider() {
+  m_pHash = NULL;
+  m_GetBitmapEventPending = FALSE;
+  m_InvalidateArtEventPending = FALSE;
+  m_pMissingImage = NULL;
+  // if this returns NULL, all missing bitmaps will be blank. Oh well
+  m_pMissingImage = new wxImage;
+  if (m_pMissingImage) {
+    CamResource::LoadwxImage(*m_pMissingImage, _T("missing.png") );
+  }
+  if (m_pMissingImage) {
+    m_pMissingBitmap=new wxBitmap(*m_pMissingImage, -1);
+  }
+  // if this returns NULL, Init will whinge, so don't check
+  m_pHash = new ResIDWithFlagsToBitmapPtr;
 }
 
 /********************************************************************************************
@@ -170,24 +173,23 @@ CamArtProvider::CamArtProvider()
 
 ********************************************************************************************/
 
-CamArtProvider::~CamArtProvider()
-{
-	if (m_pHash)
-	{
-		DeleteHashContents();
-		if (m_pHash) delete m_pHash;
-		m_pHash = NULL;
-	}
-	if (m_pMissingImage)
-	{
-		delete(m_pMissingImage);
-		m_pMissingImage=NULL;
-	}
-	if (m_pMissingBitmap)
-	{
-		delete(m_pMissingBitmap);
-		m_pMissingBitmap=NULL;
-	}
+CamArtProvider::~CamArtProvider() {
+  if (m_pHash)
+    {
+      DeleteHashContents();
+      if (m_pHash) delete m_pHash;
+      m_pHash = NULL;
+    }
+  if (m_pMissingImage)
+    {
+      delete(m_pMissingImage);
+      m_pMissingImage=NULL;
+    }
+  if (m_pMissingBitmap)
+    {
+      delete(m_pMissingBitmap);
+      m_pMissingBitmap=NULL;
+    }
 }
 
 /********************************************************************************************
@@ -252,12 +254,10 @@ wxColor CamArtProvider::LightenColour(const wxColor& c, INT32 amount)
 
 ********************************************************************************************/
 
-BOOL CamArtProvider::Init()
-{
+BOOL CamArtProvider::Init(unsigned cafscaledFontSize, unsigned scaledFontSize) {
 	ERROR3IF(m_ArtProvider, "Double Init of ArtProvider");
-	m_ArtProvider=new(CamArtProvider);
+	m_ArtProvider=new CamArtProvider();
 	ERROR2IF(!m_ArtProvider, FALSE, "Cannot get an ArtProvider");
-
 	return TRUE;
 }
 
@@ -653,36 +653,31 @@ ResIDWithFlagsToBitmapPtr::iterator CamArtProvider::Find(ResourceID Resource, Ca
 	return i;
 }
 
-/********************************************************************************************
-
+/***************************************************************************
 >	wxImage * CamArtProvider::FindImage(ResourceID Resource, CamArtFlags Flags = 0, BOOL SkipArtLoad=FALSE)
-
 
 	Author:		Alex_Bligh <alex@alex.org.uk>
 	Created:	30/12/2005
-	Inputs:		Resource - the resource ID to find
-				Flags - the flags to find
+	Inputs:		Resource: the resource ID to find
+			Flags: the flags to find
 	Outputs:	-
 	Returns:	a pointer to the bitmap that has been foudn
-	Purpose:	Finds the cached bitmap with the relevant resource ID & flags
+	Purpose:        Finds the cached bitmap with the relevant resource ID
+	                & flags
 	Errors:		-
 	SeeAlso:	-
+                        may return NULL if there is no default
+                        "missing bitmap" that could be loaded
+***************************************************************************/
 
-may return NULL if there is no default "missing bitmap" that could be loaded
 
-********************************************************************************************/
-
-
-wxImage * CamArtProvider::FindImage(ResourceID Resource, CamArtFlags Flags, BOOL SkipArtLoad)
-{
-	ResIDWithFlagsToBitmapPtr::iterator i=Find(Resource, Flags, SkipArtLoad);
-	if (i==m_pHash->end())
-	{
-		return m_pMissingImage;
-	}
-	wxImage *pImage = i->second.m_pImage;
-
-	return pImage?pImage:m_pMissingImage;
+wxImage * CamArtProvider::FindImage(ResourceID Resource, CamArtFlags Flags, BOOL SkipArtLoad) {
+  ResIDWithFlagsToBitmapPtr::iterator i = Find(Resource, Flags, SkipArtLoad);
+  if (i==m_pHash->end()) {
+    return m_pMissingImage;
+  }
+  wxImage *pImage = i->second.m_pImage;
+  return pImage ? pImage : m_pMissingImage;
 }
 
 /********************************************************************************************
@@ -954,78 +949,84 @@ wxSize CamArtProvider::GetBorderSize(CamArtFlags Flags /*=CAF_DEFAULT*/)
 	return wxSize(extraX, extraY);
 }
 
-/********************************************************************************************
-
->	wxString CamArtProvider::GetTextInfoOrDraw(ResourceID r, wxDC &dc,  BOOL Draw=FALSE, wxCoord *w=NULL, wxCoord *h=NULL,
-											   wxCoord x=0, wxCoord y=0, wxCoord MaxWidth=-1, const wxString &text = wxEmptyString)
-
+/***************************************************************************
+>	wxString CamArtProvider::GetTextInfoOrDraw(ResourceID r,
+                                                   wxDC &dc,
+                                                   BOOL Draw=FALSE,
+                                                   wxCoord *w=NULL,
+                                                   wxCoord *h=NULL,
+                                                   wxCoord x=0,
+                                                   wxCoord y=0,
+                                                   wxCoord MaxWidth=-1,
+                                                   const wxString &text = wxEmptyString)
 
 	Author:		Alex_Bligh <alex@alex.org.uk>
 	Created:	24/04/2006
 	Inputs:		r - the resource
-				Flags - the flags
-				Draw = TRUE to draw the text
-				x, y - location to draw the text (if Draw is set)
-				MaxWidth - the maximum width or the text (use -1 when calculating for no max width)
-	Outputs:	w, h, pointers to fill in (can be NULL) for the text extent. Either both or neither must be NULL
+			Flags - the flags
+			Draw = TRUE to draw the text
+			x, y - location to draw the text (if Draw is set)
+			MaxWidth - the maximum width or the text (use -1 when calculating for no max width)
+	Outputs:        w, h, pointers to fill in (can be NULL) for the text
+	                extent. Either both or neither must be NULL
 	Returns:	The text
 	Purpose:	Sets up the DC and returns the text
 	Errors:		-
 	SeeAlso:	-
-
-********************************************************************************************/
-
-wxString CamArtProvider::GetTextInfoOrDraw(ResourceID r, CamArtFlags f, wxDC &dc,
-					   BOOL Draw/*=FALSE*/, wxCoord *w,
-					   wxCoord *h, wxCoord x, wxCoord y,
-					   wxCoord MaxWidth /*= -1*/,
+***************************************************************************/
+wxString CamArtProvider::GetTextInfoOrDraw(ResourceID r,
+					   CamArtFlags f,
+					   wxDC &dc,
+					   BOOL Draw, // =FALSE
+					   wxCoord *w,
+					   wxCoord *h,
+					   wxCoord x,
+					   wxCoord y,
+					   wxCoord MaxWidth, // = -1
 					   const wxString &text) {
   // find the name by looking up the ID as a string
   const TCHAR * tcname=text;
-
-  if (w) *w=0;
-  if (h) *h=0;
-
-  if (text.IsEmpty())
-    {
-      tcname = CamResource::GetTextFail(r);
-      if (!tcname || ( (tcname[0]==_T('-')) && !tcname[1]) )
-	{
-	  // default to object name
-	  tcname = CamResource::GetObjectNameFail(r);
-	}
-
-      if (!tcname)
-	{
-	  // If this goes off, then somehow we've been passed a
-	  // resource ID without a reverse bitmap lookup. This can
-	  // normally only happen if the resource ID is corrupted, or
-	  // the resources are corrupted
-	  TCHAR cannot_get_text_resources[] = _T("Cannot get text for resource %d");
-	  ERROR3_PF((cannot_get_text_resources, r));
-	  return wxEmptyString;
-	}
+  if (w) {
+    *w = 0;
+  }
+  if (h) {
+    *h = 0;
+  }
+  if (text.IsEmpty()) {
+    tcname = CamResource::GetTextFail(r);
+    if (!tcname || ( (tcname[0]==_T('-')) && !tcname[1]) ) {
+      // default to object name
+      tcname = CamResource::GetObjectNameFail(r);
+    }
+    if (!tcname) {
+      // If this goes off, then somehow we've been passed a
+      // resource ID without a reverse bitmap lookup. This can
+      // normally only happen if the resource ID is corrupted, or
+      // the resources are corrupted
+      TCHAR cannot_get_text_resources[] = _T("Cannot get text for resource %d");
+      ERROR3_PF((cannot_get_text_resources, r));
+      return wxEmptyString;
+    }
+  }
+  dc.SetTextForeground
+    (wxSystemSettings::GetColour
+     ((f & CAF_GREYED) ? wxSYS_COLOUR_GRAYTEXT : wxSYS_COLOUR_BTNTEXT));
+  wxFont font = wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT);
+  font.SetPointSize((f & CAF_HALFHEIGHT) ? 7 : 8);
+  //font.Scale(2.0);
+  dc.SetFont(font);
+  wxString RenderText(tcname);
+  if (!(f & CAF_STATUSBARTEXT)) {
+    if (h && w) {
+	dc.GetTextExtent(RenderText, w, h);
     }
 
-  dc.SetTextForeground(wxSystemSettings::GetColour((f & CAF_GREYED)?wxSYS_COLOUR_GRAYTEXT:wxSYS_COLOUR_BTNTEXT));
-  wxFont font = wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT);
-  font.SetPointSize((f & CAF_HALFHEIGHT)?7:8);
-  dc.SetFont(font);
-
-  wxString RenderText(tcname);
-
-  if (!(f & CAF_STATUSBARTEXT))
-    {
-      if (h && w)
-	dc.GetTextExtent(RenderText, w, h);
-
-      if (Draw)
+    if (Draw) {
 	dc.DrawText(RenderText, x, y);
     }
-  else
-    {
-      // It's status bar text. We have to go through the tokens individually
-
+    } else {
+      // It's status bar text. We have to go through the tokens
+      // individually
       // First tokenize the string
       INT32 i=0;
       wxArrayString Tokens;

@@ -28,19 +28,48 @@
 
 extern "C" {
 static gboolean
-xara_slidercombo_expose_callback( GtkWidget *widget,
-                                  GdkEventExpose *gdk_event,
-                                  gboolean user_data )
-{
-    gtk_paint_box (widget->style,
-                   widget->window,
-                   GTK_STATE_NORMAL,
-                   GTK_SHADOW_OUT,
-                   NULL, widget, "menu",
-                   0, 0,
-                   widget->allocation.width, widget->allocation.height);
+xara_slidercombo_expose_callback(GtkWidget* widget,
+				 GdkEventExpose* gdk_event,
+				 gboolean user_data) {
+  GtkStyleContext* sc = gtk_widget_get_style_context(widget);
+  cairo_t* cr = gdk_cairo_create(gtk_widget_get_window(widget));
+  gtk_style_context_save(sc);
+  gtk_style_context_set_state(sc, GTK_STATE_FLAG_INSENSITIVE);
+  gtk_render_frame(sc, cr, 0, 0,
+			gtk_widget_get_allocated_width(widget),
+			gtk_widget_get_allocated_height(widget));
+  gtk_render_background(sc, cr, 0, 0,
+			gtk_widget_get_allocated_width(widget),
+			gtk_widget_get_allocated_height(widget));
+  gtk_style_context_restore(sc);
 
-    return FALSE;
+    
+  // gtk_paint_box (widget->style,
+  // 		 widget->window,
+  // 		 GTK_STATE_NORMAL,
+  // 		 GTK_SHADOW_OUT,
+  // 		 NULL,
+  // 		 widget,
+  // 		 "menu",
+  // 		 0,
+  // 		 0,
+  // 		 widget->allocation.width,
+  // 		 widget->allocation.height);
+  //gtk_widget_get_display(widget),
+  // 
+  // gtk_paint_box (gtk_widget_get_style (widget),
+  // 		 gdk_drawing_context_get_cairo_context(),
+  // 		 GTK_STATE_NORMAL,
+  // 		 GTK_SHADOW_OUT,
+  // 		 NULL,
+  // 		 widget,
+  // 		 "menu",
+  // 		 0,
+  // 		 0,
+  // 		 gtk_widget_get_allocated_width(widget),
+  // 		 gtk_widget_get_allocated_width(widget));
+
+  return FALSE;
 }
 }
 #endif

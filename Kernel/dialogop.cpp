@@ -1,7 +1,7 @@
 // $Id: dialogop.cpp 1751 2006-09-13 11:33:14Z luke $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
- 
+
                Xara LX, a vector drawing and manipulation program.
                     Copyright (C) 1993-2006 Xara Group Ltd.
        Copyright on certain contributions may be held in joint with their
@@ -32,7 +32,7 @@ ADDITIONAL RIGHTS
 
 Conditional upon your continuing compliance with the GNU General Public
 License described above, Xara Group Ltd grants to you certain additional
-rights. 
+rights.
 
 The additional rights are to use, modify, and distribute the software
 together with the wxWidgets library, the wxXtra library, and the "CDraw"
@@ -96,24 +96,24 @@ service marks of Xara Group Ltd. All rights in these marks are reserved.
 =================================XARAHEADEREND============================
  */
 
-// Implementation of the following classes 
-// 
+// Implementation of the following classes
+//
 //	DialogOp 		   Abstract base class which all dialog classes derive from
 //		BlobbyDlg	   Dialog demonstrating DialogOp functions
 //		MenuPrefDlg	   Menu preferences demo (This has a very short life!)
 //  	DebugTreeDlg   Dialog showing Camelot's debug tree
 
 /*
-*/ 
+*/
 
 //-----------------------------------------------------------------------------------------
 // Include files
-                       
-                     
-#include "camtypes.h" 
+
+
+#include "camtypes.h"
 
 //#include "document.h"  		// Temp   - in camtypes.h [AUTOMATICALLY REMOVED]
-//#include "resource.h"   
+//#include "resource.h"
 //#include "simon.h"
 //#include "tim.h"
 //#include "phil.h"
@@ -121,9 +121,9 @@ service marks of Xara Group Ltd. All rights in these marks are reserved.
 #include "dlgmgr.h"
 //#include "ensure.h"   - in camtypes.h [AUTOMATICALLY REMOVED]
 //#include "errors.h"  - in camtypes.h [AUTOMATICALLY REMOVED]
-#include "camelot.h" 
+#include "camelot.h"
 //#include "dlgtypes.h"  - in camtypes.h [AUTOMATICALLY REMOVED]
-#include "bubbleid.h" 
+#include "bubbleid.h"
 //#include "msg.h"  - in camtypes.h [AUTOMATICALLY REMOVED]
 //#include "docview.h" - in camtypes.h [AUTOMATICALLY REMOVED]
 //#include "colcontx.h"
@@ -173,7 +173,7 @@ CC_IMPLEMENT_DYNCREATE(DialogOp, Operation)
 CC_IMPLEMENT_DYNCREATE(DialogTabOp, DialogOp)
 
 // Declare smart memory handling in Debug builds
-#define new CAM_DEBUG_NEW     
+#define new CAM_DEBUG_NEW
 
 /********************************************************************************************
 
@@ -190,26 +190,26 @@ CC_IMPLEMENT_DYNCREATE(DialogTabOp, DialogOp)
 				MainInst, SubInst - instance handles of the modules containing the dialog
 									templates (if 0 the main application instance is used).
 				OpeningPage:	For tabbed dialogs allows opening tab to be chosen
-	Purpose:	The Constructor of the DialogOp class simply sets the resource ID of the 
+	Purpose:	The Constructor of the DialogOp class simply sets the resource ID of the
 				dialog and its modality.
 
 ********************************************************************************************/
 
 
-DialogOp::DialogOp(CDlgResID DialogResID, CDlgMode Mode, 
-				   CDlgResID SubDialogID, 
+DialogOp::DialogOp(CDlgResID DialogResID, CDlgMode Mode,
+				   CDlgResID SubDialogID,
 				   /* HINSTANCE MainInst, HINSTANCE SubInst, */
 				   CCRuntimeClass* Class,
-				   INT32 OpeningPage, 
+				   INT32 OpeningPage,
 				   CWindowID ParentWnd) : Operation(Class)
 {
 	MagicWord = MAGIC_CREATE;			// Save this for later
 
 	DlgResID = DialogResID;     		// Dialog's resource ID
-	DlgMode = Mode;             		// Dialog's mode       
+	DlgMode = Mode;             		// Dialog's mode
 	SubDlgID = SubDialogID;				// Dialog to merge with (0 => no merging)
-	WindowID = NULL; 					// We don't know this until we create the dialog 
-	DlgMgr = CCamApp::GetDlgManager();  // Store a pointer to the Dialog Manager so that 
+	WindowID = NULL; 					// We don't know this until we create the dialog
+	DlgMgr = CCamApp::GetDlgManager();  // Store a pointer to the Dialog Manager so that
 										// it's easy to get at
 
 	ReadWritePage = 0; 					// The page within the dialog that we are currently
@@ -227,68 +227,68 @@ PORTNOTE("dialog","Removed Windows resource'ism")
 	if(MainInst == 0)
 		MainInst = ExtraDLLs[Resources_DLL];
 
-	// Set up instance handle for the main dialog										
+	// Set up instance handle for the main dialog
 	if (MainInst == 0)
 		MainDlgInst = AfxGetInstanceHandle();
 	else
 		MainDlgInst = MainInst;
-		
+
 	// Make the sub resource instance the uk.dll one, or whatever, if it exists
 	if(SubDlgInst == 0)
 		SubDlgInst = ExtraDLLs[Resources_DLL];
 
-	// Set up instance handle for the main dialog										
+	// Set up instance handle for the main dialog
 	if (SubInst == 0)
 		SubDlgInst = AfxGetInstanceHandle();
 	else
 		SubDlgInst = SubInst;
 #endif
-	
+
 	// User is interacting, so shouldn't be waiting!
 	OpFlags.HasOwnTimeIndicator = TRUE;
 
 	ParentDlgWnd = ParentWnd;
-}                    
- 
-// No comment block required
- 
-// Never ever call this it exists cos DYNCREATE demands it. DYNCREATE has no concept 
-// of an abstract class. 
-DialogOp::DialogOp()
-{                                   
-	ENSURE(FALSE, "Invalid constructor called for DialogOp"); 
 }
-  
-  
+
+// No comment block required
+
+// Never ever call this it exists cos DYNCREATE demands it. DYNCREATE has no concept
+// of an abstract class.
+DialogOp::DialogOp()
+{
+	ENSURE(FALSE, "Invalid constructor called for DialogOp");
+}
+
+
 /********************************************************************************************
 
->	BOOL DialogOp::Create() 
+>	BOOL DialogOp::Create()
 
 	Author:		Simon_Maneggio (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	13/8/93
 	Inputs:		-
 	Outputs:	-
-	Returns:	TRUE if all resources to create the dialog can be successfully allocated. 
+	Returns:	TRUE if all resources to create the dialog can be successfully allocated.
 				FALSE otherwise
-	Purpose:	The create method reserves everything needed to guarantee that the dialog will 
+	Purpose:	The create method reserves everything needed to guarantee that the dialog will
 				appear. It returns FALSE if it fails.
 				If any dialog merging was specified (by providing a non-zero value for
 				SubDialogID in the call to the DialogOp constructor) then it will be carried
 				out when this function is called.
 	Errors:		If the resources cannot be allocated then ERRORIF is called with a
-				Dialog creation failed error message.  
+				Dialog creation failed error message.
 	SeeAlso:	-
 
 ********************************************************************************************/
 
 
 // The Create fn should only need to take a DialogOp param when the Bar system is complete
-// and the current infobar merging stuff removed 
-BOOL DialogOp::Create() {                                      
+// and the current infobar merging stuff removed
+BOOL DialogOp::Create() {
   // Create an instance of the dialog by calling the dialog managers
   // Create method. The The WindowID will be set by this call
   //
-  // old vars used: MainDlgInst, SubDlgInst, 
+  // old vars used: MainDlgInst, SubDlgInst,
   BOOL Created = DlgMgr->Create(this, DlgResID, SubDlgID, DlgMode, PageToOpen,
 				ParentDlgWnd);
   ERRORIF(!Created, _R(IDT_DIALOG_CREATEFAIL), FALSE);
@@ -298,53 +298,53 @@ BOOL DialogOp::Create() {
 
 /********************************************************************************************
 
->	void DialogOp::Open() 
+>	void DialogOp::Open()
 
 	Author:		Simon_Maneggio (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	13/8/93
 	Inputs:		-
 	Outputs:	-
 	Returns:	-
-	Purpose:	The open dialog method displays the dialog box. If Create was successful 
+	Purpose:	The open dialog method displays the dialog box. If Create was successful
 				then this function cannot fail
 	Errors:		-
 	SeeAlso:	-
 
 ********************************************************************************************/
 
-void DialogOp::Open() 
-{                            
-	ENSURE(WindowID != NULL, "Trying to open a dialog box which has not been created !"); 
-	
+void DialogOp::Open()
+{
+	ENSURE(WindowID != NULL, "Trying to open a dialog box which has not been created !");
+
 	// we may wish to subclass some of our controls, do so here
 	AddControlsToHelper();
 
 	// open the dialog
-	DlgMgr->Open(WindowID,this); 
+	DlgMgr->Open(WindowID,this);
 }
 
 /********************************************************************************************
 
->	void DialogOp::Close() 
+>	void DialogOp::Close()
 
 	Author:		Simon_Maneggio (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	13/8/93
 	Inputs:		-
 	Outputs:	-
 	Returns:	-
-	Purpose:	The close method removes the dialog from the display but keeps all system 	 	
-				resources associated with it. It hides the dialog.  
+	Purpose:	The close method removes the dialog from the display but keeps all system
+				resources associated with it. It hides the dialog.
 	Errors:		-
 	SeeAlso:	-
 
 ********************************************************************************************/
 
-void DialogOp::Close() 
-{                               
+void DialogOp::Close()
+{
 	CheckMagic("DialogOp:Close()");
-	ENSURE(WindowID != NULL, "Trying to close a window with a NULL window ID !");        
-	
-	DlgMgr->Close(WindowID, this); 
+	ENSURE(WindowID != NULL, "Trying to close a window with a NULL window ID !");
+
+	DlgMgr->Close(WindowID, this);
 
 	// remove any subclassed controls from the control helper
 	RemoveControlsFromHelper();
@@ -364,7 +364,7 @@ void DialogOp::Close()
 	Purpose:	Don't use this function any more. It's ambiguous and marked for destruction.
 				Call IsWindowVisible or HasWindow instead. This has been a public service announcement !!!!
 				(Simon)
-				
+
 
 ********************************************************************************************/
 
@@ -374,7 +374,7 @@ BOOL DialogOp::IsOpen()
 	{
 		return ( (wxWindow *)WindowID )->IsShown();	//		<<< --------------  BODGE, BODGE, BODGE
 	}
-	else return FALSE; 
+	else return FALSE;
 }
 
 
@@ -384,16 +384,16 @@ BOOL DialogOp::IsOpen()
 
 	Author:		Simon_Maneggio (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	30/11/93
-	Returns:	TRUE if this DialogOp has an associated window.	
-				 
+	Returns:	TRUE if this DialogOp has an associated window.
+
 	SeeAlso		DialogOp::IsWindowVisible
-	Purpose:	To find out if DialogOp has a window associated with it. 
-	
+	Purpose:	To find out if DialogOp has a window associated with it.
+
 ********************************************************************************************/
 
 BOOL DialogOp::HasWindow()
 {
-	return (WindowID != NULL); 
+	return (WindowID != NULL);
 }
 
 /********************************************************************************************
@@ -413,8 +413,8 @@ BOOL DialogOp::HasWindow()
 ********************************************************************************************/
 BOOL DialogOp::BringToTop()
 {
-	ERROR2IF(!WindowID, FALSE, "BringToTop called on a dialog without a window"); 
-	return (DlgMgr->BringToTop(WindowID, this)); 
+	ERROR2IF(!WindowID, FALSE, "BringToTop called on a dialog without a window");
+	return (DlgMgr->BringToTop(WindowID, this));
 }
 
 
@@ -464,7 +464,7 @@ void DialogOp::RemoveControlsFromHelper()
 
 /********************************************************************************************
 
->	BOOL DialogOp::IsGadgetTickable(CGadgetID Gadget) 
+>	BOOL DialogOp::IsGadgetTickable(CGadgetID Gadget)
 
 
 	Author:		Simon_Maneggio (Xara Group Ltd) <camelotdev@xara.com>
@@ -472,21 +472,21 @@ void DialogOp::RemoveControlsFromHelper()
 	Inputs:		Gadget: The Gadget to test
 	Outputs:	-
 	Returns:	-
-	Purpose:	To determine if Gadget is of a particular type that can be ticked. 
+	Purpose:	To determine if Gadget is of a particular type that can be ticked.
 				eg. if the gadget is a button
 	Errors:		-
 	SeeAlso:	-
 
 ********************************************************************************************/
 
-BOOL DialogOp::IsGadgetTickable(CGadgetID Gadget) 
+BOOL DialogOp::IsGadgetTickable(CGadgetID Gadget)
 {
-	return (DlgMgr->IsGadgetTickable(GetReadWriteWindowID(), Gadget)); 
+	return (DlgMgr->IsGadgetTickable(GetReadWriteWindowID(), Gadget));
 }
 
 /********************************************************************************************
 
->	BOOL DialogOp::ColourPickerAbort(CGadgetID Gadget) 
+>	BOOL DialogOp::ColourPickerAbort(CGadgetID Gadget)
 
 
 	Author:		Chris_Snook (Xara Group Ltd) <camelotdev@xara.com>
@@ -501,7 +501,7 @@ BOOL DialogOp::IsGadgetTickable(CGadgetID Gadget)
 
 ********************************************************************************************/
 
-BOOL DialogOp::ColourPickerAbort(CGadgetID Gadget, WPARAM wParam) 
+BOOL DialogOp::ColourPickerAbort(CGadgetID Gadget, WPARAM wParam)
 {
 	return (DlgMgr->ColourPickerAbort(GetReadWriteWindowID(), Gadget, wParam));
 }
@@ -515,7 +515,7 @@ BOOL DialogOp::ColourPickerAbort(CGadgetID Gadget, WPARAM wParam)
 	Created:	9/11/93
 	Returns:	TRUE if the window associated with this Op is visible. FALSE if not.
 				Note the Window must exist to do this check. A call to HasWindow will verify this
-				 
+
 	SeeAlso		DialogOp::HasWindow
 	Purpose:	Find out if a dialog is shown or hidden
 
@@ -523,7 +523,7 @@ BOOL DialogOp::ColourPickerAbort(CGadgetID Gadget, WPARAM wParam)
 
 BOOL DialogOp::IsWindowVisible()
 {
-	ERROR2IF (WindowID != NULL, FALSE, "The window does not exist, Should have called HasWindow"); 
+	ERROR2IF (WindowID != NULL, FALSE, "The window does not exist, Should have called HasWindow");
 	return (DlgMgr->IsWindowVisible(WindowID));
 }
 
@@ -576,38 +576,38 @@ BOOL DialogOp::CloseDropdown (CGadgetID Gadget, BOOL CloseVal)
 
 /********************************************************************************************
 
->	DialogOp::~DialogOp() 
+>	DialogOp::~DialogOp()
 
 	Author:		Simon_Maneggio (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	13/8/93
 	Inputs:		-
 	Outputs:	-
 	Returns:	-
-	Purpose:	The DialogOp destructor destroys the instance of the DialogOp and all  	
-				associated resources. If the dialog was open then it is closed. 
-				
-				Note that a dialog box can be destroyed even if it was never created. In this 
-				case no message is sent to the dialog manager. 
+	Purpose:	The DialogOp destructor destroys the instance of the DialogOp and all
+				associated resources. If the dialog was open then it is closed.
+
+				Note that a dialog box can be destroyed even if it was never created. In this
+				case no message is sent to the dialog manager.
 	Errors:		-
 	SeeAlso:	-
 
 ********************************************************************************************/
 
-DialogOp::~DialogOp() 
+DialogOp::~DialogOp()
 {
 	CheckMagic("DialogOp destructor");
 	if (WindowID != NULL)
-		DlgMgr->Delete(WindowID, this); 
+		DlgMgr->Delete(WindowID, this);
 
 	WindowID = NULL; // ensure we get a NULL pointer if this is used again
 	DlgMgr = NULL;	// Again, ensure this is a NULL pointer
 	pEvtHandler=NULL;
 
 	MagicWord = MAGIC_DESTROY;
-}    
+}
 
 // -----------------------------------------------------------------------------------------
-// Methods to set gadget values                                                             
+// Methods to set gadget values
 
 /********************************************************************************************
 
@@ -618,7 +618,7 @@ DialogOp::~DialogOp()
 	Inputs:		-
 	Outputs:	-
 	Returns:	-
-	Purpose:	See DialogManager for a description of this function 
+	Purpose:	See DialogManager for a description of this function
 	Errors:		-
 	SeeAlso:	DialogManager::SetUnitGadgetValue
 
@@ -627,15 +627,15 @@ DialogOp::~DialogOp()
 void DialogOp::SetComboListLength( CGadgetID Gadget)
 {
 	DlgMgr->SetComboListLength(GetReadWriteWindowID(),Gadget);
-}  
+}
 
 /********************************************************************************************
 
->	BOOL DialogOp::SetUnitGadgetValue( CGadgetID Gadget, 
-								 	   UnitType Unit, 
+>	BOOL DialogOp::SetUnitGadgetValue( CGadgetID Gadget,
+								 	   UnitType Unit,
 			        		    	   MILLIPOINT Value,
-			        		      	   BOOL EndOfList, 
-			     			       	   INT32 ListPos 
+			        		      	   BOOL EndOfList,
+			     			       	   INT32 ListPos
 			        		     	 )
 
 	Author:		Simon_Maneggio (Xara Group Ltd) <camelotdev@xara.com>
@@ -643,57 +643,57 @@ void DialogOp::SetComboListLength( CGadgetID Gadget)
 	Inputs:		-
 	Outputs:	-
 	Returns:	-
-	Purpose:	See DialogManager for a description of this function 
+	Purpose:	See DialogManager for a description of this function
 	Errors:		-
 	SeeAlso:	DialogManager::SetUnitGadgetValue
 
 ********************************************************************************************/
 
-BOOL DialogOp::SetUnitGadgetValue( CGadgetID Gadget, 
-							 	   UnitType Unit, 
+BOOL DialogOp::SetUnitGadgetValue( CGadgetID Gadget,
+							 	   UnitType Unit,
 			        		       MILLIPOINT Value,
-			        		       BOOL EndOfList, 
-			     			       INT32 ListPos 
+			        		       BOOL EndOfList,
+			     			       INT32 ListPos
 			        		     )
 {
-	return(DlgMgr->SetUnitGadgetValue(GetReadWriteWindowID(), Gadget, Unit, Value, EndOfList, ListPos)); 
-}  
+	return(DlgMgr->SetUnitGadgetValue(GetReadWriteWindowID(), Gadget, Unit, Value, EndOfList, ListPos));
+}
 
 /********************************************************************************************
->	BOOL DialogOp::SetDimensionUnitGadgetValue(	CGadgetID Gadget, 
+>	BOOL DialogOp::SetDimensionUnitGadgetValue(	CGadgetID Gadget,
 											 	UnitType  units,
 			        		    				double    Value,
 												Node*     pNode,
 												BOOL      IncludeUnitSpecifier = TRUE,
-				        		      			BOOL      EndOfList = FALSE, 
+				        		      			BOOL      EndOfList = FALSE,
 					     						INT32       ListPos   = -1
 				        		     	 		)
 
 	Author:		Ed_Cornes (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	13/10/95
-	Purpose:	See DialogManager for a description of this function 
+	Purpose:	See DialogManager for a description of this function
 ********************************************************************************************/
 
-BOOL DialogOp::SetDimensionUnitGadgetValue( CGadgetID Gadget, 
-										 	UnitType  units, 
+BOOL DialogOp::SetDimensionUnitGadgetValue( CGadgetID Gadget,
+										 	UnitType  units,
 			        		       			double    Value,
 								   			Node*     pNode,
 											BOOL      IncludeUnitSpecifier,
-				        		       		BOOL      EndOfList, 
-				     			       		INT32       ListPos 
+				        		       		BOOL      EndOfList,
+				     			       		INT32       ListPos
 					        		     	)
 {
 	return DlgMgr->SetDimensionUnitGadgetValue(GetReadWriteWindowID(), Gadget, units, Value, pNode,
-											   IncludeUnitSpecifier, EndOfList, ListPos); 
-}  
+											   IncludeUnitSpecifier, EndOfList, ListPos);
+}
 
 
 /********************************************************************************************
 
->	BOOL DialogOp::SetLongGadgetValue(CGadgetID Gadget, 
-								  	  INT32 value, 
-	  							  	  BOOL EndOfList, 
-			     			 	  	  INT32 ListPos) 
+>	BOOL DialogOp::SetLongGadgetValue(CGadgetID Gadget,
+								  	  INT32 value,
+	  							  	  BOOL EndOfList,
+			     			 	  	  INT32 ListPos)
 
 	Author:		Simon_Maneggio (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	15/9/93
@@ -706,20 +706,20 @@ BOOL DialogOp::SetDimensionUnitGadgetValue( CGadgetID Gadget,
 
 ********************************************************************************************/
 
-BOOL DialogOp::SetLongGadgetValue(CGadgetID Gadget, 
-								  INT32 value, 
-	  							  BOOL EndOfList, 
-			     			 	  INT32 ListPos) 
-{                                                
-	return(DlgMgr->SetLongGadgetValue(GetReadWriteWindowID(), Gadget, value, EndOfList, ListPos));  
-}    
+BOOL DialogOp::SetLongGadgetValue(CGadgetID Gadget,
+								  INT32 value,
+	  							  BOOL EndOfList,
+			     			 	  INT32 ListPos)
+{
+	return(DlgMgr->SetLongGadgetValue(GetReadWriteWindowID(), Gadget, value, EndOfList, ListPos));
+}
 
 /********************************************************************************************
 
->	BOOL DialogOp::SetDoubleGadgetValue(CGadgetID Gadget, 
-								  	  double value, 
-	  							  	  BOOL EndOfList, 
-			     			 	  	  INT32 ListPos) 
+>	BOOL DialogOp::SetDoubleGadgetValue(CGadgetID Gadget,
+								  	  double value,
+	  							  	  BOOL EndOfList,
+			     			 	  	  INT32 ListPos)
 
 	Author:		Simon_Maneggio (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	15/9/93
@@ -732,13 +732,13 @@ BOOL DialogOp::SetLongGadgetValue(CGadgetID Gadget,
 
 ********************************************************************************************/
 
-BOOL DialogOp::SetDoubleGadgetValue(CGadgetID Gadget, 
-								  double value, 
-	  							  BOOL EndOfList, 
-			     			 	  INT32 ListPos) 
-{                                                
-	return(DlgMgr->SetDoubleGadgetValue(GetReadWriteWindowID(), Gadget, value, EndOfList, ListPos));  
-}    
+BOOL DialogOp::SetDoubleGadgetValue(CGadgetID Gadget,
+								  double value,
+	  							  BOOL EndOfList,
+			     			 	  INT32 ListPos)
+{
+	return(DlgMgr->SetDoubleGadgetValue(GetReadWriteWindowID(), Gadget, value, EndOfList, ListPos));
+}
 
 /********************************************************************************************
 
@@ -760,13 +760,13 @@ BOOL DialogOp::SetDoubleGadgetValue(CGadgetID Gadget,
 
 ********************************************************************************************/
 
-BOOL DialogOp::SetBoolGadgetSelected(CGadgetID Gadget, BOOL IsSelected, INT32 ListPos) 
-{                                                
+BOOL DialogOp::SetBoolGadgetSelected(CGadgetID Gadget, BOOL IsSelected, INT32 ListPos)
+{
 	return(DlgMgr->SetBoolGadgetSelected(GetReadWriteWindowID(), Gadget, IsSelected, ListPos));
 
 //	return(DlgMgr->SetLongGadgetValue(WindowID, Gadget,
 // 									(IsSelected) ? TRUE : FALSE, EndOfList, ListPos));
-}    
+}
 
 
 
@@ -821,11 +821,11 @@ BOOL DialogOp::SetRadioGroupSelected(CGadgetID *GroupGadgets, CGadgetID Selected
 
 /********************************************************************************************
 
->	BOOL DialogOp::SetStringGadgetValue(CGadgetID Gadget, 
-										UINT32 IDStr,  
-										BOOL EndOfList, 
-			     			 	  		INT32 ListPos 
-										)          
+>	BOOL DialogOp::SetStringGadgetValue(CGadgetID Gadget,
+										UINT32 IDStr,
+										BOOL EndOfList,
+			     			 	  		INT32 ListPos
+										)
 	Author:		Simon_Maneggio (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	15/9/93
 	Inputs:		-
@@ -837,20 +837,20 @@ BOOL DialogOp::SetRadioGroupSelected(CGadgetID *GroupGadgets, CGadgetID Selected
 
 ********************************************************************************************/
 
-BOOL DialogOp::SetStringGadgetValue(CGadgetID Gadget, 
-									UINT32 IDStr,  
-									BOOL EndOfList, 
-			     			 	  	INT32 ListPos 
-									)           
-{       
-	return(DlgMgr->SetStringGadgetValue(GetReadWriteWindowID(), Gadget, IDStr, EndOfList, ListPos));  
+BOOL DialogOp::SetStringGadgetValue(CGadgetID Gadget,
+									UINT32 IDStr,
+									BOOL EndOfList,
+			     			 	  	INT32 ListPos
+									)
+{
+	return(DlgMgr->SetStringGadgetValue(GetReadWriteWindowID(), Gadget, IDStr, EndOfList, ListPos));
 }
-    
+
 /********************************************************************************************
 
->	BOOL DialogOp::SetStringGadgetValue(CGadgetID Gadget, 
-									StringBase* StrValue, 
-									BOOL EndOfList, 
+>	BOOL DialogOp::SetStringGadgetValue(CGadgetID Gadget,
+									StringBase* StrValue,
+									BOOL EndOfList,
 			     			 	  	INT32 ListPos)
 
 	Author:		Simon_Maneggio (Xara Group Ltd) <camelotdev@xara.com>
@@ -863,20 +863,20 @@ BOOL DialogOp::SetStringGadgetValue(CGadgetID Gadget,
 	SeeAlso:	DialogManager::SetStringGadgetValue
 
 ********************************************************************************************/
-    
-BOOL DialogOp::SetStringGadgetValue(CGadgetID Gadget, 
-									const StringBase& StrValue, 
-									BOOL EndOfList, 
+
+BOOL DialogOp::SetStringGadgetValue(CGadgetID Gadget,
+									const StringBase& StrValue,
+									BOOL EndOfList,
 			     			 	  	INT32 ListPos)
-{      
-	return (DlgMgr->SetStringGadgetValue(GetReadWriteWindowID(), Gadget, StrValue, EndOfList, ListPos)); 
+{
+	return (DlgMgr->SetStringGadgetValue(GetReadWriteWindowID(), Gadget, StrValue, EndOfList, ListPos));
 }
 
 /********************************************************************************************
 
->	BOOL DialogOp::SetCustomComboGadgetValue (CGadgetID Gadget, 
-							  CustomComboBoxControlDataItem* TheItem,   
-							  BOOL EndOfList = TRUE, 
+>	BOOL DialogOp::SetCustomComboGadgetValue (CGadgetID Gadget,
+							  CustomComboBoxControlDataItem* TheItem,
+							  BOOL EndOfList = TRUE,
 			     			  INT32 ListPos = 0)
 
 	Author:		Chris_Snook (Xara Group Ltd) <camelotdev@xara.com> S
@@ -890,13 +890,13 @@ BOOL DialogOp::SetStringGadgetValue(CGadgetID Gadget,
 
 ********************************************************************************************/
 
-BOOL DialogOp::SetCustomComboGadgetValue( CGadgetID Gadget, 
+BOOL DialogOp::SetCustomComboGadgetValue( CGadgetID Gadget,
 										  CustomComboBoxControlDataItem* TheItem,
-										  BOOL EndOfList, 
+										  BOOL EndOfList,
 			     						  INT32 ListPos )
 {
 #ifndef EXCLUDE_FROM_XARALX
-	return( DlgMgr->SetCustomComboGadgetValue( GetReadWriteWindowID(), Gadget, TheItem, EndOfList, ListPos ) ); 
+	return( DlgMgr->SetCustomComboGadgetValue( GetReadWriteWindowID(), Gadget, TheItem, EndOfList, ListPos ) );
 #else
 	return FALSE;
 #endif
@@ -934,7 +934,7 @@ BOOL DialogOp::SelectCustomComboGadgetValueOnString (CGadgetID Gadget, StringBas
 
 	Author:		Phil_Martin (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	10-06-2005
-	Purpose:	Builds a drop down list for a combo box 
+	Purpose:	Builds a drop down list for a combo box
 ******************************************************************************/
 
 void DialogOp::BuildResDropList(const CGadgetID DropListID,
@@ -989,7 +989,7 @@ void DialogOp::BuildResDropList(const CGadgetID DropListID,
 
 	Author:		Phil_Martin (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	10-06-2005
-	Purpose:	Builds a drop down list for a combo box 
+	Purpose:	Builds a drop down list for a combo box
 ******************************************************************************/
 
 void DialogOp::SetResDropListValue(const CGadgetID DropListID,
@@ -1041,9 +1041,9 @@ void DialogOp::SetResDropListValue(const CGadgetID DropListID,
 	}
 }
 
-			
-			
-			
+
+
+
 /******************************************************************************
 >	INT32		DialogOp::GetResDropListValue(	const CGadgetID DropListID,
 											const BOOL		bIncludeAuto = TRUE,
@@ -1112,9 +1112,9 @@ INT32	DialogOp::GetResDropListValue(	const CGadgetID DropListID,
 	return iValue;
 }
 
-			
-			
-			
+
+
+
 /********************************************************************************************
 
 >	BOOL DialogOp::SetGadgetRange(CGadgetID GadgetID, INT32 Min, INT32 Max, INT32 PageInc)
@@ -1131,14 +1131,14 @@ INT32	DialogOp::GetResDropListValue(	const CGadgetID DropListID,
 ********************************************************************************************/
 
 BOOL DialogOp::SetGadgetRange(CGadgetID GadgetID, INT32 Min, INT32 Max, INT32 PageInc)
-{                                                       
-	return (DlgMgr->SetGadgetRange(GetReadWriteWindowID(), GadgetID, Min, Max, PageInc)); 	
-} 
+{
+	return (DlgMgr->SetGadgetRange(GetReadWriteWindowID(), GadgetID, Min, Max, PageInc));
+}
 
 /********************************************************************************************
 
->	BOOL DialogOp::SetSelectedValueIndex(CGadgetID Gadget, 
-							   			  INT32 Index)	   
+>	BOOL DialogOp::SetSelectedValueIndex(CGadgetID Gadget,
+							   			  INT32 Index)
 
 	Author:		Simon_Maneggio (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	20/9/93
@@ -1151,18 +1151,18 @@ BOOL DialogOp::SetGadgetRange(CGadgetID GadgetID, INT32 Min, INT32 Max, INT32 Pa
 
 ********************************************************************************************/
 
-BOOL DialogOp::SetSelectedValueIndex(CGadgetID Gadget, 
-						   			  INT32 Index)	   
-{ 
-	return (DlgMgr->SetSelectedValueIndex(GetReadWriteWindowID(), Gadget, Index)); 	
-}                                              
+BOOL DialogOp::SetSelectedValueIndex(CGadgetID Gadget,
+						   			  INT32 Index)
+{
+	return (DlgMgr->SetSelectedValueIndex(GetReadWriteWindowID(), Gadget, Index));
+}
 
 /********************************************************************************************
 
->	BOOL DialogOp::SetSelectedValueRange(CGadgetID Gadget, 
+>	BOOL DialogOp::SetSelectedValueRange(CGadgetID Gadget,
 							   			  WORD StartIndex,
 							   			  WORD EndIndex,
-							   			  BOOL Select)	   
+							   			  BOOL Select)
 
 	Author:		Phil_Martin (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	29/04/94
@@ -1180,16 +1180,16 @@ BOOL DialogOp::SetSelectedValueRange(CGadgetID Gadget,
 						   			  WORD EndIndex,
 						   			  BOOL Select)
 {
-	return (DlgMgr->SetSelectedValueRange(GetReadWriteWindowID(), Gadget, StartIndex, EndIndex, Select)); 	
+	return (DlgMgr->SetSelectedValueRange(GetReadWriteWindowID(), Gadget, StartIndex, EndIndex, Select));
 }
 
 /********************************************************************************************
 
->	BOOL DialogOp::SetDimensionGadgetValue(	CGadgetID Gadget, 
+>	BOOL DialogOp::SetDimensionGadgetValue(	CGadgetID Gadget,
 			        		    			MILLIPOINT Value,
 											Node* pNode,
 											BOOL IncludeUnitSpecifier = TRUE,
-			        		      			BOOL EndOfList = FALSE, 
+			        		      			BOOL EndOfList = FALSE,
 				     						INT32 ListPos = -1
 			        		     	 		)
 
@@ -1198,29 +1198,29 @@ BOOL DialogOp::SetSelectedValueRange(CGadgetID Gadget,
 	Inputs:		-
 	Outputs:	-
 	Returns:	-
-	Purpose:	See DialogManager for a description of this function 
+	Purpose:	See DialogManager for a description of this function
 	Errors:		-
 	SeeAlso:	DialogManager::SetDimensionGadgetValue
 
 ********************************************************************************************/
 
-BOOL DialogOp::SetDimensionGadgetValue( CGadgetID Gadget, 
+BOOL DialogOp::SetDimensionGadgetValue( CGadgetID Gadget,
 			        		       		MILLIPOINT Value,
 								   		Node* pNode,
 										BOOL IncludeUnitSpecifier,
-			        		       		BOOL EndOfList, 
-			     			       		INT32 ListPos 
+			        		       		BOOL EndOfList,
+			     			       		INT32 ListPos
 			        		     	)
 {
-	return(DlgMgr->SetDimensionGadgetValue(GetReadWriteWindowID(), Gadget, Value, pNode, IncludeUnitSpecifier, EndOfList, ListPos)); 
-}  
+	return(DlgMgr->SetDimensionGadgetValue(GetReadWriteWindowID(), Gadget, Value, pNode, IncludeUnitSpecifier, EndOfList, ListPos));
+}
 
 /********************************************************************************************
 
->	BOOL DialogOp::SetMemoryGadgetValue( CGadgetID Gadget, 
+>	BOOL DialogOp::SetMemoryGadgetValue( CGadgetID Gadget,
 			        		    		  UINT32 Value,
-			        					  BOOL EndOfList, 
-			     						  INT32 ListPos 
+			        					  BOOL EndOfList,
+			     						  INT32 ListPos
 			        		     	 	)
 
 	Author:		Neville_Humphrys (Xara Group Ltd) <camelotdev@xara.com>
@@ -1228,26 +1228,26 @@ BOOL DialogOp::SetDimensionGadgetValue( CGadgetID Gadget,
 	Inputs:		-
 	Outputs:	-
 	Returns:	-
-	Purpose:	See DialogManager for a description of this function 
+	Purpose:	See DialogManager for a description of this function
 	Errors:		-
 	SeeAlso:	DialogManager::SetMemoryGadgetValue; DialogManager::SetMemoryGadgetValue;
 
 ********************************************************************************************/
 
-BOOL DialogOp::SetMemoryGadgetValue( CGadgetID Gadget, 
+BOOL DialogOp::SetMemoryGadgetValue( CGadgetID Gadget,
 			        				 UINT32 Value,
-			  						 BOOL EndOfList, 
-			   						 INT32 ListPos 
+			  						 BOOL EndOfList,
+			   						 INT32 ListPos
 			        				)
 {
-	return(DlgMgr->SetMemoryGadgetValue(GetReadWriteWindowID(), Gadget, Value, EndOfList, ListPos)); 
-}  
+	return(DlgMgr->SetMemoryGadgetValue(GetReadWriteWindowID(), Gadget, Value, EndOfList, ListPos));
+}
 
 /********************************************************************************************
 
->	BOOL DialogOp::SetGadgetHelp( CGadgetID Gadget, 
-						    	  UINT32 BubbleID, 
-						    	  UINT32 StatusID, 
+>	BOOL DialogOp::SetGadgetHelp( CGadgetID Gadget,
+						    	  UINT32 BubbleID,
+						    	  UINT32 StatusID,
 						    	  UINT32 ModuleID = 0)
 
 	Author:		Will_Cowling (Xara Group Ltd) <camelotdev@xara.com>
@@ -1255,19 +1255,19 @@ BOOL DialogOp::SetMemoryGadgetValue( CGadgetID Gadget,
 	Inputs:		-
 	Outputs:	-
 	Returns:	-
-	Purpose:	See DialogManager for a description of this function 
+	Purpose:	See DialogManager for a description of this function
 	Errors:		-
 	SeeAlso:	DialogManager::SetGadgetHelp
 
 ********************************************************************************************/
 
-BOOL DialogOp::SetGadgetHelp( CGadgetID Gadget, 
-					    	  UINT32 BubbleID, 
-					    	  UINT32 StatusID, 
+BOOL DialogOp::SetGadgetHelp( CGadgetID Gadget,
+					    	  UINT32 BubbleID,
+					    	  UINT32 StatusID,
 					    	  UINT32 ModuleID)
 {
-	return(DlgMgr->SetGadgetHelp(GetReadWriteWindowID(), Gadget, BubbleID, StatusID, ModuleID));  
-}   
+	return(DlgMgr->SetGadgetHelp(GetReadWriteWindowID(), Gadget, BubbleID, StatusID, ModuleID));
+}
 
 
 // -----------------------------------------------------------------------------------------
@@ -1275,12 +1275,12 @@ BOOL DialogOp::SetGadgetHelp( CGadgetID Gadget,
 
 /********************************************************************************************
 
->	MILLIPOINT DialogOp::GetUnitGadgetValue(CGadgetID Gadget,  
+>	MILLIPOINT DialogOp::GetUnitGadgetValue(CGadgetID Gadget,
 			       				  UnitType DefaultType,
-		        	    		  MILLIPOINT StartRange, 
+		        	    		  MILLIPOINT StartRange,
 		                 		  MILLIPOINT EndRange,
-		              		      UINT32 IDSInvalidMsg,  
-		              			  BOOL* Valid)        
+		              		      UINT32 IDSInvalidMsg,
+		              			  BOOL* Valid)
 
 	Author:		Simon_Maneggio (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	15/9/93
@@ -1292,24 +1292,24 @@ BOOL DialogOp::SetGadgetHelp( CGadgetID Gadget,
 	SeeAlso:	DialogManager::GetUnitGadgetValue
 
 ********************************************************************************************/
-	
-MILLIPOINT DialogOp::GetUnitGadgetValue(CGadgetID Gadget,  
+
+MILLIPOINT DialogOp::GetUnitGadgetValue(CGadgetID Gadget,
 			       				  UnitType DefaultType,
-		        	    		  MILLIPOINT StartRange, 
+		        	    		  MILLIPOINT StartRange,
 		                 		  MILLIPOINT EndRange,
-		              		      UINT32 IDSInvalidMsg,  
-		              			  BOOL* Valid)        
-{    
+		              		      UINT32 IDSInvalidMsg,
+		              			  BOOL* Valid)
+{
 	return(DlgMgr->GetUnitGadgetValue(GetReadWriteWindowID(), Gadget, DefaultType, StartRange, EndRange,
-		                 		  IDSInvalidMsg, Valid));         
-}   
+		                 		  IDSInvalidMsg, Valid));
+}
 
 /********************************************************************************************
 
->	INT32 DialogOp::GetLongGadgetValue(CGadgetID Gadget, 
-		       			      		  INT32 StartRange, 
-		  			          		  INT32 EndRange, 
-	           	  			  		  UINT32 IDSInvalidMsg, 
+>	INT32 DialogOp::GetLongGadgetValue(CGadgetID Gadget,
+		       			      		  INT32 StartRange,
+		  			          		  INT32 EndRange,
+	           	  			  		  UINT32 IDSInvalidMsg,
 	           			      		  BOOL* Valid,
 	           			      		  DialogManager::PFNSTRINGTOINT32 = ::StringToLong)
 
@@ -1324,28 +1324,28 @@ MILLIPOINT DialogOp::GetUnitGadgetValue(CGadgetID Gadget,
 
 ********************************************************************************************/
 
-INT32 DialogOp::GetLongGadgetValue(CGadgetID Gadget, 
-		       			      	  INT32 StartRange, 
-		  			          	  INT32 EndRange, 
-	           	  			  	  UINT32 IDSInvalidMsg, 
+INT32 DialogOp::GetLongGadgetValue(CGadgetID Gadget,
+		       			      	  INT32 StartRange,
+		  			          	  INT32 EndRange,
+	           	  			  	  UINT32 IDSInvalidMsg,
 	           			      	  BOOL* Valid,
 	           			      	  Convert::PFNSTRINGTOINT32 pfnParser)
-{  
+{
 	return DlgMgr->GetLongGadgetValue(GetReadWriteWindowID(),
 									  Gadget,
 									  StartRange,
 									  EndRange,
-									  IDSInvalidMsg, 
+									  IDSInvalidMsg,
 	           	    			   	  Valid,
 	           	    			   	  pfnParser);
-}  
+}
 
 /********************************************************************************************
 
->	double DialogOp::GetDoubleGadgetValue(CGadgetID Gadget, 
-		       			      		  double StartRange, 
-		  			          		  double EndRange, 
-	           	  			  		  UINT32 IDSInvalidMsg, 
+>	double DialogOp::GetDoubleGadgetValue(CGadgetID Gadget,
+		       			      		  double StartRange,
+		  			          		  double EndRange,
+	           	  			  		  UINT32 IDSInvalidMsg,
 	           			      		  BOOL* Valid,
 	           			      		  DialogManager::PFNSTRINGTODOUBLE = ::StringToDouble)
 
@@ -1360,21 +1360,21 @@ INT32 DialogOp::GetLongGadgetValue(CGadgetID Gadget,
 
 ********************************************************************************************/
 
-double DialogOp::GetDoubleGadgetValue(CGadgetID Gadget, 
-		       			      	  double StartRange, 
-		  			          	  double EndRange, 
-	           	  			  	  UINT32 IDSInvalidMsg, 
+double DialogOp::GetDoubleGadgetValue(CGadgetID Gadget,
+		       			      	  double StartRange,
+		  			          	  double EndRange,
+	           	  			  	  UINT32 IDSInvalidMsg,
 	           			      	  BOOL* Valid,
 	           			      	  Convert::PFNSTRINGTODOUBLE pfnParser)
-{  
+{
 	return DlgMgr->GetDoubleGadgetValue(GetReadWriteWindowID(),
 									  Gadget,
 									  StartRange,
 									  EndRange,
-									  IDSInvalidMsg, 
+									  IDSInvalidMsg,
 	           	    			   	  Valid,
 	           	    			   	  pfnParser);
-}  
+}
 
 
 /********************************************************************************************
@@ -1430,13 +1430,13 @@ BOOL DialogOp::GetBoolGadgetSelected(CGadgetID Gadget,
 	           	  			  		UINT32 IDSInvalidMsg,
 	           			      		BOOL* Valid,
 	           			      		INT32 ListPos)
-{  
+{
 	return (DlgMgr->GetBoolGadgetSelected(GetReadWriteWindowID(),
 										Gadget,
 										IDSInvalidMsg,
 	           	    			   		Valid,
 	           	    			   		ListPos));
-}  
+}
 
 
 
@@ -1498,13 +1498,13 @@ CGadgetID DialogOp::GetRadioGroupSelected(CGadgetID *GroupGadgets)
 ********************************************************************************************/
 
 String_256 DialogOp::GetStringGadgetValue(CGadgetID Gadget, BOOL* Valid, INT32 ListPos)
-{   
+{
 	return (DlgMgr->GetStringGadgetValue(GetReadWriteWindowID(), Gadget, Valid, ListPos));
 }
 
 /********************************************************************************************
 
->	BOOL DialogOp::GetGadgetRange(CGadgetID GadgetID, INT32* Min, INT32* Max) 
+>	BOOL DialogOp::GetGadgetRange(CGadgetID GadgetID, INT32* Min, INT32* Max)
 
 	Author:		Simon_Maneggio (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	15/9/93
@@ -1517,10 +1517,10 @@ String_256 DialogOp::GetStringGadgetValue(CGadgetID Gadget, BOOL* Valid, INT32 L
 
 ********************************************************************************************/
 
-BOOL DialogOp::GetGadgetRange(CGadgetID GadgetID, INT32* Min, INT32* Max) 
-{                                                       
-	return (DlgMgr->GetGadgetRange(GetReadWriteWindowID(), GadgetID, Min, Max)); 	
-}	 
+BOOL DialogOp::GetGadgetRange(CGadgetID GadgetID, INT32* Min, INT32* Max)
+{
+	return (DlgMgr->GetGadgetRange(GetReadWriteWindowID(), GadgetID, Min, Max));
+}
 
 
 
@@ -1540,17 +1540,17 @@ BOOL DialogOp::GetGadgetRange(CGadgetID GadgetID, INT32* Min, INT32* Max)
 ********************************************************************************************/
 
 MILLIPOINT DialogOp::GetDimensionGadgetValue(CGadgetID Gadget, Node* pNode, BOOL* Valid,INT32 ListPos)
-{   
+{
 	return (DlgMgr->GetDimensionGadgetValue(GetReadWriteWindowID(), Gadget, pNode, Valid, ListPos));
 }
 
 /********************************************************************************************
 
->	UINT32 DialogOp::GetMemoryGadgetValue(CGadgetID Gadget,  
-		        	    		  		 UINT32 StartRange, 
+>	UINT32 DialogOp::GetMemoryGadgetValue(CGadgetID Gadget,
+		        	    		  		 UINT32 StartRange,
 		                 		  		 UINT32 EndRange,
-		              		      		 UINT32 IDSInvalidMsg,  
-		              			  		 BOOL* Valid)        
+		              		      		 UINT32 IDSInvalidMsg,
+		              			  		 BOOL* Valid)
 
 	Author:		Neville_Humphrys (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	30/1/95
@@ -1562,16 +1562,16 @@ MILLIPOINT DialogOp::GetDimensionGadgetValue(CGadgetID Gadget, Node* pNode, BOOL
 	SeeAlso:	DialogManager::GetMemoryGadgetValue;	DialogManager::SetMemoryGadgetValue;
 
 ********************************************************************************************/
-	
-UINT32 DialogOp::GetMemoryGadgetValue(CGadgetID Gadget,  
-		        	    			 UINT32 StartRange, 
+
+UINT32 DialogOp::GetMemoryGadgetValue(CGadgetID Gadget,
+		        	    			 UINT32 StartRange,
 		                 		  	 UINT32 EndRange,
-		              		 		 UINT32 IDSInvalidMsg,  
-		              				 BOOL* Valid)        
-{    
+		              		 		 UINT32 IDSInvalidMsg,
+		              				 BOOL* Valid)
+{
 	return(DlgMgr->GetMemoryGadgetValue(GetReadWriteWindowID(), Gadget, StartRange, EndRange,
-		                 				IDSInvalidMsg, Valid));         
-}   
+		                 				IDSInvalidMsg, Valid));
+}
 
 
 
@@ -1600,8 +1600,8 @@ BOOL DialogOp::DeleteAllValues(CGadgetID GadgetID)
 
 /********************************************************************************************
 
->	BOOL DialogOp::DeleteValue(CGadgetID GadgetID, 
-				 BOOL EndOfList, 
+>	BOOL DialogOp::DeleteValue(CGadgetID GadgetID,
+				 BOOL EndOfList,
 				 INT32 ListPos)
 
 	Author:		Simon_Maneggio (Xara Group Ltd) <camelotdev@xara.com>
@@ -1614,17 +1614,17 @@ BOOL DialogOp::DeleteAllValues(CGadgetID GadgetID)
 	SeeAlso:	DialogManager::DeleteValue
 
 ********************************************************************************************/
-  
-BOOL DialogOp::DeleteValue(CGadgetID GadgetID, 
-				 BOOL EndOfList, 
+
+BOOL DialogOp::DeleteValue(CGadgetID GadgetID,
+				 BOOL EndOfList,
 				 INT32 ListPos)
-{    
-	return (DlgMgr->DeleteValue(GetReadWriteWindowID(), GadgetID, EndOfList, ListPos)); 
-}      
+{
+	return (DlgMgr->DeleteValue(GetReadWriteWindowID(), GadgetID, EndOfList, ListPos));
+}
 
 /********************************************************************************************
 
->	BOOL DialogOp::GetValueCount(CGadgetID GadgetID, INT32* Count)            
+>	BOOL DialogOp::GetValueCount(CGadgetID GadgetID, INT32* Count)
 
 	Author:		Simon_Maneggio (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	15/9/93
@@ -1637,10 +1637,10 @@ BOOL DialogOp::DeleteValue(CGadgetID GadgetID,
 
 ********************************************************************************************/
 
-BOOL DialogOp::GetValueCount(CGadgetID GadgetID, INT32* Count)            
-{                                                            
-	return (DlgMgr->GetValueCount(GetReadWriteWindowID(), GadgetID, Count)); 
-}	      
+BOOL DialogOp::GetValueCount(CGadgetID GadgetID, INT32* Count)
+{
+	return (DlgMgr->GetValueCount(GetReadWriteWindowID(), GadgetID, Count));
+}
 
 
 /********************************************************************************************
@@ -1740,7 +1740,7 @@ INT32* DialogOp::GetSelectedItems(CGadgetID GadgetID)
 
 /********************************************************************************************
 
->	BOOL DialogOp::GetValueIndex(CGadgetID GadgetID, WORD* Index)    
+>	BOOL DialogOp::GetValueIndex(CGadgetID GadgetID, WORD* Index)
 
 	Author:		Simon_Maneggio (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	15/9/93
@@ -1753,14 +1753,14 @@ INT32* DialogOp::GetSelectedItems(CGadgetID GadgetID)
 
 ********************************************************************************************/
 
-BOOL DialogOp::GetValueIndex(CGadgetID GadgetID, WORD* Index)    
+BOOL DialogOp::GetValueIndex(CGadgetID GadgetID, WORD* Index)
 {
 	return (DlgMgr->GetValueIndex(GetReadWriteWindowID(), GadgetID, Index));
-}   
+}
 
 /********************************************************************************************
 
->	BOOL DialogOp::GetValueIndex(CGadgetID GadgetID, INT32* Index)    
+>	BOOL DialogOp::GetValueIndex(CGadgetID GadgetID, INT32* Index)
 
 	Author:		Simon_Maneggio (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	15/9/93
@@ -1773,14 +1773,14 @@ BOOL DialogOp::GetValueIndex(CGadgetID GadgetID, WORD* Index)
 
 ********************************************************************************************/
 
-BOOL DialogOp::GetValueIndex(CGadgetID GadgetID, INT32* Index)    
+BOOL DialogOp::GetValueIndex(CGadgetID GadgetID, INT32* Index)
 {
 	return (DlgMgr->GetValueIndex(GetReadWriteWindowID(), GadgetID, Index));
-}   
+}
 
 /********************************************************************************************
 
->	BOOL DialogOp::EnableGadget(CGadgetID Gadget, BOOL Enabled) 
+>	BOOL DialogOp::EnableGadget(CGadgetID Gadget, BOOL Enabled)
 
 	Author:		Simon_Maneggio (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	15/9/93
@@ -1793,10 +1793,10 @@ BOOL DialogOp::GetValueIndex(CGadgetID GadgetID, INT32* Index)
 
 ********************************************************************************************/
 
-BOOL DialogOp::EnableGadget(CGadgetID Gadget, BOOL Enabled) 
-{   
-	return (DlgMgr->EnableGadget(GetReadWriteWindowID(), Gadget, Enabled)); 	
-} 
+BOOL DialogOp::EnableGadget(CGadgetID Gadget, BOOL Enabled)
+{
+	return (DlgMgr->EnableGadget(GetReadWriteWindowID(), Gadget, Enabled));
+}
 
 
 /********************************************************************************************
@@ -1823,7 +1823,7 @@ BOOL DialogOp::IsGadgetEnabled( CGadgetID Gadget )
 
 /********************************************************************************************
 
->	BOOL DialogOp::HideGadget(CGadgetID GadgetID, BOOL Hide) 
+>	BOOL DialogOp::HideGadget(CGadgetID GadgetID, BOOL Hide)
 
 	Author:		Simon_Maneggio (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	15/9/93
@@ -1836,9 +1836,9 @@ BOOL DialogOp::IsGadgetEnabled( CGadgetID Gadget )
 
 ********************************************************************************************/
 
-BOOL DialogOp::HideGadget(CGadgetID GadgetID, BOOL Hide) 
-{                                                                                
-	return (DlgMgr->HideGadget(GetReadWriteWindowID(), GadgetID, Hide)); 		
+BOOL DialogOp::HideGadget(CGadgetID GadgetID, BOOL Hide)
+{
+	return (DlgMgr->HideGadget(GetReadWriteWindowID(), GadgetID, Hide));
 }
 
 /********************************************************************************************
@@ -1878,10 +1878,10 @@ void DialogOp::Layout(BOOL CanYield /*=FALSE*/)
 {
 	DlgMgr->Layout(GetReadWriteWindowID(), CanYield);
 }
-    
+
 /********************************************************************************************
 
->	BOOL DialogOp::GadgetRedraw(CGadgetID GadgetID, BOOL Redraw) 
+>	BOOL DialogOp::GadgetRedraw(CGadgetID GadgetID, BOOL Redraw)
 
 	Author:		Simon_Maneggio (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	15/9/93
@@ -1893,10 +1893,10 @@ void DialogOp::Layout(BOOL CanYield /*=FALSE*/)
 	SeeAlso:	DialogManager::GadgetRedraw
 
 ********************************************************************************************/
-    
-BOOL DialogOp::GadgetRedraw(CGadgetID GadgetID, BOOL Redraw) 
-{                                                           
-	return (DlgMgr->GadgetRedraw(GetReadWriteWindowID(), GadgetID, Redraw)); 
+
+BOOL DialogOp::GadgetRedraw(CGadgetID GadgetID, BOOL Redraw)
+{
+	return (DlgMgr->GadgetRedraw(GetReadWriteWindowID(), GadgetID, Redraw));
 }
 
 
@@ -1995,7 +1995,7 @@ BOOL DialogOp::HighlightText(CGadgetID gadID, INT32 nStart, INT32 nEnd)
 	Inputs:		gid				the gadget ID of a control
 	Outputs:	-
 	Returns:	-
-	Purpose:	Immediately paints any invalid areas the control may have (like the 
+	Purpose:	Immediately paints any invalid areas the control may have (like the
 				"UpdateWindow" function in Windows, really).
 	Errors:		-
 	SeeAlso:	-
@@ -2042,7 +2042,7 @@ void DialogOp::InvalidateGadget(CGadgetID Gadget, BOOL EraseBackground/*=TRUE*/)
 	Created:	28/11/94
 	Inputs:		Gadget - The ID of the gadget that you want to be redrawn
 				ExtraInfo - The information passed to your DIM_ mouse event handler
-				InvalidRect - The MILLIPOINT rectangle to invalidate, in the 
+				InvalidRect - The MILLIPOINT rectangle to invalidate, in the
 				(0,0)->(dx,dy) coordinate space used in ReDrawInfoType.
 
 	Purpose:	Causes the Dialog Manager to tell the host os to get the cc_DialogDraw
@@ -2085,7 +2085,7 @@ void DialogOp::InvalidateGadget(CGadgetID Gadget,
 				gadget to be scrolled, over the specfied rectangle. You should recieve
 				a DIM_REDRAW message in the not too distant future, to update any portions
 				that 'scroll into view'.
-				
+
 	Notes:		If you are using a Virtual coordinate space which differs from the
 				(0,0)->(dx,dy) space that this requires, then you'll need to call
 				some conversion methods which do not yet exist!
@@ -2113,7 +2113,7 @@ void DialogOp::ScrollKernelRenderedGadget(CGadgetID Gadget,
 	Created:	19/1/95
 
 	Inputs:		Gadget - The ID of the gadget that you want info for
-	
+
 	Returns:	FALSE if there was a catastrophic error (it will report an ERROR2), in
 				which case the returned data is invalid (well, it defaults to 96 Dpi and
 				an area of 72000x72000 millipoints, so is 'safe' to use, but probably wrong)
@@ -2280,8 +2280,8 @@ BOOL DialogOp::AddDialogControlToHelper(CGadgetID GadgetID)
 	Author:		Diccon_Yamanaka (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	23/9/99
 	Inputs:		GadgetID
-				PageID - the ID of the tabbed dialog page that this control belongs to 
-	Purpose:	Overridden version of above for use with tabbed dialogs, allows you to 
+				PageID - the ID of the tabbed dialog page that this control belongs to
+	Purpose:	Overridden version of above for use with tabbed dialogs, allows you to
 				add controls that are not on the currently active page.
 
 ********************************************************************************************/
@@ -2348,7 +2348,7 @@ BOOL DialogOp::RemoveDialogControlFromHelper(CGadgetID GadgetID, CDlgResID PageI
 	Outputs:	-
 	Returns:	-
 	Purpose:	See DialogManager for a description of this function
-	Errors:		- 
+	Errors:		-
 	SeeAlso:	DialogManager::SetEditGadgetType
 
 ********************************************************************************************/
@@ -2356,11 +2356,11 @@ BOOL DialogOp::RemoveDialogControlFromHelper(CGadgetID GadgetID, CDlgResID PageI
 void DialogOp::SetEditGadgetType(CGadgetID Gadget, EditGadgetType Type)
 {
 	DlgMgr->SetEditGadgetType(GetReadWriteWindowID(), Gadget, Type);
-}                                                     
+}
 
 /********************************************************************************************
 
->	void SetEditGadgetType(CGadgetID Gadget, UINT32 IDSValidChar) 
+>	void SetEditGadgetType(CGadgetID Gadget, UINT32 IDSValidChar)
 
 	Author:		Simon_Maneggio (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	24/8/93
@@ -2373,10 +2373,10 @@ void DialogOp::SetEditGadgetType(CGadgetID Gadget, EditGadgetType Type)
 
 ********************************************************************************************/
 
-void DialogOp::SetEditGadgetType(CGadgetID Gadget, UINT32 IDSValidChar) 
-{                                                          
-	DlgMgr->SetEditGadgetType(GetReadWriteWindowID(), Gadget, IDSValidChar); 
-}  
+void DialogOp::SetEditGadgetType(CGadgetID Gadget, UINT32 IDSValidChar)
+{
+	DlgMgr->SetEditGadgetType(GetReadWriteWindowID(), Gadget, IDSValidChar);
+}
 
 /********************************************************************************************
 
@@ -2384,7 +2384,7 @@ void DialogOp::SetEditGadgetType(CGadgetID Gadget, UINT32 IDSValidChar)
 
 	Author:		Simon_Maneggio (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	7/9/93
-	Inputs:		- 
+	Inputs:		-
 	Outputs:	-
 	Returns:	-
 	Purpose:	See DialogManager for a description of this function
@@ -2395,8 +2395,8 @@ void DialogOp::SetEditGadgetType(CGadgetID Gadget, UINT32 IDSValidChar)
 
 void DialogOp::DualFunctionButton(CGadgetID ButtonGadget)
 {
-	DlgMgr->DualFunctionButton(GetReadWriteWindowID(), ButtonGadget); 
-}    
+	DlgMgr->DualFunctionButton(GetReadWriteWindowID(), ButtonGadget);
+}
 
 /********************************************************************************************
 
@@ -2416,7 +2416,7 @@ void DialogOp::DualFunctionButton(CGadgetID ButtonGadget)
 
 BOOL DialogOp::MakeListBoxDragable(CGadgetID ListGadget)
 {
-	return (DlgMgr->MakeListBoxDragable(GetReadWriteWindowID(), ListGadget)); 
+	return (DlgMgr->MakeListBoxDragable(GetReadWriteWindowID(), ListGadget));
 }
 
 
@@ -2429,18 +2429,18 @@ BOOL DialogOp::MakeListBoxDragable(CGadgetID ListGadget)
 	Inputs:		Message: The message
 	Outputs:	-
 	Returns:	-
-	Purpose:	The Message	function for a DialogOp should look something like this 
+	Purpose:	The Message	function for a DialogOp should look something like this
 
 				if (IS_OUR_DIALOG_MSG(Message))
 				{
-					DialogMsg* Msg = (DialogMsg*)Message; 
+					DialogMsg* Msg = (DialogMsg*)Message;
 					// Handle Msg here
 				}
-				
+
 				// Pass message on to base class for rest of handling.
 				return <BaseClass>::Message(Message);
 
-				This Pure virtual function will ENSURE 
+				This Pure virtual function will ENSURE
 
 
 	Errors:		-
@@ -2449,7 +2449,7 @@ BOOL DialogOp::MakeListBoxDragable(CGadgetID ListGadget)
 
 ********************************************************************************************/
 
-MsgResult DialogOp::Message( Msg* Message )       
+MsgResult DialogOp::Message( Msg* Message )
 {
 	CheckMagic("DialogOp::Message");;
 
@@ -2506,8 +2506,8 @@ MsgResult DialogOp::Message( Msg* Message )
 				// Its a message for the current OpDescriptor
 				// Convert the dialog message into a OpDescriptor control message
 				BROADCAST_TO_CLASS(
-					OpDescControlMsg(OpDesc, 
-										pDlgMsg->DlgMsg, 
+					OpDescControlMsg(OpDesc,
+										pDlgMsg->DlgMsg,
 										OpDesc->GetBarControlInfo()->ControlID,
 										OpDesc->GetBarControlInfo()->ResourceID,
 										this), OpDescriptor);
@@ -2529,7 +2529,7 @@ MsgResult DialogOp::Message( Msg* Message )
 					return DLG_EAT_IF_HUNGRY(pDlgMsg);
 				}
 				break;
-			
+
 			case DIM_TITLEFOCUSWARN:
 				{
 					// this indicates that the dialog has been moved, we need to send a message saying that the
@@ -2550,7 +2550,7 @@ MsgResult DialogOp::Message( Msg* Message )
 			case DIM_BAR_DEATH:
 				{
 					// These messages need to be propagated to all controls
-					BOOL Destroy = ControlList::Get()->SendMessageToAllControls(this, pDlgMsg);	
+					BOOL Destroy = ControlList::Get()->SendMessageToAllControls(this, pDlgMsg);
 
 					// These messages need to be broadcast to all controls within the dialog
 					// temporarily ALWAYS destroy if we get as far as here on a DIM_CANCEL
@@ -2574,11 +2574,11 @@ MsgResult DialogOp::Message( Msg* Message )
 		// eat the message, as we know it's for this dialogue.
 		MsgResult msgrslt = Operation::Message(Message);
 		return (msgrslt == OK) ? DLG_EAT_IF_HUNGRY(pDlgMsg) : msgrslt;
-	} 
+	}
 
 	// Not interested or possibly more to do - pass to base class.
 	return Operation::Message(Message);
-}      
+}
 
 
 /********************************************************************************************
@@ -2590,7 +2590,7 @@ MsgResult DialogOp::Message( Msg* Message )
 	Inputs:		WndID:	The CWindowID to try and find
 	Outputs:	-
 	Returns:	TRUE if WndID is the window id of a dialog
-	Purpose:	To find out if WndID is the window ID of a dialog 
+	Purpose:	To find out if WndID is the window ID of a dialog
 	Errors:		-
 	SeeAlso:	-
 
@@ -2600,23 +2600,23 @@ MsgResult DialogOp::Message( Msg* Message )
 BOOL DialogOp::IsADialogWindow(CWindowID WndID)
 {
 	// Traverse the dialog list to see if WndID is a dialog window
-	
-	// Obtain the first live dialogOp 
-	List* DlgList = GetClassList(CC_RUNTIME_CLASS(DialogOp)); 
-	ListItem* CurrentOp = DlgList->GetHead(); 
-	
 
-	while (CurrentOp != NULL)	 
-	{        
-                
-		if (((DialogOp*)CurrentOp)->WindowID == WndID)    
-	    													  
-		{	
+	// Obtain the first live dialogOp
+	List* DlgList = GetClassList(CC_RUNTIME_CLASS(DialogOp));
+	ListItem* CurrentOp = DlgList->GetHead();
+
+
+	while (CurrentOp != NULL)
+	{
+
+		if (((DialogOp*)CurrentOp)->WindowID == WndID)
+
+		{
 			return TRUE;
-		}       
+		}
 		CurrentOp = DlgList->GetNext(CurrentOp); // Get next operation in the live list
-	}        
-	return FALSE; 
+	}
+	return FALSE;
 }
 
 /********************************************************************************************
@@ -2635,8 +2635,8 @@ BOOL DialogOp::IsADialogWindow(CWindowID WndID)
 ********************************************************************************************/
 
 BOOL DialogOp::SetTitlebarName(String_256* Name)
-{																 
-	return(DlgMgr->SetTitlebarName(GetReadWriteWindowID(), Name)); 
+{
+	return(DlgMgr->SetTitlebarName(GetReadWriteWindowID(), Name));
 }
 
 /********************************************************************************************
@@ -2791,7 +2791,7 @@ BOOL DialogOp::DestroyGRenderRegion(RenderRegion* pRender)
 
 	Author:		Rik_Heywood (Xara Group Ltd) <camelotdev@xara.com> (Jason copied CreateGRenderRegion)
 	Created:	17/10/94 (11/1/95)
-	
+
 	Inputs:		pRequiredSize - The size that you want the effective area of the window to
 				be. Measured in Millipoints. eg. If you want your control to appear to be
 				1 inch square (whatever the actual size of it is), pass in a DocRect that
@@ -2816,83 +2816,73 @@ BOOL DialogOp::DestroyGRenderRegion(RenderRegion* pRender)
 	SeeAlso:	DialogOp::CreateGRenderRegion
 
 ********************************************************************************************/
-
 RenderRegion* DialogOp::CreateOSRenderRegion(DocRect* pRequiredSize, ReDrawInfoType* ExtraInfo,
-												BOOL UseSelViewColContext)
-{
-	// Make a new dialog view
-	DialogView *pDialogView = new DialogView;
-	if (pDialogView == NULL)
-		// Error - return failure.
-		return NULL;
+					     BOOL UseSelViewColContext) {
+  // Make a new dialog view
+  DialogView *pDialogView = new DialogView;
+  if (pDialogView == NULL) {
+    // Error - return failure.
+    return NULL;
+  }
+  // Initialise the DialogView
+  if (!pDialogView->Init()) {
+    // Error - return failure.
+    delete pDialogView;
+    return NULL;
+  }
+  // Pixelise the rectangle
+  pRequiredSize->lo.Pixelise(pDialogView);
+  pRequiredSize->hi.Pixelise(pDialogView);
+  DocRect ClipRect = *pRequiredSize;
+  // Get some default params for the render region
+  FIXED16 Scale(1);
+  // Ok, go and scale things
+  INT32 ReqDx = ClipRect.Width();
+  INT32 ReqDy = ClipRect.Height();
+  // Work out the scale factors
+  FIXED16 XScale = FIXED16(double(ExtraInfo->dx) / double(ReqDx));
+  FIXED16 YScale = FIXED16(double(ExtraInfo->dy) / double(ReqDy));
+  // Build the matricies
+  // One to shift everything to the correct side of the X axis
+  Matrix Translate(0, -ExtraInfo->dy);
+  // One to scale everything into the window
+  Matrix ScaleIt(XScale, YScale);
+  // One to translate everything to the origin
+  Matrix ToOrigin(-ClipRect.lo.x, -ClipRect.lo.y);
+  // Combine them all
+  ToOrigin *= ScaleIt;
+  ToOrigin *= Translate;
+  // If the caller wants to use the same colour separation options (ColourPlate) as the
+  // currently selected view, then copy the ColourPlate across to the new DialogView
+  if (UseSelViewColContext && DocView::GetSelected() != NULL) {
+    pDialogView->SetColourPlate(DocView::GetSelected()->GetColourPlate());
+  }
+  // Make a render region for the screen, asking specifically
+  // for an OSRenderRegion, and none of this sneaky & cunning
+  // diverting it back into being a GRenderRegion!
+  RenderRegion* pRender = OSRenderRegion::Create(ClipRect,
+						 ToOrigin,
+						 Scale,
+						 RENDERTYPE_SCREEN,
+						 NULL,
+						 TRUE);
 
-	// Initialise the DialogView
-	if (!pDialogView->Init())
-	{
-		// Error - return failure.
-		delete pDialogView;
-		return NULL;
-	}
 
-	// Pixelise the rectangle
-	pRequiredSize->lo.Pixelise(pDialogView);
-	pRequiredSize->hi.Pixelise(pDialogView);
-	DocRect ClipRect = *pRequiredSize;
+  if (pRender!=NULL) {
+    // Try and create the bitmap etc
+    if (pRender->AttachDevice(pDialogView, ExtraInfo->pDC, NULL)) {
+      // Try and start the render region
+      if (pRender->StartRender()) {
+	return pRender;
+      }
+    }
 
-	// Get some default params for the render region
-	FIXED16 Scale(1);
-
-	// Ok, go and scale things
-	INT32 ReqDx = ClipRect.Width();
-	INT32 ReqDy = ClipRect.Height();
-
-	// Work out the scale factors
-	FIXED16 XScale = FIXED16(double(ExtraInfo->dx) / double(ReqDx));
-	FIXED16 YScale = FIXED16(double(ExtraInfo->dy) / double(ReqDy));
-
-	// Build the matricies
-	// One to shift everything to the correct side of the X axis
-	Matrix Translate(0, -ExtraInfo->dy);
-
-	// One to scale everything into the window
-	Matrix ScaleIt(XScale, YScale);
-
-	// One to translate everything to the origin
-	Matrix ToOrigin(-ClipRect.lo.x, -ClipRect.lo.y);
-
-	// Combine them all
-	ToOrigin *= ScaleIt;
-	ToOrigin *= Translate;
-
-	// If the caller wants to use the same colour separation options (ColourPlate) as the
-	// currently selected view, then copy the ColourPlate across to the new DialogView
-	if (UseSelViewColContext && DocView::GetSelected() != NULL)
-		pDialogView->SetColourPlate(DocView::GetSelected()->GetColourPlate());
-
-	// Make a render region for the screen, asking specifically for an OSRenderRegion,
-	// and none of this sneaky & cunning diverting it back into being a GRenderRegion!
-	RenderRegion* pRender = OSRenderRegion::Create(ClipRect, ToOrigin, Scale,
-													RENDERTYPE_SCREEN, NULL, TRUE);
-
-	if (pRender!=NULL)
-	{
-		// Try and create the bitmap etc
-		if (pRender->AttachDevice(pDialogView, ExtraInfo->pDC, NULL))
-		{
-			// Try and start the render region
-			if (pRender->StartRender())
-			{
-				return pRender;
-			}
-		}
-
-		// Failed to attach and start the render region so free up the region
-		delete pRender;
-	}
-
-	// Something went wrong, fail
-	delete pDialogView;
-	return NULL;
+    // Failed to attach and start the render region so free up the region
+    delete pRender;
+  }
+  // Something went wrong, fail
+  delete pDialogView;
+  return NULL;
 }
 
 
@@ -2962,7 +2952,7 @@ BOOL DialogOp::DestroyOSRenderRegion(RenderRegion* pRender)
 CWindowID DialogOp::GetReadWriteWindowID()
 {
 	CheckMagic("DialogOp::GetReadWriteWindowID");
-	return (DlgMgr->GetPageWindow(WindowID, ReadWritePage)); 		
+	return (DlgMgr->GetPageWindow(WindowID, ReadWritePage));
 }
 
 /********************************************************************************************
@@ -3011,7 +3001,7 @@ DialogOp* DialogOp::FindDialogOp(CDlgResID ResID)
 {
 	List*		pList = MessageHandler::GetClassList(CC_RUNTIME_CLASS(DialogOp));
 	DialogOp*	pDialogOp = (DialogOp*)pList->GetHead();
-	
+
 	while (pDialogOp != NULL)
 	{
 		if (pDialogOp->DlgResID == ResID)
@@ -3033,7 +3023,7 @@ DialogOp* DialogOp::FindDialogOp(CDlgResID ResID)
 	Outputs:	-
 	Returns:	TRUE if this DialogOp is on screen
 	Purpose:	Used by the tool bar customize system to find out if a tool bar is
-				visible or not. 
+				visible or not.
 	Errors:		-
 	SeeAlso:	-
 
@@ -3083,8 +3073,8 @@ void DialogOp::SetVisibility(BOOL Visible)
 
 
 // -----------------------------------------------------------------------------------------
-// DialogTabOp functions 
- 
+// DialogTabOp functions
+
 /********************************************************************************************
 >			DialogTabOp(CDlgResID DialogResID, CDlgMode Mode
 		 				CCRuntimeClass* Class = CC_RUNTIME_CLASS(DialogOp));
@@ -3092,12 +3082,12 @@ void DialogOp::SetVisibility(BOOL Visible)
 
 	Author:		Simon_Maneggio (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	13/8/93
-				DummyDialogResID: 	An ID which is unique to this dialog. Even though 
+				DummyDialogResID: 	An ID which is unique to this dialog. Even though
 									a Dialog resource is not specified for the tab dialog
 									itself (only it's pages) we need to uniquly identify it.
-									(so we can record it's position, etc.)  
+									(so we can record it's position, etc.)
 				Mode:		 		The dialog's mode (modal, medeless)
-	Purpose:	The Constructor of the DialogTabOp class simply sets the resource ID of the 
+	Purpose:	The Constructor of the DialogTabOp class simply sets the resource ID of the
 				dialog and its modality.
 
 ********************************************************************************************/
@@ -3105,7 +3095,7 @@ void DialogOp::SetVisibility(BOOL Visible)
 
 
 // distinguish a tab dialog message from a message for any other type of dialog
-DialogTabOp::DialogTabOp(CDlgResID DummyDialogResID,  
+DialogTabOp::DialogTabOp(CDlgResID DummyDialogResID,
 						 CDlgMode Mode,
 		 				 CCRuntimeClass* Class,
 		 				 INT32 OpeningPage):DialogOp(DummyDialogResID, Mode, 0, /*NULL, NULL,*/
@@ -3120,8 +3110,8 @@ DialogTabOp::DialogTabOp(CDlgResID DummyDialogResID,
 
 	Author:		Simon_Maneggio (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	16/11/94
-	Inputs:		DialogResID: Dialog resource ID of the page you want to add to the Tabbed 
-							 dialog. 
+	Inputs:		DialogResID: Dialog resource ID of the page you want to add to the Tabbed
+							 dialog.
 				GadgetID:	 The gadget ID of the book control to add it to, or zero
 							 for the default one (either specified using GetDefaultBookGadget
 							 or just the first one it finds). You only need specify this if
@@ -3130,12 +3120,12 @@ DialogTabOp::DialogTabOp(CDlgResID DummyDialogResID,
 							 best thing to do is to override GetDefaultBookGadget)
 	Outputs:	-
 	Returns:	-
-	Purpose:	This function adds a dialog page to the tabbed dialog. 
-	
-				Note: 
-				
-				This function can be called many times before the dialog is made 
-				visible. For a modal dialog this function should be called in response to a 
+	Purpose:	This function adds a dialog page to the tabbed dialog.
+
+				Note:
+
+				This function can be called many times before the dialog is made
+				visible. For a modal dialog this function should be called in response to a
 				dialog DIM_CREATE message.
 
 				To keep things simple all Dialog pages should be the same size please.
@@ -3146,10 +3136,10 @@ DialogTabOp::DialogTabOp(CDlgResID DummyDialogResID,
 ********************************************************************************************/
 
 BOOL DialogTabOp::AddAPage(CDlgResID DialogResID, CGadgetID Gadget/*=0*/)
-{	  
-	// Ask the Dialog Manager to add the page 
-	return (DlgMgr->AddAPage(this, DialogResID, Gadget)); 
-}; 
+{
+	// Ask the Dialog Manager to add the page
+	return (DlgMgr->AddAPage(this, DialogResID, Gadget));
+};
 
 /********************************************************************************************
 
@@ -3162,14 +3152,14 @@ BOOL DialogTabOp::AddAPage(CDlgResID DialogResID, CGadgetID Gadget/*=0*/)
 	Outputs:	-
 	Returns:	return TRUE if all calls to AddAPage returned TRUE
 	Purpose:	This virtual function will get called to give you a chance to add pages to your
-				DialogTabOp. This function will usually make multiple calls to AddAPage to 
+				DialogTabOp. This function will usually make multiple calls to AddAPage to
 				register the initial set of pages to be contained in the tab dialog. The pages
 				should all be the same size and be registered in the left to right order in which
-				you wish them to appear. 
+				you wish them to appear.
 
-				This function get's called directly from the Create method, Don't call it 
-				explicitly yourself. If you return FALSE from this method then the Create 
-				method will fail. 
+				This function get's called directly from the Create method, Don't call it
+				explicitly yourself. If you return FALSE from this method then the Create
+				method will fail.
 
 	Errors:		-
 	SeeAlso:	DialogTabOp::AddPage
@@ -3179,13 +3169,13 @@ BOOL DialogTabOp::AddAPage(CDlgResID DialogResID, CGadgetID Gadget/*=0*/)
 
 BOOL DialogTabOp::RegisterYourPagesInOrderPlease()
 {
-	ERROR2(FALSE, "The DialogTabOp has not had any pages added during creation"); 
-} 
+	ERROR2(FALSE, "The DialogTabOp has not had any pages added during creation");
+}
 
 
 /********************************************************************************************
 
->	void DialogTabOp::SetName(String_256* pName) 
+>	void DialogTabOp::SetName(String_256* pName)
 
 	Author:		Simon_Maneggio (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	23/11/94
@@ -3201,14 +3191,14 @@ BOOL DialogTabOp::RegisterYourPagesInOrderPlease()
 
 void DialogTabOp::SetName(String_256* pName)
 {
-	MyName = *pName; 
+	MyName = *pName;
 	return; // done
-} 
+}
 
 
 /********************************************************************************************
 
->	String_256 DialogTabOp::GetName(void) 
+>	String_256 DialogTabOp::GetName(void)
 
 	Author:		Simon_Maneggio (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	23/11/94
@@ -3224,7 +3214,7 @@ void DialogTabOp::SetName(String_256* pName)
 String_256* DialogTabOp::GetName(void)
 {
 	return &MyName;
-} 
+}
 
 
 
@@ -3237,7 +3227,7 @@ String_256* DialogTabOp::GetName(void)
 	Created:	23/3/2000
 	Inputs:		the modified value to set
 	Returns:	-
-	Purpose:	Sets the modified property of the currently active property page of the current 
+	Purpose:	Sets the modified property of the currently active property page of the current
 				tabbed dialog (if it exists)
 
 ********************************************************************************************/
@@ -3252,15 +3242,15 @@ void DialogTabOp::SetPropertyPageModified(BOOL Modified)
 
 /********************************************************************************************
 
->	DialogTabOp::~DialogTabOp()			  
+>	DialogTabOp::~DialogTabOp()
 
 	Author:		Simon_Maneggio (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	16/11/94
 	Inputs:		-
 	Outputs:	-
 	Returns:	-
-	Purpose:	The DialogTabOp destructor destroys the instance of the DialogTabOp and all  
-				associated resources. If the dialog was open then it is closed. 
+	Purpose:	The DialogTabOp destructor destroys the instance of the DialogTabOp and all
+				associated resources. If the dialog was open then it is closed.
 
 	Errors:		-
 	SeeAlso:	-
@@ -3279,7 +3269,7 @@ DialogTabOp::~DialogTabOp()
 
 	//  Let's get the base class destructor to do all the work shall we
 
-};         
+};
 
 
 
@@ -3292,20 +3282,20 @@ DialogTabOp::~DialogTabOp()
 	Created:	29/11/94
 	Inputs:		PageID: Resource ID of the page you wish to communicate with
 	Outputs:	-
-	Returns:	FALSE if the page has not yet been created. 
+	Returns:	FALSE if the page has not yet been created.
 				This function is guaranteed to return TRUE if it is called in responce to
-				a message from the page.  
+				a message from the page.
 
 	Purpose:	Set's the Page that you wish to communicate with. Initially this page
 				is set to NULL which means that all communication will be directed at the
-				tabbed dialog itself. After this call all subsequent Get and Set functions will 
+				tabbed dialog itself. After this call all subsequent Get and Set functions will
 				be directed at the specified page within the dialog.
-				
+
 				eg. To set the string value of a gadget _R(IDC_BUTTON1) on page _R(IDD_PAGE1)
-				
+
 				TalkToPage(_R(IDD_PAGE1));
-				SetStringGadgetValue(_R(IDC_BUTTON1), 
-			  			   		 	 &Wibble);  
+				SetStringGadgetValue(_R(IDC_BUTTON1),
+			  			   		 	 &Wibble);
 	Errors:		-
 	SeeAlso:	-
 
@@ -3329,7 +3319,7 @@ BOOL DialogTabOp::TalkToPage(CDlgResID PageID)
 
 ********************************************************************************************/
 
-MsgResult DialogTabOp::Message( Msg* Message )       
+MsgResult DialogTabOp::Message( Msg* Message )
 {
 	if (IS_OUR_DIALOG_MSG(Message))
 	{
@@ -3343,18 +3333,18 @@ MsgResult DialogTabOp::Message( Msg* Message )
 			   pDlgMsg->GadgetID = _R(ID_CC_HELP_BUTTON);
 			}
 		}
-	} 
+	}
 	return DialogOp::Message(Message); // Let the base class do the rest
 }
 
 
-// Never ever call this it exists cos DYNCREATE demands it. DYNCREATE has no concept 
-// of an abstract class. 
+// Never ever call this it exists cos DYNCREATE demands it. DYNCREATE has no concept
+// of an abstract class.
 DialogTabOp::DialogTabOp()
-{                                   
-	ENSURE(FALSE, "Invalid constructor called for DialogTabOp"); 
+{
+	ENSURE(FALSE, "Invalid constructor called for DialogTabOp");
 }
-  
+
 /********************************************************************************************
 
 >	UINT32 DialogOp::SetTimer(UINT32 nIDEvent, UINT32 nElapse,
@@ -3551,8 +3541,8 @@ BOOL DialogOp::GetScreenSize(INT32 * pWidth, INT32 * pHeight)
 }
 
 /*******************************************************************************************
->	BOOL UpdateStringGadgetValue(CGadgetID Gadget, StringBase* NewString);	
-	
+>	BOOL UpdateStringGadgetValue(CGadgetID Gadget, StringBase* NewString);
+
 	Author:		Peter_Arnold (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	14/09/94
 	Inputs:		Dialog - pointer to the DialogOp containing the gadget.
@@ -3577,15 +3567,15 @@ BOOL DialogOp::UpdateStringGadgetValue(CGadgetID Gadget, StringBase* NewString)
 		return TRUE;
 	}
 	else
-	{				
+	{
 		return FALSE;
 	}
 }
 
 
 /*******************************************************************************************
->	BOOL UpdateStringGadgetValue(DialogOp* Dialog, UINT32 Gadget, StringBase* NewString);	
-	
+>	BOOL UpdateStringGadgetValue(DialogOp* Dialog, UINT32 Gadget, StringBase* NewString);
+
 	Author:		Peter_Arnold (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	14/09/94
 	Inputs:		Dialog - pointer to the DialogOp containing the gadget.
@@ -3662,7 +3652,7 @@ size_t DialogOp::GetTreeGadgetChildrenCount(CGadgetID Gadget, CTreeItemID hItem,
 	Author:		Alex Bligh
 	Created:	03-Mar-2005
 	Inputs:		Gadget - the Gadget to get the OpDescriptor for
-	Outputs:	-				   
+	Outputs:	-
 	Returns:	Pointer the gadget's associated OpDescriptor
 	Purpose:	Finds the OpDescriptor associated with a gadget
 	Errors:		-
@@ -3683,7 +3673,7 @@ OpDescriptor * DialogOp::GetGadgetOpDescriptor(CGadgetID Gadget)
 	Author:		Alex Bligh
 	Created:	03-Mar-2005
 	Inputs:		Msg: The message to handle
-	Outputs:	-				   
+	Outputs:	-
 	Returns:	TRUE to destroy the window, else FALSE
 	Purpose:	Conditionally sends a message to a particular control pointed to by an opdescriptor,
 	Errors:		-
@@ -3699,8 +3689,8 @@ BOOL DialogOp::SendMessageToControl(OpDescriptor * OpDesc, DialogMsg* DlgMsg, BO
 	BOOL DestroyWindow = FALSE;
 	if (OpDesc)
 	{
-		// If the message is DIM_CANCEL then we must inform all OpDescriptors on the 
-		// bar that their controls are about to be destroyed. 
+		// If the message is DIM_CANCEL then we must inform all OpDescriptors on the
+		// bar that their controls are about to be destroyed.
 		if (DlgMsg->DlgMsg == DIM_CANCEL||DlgMsg->DlgMsg == DIM_BAR_DEATH)
 		{
 			// Tell the OpDescriptor its controls are about to be destroyed
@@ -3710,10 +3700,10 @@ BOOL DialogOp::SendMessageToControl(OpDescriptor * OpDesc, DialogMsg* DlgMsg, BO
 		}
 		else if  (DlgMsg->DlgMsg == DIM_CREATE)
 		{
-			// Tell the OpDescriptor its controls have been created 
+			// Tell the OpDescriptor its controls have been created
 			OpDescControlCreateMsg op(OpDesc, OpDesc->GetBarControlInfo()->ControlID, OpDesc->GetBarControlInfo()->ResourceID, this);
 			OpDesc->Message(&op);
-		}		
+		}
 	}
 	return DestroyWindow;
 }
@@ -3744,7 +3734,7 @@ void DialogOp::ProfileSelectionChange (DialogMsg* Message, CGadgetID GadgetID)
 		pBiasGainValue  =  reinterpret_cast<CProfileBiasGain* /*const**/>( Message->DlgMsgParam );
 		ChangeProfile( pBiasGainValue, GadgetID );
 		break;
-			
+
 	case DIM_PROFILE_CHANGING:
 		if (m_bInteractiveProfiles == TRUE)
 		{
@@ -3799,7 +3789,7 @@ void DialogOp::ChangeProfile (CProfileBiasGain* Profile, CGadgetID GadgetID)
 	Purpose:	This is a special version of the ChangeProfile () function.  It is only called
 				when the user has stopped moving the mouse whilst dragging a profile slider.  In
 				this way, camelot now possess TRUE idle slider processing.
-	
+
 				Actually applies the profile to the selection (which should be non-undoable).
 				This base class function does nothing.
 				It MUST be overidden within InformationBarOp derived classes.

@@ -1,7 +1,7 @@
 // $Id: view.h 1323 2006-06-14 18:52:43Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
- 
+
                Xara LX, a vector drawing and manipulation program.
                     Copyright (C) 1993-2006 Xara Group Ltd.
        Copyright on certain contributions may be held in joint with their
@@ -32,7 +32,7 @@ ADDITIONAL RIGHTS
 
 Conditional upon your continuing compliance with the GNU General Public
 License described above, Xara Group Ltd grants to you certain additional
-rights. 
+rights.
 
 The additional rights are to use, modify, and distribute the software
 together with the wxWidgets library, the wxXtra library, and the "CDraw"
@@ -199,14 +199,14 @@ protected:
 	Comment:	This is used to indicate the outcome of calling View::RenderSimpleView.
 	SeeAlso:	View::RenderSimpleView
 
-********************************************************************************************/ 
+********************************************************************************************/
 
-enum RenderViewResult		
-{ 
+enum RenderViewResult
+{
 	RENDERVIEW_SUCCESS,
 	RENDERVIEW_NOTNEEDED,
-	RENDERVIEW_FAILURE, 
-	RENDERVIEW_USERABORT 
+	RENDERVIEW_FAILURE,
+	RENDERVIEW_USERABORT
 };
 
 
@@ -227,195 +227,195 @@ enum RenderViewResult
 
 class View : public ListItem
 {
-	CC_DECLARE_DYNAMIC(View);
+  CC_DECLARE_DYNAMIC(View);
 
-public:
-	View();
-	virtual ~View();
-	static void Deinit();
+  // Methods
+ public:
+  View();
+  virtual ~View();
+  static void Deinit();
 
-/////////////////////////////////////////////////////////////////////////////////////////////////
-//	Interface to the OIL layer CCamView and the kernel Document.
+  // Interface to the OIL layer CCamView and the kernel Document.
+ protected:
+  // Pointer to the associated CCamView
+  CCamView* pViewWindow;
+  // Pointer to owner document.
+  Document* pDoc;
+  // Device independent state of the view.
+  ViewState* pVState;
+ public:
+  // Set up the link to the CCamView object
+  BOOL ConnectToOilView(CCamView*);
+  // Returns document associated with this
+  Document* GetDoc() const;
+  // Which CCamView are we linked to
+  CCamView* GetConnectionToOilView() const;
+  // Get print control for our document.
+  PrintControl *GetPrintControl();
+  virtual void SetViewState(ViewState*);
+  // informs us that ViewState has changed
+  virtual BOOL ViewStateChanged() = 0;
 
-protected:
-	CCamView*  			pViewWindow;			// Pointer to the associated CCamView
-	Document*  			pDoc;					// Pointer to owner document.
-	ViewState* 			pVState;				// Device independent state of the view.
+ protected:
+  static View* Current;						// Global which records Current View
 
-public:
-	BOOL ConnectToOilView(CCamView*);			// Set up the link to the CCamView object
-	
-	Document* GetDoc() const;					// Returns document associated with this
-	CCamView* GetConnectionToOilView() const;	// Which CCamView are we linked to
-	PrintControl *GetPrintControl();			// Get print control for our document.
+ public:
+  static View* GetCurrent();					// Returns which View is current
+  BOOL SetCurrent();							// Make this View current
+  static void	SetNoCurrent();					// Make NO View current
 
-	virtual void SetViewState(ViewState*);
-	virtual BOOL ViewStateChanged() = 0;		// informs us that ViewState has changed
+  virtual void SetViewPixelSize() = 0;		// Set pixel size according to this view.
 
+  /////////////////////////////////////////////////////////////////////////////////////////////////
+  //	Rendering
 
-/////////////////////////////////////////////////////////////////////////////////////////////////
-//	"Current" and "Selected" Views
+ public:
+  void OnDraw(wxDC*, OilRect);
+  virtual void ContinueRenderView(RenderRegion*, Spread*,
+				  BOOL fRenderPaper = TRUE,
+				  BOOL fDeleteRegionAfter = TRUE,
+				  BOOL bForceImmediate = FALSE) = 0;
+  virtual wxDC* GetRenderDC() = 0;
+  virtual void AllocateDC();
+  virtual void DoneWithDC();
+  virtual BOOL RenderTreeCallback(Node* pNode, RenderRegion* pRender) {return TRUE;}
 
-protected:
-	static View* Current;						// Global which records Current View
+  Quality RenderQuality;						// WYSIWYG value (only freinds of Quality can
+  // get/set numeric value
 
-public:
-	static View* GetCurrent();					// Returns which View is current
-	BOOL SetCurrent();							// Make this View current
-	static void	SetNoCurrent();					// Make NO View current
+  // Functions to render complex shapes into simple render regions
+  RenderViewResult RenderOptimalView(RenderRegion*r, Matrix&, Spread*, BOOL);
+  SlowJobResult RenderOptimalBitmapPhase(DocRect& ClipRect, Matrix&, Spread*, RenderRegion*, Node*, Node*,
+					 BOOL RenderAllObjects, BOOL bPrintPaper, INT32&, ProgressDisplay* pProgress, INT32 TotalProgress);
 
-	virtual void SetViewPixelSize() = 0;		// Set pixel size according to this view.
+  virtual RenderViewResult RenderSimpleView(RenderRegion*, Matrix&, Spread*, BOOL);
+  SlowJobResult RenderBitmapPhase(DocRect& ClipRect, Matrix&, Spread*, RenderRegion*, Node*, Node*,
+				  BOOL bRenderAll, BOOL bPrintPaper, ProgressDisplay& Progress);
 
-/////////////////////////////////////////////////////////////////////////////////////////////////
-//	Rendering
+  static void DeInitOnTopRegion();
+  static BOOL IsPrintableNodeSelected(Node *);
 
-public:
-	void OnDraw(wxDC*, OilRect);
-	virtual void ContinueRenderView(RenderRegion*, Spread*,
-									BOOL fRenderPaper = TRUE,
-									BOOL fDeleteRegionAfter = TRUE,
-									BOOL bForceImmediate = FALSE) = 0;
-	virtual wxDC* GetRenderDC() = 0;
-	virtual void AllocateDC();
-	virtual void DoneWithDC();
-	virtual BOOL RenderTreeCallback(Node* pNode, RenderRegion* pRender) {return TRUE;}
+  virtual void RenderPaper(Spread*, DocRect, wxDC*, Matrix&);
+  virtual BOOL RenderPageMarks(RenderRegion*, Matrix&, DocRect&, Spread*);
 
-	Quality RenderQuality;						// WYSIWYG value (only freinds of Quality can
-												// get/set numeric value
+ protected:
+  virtual void RenderPaper(RenderRegion*, Spread*);
 
-	// Functions to render complex shapes into simple render regions
-	RenderViewResult RenderOptimalView(RenderRegion*r, Matrix&, Spread*, BOOL);
-	SlowJobResult RenderOptimalBitmapPhase(DocRect& ClipRect, Matrix&, Spread*, RenderRegion*, Node*, Node*,
-						   	BOOL RenderAllObjects, BOOL bPrintPaper, INT32&, ProgressDisplay* pProgress, INT32 TotalProgress);
+  SlowJobResult RenderSimpleNodes(Node *pNode, RenderRegion *pRender,
+				  ProgressDisplay& Progress, Node *pLastComplexNode = NULL);
+  SlowJobResult RenderSimpleNodesUnclipped(Node *pNode, RenderRegion *pRender,
+					   ProgressDisplay& Progress, Node *pLastComplexNode = NULL);
 
-	virtual RenderViewResult RenderSimpleView(RenderRegion*, Matrix&, Spread*, BOOL);
-	SlowJobResult RenderBitmapPhase(DocRect& ClipRect, Matrix&, Spread*, RenderRegion*, Node*, Node*,
-						   			BOOL bRenderAll, BOOL bPrintPaper, ProgressDisplay& Progress);
+ private:
+  static PaperRenderRegion* pPaperRegion;		// Region to use when rendering paper only
+  // (i.e. only for screen views)
 
-	static void DeInitOnTopRegion();
-	static BOOL IsPrintableNodeSelected(Node *);
+  static PaperRenderRegion* pOnTopRegion;		// Region to use when rendering blobs only
+  // (i.e. only for screen views)
 
-	virtual void RenderPaper(Spread*, DocRect, wxDC*, Matrix&);
-	virtual BOOL RenderPageMarks(RenderRegion*, Matrix&, DocRect&, Spread*);
+  //	ViewBitmapCache m_CachedBitmaps;			// Collection of bitmaps for rendering optimisation
 
-protected:
-	virtual void RenderPaper(RenderRegion*, Spread*);
+ public:
+  virtual BOOL GetForeBackMode() = 0;
+  virtual void SetForeBackMode(BOOL) = 0;
 
-	SlowJobResult RenderSimpleNodes(Node *pNode, RenderRegion *pRender,
-						   ProgressDisplay& Progress, Node *pLastComplexNode = NULL);
-	SlowJobResult RenderSimpleNodesUnclipped(Node *pNode, RenderRegion *pRender,
-						   ProgressDisplay& Progress, Node *pLastComplexNode = NULL);
+  virtual Matrix ConstructRenderingMatrix(Spread *pSpread);
+  // Ilan 06/06/00
+  virtual Matrix ConstructScaledRenderingMatrix(Spread *pSpread, double ScaleFactor);
 
-private:
-	static PaperRenderRegion* pPaperRegion;		// Region to use when rendering paper only
-												// (i.e. only for screen views)
+ protected:
+  RenderRegion *NewRenderRegion(DocRect InvalidRect, Matrix& ViewMatrix,
+				wxDC* pDevContext, Spread* pSpread, RenderType rType,
+				bool fOwned = false );
 
-	static PaperRenderRegion* pOnTopRegion;		// Region to use when rendering blobs only
-												// (i.e. only for screen views)
+  // Function to build and control the render regions
+  virtual void MakeNewRenderRegion(Spread *, DocRect, wxDC *, RenderType, BOOL PaintPaper = FALSE, Node* pInvalidNode = NULL);
 
-//	ViewBitmapCache m_CachedBitmaps;			// Collection of bitmaps for rendering optimisation
+ public:
+  // Get/Set the size of OIL pixels that this view uses.
+  FIXED16 GetPixelWidth();
+  FIXED16 GetPixelHeight();
+  void GetPixelSize(FIXED16 *PixelWidth, FIXED16 *PixelHeight);
+  virtual void SetPixelSize(FIXED16 PixelWidth, FIXED16 PixelHeight);
 
-public:
-	virtual BOOL GetForeBackMode() = 0;
-	virtual void SetForeBackMode(BOOL) = 0;
+  FIXED16 GetScaledPixelWidth();
+  FIXED16 GetScaledPixelHeight();
+  void GetScaledPixelSize(FIXED16 *PixelWidth, FIXED16 *PixelHeight);
+  virtual void SetScaledPixelSize(FIXED16 PixelWidth, FIXED16 PixelHeight);
 
-	virtual Matrix ConstructRenderingMatrix(Spread *pSpread);
-	// Ilan 06/06/00
-	virtual Matrix ConstructScaledRenderingMatrix(Spread *pSpread, double ScaleFactor);
+  virtual double GetConvertToEditableShapesDPI();
 
-protected:
-	RenderRegion *NewRenderRegion(DocRect InvalidRect, Matrix& ViewMatrix,
-									wxDC* pDevContext, Spread* pSpread, RenderType rType,
-									bool fOwned = false );
-	
-	// Function to build and control the render regions
-	virtual void MakeNewRenderRegion(Spread *, DocRect, wxDC *, RenderType, BOOL PaintPaper = FALSE, Node* pInvalidNode = NULL);
+ protected:
+  // Actual size of OIL pixels that this view uses.
+  FIXED16 PixelWidth,
+    PixelHeight;
 
-public:
-	// Get/Set the size of OIL pixels that this view uses.
-	FIXED16 GetPixelWidth();
-	FIXED16 GetPixelHeight();
-	void GetPixelSize(FIXED16 *PixelWidth, FIXED16 *PixelHeight);
-	virtual void SetPixelSize(FIXED16 PixelWidth, FIXED16 PixelHeight);
-
-	FIXED16 GetScaledPixelWidth();
-	FIXED16 GetScaledPixelHeight();
-	void GetScaledPixelSize(FIXED16 *PixelWidth, FIXED16 *PixelHeight);
-	virtual void SetScaledPixelSize(FIXED16 PixelWidth, FIXED16 PixelHeight);
-
-	virtual double GetConvertToEditableShapesDPI();
-
-protected:
-	// Actual size of OIL pixels that this view uses.
-	FIXED16 PixelWidth,
-			PixelHeight;
-
-	// Scaled size of OIL pixels that this view uses.
-	FIXED16 ScaledPixelWidth,
-			ScaledPixelHeight;
-
-
-public:		// Colour contexts
-	ColourContext *GetColourContext(ColourModel Model, BOOL ReturnNULLIfNone = FALSE);
-			// Find the view's context for the given colour model
-
-	ColourPlate *GetColourPlate(void);
-			// Find out what ColourPlate separation (if any) this view is using
-
-	void SetColourPlate(ColourPlate *NewPlate, BOOL bSendContextChanged = TRUE);
-			// Set the colour separation mode that will be used in all future output
-			// from this view
-
-	void SetColourContext(ColourModel Model, ColourContext *NewContext = NULL);
-			// Set or clear the special colour context for a given colour model.
-			// The View will delete the context when it is finished with it, or when
-			// you call this function again with another context or a NULL pointer.
-
-	BOOL GetForceDefaultColourContexts(void) { return(ForceDefaultColourContexts); }
-	
-	BOOL SetForceDefaultColourContexts(BOOL bForceDefault = TRUE)
-	{
-		BOOL bOldForce = ForceDefaultColourContexts;
-		ForceDefaultColourContexts = bForceDefault;
-		return(bOldForce);
-	}
-
-protected:
-	ColourPlate *ColPlate;					// NULL, or Current colour separation options
-	ColourContextArray ColourContexts;		// Cached colour contexts using the ColourPlate
-	BOOL ShouldDeleteContext[16];			// Flags for each cached context
-
-	BOOL ForceDefaultColourContexts;		// Internal flag
-											// if TRUE, forces GetColourContext to return global
-											// default colour contexts rather than special ones.
-											// Used by RenderOptimalBitmapPhase to disable colour
-											// separation/correction in masked bitmap rendering.
+  // Scaled size of OIL pixels that this view uses.
+  FIXED16 ScaledPixelWidth,
+    ScaledPixelHeight;
 
 
-/////////////////////////////////////////////////////////////////////////////////////////////////
-//	Scrolling, scaling and extents
+ public:		// Colour contexts
+  ColourContext *GetColourContext(ColourModel Model, BOOL ReturnNULLIfNone = FALSE);
+  // Find the view's context for the given colour model
 
-protected:
-	FIXED16 	Scale;								// User viewing/printing scale factor.
-	DocRect		PhysExtent;							// Size of a document (bang!)
+  ColourPlate *GetColourPlate(void);
+  // Find out what ColourPlate separation (if any) this view is using
 
-public:
-	WorkCoord GetScrollOffsets() const;
-	virtual BOOL SetScrollOffsets(WorkCoord, BOOL RedrawNeeded = TRUE);
+  void SetColourPlate(ColourPlate *NewPlate, BOOL bSendContextChanged = TRUE);
+  // Set the colour separation mode that will be used in all future output
+  // from this view
 
-	FIXED16 GetViewScale() const;					// ? the user scale in this view
-	virtual BOOL SetViewScale(FIXED16);				// Set the user scale factor
+  void SetColourContext(ColourModel Model, ColourContext *NewContext = NULL);
+  // Set or clear the special colour context for a given colour model.
+  // The View will delete the context when it is finished with it, or when
+  // you call this function again with another context or a NULL pointer.
 
-	virtual DocRect GetDocViewRect(Spread*) = 0;
-	virtual void SetExtent(DocCoord, DocCoord) = 0;	// Reset the extent of the document
-	virtual WorkRect GetViewRect() = 0;				// The physical rect of the view
+  BOOL GetForceDefaultColourContexts(void) { return(ForceDefaultColourContexts); }
+
+  BOOL SetForceDefaultColourContexts(BOOL bForceDefault = TRUE)
+  {
+    BOOL bOldForce = ForceDefaultColourContexts;
+    ForceDefaultColourContexts = bForceDefault;
+    return(bOldForce);
+  }
+
+ protected:
+  ColourPlate *ColPlate;					// NULL, or Current colour separation options
+  ColourContextArray ColourContexts;		// Cached colour contexts using the ColourPlate
+  BOOL ShouldDeleteContext[16];			// Flags for each cached context
+
+  BOOL ForceDefaultColourContexts;		// Internal flag
+  // if TRUE, forces GetColourContext to return global
+  // default colour contexts rather than special ones.
+  // Used by RenderOptimalBitmapPhase to disable colour
+  // separation/correction in masked bitmap rendering.
 
 
-/////////////////////////////////////////////////////////////////////////////////////////////////
-//	Dragging
+  /////////////////////////////////////////////////////////////////////////////////////////////////
+  //	Scrolling, scaling and extents
 
-protected:
-	BOOL		m_bSolidDrag;						// Flag indicating that current drag is solid
+ protected:
+  FIXED16 	Scale;								// User viewing/printing scale factor.
+  DocRect		PhysExtent;							// Size of a document (bang!)
+
+ public:
+  WorkCoord GetScrollOffsets() const;
+  virtual BOOL SetScrollOffsets(WorkCoord, BOOL RedrawNeeded = TRUE);
+
+  FIXED16 GetViewScale() const;					// ? the user scale in this view
+  virtual BOOL SetViewScale(FIXED16);				// Set the user scale factor
+
+  virtual DocRect GetDocViewRect(Spread*) = 0;
+  virtual void SetExtent(DocCoord, DocCoord) = 0;	// Reset the extent of the document
+  virtual WorkRect GetViewRect() = 0;				// The physical rect of the view
+
+
+  /////////////////////////////////////////////////////////////////////////////////////////////////
+  //	Dragging
+
+ protected:
+  BOOL		m_bSolidDrag;						// Flag indicating that current drag is solid
 
 };
 

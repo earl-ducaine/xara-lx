@@ -153,464 +153,486 @@ typedef CMapPtrToPtr ClipRectMap;
 
 class GRenderRegion : public RenderRegion
 {
-	CC_DECLARE_DYNAMIC( GRenderRegion )
-
-	friend class GBrush;							// so it can get to our vars etc
-	friend class OpGDraw;
-//	friend class OpGFPU;
-	friend class GRenderRegionWrapper;
-	friend class ConcurrentRenderer;
-	friend class GDrawBorrower;
-
+  CC_DECLARE_DYNAMIC( GRenderRegion )
+  friend class GBrush;							// so it can get to our vars etc
+  friend class OpGDraw;
+  // friend class OpGFPU;
+  friend class GRenderRegionWrapper;
+  friend class ConcurrentRenderer;
+  friend class GDrawBorrower;
 public:
+  GRenderRegion();								// do NOT use
+  GRenderRegion(DocRect ClipRegion, Matrix ConvertMatrix, FIXED16 ViewScale, UINT32 Depth, double dpi);
+  virtual ~GRenderRegion();
 
-	GRenderRegion();								// do NOT use
-	GRenderRegion(DocRect ClipRegion, Matrix ConvertMatrix, FIXED16 ViewScale, UINT32 Depth, double dpi);
-	virtual ~GRenderRegion();
+  static BOOL Init();
 
-	static BOOL Init();
+  // these are the virtual fns we need to instantiate a class
+  virtual BOOL CopyRenderInfo( const RenderRegion &Other);
+  virtual BOOL AttachDevice(View*, wxDC *, Spread* = NULL, bool fOwned = false );
+  virtual BOOL InitDevice();
 
-	// these are the virtual fns we need to instantiate a class
-	virtual BOOL CopyRenderInfo( const RenderRegion &Other);
-	virtual BOOL AttachDevice(View*, wxDC *, Spread* = NULL, bool fOwned = false );
-	virtual BOOL InitDevice();
+  BOOL StartRender();
+  BOOL StopRender();
 
-	BOOL StartRender();
-	BOOL StopRender();
-	virtual void SetClean(BOOL bResetChangedBounds, BOOL FillWhite);
-	virtual BOOL IsClean() {return !HaveRenderedSomething;}
+  virtual void SetClean(BOOL bResetChangedBounds, BOOL FillWhite);
+  virtual BOOL IsClean() {
+    return !HaveRenderedSomething;
+  }
 
-	void DrawPathToOutputDevice(Path* PathToDraw, PathShape shapePath=PATHSHAPE_PATH);
-	void DrawRect(DocRect *RectToRender);
-	void DrawDragRect(DocRect *RectToRender);
-	void DrawLine(const DocCoord &StartPoint, const DocCoord &EndPoint);
-	void DrawBlob(DocCoord p, BlobType type);
-	void DrawPixel(const DocCoord &Point);
-	void DrawCross(const DocCoord &Point, const UINT32 Size);
 
-	void DrawBitmap(const DocCoord &Point, KernelBitmap* pBitmap);
-	void DrawBitmap(const DocCoord &Point, UINT32 BitmapID, UINT32 ToolID = 0);
-	void DrawBitmap(const DocRect& rect, KernelBitmap* pBitmap);
+  void DrawPathToOutputDevice(Path* PathToDraw, PathShape shapePath=PATHSHAPE_PATH);
+  void DrawRect(DocRect *RectToRender);
+  void DrawDragRect(DocRect *RectToRender);
+  void DrawLine(const DocCoord &StartPoint, const DocCoord &EndPoint);
+  void DrawBlob(DocCoord p, BlobType type);
+  void DrawPixel(const DocCoord &Point);
+  void DrawCross(const DocCoord &Point, const UINT32 Size);
 
-	void DrawBitmapBlob(const DocCoord &Point, KernelBitmap* BlobShape) {}
-	void DrawBitmapBlob(const DocCoord &Point, ResourceID resID ) {}
+  void DrawBitmap(const DocCoord &Point, KernelBitmap* pBitmap);
+  void DrawBitmap(const DocCoord &Point, UINT32 BitmapID, UINT32 ToolID = 0);
+  void DrawBitmap(const DocRect& rect, KernelBitmap* pBitmap);
 
-	void DrawFixedSystemText(StringBase *TheText, DocRect &BoundsRect, UINT32 uFormat = DEFAULT_TEXT_FORMATTING);
-	void SetFixedSystemTextColours(DocColour *TextCol, DocColour *Background);
-	void GetFixedSystemTextSize(StringBase *TheText, DocRect *BoundsRect, double* atDpi = NULL);
+  void DrawBitmapBlob(const DocCoord &Point, KernelBitmap* BlobShape) {}
+  void DrawBitmapBlob(const DocCoord &Point, ResourceID resID ) {}
 
-	void InitClipping();
-	void InitAttributes();
-	void SetLineAttributes();
-	void SetFillAttributes();
-	void SetOSDrawingMode();
-	void SetQualityLevel();
+  void DrawFixedSystemText(StringBase *TheText, DocRect &BoundsRect, UINT32 uFormat = DEFAULT_TEXT_FORMATTING);
+  void SetFixedSystemTextColours(DocColour *TextCol, DocColour *Background);
+  void GetFixedSystemTextSize(StringBase *TheText, DocRect *BoundsRect, double* atDpi = NULL);
 
-	void Restore(RenderRegion*);
+  void InitClipping();
+  void InitAttributes();
+  void SetLineAttributes();
+  void SetFillAttributes();
+  void SetOSDrawingMode();
+  void SetQualityLevel();
 
-	BOOL RenderGradFillPath(Path *, GradFillAttribute* );
+  void Restore(RenderRegion*);
 
-	BOOL RenderBitmapFill  (Path *, BitmapFillAttribute* );
+  BOOL RenderGradFillPath(Path *, GradFillAttribute* );
 
-	virtual void SetSolidColours(BOOL SetSolid);
+  BOOL RenderBitmapFill  (Path *, BitmapFillAttribute* );
 
-	//static public functions
-	static RenderRegion* Create(DocRect ClipRegion, Matrix ConvertMatrix, FIXED16 ViewScale,
-								RenderType, View* pView = NULL, BOOL bForce32BPP = FALSE);
-	static BOOL Init(BOOL);
-	static void DeInit();
-	static BOOL CalcBlitMode( INT32 Wanted );
+  virtual void SetSolidColours(BOOL SetSolid);
 
-	GDrawContext *GetDrawContext() const
-	{
-		return GD;
-	};
+  //static public functions
+  static RenderRegion* Create(DocRect ClipRegion, Matrix ConvertMatrix, FIXED16 ViewScale,
+			      RenderType, View* pView = NULL, BOOL bForce32BPP = FALSE);
+  static BOOL Init(BOOL);
+  static void DeInit();
+  static BOOL CalcBlitMode( INT32 Wanted );
 
-	static GDrawContext* SetTempDrawContext(GDrawContext* pContext)
-	{
-		// Bad things will happen if we set this to NULL
-		if (pContext == NULL)
-		{
-			TRACEUSER( "Gerry", _T("******** Trying to set a NULL GDrawContext\n") );
-			pContext = pRealGD;
-		}
+  GDrawContext *GetDrawContext() const
+  {
+    return GD;
+  };
 
-		GDrawContext* pOldCon = GD;
-		GD = pContext;
-//		TRACEUSER( "Gerry", _T("GDraw context set to 0x%08x (prev = 0x%08x)\n"), GD, pOldCon);
-		return(pOldCon);
-	};
+  static GDrawContext* SetTempDrawContext(GDrawContext* pContext)
+  {
+    // Bad things will happen if we set this to NULL
+    if (pContext == NULL)
+      {
+	TRACEUSER( "Gerry", _T("******** Trying to set a NULL GDrawContext\n") );
+	pContext = pRealGD;
+      }
 
-	static GDrawContext *GetStaticDrawContext()
-	{
+    GDrawContext* pOldCon = GD;
+    GD = pContext;
+    //		TRACEUSER( "Gerry", _T("GDraw context set to 0x%08x (prev = 0x%08x)\n"), GD, pOldCon);
+    return(pOldCon);
+  };
+
+  static GDrawContext *GetStaticDrawContext()
+  {
 #ifdef RALPH
-		if (GDrawAsm::GetContextForCurrentThread() != NULL)
-			return(GDrawAsm::GetContextForCurrentThread());
+    if (GDrawAsm::GetContextForCurrentThread() != NULL)
+      return(GDrawAsm::GetContextForCurrentThread());
 #endif
 
-		return GD;
-	};
+    return GD;
+  };
 
-	static GDrawContext *GetStaticDrawContext(INT32 DitherType)
-	{
+  static GDrawContext *GetStaticDrawContext(INT32 DitherType)
+  {
 #ifdef RALPH
-		if (GDrawAsm::GetContextForCurrentThread() != NULL)
-			return(GDrawAsm::GetContextForCurrentThread());
+    if (GDrawAsm::GetContextForCurrentThread() != NULL)
+      return(GDrawAsm::GetContextForCurrentThread());
 #endif
 
-		if ((DitherType == 0) || (DitherType == 3))
-			return(ErrorDiffContext);
-		else
-			return(GD);
-	}
+    if ((DitherType == 0) || (DitherType == 3))
+      return(ErrorDiffContext);
+    else
+      return(GD);
+  }
 
-	static INT32 GetDefaultTransparency() { return WhichTransparency; }
+  static INT32 GetDefaultTransparency() { return WhichTransparency; }
 
-	static UINT32 SetPaletteEntries( LPBITMAPINFO lpBmi, wxDC* pOutputDC = NULL );
+  static UINT32 SetPaletteEntries( LPBITMAPINFO lpBmi, wxDC* pOutputDC = NULL );
 
-	// Used to calculate the size of the render region required
-	virtual WinRect CalculateWinRect( Matrix& RenderMatrix, const DocRect& docrect,
-									  const double dpi);
-	// let's non-renderregion code determine pixel dimensions of bounding boxes
-	virtual WinRect CalculateWinRect( const DocRect& docrect);
+  // Used to calculate the size of the render region required
+  virtual WinRect CalculateWinRect( Matrix& RenderMatrix, const DocRect& docrect,
+				    const double dpi);
+  // let's non-renderregion code determine pixel dimensions of bounding boxes
+  virtual WinRect CalculateWinRect( const DocRect& docrect);
 
-	void SetDeepDIB(BOOL Value);
+  void SetDeepDIB(BOOL Value);
 
-	// SMFIX
-	// call to get the 32bit bitmap just to read it with no conversion going on
-	// used when gathering stats for the palette
-	const RGBQUAD* Get32BitRGBQuadData(){ return (RGBQUAD*)pBits;}
-	UINT32 GetSizeOfRGBQuadData() { return pBitmapInfo ? pBitmapInfo->bmiHeader.biWidth * pBitmapInfo->bmiHeader.biHeight : 0; }
+  // SMFIX
+  // call to get the 32bit bitmap just to read it with no conversion going on
+  // used when gathering stats for the palette
+  const RGBQUAD* Get32BitRGBQuadData(){ return (RGBQUAD*)pBits;}
+  UINT32 GetSizeOfRGBQuadData() { return pBitmapInfo ? pBitmapInfo->bmiHeader.biWidth * pBitmapInfo->bmiHeader.biHeight : 0; }
 
-	void SetDoCompression(BOOL bDoCompression) { m_DoCompression = bDoCompression; }
+  void SetDoCompression(BOOL bDoCompression) { m_DoCompression = bDoCompression; }
 
-	void SetDoBitmapConversion(BOOL bEnable) { m_bEnableConversion = bEnable; }
+  void SetDoBitmapConversion(BOOL bEnable) { m_bEnableConversion = bEnable; }
 
-	DocRect GetChangedRect();
+  DocRect GetChangedRect();
 
-	void SetBitmapPointers(LPBITMAPINFO bi, LPBYTE by);
-	BOOL GetBitmapPointers(LPBITMAPINFO* ppInfo, LPBYTE* ppBits, BOOL bCorrectTransparency = TRUE);
+  void SetBitmapPointers(LPBITMAPINFO bi, LPBYTE by);
+  BOOL GetBitmapPointers(LPBITMAPINFO* ppInfo, LPBYTE* ppBits, BOOL bCorrectTransparency = TRUE);
 
 protected:
 
-	static GDrawContext *pRealGD;						// ptr to GDraw we want to use
-	static GDrawContext *GD;							// ptr to GDraw we want to use
-	static GDrawContext *ErrorDiffContext;				// ptr to special context for error diffusion
+  static GDrawContext *pRealGD;						// ptr to GDraw we want to use
+  static GDrawContext *GD;							// ptr to GDraw we want to use
+  static GDrawContext *ErrorDiffContext;				// ptr to special context for error diffusion
 
-	GMATRIX CurrentGMatrix;
+  GMATRIX CurrentGMatrix;
 
-	GMATRIX SetGavinMatrix(GMATRIX* GMatrix);
-	virtual GMATRIX MakeGavinMatrix(Matrix NewRenderMatrix, DocRect ClipRect, double PixelsPerInch, BOOL bMasterCapture);
-	virtual double GetPixelsPerInch() {return PixelsPerInch;}
+  GMATRIX SetGavinMatrix(GMATRIX* GMatrix);
+  virtual GMATRIX MakeGavinMatrix(Matrix NewRenderMatrix, DocRect ClipRect, double PixelsPerInch, BOOL bMasterCapture);
+  virtual double GetPixelsPerInch() {return PixelsPerInch;}
 
-	MILLIPOINT CalcPixelWidth();
-	double CalcPixelWidthDouble();
-	MILLIPOINT CalcScaledPixelWidth();
-	double CalcScaledPixelWidthDouble();
+  MILLIPOINT CalcPixelWidth();
+  double CalcPixelWidthDouble();
+  MILLIPOINT CalcScaledPixelWidth();
+  double CalcScaledPixelWidthDouble();
 
-	RRCaps Caps;
+  RRCaps Caps;
 
 public:
-	double GetScaledPixelWidthDouble();
-	void SetSimulatePrinting(UINT32 PrintType);
-	virtual void GetRenderRegionCaps(RRCaps* pCaps);
+  double GetScaledPixelWidthDouble();
+  void SetSimulatePrinting(UINT32 PrintType);
+  virtual void GetRenderRegionCaps(RRCaps* pCaps);
 
-	// Function to draw a bitmap into the render region using a mask, and
-	// and equivalent function to do the same, only colour separating it as it goes
-	// The Separated version is called by this one if colour seps are enabled
-	virtual SlowJobResult DrawMaskedBitmap(const DocRect &Rect, KernelBitmap* pBitmap,
-								  		   MaskedRenderRegion* pMask, ProgressDisplay *Progress);
+  // Function to draw a bitmap into the render region using a mask, and
+  // and equivalent function to do the same, only colour separating it as it goes
+  // The Separated version is called by this one if colour seps are enabled
+  virtual SlowJobResult DrawMaskedBitmap(const DocRect &Rect, KernelBitmap* pBitmap,
+					 MaskedRenderRegion* pMask, ProgressDisplay *Progress);
+
+
+  BOOL GetTransparencyFill(TranspGradTable*, DWORD*);
+  virtual BOOL DrawArrowHead(ArrowRec &ArrowToDraw, DocCoord &Centre, DocCoord &Direction);
+  BOOL SetBitmapTransparencyFill(TranspFillAttribute*, DWORD*, TranspGradTable*);
+  // Member variable that may get set up in SetBitmapTransparencyFill
+  // and needs freeing later
+  // LPBYTE m_pTempTransparencyBMPBits;
+  // GAT: Never used.
+  BOOL SetFractalFill(ColourFillAttribute*, DWORD*);
+  BOOL SetFractalTransparencyFill(TranspFillAttribute*, DWORD*);
+  // These are pure virtual fns that must be instantiated in all
+  // derived classes, together with the multiple paramter constructor
+  // and destructor.
+  virtual LPBITMAPINFO GetLPBits( INT32 Width, INT32 Height, INT32 Depth, LPBYTE*) = 0;
+  virtual void FreeLPBits( LPBITMAPINFO, LPBYTE ) = 0;
+  virtual BOOL DisplayBits(LPBITMAPINFO lpDisplayBitmapInfo = NULL, LPBYTE lpDisplayBits = NULL) = 0;
+  // This isn't pure, but is needed by some inherited classes
+  virtual void InitBmpBits();
+  virtual BOOL StartRenderAfter(GMATRIX*);
+  virtual BOOL StartRenderMiddle();
+  virtual void DisplayCurrentState();
+
+  // Properties
 protected:
-	BOOL GetTransparencyFill(TranspGradTable*, DWORD*);
-
-	virtual BOOL DrawArrowHead(ArrowRec &ArrowToDraw, DocCoord &Centre, DocCoord &Direction);
-
-	BOOL SetBitmapTransparencyFill(TranspFillAttribute*, DWORD*, TranspGradTable*);
-
-//	LPBYTE m_pTempTransparencyBMPBits;	// member variable that may get set up in SetBitmapTransparencyFill and needs freeing later
-										// GAT: Never used.
-
-	BOOL SetFractalFill(ColourFillAttribute*, DWORD*);
-	BOOL SetFractalTransparencyFill(TranspFillAttribute*, DWORD*);
-
-	// these are pure virtual fns that must be instantiated in all derived classes,
-	// together with the multiple paramter constructor and destructor.
-	virtual LPBITMAPINFO GetLPBits( INT32 Width, INT32 Height, INT32 Depth, LPBYTE*) = 0;
-	virtual void FreeLPBits( LPBITMAPINFO, LPBYTE ) = 0;
-	virtual BOOL DisplayBits(LPBITMAPINFO lpDisplayBitmapInfo = NULL, LPBYTE lpDisplayBits = NULL) = 0;
-
-	// this isn't pure, but is needed by some inherited classes
-	virtual void InitBmpBits();					// added by Ilan.
-	virtual BOOL StartRenderAfter(GMATRIX*);
-	virtual BOOL StartRenderMiddle();
-	virtual void DisplayCurrentState();
-
-	// these are the member variables
-	LPBITMAPINFO pBitmapInfo;							// ptr to BITMAPINFO
-	LPBYTE pBits;										// ptr to actual bytes (or NULL)
-//	INT32 uBitmapSize;									// size of above
-	UINT32 uBitmapDepth;									// in bits/pixel
-	UINT32 uLineSize;
-
+  LPBITMAPINFO pBitmapInfo;
+  // ptr to actual bytes (or NULL)
+  LPBYTE pBits;
+  // in bits/pixel
+  UINT32 uBitmapDepth;
+  UINT32 uLineSize;
 #if USE_wxBITMAP
-	wxBitmap* pBitmap;
-	wxAlphaPixelData* pBitmapData;						// Used to obtain and maintain lpBits.
-
-	LPBITMAPINFO AllocWxBitmap( UINT32 Width, UINT32 Height, UINT32 Depth );
-	void FreeWxBitmap();
+  wxBitmap* pBitmap;
+  // Used to obtain and maintain lpBits.
+  wxAlphaPixelData* pBitmapData;
+  LPBITMAPINFO AllocWxBitmap( UINT32 Width, UINT32 Height, UINT32 Depth );
+  void FreeWxBitmap();
 #endif
+  // Position in the owner window
+  wxRect WRect;
+  // Position in the whole screen bitmap
+  wxRect ScreenRect;
+  // Resolution of bitmap
+  double PixelsPerInch;
+  // Accurate size of pixel with view zoom factored in
+  double dScaledPixelWidth;
+  // Palette used to render (or NULL)
+  wxPalette* hPalette;
+  // Original (previous) palette
+  wxPalette* hPrevPalette;
+  // TRUE if this bitmap is a little one,
+  BOOL LocalBitmap;
+  // FALSE if its a chunk of ScreenBitmap
+  BOOL UseSolidColours;
+  // TRUE to enforce smoothing of all rendered bitmaps
+  BOOL m_bForceBitmapSmoothing;
+  // req'd by shadowing framework.
+  BOOL m_bEnableConversion;
+  // Set when in-place conversion of RGBA bitmap invalidates it
+  BOOL ForceInitBmpBits;
+  // DitherStyle for 8 bit rendering
+  INT32 DitherStyle8Bit;
+  // TRUE if drawing has occurred
+  BOOL HaveRenderedSomething;
+  UINT32 m_ForcePrintingCaps;
 
-	wxRect WRect;										// its position in the owner window
-	wxRect ScreenRect;									// its position in the whole screen bitmap
-
-	double PixelsPerInch;								// resolution of bitmap
-	double dScaledPixelWidth;							// accurate size of pixel with view zoom factored in
-
-	wxPalette* hPalette;								// palette used to render (or NULL)
-	wxPalette* hPrevPalette;							// original (previous) palette
-
-	BOOL LocalBitmap;									// TRUE if this bitmap is a little one,
-														// FALSE if its a chunk of ScreenBitmap
-	BOOL UseSolidColours;
-
-	BOOL m_bForceBitmapSmoothing;						// TRUE to enforce smoothing of all rendered bitmaps
-														// ; req'd by shadowing framework.
-	BOOL m_bEnableConversion;
-	BOOL ForceInitBmpBits;								// Set when in-place conversion of RGBA bitmap invalidates it
-
-	INT32 DitherStyle8Bit;								// DitherStyle for 8 bit rendering
-
-	BOOL HaveRenderedSomething;							// TRUE if drawing has occurred
-
-	UINT32 m_ForcePrintingCaps;
-
-	void Display1to1Bitmap();
-	void DisplayLtoHBitmap();
-	void DisplayHto8Bitmap();
-
-	void PlotBitmap( UINT32 ColourFlag );
-	void PlotBitmap( wxDC *pDC, UINT32 ColourFlag, INT32 Left, INT32 Top, UINT32 Width, UINT32 Height, wxPalette* hPal, INT32, INT32 );
-public:
-	static LPBYTE StaticPlotBitmap( wxDC *pDC, UINT32 ColourFlag, LPBITMAPINFO lpBitmapInfo, LPBYTE lpBits, INT32 Left, INT32 Top, UINT32 Width, UINT32 Height, wxPalette* hPal, INT32, INT32 );
+  // Methods
 protected:
-//	KernelBitmap* FractalBitmap;		// GAT: Never used.
+  void Display1to1Bitmap();
+  void DisplayLtoHBitmap();
+  void DisplayHto8Bitmap();
+  void PlotBitmap( UINT32 ColourFlag );
+  void PlotBitmap( wxDC *pDC,
+		   UINT32 ColourFlag,
+		   INT32 Left, INT32 Top,
+		   UINT32 Width,
+		   UINT32 Height,
+		   wxPalette* hPal,
+		   INT32,
+		   INT32 );
 
-	// Limit of transparency in hit-detect pixels before pixel will be ignored
-	static UINT32 ClickTranspLimit;
+  //	KernelBitmap* FractalBitmap;		// GAT: Never used.
 
-	// Whether to use high-quality anti-aliasing or not
-	static BOOL HighQualityAA;
+  // Limit of transparency in hit-detect pixels before pixel will be ignored
+  static UINT32 ClickTranspLimit;
 
-	// Bitmap conversion algorithm for show printer colours
-	static INT32 BitmapConversion;
+  // Whether to use high-quality anti-aliasing or not
+  static BOOL HighQualityAA;
+
+  // Bitmap conversion algorithm for show printer colours
+  static INT32 BitmapConversion;
 
 public:
-	// Allows you to override the normal checks which are made when deciding
-	// whether to smooth a bitmap or not; if we're rendering at full quality
-	// and the bitmap will let us, then we _will_ render it with smoothing.
-	void SetForceBitmapSmoothing(BOOL ForceSmoothing) { m_bForceBitmapSmoothing = ForceSmoothing; }
-	BOOL IsForcingBitmapSmoothing() { return m_bForceBitmapSmoothing; }
+  static LPBYTE StaticPlotBitmap(wxDC *pDC,
+				 UINT32 ColourFlag,
+				 LPBITMAPINFO lpBitmapInfo,
+				 LPBYTE lpBits,
+				 INT32 Left, INT32 Top,
+				 UINT32 Width,
+				 UINT32 Height,
+				 wxPalette* hPal,
+				 INT32,
+				 INT32 );
+  // Allows you to override the normal checks which are made when
+  // deciding whether to smooth a bitmap or not; if we're rendering at
+  // full quality and the bitmap will let us, then we _will_ render it
+  // with smoothing.
+  void SetForceBitmapSmoothing(BOOL ForceSmoothing) {
+    m_bForceBitmapSmoothing = ForceSmoothing;
+  }
+  BOOL IsForcingBitmapSmoothing() { return m_bForceBitmapSmoothing; }
 
 private:
-	BOOL SetGCol( DocColour& ) const;
-	BOOL SetFillGCol( DocColour& ) const;
+  BOOL SetGCol( DocColour& ) const;
+  BOOL SetFillGCol( DocColour& ) const;
 
-	DocCoord DocCoordToG(const DocCoord& DocPoint);
-	void DocCoordToG( DocCoord *DocPoint );
-	BOOL StrokePath( const DocCoord *, const PathVerb*, UINT32,
-					 const DocCoord *, const PathVerb*, UINT32, BOOL DrawArrows = FALSE);
+  DocCoord DocCoordToG(const DocCoord& DocPoint);
+  void DocCoordToG( DocCoord *DocPoint );
+  BOOL StrokePath( const DocCoord *, const PathVerb*, UINT32,
+		   const DocCoord *, const PathVerb*, UINT32, BOOL DrawArrows = FALSE);
 
 
 protected:
-	// don't make these into bitfields, as they get setup by the preferences code which
-	// won't be able to cope
-	static BOOL WantDoGDraw;										// TRUE if user wants it
-	static UINT32 WantGDrawDepth;										// desired depth of off-screen bitmap
-//	static BOOL WantNoPalette;										// TRUE if palette switching not wanted
-//	static UINT32 WantBlitMode;										// 0=auto, 1=Stretch, 2=SetDIB, 3=BitBlt
-	static BOOL WantHighColourDirect;								// TRUE if deep sprite plots directly
-	static BOOL WantDeepGDraw; 										// TRUE for 32-bit bitmaps
-//	static BOOL WantWinG;											// TRUE to use WinG if poss
-	static INT32  WhichPalette;
-	static INT32  WhichDither;
-	static INT32  WhichTransparency;
-	static INT32  ViewDither;											// GDraw dither style used for Views
+  // don't make these into bitfields, as they get setup by the preferences code which
+  // won't be able to cope
+  static BOOL WantDoGDraw;										// TRUE if user wants it
+  static UINT32 WantGDrawDepth;										// desired depth of off-screen bitmap
+  //	static BOOL WantNoPalette;										// TRUE if palette switching not wanted
+  //	static UINT32 WantBlitMode;										// 0=auto, 1=Stretch, 2=SetDIB, 3=BitBlt
+  static BOOL WantHighColourDirect;								// TRUE if deep sprite plots directly
+  static BOOL WantDeepGDraw; 										// TRUE for 32-bit bitmaps
+  //	static BOOL WantWinG;											// TRUE to use WinG if poss
+  static INT32  WhichPalette;
+  static INT32  WhichDither;
+  static INT32  WhichTransparency;
+  static INT32  ViewDither;											// GDraw dither style used for Views
 
-	static BOOL CanDoGDraw;											// TRUE if it is physically permitted
-																	// GAT: Set if GDraw initialises OK.
-	static BOOL CanDoPalIndices;									// TRUE if GDI does DIB_PAL_INDICES
-	static BOOL CanSetPalette;										// TRUE if screen has palette support
-//	static BOOL CanDoDeepDIBs;
+  static BOOL CanDoGDraw;											// TRUE if it is physically permitted
+  // GAT: Set if GDraw initialises OK.
+  static BOOL CanDoPalIndices;									// TRUE if GDI does DIB_PAL_INDICES
+  static BOOL CanSetPalette;										// TRUE if screen has palette support
+  //	static BOOL CanDoDeepDIBs;
 
-	static INT32 ScreenDepth;											// in bits/pixel
-	static INT32 ScreenWidth;											// in pixels
-	static INT32 ScreenHeight;										// in pixels
-	static INT32 LogPixelsX;
-	static INT32 LogPixelsY;
+  static INT32 ScreenDepth;											// in bits/pixel
+  static INT32 ScreenWidth;											// in pixels
+  static INT32 ScreenHeight;										// in pixels
+  static INT32 LogPixelsX;
+  static INT32 LogPixelsY;
 
-//GAT - Not used
-//	static LPBITMAPINFO ScreenBitmap;								// NULL if none
-//	static LPBYTE ScreenBits;										// bitmap memory for above
+  //GAT - Not used
+  //	static LPBITMAPINFO ScreenBitmap;								// NULL if none
+  //	static LPBYTE ScreenBits;										// bitmap memory for above
 
-	static LPRGBQUAD Fixed256Palette;								// NULL if not fixed palette (256 cols only)
-//	static BOOL RealFPU;
-	static BitmapConvertHint ScreenHinting;							// used for hinting bitmap conversion
+  static LPRGBQUAD Fixed256Palette;								// NULL if not fixed palette (256 cols only)
+  //	static BOOL RealFPU;
+  static BitmapConvertHint ScreenHinting;							// used for hinting bitmap conversion
 
-	static INT32 LastPaletteFlag;									// last value passed to GDraw_SelectPalette
+  static INT32 LastPaletteFlag;									// last value passed to GDraw_SelectPalette
 
-	static RealLogPalette ErrorDiffPalette;							// static LOGPALETTE structure for error diffusion
+  static RealLogPalette ErrorDiffPalette;							// static LOGPALETTE structure for error diffusion
 
 protected:
-	static void UpdateErrorDiffPalette(void);
+  static void UpdateErrorDiffPalette(void);
 
 public:
-//	static INT32 MaxGMemory;											// largest allocation allowed (0=no limit)
-//	static UINT32 MaxGMemoryInK;										// the above in Kbytes
-//	static INT32 FreeGMemory;										// how much left to allocate
+  //	static INT32 MaxGMemory;											// largest allocation allowed (0=no limit)
+  //	static UINT32 MaxGMemoryInK;										// the above in Kbytes
+  //	static INT32 FreeGMemory;										// how much left to allocate
 
 
 public:
-	static const LOGPALETTE* GetRecommendedPalette();
-//	static void PlotBitmap( wxDC *pDC, UINT32 ColourFlag, LPBITMAPINFO lpBitmapInfo, LPBYTE lpBits, INT32 Left, INT32 Top, INT32 Width, INT32 Height, wxPalette* hPal, INT32, INT32 );
-	static BOOL StrokePathAvailable();
-	static INT32 StrokePathToPath(
-	 	CONST DocCoord *IPoints,
-		CONST BYTE FAR *ITypes,
-		size_t ILength,
-		DocCoord *OPoints,
-		BYTE  *OTypes,
-		DWORD OLength,
-		BOOL Close,
-		DWORD LineWidth,
-		DWORD Flattening,
-		LineCapType LineCaps,
-		JointType LineJoin,
-		CONST DashType *Dash);
-	static void GColInit( wxDC *, BOOL = FALSE );
-	static void PaletteHasChanged();
-	static void EnsurePalette(INT32 PaletteFlag);
-	static LPLOGPALETTE GetErrorDiffPalette(void)
-	{
-		return((LPLOGPALETTE)&ErrorDiffPalette);
-	};
+  static const LOGPALETTE* GetRecommendedPalette();
+  //	static void PlotBitmap( wxDC *pDC, UINT32 ColourFlag, LPBITMAPINFO lpBitmapInfo, LPBYTE lpBits, INT32 Left, INT32 Top, INT32 Width, INT32 Height, wxPalette* hPal, INT32, INT32 );
+  static BOOL StrokePathAvailable();
+  static INT32 StrokePathToPath(
+				CONST DocCoord *IPoints,
+				CONST BYTE FAR *ITypes,
+				size_t ILength,
+				DocCoord *OPoints,
+				BYTE  *OTypes,
+				DWORD OLength,
+				BOOL Close,
+				DWORD LineWidth,
+				DWORD Flattening,
+				LineCapType LineCaps,
+				JointType LineJoin,
+				CONST DashType *Dash);
+  static void GColInit( wxDC *, BOOL = FALSE );
+  static void PaletteHasChanged();
+  static void EnsurePalette(INT32 PaletteFlag);
+  static LPLOGPALETTE GetErrorDiffPalette(void)
+  {
+    return((LPLOGPALETTE)&ErrorDiffPalette);
+  };
 
-	static void SetViewDither(INT32 dither){ViewDither = dither;};
+  static void SetViewDither(INT32 dither){ViewDither = dither;};
 
-	static DWORD GetMaxBitmapWidth(void);
-	static DWORD GetMaxBitmapDepth(void);
-	static INT32 GetDefaultDPI()
-	{
-		return LogPixelsX;
-	};
-
-public:
-	void SetDitherStyle8Bit(INT32 DitherStyle)
-	{
-		DitherStyle8Bit = DitherStyle;
-	};
-
-	// banding and mergeing with offscreen rendering system
-	virtual void ResetRegion(DocRect &NewClipRect);
+  static DWORD GetMaxBitmapWidth(void);
+  static DWORD GetMaxBitmapDepth(void);
+  static INT32 GetDefaultDPI()
+  {
+    return LogPixelsX;
+  };
 
 public:
-	void FreeOffscreenState();
+  void SetDitherStyle8Bit(INT32 DitherStyle)
+  {
+    DitherStyle8Bit = DitherStyle;
+  };
+
+  // banding and mergeing with offscreen rendering system
+  virtual void ResetRegion(DocRect &NewClipRect);
 
 public:
-	virtual void SetOffscreen(OffscreenAttrValue*);
-	virtual void RestoreOffscreen(OffscreenAttrValue*);
-	BOOL RenderBitmapWithTransparency(
-					Path*,
-					BitmapFillAttribute*,
-					BitmapTranspFillAttribute*
+  void FreeOffscreenState();
+
+public:
+  virtual void SetOffscreen(OffscreenAttrValue*);
+  virtual void RestoreOffscreen(OffscreenAttrValue*);
+  BOOL RenderBitmapWithTransparency(
+				    Path*,
+				    BitmapFillAttribute*,
+				    BitmapTranspFillAttribute*
+				    );
+  virtual BOOL IsWrappedRender() const {return IsWrapped;}
+  virtual BOOL TranspTypeIsRGBTCompatible(UINT32 ttype) const;	// Should be TranspType ttype
+  TransparencyEnum MapTranspTypeToGDraw(UINT32 ttype, BOOL bGraduated) const;
+
+
+  /////////////////////////////////////////////////////////////////////
+  //
+  // New Capture system
+  //
+public:
+  virtual Capture* StartCapture(CCObject* pOwner,
+				DocRect CaptureRect,
+				CAPTUREINFO cinfo,
+				BOOL bTransparent = TRUE,
+				BOOL bCaptureBackground = FALSE,
+				double mpPixelWidth = 0,
+				NodeRenderableInk* pDirectSupplier = NULL
 				);
-	virtual BOOL IsWrappedRender() const {return IsWrapped;}
-	virtual BOOL TranspTypeIsRGBTCompatible(UINT32 ttype) const;	// Should be TranspType ttype
-	TransparencyEnum MapTranspTypeToGDraw(UINT32 ttype, BOOL bGraduated) const;
+  virtual BOOL StopCapture(CCObject* pOwner,
+			   BOOL bRender = TRUE,
+			   BOOL bReleaseBitmap = FALSE,
+			   LPBITMAPINFO* plpBitmapInfo = NULL,
+			   LPBYTE* plpBits = NULL,
+			   DocRect* pCaptureRect = NULL,
+			   Matrix* pmatTransform = NULL,
+			   double* pdResolution = NULL
+			   );
+  virtual BOOL ChangeCapture(CAPTUREINFO cinfo,
+			     BOOL bTransparent = TRUE,
+			     BOOL bCaptureBackground = FALSE
+			     );
+  //	virtual INT32 GetCaptureDepth()				{return m_CaptureStack.Size();}
+  virtual BOOL MasterCaptureIsCurrent() const	{return (!m_CaptureStack.Empty() && GetTopCaptureBitmap() && GetTopCaptureBitmap()->IsMaster());}
+  //	virtual Capture* GetTopCapture() const		{return m_CaptureStack.Empty() ? NULL : m_CaptureStack.Top();}
+  //	virtual Capture* GetMasterCapture()	const	{return m_CaptureStack.Empty() ? NULL : m_CaptureStack.Bottom();}
+  virtual BOOL RenderCurrentCaptureState(BOOL bStartFromMaster = FALSE);
+  virtual Capture* GetTopCaptureBitmap(Capture* pFromCapture = NULL) const;
+  virtual BOOL TopCaptureIsDirect()			{return (GetTopCapture() && GetTopCapture()->IsDirect());}
 
-
-	/////////////////////////////////////////////////////////////////////
-	//
-	// New Capture system
-	//
-public:
-	virtual Capture* StartCapture(CCObject* pOwner,
-							  DocRect CaptureRect,
-							  CAPTUREINFO cinfo,
-							  BOOL bTransparent = TRUE,
-							  BOOL bCaptureBackground = FALSE,
-							  double mpPixelWidth = 0,
-							  NodeRenderableInk* pDirectSupplier = NULL
-							  );
-	virtual BOOL StopCapture(CCObject* pOwner,
-							 BOOL bRender = TRUE,
-							 BOOL bReleaseBitmap = FALSE,
-							 LPBITMAPINFO* plpBitmapInfo = NULL,
-							 LPBYTE* plpBits = NULL,
-							 DocRect* pCaptureRect = NULL,
-							 Matrix* pmatTransform = NULL,
-							 double* pdResolution = NULL
-							 );
-	virtual BOOL ChangeCapture(CAPTUREINFO cinfo,
-							  BOOL bTransparent = TRUE,
-							  BOOL bCaptureBackground = FALSE
-							 );
-//	virtual INT32 GetCaptureDepth()				{return m_CaptureStack.Size();}
-	virtual BOOL MasterCaptureIsCurrent() const	{return (!m_CaptureStack.Empty() && GetTopCaptureBitmap() && GetTopCaptureBitmap()->IsMaster());}
-//	virtual Capture* GetTopCapture() const		{return m_CaptureStack.Empty() ? NULL : m_CaptureStack.Top();}
-//	virtual Capture* GetMasterCapture()	const	{return m_CaptureStack.Empty() ? NULL : m_CaptureStack.Bottom();}
-	virtual BOOL RenderCurrentCaptureState(BOOL bStartFromMaster = FALSE);
-	virtual Capture* GetTopCaptureBitmap(Capture* pFromCapture = NULL) const;
-	virtual BOOL TopCaptureIsDirect()			{return (GetTopCapture() && GetTopCapture()->IsDirect());}
-
-// Internal worker functions
+  // Internal worker functions
 protected:
-	virtual BOOL SetRenderToCapture(Capture* pCapture, BOOL bApplyClipRegion = FALSE, BOOL bSetBitmap = TRUE);
-	virtual BOOL SetupDirectCapture(Capture* pNewCapture, NodeRenderableInk* pSupplier);
+  virtual BOOL SetRenderToCapture(Capture* pCapture, BOOL bApplyClipRegion = FALSE, BOOL bSetBitmap = TRUE);
+  virtual BOOL SetupDirectCapture(Capture* pNewCapture, NodeRenderableInk* pSupplier);
 
-// State variables
-//private:
-//	StackT<Capture*> m_CaptureStack;
+  // State variables
+  //private:
+  //	StackT<Capture*> m_CaptureStack;
 
 
-	/////////////////////////////////////////////////////////////////////
-	// Additional stuff for GRenderRegionWrapper (affects how bmp mem is allocated)
+  /////////////////////////////////////////////////////////////////////
+  // Additional stuff for GRenderRegionWrapper (affects how bmp mem is allocated)
 protected:
-	BOOL IsWrapped;
-	void SetIsWrapped(BOOL flag) { IsWrapped = flag; }
+  BOOL IsWrapped;
+  void SetIsWrapped(BOOL flag) { IsWrapped = flag; }
 
-	/////////////////////////////////////////////////////////////////////////////////////////
-	//	Karim 10/04/2000
-	//	Implementation of clipping within a GRenderRegion.
+  /////////////////////////////////////////////////////////////////////////////////////////
+  //	Karim 10/04/2000
+  //	Implementation of clipping within a GRenderRegion.
 public:
-	virtual void SetClipRegion		(ClipRegionAttribute * pClipAttr, BOOL Temp);
-	virtual void RestoreClipRegion	(ClipRegionAttribute * pClipAttr, BOOL Temp);
+  virtual void SetClipRegion		(ClipRegionAttribute * pClipAttr, BOOL Temp);
+  virtual void RestoreClipRegion	(ClipRegionAttribute * pClipAttr, BOOL Temp);
 
 private:
-//	ClipRegionMap	m_ClipRegionMap;
+  //	ClipRegionMap	m_ClipRegionMap;
 
 protected:
-	const REGION* MakeClipRegionFromClipAttr(ClipRegionAttribute* pClipAttr);
-	BOOL ApplyCurrentClipRegion();
-	void FreeStoredClipRegions();
-	/////////////////////////////////////////////////////////////////////////////////////////
+  const REGION* MakeClipRegionFromClipAttr(ClipRegionAttribute* pClipAttr);
+  BOOL ApplyCurrentClipRegion();
+  void FreeStoredClipRegions();
+  /////////////////////////////////////////////////////////////////////////////////////////
 
 public:
-	void OffsetByHalfPixel();
-	virtual BOOL GrabBitmap(DocRect* rectGrab, LPBITMAPINFO* plpBitmapInfo, LPBYTE* plpBits);
+  void OffsetByHalfPixel();
+  virtual BOOL GrabBitmap(DocRect* rectGrab, LPBITMAPINFO* plpBitmapInfo, LPBYTE* plpBits);
 
 #ifdef _DEBUG
-virtual void DebugTrace();
-	BOOL DumpCaptureStack();
+  virtual void DebugTrace();
+  BOOL DumpCaptureStack();
 #endif
 
 protected:
-	// Andy Hills, 23-10-00:
-	// Helper functions for RenderBitmapFill and SetBitmapTransparencyFill
-	BOOL IsScaledUp(FillGeometryAttribute *Fill);
-	BOOL IsAt100Percent(FillGeometryAttribute *Fill);
-	BOOL IsDistorted(FillGeometryAttribute *Fill);
-	BOOL NeedToSmooth(FillGeometryAttribute *Fill,BOOL bAlreadyScaled);
-	virtual BOOL SetSmoothingFlags(FillGeometryAttribute *Fill);
+  // Andy Hills, 23-10-00:
+  // Helper functions for RenderBitmapFill and SetBitmapTransparencyFill
+  BOOL IsScaledUp(FillGeometryAttribute *Fill);
+  BOOL IsAt100Percent(FillGeometryAttribute *Fill);
+  BOOL IsDistorted(FillGeometryAttribute *Fill);
+  BOOL NeedToSmooth(FillGeometryAttribute *Fill,BOOL bAlreadyScaled);
+  virtual BOOL SetSmoothingFlags(FillGeometryAttribute *Fill);
 };
 
 

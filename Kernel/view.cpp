@@ -1,7 +1,7 @@
 // $Id: view.cpp 1357 2006-06-25 11:31:45Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
- 
+
                Xara LX, a vector drawing and manipulation program.
                     Copyright (C) 1993-2006 Xara Group Ltd.
        Copyright on certain contributions may be held in joint with their
@@ -32,7 +32,7 @@ ADDITIONAL RIGHTS
 
 Conditional upon your continuing compliance with the GNU General Public
 License described above, Xara Group Ltd grants to you certain additional
-rights. 
+rights.
 
 The additional rights are to use, modify, and distribute the software
 together with the wxWidgets library, the wxXtra library, and the "CDraw"
@@ -378,9 +378,9 @@ Document* View::GetDoc() const
     Author: 	Phil_Martin (Xara Group Ltd) <camelotdev@xara.com>
     Created:	24/5/93
     Returns:   	Pointer to the current View object.
-    Purpose:    Find the current View object which SHOULD have been set as one of the very 
-    			first actions during event processing.             
-                   			                                     
+    Purpose:    Find the current View object which SHOULD have been set as one of the very
+    			first actions during event processing.
+
 *********************************************************************************************/
 
 View *View::GetCurrent()
@@ -411,7 +411,7 @@ View *View::GetCurrent()
 BOOL View::SetCurrent()
 {
 #ifdef RALPH
-	// if we are being called from the load thread just ignore 
+	// if we are being called from the load thread just ignore
 	if(::GetCurrentThreadId() == RalphDocument::GetImportingThreadID())
 		return TRUE;
 #endif
@@ -422,13 +422,13 @@ BOOL View::SetCurrent()
 		if (this != NULL)
 		{
 			SetViewPixelSize();
-			if (pDoc != NULL) 
+			if (pDoc != NULL)
 				pDoc->SetCurrent();
 		}
 	}
 
 	return TRUE;
-}													  
+}
 
 
 
@@ -440,13 +440,13 @@ BOOL View::SetCurrent()
     Created:	24/5/93
     Purpose:    Set the current View pointer to be NULL, i.e., there is no current
     			View object.
-                   			                                     
+
 *********************************************************************************************/
 
 void View::SetNoCurrent()
 {
 #ifdef RALPH
-	// if we are being called from the load thread just ignore 
+	// if we are being called from the load thread just ignore
 	if(::GetCurrentThreadId() == RalphDocument::GetImportingThreadID())
 		return ;
 #endif
@@ -476,16 +476,16 @@ void View::SetNoCurrent()
 void View::SetViewState(ViewState* pvs)
 {
 	ERROR3IF(pvs == NULL, "View::SetViewState called with a null parameter!");
-	
+
 	// Justin here: removed this ERROR3 because it stops the workspace restoration code
 	// working.  This is a temp fix, just for the 1.1 release.  What we need is a function
 	// that allows you to *change* the ViewState this View refers to, and unfortunately
 	// the effect of these two ERROR3's is to make that impossible, as you can't pass a new
 	// ViewState, or set th existing one to null.
 //	ERROR3IF(pVState != NULL, "View::SetViewState called when view already has a view state.");
-	
+
 	pVState = pvs;
-	
+
 	// Inform the ViewState object which view it is describing.
 	pVState->pView = this;
 }
@@ -493,7 +493,7 @@ void View::SetViewState(ViewState* pvs)
 /*********************************************************************************************
 
 > 	RenderRegion *View::NewRenderRegion(DocRect InvalidRect, Matrix& ViewMatrix,
-										CDC* pDevContext, Spread* pSpread, 
+										CDC* pDevContext, Spread* pSpread,
 										RenderType rType)
     Author: 	Phil_Martin (Xara Group Ltd) <camelotdev@xara.com>
     Created:	27/5/93
@@ -501,58 +501,58 @@ void View::SetViewState(ViewState* pvs)
     Returns:	Pointer to a new RenderRegion, or NULL if failed.
 	Scope:		Protected
     Purpose:	Make a new RenderRegion of the correct type
-			    then do all the common things that have to be done to a new RenderRegion before 
+			    then do all the common things that have to be done to a new RenderRegion before
 			    returning it.
 				If the rectangle passed in is empty then no region will be created!
 	Errors:		NULL return if RR::Create or AttachDevice failed.
-                   			                                     
+
 *********************************************************************************************/
 
-RenderRegion *View::NewRenderRegion(DocRect InvalidRect, Matrix& ViewMatrix,
-									CNativeDC *pDevContext, Spread* pSpread, RenderType rType,
-									bool fOwned /*= false*/ )
-{
-	RenderRegion *pNewRRegion;
+RenderRegion* View::NewRenderRegion(DocRect InvalidRect,
+				    Matrix& ViewMatrix,
+				    CNativeDC* pDevContext,
+				    Spread* pSpread,
+				    RenderType rType,
+				    bool fOwned) {
+  RenderRegion* pNewRRegion;
+  if (rType == RENDERTYPE_SCREENXOR) {
+    if (pOnTopRegion == NULL)
+      {
+	// No OnTop rendering region - get a new render region of
+	// the special type RENDERTYPE_SCREENPAPER.
+	pOnTopRegion = (PaperRenderRegion *) NewRenderRegion(InvalidRect, ViewMatrix,
+							     pDevContext, pSpread,
+							     RENDERTYPE_SCREENPAPER, fOwned );
+	pOnTopRegion->SaveContext();
+      }
+    else
+      {
+	// Change the device of the OnTop rendering region
+	pOnTopRegion->AttachDevice(this, pSpread, pDevContext,
+				   ViewMatrix, Scale, InvalidRect, fOwned );
+      }
 
-	if (rType == RENDERTYPE_SCREENXOR)
-	{
-		if (pOnTopRegion == NULL)
-		{
-			// No OnTop rendering region - get a new render region of 
-			// the special type RENDERTYPE_SCREENPAPER.
-			pOnTopRegion = (PaperRenderRegion *) NewRenderRegion(InvalidRect, ViewMatrix,
-																 pDevContext, pSpread,
-																 RENDERTYPE_SCREENPAPER, fOwned );
-			pOnTopRegion->SaveContext();
-		}
-		else
-		{
-			// Change the device of the OnTop rendering region
-			pOnTopRegion->AttachDevice(this, pSpread, pDevContext, 
-									   ViewMatrix, Scale, InvalidRect, fOwned );
-		}
-
-		pNewRRegion = pOnTopRegion;
-	}
-	else
-	{
-		// JCF: added 'this' argument to the end of the list.
-		pNewRRegion = OSRenderRegion::Create(InvalidRect, ViewMatrix, Scale, rType, this);
-
-		// If the construction was succesful then
-		// Attach the new RenderRegion to a Window and its DC for rendering...
-		if (pNewRRegion)
-		{
-			if (!pNewRRegion->AttachDevice(this, pDevContext, pSpread, fOwned))
-			{
-				// the AttachDevice failed, so tidy up
-				delete pNewRRegion;
-				pNewRRegion = NULL;
-			}
-		}
-	}
-
-	return pNewRRegion;
+    pNewRRegion = pOnTopRegion;
+  } else {
+    // hoping that whenever this is called the dialog manager is
+    // initialize enough to have the correct scale factor loaded from
+    // the user's preference and or detected from the screen environment.
+    pNewRRegion = OSRenderRegion::Create (InvalidRect,
+					  ViewMatrix,
+					  Scale,
+					  rType,
+					  this);
+    // If the construction was succesful then Attach the new
+    // RenderRegion to a Window and its DC for rendering...
+    if (pNewRRegion) {
+      if (!pNewRRegion->AttachDevice(this, pDevContext, pSpread, fOwned)) {
+	// the AttachDevice failed, so tidy up
+	delete pNewRRegion;
+	pNewRRegion = NULL;
+      }
+    }
+  }
+  return pNewRRegion;
 }
 
 /*********************************************************************************************
@@ -562,7 +562,7 @@ RenderRegion *View::NewRenderRegion(DocRect InvalidRect, Matrix& ViewMatrix,
 	Author: 	Will_Cowling (Xara Group Ltd) <camelotdev@xara.com>
     Created:	2/5/95
     Purpose:	Deinitialises the static OnTop RenderRegion, used for blob rendering.
-                   			                                     
+
 *********************************************************************************************/
 
 void View::DeInitOnTopRegion()
@@ -663,7 +663,7 @@ void View::RenderPaper(Spread *pSpread, DocRect ClipRect, CNativeDC *pDevContext
 //	TRACE( _T("View::RenderPaper\n") );
 	if (pPaperRegion == NULL)
 	{
-		// No paper rendering region - get a new render region of 
+		// No paper rendering region - get a new render region of
 		// the special type RENDERTYPE_SCREENPAPER.
 		pPaperRegion = (PaperRenderRegion *) NewRenderRegion(ClipRect, RenderMatrix,
 															 pDevContext, pSpread,
@@ -678,7 +678,7 @@ void View::RenderPaper(Spread *pSpread, DocRect ClipRect, CNativeDC *pDevContext
 	else
 	{
 		// Change the device of the paper rendering region
-		pPaperRegion->AttachDevice(this, pSpread, pDevContext, 
+		pPaperRegion->AttachDevice(this, pSpread, pDevContext,
 								   RenderMatrix, Scale, ClipRect);
 	}
 
@@ -705,24 +705,24 @@ void View::RenderPaper(Spread *pSpread, DocRect ClipRect, CNativeDC *pDevContext
 
 /********************************************************************************************
 
->	virtual void View::RenderPaper(RenderRegion* pRRegion, Spread* pSpread) 
+>	virtual void View::RenderPaper(RenderRegion* pRRegion, Spread* pSpread)
 
 	Author: 	Phil_Martin (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	19/5/93
 	Inputs:		pRRegion - The render region to draw in
 				pSpread - the spread to draw
 	Scope:		Private
-	Purpose:	To render the parts of a Document which are not rendered when printing. Ie. all 
-		 		the parts of the document that represent the paper on which the ink will be 
+	Purpose:	To render the parts of a Document which are not rendered when printing. Ie. all
+		 		the parts of the document that represent the paper on which the ink will be
 				rendered.
-				This function does not take any notice of the RenderControl object - it renders 
-				until it has finished so that at least the pages, pasteboard, etc. will be 
+				This function does not take any notice of the RenderControl object - it renders
+				until it has finished so that at least the pages, pasteboard, etc. will be
 				drawn when any region is invalidated.
 
 ********************************************************************************************/
 /*
 Technical notes:
-				Assumes that the node that it is passed is the first node in the tree and that 
+				Assumes that the node that it is passed is the first node in the tree and that
 				this node does NOT need to be rendered as part of the Paper view.
 
 ********************************************************************************************/
@@ -762,7 +762,7 @@ void View::RenderPaper(RenderRegion* pRRegion, Spread* pSpread)
 				}
 			}
 		}
-	}	
+	}
 #endif
 }
 
@@ -770,7 +770,7 @@ void View::RenderPaper(RenderRegion* pRRegion, Spread* pSpread)
 
 /********************************************************************************************
 
->	virtual void View::RenderPageMarks(Spread *pSpread, 
+>	virtual void View::RenderPageMarks(Spread *pSpread,
 									   DocRect ClipRect,
 									   CDC *pDevContext,
 									   Matrix& RenderMatrix
@@ -878,7 +878,7 @@ BOOL View::RenderPageMarks(RenderRegion *pCurrRegion, Matrix &ViewTrans, DocRect
 
 #endif
 #endif
-	return TRUE;	
+	return TRUE;
 }
 
 
@@ -902,7 +902,7 @@ void View::OnDraw( CNativeDC *pDevContext, OilRect OilClipRect )
 		return;						     	// If the system is disabled, ignore
 
 //	TRACE( _T("View::OnDraw\n") );
-	
+
 //	TRACE( _T("Rect = (%d, %d, %d, %d)"), OilClipRect.lo.x, OilClipRect.lo.y, OilClipRect.hi.x, OilClipRect.hi.y );
 
 	// find type of rendering device
@@ -1053,7 +1053,7 @@ WorkCoord View::GetScrollOffsets() const
 	Inputs:		New view scale factor
     Purpose:    Set the viewing scale factor for this view.
 				(Also, sets up the scaled pixel size in DocCoord if this View is current.
-                   			                                     
+
 *********************************************************************************************/
 
 BOOL View::SetViewScale(FIXED16 NewScale)
@@ -1085,7 +1085,7 @@ BOOL View::SetViewScale(FIXED16 NewScale)
     Created:	31/5/93
     Returns:   	Viewing scale factor for this view.
     Purpose:    Inquire the viewing scale factor from this View.
-                   			                                     
+
 *********************************************************************************************/
 
 FIXED16 View::GetViewScale() const
@@ -1129,7 +1129,7 @@ Matrix View::ConstructRenderingMatrix(Spread *pSpread)
 	// Just in case the above hasn't work (the DocCoord conversion seems to produce some rounding
 	// errors), Pixelize the offset
 	WorkCoordOffset.Pixelise(72000.0/PixelWidth.MakeDouble(),72000.0/PixelHeight.MakeDouble());
-	
+
 	// Construct the transformation matrix for the spread.
 	Matrix RenderMatrix;
 
@@ -1183,7 +1183,7 @@ Matrix View::ConstructScaledRenderingMatrix(Spread *pSpread, double ScaleFactor)
 	// Offset it by the window scroll position
 	WorkCoordOffset.x -= pVState->GetScrollPos().x;
 	WorkCoordOffset.y -= pVState->GetScrollPos().y;
-	
+
 	// Construct the transformation matrix for the spread.
 	Matrix RenderMatrix;
 
@@ -1334,7 +1334,7 @@ void View::GetScaledPixelSize(FIXED16 *pScaledPixelWidth, FIXED16 *pScaledPixelH
 	Author:		Gerry_Iles (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	18/08/2005
 
-	Returns:	The resolution to use for convert top editable shapes 
+	Returns:	The resolution to use for convert top editable shapes
 				operations while this view is current
 	Purpose:	Allows derived view classes to override the reolution
 
@@ -1557,7 +1557,7 @@ void View::SetColourPlate(ColourPlate *NewPlate, BOOL bSendContextChanged)
 		}
 	}
 
-	// And if necessary, inform everybody that the colour separation options for 
+	// And if necessary, inform everybody that the colour separation options for
 	// the selected view have been changed
 	if (bSendContextChanged && this == DocView::GetSelected())
 		ColourManager::SelViewContextHasChanged();
@@ -1578,14 +1578,14 @@ void View::SetColourPlate(ColourPlate *NewPlate, BOOL bSendContextChanged)
 							 context will be deleted. The new context is now "owned" by the
 							 view, which will delete it when it is finished with it.
 
-	Purpose:	Sets a new colour context for this view. 
+	Purpose:	Sets a new colour context for this view.
 
 				When we render to a view, an appropriate CMYK or RGB context is used
 				for output, fetched by calling View::GetColourContext. Normally, the view
 				will get a global default context, attach a copy of the View's ColourPlate
 				(see View::SetColourPlate) to it, and return that. However, if you set
 				a special context, this will be used instead of a global default.
-				
+
 				This is only currently used by the printing system to use a CMYK context
 				which knows how to colour-correct separated output for the output printer
 				device.
@@ -1744,7 +1744,7 @@ void ProgressDisplay::SetUp(RenderRegion *pRender, ScanningRenderRegion *pScanne
 				FirstStageCount++;
 
 			// Have we found the last complex node yet?
-			// (If so, then we start incrementing ThirdStageCount instead of 
+			// (If so, then we start incrementing ThirdStageCount instead of
 			// FirstStageCount).
 			if (pNode == pLastComplexNode)
 				FoundLastComplex = TRUE;
@@ -1772,7 +1772,7 @@ void ProgressDisplay::SetUp(RenderRegion *pRender, ScanningRenderRegion *pScanne
 			}
 
 			// Have we found the last complex node yet?
-			// (If so, then we start incrementing ThirdStageCount instead of 
+			// (If so, then we start incrementing ThirdStageCount instead of
 			// FirstStageCount).
 			if (pNode == pLastComplexNode)
 				FoundLastComplex = TRUE;
@@ -2233,8 +2233,8 @@ BOOL View::IsPrintableNodeSelected(Node *pNode)
 		// Even if this node is not selected, its parent might be, so we
 		// scan upwards until we find a layer, or a selected node.
 		Node *pTestNode = pNode;
-		while ((pTestNode != NULL) && 
-			   (!pTestNode->IsSelected()) && 
+		while ((pTestNode != NULL) &&
+			   (!pTestNode->IsSelected()) &&
 			   (!pTestNode->IsLayer()))
 		{
 			pTestNode = pTestNode->FindParent();
@@ -2306,7 +2306,7 @@ public:
 		return(bRender);
 	}
 
-	virtual BOOL BeforeSubtree(RenderRegion* pRegion, Node* pNode, Node** ppNextNode, 
+	virtual BOOL BeforeSubtree(RenderRegion* pRegion, Node* pNode, Node** ppNextNode,
 									BOOL bClip, SubtreeRenderState* pState)
 	{
 //		TRACE( _T("SRC# BeforeSubtree 0x%08x - %s\n"), pNode, pNode->GetRuntimeClass()->GetClassName());
@@ -2372,7 +2372,7 @@ public:
 		return(bRender);
 	}
 
-	virtual BOOL BeforeSubtree(RenderRegion* pRegion, Node* pNode, Node** ppNextNode, 
+	virtual BOOL BeforeSubtree(RenderRegion* pRegion, Node* pNode, Node** ppNextNode,
 									BOOL bClip, SubtreeRenderState* pState)
 	{
 //		TRACE( _T("OPRC# BeforeSubtree 0x%08x - %s\n"), pNode, pNode->GetRuntimeClass()->GetClassName());
@@ -2388,20 +2388,20 @@ public:
 				TRACEUSER("noone", _T("Try to render the last complex span NumNodes = %d\n"), m_ComplexCount);
 				RenderLastComplexSpan(pRegion, pNode);
 			}
-			
+
 			m_SpanBoundsRect = m_NextBoundsRect;
 			m_pNextAction = m_pScanRR->FindNextFromList();
 			m_bNextComplex = m_pScanRR->IsThisNodeComplex();
 			m_NextBoundsRect = m_pScanRR->GetSpanBounds();
-			TRACEUSER("noone", _T("NextBounds = (%d, %d) - (%d, %d)\n"), m_NextBoundsRect.lo.x, m_NextBoundsRect.lo.y, 
+			TRACEUSER("noone", _T("NextBounds = (%d, %d) - (%d, %d)\n"), m_NextBoundsRect.lo.x, m_NextBoundsRect.lo.y,
 				m_NextBoundsRect.hi.x, m_NextBoundsRect.hi.y );
-			TRACEUSER("noone", _T("NextAction is %s 0x%08x - %s\n"), m_bNextComplex ? _T("complex") : _T("simple"), m_pNextAction, 
+			TRACEUSER("noone", _T("NextAction is %s 0x%08x - %s\n"), m_bNextComplex ? _T("complex") : _T("simple"), m_pNextAction,
 				m_pNextAction ? m_pNextAction->GetRuntimeClass()->GetClassName() : _T("") );
 			m_ComplexCount = 0;
 			m_pComplexStart = bIsComplex ? pNode : NULL;
 			m_bDoingComplex = bIsComplex;
 		}
-		
+
 		return(FALSE);
 	}
 
@@ -2414,7 +2414,7 @@ public:
 			RenderLastComplexSpan(pRegion, NULL);
 		}
 
-		return true; 
+		return true;
 	}
 
 protected:
@@ -2436,7 +2436,7 @@ protected:
 											  m_bPrintPaper, *m_pNodesSoFar, m_pProgress, m_ComplexCount);
 		}
 
-		return true; 
+		return true;
 	}
 
 private:
@@ -2468,7 +2468,7 @@ public:
 		RS_INCOMPLEX,
 		RS_AFTERCOMPLEX,
 	} RenderStateType;
-	
+
 	OptimalBitmapRenderCallback(View* pView, BOOL bRenderAll, Node* pFirstComplex, Node* pNextNormal, BOOL bRenderMask,
 				double RegionArea, INT32* pNodesSoFar, ProgressDisplay* pProgress, BOOL bCount, double NodeIncrement = 1.0)
 	{
@@ -2531,7 +2531,7 @@ public:
 					case RS_INCOMPLEX:
 						// Use the standard case below
 						break;
-					
+
 					case RS_AFTERCOMPLEX:
 			 			// if it is bounded, then decide if it is worth doing this
 						// Don't do this for NodeClipView's or large objects clipped by small ones
@@ -2541,7 +2541,7 @@ public:
 						{
 							// Find out the bounds
 							DocRect BoundsRect = ((NodeRenderableBounded*)pNode)->GetBoundingRect();
-							
+
 							// if it is small, then don't draw it
 							double BoundsArea = (double)BoundsRect.Width() * (double)BoundsRect.Height();
 							if (BoundsArea > 0)
@@ -2560,7 +2560,7 @@ public:
 					default:
 						TRACE( _T("OBRC# Bad RenderState in BeforeNode\n"));
 						break;
-				}			
+				}
 			}
 			else	// m_bRenderMask
 			{
@@ -2571,7 +2571,7 @@ public:
 					case RS_INCOMPLEX:
 						// Use the standard case below
 						break;
-					
+
 					case RS_AFTERCOMPLEX:
 						// Must skip everything until the end
 						bRender = FALSE;
@@ -2580,9 +2580,9 @@ public:
 					default:
 						TRACE( _T("OBRC# Bad RenderState in BeforeNode\n"));
 						break;
-				}			
+				}
 			}
-		}		
+		}
 
 //		TRACE( _T("OBRC%s# BeforeNode    0x%08x - %s	returning %s\n", m_bRenderMask?"M":"B", pNode, pNode->GetRuntimeClass()->GetClassName(), bRender ? "true" : "false"));
 		return(bRender);
@@ -2607,7 +2607,7 @@ public:
 						PrintingMaskedRenderRegion* pMaskRegion = (PrintingMaskedRenderRegion*)pRegion;
 						pMaskRegion->SetMaskDrawingMode(TRUE);
 					}
-					
+
 					// And change state to be in the complex span
 					m_RenderState = RS_INCOMPLEX;
 				}
@@ -2623,7 +2623,7 @@ public:
 						PrintingMaskedRenderRegion* pMaskRegion = (PrintingMaskedRenderRegion*)pRegion;
 						pMaskRegion->SetMaskDrawingMode(FALSE);
 					}
-					
+
 					// And change state to be after the complex span
 					m_RenderState = RS_AFTERCOMPLEX;
 
@@ -2725,10 +2725,10 @@ RenderViewResult View::RenderOptimalView(RenderRegion* pRender, Matrix& ViewTran
 	// Get it ready to render
 	Scanner.SetMatrix(ViewTrans);
 	Scanner.SetClipRect(ClipRect);
-	
+
 	// Start the render region and return if it fails
 	if (Scanner.StartRender())
-	{			
+	{
 		// and tell the scanning render region about the caps of the host region
 		Scanner.SetHostRRCaps(Caps);
 
@@ -2775,7 +2775,7 @@ RenderViewResult View::RenderOptimalView(RenderRegion* pRender, Matrix& ViewTran
 
 		// Ask the render region not to render complex shapes
 		pRender->SetRenderComplexShapes(FALSE);
-	
+
 		// Start the render region and get out if it fails
 		if (!pRender->StartRender())
 			goto OptimalRenderError;
@@ -2829,7 +2829,7 @@ RenderViewResult View::RenderOptimalView(RenderRegion* pRender, Matrix& ViewTran
 		// All worked, so return success
 		Result = RENDERVIEW_SUCCESS;
 	}
-	
+
 OptimalRenderError:
 #ifdef _DEBUG
 	if (Result != RENDERVIEW_SUCCESS)
@@ -2871,7 +2871,7 @@ OptimalRenderError:
 				Progress - the Progress display object
 	Outputs:	NodesSoFar - The Number of nodes rendered after the Complex ones have been done
 	Returns:	SLOWJOB_SUCCESS - if all went well
-				SLOWJOB_FAILURE - if all went bad 
+				SLOWJOB_FAILURE - if all went bad
 				SLOWJOB_USERABORT - if the user press 'esc'
 	Purpose:	Renders the masked bitmap part of the process. This function will get called
 				many times during the typical rendering of the document (once for each run
@@ -2881,7 +2881,7 @@ OptimalRenderError:
 				ColourPlate attached to this view). The bitmap is then plotted into the output
 				RenderRegion, at which point it will be separated/corrected according to the
 				ColourPlate settings. This is for 2 reasons:
-				1) If we didn't stop it here, the output would be colour corrected twice, 
+				1) If we didn't stop it here, the output would be colour corrected twice,
 				   and thus come out wrong
 				2) Bleach transparency does not work correctly on pre-separated colours,
 				   so we must render using composite colour in order to nmake such
@@ -2945,7 +2945,7 @@ SlowJobResult View::RenderOptimalBitmapPhase(DocRect& ClipRect, Matrix& ViewTran
 	BitmapClipRect.lo.x = (INT32)(((double)TempPixels) * dPixelWidth);
 	if (BitmapClipRect.Width() < dPixelWidth)
 		BitmapClipRect.hi.x = (INT32)(BitmapClipRect.lo.x + dPixelWidth);
-	
+
 	TempPixels = (INT32)(((double)BitmapClipRect.lo.y) / dPixelWidth);
 	BitmapClipRect.lo.y = (INT32)(((double)TempPixels) * dPixelWidth);
 	if (BitmapClipRect.Height() < dPixelWidth)
@@ -2955,7 +2955,7 @@ SlowJobResult View::RenderOptimalBitmapPhase(DocRect& ClipRect, Matrix& ViewTran
 	// Find out if this render region is printing or not.
 	// This is used as a param to the constructors of the bitmap-related render regions so that they
 	// have the same printing state as the main render region.
-	// If they don't, some nodes that shouldn't render when printing (e.g. background layers) will get 
+	// If they don't, some nodes that shouldn't render when printing (e.g. background layers) will get
 	// rendered into the bitmaps.
 	BOOL Printing = pRender->IsPrinting();
 
@@ -2980,7 +2980,7 @@ SlowJobResult View::RenderOptimalBitmapPhase(DocRect& ClipRect, Matrix& ViewTran
 		TRACEUSER( "Gerry", _T("NULL GDraw context returned from SetTempDrawContext\n"));
 	}
 
-	// Feathers require that the ScaleFactor of the render region be set correctly 
+	// Feathers require that the ScaleFactor of the render region be set correctly
 	// or they will only render correctly at 100%
 	FIXED16 TempScale;
 	ViewTrans.Decompose(&TempScale, NULL, NULL, NULL, NULL);
@@ -3069,7 +3069,7 @@ SlowJobResult View::RenderOptimalBitmapPhase(DocRect& ClipRect, Matrix& ViewTran
 		DocRect DrawRect = ClipRect;
 
 		// Inflate the rect by 2 pixels
-		DrawRect.Inflate((INT32)(2*72000.0/Dpi + 0.5)); 
+		DrawRect.Inflate((INT32)(2*72000.0/Dpi + 0.5));
 
 		// Tell the masked render region that the following nodes are Simple
 		MaskedBitmap.SetMaskDrawingMode(FALSE);
@@ -3180,7 +3180,7 @@ pRealBmp->AttachDebugCopyToCurrentDocument("TestBmp");
 			{
 				// Either something has gone wrong, or an error has occured, so clean up.
 
-				// Get rid of the bitmaps. We have to detach it once, as it was attached 
+				// Get rid of the bitmaps. We have to detach it once, as it was attached
 				// when extracted from the render region.
 //				pFullBitmap->Detach();
 				delete pRealBmp;
@@ -3256,7 +3256,7 @@ TRACEUSER( "Phil", _T("GetNextBand (After)  %d, %d\n"), BitmapRR.GetClipRect().l
 		TRACEUSER( "Gerry", _T("Not &TempContext when restoring\n"));
 	}
 	pOldGD = NULL;
-	
+
 	// All went well so makesure the progress is at the right point
 	NodesSoFar = EndProgress;
 	if (pProgress)
@@ -3331,7 +3331,7 @@ public:
 												  m_bPrintPaper, *m_pProgress);
 			}
 		}
-		
+
 		return(FALSE);
 	}
 
@@ -3362,7 +3362,7 @@ public:
 		RS_INCOMPLEX,
 		RS_AFTERCOMPLEX,
 	} RenderStateType;
-	
+
 	SimpleBitmapRenderCallback(View* pView, BOOL bRenderAll, Node* pFirstComplex, Node* pLastComplex, BOOL bRenderMask)
 	{
 		m_pView = pView;
@@ -3408,7 +3408,7 @@ public:
 				m_RenderState = RS_INCOMPLEX;
 			}
 		}
-		
+
 		return(FALSE);
 	}
 
@@ -3513,7 +3513,7 @@ RenderViewResult View::RenderSimpleView(RenderRegion* pRender, Matrix& ViewTrans
 	ScanningRenderRegion Scanner(pRender->IsPrinting());
 
 	BOOL bDoScan = TRUE;
-	
+
 	if (bIsOnScreen)
 	{
 		// Now check the print method to determine if we need to do a three-pass render
@@ -3547,11 +3547,11 @@ RenderViewResult View::RenderSimpleView(RenderRegion* pRender, Matrix& ViewTrans
 		// Get it ready to render
 		Scanner.SetMatrix(ViewTrans);
 		Scanner.SetClipRect(ClipRect);
-		
+
 		// Start the render region and return if it fails
 		if (!Scanner.StartRender())
 			return RENDERVIEW_FAILURE;
-		
+
 		// and tell the scanning render region about the caps of the host region
 		Scanner.SetHostRRCaps(Caps);
 
@@ -3569,11 +3569,11 @@ RenderViewResult View::RenderSimpleView(RenderRegion* pRender, Matrix& ViewTrans
 
 		// Call RenderTree to do the rendering
 		Scanner.RenderTree(pSpread, FALSE, FALSE, &ScanCallback);
-		
-		// Thats all the nodes rendered, so stop rendering	
+
+		// Thats all the nodes rendered, so stop rendering
 		Scanner.StopRender();
 	}
-	
+
 	//	WEBSTER-ranbirr-13/11/96
 #ifndef WEBSTER
 	// We going to print the document now
@@ -3590,10 +3590,10 @@ RenderViewResult View::RenderSimpleView(RenderRegion* pRender, Matrix& ViewTrans
 
 	pRender->SetMatrix(ViewTrans);
 	pRender->SetClipRect(ClipRect);
-	
+
 	// Ask the render region not to render complex shapes
 	pRender->SetRenderComplexShapes(FALSE);
-	
+
 	// Start the render region and return if it fails
 	if (!pRender->StartRender())
 		return RENDERVIEW_FAILURE;
@@ -3627,7 +3627,7 @@ RenderViewResult View::RenderSimpleView(RenderRegion* pRender, Matrix& ViewTrans
 	}
 
 	// Find the first and last complex node in the document
-	Node* pFirstComplexNode = Scanner.GetFirstComplexObject();	
+	Node* pFirstComplexNode = Scanner.GetFirstComplexObject();
 	Node* pLastComplexNode = Scanner.GetLastComplexObject();
 
 	// Create and initialise the progress display.
@@ -3646,7 +3646,7 @@ RenderViewResult View::RenderSimpleView(RenderRegion* pRender, Matrix& ViewTrans
 
 	TRACE( _T("pFirstComplexNode = 0x%08x\n"), pFirstComplexNode);
 	TRACE( _T("pLastComplexNode  = 0x%08x\n"), pLastComplexNode);
-	
+
 //	pRender->SetRenderState(pFirstInkNode);
 
 	// Find out about the first node and the first complex node
@@ -3656,7 +3656,7 @@ RenderViewResult View::RenderSimpleView(RenderRegion* pRender, Matrix& ViewTrans
 	// We always do it under NT, or to a PostScript printer or EPS file; under other conditions
 	// we are controlled by the printing preference.
 	BOOL DoMaskedBlit = FALSE;
-	if (//IsWin32NT() || 
+	if (//IsWin32NT() ||
 		bIsOnScreen ||
 		(PrintMonitor::PrintMaskType==PrintMonitor::MASK_MASKED) ||
 		(CCDC::GetType(pRender->GetRenderDC(), TRUE) == RENDERTYPE_PRINTER_PS) ||
@@ -3727,7 +3727,7 @@ RenderViewResult View::RenderSimpleView(RenderRegion* pRender, Matrix& ViewTrans
 
 	Note that we must scan the tree without using the region's clip rectangle, because otherwise
 	we will miss the 'last complex node' when searching, because e.g. it is outside the
-	clipping rectangle of a particular band, so we will keep rendering until we reach the top 
+	clipping rectangle of a particular band, so we will keep rendering until we reach the top
 	of the drawing object stack, which is bad.  Therefore, we scan without doing region tests,
 	but we check whether the node actually needs to render using the current band's
 	clipping region.
@@ -3803,7 +3803,7 @@ SlowJobResult View::RenderBitmapPhase(DocRect& ComplexClipRect, Matrix& ViewTran
 	// We always do it under NT, or to a PostScript printer; under other conditions
 	// we are controlled by the printing preference.
 	BOOL DoMaskedBlit = FALSE;
-	if (//IsWin32NT() || 
+	if (//IsWin32NT() ||
 		bIsOnScreen ||
 		(PrintMonitor::PrintMaskType==PrintMonitor::MASK_MASKED) ||
 		(CCDC::GetType(pHostRegion->GetRenderDC(), TRUE) == RENDERTYPE_PRINTER_PS) ||
@@ -3845,7 +3845,7 @@ SlowJobResult View::RenderBitmapPhase(DocRect& ComplexClipRect, Matrix& ViewTran
 		TRACEUSER( "Gerry", _T("NULL GDraw context returned from SetTempDrawContext\n"));
 	}
 
-	// Feathers require that the ScaleFactor of the render region be set correctly 
+	// Feathers require that the ScaleFactor of the render region be set correctly
 	// or they will only render correctly at 100%
 	FIXED16 TempScale;
 	ViewTrans.Decompose(&TempScale, NULL, NULL, NULL, NULL);
@@ -3918,7 +3918,7 @@ SlowJobResult View::RenderBitmapPhase(DocRect& ComplexClipRect, Matrix& ViewTran
 			BitmapRR.RestoreContext();
 		}
 
-		// We anti-alias the transparency mask 
+		// We anti-alias the transparency mask
 		QualityAttribute *pAttr = new QualityAttribute();
 		pAttr->QualityValue.SetQuality(QUALITY_MAX);
 		BitmapRR.SetQuality(pAttr, TRUE);
@@ -3977,7 +3977,7 @@ SlowJobResult View::RenderBitmapPhase(DocRect& ComplexClipRect, Matrix& ViewTran
 
 		// Tell the render region we are done rendering
 		MaskedBitmap.StopRender();
-		
+
 		// Make the mask a little bigger, to cover any errors from different dpis
 		MaskedBitmap.SpreadMask();
 
@@ -3986,7 +3986,7 @@ SlowJobResult View::RenderBitmapPhase(DocRect& ComplexClipRect, Matrix& ViewTran
 //		KernelBitmap* pRealMaskBmp = new KernelBitmap(pMaskBitmap, TRUE);
 //		pRealMaskBmp->AttachDebugCopyToCurrentDocument("TestMask");
 //		delete pRealMaskBmp;
-		
+
 		// Get the bitmaps from the render region
 		OILBitmap* pFullBitmap = BitmapRR.ExtractBitmap();
 		KernelBitmap* pRealBmp = new KernelBitmap(pFullBitmap, TRUE);
@@ -3995,7 +3995,7 @@ SlowJobResult View::RenderBitmapPhase(DocRect& ComplexClipRect, Matrix& ViewTran
 
 		// Restore the ForceDefaultContext flag around the output rendering section
 		ForceDefaultColourContexts = OldForceState;
-		
+
 		// Restore the original GDrawContext
 		if (GRenderRegion::SetTempDrawContext(pOldGD) != &TempContext)
 		{
@@ -4015,14 +4015,14 @@ SlowJobResult View::RenderBitmapPhase(DocRect& ComplexClipRect, Matrix& ViewTran
 //			TRACE( _T("BandMatrix = \n"));
 //			Matrix HostMatrix = pHostRegion->GetMatrix();
 //			HostMatrix.Dump();
-			SlowJobResult Result = pHostRegion->DrawMaskedBitmap(BandClipRect, pRealBmp, 
+			SlowJobResult Result = pHostRegion->DrawMaskedBitmap(BandClipRect, pRealBmp,
 																 &MaskedBitmap, &Progress);
 
 			if (Result != SLOWJOB_SUCCESS)
 			{
 				// Either something has gone wrong, or an error has occured, so clean up.
 
-				// Get rid of the bitmaps. We have to detach it once, as it was attached 
+				// Get rid of the bitmaps. We have to detach it once, as it was attached
 				// when extracted from the render region.
 //				pFullBitmap->Detach();
 				delete pRealBmp;
@@ -4083,7 +4083,7 @@ SlowJobResult View::RenderBitmapPhase(DocRect& ComplexClipRect, Matrix& ViewTran
 	pOldGD = NULL;
 
 //	pHostRegion->StartRender();
-	
+
 //	TRACEUSER( "Gerry", _T("End of View::RenderBitmapPhase\n"));
 
 	// all worked
@@ -4163,7 +4163,7 @@ SlowJobResult View::RenderSimpleNodesUnclipped(Node *pNode, RenderRegion *pRende
 
 	Author:		Tim_Browse (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	05/09/95
-	Returns:	Pointer to the PrintControl object, or 
+	Returns:	Pointer to the PrintControl object, or
 				NULL if none found, or the view is not attached to a document.
 	Purpose:	Simple way of getting the PrintControl object associated with this view's
 				document.
@@ -4183,11 +4183,11 @@ PrintControl *View::GetPrintControl()
 	// printing via bitmap, and so if we need to band the output.
 	PrintComponent *pPrintComponent = (PrintComponent *)
 		pDoc->GetDocComponent(CC_RUNTIME_CLASS(PrintComponent));
-	ERROR2IF(pPrintComponent == NULL, NULL, 
+	ERROR2IF(pPrintComponent == NULL, NULL,
 			 "Unable to find PrintComponent object in document.");
 
 	PrintControl *pPrintControl = pPrintComponent->GetPrintControl();
-	ERROR2IF(pPrintControl == NULL, NULL, 
+	ERROR2IF(pPrintControl == NULL, NULL,
 			 "Unable to find PrintControl object in document component.");
 
 	return pPrintControl;
@@ -4331,4 +4331,3 @@ BOOL ProgressDisplay::SetNodesRendered(INT32 NumNodes)
 	// All ok
 	return TRUE;
 }
-

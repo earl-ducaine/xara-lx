@@ -1,29 +1,5 @@
 #!/usr/bin/env bash
 
-function build_wx {
-    if [ ! -d wxGTK-2.8.12 ]; then
-	if [ ! -f wxGTK-2.8.12.tar.gz ]; then
-	    curl -LO https://github.com/wxWidgets/wxWidgets/releases/download/v2.8.12/wxGTK-2.8.12.tar.gz
-	fi
-	tar xf wxGTK-2.8.12.tar.gz
-    fi
-    cd wxGTK-2.8.12
-    if [ -d buildgtk ]; then
-	cd buildgtk
-	sudo make uninstall
-	cd ..
-	rm -rf buildgtk
-    fi
-    mkdir buildgtk
-    cd buildgtk
-    ../configure --with-gtk --enable-debug --enable-unicode --with-libpng=builtin
-    make -j 8
-    sudo make install
-    sudo ldconfig
-    cd ..
-    cd ..
-}
-
 function build_wx_30 {
     if [ ! -d wxWidgets-3.0.3 ]; then
 	if [ ! -f wxGTK-3.0.3.tar.gz ]; then
@@ -40,7 +16,8 @@ function build_wx_30 {
     fi
     mkdir buildgtk
     cd buildgtk
-    ../configure --with-gtk --enable-debug --enable-unicode --enable-aui --with-libpng=builtin
+    ../configure --enable-debug --enable-unicode --enable-aui --with-gtk=3 --disable-shared
+#    ../configure --with-gtk --enable-debug --enable-unicode --enable-aui --with-libpng=builtin
     make -j 8
     sudo make install
     sudo ldconfig
@@ -67,33 +44,14 @@ function build_wx_from_git {
     mkdir buildgtk
     cd buildgtk
     ../configure --with-gtk --enable-debug --enable-unicode --with-libpng=builtin
-    make -j 8
-    sudo make install
-    sudo ldconfig
+    export PATH="/usr/lib/ccache:$PATH"; make -j 8
     cd ..
-    cd ..
-}
-
-function run_build_wx_from_git {
-    build_wx_from_git WX_2_9_0
-}
-
-function build_png {
-    if [ ! -d libpng-1.6.29 ]; then
-	if [ ! -f libpng-1.6.29.tar.gz ]; then
-	    curl -LO https://superb-sea2.dl.sourceforge.net/project/libpng/libpng16/1.6.29/libpng-1.6.29.tar.gz
-	fi
-	tar xf libpng-1.6.29.tar.gz
-    fi
-    cd libpng-1.6.29
-    ./configure
-    make -j 2
     cd ..
 }
 
 function build_xoamorph {
     ./autogen.sh
-    ./configure --enable-debug
+    ./configure --enable-debug --with-wx-config=wxWidgets-3.0.3/buildgtk/wx-config --enable-static-exec
     # cd libs/x86_64
     #  ar -s -r libCDraw.a *.o
     # cd ../..

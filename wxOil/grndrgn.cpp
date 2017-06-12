@@ -847,72 +847,71 @@ void GRenderRegion::DeInit()
 
 ********************************************************************************************/
 
-GRenderRegion::GRenderRegion(DocRect ClipRegion, Matrix ConvertMatrix, FIXED16 ViewScale,
-								UINT32 Depth, double dpi)
-	: RenderRegion(ClipRegion, ConvertMatrix, ViewScale)
-{
-	pBitmapInfo	= NULL;
-	pBits		= NULL;
+GRenderRegion::GRenderRegion(DocRect ClipRegion, Matrix ConvertMatrix,
+			     FIXED16 ViewScale, UINT32 Depth, double dpi)
+  : RenderRegion(ClipRegion, ConvertMatrix, ViewScale){
+  pBitmapInfo	= NULL;
+  pBits		= NULL;
 #if USE_wxBITMAP
-	pBitmap		= NULL;
-	pBitmapData	= NULL;
+  pBitmap		= NULL;
+  pBitmapData	= NULL;
 #endif
 
-//	BitmapSize = 0;
+  //	BitmapSize = 0;
 
-	// If specified dpi is zero then use the calculated screen dpi otherwise use the specified value
-	if (dpi == 0.0)
-		PixelsPerInch = (double)LogPixelsX;
-	else
-		PixelsPerInch = dpi;
-	ERROR3IF(PixelsPerInch < 4.0,"GRenderRegion PixelsPerInch < 4 dpi, is this good?");
+  // If specified dpi is zero then use the calculated screen dpi otherwise use the specified value
+  if (dpi == 0.0)
+    PixelsPerInch = (double)LogPixelsX;
+  else
+    PixelsPerInch = dpi;
+  ERROR3IF(PixelsPerInch < 4.0,"GRenderRegion PixelsPerInch < 4 dpi, is this good?");
 
-	hPalette = NULL;
-	hPrevPalette = NULL;
-	uBitmapDepth = Depth;
-//GAT	FractalBitmap = NULL;
-	UseSolidColours = FALSE;
-	LocalBitmap = TRUE;								// always local bitmap currently
-	m_bEnableConversion = TRUE;
-	dScaledPixelWidth = 0.0;
+  hPalette = NULL;
+  hPrevPalette = NULL;
+  uBitmapDepth = Depth;
+  //GAT	FractalBitmap = NULL;
+  UseSolidColours = FALSE;
+  LocalBitmap = TRUE;								// always local bitmap currently
+  m_bEnableConversion = TRUE;
+  dScaledPixelWidth = 0.0;
 
-	if (LocalBitmap)
-	{
-		WRect = wxRect(0,0,0,0);
+  if (LocalBitmap)
+    {
+      WRect = wxRect(0,0,0,0);
 
-		// this ensure triggers up on bitmap export, so it is removed
-		//ENSURE( (WRect.left>=0) && (WRect.top>=0), "neg wrect");
+      // this ensure triggers up on bitmap export, so it is removed
+      //ENSURE( (WRect.left>=0) && (WRect.top>=0), "neg wrect");
 
-		#if DEBUG_BORDER
-		// kludge the rectangle slightly
-		WRect.left += 2; WRect.width -= 4;
-		WRect.top += 2; WRect.height -= 4;
-		#endif
-	}
-	else
-		ENSURE(FALSE, "Non local bitmap error");
+#if DEBUG_BORDER
+      // kludge the rectangle slightly
+      WRect.left += 2; WRect.width -= 4;
+      WRect.top += 2; WRect.height -= 4;
+#endif
+    }
+  else
+    ENSURE(FALSE, "Non local bitmap error");
 
-	// BG time slice should be 0.5 of a second due to blit overhead
-	Timeslice = 500;
+  // BG time slice should be 0.5 of a second due to blit overhead
+  Timeslice = 500;
 
-	// Set default dither type
-	DitherStyle8Bit = WhichDither;
+  // Set default dither type
+  DitherStyle8Bit = WhichDither;
 
-	m_DoCompression = FALSE;
+  m_DoCompression = FALSE;
 
-	m_bForceBitmapSmoothing = FALSE;
-	m_ForcePrintingCaps = FALSE;
+  m_bForceBitmapSmoothing = FALSE;
+  m_ForcePrintingCaps = FALSE;
 
-	// Set the render caps up
-	GetRenderRegionCaps(&Caps);
+  // Set the render caps up
+  GetRenderRegionCaps(&Caps);
 
-	// Ilan
-	IsWrapped = FALSE;
+  // Ilan
+  IsWrapped = FALSE;
 
-	// Default to not forcing Init (allocation will force it anyway)
-	ForceInitBmpBits = FALSE;
+  // Default to not forcing Init (allocation will force it anyway)
+  ForceInitBmpBits = FALSE;
 
-	RememberMe("Constructor");
+  RememberMe("Constructor");
 }
 
 
@@ -5018,7 +5017,6 @@ void GRenderRegion::DrawFixedSystemText(StringBase *TheText, DocRect &BoundsRect
 	wxFont SaveFont=RenderDC->GetFont();
 
 	wxFont FixedFont = wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT);
-	FixedFont.SetPointSize(8);
 	RenderDC->SetFont(FixedFont);
 
 	wxDC * pDC = RenderDC;
@@ -5178,7 +5176,6 @@ void GRenderRegion::GetFixedSystemTextSize(StringBase *TheText, DocRect *BoundsR
 	wxFont SaveFont=RenderDC->GetFont();
 
 	wxFont FixedFont = wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT);
-	FixedFont.SetPointSize(8);
 	RenderDC->SetFont(FixedFont);
 
 	wxDC * pDC = RenderDC;

@@ -120,10 +120,12 @@ CC_IMPLEMENT_MEMDUMP(GBrush, ListItem)
 CC_IMPLEMENT_DYNCREATE(OpGBrush, Operation)
 #define new CAM_DEBUG_NEW
 
-
-List			GBrush::BrushList;	   				// list of all active brushes
-GBrush			*GBrush::Current;	   				// current brush, or NULL
-static BOOL WantBetterBrushes = TRUE;				// TRUE to use these, FALSE to not
+// list of all active brushes
+List GBrush::BrushList;
+// current brush, or NULL
+GBrush* GBrush::Current = NULL;
+// TRUE to use these, FALSE to not
+static BOOL WantBetterBrushes = TRUE;
 
 
 /********************************************************************************************
@@ -187,38 +189,30 @@ BOOL GBrush::InitGBrush(BOOL FirstTime)
 }
 
 
-
-/********************************************************************************************
-
+/****************************************************************************
 >	void GBrush::DeinitGBrush(void)
 
 	Author:		Jason_Williams (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	11/9/95
-
-	Purpose:	De-initialises the GBrush pretend bitmap. Called on DeInit of GRenderRegion
-				to shut down without a memory leak taking place.
-
+	Purpose:        De-initialises the GBrush pretend bitmap. Called on
+			DeInit of GRenderRegion to shut down without a
+			memory leak taking place.
 	SeeAlso:	GBrush::InitGBrush
-
-	Errors:		ERROR3 with graceful exit if there are GBrushes still active at the time
-
+	Errors:         ERROR3 with graceful exit if there are GBrushes still
+	                active at the time
 	Scope:		Static
-
-********************************************************************************************/
-
-void GBrush::DeinitGBrush(void)
-{
+****************************************************************************/
+void GBrush::DeinitGBrush() {
 #ifdef _DEBUG
-	// This was an ERROR3, but our stupid error handler doesn't handle errors very well,
-	// (in fact, at this stage in program de-initialisation, it doesn' handle them at all)
-	// so it's just a trace warning now.
-	if (!BrushList.IsEmpty())
-	{
-		TRACEALL( wxT("Warning: Deinitialising GBrush when GBrush(es) still active\n\n" ) );
-	}
+  // This was an ERROR3, but our stupid error handler doesn't
+  // handle errors very well, (in fact, at this stage in program
+  // de-initialisation, it doesn' handle them at all) so it's
+  // just a trace warning now.
+  if (!BrushList.IsEmpty()) {
+      TRACEALL(wxT("Warning: Deinitialising GBrush when GBrush(es) still active\n\n"));
+    }
 #endif
 }
-
 
 /********************************************************************************************
 
@@ -292,9 +286,8 @@ GBrush::~GBrush()
 
 ********************************************************************************************/
 
-BOOL GBrush::Init( wxDC* RefDC )
-{
-	ENSURE( Current==NULL, "Only one current GBrush at a time" );
+BOOL GBrush::Init( wxDC* RefDC ) {
+	ENSURE(Current == NULL, "Only one current GBrush at a time");
 
 	Valid = FALSE;											// in case of failure
 

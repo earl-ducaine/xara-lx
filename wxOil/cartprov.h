@@ -1,7 +1,7 @@
 // $Id: cartprov.h 1282 2006-06-09 09:46:49Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
- 
+
                Xara LX, a vector drawing and manipulation program.
                     Copyright (C) 1993-2006 Xara Group Ltd.
        Copyright on certain contributions may be held in joint with their
@@ -32,7 +32,7 @@ ADDITIONAL RIGHTS
 
 Conditional upon your continuing compliance with the GNU General Public
 License described above, Xara Group Ltd grants to you certain additional
-rights. 
+rights.
 
 The additional rights are to use, modify, and distribute the software
 together with the wxWidgets library, the wxXtra library, and the "CDraw"
@@ -194,7 +194,7 @@ WX_DECLARE_HASH_MAP( ResourceIDWithFlags, ImageAndBitmap, ResourceIDWithFlagsHas
 	Purpose:	A derived event handler which providers art for bitmap buttons and
 				other controls within Camelot
 	Notes:		In the OIL
-	See Also:	
+	See Also:
 
 This class is specificly written so it will provided cached vector-drawn art.
 
@@ -203,63 +203,70 @@ This class is specificly written so it will provided cached vector-drawn art.
 class CamArtProvider : public wxEvtHandler
 {
 public:
-	CamArtProvider();
-	~CamArtProvider(); // Note - do not call the destructor from within an event being handled!
+  CamArtProvider();
+  ~CamArtProvider(); // Note - do not call the destructor from within an event being handled!
 
 private:
-	static CamArtProvider * m_ArtProvider;
+  static CamArtProvider * m_ArtProvider;
 
 public:
-	static BOOL Init();
-	static void DeInit();
-	static CamArtProvider * Get() {return m_ArtProvider;}
+  static BOOL Init(unsigned cafscaledFontSize, unsigned scaledFontSize);
+  static void DeInit();
+  static CamArtProvider * Get() {return m_ArtProvider;}
 
-	void GetBitmapEvent(wxCamArtProviderEvent &event);
-	void InvalidateArtEvent(wxCamArtProviderEvent &event);
-	void Draw (wxDC& dc, const wxRect & rect, ResourceID Resource, CamArtFlags Flags = CAF_DEFAULT, const wxString &text = wxEmptyString);
+  void GetBitmapEvent(wxCamArtProviderEvent &event);
+  void InvalidateArtEvent(wxCamArtProviderEvent &event);
+  void Draw (wxDC& dc, const wxRect & rect, ResourceID Resource, CamArtFlags Flags = CAF_DEFAULT, const wxString &text = wxEmptyString);
 
-	wxSize GetSize(ResourceID r, CamArtFlags Flags=CAF_DEFAULT, const wxString &text = wxEmptyString);
-	
-	void EnsureBitmapLoaded(ResourceID Resource, BOOL SkipArtLoad = FALSE);
-	void EnsureChildBitmapsLoaded(wxWindow * pWindow = NULL, BOOL SkipArtLoad = FALSE);
-	void ReloadAllArt();
-	wxBitmap * FindBitmap(ResourceID Resource, CamArtFlags Flags = CAF_DEFAULT, BOOL SkipArtLoad=FALSE);
-	wxImage * FindImage(ResourceID Resource, CamArtFlags Flags = CAF_DEFAULT, BOOL SkipArtLoad=FALSE);
+  wxSize GetSize(ResourceID r, CamArtFlags Flags=CAF_DEFAULT, const wxString &text = wxEmptyString);
 
-	static CamArtFlags GetBitmapFlags(const wxString &str);
-	static wxString MakeBitmapFlagString(const CamArtFlags flags);
+  void EnsureBitmapLoaded(ResourceID Resource, BOOL SkipArtLoad = FALSE);
+  void EnsureChildBitmapsLoaded(wxWindow * pWindow = NULL, BOOL SkipArtLoad = FALSE);
+  void ReloadAllArt();
+  wxBitmap * FindBitmap(ResourceID Resource, CamArtFlags Flags = CAF_DEFAULT, BOOL SkipArtLoad=FALSE);
+  wxImage * FindImage(ResourceID Resource, CamArtFlags Flags = CAF_DEFAULT, BOOL SkipArtLoad=FALSE);
 
-	wxImage * GetMissingImage() const {return m_pMissingImage;}
-	wxBitmap * GetMissingBitmap() const {return m_pMissingBitmap;}
+  static CamArtFlags GetBitmapFlags(const wxString &str);
+  static wxString MakeBitmapFlagString(const CamArtFlags flags);
+
+  wxImage * GetMissingImage() const {return m_pMissingImage;}
+  wxBitmap * GetMissingBitmap() const {return m_pMissingBitmap;}
 
 protected:
-	ResIDWithFlagsToBitmapPtr::iterator Find(ResourceID Resource, CamArtFlags Flags, BOOL SkipArtLoad);
+  ResIDWithFlagsToBitmapPtr::iterator Find(ResourceID Resource, CamArtFlags Flags, BOOL SkipArtLoad);
 
-	ResourceIDWithFlags CombineFlags(ResourceID Resource, CamArtFlags Flags) { return Resource | (((UINT64)Flags)<<32) ; }
-	CamArtFlags GetFlags(ResourceIDWithFlags ResWithFlags) { return (CamArtFlags)(ResWithFlags>>32); }
-	ResourceID GetResourceID(ResourceIDWithFlags ResWithFlags) { return (ResourceID)(ResWithFlags & 0xFFFFFFFF); } // mask unnecessary but for clarity
+  ResourceIDWithFlags CombineFlags(ResourceID Resource, CamArtFlags Flags) { return Resource | (((UINT64)Flags)<<32) ; }
+  CamArtFlags GetFlags(ResourceIDWithFlags ResWithFlags) { return (CamArtFlags)(ResWithFlags>>32); }
+  ResourceID GetResourceID(ResourceIDWithFlags ResWithFlags) { return (ResourceID)(ResWithFlags & 0xFFFFFFFF); } // mask unnecessary but for clarity
 
-	static wxColor DarkenColour(const wxColor& c, INT32 amount);
-	static wxColor LightenColour(const wxColor& c, INT32 amount);
+  static wxColor DarkenColour(const wxColor& c, INT32 amount);
+  static wxColor LightenColour(const wxColor& c, INT32 amount);
 
-	wxImage * MakeBitmap(ResourceIDWithFlags ResWithFlags);
-	void InvalidateAllArt();
-	void InvalidateAllArtInChildren(wxWindow * pWindow);
-	void DeleteHashContents();
-	void ArtLoad(BOOL newbitmaps = FALSE, BOOL defer=TRUE);
+  wxImage * MakeBitmap(ResourceIDWithFlags ResWithFlags);
+  void InvalidateAllArt();
+  void InvalidateAllArtInChildren(wxWindow * pWindow);
+  void DeleteHashContents();
+  void ArtLoad(BOOL newbitmaps = FALSE, BOOL defer=TRUE);
 
-	wxSize GetBorderSize(CamArtFlags Flags=CAF_DEFAULT);
-	wxString GetTextInfoOrDraw(ResourceID r, CamArtFlags f, wxDC &dc, BOOL Draw=FALSE, wxCoord *w=NULL, wxCoord *h=NULL,
-								wxCoord x=0, wxCoord y=0, wxCoord MaxWidth=-1, const wxString &text = wxEmptyString);
+  wxSize GetBorderSize(CamArtFlags Flags=CAF_DEFAULT);
+  wxString GetTextInfoOrDraw(ResourceID r,
+			     CamArtFlags f,
+			     wxDC& dc,
+			     BOOL Draw = FALSE,
+			     wxCoord* w = NULL,
+			     wxCoord* h = NULL,
+			     wxCoord x = 0,
+			     wxCoord y = 0,
+			     wxCoord MaxWidth = -1,
+			     const wxString& text = wxEmptyString);
+  ResIDWithFlagsToBitmapPtr * m_pHash;
+  BOOL m_GetBitmapEventPending;
+  BOOL m_InvalidateArtEventPending;
+  wxImage * m_pMissingImage;
+  wxBitmap * m_pMissingBitmap;
 
-	ResIDWithFlagsToBitmapPtr * m_pHash;
-	BOOL m_GetBitmapEventPending;
-	BOOL m_InvalidateArtEventPending;
-	wxImage * m_pMissingImage;
-	wxBitmap * m_pMissingBitmap;
-
-	DECLARE_CLASS(wxEvtHandler)
-	DECLARE_EVENT_TABLE()
+  DECLARE_CLASS(wxEvtHandler)
+  DECLARE_EVENT_TABLE()
 
 };
 
@@ -272,7 +279,7 @@ protected:
 	Created:	19/12/2005
 	Purpose:	A derived event to allow for postprocessing of dialog events
 	Notes:		In the OIL
-	See Also:	
+	See Also:
 
 ********************************************************************************************/
 
@@ -306,4 +313,3 @@ END_DECLARE_EVENT_TYPES()
 	(wxObjectEventFunction)(wxEventFunction)(wxCamArtProviderEventFunction) &fn, (wxObject *) NULL),
 
 #endif
-

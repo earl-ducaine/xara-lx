@@ -2506,9 +2506,12 @@ MsgResult OpZoomPrevZoomDescriptor::HandleButtonMsg(DialogOp*, CGadgetID)
 ********************************************************************************************/
 
 OpZoomComboDescriptor::OpZoomComboDescriptor()
-  :	OpZoomDescriptor(OPTOKEN_ZOOMCOMBO, _R(IDS_ZOOMCOMBOSTATUSTEXT), 0, _R(IDBBL_ZOOM_COMBO), _R(IDCB_ZOOM_COMBO_BOX), _R(IDCB_ZOOM_COMBO_BOX))
-{
-
+  :	OpZoomDescriptor(OPTOKEN_ZOOMCOMBO,
+			 _R(IDS_ZOOMCOMBOSTATUSTEXT),
+			 0,
+			 _R(IDBBL_ZOOM_COMBO),
+			 _R(IDCB_ZOOM_COMBO_BOX),
+			 _R(IDCB_ZOOM_COMBO_BOX)) {
 	// Empty.
 }
 

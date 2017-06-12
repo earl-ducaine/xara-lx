@@ -776,12 +776,15 @@ bool CCamApp::OnInit() {
   if (!CamResource::Init()) return FALSE;
   // Initialize the art provider - needed for dialogs
   wxPlatformDependent::Init(CLASSINFO(CamPlatformDependent));
-  if (!CamArtProvider::Init()) return FALSE;
+  // Initialise the kernel application object & Prefs
+  // TODO ed -- pull this from prefs. Hard Coded for now.
+  if (!CamArtProvider::Init(16, 16)) {
+    return FALSE;
+  }
   // We need this pretty early so we can handle ERROR boxes etc
   if (!DialogEventHandler::Init()) return FALSE;
   if (!ControlList::Init()) return FALSE;
   TRACET(_T("CCamApp::Calling Camelot.Init"));
-  // Initialise the kernel application object & Prefs
   if( !Camelot.Init() )
     return false;
   // --------------------------------------------------------------------------

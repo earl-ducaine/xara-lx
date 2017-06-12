@@ -164,14 +164,16 @@ CC_IMPLEMENT_DYNAMIC(CGadgetImageList, CCObject);
 List DialogManager::DiscardStrList;
 List DialogManager::ScrollPageIncList;
 List DialogManager::DialogPositionList;
-
-IdToSerializedPaneInfo * DialogManager::s_pPaneInfoHash = NULL;
-
-wxWindow   *DialogManager::pDlgCurrent = NULL;   // Required for IsDialogMessage handling
-
-// The ActiveDialogStack is used to restore previously active dialogs after a Modal dialog
-// is closed.
+IdToSerializedPaneInfo* DialogManager::s_pPaneInfoHash = NULL;
+// Required for IsDialogMessage handling
+wxWindow* DialogManager::pDlgCurrent = NULL;
+// The ActiveDialogStack is used to restore previously active dialogs
+// after a Modal dialog is closed.
 ActiveDlgStateStack DialogManager::ActiveDlgStack;
+// Set to 2 for testing. Ordinarily this would initially have the
+// value if 1.
+unsigned DialogManager::FontSize = 8;
+float  DialogManager::FontScaleFactor = 1;
 
 // When the user clicks with the right mouse button on a dual function button BN_RGT_CLICKED
 // is returned as the notification code.
@@ -180,28 +182,23 @@ ActiveDlgStateStack DialogManager::ActiveDlgStack;
 
 class Node;
 
-/********************************************************************************************
-
+/**************************************************************************
 >	DialogManager::DialogManager()
 
 	Author:		Simon_Maneggio (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	17/12/93
-	Purpose:	DialogManager constructor. It allocates our special Property atom.
-
-********************************************************************************************/
-
-DialogManager::DialogManager()
-{
-	// we must use a unique string so we don't clash with anyone else
+	Purpose:        DialogManager constructor. It allocates our special
+	                Property atom.
+**************************************************************************/
+DialogManager::DialogManager() {
+  // we must use a unique string so we don't clash with anyone else
 }
 
 /***************************************************************************
-
 >	BOOL		DialogManager::Create(DialogOp* DlgOp,
-									HINSTANCE MainInstance, CDlgResID MainDlgID,
-									HINSTANCE SubInstance,  CDlgResID SubDlgID,
-									CDlgMode Mode, INT32 OpeningPage, CWindowID ParentWnd)
-
+					      HINSTANCE MainInstance, CDlgResID MainDlgID,
+					      HINSTANCE SubInstance,  CDlgResID SubDlgID,
+					      CDlgMode Mode, INT32 OpeningPage, CWindowID ParentWnd)
 	Author:		Simon_Maneggio (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	17/8/93
 
@@ -214,12 +211,15 @@ DialogManager::DialogManager()
 			MainDlgID: Resource identifier of the main
 			dialog box
 
-				SubInstance:	Instance handle of the module that contains the dialog
-								defined by SubDlgID.
-				SubDlgID:		Resource identifier of the secondary dialog box to merge
-								with the main one (0 if none).
-				Mode:			Dialog mode (Modal, Modeless)
-				OpeningPage:	Index of the tabbed page which we need to open (0 if none).
+                        SubInstance: Instance handle of the module
+                        that contains the dialog defined by SubDlgID.
+
+                        SubDlgID: Resource identifier of the secondary
+                        dialog box to merge with the main one (0 if
+                        none).  Mode: Dialog mode (Modal, Modeless)
+
+                        OpeningPage: Index of the tabbed page which we
+                        need to open (0 if none).
 
 	Returns:	TRUE if the Dialog/Bar could be created, else FALSE
 
@@ -253,7 +253,6 @@ DialogManager::DialogManager()
 	Errors:		An Error will be set if this function fails
 
 	SeeAlso:	DialogOp::Create
-
 ***************************************************************************/
 
 // First a private class definition
@@ -261,69 +260,89 @@ DialogManager::DialogManager()
 class wxDynamicPropertySheetDialog : public wxPropertySheetDialog
 {
 public:
-	wxDynamicPropertySheetDialog() {m_TabType=TABTYPE_TABS;}
-	~wxDynamicPropertySheetDialog() {}
-	void SetTabType(TabType t) {m_TabType=t;}
-protected:
-	TabType m_TabType;
-	virtual wxBookCtrlBase* CreateBookCtrl()
-	{
-		INT32 style = wxCLIP_CHILDREN | wxBK_DEFAULT;
-		wxBookCtrlBase* pBook = NULL;
+  wxDynamicPropertySheetDialog() {
+    m_TabType = TABTYPE_TABS;
+  }
+  
+  ~wxDynamicPropertySheetDialog() {
+  }
+  
+  void SetTabType(TabType t) {
+    m_TabType=t;
+  }
 
-		switch (m_TabType)
-		{
+  // Properties
+protected:
+  TabType m_TabType;
+
+  // Methods
+protected:
+  virtual wxBookCtrlBase* CreateBookCtrl() {
+    INT32 style = wxCLIP_CHILDREN | wxBK_DEFAULT;
+    wxBookCtrlBase* pBook = NULL;
+    switch (m_TabType) {
 #if wxUSE_LISTBOOK
-			case TABTYPE_LIST:
-				return new wxListbook(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, style );
-				break;
+    case TABTYPE_LIST:
+      return new wxListbook(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, style );
+      break;
 #endif
 #if wxUSE_CHOICEBOOK
-			case TABTYPE_CHOICE:
-				return new wxChoicebook(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, style );
-				break;
+    case TABTYPE_CHOICE:
+      return new wxChoicebook(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, style );
+      break;
 #endif
 #if wxUSE_TREEBOOK || wxXTRA_TREEBOOK
-			case TABTYPE_TREE:
-				{
-					wxTreebook * t = new wxTreebook(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, style );
-					if (t)
-						t->GetTreeCtrl()->SetIndent(0);
-					return t;
-				}
-				break;
+    case TABTYPE_TREE: {
+      wxTreebook* t = new wxTreebook(this, wxID_ANY, wxDefaultPosition,
+				     wxDefaultSize, style);
+      if (t) {
+	t->GetTreeCtrl()->SetIndent(0);
+      }
+      return t;
+    }
+      break;
 #else
-			// Default to a ListBook if there is no treebook availables
-			case TABTYPE_TREE:
-				return new wxListbook(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, style );
-				break;
+      // Default to a ListBook if there is no treebook availables
+    case TABTYPE_TREE:
+      return new wxListbook(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, style );
+      break;
 #endif
 #if wxUSE_TOOLBOOK
-			case TABTYPE_TOOLBAR:
-				return new wxToolbook(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, style );
-				break;
+    case TABTYPE_TOOLBAR:
+      return new wxToolbook(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, style );
+      break;
 #endif
-			case TABTYPE_TABS:
-			default:
-				pBook = new wxNotebook(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, style );
-
-PORTNOTE("dialog", "This should probably be applied to all controls eventually")
-				// Fabricate a Xara standard font and associate it with notebook control
-				wxFont	fontDefault = wxSystemSettings::GetFont( wxSYS_DEFAULT_GUI_FONT );
-				fontDefault.SetPointSize( 8 );
-				pBook->SetFont( fontDefault );
-
-				break;
-		}
-
-		return pBook;
-	}
+    case TABTYPE_TABS:
+    default:
+      pBook = new wxNotebook(this, wxID_ANY, wxDefaultPosition, wxDefaultSize,
+			     style );
+      PORTNOTE("dialog", "This should probably be applied to all controls eventually");
+      // Fabricate a Xara standard font and associate it with
+      // notebook control
+      wxFont fontDefault = wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT);
+      //fontDefault.Scale(2.0);
+      // fontDefault.SetPointSize(DialogManager::GetEffectiveFontSize());
+      pBook->SetFont(fontDefault);
+      break;
+    }
+    return pBook;
+  }
 };
 
-// original types used were Microsoft HINSTANCEs
-// 
-// HINSTANCE MainInstance,
-// HINSTANCE SubInstance,
+float DialogManager::GetFontScaleFactor() {
+  return FontScaleFactor;
+}
+
+void DialogManager::SetFontScaleFactor(float scaleFactor){
+  FontScaleFactor = scaleFactor;
+}
+
+
+// compute effective font size in points
+unsigned DialogManager::GetEffectiveFontSize() {
+  return FontScaleFactor * FontSize;
+}
+
 BOOL DialogManager::Create(DialogOp* DlgOp,
 			   CDlgResID MainDlgID,
 			   CDlgResID SubDlgID,
@@ -591,7 +610,7 @@ void DialogManager::CreateRecursor(wxWindow * pwxWindow)
 
 	Author:		Simon_Maneggio (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	6/9/94
-	Inputs:		DialogWnd: The dialogs window ID, NULL if dialog 
+	Inputs:		DialogWnd: The dialogs window ID, NULL if dialog
                         failed to be created
 	Returns:	-
 	Purpose:        This function posts the creation event to dialog for
@@ -618,7 +637,7 @@ BOOL DialogManager::PostCreate(DialogOp* pDialogOp, INT32 OpeningPage) {
   CDlgResID ActivePage = 0; // Active page for tabbed dialogs
   UINT32 ActivePageIndex = 0;
   // TRUE if the dialog has been created before
-  BOOL CreatedBefore = FALSE; 
+  BOOL CreatedBefore = FALSE;
   wxBookCtrlBase* pBook=NULL;
   // Only do special processing for DialogTabOp
   if (pDialogOp->IS_KIND_OF(DialogTabOp)) {
@@ -710,7 +729,7 @@ BOOL DialogManager::PostCreate(DialogOp* pDialogOp, INT32 OpeningPage) {
   PORTNOTE("dialog", "Removed FontFactory usage")
 #ifndef EXCLUDE_FROM_XARALX
     if(UnicodeManager::IsDBCSOS()) {
-      FontFactory::ApplyFontToWindow(DialogWnd, STOCKFONT_DIALOG); 
+      FontFactory::ApplyFontToWindow(DialogWnd, STOCKFONT_DIALOG);
     }
 #endif
     // Inform the Dialog that it has been created so that it can be
