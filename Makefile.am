@@ -49,13 +49,19 @@ else
     XaraLX_SOURCES	= Kernel/libKernel.a wxOil/libwxOil.a tools/libTools.a wxXtra/libwxXtra.a
     XaraLX_LDSOURCE = -Wl,--start-group $(XaraLX_SOURCES) -Wl,--end-group
 endif
-XaraLX_LDFLAGS = --debug -L$(srcdir)/$(CDRAW_LIB_DIR) \
-	-L$(srcdir)/$(CDRAW_LIB_ALT_DIR)  $(WX_LIBS) $(LIBS) $(LIBXML2_LIBS) \
-	-ljpeg -lCDraw -lCDraw-alt  -latk-1.0 -lgio-2.0 -lpangoft2-1.0 -lpangocairo-1.0 \
-	-lgdk_pixbuf-2.0 -lcairo -lpango-1.0 -lfreetype -lfontconfig -lgobject-2.0 -lglib-2.0 \
-	$(libpng_LIBS) -lz
 
-XaraLX_LD			?= $(CXX)
+# XaraLX_LDFLAGS = --debug -L$(srcdir)/$(CDRAW_LIB_DIR) \
+# 	-L$(srcdir)/$(CDRAW_LIB_ALT_DIR)  $(WX_LIBS) $(LIBS) $(LIBXML2_LIBS) \
+# 	-ljpeg -lCDraw -lCDraw-alt  -latk-1.0 -lgio-2.0 -lpangoft2-1.0 -lpangocairo-1.0 \
+# 	-lgdk_pixbuf-2.0 -lcairo -lpango-1.0 -lfreetype -lfontconfig -lgobject-2.0 -lglib-2.0 \
+# 	$(libpng_LIBS) -lz
+
+XaraLX_LDFLAGS = --debug -L$(srcdir)/$(CDRAW_LIB_DIR) \
+	-L$(srcdir)/$(CDRAW_LIB_ALT_DIR)  \
+	$(LIBXML2_LIBS) -lCDraw -lCDraw-alt -lpangoft2-1.0 -lfreetype -lz \
+	-llzma  $(WX_LIBS) -licuuc
+
+XaraLX_LD ?= $(CXX)
 
 XaraLX$(EXEEXT) : $(XaraLX_SOURCES)
 	$(XaraLX_LD) -no-pie $(XaraLX_LDSOURCE) $(XaraLX_LDFLAGS) -o $@
