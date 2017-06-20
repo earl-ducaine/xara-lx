@@ -29,18 +29,18 @@ endif
 # Do not compile po directory if WXRC is broken (gentoo wxWidgets 2.6.3.2)
 # Leave the '#po' on the end to keep automake quiet
 if INTERNATIONAL_ENABLE
-SUBDIRS = $(PRECOMPILE_DIR) wxXtra wxOil Kernel tools $(XARLIB_DIR) $(FILTERS_DIRS) po
-else
-SUBDIRS = $(PRECOMPILE_DIR) wxXtra wxOil Kernel tools $(XARLIB_DIR) $(FILTERS_DIRS)
+PO=po
 endif
+
+SUBDIRS = $(PRECOMPILE_DIR) libs wxXtra wxOil Kernel tools $(XARLIB_DIR) $(FILTERS_DIRS) $(PO)
 
 # We clean these here not in the wxOil makefile to prevent a loop
 MOSTLYCLEANFILES=wxOil/xrc/xrc.d wxOil/xrc/xrc.stamp Resources/*
 
 bin_PROGRAMS		= XaraLX
 
-XaraLX_CXXFLAGS = $(XARALXCXXFLAGS)
-XaraLX_CPPFLAGS = $(XARALXCPPFLAGS)
+XaraLX_CXXFLAGS = $(XARALXCXXFLAGS) $(AM_CFLAGS) $(libpng_CFLAGS)
+XaraLX_CPPFLAGS = $(XARALXCPPFLAGS) $(AM_CPPFLAGS) $(libpng_CPPFLAGS)
 
 if DARWIN_LINK
     XaraLX_SOURCES	= Kernel/*.o wxOil/*.o tools/*.o wxXtra/*.o
@@ -49,12 +49,19 @@ else
     XaraLX_SOURCES	= Kernel/libKernel.a wxOil/libwxOil.a tools/libTools.a wxXtra/libwxXtra.a
     XaraLX_LDSOURCE = -Wl,--start-group $(XaraLX_SOURCES) -Wl,--end-group
 endif
-XaraLX_LDFLAGS		= --debug -L$(srcdir)/$(CDRAW_LIB_DIR)  $(WX_LIBS) $(LIBS) $(LIBXML2_LIBS) -ljpeg -lCDraw \
-			  -lgtk-x11-2.0 -lgdk-x11-2.0 -latk-1.0 -lgio-2.0 -lpangoft2-1.0 -lpangocairo-1.0 \
-			  -lgdk_pixbuf-2.0 -lcairo -lpango-1.0 -lfreetype -lfontconfig -lgobject-2.0 -lglib-2.0 \
-			  $(srcdir)/$(PNG_LIB_DIR)/libpng.a -lz
-#			  -lpng
-XaraLX_LD			?= $(CXX)
+
+# XaraLX_LDFLAGS = --debug -L$(srcdir)/$(CDRAW_LIB_DIR) \
+# 	-L$(srcdir)/$(CDRAW_LIB_ALT_DIR)  $(WX_LIBS) $(LIBS) $(LIBXML2_LIBS) \
+# 	-ljpeg -lCDraw -lCDraw-alt  -latk-1.0 -lgio-2.0 -lpangoft2-1.0 -lpangocairo-1.0 \
+# 	-lgdk_pixbuf-2.0 -lcairo -lpango-1.0 -lfreetype -lfontconfig -lgobject-2.0 -lglib-2.0 \
+# 	$(libpng_LIBS) -lz
+
+XaraLX_LDFLAGS = --debug -L$(srcdir)/$(CDRAW_LIB_DIR) \
+	-L$(srcdir)/$(CDRAW_LIB_ALT_DIR)  \
+	$(LIBXML2_LIBS) -lCDraw -lCDraw-alt -lpangoft2-1.0 -lfreetype -lz \
+	-llzma  $(WX_LIBS) -licuuc
+
+XaraLX_LD ?= $(CXX)
 
 XaraLX$(EXEEXT) : $(XaraLX_SOURCES)
 	$(XaraLX_LD) -no-pie $(XaraLX_LDSOURCE) $(XaraLX_LDFLAGS) -o $@
