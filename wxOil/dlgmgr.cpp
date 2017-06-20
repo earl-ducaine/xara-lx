@@ -173,7 +173,7 @@ ActiveDlgStateStack DialogManager::ActiveDlgStack;
 // Set to 2 for testing. Ordinarily this would initially have the
 // value if 1.
 unsigned DialogManager::FontSize = 8;
-float  DialogManager::FontScaleFactor = 1;
+float  DialogManager::FontScaleFactor = 2;
 
 // When the user clicks with the right mouse button on a dual function button BN_RGT_CLICKED
 // is returned as the notification code.
@@ -263,10 +263,10 @@ public:
   wxDynamicPropertySheetDialog() {
     m_TabType = TABTYPE_TABS;
   }
-  
+
   ~wxDynamicPropertySheetDialog() {
   }
-  
+
   void SetTabType(TabType t) {
     m_TabType=t;
   }
@@ -320,7 +320,7 @@ protected:
       // Fabricate a Xara standard font and associate it with
       // notebook control
       wxFont fontDefault = wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT);
-      //fontDefault.Scale(2.0);
+      fontDefault.Scale(2.0);
       // fontDefault.SetPointSize(DialogManager::GetEffectiveFontSize());
       pBook->SetFont(fontDefault);
       break;
@@ -1572,16 +1572,20 @@ void DialogManager::Event (DialogEventHandler *pEvtHandler, wxEvent &event) {
 	    ReDrawInfoType ExtraInfo;
 
 	    ExtraInfo.pMousePos = NULL;		// No mouse position info for redraw events
+	    ExtraInfo.pDC = NULL;
 
 
 	    // Build a CC dc out of it for rendering to the screen
 	    // Get a MFC CDC to put the DC in
-	    CCPaintDC MyDc(pGadget);
-
-	    ExtraInfo.pDC = NULL;
-
-	    // The devices DPI
-	    ExtraInfo.Dpi = OSRenderRegion::GetFixedDCPPI(MyDc).GetHeight();
+	    if (pGadget->GTKPaintContext()) {
+	      CCPaintDC MyDc(pGadget);
+	      // The devices DPI
+	      ExtraInfo.Dpi = OSRenderRegion::GetFixedDCPPI(MyDc).GetHeight();
+	    } else {
+	      CCClientDC MyDc(pGadget);
+	      // The devices DPI
+	      ExtraInfo.Dpi = OSRenderRegion::GetFixedDCPPI(MyDc).GetHeight();
+	    }
 
 	    // How big the window is
 	    wxSize WindowSize = pGadget->GetClientSize();
