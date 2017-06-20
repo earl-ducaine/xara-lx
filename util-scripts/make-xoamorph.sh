@@ -19,8 +19,6 @@ function build_wx_30 {
     ../configure --enable-debug --enable-unicode --enable-aui --with-gtk=3 --disable-shared
 #    ../configure --with-gtk --enable-debug --enable-unicode --enable-aui --with-libpng=builtin
     make -j 8
-    sudo make install
-    sudo ldconfig
     cd ..
     cd ..
 }
