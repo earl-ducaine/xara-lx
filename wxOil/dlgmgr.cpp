@@ -1104,28 +1104,46 @@ BOOL DialogManager::BringToTop(CWindowID WindowID, DialogOp* pDlgOp)
 	return TRUE;
 }
 
+// Determine whether pGadget is part of a tabbed dialog page.  If so
+// return PageID, otherwise return 0.  pGadget is part of a tabbed
+// dialog if the first ancestor is a panel and the parent of the panel
+// is of class wxBookCtrlBase
+INT32 GetTabbedDialogPage(wxWindow* pGadget) {
+  INT32 PageID = 0;
+  if(NULL != pGadget) {
+    wxWindow* pDialog = pGadget->GetParent();
+    while((NULL != pDialog) &&
+	  !pDialog->IsKindOf(CLASSINFO(wxDialog)) &&
+	  !pDialog->IsKindOf(CLASSINFO(wxPanel))) {
+      pDialog = pDialog->GetParent();
+    }
+    if((NULL != pDialog) && pDialog->IsKindOf(CLASSINFO(wxPanel))) {
+      wxWindow *pDialogParent = pDialog->GetParent();
+      if((NULL != pDialogParent) &&
+	 pDialogParent->IsKindOf(CLASSINFO(wxBookCtrlBase))) {
+	PageID = pDialog->GetId();
+      }
+    }
+  }
+  return PageID;
+}
 
-
-/********************************************************************************************
-
->	static void DialogManager::Event (DialogEventHandler *pEvtHandler, wxEvent &event)
+/***************************************************************************
+>	static void DialogManager::Event (DialogEventHandler *pEvtHandler,
+                                          wxEvent &event)
 
 	Author:		Simon_Maneggio (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	16/9/93
-	Purpose:	OnCommand message handler. Translates a windows Command message into a DIM
+	Purpose:	OnCommand message handler. Translates a windows
+                        Command message into a DIM
 	Errors:		-
 	SeeAlso:	-
-
-********************************************************************************************/
-
+***************************************************************************/
 void DialogManager::Event (DialogEventHandler *pEvtHandler, wxEvent &event) {
   WXTYPE EventType = event.GetEventType();
-  //  if (event.IsCommandEvent()) {
   wxCommandEvent commandEvent = (event.IsCommandEvent()) ?
     static_cast<wxCommandEvent&>(event):
     NULL;
-    // }
-  //	CDlgMessage DIM = DIM_NONE;
   int id = event.GetId();
   UINT_PTR DlgMsgParam = 0;
   INT32 PageID = 0;
@@ -1144,7 +1162,7 @@ void DialogManager::Event (DialogEventHandler *pEvtHandler, wxEvent &event) {
     // this ensures we are using a valid window pointer
     pDialogEvent->msg.DlgWndID = pEvtHandler->pwxWindow;
     // Send it around
-    BROADCAST_TO_CLASS( DialogMsg(pDialogEvent->msg), DialogOp );
+    BROADCAST_TO_CLASS(DialogMsg(pDialogEvent->msg), DialogOp);
     return;
   }
   wxWindow* pGadget = NULL;
@@ -1159,26 +1177,7 @@ void DialogManager::Event (DialogEventHandler *pEvtHandler, wxEvent &event) {
     pGadget = (wxWindow *)event.GetEventObject();
     id = pGadget->GetId();
   }
-  // Try and find-out whether our control is part of a tabbed dialog page
-  if( NULL != pGadget ) {
-    // pEvtHandler->pwxWindow maybe our immediate wxPanel\wxDialog, but won't
-    // be in case of tabbed dialog
-    wxWindow*	pDialog = pGadget->GetParent();
-    while( NULL != pDialog && !pDialog->IsKindOf( CLASSINFO(wxDialog) ) &&
-	   !pDialog->IsKindOf( CLASSINFO(wxPanel) ) )
-      {
-	pDialog = pDialog->GetParent();
-      }
-    // Could this be part of a tabbed dialog?
-    if( NULL != pDialog && pDialog->IsKindOf( CLASSINFO(wxPanel) ) ) {
-      // A parent of type wxBookCtrlBase would synch it
-      wxWindow *pDialogParent = pDialog->GetParent();
-      if( NULL != pDialogParent && pDialogParent->IsKindOf( CLASSINFO(wxBookCtrlBase) ) ) {
-
-	PageID = pDialog->GetId();
-      }
-    }
-  }
+  PageID = GetTabbedDialogPage(pGadget);
   // Make up a default message
   DialogMsg msg(pEvtHandler->pwxWindow, DIM_NONE, id, DlgMsgParam, PageID);
 
@@ -1602,7 +1601,10 @@ void DialogManager::Event (DialogEventHandler *pEvtHandler, wxEvent &event) {
 	    MousePos.y = ExtraInfo.dy - ((YPos * 72000) / ExtraInfo.Dpi);
 	    ExtraInfo.pMousePos = &MousePos;
 
-	    BROADCAST_TO_CLASS(DialogMsg(pEvtHandler->pwxWindow, msg.DlgMsg, id, (UINT_PTR)(void *)&ExtraInfo, PageID), DialogOp);
+	    BROADCAST_TO_CLASS(DialogMsg(pEvtHandler->pwxWindow,
+					 msg.DlgMsg,
+					 id,
+					 (UINT_PTR)(void *)&ExtraInfo, PageID), DialogOp);
 
 	    msg.DlgMsg = DIM_NONE; // Stop further processing
 	  }

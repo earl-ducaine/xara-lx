@@ -2392,245 +2392,229 @@ void OSRenderRegion::GetFixedSystemTextSize(StringBase *TheText, DocRect *Bounds
 #define MAX_POLYGONS	256
 
 
-/********************************************************************************************
+/****************************************************************************
+>	INT32 OSRenderRegion::RawRenderPath(DocCoord *const Coords,
+                                            PathVerb *const Verbs,
+					    INT32 NumCoords,
+					    INT32 *PolyCount,
+					    INT32 *ResCount,
+					    INT32 Flatness = 0,
+                                            INT32 *pActualFlatness = NULL)
 
->	INT32 OSRenderRegion::RawRenderPath( DocCoord *const Coords, PathVerb *const Verbs,
-									   INT32 NumCoords, INT32 *PolyCount, INT32 *ResCount,
-									   INT32 Flatness = 0, INT32 *pActualFlatness = NULL )
+	Author:	      Andy_Pennell (Xara Group Ltd) <camelotdev@xara.com>
+	Created:      20/4/94
+	Inputs:	      Coords - A path to be drawn (in DocCoords).
+                      Verbs
+                      NumCoords
+		      wFlatness - the value to use when flattening a curve.
 
-	Author:		Andy_Pennell (Xara Group Ltd) <camelotdev@xara.com>
-	Created:	20/4/94
-	Inputs:		A path to be drawn (in DocCoords).
-				Flatness - the value to use when flattening a curve.
-				pActualFlatness - if the caller wants to know what flatness was eventually
-								  reached while flattening the path, it passes in a pointer
-								  here to be filled in.  If the path could not be flattened,
-								  this contains the last flatness level that was tried
-								  before giving up.
-	Outputs:	PolyCounts must point to an array of MAX_POLYGONS ints which will be filled
-				in with a list of polygon sizes (can be just 1 big if ResCount is NULL).
-				*ResCount will be updated with the number of polygons. If it is NULL then the
-				routine returns after the end of the first sub-path has been found.
-				The points calculated from this will be in the PointArray variable.
-	Returns:	Number of points read, 0 if failed (e.g. not enough memory or too complex).
-	Purpose:	Low level primitive for rendering paths without GDI32. Note that PointArray
-				should be freed by the caller upon completion.
+		      pActualFlatness - if the caller wants to know
+		      what flatness was eventually reached while
+		      flattening the path, it passes in a pointer here
+		      to be filled in.  If the path could not be
+		      flattened, this contains the last flatness level
+		      that was tried before giving up.
+
+	Outputs:      PolyCount - must point to an array of MAX_POLYGONS
+		      ints which will be filled in with a list of
+		      polygon sizes (can be just 1 big if ResCount is
+		      NULL).
+
+                      ResCount will be updated with the number of
+		      polygons. If it is NULL then the routine returns
+		      after the end of the first sub-path has been
+		      found.  The points calculated from this will be
+		      in the PointArray variable.
+
+	Returns:      Number of points read, 0 if failed (e.g. not enough
+	              memory or too complex).
+
+	Purpose:      Low level primitive for rendering paths without
+		      GDI32. Note that PointArray should be freed by
+		      the caller upon completion.
+
 	Errors:		-
 	Scope:		Private
 	SeeAlso:	RawRenderPath32
-
-********************************************************************************************/
-
-INT32 OSRenderRegion::RawRenderPath( DocCoord *const Coords, PathVerb *const Verbs, INT32 NumCoords,
-								   INT32 *PolyCounts, INT32 *ResCount,
-								   INT32 Flatness, INT32 *pActualFlatness )
-{
-	// Flatness less than 0 will screw up, so let's ignore it
-	if (Flatness < 0)
-		return 0;
-
-	// We have to manually flatten the beziers in the curve and decide when to draw them.
-	INT32 MaxFlatness;
-
-	// Decide how flat we are going to make this curve, if the caller has not specified
-	if (Flatness == 0)
-	{
-		// (Tim says: these figures are a bit arbitrary, especially the MaxFlatness ones)
-		if (RFlags.Metafile)
-		{
+****************************************************************************/
+INT32 OSRenderRegion::RawRenderPath(DocCoord *const Coords,
+				    PathVerb *const Verbs,
+				    INT32 NumCoords,
+				    INT32 *PolyCounts,
+				    INT32 *ResCount,
+				    INT32 Flatness,
+				    INT32 *pActualFlatness) {
+  // Flatness less than 0 will screw up, so let's ignore it
+  if (Flatness < 0) {
+    return 0;
+  }
+  // We have to manually flatten the beziers in the curve and decide
+  // when to draw them.
+  INT32 MaxFlatness;
+  // Decide how flat we are going to make this curve, if the caller
+  // has not specified
+  //
+  // (Tim says: these figures are a bit arbitrary, especially the
+  // MaxFlatness ones)
+  if (Flatness == 0) {
+    if (RFlags.Metafile) {
 #if !defined(EXCLUDE_FROM_RALPH) && !defined(EXCLUDE_FROM_XARALX)
-			// If this is a Metafile view then go and find out the flatness
-			if (RenderView->IS_KIND_OF(MetafileView))
-				Flatness = ((MetafileView*)RenderView)->GetMetafileFlatness();
-			else
+      // If this is a Metafile view then go and find out the flatness
+      if (RenderView->IS_KIND_OF(MetafileView))
+	Flatness = ((MetafileView*)RenderView)->GetMetafileFlatness();
+      else
 #endif
-				Flatness = 512;
-		}
-		else
-		{
-			Flatness = CalcPathFlattening();
-		}
+	Flatness = 512;
+    } else {
+      Flatness = CalcPathFlattening();
+    }
+  }
+  MaxFlatness = Flatness * 8;
+  // The number of polygons found so far
+  INT32 Count = 0;
+  // The number of points that have been placed in complete polygons
+  INT32 PointsSoFar = 0;
+  // Position we are reading points from
+  INT32 ReadPos = 0;
+  // Flatten curve until it works or flatness becomes too inaccurate.
+  BOOL Worked = FALSE;
+  while (!Worked && (Flatness <= MaxFlatness) && (Flatness > 0)) {
+    // Position we are adding points at
+    InsertPos = 0;
+    ReadPos = 0;
+    Count = 0;
+    PointsSoFar = 0;
+    Worked = TRUE;
+    BOOL KeepGoing = TRUE;
+    // loop through the whole path
+    while (KeepGoing &&
+	   (ReadPos < NumCoords) &&
+	   Worked) {
+      if (InsertPos >= SIZEOF_POLYLINE_BUFFER) {
+	// this check is enough for those times when
+	// CurrentPoint is simply incrememented, but is
+	// insufficient when it is increased by more than one,
+	// so additional checks are needed elsewhere
+	TRACE( _T("Path too complex to flatten\n"));
+	InsertPos = 0;
+	Worked = FALSE;
+	break;
+      }
+      // Find out the type of element that we are over (after the
+      // close flag has been removed)
+      Coord P[4];
+      INT32 OldInsertPos;
+      switch ((Verbs[ReadPos]) & (~PT_CLOSEFIGURE)){
+      case PT_MOVETO:
+	// This represents the start of a new polygon, so finish the
+	// last one
+	if (InsertPos > 0){
+	  // We have put points into the polygon, so this is not the
+	  // first one
+	  PolyCounts[Count] = InsertPos - PointsSoFar;
+	  // Keep tabs on how many points have been put in polygons so
+	  // far
+	  PointsSoFar = InsertPos;
+	  // Count the number of polygons
+	  Count++;
+	  // Make sure its not too many
+	  if (Count == MAX_POLYGONS) {
+	    TRACE(_T("Too many polygons in path to render\n"));
+	    InsertPos = 0;
+	    Worked = FALSE;
+	    break;
+	  }
+	  if (ResCount == NULL) {
+	    // sub-path has ended, stop the loop now
+	    KeepGoing = FALSE;
+	    break;
+	  }
 	}
-
-	MaxFlatness = Flatness * 8;
-
-	// The number of polygons found so far
-	INT32 Count = 0;
-
-	// The number of points that have been placed in complete polygons
-	INT32 PointsSoFar = 0;
-
-	// Position we are reading points from
-	INT32 ReadPos = 0;
-
-	// Flatten curve until it works or flatness becomes too inaccurate.
-	BOOL Worked = FALSE;
-	while (!Worked && (Flatness <= MaxFlatness) &&(Flatness > 0))
-	{
-		// Position we are adding points at
-		InsertPos = 0;
-
-		ReadPos = 0;
-		Count = 0;
-		PointsSoFar = 0;
-
-		Worked = TRUE;
-		BOOL KeepGoing = TRUE;
-
-		// loop through the whole path
-		while (
-				KeepGoing &&
-				(ReadPos < NumCoords) &&
-				Worked
-			  )
-		{
-			if ( InsertPos >= SIZEOF_POLYLINE_BUFFER )
-			{
-				// this check is enough for those times when CurrentPoint is simply incrememented,
-				// but is insufficient when it is increased by more than one, so additional checks
-				// are needed elsewhere
-				TRACE( _T("Path too complex to flatten\n"));
-				InsertPos = 0;
-				Worked = FALSE;
-				break;
-			}
-
-			// Find out the type of element that we are over (after the close flag has been removed)
-			Coord P[4];
-			INT32 OldInsertPos;
-
-			switch ( (Verbs[ReadPos]) & (~PT_CLOSEFIGURE) )
-			{
-				case PT_MOVETO:
-					// This represents the start of a new polygon, so finish the last one
-					if (InsertPos>0)
-					{
-						// We have put points into the polygon, so this is not the first one
-						PolyCounts[Count] = InsertPos - PointsSoFar;
-
-						// Keep tabs on how many points have been put in polygons so far
-						PointsSoFar = InsertPos;
-
-						// Count the number of polygons
-						Count++;
-
-						// Make sure its not too many
-						if (Count == MAX_POLYGONS)
-						{
-							TRACE( _T("Too many polygons in path to render\n") );
-							InsertPos = 0;
-							Worked = FALSE;
-							break;
-						}
-
-						if (ResCount==NULL)
-						{
-							// sub-path has ended, stop the loop now
-							KeepGoing = FALSE;
-							break;
-						}
-					}
-
-					// Put the MoveTo into the point array
-					PointArray[InsertPos] = DocCoordToWin(Coords[ReadPos]);
-					InsertPos++;
-					ReadPos++;
-					break;
-
-
-				case PT_LINETO:
-					// Put the LineTo into the point array
-					PointArray[InsertPos] = DocCoordToWin(Coords[ReadPos]);
-					InsertPos++;
-					ReadPos++;
-					break;
-
-
-				case PT_BEZIERTO:
-					// If this point is a bezier, then the next 2 points should be beziers to
-					ENSURE((Verbs[ReadPos+1]) & (~PT_CLOSEFIGURE), "Bezier found with 1 point");
-					ENSURE((Verbs[ReadPos+2]) & (~PT_CLOSEFIGURE), "Bezier found with 2 points");
-
-					// Make sure that this is not at the start of the path
-					ENSURE(ReadPos>0, "Broken path found while flattening" );
-					OldInsertPos = InsertPos;
-
-					// Flatten the bezier out
-					P[0] = DocCoordToOS256(Coords[ReadPos-1]);
-					P[1] = DocCoordToOS256(Coords[ReadPos]);
-					P[2] = DocCoordToOS256(Coords[ReadPos+1]);
-					P[3] = DocCoordToOS256(Coords[ReadPos+2]);
-
-					if (!Bezier(P[0].x,P[0].y, P[1].x,P[1].y, P[2].x,P[2].y, P[3].x,P[3].y, Flatness))
-					{
-						// Not enough room to flatten bezier.
-						Worked = FALSE;
-						break;
-					}
-
-		 			// If the curve was already flat then check to see if the curve was a vertical
-					// or horizontal line.  If it was then ensure the coords are the same to avoid kinks.
-					if (InsertPos == OldInsertPos+1)
-					{
-						if (Coords[ReadPos-1].x == Coords[ReadPos+2].x)
-							PointArray[OldInsertPos].x = PointArray[OldInsertPos-1].x;
-						if (Coords[ReadPos-1].y == Coords[ReadPos+2].y)
-							PointArray[OldInsertPos].y = PointArray[OldInsertPos-1].y;
-					}
-
-					// Update the positions and break
-					// InsertPos is updated by the bezier functions as the number of points
-					// that they add depends on the curve
-					ReadPos+=3;
-					break;
-
-				default:
-					ENSURE( FALSE, "We found a Path Element that does not exist!" );
-					break;
-			}
-
-			if (ResCount==NULL)
-			{
-				// caller wants sub-paths, better check for close markers
-				if (Verbs[ReadPos-1] & PT_CLOSEFIGURE)
-					KeepGoing = FALSE;
-			}
-		}
-
-		// Increase flatness in case we need to try again.
-		Flatness *= 2;
+	// Put the MoveTo into the point array
+	PointArray[InsertPos] = DocCoordToWin(Coords[ReadPos]);
+	InsertPos++;
+	ReadPos++;
+	break;
+      case PT_LINETO:
+	// Put the LineTo into the point array
+	PointArray[InsertPos] = DocCoordToWin(Coords[ReadPos]);
+	InsertPos++;
+	ReadPos++;
+	break;
+      case PT_BEZIERTO:
+	// If this point is a bezier, then the next 2 points
+	// should be beziers to
+	ENSURE((Verbs[ReadPos+1]) & (~PT_CLOSEFIGURE),
+	       "Bezier found with 1 point");
+	ENSURE((Verbs[ReadPos+2]) & (~PT_CLOSEFIGURE),
+	       "Bezier found with 2 points");
+	// Make sure that this is not at the start of the path
+	ENSURE(ReadPos>0, "Broken path found while flattening" );
+	OldInsertPos = InsertPos;
+	// Flatten the bezier out
+	P[0] = DocCoordToOS256(Coords[ReadPos-1]);
+	P[1] = DocCoordToOS256(Coords[ReadPos]);
+	P[2] = DocCoordToOS256(Coords[ReadPos+1]);
+	P[3] = DocCoordToOS256(Coords[ReadPos+2]);
+	if (!Bezier(P[0].x, P[0].y, P[1].x, P[1].y, P[2].x, P[2].y,
+		    P[3].x, P[3].y, Flatness)) {
+	  // Not enough room to flatten bezier.
+	  Worked = FALSE;
+	  break;
 	}
-
-	if (!Worked)
-	{
-		// oops - didn't work
+	// If the curve was already flat then check to see if
+	// the curve was a vertical or horizontal line.  If it
+	// was then ensure the coords are the same to avoid
+	// kinks.
+	if (InsertPos == OldInsertPos+1) {
+	  if (Coords[ReadPos-1].x == Coords[ReadPos+2].x) {
+	    PointArray[OldInsertPos].x = PointArray[OldInsertPos-1].x;
+	  }
+	  if (Coords[ReadPos-1].y == Coords[ReadPos+2].y) {
+	    PointArray[OldInsertPos].y = PointArray[OldInsertPos-1].y;
+	  }
 	}
-	// complete the information about the last polygon in the list
-	else if (InsertPos>0)
-	{
-		PolyCounts[Count] = InsertPos - PointsSoFar;
-		Count++;
-
-		if (ResCount)
-			*ResCount = Count;
-	}
-	else
-	{
-		if (ResCount)
-			*ResCount = 0;
-		else
-		{
-			ENSURE(FALSE, "strange short path");
-			Worked = FALSE;										// don't use incomplete data
-		}
-	}
-
-	// Tell the caller what flatness we used if necessary
-	if (pActualFlatness != NULL)
-		*pActualFlatness = Flatness;
-
-	// return value is number of verb/coord pairs read.
-	return Worked ? ReadPos : 0;
+	// Update the positions and break
+	// InsertPos is updated by the bezier functions as the number of points
+	// that they add depends on the curve
+	ReadPos+=3;
+	break;
+      default:
+	ENSURE( FALSE, "We found a Path Element that does not exist!" );
+	break;
+      }
+      if (ResCount == NULL) {
+	// caller wants sub-paths, better check for close markers
+	if (Verbs[ReadPos-1] & PT_CLOSEFIGURE)
+	  KeepGoing = FALSE;
+      }
+    }
+    // Increase flatness in case we need to try again.
+    Flatness *= 2;
+  }
+  if (!Worked) {
+    // oops - didn't work
+  } else if (InsertPos > 0) {
+    // complete the information about the last polygon in the list
+    PolyCounts[Count] = InsertPos - PointsSoFar;
+    Count++;
+    if (ResCount) {
+      *ResCount = Count;
+    }
+  } else {
+    if (ResCount) {
+      *ResCount = 0;
+    } else {
+      ENSURE(FALSE, "strange short path");
+      Worked = FALSE;										// don't use incomplete data
+    }
+  }
+  // Tell the caller what flatness we used if necessary
+  if (pActualFlatness != NULL) {
+    *pActualFlatness = Flatness;
+  }
+  // return value is number of verb/coord pairs read.
+  return Worked ? ReadPos : 0;
 }
 
 /********************************************************************************************
@@ -2649,23 +2633,18 @@ INT32 OSRenderRegion::RawRenderPath( DocCoord *const Coords, PathVerb *const Ver
 
 ********************************************************************************************/
 
-BOOL OSRenderRegion::SetClipToPathTemporary( Path *const PathToDraw)
-{
-	PORTNOTETRACE("other","OSRenderRegion::SetClipToPathTemporary - do nothing");
+BOOL OSRenderRegion::SetClipToPathTemporary( Path *const PathToDraw) {
+  PORTNOTETRACE("other",
+		"OSRenderRegion::SetClipToPathTemporary - do nothing");
 #ifndef EXCLUDE_FROM_XARALX
-	BOOL Worked;
-	Worked = RawRenderPath32( PathToDraw );
-	if (Worked)
-	{
-//		Worked = ::SelectClipPath( RenderDC, RGN_AND );
-		if (!Worked)
-			TRACE( _T("SelectClipPath failed"));
-	}
-	else
-		TRACE( _T("RawPath32 failed in Clip"));
-	return Worked;
+  BOOL Worked;
+  Worked = RawRenderPath32(PathToDraw);
+  if (!Worked) {
+    TRACE( _T("RawPath32 failed in Clip"));
+  }
+  return Worked;
 #else
-	return FALSE;
+  return FALSE;
 #endif
 }
 
@@ -2863,15 +2842,17 @@ void OSRenderRegion::RenderPath(Path *DrawPath) {
   // We ought to check for stroke-providers in here, when the great day comes that
   // we actually have them...
   //
-  // DY - 27/11/2000 The Great Day has arrived!!! If we have an AttrStrokeType
-  // AND an AttrVariableWidth then we don't want Gavin to mess with our line widths
+  // DY - 27/11/2000 The Great Day has arrived!!! If we have an
+  // AttrStrokeType AND an AttrVariableWidth then we don't want Gavin
+  // to mess with our line widths
   BOOL StrokeProvided = FALSE;
   StrokeTypeAttrValue* pStroke =
     (StrokeTypeAttrValue*) GetCurrentAttribute(ATTR_STROKETYPE);
   VariableWidthAttrValue* pVarWidth =
     (VariableWidthAttrValue*) GetCurrentAttribute(ATTR_VARWIDTH);
   if (pVarWidth && pStroke) {
-    // Test that these attrs are active and not just defaults that don't do anything
+    // Test that these attrs are active and not just defaults that
+    // don't do anything
     if (pStroke->GetPathProcessor() != NULL &&
 	pVarWidth->GetWidthFunction() != NULL) {
       StrokeProvided = TRUE;
@@ -2914,7 +2895,7 @@ void OSRenderRegion::RenderPath(Path *DrawPath) {
 	ManualStroke = FALSE;
 	// if no line, don't bother
 	// if low quality, don't bother
-      } else if (RR_STROKECOLOUR().IsTransparent() ||				
+      } else if (RR_STROKECOLOUR().IsTransparent() ||
 		 (RRQuality.GetLineQuality() < Quality::FullLine)) {
 	ManualStroke = FALSE;
       }
@@ -2932,35 +2913,58 @@ void OSRenderRegion::RenderPath(Path *DrawPath) {
   }
   INT32 Count;
   // An array of the number of points in each polygon
-  INT32 PolyCounts[MAX_POLYGONS];
-  // Use default flattening
-  INT32 Flatness = 0;
+  INT32 Verbs[MAX_POLYGONS];
+  // was flatness in
+  INT32 DiscoveredPolyCounts[MAX_POLYGONS] =  { 0 };
+  // was flatness out
+  INT32 ResCount = 0;
   // In all, we reduce flattening 8 times before giving up (arbitrary number)
-  INT32 Attempts = 8;
+  INT32 Attempts = 16;
   BOOL Worked = FALSE;
   // Keep flattening until it works (or we have tried 8 times)
   while (!Worked && (Attempts > 0)) {
-    Worked = RawRenderPath(NORMALPATH(DrawPath), PolyCounts, &Count, Flatness,
-			   &Flatness );
+    Worked = RawRenderPath(NORMALPATH(DrawPath), Verbs, &Count,
+			   0, &ResCount);
+    // DiscoveredPolyCounts[0]
     Attempts--;
   }
-  // Note, it's apparanetly possible to generat a drag event in which
+
+  wxPen pen = RenderDC->GetPen();
+  pen.SetWidth(2);
+  RenderDC->SetPen(pen);
+
+
+  // Note, it's apparanetly possible to generate a drag event in which
   // the sweep is effectively zero, and thus the RawRenderPath reduces
   // to a single point.
-  if (Worked && (Count > 1)) {
-    if (Count) {
-      if (DrawPath->IsFilled && !ExtendedFill) {
-	RenderDC->DrawPolyPolygon(Count, PolyCounts, PointArray, 0, 0, nFillStyle);
+  if (Worked) {
+    if (DrawPath->IsFilled && !ExtendedFill) {
+      // If we have just a single polygon we have to use a slightly
+      // different wxWidgets method.
+      if (Count == 1) {
+	RenderDC->DrawPolygon(Worked,
+			      PointArray,
+			      0,
+			      0,
+			      nFillStyle);
+      // } else if (ResCount > 1) {
+      // RenderDC->DrawPolyPolygon(Count, PolyCounts, PointArray, 0, 0, nFillStyle);
       } else {
-	// render the little sub-paths. Win16 doesn't have Polypolyline
-	wxPoint* PointList = PointArray;
-	INT32 *CountList = PolyCounts;
-	INT32 count;
-	while (Count--) {
-	  count = *CountList++;
-	  RenderDC->DrawLines(count,PointList);
-	  PointList += count;
-	}
+	// Theoretically we could use DrawPolyPolygon for multiple
+	// polygons.  But it doesn't look like the code here
+	// ever supported that.
+	TRACE(_T("No polygon (or more than 1) found to draw."));
+      }
+    } else {
+      // (TODO -- This surely most be broken) Render the little
+      // sub-paths. Win16 doesn't have Polypolyline
+      wxPoint* PointList = PointArray;
+      INT32 *CountList = DiscoveredPolyCounts;
+      INT32 count;
+      while (Count--) {
+	count = *CountList++;
+	RenderDC->DrawLines(count, PointList);
+	PointList += count;
       }
     }
   } else {

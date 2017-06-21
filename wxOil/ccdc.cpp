@@ -1,7 +1,7 @@
 // $Id: ccdc.cpp 1354 2006-06-23 20:23:25Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
- 
+
                Xara LX, a vector drawing and manipulation program.
                     Copyright (C) 1993-2006 Xara Group Ltd.
        Copyright on certain contributions may be held in joint with their
@@ -32,7 +32,7 @@ ADDITIONAL RIGHTS
 
 Conditional upon your continuing compliance with the GNU General Public
 License described above, Xara Group Ltd grants to you certain additional
-rights. 
+rights.
 
 The additional rights are to use, modify, and distribute the software
 together with the wxWidgets library, the wxXtra library, and the "CDraw"
@@ -125,7 +125,7 @@ service marks of Xara Group Ltd. All rights in these marks are reserved.
 	Author:		Andy_Pennell (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	9/11/93
 	Purpose:	A layer above the MFC CDC class which contains additional information,
-				including a type word (see RenderType) and rectangle list information. Note 
+				including a type word (see RenderType) and rectangle list information. Note
 				that is is derived from an MFC class, not CCObject so take care with 'new's
 				and ISRUNTIME checks.
 	SeeAlso:	CDC;CCPaintDC
@@ -158,7 +158,7 @@ List CCDC::s_DCList;
 	Scope:	    Public
 	SeeAlso:	RenderType
 
-*********************************************************************************************/ 
+*********************************************************************************************/
 
 CCDC::CCDC( RenderType rType )
 {
@@ -183,7 +183,7 @@ CCDC::CCDC( RenderType rType )
 	Errors:		-
 	Scope:	    Public
 
-*********************************************************************************************/ 
+*********************************************************************************************/
 
 CCDC::CCDC( CNativeDC *pDC, RenderType rType )
 {
@@ -207,7 +207,7 @@ CCDC::CCDC( CNativeDC *pDC, RenderType rType )
 	Errors:		-
 	Scope:	    Public
 
-*********************************************************************************************/ 
+*********************************************************************************************/
 
 CCDC::~CCDC()
 {
@@ -234,7 +234,7 @@ CCDC::~CCDC()
 	Errors:		-
 	Scope:	    Public
 
-*********************************************************************************************/ 
+*********************************************************************************************/
 
 CCDC *CCDC::ConvertFromNativeDC( CNativeDC* pDC )
 {
@@ -270,7 +270,7 @@ CCDC *CCDC::ConvertFromNativeDC( CNativeDC* pDC )
 	Errors:		-
 	Scope:	    Public
 
-*********************************************************************************************/ 
+*********************************************************************************************/
 
 UINT32 CCDC::GetRectangleList( wxDC* pCDC, wxRect **lpRect)
 {
@@ -308,7 +308,7 @@ UINT32 CCDC::GetRectangleList( wxDC* pCDC, wxRect **lpRect)
 	Scope:	    Public
 	SeeAlso:	RenderType
 
-*********************************************************************************************/ 
+*********************************************************************************************/
 
 RenderType CCDC::GetType( CNativeDC* pDC, BOOL bCalculate)
 {
@@ -333,7 +333,7 @@ RenderType CCDC::GetType( CNativeDC* pDC, BOOL bCalculate)
 					// Need to detect if this is a PostScript printer - this requires
 					// different code on different OSs.
 					// (This code taken from MSDN - PSS ID Number: Q124135)
-					WORD wEscape;					
+					WORD wEscape;
 
 					if (IsWin32NT() || IsWin32c())
 					{
@@ -359,7 +359,7 @@ RenderType CCDC::GetType( CNativeDC* pDC, BOOL bCalculate)
 							{
 								// Ok - does it support passthrough?
 								wEscape = PASSTHROUGH;
-								if (pDC->Escape(QUERYESCSUPPORT, sizeof(WORD), 
+								if (pDC->Escape(QUERYESCSUPPORT, sizeof(WORD),
 												 (LPCSTR) &wEscape, NULL) > 0)
 								{
 									// Found a PS printer
@@ -411,7 +411,7 @@ RenderType CCDC::GetType( CNativeDC* pDC, BOOL bCalculate)
 	Errors:		-
 	Scope:	    Public
 
-*********************************************************************************************/ 
+*********************************************************************************************/
 
 BOOL CCDC::IsPaperWanted( RenderType rType )
 {
@@ -426,10 +426,10 @@ BOOL CCDC::IsPaperWanted( RenderType rType )
 
 		case RENDERTYPE_MONOBITMAP:
 			return FALSE;
-		
+
 		case RENDERTYPE_HITDETECT:
 			return FALSE;
-		
+
 		case RENDERTYPE_COLOURBITMAP:
 			return TRUE;
 
@@ -502,61 +502,61 @@ void CCDC::SetDC (CNativeDC * dc, BOOL bDeleteDC /*= TRUE*/)
 	Scope:	    Public
 	SeeAlso:	CCDC;RenderType
 
-*********************************************************************************************/ 
+*********************************************************************************************/
 
-CCPaintDC::CCPaintDC(wxWindow *pWnd) : CCDC(RENDERTYPE_SCREEN), m_DC(pWnd)
-{
-	// Register this DC with the DC type system and set that it is temporary
-	CCDC::SetDC(&m_DC, FALSE);
+CCPaintDC::CCPaintDC(wxWindow *pWnd) : CCDC(RENDERTYPE_SCREEN), m_DC(pWnd) {
+
+  // Register this DC with the DC type system and set that it is temporary
+  CCDC::SetDC(&m_DC, FALSE);
 
 #ifndef EXCLUDE_FROM_XARALX
-	// Loose the old region data
-	CCFree( lpRgnData );
-	lpRgnData = NULL;
+  // Loose the old region data
+  CCFree( lpRgnData );
+  lpRgnData = NULL;
 
-	// Setup the DC
-//	m_pDc		= this;
-	m_clipping	= true;
+  // Setup the DC
+  //	m_pDc		= this;
+  m_clipping	= true;
 
 #if defined(__WXMSW__)
-	// before the BeginPaint we must extract
-	// the update region. This is so we can more efficiently paint the window, especially after
-	// diagonal scrolls.
-	HRGN				hRgn = CreateRectRgn(0,0,0,0);
-	if( hRgn )
+  // before the BeginPaint we must extract
+  // the update region. This is so we can more efficiently paint the window, especially after
+  // diagonal scrolls.
+  HRGN				hRgn = CreateRectRgn(0,0,0,0);
+  if( hRgn )
+    {
+      INT32 result = ::GetUpdateRgn( HWND(pWnd->GetHandle()), hRgn, FALSE );
+      if (result==COMPLEXREGION)
 	{
-		INT32 result = ::GetUpdateRgn( HWND(pWnd->GetHandle()), hRgn, FALSE );
-		if (result==COMPLEXREGION)
+	  // How many regions are there in there
+	  DWORD res = GetRegionData( hRgn, 0, NULL );
+
+	  // If there are some and there are less than our limit then get the info about them
+	  if ((res!=0) && (res<MAX_REGIONS))
+	    {
+	      // alloc space to put the region data in
+	      lpRgnData = (LPRGNDATA)CCMalloc( res );
+	      if (lpRgnData)
 		{
-			// How many regions are there in there
-			DWORD res = GetRegionData( hRgn, 0, NULL );
+		  // alloced buffer - use it
+		  lpRgnData->rdh.dwSize = sizeof(RGNDATAHEADER);
+		  DWORD newres = GetRegionData( hRgn, res, lpRgnData );
 
-			// If there are some and there are less than our limit then get the info about them
-			if ((res!=0) && (res<MAX_REGIONS))
-			{
-				// alloc space to put the region data in
-				lpRgnData = (LPRGNDATA)CCMalloc( res );
-				if (lpRgnData)
-				{
-					// alloced buffer - use it
-					lpRgnData->rdh.dwSize = sizeof(RGNDATAHEADER);
-					DWORD newres = GetRegionData( hRgn, res, lpRgnData );
+		  // Note GetRegionData is documented wrongly - when it works it returns the size, not 1
+		  if (newres!=res)
+		    {
+		      // error occurred somehow so tidy up heap
+		      CCFree( lpRgnData );
+		      lpRgnData = NULL;
 
-					// Note GetRegionData is documented wrongly - when it works it returns the size, not 1
-					if (newres!=res)
-					{
-						// error occurred somehow so tidy up heap
-						CCFree( lpRgnData );
-						lpRgnData = NULL;
-
-						if (newres!=0)
-							TRACE( _T("GetRegionData changed from %lu to %lu\n"), res, newres);
-					}
-				}
-			}
+		      if (newres!=0)
+			TRACE( _T("GetRegionData changed from %lu to %lu\n"), res, newres);
+		    }
 		}
-		DeleteObject( hRgn );
+	    }
 	}
+      DeleteObject( hRgn );
+    }
 #endif
 #endif
 }
@@ -575,7 +575,7 @@ CCPaintDC::CCPaintDC(wxWindow *pWnd) : CCDC(RENDERTYPE_SCREEN), m_DC(pWnd)
 	Errors:		-
 	Scope:	    Public
 
-*********************************************************************************************/ 
+*********************************************************************************************/
 
 CCPaintDC::~CCPaintDC()
 {
@@ -596,7 +596,7 @@ CCPaintDC::~CCPaintDC()
 	Scope:	    Public
 	SeeAlso:	CCDC;RenderType
 
-*********************************************************************************************/ 
+*********************************************************************************************/
 
 CCClientDC::CCClientDC(wxWindow *pWnd) : CCDC(RENDERTYPE_SCREEN), m_DC(pWnd)
 {
@@ -618,7 +618,7 @@ CCClientDC::CCClientDC(wxWindow *pWnd) : CCDC(RENDERTYPE_SCREEN), m_DC(pWnd)
 	Errors:		-
 	Scope:	    Public
 
-*********************************************************************************************/ 
+*********************************************************************************************/
 
 CCClientDC::~CCClientDC()
 {
