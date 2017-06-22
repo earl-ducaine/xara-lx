@@ -109,8 +109,9 @@ service marks of Xara Group Ltd. All rights in these marks are reserved.
 
 //#include "errordlg.h"
 
-// The various error types below are used to pass to InformGeneral by the inline functions InformError,
-// InformWarning etc. They are also stored inside the class CInformErrorDialogue
+// The various error types below are used to pass to InformGeneral by
+// the inline functions InformError, InformWarning etc. They are also
+// stored inside the class CInformErrorDialogue
 #define	ERRORTYPE_NORMAL	0
 #define	ERRORTYPE_QUESTION	1
 #define	ERRORTYPE_WARNING	2
@@ -119,47 +120,59 @@ service marks of Xara Group Ltd. All rights in these marks are reserved.
 #define	ERRORTYPE_ENSURE	5
 
 #if !defined(EXCLUDE_FROM_XARLIB)
-/********************************************************************************************
-
+/****************************************************************************
 >	class ErrorInfo
 
 	Author:		Tim_Browse (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	04/07/94
-	Purpose:	Describe the error/warning/question that is to be displayed.
-				Fields are:
-				MonoOn
-				ErrorMsg - Resource ID of the error message.
-				Title	 - resource ID of the dialogue title string (optional)
-				Button   - array of up to 4 button string resource IDs.
-				OK       - the button which is the 'OK' or default button, i.e. the one which
-				 	 	   should be activated by Enter (this in the range 1-4).
-				Cancel   - the button which is the 'Cancel' button, i.e. the one which should
-						   be activated by Esc (this in the range 1-4).
-				Help     - the index of the button which is the 'Help' button (this in the
-					       range 1-4).
-				MonoOff
-	SeeAlso:	InformGeneral
+	Fields:
+        		MonoOn
+			ErrorMsg - Resource ID of the error message.
 
-********************************************************************************************/
+			Title - resource ID of the dialogue title
+			string (optional)
 
+			Button   - array of up to 4 button string resource IDs.
+
+			OK - the button which is the 'OK' or default
+			button, i.e. the one which should be activated
+			by Enter (this in the range 1-4).
+
+                        Cancel - the button which is the 'Cancel'
+			button, i.e. the one which should be activated
+			by Esc (this in the range 1-4).
+
+                        Help - the index of the button which is the
+			'Help' button (this in the range 1-4).
+			MonoOff SeeAlso: InformGeneral
+
+	Purpose: Describe the error/warning/question that is to be
+	displayed.
+****************************************************************************/
 class ErrorInfo
 {
 public:
-	ErrorInfo();
+  ErrorInfo();
 
-	UINT32 ErrorMsg;
-	UINT32 Title;
-	UINT32 Button[4];
-	UINT32 OK;
-	UINT32 Cancel;
-	UINT32 Help;
+  UINT32 ErrorMsg;
+  UINT32 Title;
+  UINT32 Button[4];
+  UINT32 OK;
+  UINT32 Cancel;
+  UINT32 Help;
 };
 
-// The function used throughout the program should be moved to its own .h file really
+// The function used throughout the program should be moved to its own
+// .h file really
 INT32 CCAPI InformGeneral(UINT32 Error,
-						UINT32 modID, UINT32 ErrorMsg,
-						UINT32 Butt1, UINT32 Butt2, UINT32 Butt3, UINT32 Butt4,
-						UINT32 OK, UINT32 Cancel);
+			  UINT32 modID,
+			  UINT32 ErrorMsg,
+			  UINT32 Butt1,
+			  UINT32 Butt2,
+			  UINT32 Butt3,
+			  UINT32 Butt4,
+			  UINT32 OK,
+			  UINT32 Cancel);
 
 INT32 CCAPI InformGeneral(UINT32 Error, ErrorInfo *pInfo, UINT32 ModID = 0);
 
@@ -167,34 +180,34 @@ INT32 CCAPI InformGeneral(UINT32 Error, ErrorInfo *pInfo, UINT32 ModID = 0);
 void CCAPI InformLastError(UINT32 Error = ERRORTYPE_ERROR);
 
 
-// These functions are no longer inline as this just caused huge dependancy problems
-// Errors first:
+// These functions are no longer inline as this just caused huge
+// dependancy problems Errors first:
 INT32 InformError(UINT32 ErrorMsg = 0,
-					   UINT32 Butt1  = 0,
-					   UINT32 Butt2  = 0,
-					   UINT32 Butt3  = 0,
-					   UINT32 Butt4  = 0,
-					   UINT32 OK     = 1,
-					   UINT32 Cancel = 2);
+		  UINT32 Butt1  = 0,
+		  UINT32 Butt2  = 0,
+		  UINT32 Butt3  = 0,
+		  UINT32 Butt4  = 0,
+		  UINT32 OK     = 1,
+		  UINT32 Cancel = 2);
 
 INT32 ToolInformError(UINT32 ToolID,
-						   UINT32 ErrorMsg = 0,
-						   UINT32 Butt1  = 0,
-						   UINT32 Butt2  = 0,
-						   UINT32 Butt3  = 0,
-						   UINT32 Butt4  = 0,
-						   UINT32 OK     = 1,
-						   UINT32 Cancel = 2);
+		      UINT32 ErrorMsg = 0,
+		      UINT32 Butt1  = 0,
+		      UINT32 Butt2  = 0,
+		      UINT32 Butt3  = 0,
+		      UINT32 Butt4  = 0,
+		      UINT32 OK     = 1,
+		      UINT32 Cancel = 2);
 
 
 INT32 ModuleInformError(UINT32 ModID,
-							 UINT32 ErrorMsg = 0,
-							 UINT32 Butt1  = 0,
-							 UINT32 Butt2  = 0,
-							 UINT32 Butt3  = 0,
-							 UINT32 Butt4  = 0,
-							 UINT32 OK     = 1,
-							 UINT32 Cancel = 2);
+			UINT32 ErrorMsg = 0,
+			UINT32 Butt1  = 0,
+			UINT32 Butt2  = 0,
+			UINT32 Butt3  = 0,
+			UINT32 Butt4  = 0,
+			UINT32 OK     = 1,
+			UINT32 Cancel = 2);
 
 INT32 InformError(ErrorInfo *pInfo);
 INT32 ToolInformError(UINT32 ToolID, ErrorInfo *pInfo);
@@ -202,30 +215,30 @@ INT32 ModuleInformError(UINT32 ModID, ErrorInfo *pInfo);
 
 // now serious errors
 INT32 InformSeriousError(UINT32 ErrorMsg = 0,
-							  UINT32 Butt1  = 0,
-							  UINT32 Butt2  = 0,
-							  UINT32 Butt3  = 0,
-							  UINT32 Butt4  = 0,
-						   	  UINT32 OK     = 1,
-						      UINT32 Cancel = 2);
+			 UINT32 Butt1  = 0,
+			 UINT32 Butt2  = 0,
+			 UINT32 Butt3  = 0,
+			 UINT32 Butt4  = 0,
+			 UINT32 OK     = 1,
+			 UINT32 Cancel = 2);
 
 INT32 ToolInformSeriousError(UINT32 ToolID,
-								  UINT32 ErrorMsg = 0,
-						   		  UINT32 Butt1  = 0,
-						   		  UINT32 Butt2  = 0,
-						   		  UINT32 Butt3  = 0,
-						   		  UINT32 Butt4  = 0,
-								  UINT32 OK     = 1,
-								  UINT32 Cancel = 2);
+			     UINT32 ErrorMsg = 0,
+			     UINT32 Butt1  = 0,
+			     UINT32 Butt2  = 0,
+			     UINT32 Butt3  = 0,
+			     UINT32 Butt4  = 0,
+			     UINT32 OK     = 1,
+			     UINT32 Cancel = 2);
 
 INT32 ModuleInformSeriousError(UINT32 ModID,
-									UINT32 ErrorMsg = 0,
-							 		UINT32 Butt1  = 0,
-							 		UINT32 Butt2  = 0,
-							 		UINT32 Butt3  = 0,
-							 		UINT32 Butt4  = 0,
-								    UINT32 OK     = 1,
-								    UINT32 Cancel = 2);
+			       UINT32 ErrorMsg = 0,
+			       UINT32 Butt1  = 0,
+			       UINT32 Butt2  = 0,
+			       UINT32 Butt3  = 0,
+			       UINT32 Butt4  = 0,
+			       UINT32 OK     = 1,
+			       UINT32 Cancel = 2);
 
 INT32 InformSeriousError(ErrorInfo *pInfo);
 INT32 ToolInformSeriousError(UINT32 ToolID, ErrorInfo *pInfo);
@@ -233,32 +246,32 @@ INT32 ModuleInformSeriousError(UINT32 ModID, ErrorInfo *pInfo);
 
 // now warnings:
 INT32 InformWarning(UINT32 ErrorMsg = 0,
-						 UINT32 Butt1  = 0,
-						 UINT32 Butt2  = 0,
-						 UINT32 Butt3  = 0,
-						 UINT32 Butt4  = 0,
-						 UINT32 OK     = 1,
-						 UINT32 Cancel = 2);
+		    UINT32 Butt1  = 0,
+		    UINT32 Butt2  = 0,
+		    UINT32 Butt3  = 0,
+		    UINT32 Butt4  = 0,
+		    UINT32 OK     = 1,
+		    UINT32 Cancel = 2);
 
 
 INT32 ToolInformWarning(UINT32 ToolID,
-							 UINT32 ErrorMsg = 0,
-							 UINT32 Butt1  = 0,
-							 UINT32 Butt2  = 0,
-							 UINT32 Butt3  = 0,
-							 UINT32 Butt4  = 0,
-							 UINT32 OK     = 1,
-						     UINT32 Cancel = 2);
+			UINT32 ErrorMsg = 0,
+			UINT32 Butt1  = 0,
+			UINT32 Butt2  = 0,
+			UINT32 Butt3  = 0,
+			UINT32 Butt4  = 0,
+			UINT32 OK     = 1,
+			UINT32 Cancel = 2);
 
 
 INT32 ModuleInformWarning(UINT32 ModID,
-							   UINT32 ErrorMsg = 0,
-							   UINT32 Butt1  = 0,
-							   UINT32 Butt2  = 0,
-							   UINT32 Butt3  = 0,
-							   UINT32 Butt4  = 0,
-						   	   UINT32 OK     = 1,
-						       UINT32 Cancel = 2);
+			  UINT32 ErrorMsg = 0,
+			  UINT32 Butt1  = 0,
+			  UINT32 Butt2  = 0,
+			  UINT32 Butt3  = 0,
+			  UINT32 Butt4  = 0,
+			  UINT32 OK     = 1,
+			  UINT32 Cancel = 2);
 
 INT32 InformWarning(ErrorInfo *pInfo);
 INT32 ToolInformWarning(UINT32 ToolID, ErrorInfo *pInfo);
@@ -266,32 +279,32 @@ INT32 ModuleInformWarning(UINT32 ModID, ErrorInfo *pInfo);
 
 // questions:
 UINT32 AskQuestion(UINT32 ErrorMsg = 0,
-					   UINT32 Butt1  = 0,
-					   UINT32 Butt2  = 0,
-					   UINT32 Butt3  = 0,
-					   UINT32 Butt4  = 0,
-					   UINT32 OK     = 1,
-					   UINT32 Cancel = 2);
+		   UINT32 Butt1  = 0,
+		   UINT32 Butt2  = 0,
+		   UINT32 Butt3  = 0,
+		   UINT32 Butt4  = 0,
+		   UINT32 OK     = 1,
+		   UINT32 Cancel = 2);
 
 
 UINT32 ToolAskQuestion(UINT32 ToolID,
-						   UINT32 ErrorMsg = 0,
-						   UINT32 Butt1  = 0,
-						   UINT32 Butt2  = 0,
-						   UINT32 Butt3  = 0,
-						   UINT32 Butt4  = 0,
-						   UINT32 OK     = 1,
-						   UINT32 Cancel = 2);
+		       UINT32 ErrorMsg = 0,
+		       UINT32 Butt1  = 0,
+		       UINT32 Butt2  = 0,
+		       UINT32 Butt3  = 0,
+		       UINT32 Butt4  = 0,
+		       UINT32 OK     = 1,
+		       UINT32 Cancel = 2);
 
 
 INT32 ModuleAskQuestion(UINT32 ModID,
-							 UINT32 ErrorMsg = 0,
-							 UINT32 Butt1  = 0,
-							 UINT32 Butt2  = 0,
-							 UINT32 Butt3  = 0,
-							 UINT32 Butt4  = 0,
-							 UINT32 OK     = 1,
-							 UINT32 Cancel = 2);
+			UINT32 ErrorMsg = 0,
+			UINT32 Butt1  = 0,
+			UINT32 Butt2  = 0,
+			UINT32 Butt3  = 0,
+			UINT32 Butt4  = 0,
+			UINT32 OK     = 1,
+			UINT32 Cancel = 2);
 
 INT32 AskQuestion(ErrorInfo *pInfo);
 INT32 ToolAskQuestion(UINT32 ToolID, ErrorInfo *pInfo);
@@ -300,31 +313,31 @@ INT32 ModuleAskQuestion(UINT32 ModID, ErrorInfo *pInfo);
 
 // now just messages:
 INT32 InformMessage(UINT32 ErrorMsg = 0,
-						 UINT32 Butt1  = 0,
-						 UINT32 Butt2  = 0,
-						 UINT32 Butt3  = 0,
-						 UINT32 Butt4  = 0,
-						 UINT32 OK     = 1,
-						 UINT32 Cancel = 2);
+		    UINT32 Butt1  = 0,
+		    UINT32 Butt2  = 0,
+		    UINT32 Butt3  = 0,
+		    UINT32 Butt4  = 0,
+		    UINT32 OK     = 1,
+		    UINT32 Cancel = 2);
 
 
 INT32 ToolInformMessage(UINT32 ToolID,
-							 UINT32 ErrorMsg = 0,
-							 UINT32 Butt1  = 0,
-							 UINT32 Butt2  = 0,
-							 UINT32 Butt3  = 0,
-							 UINT32 Butt4  = 0,
-							 UINT32 OK     = 1,
-							 UINT32 Cancel = 2);
+			UINT32 ErrorMsg = 0,
+			UINT32 Butt1  = 0,
+			UINT32 Butt2  = 0,
+			UINT32 Butt3  = 0,
+			UINT32 Butt4  = 0,
+			UINT32 OK     = 1,
+			UINT32 Cancel = 2);
 
 INT32 ModuleInformMessage(UINT32 ModID,
-							   UINT32 ErrorMsg = 0,
-							   UINT32 Butt1  = 0,
-							   UINT32 Butt2  = 0,
-							   UINT32 Butt3  = 0,
-							   UINT32 Butt4  = 0,
-							   UINT32 OK     = 1,
-							   UINT32 Cancel = 2);
+			  UINT32 ErrorMsg = 0,
+			  UINT32 Butt1  = 0,
+			  UINT32 Butt2  = 0,
+			  UINT32 Butt3  = 0,
+			  UINT32 Butt4  = 0,
+			  UINT32 OK     = 1,
+			  UINT32 Cancel = 2);
 
 INT32 InformMessage(ErrorInfo *pInfo);
 INT32 ToolInformMessage(UINT32 ToolID, ErrorInfo *pInfo);
@@ -332,35 +345,49 @@ INT32 ModuleInformMessage(UINT32 ModID, ErrorInfo *pInfo);
 #endif
 
 
-/***********************************************************************************************
-
+/***************************************************************************
 >	macro ERROR(UINT32 ErrID, retvalue)
 
 	Author:		Jim_Lynn (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	9/7/93
-	Purpose:	This macro should be used to return from a function when an error condition
-				has been detected. The rule in Camelot is that every function which might
-				fail should return a BOOL indicating success or failure. Thus, retvalue will
-				usually be FALSE. However, functions which return pointers can indicate error
-				conditions by returning NULL, so the retvalue parameter is there to give extra
-				functionality. Obviously, TRUE or FALSE (or NULL) tells us very little about why
-				a function failed, so we have a class containing static variables which must be
-				set each time a function fails. A calling routine can look at the error value to
-				see what the error was, or use the string to present the error in an error box.
-				The macro has two incarnations - within module code in a separate DLL it passes a
-				Module ID, which allows the string finding functions to look in another resource,
-				while within kernel code, it just passes the error ID.
-				It looks at the symbol MODULE_ID to see if it is being defined within a module,
-				and defines the appropriate behaviour. MODULE_ID should be defined as a unique
-				module identifier in all code running in a module. It should not be defined in any
-				other code.
-				Warning: Windows.h defines ERROR as 0 for region functions. Use of this together
-				with errors.h should be treated carefully.
+
+	Purpose: This macro should be used to return from a function
+			when an error condition has been detected. The
+			rule in Camelot is that every function which
+			might fail should return a BOOL indicating
+			success or failure. Thus, retvalue will
+			usually be FALSE. However, functions which
+			return pointers can indicate error conditions
+			by returning NULL, so the retvalue parameter
+			is there to give extra
+			functionality. Obviously, TRUE or FALSE (or
+			NULL) tells us very little about why a
+			function failed, so we have a class containing
+			static variables which must be set each time a
+			function fails. A calling routine can look at
+			the error value to see what the error was, or
+			use the string to present the error in an
+			error box.  The macro has two incarnations -
+			within module code in a separate DLL it passes
+			a Module ID, which allows the string finding
+			functions to look in another resource, while
+			within kernel code, it just passes the error
+			ID.  It looks at the symbol MODULE_ID to see
+			if it is being defined within a module, and
+			defines the appropriate behaviour. MODULE_ID
+			should be defined as a unique module
+			identifier in all code running in a module. It
+			should not be defined in any other code.
+
+			Warning: Windows.h defines ERROR as 0 for
+			region functions. Use of this together with
+			errors.h should be treated carefully.
+
+
 	SeeAlso:	TOOLERROR; ERRORIF; Error
+****************************************************************************/
 
-***********************************************************************************************/
-
-/*********************************************************************************************
+/****************************************************************************
 
 >	macro TOOLERROR(UINT32 ErrID, retvalue, toolID)
 
@@ -371,7 +398,7 @@ INT32 ModuleInformMessage(UINT32 ModID, ErrorInfo *pInfo);
 				that of your tool ID. MODULE_ID does not need to be defined for this to work.
 	SeeAlso:	ERROR; TOOLERRORIF; Error
 
-*********************************************************************************************/
+***************************************************************************/
 
 #ifdef ERROR
 #undef ERROR
@@ -397,234 +424,374 @@ return retparam;
 
 
 
-/***********************************************************************************************
+/***************************************************************************
 
 >	macro ERRORIF(condition, UINT32 ErrID, retvalue)
 
-	Author:		Jim_Lynn (Xara Group Ltd) <camelotdev@xara.com>
-	Created:	9/7/93
-	Inputs:		condition is a boolean expression, TRUE if error should be returned.
-				ErrID is an error number/resource (all the same)
-				retvalue is the value that will be returned from the function.
-	Purpose:	This is a general purpose macro which is a bit like ENSURE, except that it really
-				does return an error to the calling code.
-				This macro should be used at the beginning of a member function, to test for
-				the known conditions that the function works to. All functions should know what
-				conditions they expect before they start, and they should fail if those conditions
-				are not met. The condition should be a boolean expression which should evaluate
-				to TRUE if an error condition has manifested itself, at which time the ERROR macro
-				is executed, making the function return whatever you put in retvalue.
-				Usually, retvalue will be FALSE, since most functions that fail are expected to
-				return a BOOL. However, some functions can usefully return other error indicators.
-				For example, a function which returns a pointer can return NULL to indicate an error.
-				Thus, you can use the macro as:
+	Author:	    Jim_Lynn (Xara Group Ltd) <camelotdev@xara.com>
+	Created:    9/7/93
 
-					ERRORIF(num != 42, _R(ID_BADPARAM), FALSE);
-				or
-					ERRORIF(!ptr, _R(ID_BADPOINTER), NULL);
+	Inputs:     condition is a boolean expression, TRUE if error
+		    should be returned.  ErrID is an error
+		    number/resource (all the same) retvalue is the
+		    value that will be returned from the function.
 
-	SeeAlso:	ERROR; Error
+	Purpose:    This is a general purpose macro which is a bit like
+		    ENSURE, except that it really does return an error
+		    to the calling code.  This macro should be used at
+		    the beginning of a member function, to test for
+		    the known conditions that the function works
+		    to. All functions should know what conditions they
+		    expect before they start, and they should fail if
+		    those conditions are not met. The condition should
+		    be a boolean expression which should evaluate to
+		    TRUE if an error condition has manifested itself,
+		    at which time the ERROR macro is executed, making
+		    the function return whatever you put in retvalue.
+		    Usually, retvalue will be FALSE, since most
+		    functions that fail are expected to return a
+		    BOOL. However, some functions can usefully return
+		    other error indicators.  For example, a function
+		    which returns a pointer can return NULL to
+		    indicate an error.
 
-***********************************************************************************************/
+                    Thus, you can use the macro as:
 
-/*********************************************************************************************
+                    ERRORIF(num != 42, _R(ID_BADPARAM), FALSE);
 
+		    , or,
+
+                    ERRORIF(!ptr, _R(ID_BADPOINTER), NULL);
+
+	SeeAlso:    ERROR; Error
+***************************************************************************/
+
+/***************************************************************************
 >	macro TOOLERRORIF(condition, UINT32 ErrID, retvalue, toolID)
 
 	Author:		Andy_Pennell (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	20/8/93
-	Purpose:	Like ERRORIF, except specially for Tools to use.
-				If you are a Tool you can use the TOOLERROR macro which takes a third parameter,
-				that of your tool ID. MODULE_ID does not need to be defined for this to work.
+
+	Purpose:        Like ERRORIF, except specially for Tools to use.  If
+			you are a Tool you can use the TOOLERROR macro
+			which takes a third parameter, that of your
+			tool ID. MODULE_ID does not need to be defined
+			for this to work.
+
 	SeeAlso:	ERRORIF; TOOLERROR; Error
-
-*********************************************************************************************/
-
-
-#define ERRORIF(cond,returnID, retvalue)\
-	if (cond) 							\
-	{									\
-		ERROR( returnID, retvalue );	\
+****************************************************************************/
+#define ERRORIF(cond, returnID, retvalue)\
+	if (cond) { \
+	  ERROR((returnID), (retvalue));	\
 	}
 
-
-#define	TOOLERRORIF(cond,returnID,retvalue,toolid)	\
-	if (cond)										\
-	{												\
-		TOOLERROR((UINT32)returnID, retvalue,toolid);	\
+#define	TOOLERRORIF(cond, returnID, retvalue, toolid) \
+	if (cond) { \
+	  TOOLERROR((UINT32)(returnID), (retvalue), (toolid));	\
 	}
 
-
-// INLINE_MARKERROR non-zero if MarkError function is inline
-// this is done in retail builds, except in DLL code
-#if defined(_DEBUG) || defined(_AFXDLL)
-#define	INLINE_MARKERROR	0
+// INLINE_MARKERROR non-zero if MarkError function is inline this is
+// done in retail builds, except in DLL code
+#if defined(_DEBUG)
+# define INLINE_MARKERROR 0
 #else
-#define	INLINE_MARKERROR	1
+#  define INLINE_MARKERROR 1
 #endif
+
 // MARKERROR_BODY is used to expand the actual function as required
-#define	MARKERROR_BODY(Line,File)	{ LastErrorLine = Line; LastErrorFile = File; }
+#define	MARKERROR_BODY(Line, File) { \
+    LastErrorLine = (Line); \
+    LastErrorFile = (File); \
+  }
 
 #define MAXERRORFORMATLENGTH 256
 
-/***********************************************************************************************
-
+/***************************************************************************
 >	class Error
 
 	Author:		Jim_Lynn (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	9/7/93
-	Purpose:	The Error class consists only of static variables, one for the ID of the error,
-				another for the string, and another for the ID of the module that generated the
-				error (0 if the error happened in the kernel). The string is a simple TCHAR array
-				to avoid the need for dynamic memory allocation during error handling. These
-				variables must be set whenever an error condition manifests itself. The class
-				provides static functions to do this, which are called by the ERRORIF and
-				NERROR macros
+
+	Purpose:        The Error class consists only of static variables,
+			one for the ID of the error, another for the
+			string, and another for the ID of the module
+			that generated the error (0 if the error
+			happened in the kernel). The string is a
+			simple TCHAR array to avoid the need for
+			dynamic memory allocation during error
+			handling. These variables must be set whenever
+			an error condition manifests itself. The class
+			provides static functions to do this, which
+			are called by the ERRORIF and NERROR macros
+
 	SeeAlso:	ERRORIF; ERROR
 
-***********************************************************************************************/
-
+****************************************************************************/
 class CCAPI Error
 {
-private:
-	static UINT32 ErrorID;
+  // Static Properties
+ private:
+  static UINT32 ErrorID;
+  // Chris introduced RalphErrorID during ralph error handling ralph
+  // needs this so that he can map the ID to a HRESULT before passing
+  // it back to a harness - the current ErrorId is cleared in
+  // SetSeriousError maybe by design To be safe we'll keep our own
+  // copy.
+  static UINT32 RalphErrorID;
+  static UINT32 ModuleID;
+  static TCHAR ErrorString[256];
+  // This is incremented each time we start something that looks
+  static UINT32	RenderThread;
+  // like a render, and decremented as we thread out. So if an error
+  // occurs, we know we have to be very careful
+  //
+  // line number of last error (or 0)
+  static UINT32 LastErrorLine;
+  // ptr to filename of last error
+  static const char *LastErrorFile;
+  static wxString UserName;
+  static void TraceWrite(wxString buf, va_list args);
 
-	// Chris introduced RalphErrorID during ralph error handling
-	// ralph needs this so that he can map the ID to a HRESULT before passing it
-	// back to a harness - the current ErrorId is cleared in SetSeriousError maybe by design
-	// To be safe we'll keep our own copy.
-
-	static UINT32 RalphErrorID;
-	static UINT32 ModuleID;
-	static TCHAR ErrorString[256];
-	static UINT32	RenderThread;			// This is incremented each time we start something that looks
-										// like a render, and decremented as we thread out. So if an error
-										// occurs, we know we have to be very careful
-
-	static UINT32 LastErrorLine;			// line number of last error (or 0)
-	static const char *LastErrorFile;	// ptr to filename of last error
-
-	static wxString UserName;
-
-	static void TraceWrite(wxString buf, va_list args);
-	static void FixFormat (const TCHAR * fmt, TCHAR * fmt2);
+  // Static methods
+ private:
+   static void FixFormat (const TCHAR * fmt, TCHAR * fmt2);
 #if 0 != wxUSE_UNICODE
-	// In UNICODE builds ONLY we allow an additional char *
-	// version of which copes with old code that does
-	// ERROR3PF("foo", ...), not ERROR3PF(_T("foo", ....). We
-	// don't include these in the non-Unicode version as they
-	// clash with the TCHAR stuff
-	static void FixFormat (const char * fmt, TCHAR * fmt2);
+  // In UNICODE builds ONLY we allow an additional char * version of
+  // which copes with old code that does ERROR3PF("foo", ...), not
+  // ERROR3PF(_T("foo", ....). We don't include these in the
+  // non-Unicode version as they clash with the TCHAR stuff
+  static void FixFormat (const char* fmt, TCHAR* fmt2);
 #endif
 
-public:
-	Error()
-	{
-		ErrorString[0] = 0;
-		RalphErrorID =ErrorID = ModuleID = 0;
-	}
+  // Static Methods
+ public:
+  static void SetUserName(wxString User) {
+    UserName = User;
+  }
 
-	static BOOL IsUserName(const char *wanted);
-
-	static void SetUserName(wxString User) { UserName = User; }
-
-	// convert ID's to HRESULT for ralph harness's
-	static HRESULT ErrIDToHRESULT(UINT32 ErrID);
-
+  static BOOL IsUserName(wxString wanted);
+  // convert ID's to HRESULT for ralph harness's
+  static HRESULT ErrIDToHRESULT(UINT32 ErrID);
 #if !defined(EXCLUDE_FROM_XARLIB)
-	static HRESULT GetRalphError();
+  static HRESULT GetRalphError();
 #endif
+  static void SetError(UINT32 number, const TCHAR* errstring, UINT32 module);
+  static void SetError(UINT32 number, UINT32 module = 0);
+  static void SetErrorTool(UINT32 number, UINT32 toolid);
+  static void SetErrorSerious( const TCHAR* );
+  static void ClearError();
 
-	~Error();
-	static void SetError(UINT32 number, const TCHAR* errstring, UINT32 module);
-	static void SetError(UINT32 number, UINT32 module = 0);
-	static void SetErrorTool(UINT32 number, UINT32 toolid);
-	static void SetErrorSerious( const TCHAR* );
+  // Static inline Methods
+ public:
+  inline static TCHAR* GetErrorString();
+  inline static UINT32 GetErrorNumber();
+  inline static UINT32 GetRalphErrorNumber();
+  inline static UINT32 GetErrorModule();
 
-	static void ClearError();
+  inline static void RenderThreadIn() {
+    RenderThread++;
+  }
 
-	inline static TCHAR* GetErrorString();
+  inline static void RenderThreadOut() {
+    RenderThread--;
+  }
 
-	inline static UINT32 GetErrorNumber();
-	inline static UINT32 GetRalphErrorNumber();
+  inline static void RenderThreadReset() {
+    RenderThread = 0;
+  }
 
-	inline static UINT32 GetErrorModule();
+  inline static BOOL IsInRenderThread() {
+    return ( RenderThread != 0 );
+  }
 
-	inline static void RenderThreadIn() { RenderThread++; }
-	inline static void RenderThreadOut() { RenderThread--; }
-	inline static void RenderThreadReset() { RenderThread = 0; }
-	inline static BOOL IsInRenderThread() { return ( RenderThread != 0 ); }
-
-	static void DirectStatus( BOOL = FALSE );
-
-	static void MarkError( UINT32 LineNumber, const char *Filename )
-	#if INLINE_MARKERROR
-		MARKERROR_BODY( LineNumber, Filename )
-	#else
-		;
-	#endif
-
-
-	static void CDECL XSetErrorC();
-	static void CDECL XSetError(const TCHAR *fmt, ...);
-#if 0 != wxUSE_UNICODE
-	// In UNICODE builds ONLY we allow an additional char *
-	// version of which copes with old code that does
-	// ERROR3PF("foo", ...), not ERROR3PF(_T("foo", ....). We
-	// don't include these in the non-Unicode version as they
-	// clash with the TCHAR stuff
-	static void CDECL XSetError(const char *fmt, ...);
-#endif
-	static void CDECL XSetError(UINT32, ...);
-	static void CDECL ReleaseTrace(LPCTSTR, ...);
-	static void CDECL XComplain(const TCHAR* fmt, ...);
-# if 0 != wxUSE_UNICODE
-	// In UNICODE builds ONLY we allow an additional char *
-	// version of which copes with old code that does
-	// ERROR3PF("foo", ...), not ERROR3PF(_T("foo", ....). We
-	// don't include these in the non-Unicode version as they
-	// clash with the TCHAR stuff
-	// static void CDECL XComplain(const char* fmt, ...);
-# endif
-
-	
-#ifdef _DEBUG
-# if 0 != wxUSE_UNICODE
-	// In UNICODE builds ONLY we allow an additional char *
-	// version of which copes with old code that does
-	// ERROR3PF("foo", ...), not ERROR3PF(_T("foo", ....). We
-	// don't include these in the non-Unicode version as they
-	// clash with the TCHAR stuff
-	// static void CDECL XComplain(const char* fmt, ...);
-# endif
-	static void CDECL TraceUser(const char *, LPCTSTR, ...);
-	static void CDECL TraceAll(wxString, ...);
-	static void CDECL TraceTime(const TCHAR * t);
+  static void DirectStatus(BOOL = FALSE);
+  static void MarkError(UINT32 LineNumber, const char *Filename)
+#if INLINE_MARKERROR
+    MARKERROR_BODY(LineNumber, Filename)
 #else
-	static void CDECL TraceUser(const char *, LPCTSTR, ...) { }
-	static void CDECL TraceAll(wxString, ...) { }
-	static void CDECL TraceTime(const TCHAR*) { }
+    ;
 #endif
 
-	// Stack walking stuff
-public:
-	static void DumpStack(UINT32 frames=0);
+  // Constructors/Destructors
+ public:
+  Error() {
+    ErrorString[0] = 0;
+    RalphErrorID = ErrorID = ModuleID = 0;
+  }
 
-// FreeBSD does not provide backtrace()
-#if !defined(__WXMAC__) && !defined(__FreeBSD__)
-	class StackWalker : public wxStackWalker
-	{
-		public:
-			virtual void OnStackFrame(const wxStackFrame & frame);
-	};
+  ~Error();
+
+  // Static methods
+ public:
+  static void CDECL XSetErrorC();
+  static void CDECL XSetError(const TCHAR *fmt, ...);
+  static void DumpStack(UINT32 frames = 0);
+
+
+#if 0 != wxUSE_UNICODE
+  // In UNICODE builds ONLY we allow an additional char * version of
+  // which copes with old code that does ERROR3PF("foo", ...), not
+  // ERROR3PF(_T("foo", ....). We don't include these in the
+  // non-Unicode version as they clash with the TCHAR stuff
+  static void XSetError(const char *fmt, ...);
 #endif
 
-	static UINT32 ErrorBoxRecurse;
+  static void XSetError(UINT32, ...);
+  static void ReleaseTrace(LPCTSTR, ...);
+  static void XComplain(const TCHAR* fmt, ...);
 
+#ifdef _DEBUG
+  // One Argument
+  static void TraceUser(wxString User, wxString msg);
+  static void TraceUser(wxString User, wxString msg, wxString arg1);
+  static void TraceUser(wxString User, wxString msg, uintptr_t arg);
+
+  static void TraceUser(wxString User, wxString msg, void* arg) {
+    TraceUser(User, msg, (uintptr_t) arg);
+  }
+
+  // Two Arguments
+  static void TraceUser(wxString User, wxString fmt, wxString arg1,
+			wxString arg2);
+
+  static void TraceUser(wxString User, wxString fmt, wxString arg1,
+			uintptr_t arg2);
+
+  static void TraceUser(wxString User, wxString msg, wxString arg1,
+			void* arg2) {
+    TraceUser(User, msg, arg1, (uintptr_t) arg2);
+  }
+
+  static void TraceUser(wxString User, wxString msg, uintptr_t arg1,
+			wxString arg2);
+
+  static void TraceUser(wxString User, wxString msg, uintptr_t arg1,
+			uintptr_t arg2);
+
+  static void TraceUser(wxString User, wxString msg, void* arg1,
+			wxString arg2) {
+    TraceUser(User, msg, (uintptr_t)arg1, arg2);
+  }
+
+  static void TraceUser(wxString User, wxString msg, void* arg1,
+			uintptr_t arg2) {
+    TraceUser(User, msg, (uintptr_t)arg1, arg2);
+  }
+
+  static void TraceUser(wxString User, wxString msg, void* arg1, void* arg2) {
+    TraceUser(User, msg, (uintptr_t) arg1, (uintptr_t) arg2);
+  }
+
+  // Three Arguments
+  static void TraceUser(wxString User, wxString msg, wxString arg1,
+			uintptr_t arg2, wxString arg3);
+
+  static void TraceUser(wxString User, wxString msg, wxString arg1,
+			uintptr_t arg2, uintptr_t arg3);
+
+  static void TraceUser(wxString User, wxString msg, wxString arg1,
+			void* arg2, wxString arg3) {
+    TraceUser(User, msg, arg1, (uintptr_t) arg2, arg3);
+  }
+
+  static void TraceUser(wxString User, wxString msg, uintptr_t arg1,
+			wxString arg2, uintptr_t arg3);
+
+  static void TraceUser(wxString User, wxString msg, uintptr_t arg1,
+			uintptr_t arg2, uintptr_t arg3);
+
+  static void TraceUser(wxString User, wxString msg, void* arg1,
+			wxString arg2, uintptr_t arg3) {
+    TraceUser(User, msg, (uintptr_t)arg1, arg2, arg3);
+  }
+
+  // Four Arguments
+  static void TraceUser(wxString User, wxString msg, uintptr_t arg1,
+			wxString arg2, wxString arg3, wxString arg4);
+
+    static void TraceUser(wxString User, wxString msg, uintptr_t arg1,
+			uintptr_t arg2, uintptr_t arg3, uintptr_t arg4);
+
+  // Five Arguments
+  static void TraceUser(wxString User, wxString msg, uintptr_t arg1,
+			wxString arg2, uintptr_t arg3, wxString arg4,
+			uintptr_t arg5);
+
+  static void TraceUser(wxString User, wxString msg, uintptr_t arg1,
+			wxString arg2, uintptr_t arg3, wxString arg4,
+			void* arg5) {
+    TraceUser(User, msg, arg1, arg2, arg3, arg4, (uintptr_t) arg5);
+  }
+
+  static void TraceUser(wxString User, wxString msg, uintptr_t arg1,
+			uintptr_t arg2, uintptr_t arg3, wxString arg4,
+			uintptr_t arg5);
+
+  static void TraceUser(wxString User, wxString msg, uintptr_t arg1,
+			uintptr_t arg2, uintptr_t arg3, wxString arg4,
+			void* arg5) {
+    TraceUser(User, msg, arg1, arg2, arg3, arg4, (uintptr_t) arg5);
+  }
+
+  static void TraceUser(wxString User, wxString msg, uintptr_t arg1,
+			uintptr_t arg2, uintptr_t arg3, uintptr_t arg4,
+			uintptr_t arg5);
+
+  // Six Arguments
+  static void TraceUser(wxString User, wxString msg, wxString arg1,
+			wxString arg2, uintptr_t arg3, uintptr_t arg4,
+			uintptr_t arg5, uintptr_t arg6);
+
+  static void TraceUser(wxString User, wxString msg, wxString arg1,
+			wxString arg2, void* arg3, void* arg4,
+			void* arg5, void* arg6) {
+    TraceUser(User, msg, arg1, arg2, (uintptr_t)arg3, (uintptr_t)arg4,
+	      (uintptr_t)arg5, (uintptr_t)arg6);
+  }
+
+    static void TraceUser(wxString User, wxString msg, wxString arg1,
+			wxString arg2, void* arg3, uintptr_t arg4,
+			uintptr_t arg5, uintptr_t arg6) {
+    TraceUser(User, msg, arg1, arg2, (uintptr_t)arg3, arg4,
+	      arg5, arg6);
+  }
+
+
+  static void TraceUser(wxString User, wxString msg, uintptr_t arg1,
+			uintptr_t arg2, uintptr_t arg3, uintptr_t arg4,
+			uintptr_t arg5, uintptr_t arg6);
+
+
+  static void TraceUser(wxString User, wxString msg, wxWindow& arg1,
+			uintptr_t arg2);
+
+
+  static void TraceAll(wxString, ...);
+  static void TraceTime(const TCHAR * t);
+#else
+  static void TraceUser(wxString User, wxString fmt, ...) {
+  }
+
+  static void TraceAll(wxString, ...) {
+  }
+
+  static void TraceTime(const TCHAR*) {
+  }
+#endif
+
+  // Stack walking stuff
+ public:
+  // FreeBSD does not provide backtrace()
+  class StackWalker : public wxStackWalker
+  {
+  public:
+    virtual void OnStackFrame(const wxStackFrame & frame);
+  };
+
+  static UINT32 ErrorBoxRecurse;
 };
 
-/***********************************************************************************************
-
+/***************************************************************************
 >	void Error::RenderThreadIn()
 	void Error::RenderThreadOut()
 	void Error::RenderThreadReset()

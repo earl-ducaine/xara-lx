@@ -1068,97 +1068,204 @@ MARKERROR_BODY( LineNumber, Filename )
 
 // \n's needed on the end of these
 
-BOOL Error::IsUserName(const char *wanted)
-{
+BOOL Error::IsUserName(wxString wanted) {
   // CmpNoCase returns 0 for a match
-  if (!UserName.CmpNoCase(_T("ALL"))) {
+  if (!UserName.CmpNoCase("ALL")) {
     return TRUE;
   }
-  if (!UserName.CmpNoCase(_T("")))
+  if (!UserName.CmpNoCase("")) {
     return FALSE;
-  wxString target (wanted, wxConvUTF8);
-
-  if (!target.CmpNoCase(_T("ALL")))
+  }
+  wxString target(wanted);
+  if (!target.CmpNoCase("ALL")) {
     return TRUE;
-
+  }
   return (!UserName.CmpNoCase(target));
 }
 
 #ifdef _DEBUG
-
+// Watchout for newlines!
 void Error::TraceWrite(wxString bufp, va_list args) {
-  // wxWidgets doesn't expect newlines in the string, but
-  // Camelot source provides them. So we print each bit
-  // separately
-  // # if 1
-  // replace \n by a space - the real solution is to remove the \n
-  // from all the trace statements (yawn)
-  // TCHAR buf[MAXERRORFORMATLENGTH];
-  // camStrncpy(buf, bufp, MAXERRORFORMATLENGTH);
-  // buf[MAXERRORFORMATLENGTH-1]=0;
-  // TCHAR* b = buf;
-  // do {
-  //   if (*b == '\n') {
-  //     *b=' ';
-  //   }
-  // } while(*b++);
   wxVLogDebug(bufp, args);
-// # else
-//   // this way is bad as it doesn't work with args either side of the
-//   // newline
-//   TCHAR* newline;
-//   do {
-//     newline = camStrchr(bufp, _T('\n'));
-//     if (newline) *newline++=0;
-//     // We really should pass only the args before the newline here, but...
-//     wxVLogDebug(bufp, args);
-//     bufp=newline;
-//   } while (bufp && *bufp);
-// # endif
 }
 
 # if 0 != wxUSE_UNICODE
-// wxWidgets does this if we let it use the vsnprintf in wxLogDebug
-// so we don't currently do this - this one converts from a char *
-// and is only enabled on Unicode builds
-void Error::FixFormat (const char * fmt, TCHAR * fmt2)
-{
-	wxString FString(fmt, wxConvUTF8);
-	FixFormat(FString.wx_str(), fmt2);
+// wxWidgets does this if we let it use the vsnprintf in wxLogDebug so
+// we don't currently do this - this one converts from a char * and is
+// only enabled on Unicode builds
+void Error::FixFormat (const char* fmt, TCHAR* fmt2) {
+  wxString FString(fmt, wxConvUTF8);
+  FixFormat(FString.wx_str(), fmt2);
 }
 # endif
 
-// wxWidgets does this if we let it use the vsnprintf in wxLogDebug
-// so we don't currently do this
-void Error::FixFormat (const TCHAR * fmt, TCHAR * fmt2)
-{
-	// Unicode - replace %s with %ls
-	INT32 i=0;
-	INT32 j=0;
-	TCHAR c;
-
-	do
-	{
-		c = fmt[i++];
-		fmt2[j++]=c;
-		if ( (c == _T('%')) && (fmt[i]==_T('s')) )
-			fmt2[j++]=_T('l'); // this is safe as we know we had at least 2 spare chars
-	} while ( c && (j < MAXERRORFORMATLENGTH-1)); // Strict comparison deliberate
-
-	// for safety
-	fmt2[MAXERRORFORMATLENGTH-1]=_T('\0');
+// wxWidgets does this if we let it use the vsnprintf in wxLogDebug so
+// we don't currently do this
+void Error::FixFormat (const TCHAR* fmt, TCHAR* fmt2) {
+  // Unicode - replace %s with %ls
+  INT32 i=0;
+  INT32 j=0;
+  TCHAR c;
+  // Strict comparison deliberate
+  do {
+      c = fmt[i++];
+      fmt2[j++]=c;
+      if ((c == _T('%')) && (fmt[i]==_T('s'))) {
+	// this is safe as we know we had at least 2 spare chars
+	fmt2[j++]=_T('l');
+      }
+    } while (c && (j < MAXERRORFORMATLENGTH - 1));
+  // for safety
+  fmt2[MAXERRORFORMATLENGTH - 1] = _T('\0');
 }
 
-void CDECL Error::TraceUser(const char *User, LPCTSTR fmt, ...)
-{
-	if (!IsUserName(User)) return;
+// void Error::TraceUser(wxString User, wxString fmt, wxString arg1, ...) {
+//   if (!IsUserName(User)) {
+//     return;
+//   }
+//   va_list marker;
+//   va_start(marker, fmt);
+//   //	wxVLogDebug(fmt, marker);
+//   TraceWrite(fmt, marker);
+//   va_end(marker);
+// }
 
-	va_list marker;
-	va_start( marker, fmt );
-//	wxVLogDebug(fmt, marker);
-	TraceWrite(fmt, marker);
-	va_end( marker );
+void Error::TraceUser(wxString User, wxString msg) {
+  if (!IsUserName(User)) {
+    return;
+  }
+  wxLogDebug(msg);
 }
+
+void Error::TraceUser(wxString User, wxString fmt, wxString arg) {
+  wxString msg;
+  msg.Printf(fmt, arg);
+  TraceUser(User, msg);
+}
+
+void Error::TraceUser(wxString User, wxString fmt, uintptr_t arg) {
+  wxString msg;
+  msg.Printf(fmt, arg);
+  TraceUser(User, msg);
+}
+
+// Two arguments
+void Error::TraceUser(wxString User, wxString fmt, wxString arg1,
+		      wxString arg2) {
+  wxString msg;
+  msg.Printf(fmt, arg1, arg2);
+  TraceUser(User, msg);
+}
+
+void Error::TraceUser(wxString User, wxString fmt, wxString arg1,
+		      uintptr_t arg2) {
+  wxString msg;
+  msg.Printf(fmt, arg1, arg2);
+  TraceUser(User, msg);
+}
+
+void Error::TraceUser(wxString User, wxString fmt, uintptr_t arg1,
+		      wxString arg2) {
+  wxString msg;
+  msg.Printf(fmt, arg1, arg2);
+  TraceUser(User, msg);
+}
+
+void Error::TraceUser(wxString User, wxString fmt, uintptr_t arg1,
+		      uintptr_t arg2) {
+  wxString msg;
+  msg.Printf(fmt, arg1, arg2);
+  TraceUser(User, msg);
+}
+
+// Three Arguments
+
+void Error::TraceUser(wxString User, wxString fmt, wxString arg1,
+		      uintptr_t arg2, wxString arg3) {
+  wxString msg;
+  msg.Printf(fmt, arg1, arg2, arg3);
+  TraceUser(User, msg);
+}
+
+void Error::TraceUser(wxString User, wxString fmt, wxString arg1,
+		      uintptr_t arg2, uintptr_t arg3) {
+  wxString msg;
+  msg.Printf(fmt, arg1, arg2, arg3);
+  TraceUser(User, msg);
+}
+
+void Error::TraceUser(wxString User, wxString fmt, uintptr_t arg1,
+		      wxString arg2, uintptr_t arg3) {
+  wxString msg;
+  msg.Printf(fmt, arg1, arg2, arg3);
+  TraceUser(User, msg);
+}
+
+void Error::TraceUser(wxString User, wxString fmt, uintptr_t arg1,
+		      uintptr_t arg2, uintptr_t arg3) {
+  wxString msg;
+  msg.Printf(fmt, arg1, arg2, arg3);
+  TraceUser(User, msg);
+}
+
+// Four Aurguments
+void Error::TraceUser(wxString User, wxString fmt, uintptr_t arg1,
+		      wxString arg2, wxString arg3, wxString arg4) {
+  wxString msg;
+  msg.Printf(fmt, arg1, arg2, arg3, arg4);
+  TraceUser(User, msg);
+}
+
+void Error::TraceUser(wxString User, wxString fmt, uintptr_t arg1,
+		      uintptr_t arg2, uintptr_t arg3, uintptr_t arg4) {
+  wxString msg;
+  msg.Printf(fmt, arg1, arg2, arg3, arg4);
+  TraceUser(User, msg);
+}
+
+
+void Error::TraceUser(wxString User, wxString fmt, uintptr_t arg1,
+			wxString arg2, uintptr_t arg3, wxString arg4,
+			uintptr_t arg5) {
+  wxString msg;
+  msg.Printf(fmt, arg1, arg2, arg3, arg4, arg5);
+  TraceUser(User, msg);
+}
+
+void Error::TraceUser(wxString User, wxString fmt, uintptr_t arg1,
+			uintptr_t arg2, uintptr_t arg3, wxString arg4,
+			uintptr_t arg5) {
+  wxString msg;
+  msg.Printf(fmt, arg1, arg2, arg3, arg4, arg5);
+  TraceUser(User, msg);
+}
+
+// Six Arguments
+void Error::TraceUser(wxString User, wxString fmt, wxString arg1,
+			wxString arg2, uintptr_t arg3, uintptr_t arg4,
+		      uintptr_t arg5, uintptr_t arg6) {
+  wxString msg;
+  msg.Printf(fmt, arg1, arg2, arg3, arg4, arg5, arg6);
+  TraceUser(User, msg);
+}
+
+void Error::TraceUser(wxString User, wxString fmt, uintptr_t arg1,
+			uintptr_t arg2, uintptr_t arg3, uintptr_t arg4,
+		      uintptr_t arg5, uintptr_t arg6) {
+  wxString msg;
+  msg.Printf(fmt, arg1, arg2, arg3, arg4, arg5, arg6);
+  TraceUser(User, msg);
+}
+
+void Error::TraceUser(wxString User, wxString fmt, uintptr_t arg1,
+			uintptr_t arg2, uintptr_t arg3, uintptr_t arg4,
+			uintptr_t arg5) {
+  wxString msg;
+  msg.Printf(fmt, arg1, arg2, arg3, arg4, arg5);
+  TraceUser(User, msg);
+}
+
+
 
 void CDECL Error::TraceAll(wxString fmt, ...) {
 	va_list marker;

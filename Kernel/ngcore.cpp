@@ -1,7 +1,7 @@
 // $Id: ngcore.cpp 1282 2006-06-09 09:46:49Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
- 
+
                Xara LX, a vector drawing and manipulation program.
                     Copyright (C) 1993-2006 Xara Group Ltd.
        Copyright on certain contributions may be held in joint with their
@@ -32,7 +32,7 @@ ADDITIONAL RIGHTS
 
 Conditional upon your continuing compliance with the GNU General Public
 License described above, Xara Group Ltd grants to you certain additional
-rights. 
+rights.
 
 The additional rights are to use, modify, and distribute the software
 together with the wxWidgets library, the wxXtra library, and the "CDraw"
@@ -309,7 +309,7 @@ void NameGallery::GetHighlightCount(INT32* pnTotalItems, INT32* pnJustNames)
 	// Count how many SGNameItems are highlighted in all groups.
 	if (pnTotalItems != 0)
 		*pnTotalItems = GetSelectedItemCount();
-	
+
 	// Count how many SGNameItems are highlighted in the SGUsedNames group.
 	if (pnJustNames != 0)
 		*pnJustNames = (GetUsedNames() != 0) ? GetUsedNames()->GetSelectedItemCount() : 0;
@@ -481,11 +481,11 @@ BOOL NameGallery::CreateDisplayTree()
 	{
 		DisplayTree = new SGDisplayRootScroll(this);
 		ERRORIF(DisplayTree == 0, _R(IDE_NOMORE_MEMORY), FALSE);
-			
+
 		m_pUsedNames = new SGUsedNames;
 		ERRORIF(m_pUsedNames == 0, _R(IDE_NOMORE_MEMORY), FALSE);
 		DisplayTree->AddItem(m_pUsedNames);
-		
+
 		SGUsedFonts* pFonts = new SGUsedFonts;
 		ERRORIF(pFonts == 0, _R(IDE_NOMORE_MEMORY), FALSE);
 		DisplayTree->AddItem(pFonts);
@@ -569,7 +569,7 @@ MsgResult NameGallery::Message(Msg* pMessage)
 			  // check if it is involved in a stretch...
 			  NameGallery *pNameGallery = NameGallery::Instance();
 			  if (!pNameGallery)	{ return tempMsg;	}
-			  
+
 			  SGUsedNames *pNames = pNameGallery->GetUsedNames();
 			  if (!pNames)	{
 			    return tempMsg;
@@ -597,15 +597,15 @@ MsgResult NameGallery::Message(Msg* pMessage)
 				    }
 				  }
 			      }
-			      
+
 			    }
-			    
+
 			    pNameGalleryItem = (SGNameItem *) pNameGalleryItem->GetNext();
 			  }
 			  return tempMsg;
 			}
 			break;
-			
+
 		default:
 			break;
 		}
@@ -631,7 +631,7 @@ MsgResult NameGallery::Message(Msg* pMessage)
 			CreateDisplayTree();
 		}
 	}
-	
+
 	// Redraw after an undo, a redo or a successful undoable operation. We use this
 	// rather blanket approach because there isn't a message sent around to notify us
 	// of all the possible changes to attributes and objects that interest us.
@@ -654,10 +654,10 @@ MsgResult NameGallery::Message(Msg* pMessage)
 		case OpMsg::AFTER_REDO:
 			DisplayDirty();
 			break;
-		
+
 		default:
 			break;
-		}			
+		}
 	}
 
 	// Redraw after changes to the common attributes.  This will catch changes to
@@ -697,7 +697,7 @@ BOOL NameGallery::OnTimerEvent()
 	return TRUE;
 }
 
- 
+
 
 void NameGallery::DisplayDirty()
 {
@@ -767,7 +767,7 @@ BOOL NameGallery::OnIdleEvent()
 	Author:		Justin_Flude (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	15/5/99
 	Inputs:		pstrCommandID	---		the ID of the command
-	Outputs:	pstrShade		---		if returning (OpState.Greyed == TRUE) then this 
+	Outputs:	pstrShade		---		if returning (OpState.Greyed == TRUE) then this
 										is set to the reason that the item is shaded/greyed.
 	Returns:	An OpState indicating the current menu item state.
 	Purpose:	To determine the state of a given menu item. This method is an exact
@@ -843,7 +843,7 @@ void NameGallery::DoCommand(StringBase* pstrCommandID)
 
 /********************************************************************************************
 >	virtual BOOL NameGallery::InitMenuCommands()
-												 
+
 	Author:		Justin_Flude (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	18/5/99
 	Returns:	TRUE if successful.
@@ -940,7 +940,7 @@ BOOL NameGallery::ApplyAction(SGActionType nAction)
 				pDesc->Invoke();
 		}
 		return TRUE;
-		
+
 	default:
 		break;
 	}
@@ -975,7 +975,7 @@ void NameGallery::SelectionHasChanged()
 	Author:		Justin_Flude (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	15/5/99
 	Purpose:	Overrides default SuperGallery hide/show handling to force an update to
-				the gallery when 
+				the gallery when
 ********************************************************************************************/
 
 void NameGallery::SetVisibility(BOOL fOpen)
@@ -994,7 +994,7 @@ void NameGallery::SetVisibility(BOOL fOpen)
 
 	Author:		Simon_Knight (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	3/3/00
-	Inputs:		PropagateChanges - 
+	Inputs:		PropagateChanges -
 	Purpose:	The scans are too slow and this replaces the ForceRedraw function when in the
 				middle of an op which just updates the sizes of the named sets and NOTHING ELSE.
 				No node is looked at twice, and retests for "most likely" name gallery item first.
@@ -1014,7 +1014,7 @@ BOOL NameGallery::FastUpdateNamedSetSizes(BOOL PropagateChanges)
 	if (!pNames)
 		return FALSE;
 
-	SGNameItem* pNameGalleryItem = NULL; 
+	SGNameItem* pNameGalleryItem = NULL;
 
 	// reset all the names
 	pNameGalleryItem = (SGNameItem*) pNames->GetChild();
@@ -1103,11 +1103,14 @@ BOOL NameGallery::FastUpdateNamedSetSizes(BOOL PropagateChanges)
 
 	TRACEUSER( "GerryX", _T("Named Sets\n"));
 	pNameGalleryItem = (SGNameItem*) pNames->GetChild();
-	while (pNameGalleryItem)
-	{
-		pNameGalleryItem->GetNameText(&str);
-		TRACEUSER( "GerryX", _T("Item %s Bar = %d  Nodes = %d\n"), (TCHAR*)str, pNameGalleryItem->m_BarNumber, 
-			pNameGalleryItem->GetObjectCount());
+	while (pNameGalleryItem) {
+	  pNameGalleryItem->GetNameText(&str);
+	  wxString s = (TCHAR*)str;
+	  TRACEUSER("GerryX",
+		    _T("Item %s Bar = %d  Nodes = %d\n"),
+		    s,
+		    pNameGalleryItem->m_BarNumber,
+		    pNameGalleryItem->GetObjectCount());
 		DocRect Rect;
 		Rect = pNameGalleryItem->GetSetBounds();
 		TRACEUSER( "GerryX", _T("Bounds     = (%d, %d) (%d, %d)\n"), Rect.lo.x, Rect.lo.y, Rect.hi.y, Rect.hi.y);
@@ -1190,7 +1193,7 @@ BOOL NameGallery::FastApplyStretchScan(ObjChangeParam & ObjChange)
 	INT32 TimesInLoop = 0;
 
 	// Added this line because OpCut (and presumably others) causes an OpPageResize
-	// to happen which gets remembered as the last op and we crash at this point 
+	// to happen which gets remembered as the last op and we crash at this point
 	// because the op has been deleted
 	m_LastOpUsed = ObjChange.GetOpPointer();
 
@@ -1200,8 +1203,8 @@ BOOL NameGallery::FastApplyStretchScan(ObjChangeParam & ObjChange)
 	BOOL IsAButtonNoChangingOp =
 PORTNOTE("other", "Remove OpDuplicateBar and OpShortenBar")
 #ifndef EXCLUDE_FROM_XARALX
-									IS_A(m_LastOpUsed, OpDuplicateBar) || 
-									IS_A(m_LastOpUsed, OpShortenBar) || 
+									IS_A(m_LastOpUsed, OpDuplicateBar) ||
+									IS_A(m_LastOpUsed, OpShortenBar) ||
 #endif
 									IS_A(m_LastOpUsed, OpRenameAll);
 
@@ -1382,7 +1385,7 @@ PORTNOTE("other", "Removed OpDuplicateBar");
 	INT32 ExtendsFound = 0;
 
 		/*** LOOK AT EACH TARGET IT IS EITHER 1) EXTENDING 2) RESETING OR 3) DOING NOTHING ***/
-		
+
 		pNameGalleryItem = (SGNameItem*) pNames->GetChild();
 		while (pNameGalleryItem)
 		{
@@ -1429,7 +1432,7 @@ PORTNOTE("other", "Removed OpDuplicateBar");
 						ExtendStruct[ExtendsFound].pTriggerSet && // and it has a trigger associated
 						!pNameGalleryItem->IsABackBar()) // and it is not a back bar
 					{
-						if (pNodeBarProperty->Bar(pNameGalleryItem->m_BarNumber).SameSize < 3 
+						if (pNodeBarProperty->Bar(pNameGalleryItem->m_BarNumber).SameSize < 3
 							&& ( ExtendStruct[ExtendsFound].pTriggerSet->GetSetBounds().Height() != 0 || ExtendStruct[ExtendsFound].pTriggerSet->GetSetBounds().Width() != 0))
 						{
 							// expand up the combined and old combined trigger rects
@@ -1489,7 +1492,7 @@ PORTNOTE("other", "Removed OpDuplicateBar");
 						DoReset = TRUE;
 						TRACEUSER( "GerryX", _T("Bar gone live\n"));
 					}
-					
+
 					/*** DO AN EXTEND ***/
 					if (DoExtend)
 					{
@@ -1547,7 +1550,7 @@ PORTNOTE("other", "Removed OpDuplicateBar");
 								ExtendStruct[ExtendsFound].pTriggerSet && // and it has a trigger associated
 								!pNameGalleryItem->IsABackBar()) // and it is not a back bar
 							{
-								if (pNodeBarProperty->Bar(pNameGalleryItem->m_BarNumber).SameSize < 3 
+								if (pNodeBarProperty->Bar(pNameGalleryItem->m_BarNumber).SameSize < 3
 									&& ( ExtendStruct[ExtendsFound].pTriggerSet->GetSetBounds().Height() != 0 || ExtendStruct[ExtendsFound].pTriggerSet->GetSetBounds().Width() != 0))
 								{
 									// expand up the combined and old combined trigger rects
@@ -1609,7 +1612,7 @@ PORTNOTE("other", "Removed OpBarCreation");
 			}
 #endif
 		}
-		
+
 		// no target found to extend, so give up now!
 		if (ExtendsFound == 0 && !IsAButtonNoChangingOp)
 		{
@@ -1661,7 +1664,7 @@ PORTNOTE("other", "Removed OpBarCreation");
 
 				// We will always update the set sizes here as otherwise there can be small
 				// discrepancies between the current and old sizes at the end of the operation
-				// This causes the next operation to go wrong (things get reset rather than 
+				// This causes the next operation to go wrong (things get reset rather than
 				// extended)
 				FastUpdateNamedSetSizes();
 			}
@@ -1757,7 +1760,7 @@ PORTNOTE("other", "Removed OpBarCreation");
 //		DocRect TotalExtend; // total bounds for the extender so the button all extends the same amount
 		DocRect rDiff; // temp variable
 
-//		TotalExtend.MakeEmpty(); 
+//		TotalExtend.MakeEmpty();
 		rDiff.MakeEmpty();
 
 		NodeListItemWithIndex * pNodeListItem = (NodeListItemWithIndex *)ExtendNodeList.GetHead();
@@ -1769,7 +1772,7 @@ PORTNOTE("other", "Removed OpBarCreation");
 			{
 				// check if we are allowed to extend
 				rDiff =	Extender::CheckValidExtend((NodeRenderableInk*) (pNodeListItem->pNode),
-												ExtendStruct[pNodeListItem->Index].pTargetStretchProp->GetStretchType(), 
+												ExtendStruct[pNodeListItem->Index].pTargetStretchProp->GetStretchType(),
 												ExtendStruct[pNodeListItem->Index].pTargetStretchProp->GetRefUnionTriggerBounds(),
 												ExtendStruct[pNodeListItem->Index].pTargetStretchProp->GetRefTargetBounds(),
 												ExtendStruct[pNodeListItem->Index].CombinedTriggerRect,
@@ -1802,12 +1805,12 @@ PORTNOTE("other", "Removed OpBarCreation");
 					ExtendStruct[pNodeListItem->Index].TotalExtend.hi.x = ExtendStruct[pNodeListItem->Index].TotalExtend.lo.x;
 				else
 					ExtendStruct[pNodeListItem->Index].TotalExtend.lo.x = ExtendStruct[pNodeListItem->Index].TotalExtend.hi.x;
-					
+
 				if (ExtendStruct[pNodeListItem->Index].TotalExtend.lo.y < ExtendStruct[pNodeListItem->Index].TotalExtend.hi.y)
 					ExtendStruct[pNodeListItem->Index].TotalExtend.hi.y = ExtendStruct[pNodeListItem->Index].TotalExtend.lo.y;
 				else
 					ExtendStruct[pNodeListItem->Index].TotalExtend.lo.y = ExtendStruct[pNodeListItem->Index].TotalExtend.hi.y;
-					
+
 				// check allow op
 				ExtendOk = pNodeListItem->pNode->AllowOp(&ObjChange);
 			}
@@ -1827,7 +1830,7 @@ PORTNOTE("other", "Removed OpBarCreation");
 
 				// do the extend
 				Extender::Extend((NodeRenderableInk*) (pNodeListItem->pNode),
-					ExtendStruct[pNodeListItem->Index].pTargetStretchProp->GetStretchType(), 
+					ExtendStruct[pNodeListItem->Index].pTargetStretchProp->GetStretchType(),
 					ExtendStruct[pNodeListItem->Index].pTargetStretchProp->GetRefUnionTriggerBounds(),
 					ExtendStruct[pNodeListItem->Index].pTargetStretchProp->GetRefTargetBounds(),
 					ExtendStruct[pNodeListItem->Index].CombinedTriggerRect,
@@ -1844,7 +1847,7 @@ PORTNOTE("other", "Removed OpBarCreation");
 				ExtendParams EPS;
 				EPS.pOp = m_LastOpUsed;
 				Extender::CalculateExtendParams(&EPS,
-					ExtendStruct[pNodeListItem->Index].pTargetStretchProp->GetStretchType(), 
+					ExtendStruct[pNodeListItem->Index].pTargetStretchProp->GetStretchType(),
 					ExtendStruct[pNodeListItem->Index].pTargetStretchProp->GetRefUnionTriggerBounds(),
 					ExtendStruct[pNodeListItem->Index].pTargetStretchProp->GetRefTargetBounds(),
 					ExtendStruct[pNodeListItem->Index].CombinedTriggerRect,
@@ -1924,7 +1927,7 @@ PORTNOTE("other", "Removed OpBarCreation");
 	// from bars that still exist
 	if (m_LastOpUsed->OpStatus == DO && (
 PORTNOTE("other", "Removed OpShortenBar")
-#ifndef EXCLUDE_FROM_XARALX											
+#ifndef EXCLUDE_FROM_XARALX
 											IS_A(m_LastOpUsed, OpShortenBar) ||
 #endif
 											IS_A(m_LastOpUsed, OpDelete)))
@@ -1968,7 +1971,7 @@ PORTNOTE("other", "Removed OpShortenBar")
 
 	// We will always update the set sizes here as otherwise there can be small
 	// discrepancies between the current and old sizes at the end of the operation
-	// This causes the next operation to go wrong (things get reset rather than 
+	// This causes the next operation to go wrong (things get reset rather than
 	// extended)
 	FastUpdateNamedSetSizes();
 
@@ -2039,8 +2042,8 @@ void NameGallery::ResetRelationshipRects(SGNameItem * pTarget, NamedStretchProp 
 		BOOL ok = TempCombinedTriggerRect.IsValid();
 
 		// if it is ok and this will make a difference
-		if (ok 
-			&& (TempCleanTargetRect != pProp->GetRefTargetBounds() || TempCombinedTriggerRect != pProp->GetRefUnionTriggerBounds()) 
+		if (ok
+			&& (TempCleanTargetRect != pProp->GetRefTargetBounds() || TempCombinedTriggerRect != pProp->GetRefUnionTriggerBounds())
 			)
 		{
 #ifdef DEBUG
@@ -2060,14 +2063,14 @@ void NameGallery::ResetRelationshipRects(SGNameItem * pTarget, NamedStretchProp 
 
 				Node * pNodeSetSentinel = Document::GetSelected()->GetSetSentinel(); // the sentinel
 				pCopy->AttachNode(pNodeSetSentinel, LASTCHILD);
-				// Create a hide node action to hide the node when we undo 
+				// Create a hide node action to hide the node when we undo
 				HideNodeAction* UndoHideNodeAction;
-				HideNodeAction::Init(m_LastOpUsed,                    
+				HideNodeAction::Init(m_LastOpUsed,
 					  				 m_LastOpUsed->GetUndoActions(), //&UndoActions,
-									 pCopy, 
-									 FALSE, 		 // Include subtree size 
+									 pCopy,
+									 FALSE, 		 // Include subtree size
 					  				 ( Action**)(&UndoHideNodeAction));
-				
+
 				m_LastOpUsed->DoHideNode(pTarget->GetPropertyNode(), FALSE);
 				pTarget->ResetCachedPropertyNode();
 
@@ -2098,7 +2101,7 @@ void NameGallery::ShuffleBar(INT32 BarNumber, INT32 Spacing, INT32 BarDirection,
 	DocCoord FirstButtonPos(0,0);
 	DocCoord FirstButtonSubPixPos(0,0);
 	DocRect	rBounds;
-	
+
 	SGNameItem * Order[MAX_BUTTONS_IN_A_BAR];
 	INT32 num = 0;
 
@@ -2126,7 +2129,7 @@ void NameGallery::ShuffleBar(INT32 BarNumber, INT32 Spacing, INT32 BarDirection,
 		pNameGalleryItem = (SGNameItem *) pNameGalleryItem->GetNext();
 	}
 
-	
+
 	// sort them by location
 	INT32 i;
 	INT32 j;
@@ -2144,7 +2147,7 @@ void NameGallery::ShuffleBar(INT32 BarNumber, INT32 Spacing, INT32 BarDirection,
 				}
 			}
 		}
-	else 
+	else
 	if (BarDirection == 2) // vert
 		for (i = 0; i < num; i++)
 		{
@@ -2236,7 +2239,7 @@ void NameGallery::ShuffleBar(INT32 BarNumber, INT32 Spacing, INT32 BarDirection,
 		{
 			pNameGalleryItem = SliceHelper::LookupNameGalleryItem(((TemplateAttribute *)pNode)->GetParam());
 
-			if (pNameGalleryItem && pNameGalleryItem->m_BarNumber == BarNumber && 
+			if (pNameGalleryItem && pNameGalleryItem->m_BarNumber == BarNumber &&
 				(pNameGalleryItem->m_Translation.x || pNameGalleryItem->m_Translation.y))
 			{
 				// of course it is the parent of the attrib that is the node that needs extending
@@ -2323,7 +2326,7 @@ BOOL NameGallery::ExpandVirtualTriggers(INT32 ExpandType, INT32 BarNo, DocRect &
 
 	Author		: Matt Priestley
 	Created		: 06 February 2001
-	Purpose		: 
+	Purpose		:
 
 	Returns		: BOOL
 	Argument	: INT32 Index

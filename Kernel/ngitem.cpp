@@ -1,7 +1,7 @@
 // $Id: ngitem.cpp 1488 2006-07-20 15:31:34Z phil $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
- 
+
                Xara LX, a vector drawing and manipulation program.
                     Copyright (C) 1993-2006 Xara Group Ltd.
        Copyright on certain contributions may be held in joint with their
@@ -32,7 +32,7 @@ ADDITIONAL RIGHTS
 
 Conditional upon your continuing compliance with the GNU General Public
 License described above, Xara Group Ltd grants to you certain additional
-rights. 
+rights.
 
 The additional rights are to use, modify, and distribute the software
 together with the wxWidgets library, the wxXtra library, and the "CDraw"
@@ -273,7 +273,7 @@ NodeSetProperty* SGNameItem::GetPropertyNode()
 				? m_pCachedPropertyNode
 				: m_pCachedPropertyNode =
 						Document::GetCurrent()->GetSetSentinel()->FindPropertyNode(m_strName);
-}	
+}
 
 
 
@@ -320,7 +320,7 @@ void SGNameItem::Include(Node* pNode)
 	Returns:	-1 if comparison is <
 				0 if =
 				+1 if >
-	Purpose:	Overrides the default comparator so that it takes into accounted 
+	Purpose:	Overrides the default comparator so that it takes into accounted
 				appended numbers.
 ***********************************************************************************************/
 
@@ -328,7 +328,7 @@ INT32 SGNameItem::CompareTo(SGDisplayNode* pItem, INT32 nKey)
 {
 	ERROR3IF(pItem == 0, "SGNameItem::CompareTo: null input");
 	ERROR3IF(!pItem->IS_KIND_OF(SGNameItem), "SGNameItem::CompareTo: not an SGNameItem");
-	
+
 	switch (nKey)
 	{
 	case SGSORTKEY_BYNAME:
@@ -342,7 +342,7 @@ INT32 SGNameItem::CompareTo(SGDisplayNode* pItem, INT32 nKey)
 				// Eat up any whitespace.
 				while (StringBase::IsSpace(*pchThis)) pchThis = camStrinc(pchThis);
 				while (StringBase::IsSpace(*pchOther)) pchOther = camStrinc(pchOther);
-			
+
 				// Check if we've reached the end of the strings.  If we have reached
 				// the end of both, they are equal.  Otherwise the one that is shortest
 				// is 'lower'.
@@ -357,7 +357,7 @@ INT32 SGNameItem::CompareTo(SGDisplayNode* pItem, INT32 nKey)
 					// Span and copy the integers embedded in each string.
 					String_256 strThisNum, strOtherNum;
 					LPTSTR pchThisNum = strThisNum, pchOtherNum = strOtherNum;
-					
+
 					do {
 						*pchThisNum = *pchThis;
 						pchThisNum = camStrinc(pchThisNum);
@@ -395,7 +395,7 @@ PORTNOTE("other", "Removed CompareString, rwplace with simple subtraction" )
 											NORM_IGNORECASE,
 											pchThis, 1, pchOther, 1) - 2;
 #endif
-				
+
 				if (nTest != 0) return nTest;
 
 				// The strings are still equal so compare the next characters.
@@ -499,7 +499,7 @@ BOOL SGNameItem::GetBubbleHelp(DocCoord* pMousePos, String_256* pResult)
 }
 
 
-	
+
 /**********************************************************************************************
 >   virtual BOOL SGNameItem::GetStatusLineHelp(DocCoord* pMousePos, String_256* pResult)
 
@@ -510,10 +510,10 @@ BOOL SGNameItem::GetBubbleHelp(DocCoord* pMousePos, String_256* pResult)
 				help on specific areas of an item.
 	Outputs:    On exit, if the return value is TRUE, the string pointed at by Result
 				will contain a status line help string for this item
-	Returns:    TRUE if it filled in the string, FALSE if it did not            
+	Returns:    TRUE if it filled in the string, FALSE if it did not
 	Purpose:    Called by the parent gallery when status line help is needed. The parent
 				gallery will do a hit test to determine which node contains the pointer,
-				and will then ask that node to supply bubble/status-line help.          
+				and will then ask that node to supply bubble/status-line help.
 	Notes:      The base class returns FALSE (i.e. provides no help)
 				If you can provide help, then override the base class method to do so.
 	SeeAlso:    SGDisplayNode::GetBubbleHelp
@@ -572,7 +572,7 @@ BOOL SGNameItem::GetStatusLineHelp(DocCoord* pMousePos, String_256* pResult)
 		else
 			// Over 'Used' something else.
 			idMask = _R(IDST_NAMEGAL_OTHER_ITEM);
-	
+
 		// Build up a specific message.
 		String strType(pGroup->GetTypeID());
 		return pResult->MakeMsg(idMask, &strSel, &m_strName, &strType, &strType);
@@ -759,7 +759,7 @@ PORTNOTE("other", "Removed SuperGallery related stuff" )
 	Inputs:     nEventType  - an enumerated value describing what type of event is to be processed
 				pEventInfo  - a structure describing the event (may be 0). The exact thing
 							  pointed at by this pointer depends upon the event type:
-					
+
 					SGEVENT_FORMAT      0
 					SGEVENT_REDRAW      (SGRedrawInfo*)
 					SGEVENT_BGREDRAW    0
@@ -790,165 +790,169 @@ PORTNOTE("other", "Removed SuperGallery related stuff" )
 	SeeAlso:    SGDisplayItem::HandleEvent; SGNameItem::CalcUiBounds
 ***********************************************************************************************/
 
-BOOL SGNameItem::HandleEvent(SGEventType nEventType, void* pEventInfo, SGMiscInfo* pMiscInfo)
-{
-	switch (nEventType)
-	{
-		case SGEVENT_FORMAT:
-		{
-			SGFormatInfo* pFormatInfo = GetFormatInfo(nEventType, pEventInfo);
-			CalculateMyRect(pFormatInfo, pMiscInfo);
-			CalcUiBounds(0, pMiscInfo);
-			break;
-		}
+BOOL SGNameItem::HandleEvent(SGEventType nEventType, void* pEventInfo,
+			     SGMiscInfo* pMiscInfo) {
+  switch (nEventType)
+    {
+    case SGEVENT_FORMAT:
+      {
+	SGFormatInfo* pFormatInfo = GetFormatInfo(nEventType, pEventInfo);
+	CalculateMyRect(pFormatInfo, pMiscInfo);
+	CalcUiBounds(0, pMiscInfo);
+	break;
+      }
 
-		case SGEVENT_REDRAW:
-		{
-			DocRect MyRect(FormatRect);     // Rely on FormatRect being cached from above
-			SGRedrawInfo* pRedrawInfo = GetRedrawInfo(nEventType, pEventInfo);
-			if (IMustRedraw(pRedrawInfo))
-			{
-				StartRendering(pRedrawInfo, pMiscInfo);
-				pRedrawInfo->Renderer->SaveContext();
-				HandleRedraw(pRedrawInfo, pMiscInfo);
-				pRedrawInfo->Renderer->RestoreContext();
-				StopRendering(pRedrawInfo, pMiscInfo);
-			}
-			break;
-		}
+    case SGEVENT_REDRAW:
+      {
+	DocRect MyRect(FormatRect);     // Rely on FormatRect being cached from above
+	SGRedrawInfo* pRedrawInfo = GetRedrawInfo(nEventType, pEventInfo);
+	if (IMustRedraw(pRedrawInfo))
+	  {
+	    StartRendering(pRedrawInfo, pMiscInfo);
+	    pRedrawInfo->Renderer->SaveContext();
+	    HandleRedraw(pRedrawInfo, pMiscInfo);
+	    pRedrawInfo->Renderer->RestoreContext();
+	    StopRendering(pRedrawInfo, pMiscInfo);
+	  }
+	break;
+      }
 
-		case SGEVENT_MOUSECLICK:
-		{
-			// Work out which UI item has been clicked on, if any.
-			SGMouseInfo* pMouseInfo = GetMouseInfo(nEventType, pEventInfo);
-			if (m_rToggle.ContainsCoord(pMouseInfo->Position))
-			{
-				TRACEUSER( "matt", _T("m_rToggle Contains the Mouse Coords\n"));
-				if (m_nObjects > 0)
-				{
-					TRACEUSER( "matt", _T("Num Objects > 0\n"));
-					// It's a click on the selection toggle gadget for some objects.
-					SelectScan::Change eChange;
-					if (KeyPress::IsGalleryCtrlPressed())
-						eChange = SelectScan::TOGGLE;
-					else if (IsAllSelected())
-						eChange = SelectScan::DESELECT;
-					else
-						eChange = SelectScan::SELECT;
+    case SGEVENT_MOUSECLICK:
+      {
+	// Work out which UI item has been clicked on, if any.
+	SGMouseInfo* pMouseInfo = GetMouseInfo(nEventType, pEventInfo);
+	if (m_rToggle.ContainsCoord(pMouseInfo->Position))
+	  {
+	    TRACEUSER( "matt", _T("m_rToggle Contains the Mouse Coords\n"));
+	    if (m_nObjects > 0)
+	      {
+		TRACEUSER( "matt", _T("Num Objects > 0\n"));
+		// It's a click on the selection toggle gadget for some objects.
+		SelectScan::Change eChange;
+		if (KeyPress::IsGalleryCtrlPressed())
+		  eChange = SelectScan::TOGGLE;
+		else if (IsAllSelected())
+		  eChange = SelectScan::DESELECT;
+		else
+		  eChange = SelectScan::SELECT;
 
-					// Change the selection state of the objects within this set item and
-					// claim the event.
-					OpDescriptor* pDesc =
-							OpDescriptor::FindOpDescriptor(OPTOKEN_SELECT_SET);
-					ERROR3IF(pDesc == 0, "SGNameItem::HandleEvent: no descriptor");
-					
-					OpParam param( this, INT32(eChange) );
-					pDesc->Invoke( &param );
-					return TRUE;
-				}
-			}
-			
-			else if (m_nObjects > 0 && m_rProp.ContainsCoord(pMouseInfo->Position))
-			{
-				TRACEUSER( "matt", _T("m_rToggle DOES NOT contain MouseCoords, m_rProp DOES\n"));
+		// Change the selection state of the objects within this set item and
+		// claim the event.
+		OpDescriptor* pDesc =
+		  OpDescriptor::FindOpDescriptor(OPTOKEN_SELECT_SET);
+		ERROR3IF(pDesc == 0, "SGNameItem::HandleEvent: no descriptor");
 
-PORTNOTE("other", "Removed SuperGallery related stuff" )
+		OpParam param( this, INT32(eChange) );
+		pDesc->Invoke( &param );
+		return TRUE;
+	      }
+	  }
+
+	else if (m_nObjects > 0 && m_rProp.ContainsCoord(pMouseInfo->Position))
+	  {
+	    TRACEUSER( "matt", _T("m_rToggle DOES NOT contain MouseCoords, m_rProp DOES\n"));
+
+	    PORTNOTE("other", "Removed SuperGallery related stuff" )
 #if !defined(EXCLUDE_FROM_XARALX)
-				// It's a click on the property UI.  Pass it on and claim it.
-				SGNameProp* pProp = GetProperty();
-				if (pProp != 0 && !pProp->HandleMouse(this, pMouseInfo, pMiscInfo))
-				{
-					InformError();
-					return FALSE;
-				}
+	      // It's a click on the property UI.  Pass it on and claim it.
+	      SGNameProp* pProp = GetProperty();
+	    if (pProp != 0 && !pProp->HandleMouse(this, pMouseInfo, pMiscInfo))
+	      {
+		InformError();
+		return FALSE;
+	      }
 #endif
-				return TRUE;
-			}
+	    return TRUE;
+	  }
 
-			else if (m_rText.ContainsCoord(pMouseInfo->Position) ||
-					 (m_nObjects == 0 && m_rProp.ContainsCoord(pMouseInfo->Position)))
-			{
-				TRACEUSER( "matt", _T("m_rText contains MouseCoords OR m_rProp DOES\n"));
+	else if (m_rText.ContainsCoord(pMouseInfo->Position) ||
+		 (m_nObjects == 0 && m_rProp.ContainsCoord(pMouseInfo->Position)))
+	  {
+	    TRACEUSER( "matt", _T("m_rText contains MouseCoords OR m_rProp DOES\n"));
 
-				// It's a click on the text label.  If a name is clicked then (always)
-				// start dragging it.  If the click isn't really a drag then
-				// DragWasReallyAClick will be called when the drag is cancelled.
-				DefaultPreDragHandler(pMouseInfo, pMiscInfo);
-PORTNOTE("other", "Removed bitmap drag handling BitmapDragInformation");
+	    // It's a click on the text label.  If a name is clicked then (always)
+	    // start dragging it.  If the click isn't really a drag then
+	    // DragWasReallyAClick will be called when the drag is cancelled.
+	    DefaultPreDragHandler(pMouseInfo, pMiscInfo);
+	    PORTNOTE("other", "Removed bitmap drag handling BitmapDragInformation");
 #ifndef EXCLUDE_FROM_XARALX
-				if (GetParent() == NameGallery::Instance()->GetUsedNames())
-				{           
-					// It's a name (ie. a child of the 'Used Names' group), so create and run
-					// a drag operation.
-					SGNameDrag* pDragInfo = new SGNameDrag(this, pMouseInfo, pMiscInfo);
-					ERRORIF(pDragInfo == 0, _R(IDE_NOMORE_MEMORY), FALSE);
-					DragManagerOp::StartDrag(pDragInfo, GetListWindow());
-				}
-				else
+	    if (GetParent() == NameGallery::Instance()->GetUsedNames())
+	      {
+		// It's a name (ie. a child of the 'Used Names' group), so create and run
+		// a drag operation.
+		SGNameDrag* pDragInfo = new SGNameDrag(this, pMouseInfo, pMiscInfo);
+		ERRORIF(pDragInfo == 0, _R(IDE_NOMORE_MEMORY), FALSE);
+		DragManagerOp::StartDrag(pDragInfo, GetListWindow());
+	      }
+	    else
 #endif
-					// Not a name so just do the default, but don't close on
-					// adjust-double-click.
-					DefaultClickHandler(pMouseInfo, pMiscInfo, FALSE);
+	      // Not a name so just do the default, but don't close on
+	      // adjust-double-click.
+	      DefaultClickHandler(pMouseInfo, pMiscInfo, FALSE);
+	    wxString s1 = (LPCTSTR) String(((SGNameGroup*) GetParent())->GetTypeID());
+	    wxString s2 = (LPCTSTR) m_strName;
+	    TRACEUSER("JustinF",
+		      _T("%s \"%s\" at 0x%p --- %d nodes, %d objects, %d selected\n"),
+		      s1,
+		      s2,
+		      (LPVOID) this,
+		      m_nNodes,
+		      m_nObjects,
+		      m_nSelected);
 
-				TRACEUSER("JustinF",
-						  _T("%s \"%s\" at 0x%p --- %d nodes, %d objects, %d selected\n"),
-						  (LPCTSTR) String(((SGNameGroup*) GetParent())->GetTypeID()),
-						  (LPCTSTR) m_strName, (LPVOID) this,
-						  m_nNodes, m_nObjects, m_nSelected);
+	    // Claim this click.
+	    return TRUE;
+	  }
 
-				// Claim this click.
-				return TRUE;
-			}
+	TRACEUSER( "matt", _T("Click outside bounds of item's UI\n"));
+	// The click was outside the bounds of the item's UI gadgets.
+	break;
+      }
+      /*
+      // Matt - 15/09/2000 - Added for tooltip help over properties
+      case SGEVENT_CLAIMPOINT:
+      {
+      // Work out which UI item is hovered over, if any...
+      SGClaimPointInfo *pMouseInfo = GetClaimPointInfo(nEventType, pEventInfo);
+      if (!m_rToggle.ContainsCoord(pMouseInfo->Position) && m_nObjects > 0 && m_rProp.ContainsCoord(pMouseInfo->Position))
+      {
+      //Then we're hovering over the properties section...
+      SGNameProp* pProp = GetProperty();
 
-			TRACEUSER( "matt", _T("Click outside bounds of item's UI\n"));
-			// The click was outside the bounds of the item's UI gadgets.
-			break;
-		}
-/*
-		// Matt - 15/09/2000 - Added for tooltip help over properties
-		case SGEVENT_CLAIMPOINT:
-		{
-			// Work out which UI item is hovered over, if any...
-			SGClaimPointInfo *pMouseInfo = GetClaimPointInfo(nEventType, pEventInfo);
-			if (!m_rToggle.ContainsCoord(pMouseInfo->Position) && m_nObjects > 0 && m_rProp.ContainsCoord(pMouseInfo->Position))
-			{
-				//Then we're hovering over the properties section...
-				SGNameProp* pProp = GetProperty();
+      if (pProp->GetIndex() == 0)
+      {
+      //Then it's an EXPORT property
+      TRACEUSER( "matt", _T("...EXPORTY...\n"));
+      }
+      else if (pProp->GetIndex() == 1)
+      {
+      //Then it's a SLICE tickbox
+      TRACEUSER( "matt", _T("SLICEY...\n"));
+      }
+      else if (pProp->GetIndex() == 2)
+      {
+      //Then it's a STRETCH tickbox
+      TRACEUSER( "matt", _T("...STRETCHY...\n"));
+      }
 
-				if (pProp->GetIndex() == 0)
-				{
-					//Then it's an EXPORT property
-					TRACEUSER( "matt", _T("...EXPORTY...\n"));
-				}
-				else if (pProp->GetIndex() == 1)
-				{
-					//Then it's a SLICE tickbox
-					TRACEUSER( "matt", _T("SLICEY...\n"));
-				}
-				else if (pProp->GetIndex() == 2)
-				{
-					//Then it's a STRETCH tickbox
-					TRACEUSER( "matt", _T("...STRETCHY...\n"));
-				}
+      //				if (pProp != 0 && !pProp->HandleMouse(this, pMouseInfo, pMiscInfo))
+      //				{
+      //					InformError();
+      //					return FALSE;
+      //				}
+      return true;
+      }
+      break;
+      }
+      */
+    default:
+      // Let the base class handle any events we don't know about.
+      // This includes things like hit testing (CLAIMPOINT) etc
+      return SGDisplayItem::HandleEvent(nEventType, pEventInfo, pMiscInfo);
+    }
 
-//				if (pProp != 0 && !pProp->HandleMouse(this, pMouseInfo, pMiscInfo))
-//				{
-//					InformError();
-//					return FALSE;
-//				}
-				return true;
-			}
-			break;
-		}
-*/
-		default:
-			// Let the base class handle any events we don't know about.
-			// This includes things like hit testing (CLAIMPOINT) etc
-			return SGDisplayItem::HandleEvent(nEventType, pEventInfo, pMiscInfo);
-	}
-
-	// Default return value: we do not claim this event, so it will be passed on to others.
-	return FALSE;
+  // Default return value: we do not claim this event, so it will be passed on to others.
+  return FALSE;
 }
 
 // is this name group item a backbar?
@@ -975,7 +979,7 @@ BOOL SGNameItem::IsABackBar()
 
 	Author:		Justin_Flude (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	27/6/99
-	Inputs:		pDoc	---		the document associated with this group (by default, 
+	Inputs:		pDoc	---		the document associated with this group (by default,
 								always whatever is the currently 'selected' document)
 	Purpose:	Creates an abstract Name Gallery group.
 	Notes:		Uses the lowest bit of SGDisplayFlags.Reserved to track whether a group
@@ -1065,11 +1069,11 @@ SGNameItem* SGNameGroup::RegisterMember(Node* pNode, const StringBase& strName)
 			Flags.Reserved &= ~1;
 			Flags.Folded = FALSE;
 		}
-		
+
 		// We must create a new set item for this 'attribute value'.
 		pItem = MakeItem(strName);
 		ERRORIF(pItem == 0, _R(IDE_NOMORE_MEMORY), 0);
-		
+
 		// Insert in alphabetical order.
 		SGSortKey sk[2] = { { SGSORTKEY_BYNAME } };
 		AddItem(pItem, sk);
@@ -1248,7 +1252,7 @@ BOOL SGUsedBitmaps::CreateItems(Node* pNode)
 	{
 		pBmp = ((BitmapTranspFillAttribute*) pAttr->GetAttributeValue())
 						->BitmapRef.GetBitmap();
-		
+
 		if (pBmp != 0 && RegisterMember(pNode, pBmp->GetName()) == 0)
 			return FALSE;
 		else if (pBmp != 0)
@@ -1564,5 +1568,3 @@ BOOL SGUsedColours::CreateItems(Node* pNode)
 
 	return TRUE;
 }
-
-

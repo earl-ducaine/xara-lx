@@ -1,7 +1,7 @@
 // $Id: colcomp.cpp 1315 2006-06-14 09:51:34Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
- 
+
                Xara LX, a vector drawing and manipulation program.
                     Copyright (C) 1993-2006 Xara Group Ltd.
        Copyright on certain contributions may be held in joint with their
@@ -32,7 +32,7 @@ ADDITIONAL RIGHTS
 
 Conditional upon your continuing compliance with the GNU General Public
 License described above, Xara Group Ltd grants to you certain additional
-rights. 
+rights.
 
 The additional rights are to use, modify, and distribute the software
 together with the wxWidgets library, the wxXtra library, and the "CDraw"
@@ -251,7 +251,7 @@ BOOL ColourListComponentClass::AddComponent(BaseDocument *pDocument)
 ColourListComponent::ColourListComponent()
 {
 	ERROR3("ColourListComponent constructed with default constructor!?\n");
-	
+
 	// We don't have a colour list! Eek!
 	pIndexedColours = NULL;
 
@@ -260,7 +260,7 @@ ColourListComponent::ColourListComponent()
 
 	// Initialise Exporter colour list
 	pExportedColours = NULL;
-	
+
 	// Initialise IndexedColour ComponentCopy array pointers
 	SourceColours	= NULL;
 	DestColours		= NULL;
@@ -388,7 +388,7 @@ TRACEUSER( "Neville",_T("ColourListComponent::StartImport\n") );
 	pCamFilter = pFilter;
 	// Set our variable so that we warn about a possible replacement only once
 	WarnedBefore = FALSE;
-	
+
 	// Get a colour table and don't do strict checking (as per Camelot EPS and Native EPS).
 	pNewColours = new ImportedColours(this, FALSE);
 	if ((pNewColours == NULL) || !pNewColours->Init())
@@ -441,10 +441,10 @@ TRACEUSER( "Neville", _T("ColourListComponent::EndImport\n") );
 	if (Success)
 	{
 		// Try and sort the imported colour list by the entry number that was saved
-		// in the colour definition on export. This was the colour's position in 
+		// in the colour definition on export. This was the colour's position in
 		// the indexed colour list.
 		pNewColours->SortColoursByEntryNumber();
-		
+
 		// Adds the colours to the system, with undo
 		pNewColours->AddColoursToDocument();
 	}
@@ -479,7 +479,7 @@ TRACEUSER( "Neville", _T("ColourListComponent::EndImport\n") );
 				FALSE if not (e.g. out of memory)
 	Purpose:	Try and convert a colour reference i.e. record number into a previously
 				imported colour definition which should now be an indexed colour in the document.
-	SeeAlso:	ColourRecordHandler; 
+	SeeAlso:	ColourRecordHandler;
 
 ********************************************************************************************/
 
@@ -488,7 +488,7 @@ BOOL ColourListComponent::GetDocColour(INT32 ColourRef, DocColour* pDocColour)
 	ERROR2IF(pDocColour == NULL,FALSE,"ColourListComponent::GetDocColour NULL pCXFileRec");
 	ERROR2IF(pNewColours == NULL,FALSE,"ColourListComponent::ImportSimpleColour NULL pNewColours");
 //TRACEUSER( "Neville", _T("GetDocColour for ref %d\n"), ColourRef);
-	
+
 	// First check to see if the colour refers to any of the built in colours.
 	// These will have negative record numbers
 	if (ColourRef < 0)
@@ -544,7 +544,7 @@ BOOL ColourListComponent::GetDocColour(INT32 ColourRef, DocColour* pDocColour)
 				break;
 			}
 		}
-		
+
 		// Make ourselves the required colour
 		DocColour * pReplacementCol = new DocColour(defaultcolour);
 		// Make the return colour this
@@ -560,7 +560,7 @@ BOOL ColourListComponent::GetDocColour(INT32 ColourRef, DocColour* pDocColour)
 		// Try and find the specified record number in our colour list
 		IndexedColour *pCol = pNewColours->GetColour(ColourRef);
 		// If not found then this is a problem as a colour must have been defined before its being
-		// referenced 
+		// referenced
 		// We will warn the user and use a replacement colour instead
 		if (pCol == NULL)
 		{
@@ -584,7 +584,7 @@ BOOL ColourListComponent::GetDocColour(INT32 ColourRef, DocColour* pDocColour)
 				ERROR2(FALSE,"ColourListComponent::GetDocColour ColourRef cannot be found");
 		}
 		else
-		{		
+		{
 			// Make the specified DocColour referencing this IndexedColour.
 			pDocColour->MakeRefToIndexedColour(pCol);
 		}
@@ -603,7 +603,7 @@ BOOL ColourListComponent::GetDocColour(INT32 ColourRef, DocColour* pDocColour)
 	Returns:	TRUE if the record was succesfully imported;
 				FALSE if not (e.g. out of memory)
 	Purpose:	Try and import a simple RGB colour definition record into the document.
-	SeeAlso:	ColourRecordHandler; 
+	SeeAlso:	ColourRecordHandler;
 
 ********************************************************************************************/
 
@@ -628,13 +628,13 @@ BOOL ColourListComponent::ImportSimpleColour(CXaraFileRecord* pCXFileRec)
 	ColourInfo.WebNativeColour = TRUE;
 	ColourRGBT NewRGBT;
 	String_64 ColName; //(TEXT("_"));
-	// Make the name unique by adding a text form of the record number 
+	// Make the name unique by adding a text form of the record number
 	TCHAR			   *pNewName = (TCHAR *)ColName;
 	camSnprintf( pNewName, 64, _T("_%d"), ColourInfo.RecordNumber );
 
-	NewRGBT.Red = (double)((double)Red/256.0);	
-	NewRGBT.Green = (double)((double)Green/256.0);	
-	NewRGBT.Blue = (double)((double)Blue/256.0);	
+	NewRGBT.Red = (double)((double)Red/256.0);
+	NewRGBT.Green = (double)((double)Green/256.0);
+	NewRGBT.Blue = (double)((double)Blue/256.0);
 	if (ok) ok = pNewColours->AddColour(&ColName, &NewRGBT, &ColourInfo);
 
 	return ok;
@@ -650,7 +650,7 @@ BOOL ColourListComponent::ImportSimpleColour(CXaraFileRecord* pCXFileRec)
 	Returns:	TRUE if the record was succesfully imported;
 				FALSE if not (e.g. out of memory)
 	Purpose:	Try and import a colour definition record into the document.
-	SeeAlso:	ColourRecordHandler; 
+	SeeAlso:	ColourRecordHandler;
 
 ********************************************************************************************/
 
@@ -658,7 +658,7 @@ BOOL ColourListComponent::ImportColourDefinition(CXaraFileRecord* pCXFileRec)
 {
 	ERROR2IF(pCXFileRec == NULL,FALSE,"ColourListComponent::ImportColourDefinition NULL pCXFileRec");
 	ERROR2IF(pNewColours == NULL,FALSE,"ColourListComponent::ImportColourDefinition NULL pNewColours");
-	
+
 
 	// Check for special types (NB a colour cannot be both a spot colour and a linked colour).
 	NewColourInfo ColourInfo;
@@ -718,20 +718,25 @@ BOOL ColourListComponent::ImportColourDefinition(CXaraFileRecord* pCXFileRec)
 	if (ok) ok = pCXFileRec->ReadUINT32(&Comp3);
 	UINT32 Comp4 = 0;
 	if (ok) ok = pCXFileRec->ReadUINT32(&Comp4);
-	
-	String_64 ColName; 
+
+	String_64 ColName;
 	if (ok) ok = pCXFileRec->ReadUnicode(&ColName);//, ColName.MaxLength());
-	
+
 	if (ColName.Length() == 0 )
-	{	
+	{
 		// We are an unnamed colour and so make up a name based on the record number
 		// This is so that all the existing import code can be reused.
-		// Make the name unique by adding a text form of the record number 
+		// Make the name unique by adding a text form of the record number
 		TCHAR		   *pNewName = (TCHAR *)ColName;
 		camSnprintf( pNewName, 64, _T("_%d"), ColourInfo.RecordNumber );
 	}
-TRACEUSER( "Neville", _T("ImportColourDefinition Name %s RecordNumber %d, EntryNumber %d\n"),(TCHAR*)ColName,ColourInfo.RecordNumber,EntryNumber);
-	
+	wxString str = ColName;
+TRACEUSER( "Neville",
+	   _T("ImportColourDefinition Name %s RecordNumber %d, EntryNumber %d\n"),
+	   str,
+	   (uintptr_t)ColourInfo.RecordNumber,
+	   (uintptr_t)EntryNumber);
+
 	// We had a problem reading the colour definition so stop now
 	if (!ok)
 		return FALSE;
@@ -790,7 +795,7 @@ TRACEUSER( "Neville", _T("ImportColourDefinition Name %s RecordNumber %d, EntryN
 							return FALSE;
 					}
 					break;
-				
+
 					default:
 						ERROR3("ColourListComponent::ImportColourDefinition unknown colour model!");
 						break;
@@ -842,7 +847,7 @@ TRACEUSER( "Neville", _T("ImportColourDefinition Name %s RecordNumber %d, EntryN
 	Created:	29/5/96
 	Inputs:		pCol		- RGB colour data to fill in
 				pColourInfo	- pointer to the colour info to fill in
-				Comp1 .. 4	- colour components read in from the record 
+				Comp1 .. 4	- colour components read in from the record
 	Outputs:	The data in the pCol and pColourInfo will have been filled in
 	Returns:	True if value read ok, False otherwise.
 	Purpose:	Read the RGB values from a Camelot RGB colour definition record.
@@ -894,8 +899,8 @@ BOOL ColourListComponent::ReadRGB(ColourRGBT *pCol, NewColourInfo *pColourInfo,
 	Author:		Neville_Humphrys (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	29/5/96
 	Inputs:		pCol	- RGB colour data to fill in
-				pColourInfo	- pointer to the colour info to fill in				
-				Comp1 .. 4	- colour components read in from the record 
+				pColourInfo	- pointer to the colour info to fill in
+				Comp1 .. 4	- colour components read in from the record
 	Outputs:	The data in the pCol and pColourInfo will have been filled in
 	Returns:	True if value read ok, False otherwise.
 	Purpose:	Read the CMYK values from a Camelot CMYK colour definition record.
@@ -951,8 +956,8 @@ BOOL ColourListComponent::ReadCMYK(ColourCMYK *pCol, NewColourInfo *pColourInfo,
 	Author:		Neville_Humphrys (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	29/5/96
 	Inputs:		pCol	- HSVT colour data to fill in
-				pColourInfo	- pointer to the colour info to fill in				
-				Comp1 .. 4	- colour components read in from the record 
+				pColourInfo	- pointer to the colour info to fill in
+				Comp1 .. 4	- colour components read in from the record
 	Outputs:	The data in the pCol and pColourInfo will have been filled in
 	Returns:	True if value read ok, False otherwise.
 	Purpose:	Read the HSV values from a Camelot HSV colour definition record.
@@ -989,7 +994,7 @@ BOOL ColourListComponent::ReadHSV(ColourHSVT *pCol, NewColourInfo *pColourInfo,
 		pColourInfo->Inherits[2] = TRUE;
 	else
 		pCol->Value = Value24;
-	
+
 	// No transparency
 	pCol->Transparent = 0.0;
 
@@ -1003,8 +1008,8 @@ BOOL ColourListComponent::ReadHSV(ColourHSVT *pCol, NewColourInfo *pColourInfo,
 	Author:		Neville_Humphrys (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	29/5/96
 	Inputs:		pCol	- Grey colour data to fill in
-				pColourInfo	- pointer to the colour info to fill in				
-				Comp1	- the first of the colour components read in from the record 
+				pColourInfo	- pointer to the colour info to fill in
+				Comp1	- the first of the colour components read in from the record
 	Outputs:	The data in the pCol and pColourInfo will have been filled in
 	Returns:	True if value read ok, False otherwise.
 	Purpose:	Read the Grey values from a Camelot Grey colour definition record.
@@ -1043,8 +1048,8 @@ BOOL ColourListComponent::ReadGrey(ColourGreyT *pCol, NewColourInfo *pColourInfo
 
 	Author:		Neville_Humphrys (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	29/5/96
-	Inputs:		pColourInfo	- pointer to the colour info to fill in				
-				Comp1		- the first of the colour components read in from the record 
+	Inputs:		pColourInfo	- pointer to the colour info to fill in
+				Comp1		- the first of the colour components read in from the record
 	Outputs:	The data in the pCol and pColourInfo will have been filled in
 	Returns:	True if value read ok, False otherwise.
 	Purpose:	Read the tint values from a Camelot tint colour definition record.
@@ -1079,8 +1084,8 @@ BOOL ColourListComponent::ReadTint(NewColourInfo *pColourInfo, UINT32 Comp1)
 
 	Author:		Neville_Humphrys (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	29/5/96
-	Inputs:		pColourInfo	- pointer to the colour info to fill in				
-				Comp1 .. 2	- the first two colour components read in from the record 
+	Inputs:		pColourInfo	- pointer to the colour info to fill in
+				Comp1 .. 2	- the first two colour components read in from the record
 	Outputs:	The data in the pCol and pColourInfo will have been filled in
 	Returns:	True if value read ok, False otherwise.
 	Purpose:	Read the shade values from a Camelot shade colour definition record.
@@ -1136,7 +1141,7 @@ BOOL ColourListComponent::StartExport(BaseCamelotFilter *pFilter)
 {
 #ifdef DO_EXPORT
 TRACEUSER( "Neville", _T("ColourListComponent::StartExport\n"));
-	// Mark all colours as unsaved 
+	// Mark all colours as unsaved
 	if (pFilter == NULL)
 	{
 		ERROR3("ColourListComponent::StartExport filter is null!");
@@ -1225,7 +1230,7 @@ TRACEUSER( "Neville", _T("ColourListComponent::EndExport exporting unsaved colou
 		}
 	}
 
-#endif		
+#endif
 	return TRUE;
 }
 
@@ -1241,7 +1246,7 @@ TRACEUSER( "Neville", _T("ColourListComponent::EndExport exporting unsaved colou
 
 	Purpose:	Inform the document component that a Web or Native export has just finished.
 
-	Notes:		This is called after EndExport, so that the component can clean up any 
+	Notes:		This is called after EndExport, so that the component can clean up any
 				during-export data structures. This allows situations like: PrintComponent
 				wants to save a colour reference in it's EndExport call, but is called after
 				the ColourComponent EndExport. The ColourComponent EndExport does not delete
@@ -1265,7 +1270,7 @@ void ColourListComponent::CleanUpAfterExport(BOOL Success)
 	// Null our link to the BaseCamelotFilter
 	pCamFilter = NULL;
 
-#endif		
+#endif
 	return;
 }
 
@@ -1307,12 +1312,12 @@ INT32 ColourListComponent::GetWriteColourReference(DocColour* pDocColour, BaseCa
 	ERROR2IF(pFilter == NULL,0L,"ColourListComponent::GetWriteColourReference null pFilter");
 
 	INT32 RecordNumber = 0L;
-	
+
 	// First, check to see if the doc colour is transparent. If so then just return the default
 	// default reference for this
 	if (pDocColour->IsTransparent())
 		return REF_DEFAULTCOLOUR_TRANSPARENT;
-	
+
 	// Get the indexed colour which this DocColour refers to, if any.
 	IndexedColour * pCol = pDocColour->FindParentIndexedColour();
 	if (pCol)
@@ -1332,12 +1337,12 @@ INT32 ColourListComponent::GetWriteColourReference(DocColour* pDocColour, BaseCa
 	}
 	else
 	{
-		// its a simple colour, so save this out as a simple colour. 
+		// its a simple colour, so save this out as a simple colour.
 		if (pFilter->IsWebFilter())
 		{
-			// its a simple colour, so just save this as a simple colour. 
+			// its a simple colour, so just save this as a simple colour.
 			// We must add the RGB colours to our exported list, so that we only save the
-			// definition out once. 
+			// definition out once.
 			RecordNumber = SaveSimpleColour(pDocColour, pFilter, TRUE);
 		}
 		else
@@ -1353,7 +1358,7 @@ INT32 ColourListComponent::GetWriteColourReference(DocColour* pDocColour, BaseCa
 			ERROR3IF(cc == NULL, "ColourListComponent::GetWriteColourReference No global RGB colour context!? Something is very broken");
 			if (cc == NULL)
 				return 0L;
-			
+
 			// And convert the colour into a *packed* (8-bit components) colour structure
 			PColourRGBT Result;
 			cc->ConvertColour(pDocColour, (ColourPacked *)&Result);
@@ -1369,7 +1374,7 @@ INT32 ColourListComponent::GetWriteColourReference(DocColour* pDocColour, BaseCa
 				RecordNumber = pExportCol->RecordNumber;
 			}
 			else
-			{	
+			{
 				// Create ourselves a new indexed colour to put our data in
 				// Use the DocColour we have been supplied with, this should create an unnamed colour by default
 				IndexedColour *pNewCol = new IndexedColour(*pDocColour);
@@ -1379,8 +1384,8 @@ INT32 ColourListComponent::GetWriteColourReference(DocColour* pDocColour, BaseCa
 					// was created from a named colour and then de-indexed. For details see LineDefinition::ConvertIndexedColours
 					// This means that if we get a doccolour with that flag set it was originally created by an indexed colour, so
 					// we can call our function to find the parent
-	
-					
+
+
 					IndexedColour* pIndexedCol = NULL;
 					if (pDocColour->IsNamed())
 					{
@@ -1388,11 +1393,11 @@ INT32 ColourListComponent::GetWriteColourReference(DocColour* pDocColour, BaseCa
 						// subsequently de-indexed for various reasons. Its original parent should be in the list
 						// somewhere
 						pIndexedCol = GetIndexedParentOfColour(*pDocColour);
-					
+
 					}
 					else
 						pNewCol->SetUnnamed();
-		
+
 					// Now save out the colour data in a complex colour record out to file
 					// We cannot ask the routine to add this colour to the exported list as it is
 					// not a REAL indexed colour in the indexed colour list, so say False.
@@ -1400,7 +1405,7 @@ INT32 ColourListComponent::GetWriteColourReference(DocColour* pDocColour, BaseCa
 						RecordNumber = SaveComplexColour(pNewCol, pFilter, FALSE);
 					else
 					// if we found an indexed colour then save out normally - DY
-						RecordNumber = SaveColourAndParents(pIndexedCol, pFilter);	
+						RecordNumber = SaveColourAndParents(pIndexedCol, pFilter);
 
 					if (RecordNumber > 0)
 					{
@@ -1415,15 +1420,15 @@ INT32 ColourListComponent::GetWriteColourReference(DocColour* pDocColour, BaseCa
 				else
 				{
 					// We failed to create the complex colour so we have no choice but to save
-					// it as a simple colour. 
+					// it as a simple colour.
 					// We must add the RGB colours to our exported list, so that we only save the
-					// definition out once. 
+					// definition out once.
 					RecordNumber = SaveSimpleColour(pDocColour, pFilter, TRUE);
 				}
 			}
 		}
 	}
-	
+
 	return RecordNumber;
 #endif
 	return 0L;
@@ -1455,7 +1460,7 @@ INT32 ColourListComponent::SaveSimpleColour(IndexedColour *pCol, BaseCamelotFilt
 #ifdef DO_EXPORT
 	ERROR2IF(pCol == NULL || pFilter == NULL, 0L, "ColourListComponent::SaveSimpleColour no pCol or pFilter supplied!");
 	ERROR2IF(pExportedColours == NULL, 0L, "ColourListComponent::SaveSimpleColour no pExportedColours!");
-	
+
 	// Use same condition as SaveColourAndChildren so that if the colour is unnamed
 	// and it's not actually used anywhere, don't bother saving it.
 	// This optimises out temporary locals that are no longer needed. At the worst,
@@ -1474,7 +1479,7 @@ INT32 ColourListComponent::SaveSimpleColour(IndexedColour *pCol, BaseCamelotFilt
 	{
 		// Just return the record number as the colour reference to the caller
 		return pExportCol->RecordNumber;
-	}	
+	}
 
 	// Create a DocColour referencing this IndexedColour.
 	DocColour SimpleColour;
@@ -1537,7 +1542,7 @@ INT32 ColourListComponent::SaveSimpleColour(DocColour *pDocCol, BaseCamelotFilte
 	ERROR3IF(cc == NULL, "ColourListComponent::SaveSimpleColour No global RGB colour context!? Something is very broken");
 	if (cc == NULL)
 		return 0L;
-	
+
 	// And convert the colour into a *packed* (8-bit components) colour structure
 	PColourRGBT Result;
 	cc->ConvertColour(pDocCol, (ColourPacked *)&Result);
@@ -1555,7 +1560,7 @@ INT32 ColourListComponent::SaveSimpleColour(DocColour *pDocCol, BaseCamelotFilte
 		{
 			// Just return the record number as the colour reference to the caller
 			return pExportCol->RecordNumber;
-		}	
+		}
 	}
 
 	// And finally, read the bytes out of the packed colour struct.
@@ -1611,7 +1616,7 @@ INT32 ColourListComponent::SaveSimpleColour(DocColour *pDocCol, BaseCamelotFilte
 		// Finally, write the record out to file
 		// In the process get the record number that this was written out as
 		if (ok) RecordNumber = pFilter->WriteDefinitionRecord(&Rec);
-		
+
 		// If we have had a problem at any of the stages then return that to the caller
 		if (!ok || RecordNumber <= 0)
 			return 0L;
@@ -1658,7 +1663,7 @@ INT32 ColourListComponent::SaveSimpleColour(DocColour *pDocCol, BaseCamelotFilte
 				This is the Web file form of saving colours.
 	Purpose:	Save out an indexed colour in its complex form usually to a Native file.
 				If it has any parents then these must be saved out before it, as the colour
-				reference for the parent *MUST* be a real record number which has been 
+				reference for the parent *MUST* be a real record number which has been
 				previously saved into the stream.
 				Returns a record number or colour reference to the caller ready for use by
 				somebody else to save in their record.
@@ -1674,7 +1679,7 @@ INT32 ColourListComponent::SaveColourAndParents(IndexedColour *pCol, BaseCamelot
 #ifdef DO_EXPORT
 	ERROR2IF(pCol == NULL || pFilter == NULL, 0L, "ColourListComponent::SaveColourAndParents no pCol or pFilter!");
 	ERROR2IF(pExportedColours == NULL, 0L, "ColourListComponent::SaveColourAndParents no pExportedColours!");
-	
+
 	// Use same condition as SaveColourAndChildren so that if the colour is unnamed
 	// and it's not actually used anywhere, don't bother saving it.
 	// This optimises out temporary locals that are no longer needed. At the worst,
@@ -1735,7 +1740,7 @@ INT32 ColourListComponent::SaveColourAndParents(IndexedColour *pCol, BaseCamelot
 	{
 		// Just return the record number as the colour reference to the caller
 		return pExportCol->RecordNumber;
-	}	
+	}
 
 	// Now save out the colour data in a complex colour record out to file
 	// We want this indexed colour adding to the exported list and so say TRUE
@@ -1767,7 +1772,7 @@ INT32 ColourListComponent::SaveColourAndParents(IndexedColour *pCol, BaseCamelot
 				record. Returns a record number or colour reference to the caller ready for use
 				by somebody else to save in their record.
 				If it has any parents then these must be saved out before it, as the colour
-				reference for the parent *MUST* be a real record number which has been 
+				reference for the parent *MUST* be a real record number which has been
 				previously saved into the stream.
 				Returns a record number or colour reference to the caller ready for use by
 				somebody else to save in their record.
@@ -1884,16 +1889,16 @@ INT32 ColourListComponent::SaveComplexColour(IndexedColour *pCol, BaseCamelotFil
 	// If GetColourLinePosition is False then the indexed colour is not on the colour line.
 	// so do NOT try and go through the list of colours to find its pos number, just use zero.
 	if (GetColourLinePosition)
-		ColourListNumber = GetIndexColourNumber(pCol); 
+		ColourListNumber = GetIndexColourNumber(pCol);
 	if (ok) ok = Rec.WriteUINT32(ColourListNumber);
 
 	// Write out the reference number of the parent colour
-	UINT32 ParentColourRef = 0L; 
+	UINT32 ParentColourRef = 0L;
 	IndexedColour *pParentCol = pCol->FindLinkedParent();
 	ExportColour* pExportCol = NULL;
 	if (pParentCol)
 	{
-		// If there is a parent then recover the record number from the exported colours list 
+		// If there is a parent then recover the record number from the exported colours list
 		pExportCol = pExportedColours->GetColour(pParentCol);
 		ERROR2IF(pExportCol == NULL,FALSE,"ColourListComponent::SaveComplexColour Not exported parent before child!");
 		ParentColourRef = pExportCol->RecordNumber;
@@ -1905,7 +1910,7 @@ INT32 ColourListComponent::SaveComplexColour(IndexedColour *pCol, BaseCamelotFil
 	BOOL Linked = (ColType == COLOURTYPE_LINKED);
 	switch (ColType)
 	{
-		
+
 		case COLOURTYPE_NORMAL:
 		case COLOURTYPE_SPOT:
 		case COLOURTYPE_LINKED:
@@ -2034,7 +2039,7 @@ INT32 ColourListComponent::SaveComplexColour(IndexedColour *pCol, BaseCamelotFil
 	Outputs:	-
 	Returns:	The colour component as a UINT32 ready to write out to file.
 	Purpose:	Returns either the colour component value or if it is inherited, a known illegal
-				value which we can intepret on import to be an overridden value. 
+				value which we can intepret on import to be an overridden value.
 				Doing it in a function centralises the syntax of inherited components.
 	Errors:		-
 	SeeAlso:	ColourListComponent::SaveColourAndParents
@@ -2116,7 +2121,7 @@ INT32 ColourListComponent::GetIndexColourNumber(IndexedColour *pCol)
 	Author:		Tim_Browse (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	03/08/94
 	Inputs:		pFilter - the EPS filter that is being used to import a file.
-	Purpose:	Inform the colour list document component that an EPS import is about to 
+	Purpose:	Inform the colour list document component that an EPS import is about to
 				start.
 	SeeAlso:	DocComponent
 
@@ -2150,7 +2155,7 @@ BOOL ColourListComponent::EPSStartImport(EPSFilter *pFilter)
 	Inputs:		pFilter - the EPS filter that is being used to import a file.
 				Success - TRUE => The import was successful;
 						 FALSE => The import failed - abandon any changes.
-	Purpose:	Inform the colour list document component that an EPS import has just 
+	Purpose:	Inform the colour list document component that an EPS import has just
 				finished.
 	SeeAlso:	DocComponent
 
@@ -2222,7 +2227,7 @@ void ColourListComponent::AddNewColour(IndexedColour *pNewCol)
 				comments of the EPS file.
 
 	Notes:		IMPORTANT: Version 1.1 file extensions (Jason, 7/9/95 & 14/10/95)
-				For this version, Shade colours have been added. 
+				For this version, Shade colours have been added.
 				To retain backward compatability,
 				all shades and their children are written into a second colour table
 				(a %%JWColourTable). This means old loader code will skip them and use
@@ -2263,11 +2268,11 @@ BOOL ColourListComponent::WriteEPSComments(EPSFilter *pFilter)
 
 		while (pCol != NULL)
 		{
-			if (!pCol->IsDeleted() && 
-				((pCol->GetType() == COLOURTYPE_NORMAL) || 
+			if (!pCol->IsDeleted() &&
+				((pCol->GetType() == COLOURTYPE_NORMAL) ||
 				 (pCol->GetType() == COLOURTYPE_SPOT)))
 			{
-				// The colour is in use and is not a linked colour or tint - save it to 
+				// The colour is in use and is not a linked colour or tint - save it to
 				// the EPS file.
 				SaveColourAndChildren(pCol, pDC, CamelotEPS);
 
@@ -2285,10 +2290,10 @@ BOOL ColourListComponent::WriteEPSComments(EPSFilter *pFilter)
 		while (pCol != NULL)
 		{
 			if (!pCol->IsDeleted() && pCol->IsInUse() &&
-				((pCol->GetType() == COLOURTYPE_NORMAL) || 
+				((pCol->GetType() == COLOURTYPE_NORMAL) ||
 				 (pCol->GetType() == COLOURTYPE_SPOT)))
 			{
-				// The colour is in use and is not a linked colour or tint - save it to 
+				// The colour is in use and is not a linked colour or tint - save it to
 				// the EPS file.
 				SaveColourAndChildren(pCol, pDC, CamelotEPS);
 			}
@@ -2311,11 +2316,11 @@ BOOL ColourListComponent::WriteEPSComments(EPSFilter *pFilter)
 
 			while (pCol != NULL)
 			{
-				if (!pCol->IsDeleted() && 
-					((pCol->GetType() == COLOURTYPE_NORMAL) || 
+				if (!pCol->IsDeleted() &&
+					((pCol->GetType() == COLOURTYPE_NORMAL) ||
 					 (pCol->GetType() == COLOURTYPE_SPOT)))
 				{
-					// The colour is in use and is not a linked colour or tint - save it to 
+					// The colour is in use and is not a linked colour or tint - save it to
 					// the EPS file.
 					if (ColourOrChildIsShade(pCol))
 					{
@@ -2343,10 +2348,10 @@ BOOL ColourListComponent::WriteEPSComments(EPSFilter *pFilter)
 			while (pCol != NULL)
 			{
 				if (!pCol->IsDeleted() && pCol->IsInUse() &&
-					((pCol->GetType() == COLOURTYPE_NORMAL) || 
+					((pCol->GetType() == COLOURTYPE_NORMAL) ||
 					 (pCol->GetType() == COLOURTYPE_SPOT)))
 				{
-					// The colour is in use and is not a linked colour or tint - save it to 
+					// The colour is in use and is not a linked colour or tint - save it to
 					// the EPS file.
 					if (ColourOrChildIsShade(pCol))
 					{
@@ -2365,7 +2370,7 @@ BOOL ColourListComponent::WriteEPSComments(EPSFilter *pFilter)
 				// Try the next colour
 				pCol = (IndexedColour *) pUnnamedColours->GetNext(pCol);
 			}
-			
+
 		}
 	}
 #endif
@@ -2375,7 +2380,7 @@ BOOL ColourListComponent::WriteEPSComments(EPSFilter *pFilter)
 
 /********************************************************************************************
 
->	void ColourListComponent::AddComponentValue(char *ColDef, char *Format, 
+>	void ColourListComponent::AddComponentValue(char *ColDef, char *Format,
 												double ComponentValue, BOOL Inherited)
 
 	Author:		Tim_Browse (Xara Group Ltd) <camelotdev@xara.com>
@@ -2387,8 +2392,8 @@ BOOL ColourListComponent::WriteEPSComments(EPSFilter *pFilter)
 				Inherited - TRUE => This component is inherited, so just output a '-'
 						   FALSE => This component is not inherited, so output the
 									actual value to the string
-	Outputs:	ColDef - the updated colour definition string, with the value converted to 
-						 ASCII (taking into account the Inherited flag), and appended (with 
+	Outputs:	ColDef - the updated colour definition string, with the value converted to
+						 ASCII (taking into account the Inherited flag), and appended (with
 						 a leading space so the values don't join together).
 	Purpose:	Add a colour component value to a colour definition string.  This is used
 				to build up the entries in the EPS colour table.  It also centralises the
@@ -2398,7 +2403,7 @@ BOOL ColourListComponent::WriteEPSComments(EPSFilter *pFilter)
 
 ********************************************************************************************/
 
-void ColourListComponent::AddComponentValue( PTSTR ColDef, PCTSTR Format, 
+void ColourListComponent::AddComponentValue( PTSTR ColDef, PCTSTR Format,
 											double ComponentValue, BOOL Inherited)
 {
 	// Construct the colour component value
@@ -2494,7 +2499,7 @@ BOOL ColourListComponent::ColourOrChildIsShade(IndexedColour *pCol)
 
 /********************************************************************************************
 
->	BOOL ColourListComponent::SaveColourAndChildren(IndexedColour *pCol, EPSExportDC *pDC, 
+>	BOOL ColourListComponent::SaveColourAndChildren(IndexedColour *pCol, EPSExportDC *pDC,
 												BOOL CamelotEPS, INT32 NestingLevel = 0,
 												BOOL SaveShades = FALSE)
 
@@ -2519,7 +2524,7 @@ BOOL ColourListComponent::ColourOrChildIsShade(IndexedColour *pCol)
 
 ********************************************************************************************/
 
-BOOL ColourListComponent::SaveColourAndChildren(IndexedColour *pCol, EPSExportDC *pDC, 
+BOOL ColourListComponent::SaveColourAndChildren(IndexedColour *pCol, EPSExportDC *pDC,
 												BOOL CamelotEPS, INT32 NestingLevel,
 												BOOL SaveShades)
 {
@@ -2618,7 +2623,7 @@ BOOL ColourListComponent::SaveColourAndChildren(IndexedColour *pCol, EPSExportDC
 		// We only do linked colours in CamelotEPS
 		Linked = Linked && CamelotEPS;
 
-		
+
 		if (Linked)
 		{
 			// Mark this as a linked colour
@@ -2790,7 +2795,7 @@ BOOL ColourListComponent::SaveColourAndChildren(IndexedColour *pCol, EPSExportDC
 
 /********************************************************************************************
 
->	ProcessEPSResult ColourListComponent::ProcessEPSComment(EPSFilter *pFilter, 
+>	ProcessEPSResult ColourListComponent::ProcessEPSComment(EPSFilter *pFilter,
 														    const char *pComment)
 
 	Author:		Tim_Browse (Xara Group Ltd) <camelotdev@xara.com>
@@ -2801,7 +2806,7 @@ BOOL ColourListComponent::SaveColourAndChildren(IndexedColour *pCol, EPSExportDC
 									   component.
 				EPSCommentError		 - This EPS comment was recognised by this document
 									   component, but it contained an error.
-				EPSCommentOK		 - This EPS comment was recognised as a legal comment by 
+				EPSCommentOK		 - This EPS comment was recognised as a legal comment by
 									   this document component, and was processed
 									   successfully.
 	Purpose:	Process an EPS comment - if this is a colour table comment, this component
@@ -2820,7 +2825,7 @@ BOOL ColourListComponent::SaveColourAndChildren(IndexedColour *pCol, EPSExportDC
 
 ********************************************************************************************/
 
-ProcessEPSResult ColourListComponent::ProcessEPSComment(EPSFilter *pFilter, 
+ProcessEPSResult ColourListComponent::ProcessEPSComment(EPSFilter *pFilter,
 														PCTSTR pComment)
 {
 	if (pFilter->IsKindOf(CC_RUNTIME_CLASS(ArtWorksEPSFilter)))
@@ -2837,7 +2842,7 @@ ProcessEPSResult ColourListComponent::ProcessEPSComment(EPSFilter *pFilter,
 		else if (camStrncmp(pComment, _T("%%JWColourTable"), 15) == 0)
 		{
 			// Found a version 1.1 extended colour table
-			return EPSCommentOK;			
+			return EPSCommentOK;
 		}
 		else if (camStrncmp(pComment, _T("%%+"), 3) == 0)
 		{
@@ -2925,7 +2930,7 @@ ProcessEPSResult ColourListComponent::ProcessEPSComment(EPSFilter *pFilter,
 			{
 				i++;
 			}
-			
+
 			// Check for the overprint flag
 			if (Comment[i] == 'o')
 			{
@@ -3072,7 +3077,7 @@ INT32 ColourListComponent::ExtractString( PCTSTR Comment, INT32 Start, PTSTR Str
 //	INT32 i = Start;
 //	INT32 j = 0;
 //	INT32 StringNesting = 1;
-	
+
 	// Look for the last closing Parenthesis in this string...
 	const TCHAR		   *End = camStrrchr(Comment, ')');
 
@@ -3098,7 +3103,7 @@ INT32 ColourListComponent::ExtractString( PCTSTR Comment, INT32 Start, PTSTR Str
 
 /********************************************************************************************
 
->	void ColourListComponent::ReadEPS_RGB(ColourRGBT *pCol, char *pComment, 
+>	void ColourListComponent::ReadEPS_RGB(ColourRGBT *pCol, char *pComment,
 									  NewColourInfo *pColourInfo)
 
 	Author:		Tim_Browse (Xara Group Ltd) <camelotdev@xara.com>
@@ -3119,7 +3124,7 @@ INT32 ColourListComponent::ExtractString( PCTSTR Comment, INT32 Start, PTSTR Str
 
 ********************************************************************************************/
 
-void ColourListComponent::ReadEPS_RGB( ColourRGBT *pCol, PTSTR pComment, 
+void ColourListComponent::ReadEPS_RGB( ColourRGBT *pCol, PTSTR pComment,
 								  NewColourInfo *pColourInfo )
 {
 	BOOL Linked = (pColourInfo != NULL) && (pColourInfo->Type == COLOURTYPE_LINKED);
@@ -3158,7 +3163,7 @@ void ColourListComponent::ReadEPS_RGB( ColourRGBT *pCol, PTSTR pComment,
 
 /********************************************************************************************
 
->	void ColourListComponent::ReadEPS_CMYK(ColourCMYK *pCol, char *pComment, 
+>	void ColourListComponent::ReadEPS_CMYK(ColourCMYK *pCol, char *pComment,
 									   NewColourInfo *pColourInfo)
 
 	Author:		Tim_Browse (Xara Group Ltd) <camelotdev@xara.com>
@@ -3175,7 +3180,7 @@ void ColourListComponent::ReadEPS_RGB( ColourRGBT *pCol, PTSTR pComment,
 
 ********************************************************************************************/
 
-void ColourListComponent::ReadEPS_CMYK(ColourCMYK *pCol, PTSTR pComment, 
+void ColourListComponent::ReadEPS_CMYK(ColourCMYK *pCol, PTSTR pComment,
 								   NewColourInfo *pColourInfo)
 {
 	BOOL Linked = (pColourInfo != NULL) && (pColourInfo->Type == COLOURTYPE_LINKED);
@@ -3399,7 +3404,7 @@ TRACEUSER( "Jason", _T("Load new shade %ld %ld\n"), Val, (INT32)*ResultY);
 		// The old value was a 0-100 shade-to-black, so to convert into the new
 		// format we just negate it. Happy Happy Bodge Bodge.
 		*ResultY = -(*ResultY);
-		
+
 		// And set a sensible X value
 		Val = 0;
 TRACEUSER( "Jason", _T("Load OLD shade %ld %ld\n"), Val, (INT32)*ResultY);
@@ -3434,7 +3439,7 @@ void ColourListComponent::EndOfEPSComment(EPSFilter *pFilter)
 
 /********************************************************************************************
 
->	IndexedColour *ColourListComponent::FindNamedColour(const char *pName, 
+>	IndexedColour *ColourListComponent::FindNamedColour(const char *pName,
 														DocColour *ColDef = NULL,
 													    UINT32 Tint = 100,
 													    BOOL Strict = FALSE)
@@ -3471,7 +3476,7 @@ void ColourListComponent::EndOfEPSComment(EPSFilter *pFilter)
 
 ********************************************************************************************/
 
-IndexedColour *ColourListComponent::FindNamedColour( PCTSTR pName, 
+IndexedColour *ColourListComponent::FindNamedColour( PCTSTR pName,
 													DocColour *ColDef,
 													UINT32 Tint,
 													BOOL Strict)
@@ -3587,7 +3592,7 @@ BOOL ColourListComponent::FindIdenticalColour(IndexedColour *pColour,
 			// Introduced WEBSTER_IGNORE_NAME_MATCHING so that Webster can ignore the name when
 			// trying to find an identical colour
 
-			#if WEBSTER_IGNORE_NAME_MATCHING 
+			#if WEBSTER_IGNORE_NAME_MATCHING
 			if (pIndexedColours != NULL)
 			{
 				if (!pItem->IsDifferent(*pColour, COL_ACCURACY))
@@ -3614,7 +3619,7 @@ BOOL ColourListComponent::FindIdenticalColour(IndexedColour *pColour,
 					return TRUE;
 				}
 			}
-			#endif // WEBSTER_IGNORE_NAME_MATCHING 
+			#endif // WEBSTER_IGNORE_NAME_MATCHING
 		}
 
 		// Try the next colour
@@ -3672,7 +3677,7 @@ IndexedColour *ColourListComponent::ExactMatchExists(IndexedColour *SourceColour
 
 	// --- First check for any *exact* matches
 	// Get the name/ID for this colour. TRUE is passed in so that unnamed colours return
-	// their unique id string rather than "Local colour" (hmmm... we aren't checking 
+	// their unique id string rather than "Local colour" (hmmm... we aren't checking
 	// unnamed colours, so this is a bit of a moot point! ;-)
 	String_64 SourceName = *(SourceColour->GetName(TRUE));
 
@@ -4064,7 +4069,7 @@ INT32 ColourListComponent::ExtendTables(void)
 	}
 
 	SourceColours = TempArray;	// Realloc succeeded - set the new SourceColour ptr
-	
+
 	// Realloc the Dest array, with error handling
 	TempArray = (IndexedColour **) CCRealloc(DestColours,
 											(ColourTableSize+1) * sizeof(IndexedColour *));
@@ -4204,7 +4209,7 @@ IndexedColour *ColourListComponent::MapColour(IndexedColour *SourceColour,
 	// Note that if this is not a tint/linked colour, this has the side effect of ensuring
 	// that Parent is NULL, rather than referencing a parent in a different document
 	DestColour->SetLinkedParent(DestParent, DestColour->GetType());
-	
+
 
 	// Finally, map ourselves...
 	// Find a blank entry in the mapping tables
@@ -4224,7 +4229,7 @@ IndexedColour *ColourListComponent::MapColour(IndexedColour *SourceColour,
 	// Check if there is already a matching colour in the dest. document.
 	// If there is one, then chuck away DestColour, and use the matching colour instead
 	IndexedColour *MatchColour = ExactMatchExists(DestColour);
-	if (MatchColour != NULL)	
+	if (MatchColour != NULL)
 	{
 		delete DestColour;
 		DestColour = MatchColour;
@@ -4291,7 +4296,7 @@ IndexedColour *ColourListComponent::MapColour(IndexedColour *SourceColour,
 
 				Chains of linked/tint IndexedColours are also handled properly.
 
-	Notes:		If this function returns FALSE, you MUST clean up and then call 
+	Notes:		If this function returns FALSE, you MUST clean up and then call
 				AbortComponentCopy to clean up.
 
 	Errors:		Memory errors are reported immediately
@@ -4306,7 +4311,7 @@ IndexedColour *ColourListComponent::MapColour(IndexedColour *SourceColour,
 
 ColCompCopyResult ColourListComponent::CopyColourAcross(DocColour* pDocColour, BOOL SourceIsUnique)
 {
-	IndexedColour *SourceColour = pDocColour->FindParentIndexedColour(); 
+	IndexedColour *SourceColour = pDocColour->FindParentIndexedColour();
 
 	if (SourceColour == NULL)	// Doesn't reference an IndexedColour, so return success
 		return(CCCOPY_MERGEDCOLOUR);
@@ -4356,7 +4361,7 @@ IndexedColour* ColourListComponent::GetIndexedParentOfColour(DocColour Colour)
 	ColourContext *cc = ColourManager::GetColourContext(Colour.GetColourModel());
 	ERROR2IF(cc == NULL, NULL,  "Can't find colour context?!");
 	DocColour ConvertedDocCol;
-	
+
 	IndexedColour* pItem = (IndexedColour*)pList->GetHead();
 
 	// what we have to do is get each indexed colour as a standalone definition then
@@ -4368,14 +4373,14 @@ IndexedColour* ColourListComponent::GetIndexedParentOfColour(DocColour Colour)
 
 		// Make the DocColour into a simple standalone "lookalike" of the parent colour
 		ConvertedDocCol = DocColour(Colour.GetColourModel(), &ColDef);
-		
+
 		// now test to see if its the same, if so we've got what we want
 		if (ConvertedDocCol == Colour)
 			break;
 
 		pItem = (IndexedColour*)pList->GetNext(pItem);
-		
-	
+
+
 	}
 	return pItem;
 }

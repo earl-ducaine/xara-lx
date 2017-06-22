@@ -1183,8 +1183,13 @@ void DialogManager::Event (DialogEventHandler *pEvtHandler, wxEvent &event) {
 
   if (!event.IsKindOf(CLASSINFO(wxMouseEvent))) // MouseEvents are too noisy
     {
-      TRACEUSER("amb",_T("event %d(%s) received, ID=%d(%s), wxw=%llx"), EventType, DialogEventHandler::GetEventName(EventType), id,
-		CamResource::GetObjectName((ResourceID)id), pEvtHandler->pwxWindow);
+      TRACEUSER("amb",
+		_T("event %d(%s) received, ID=%d(%s), wxw=%llx"),
+		EventType,
+		DialogEventHandler::GetEventName(EventType),
+		id,
+		CamResource::GetObjectName((ResourceID)id),
+		pEvtHandler->pwxWindow);
     }
 
   if (
