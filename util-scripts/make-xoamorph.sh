@@ -47,6 +47,25 @@ function build_wx_from_git {
     cd ..
 }
 
+function build_ecl_from_git {
+    # Used to have multip local versions
+    VERSION=ecl
+    if [ ! -d $VERSION ]; then
+	git clone --depth=1 https://gitlab.com/embeddable-common-lisp/ecl.git $VERSION
+    fi
+    cd $VERSION
+    git pull --depth 1
+    rm -rf *
+    git fetch --tags
+    git checkout -f develop
+    ./configure --enable-debug=yes --with-debug-cflags=yes --with-profile-cflags=yes
+    export PATH="/usr/lib/ccache:$PATH"; make -j 8
+    cd ..
+    cd ..
+}
+
+
+
 function build_xoamorph {
     ./autogen.sh
     ./configure --enable-debug --with-wx-config=wxWidgets-3.0.3/buildgtk/wx-config --enable-static-exec

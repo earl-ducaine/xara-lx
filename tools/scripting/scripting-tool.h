@@ -100,14 +100,11 @@ service marks of Xara Group Ltd. All rights in these marks are reserved.
 #ifndef INC_OPBEZIER
 #define INC_OPBEZIER
 
-//#include "doccoord.h" - in camtypes.h [AUTOMATICALLY REMOVED]
-//#include "undoop.h" - in camtypes.h [AUTOMATICALLY REMOVED]
-
 class BezierTool;
 class Cursor;
 
-#define OPTOKEN_INSERTFLOATER	_T("OpInsertFloater")
-#define OPTOKEN_REMOVEFLOATER	_T("OpRemoveFloater")
+#define OPTOKEN_INSERTFLOATER "OpInsertFloater"
+#define OPTOKEN_REMOVEFLOATER "OpRemoveFloater"
 
 /********************************************************************************************
 
