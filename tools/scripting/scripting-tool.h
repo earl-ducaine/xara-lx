@@ -1,7 +1,8 @@
-// $Id: opbezier.h 1282 2006-06-09 09:46:49Z alex $
+// Yo emacs! -*- mode: c++ ;  -*-
+
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
- 
+
                Xara LX, a vector drawing and manipulation program.
                     Copyright (C) 1993-2006 Xara Group Ltd.
        Copyright on certain contributions may be held in joint with their
@@ -32,7 +33,7 @@ ADDITIONAL RIGHTS
 
 Conditional upon your continuing compliance with the GNU General Public
 License described above, Xara Group Ltd grants to you certain additional
-rights. 
+rights.
 
 The additional rights are to use, modify, and distribute the software
 together with the wxWidgets library, the wxXtra library, and the "CDraw"
@@ -100,67 +101,71 @@ service marks of Xara Group Ltd. All rights in these marks are reserved.
 #ifndef INC_OPBEZIER
 #define INC_OPBEZIER
 
+//#include "doccoord.h" - in camtypes.h [AUTOMATICALLY REMOVED]
+//#include "undoop.h" - in camtypes.h [AUTOMATICALLY REMOVED]
+
 class BezierTool;
 class Cursor;
 
-#define OPTOKEN_INSERTFLOATER "OpInsertFloater"
-#define OPTOKEN_REMOVEFLOATER "OpRemoveFloater"
+#define OPTOKEN_INSERTFLOATER	_T("OpInsertFloater")
+#define OPTOKEN_REMOVEFLOATER	_T("OpRemoveFloater")
 
-/********************************************************************************************
-
+/****************************************************************************
 >	class OpSelectPathPoints : public UndoableOperation
 
 	Author:		Jim_Lynn (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	29/6/94
-	Purpose:	This is the operation that marquee selects points in paths
 
-********************************************************************************************/
-
+	Purpose:	This is the operation that marquee selects points in
+                        paths
+****************************************************************************/
 class OpSelectPathPoints : public UndoableOperation
+
 {
+  CC_DECLARE_DYNCREATE(OpSelectPathPoints);
 
-CC_DECLARE_DYNCREATE(OpSelectPathPoints);
-
+  // Methods
 public:
-	// Construction/Destruction
-	OpSelectPathPoints();
+  // Construction/Destruction
+  OpSelectPathPoints();
+  // The all important Do functions
+  void DoDrag(DocCoord Anchor, Spread*, BOOL isAdjust, BezierTool* toolptr,
+	      ClickModifiers mod);
+  // Virtual functions needed for the dragging operations to work
+  virtual void DragPointerMove(DocCoord PointerPos, ClickModifiers ClickMods, Spread*,
+			       BOOL bSolidDrag);
+  virtual void DragFinished(DocCoord PointerPos,
+			    ClickModifiers ClickMods,
+			    Spread*,
+			    BOOL Success,
+			    BOOL bSolidDrag);
 
-	// The all important Do functions
-	void DoDrag( DocCoord Anchor, Spread*, BOOL isAdjust, BezierTool* toolptr, ClickModifiers );
-	
-	// Virtual functions needed for the dragging operations to work
-	virtual void DragPointerMove( DocCoord PointerPos, ClickModifiers ClickMods, Spread*, BOOL bSolidDrag);
-	virtual void DragFinished(	DocCoord PointerPos, 
-								ClickModifiers ClickMods, 
-								Spread*, 
-								BOOL Success, BOOL bSolidDrag);
+  // Some Render functions to will draw the EORed path
+  void RenderDragBlobs( DocRect, Spread*, BOOL bSolidDrag);
 
-	// Some Render functions to will draw the EORed path
-	void RenderDragBlobs( DocRect, Spread*, BOOL bSolidDrag);
-		
-	// These functions required for the OpDescriptor class
-	static BOOL Declare();
-	static OpState GetState(String_256* Description, OpDescriptor*);
-	static BOOL Init();
+  // These functions required for the OpDescriptor class
+  static BOOL Declare();
+  static OpState GetState(String_256* Description, OpDescriptor*);
+  static BOOL Init();
 
-	static BOOL DragInProgress();
+  static BOOL DragInProgress();
 
 private:
-	DocCoord	StartPoint;			// The start of the rectangle
-	Spread *	StartSpread;
-	DocCoord	PreviousPoint;		// So that we don't update too often.
-	BOOL		AdjustDrag;			// Is the drag adjust or not?
-	BezierTool*	BezToolPtr;			// Points back to the bezier tool
-	ClickModifiers Mods;			// which modifiers were in evidence from the original click
-	static BOOL	DragUnderway;		// This op is not re-entrant.
+  DocCoord	StartPoint;			// The start of the rectangle
+  Spread *	StartSpread;
+  DocCoord	PreviousPoint;		// So that we don't update too often.
+  BOOL		AdjustDrag;			// Is the drag adjust or not?
+  BezierTool*	BezToolPtr;			// Points back to the bezier tool
+  ClickModifiers Mods;			// which modifiers were in evidence from the original click
+  static BOOL	DragUnderway;		// This op is not re-entrant.
 
-	Cursor* pcMarqueeCursor;				// Normal freehand cursor
-	void	ChangeCursor(Cursor* cursor);	// function to change cursor
-	void	PushCursor(Cursor* cursor);		// Push this cursor onto the cursor stack
-	void	PopCursor();					// Pop our cursor off the stack
-	void	RemoveDragBlobs(BOOL, BOOL);	// Restores the selection blobs to pre-drag state
-	void	RenderRubberRect(DocRect* Rect);
-	void	RenderRubberSelection(RenderRegion* pRegion);
+  Cursor* pcMarqueeCursor;				// Normal freehand cursor
+  void	ChangeCursor(Cursor* cursor);	// function to change cursor
+  void	PushCursor(Cursor* cursor);		// Push this cursor onto the cursor stack
+  void	PopCursor();					// Pop our cursor off the stack
+  void	RemoveDragBlobs(BOOL, BOOL);	// Restores the selection blobs to pre-drag state
+  void	RenderRubberRect(DocRect* Rect);
+  void	RenderRubberSelection(RenderRegion* pRegion);
 };
 
 
@@ -246,10 +251,10 @@ public:
 
 	Author:		Peter_Arnold (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	05/12/94
-	Purpose:	An action to provide the Line tool with an undoable way of inserting the 
+	Purpose:	An action to provide the Line tool with an undoable way of inserting the
 				floating endpoint.  This isn't stored in the document, which makes life
 				tricky.
-	SeeAlso:	
+	SeeAlso:
 
 ********************************************************************************************/
 
@@ -283,10 +288,10 @@ public:
 
 	Author:		Peter_Arnold (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	05/12/94
-	Purpose:	An action to provide the Line tool with an undoable way of removing the 
+	Purpose:	An action to provide the Line tool with an undoable way of removing the
 				floating endpoint.  This isn't stored in the document, which makes life
 				tricky.
-	SeeAlso:	
+	SeeAlso:
 
 ********************************************************************************************/
 
@@ -312,7 +317,3 @@ protected:
 
 
 #endif 		// INC_OPBEZIER
-
-
-
-
