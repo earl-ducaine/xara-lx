@@ -254,39 +254,39 @@ public:
 	List list; // A list
 };
 
-/**********************************************************************************************
-
+/***************************************************************************
 >	inline ListItem *List::GetNext( const ListItem* ) const
 
 	Author: 	Mario_Shamtani (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	14/4/93
 	Inputs:		pointer to ListItem
 	Outputs:	None
-	Returns:	ListItem if not empty
-				NULL if list empty or if ListItem not found or end of list or input pointer
-				is NULL
-	Purpose:
-		
-		To allow access to the next ListItem in the list after the one that has been 
-		passed in as input.
 
-	Errors:		In the debug build, if SLOW_LIST_DEBUG is enabled (see list.h), this
-				will check that the item is valid (is in the list etc), and generate
-				ENSURE failures if not.
-				In all debug builds, we will still check that the list is non-empty and
-				that the passed ListItem is non-NULL.
-				In debug, a check is also made that you are not trying to GetNext on the
-				last item you removed from the list, as this is a common mistake to make
+	Returns:        ListItem if not empty NULL if list empty or if
+			ListItem not found or end of list or input
+			pointer is NULL
 
-**********************************************************************************************/
-/*
-Technical notes: 
+	Purpose:        To allow access to the next ListItem in the list
+		        after the one that has been passed in as
+		        input.
 
-In debug builds the input ListItem is validated and its existence in the List is also checked.
-In release build it is assume that the input parameter will be ok and that it is in the list.
+	Errors:         In the debug build, if SLOW_LIST_DEBUG is enabled (see
+			list.h), this will check that the item is
+			valid (is in the list etc), and generate
+			ENSURE failures if not.  In all debug builds,
+			we will still check that the list is non-empty
+			and that the passed ListItem is non-NULL.  In
+			debug, a check is also made that you are not
+			trying to GetNext on the last item you removed
+			from the list, as this is a common mistake to
+			make
 
-**********************************************************************************************/
-
+       Technical notes: In debug builds the input ListItem is
+                        validated and its existence in the List is
+                        also checked.  In release build it is assume
+                        that the input parameter will be ok and that
+                        it is in the list.
+****************************************************************************/
 inline ListItem *List::GetNext( const ListItem* here ) const
 {
 #ifdef _DEBUG

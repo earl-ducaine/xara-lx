@@ -266,200 +266,205 @@ CCamApp::CCamApp()
 
 int /*TYPENOTE: Correct*/ CCamApp::FilterEvent( wxEvent& event )
 {
-	static /*TYPENOTE: Correct*/ long	lLastTimeStamp = 0;
+  static /*TYPENOTE: Correct*/ long	lLastTimeStamp = 0;
 
-	wxObject* pEventObject = event.GetEventObject();
+  wxObject* pEventObject = event.GetEventObject();
 
-	if (( event.GetEventType() == wxEVT_DESTROY ) && pEventObject->IsKindOf(CLASSINFO(wxWindow)))
+  if (( event.GetEventType() == wxEVT_DESTROY ) && pEventObject->IsKindOf(CLASSINFO(wxWindow)))
+    {
+      // Register window destruction
+      wxWindowDeletionWatcher::RegisterWindowDeletion((wxWindow *)pEventObject);
+    }
+
+  if (PrintMonitor::IsPrintingNow())
+    {
+      // Disable processing of paint messages for various controls which may use GDraw or GBrush to paint, as this
+      // appears to upset printing
+      if (event.IsKindOf(CLASSINFO(wxPaintEvent)))
 	{
-		// Register window destruction
-		wxWindowDeletionWatcher::RegisterWindowDeletion((wxWindow *)pEventObject);
+	  if (!pEventObject->IsKindOf(CLASSINFO(wxCamArtControl)))
+	    {
+	      // TRACEUSER("amb", _T("CCamApp::FilterEvent caught paint for %s"), pEventObject->GetClassInfo()->GetClassName());
+	      return false;
+	    }
 	}
+    }
 
-	if (PrintMonitor::IsPrintingNow())
+  if( event.GetEventType() == wxEVT_ACTIVATE )
+    {
+      TRACEUSER("luke", _T("CCamApp::FilterEvent activate to %s"), pEventObject->GetClassInfo()->GetClassName());
+
+      if( pEventObject->IsKindOf( CLASSINFO(wxAuiFloatingFrame) ) )
 	{
-		// Disable processing of paint messages for various controls which may use GDraw or GBrush to paint, as this
-		// appears to upset printing
-		if (event.IsKindOf(CLASSINFO(wxPaintEvent)))
-		{
-			if (!pEventObject->IsKindOf(CLASSINFO(wxCamArtControl)))
+	  wxClassInfo* pClassInfo = pEventObject->GetClassInfo();
+	  while( NULL != pClassInfo )
+	    {
+	      TRACEUSER( "luke", _T("Class = %s"), (PCTSTR)pClassInfo->GetClassName() );
+
+	      const wxChar* pszBaseClass = pClassInfo->GetBaseClassName1();
+	      pClassInfo = NULL == pszBaseClass ? NULL : wxClassInfo::FindClass( pszBaseClass );
+	    }
+	  TRACEUSER("luke",
+		    _T("Parent = %x, %x"),
+		    (((wxWindow*)pEventObject)->GetParent()),
+	    	    m_pMainFrame);
+	  TRACEUSER( "luke",
+		     _T("Active = %x"),
+		     (uintptr_t (((wxTopLevelWindow*)pEventObject)->IsActive())));
+
+	  GiveActiveCanvasFocus();
+	  return 1;				// Don't let the recipent know it was activated
+	}
+    }
+
+  // useful code to see where focus events originate from. Set a breakpoint below and look
+  // at the call stack
+  if ( event.GetEventType() == wxEVT_SET_FOCUS )
+    {
+      TRACEUSER("luke", _T("CCamApp::FilterEvent focus to %s"), pEventObject->GetClassInfo()->GetClassName());
+      /*		if (pEventObject->IsKindOf(CLASSINFO(CRenderWnd)))
 			{
-				// TRACEUSER("amb", _T("CCamApp::FilterEvent caught paint for %s"), pEventObject->GetClassInfo()->GetClassName());
-				return false;
-			}
-		}
-	}
-
-	if( event.GetEventType() == wxEVT_ACTIVATE )
-	{
-		TRACEUSER("luke", _T("CCamApp::FilterEvent activate to %s"), pEventObject->GetClassInfo()->GetClassName());
-
-		if( pEventObject->IsKindOf( CLASSINFO(wxAuiFloatingFrame) ) )
-		{
-			wxClassInfo* pClassInfo = pEventObject->GetClassInfo();
-			while( NULL != pClassInfo )
-			{
-				TRACEUSER( "luke", _T("Class = %s"), (PCTSTR)pClassInfo->GetClassName() );
-
-				const wxChar* pszBaseClass = pClassInfo->GetBaseClassName1();
-				pClassInfo = NULL == pszBaseClass ? NULL : wxClassInfo::FindClass( pszBaseClass );
-			}
-			TRACEUSER( "luke", _T("Parent = %x, %x"), ((wxWindow*)pEventObject)->GetParent(), m_pMainFrame );
-			TRACEUSER( "luke", _T("Active = %x"), ((wxTopLevelWindow*)pEventObject)->IsActive() );
-
-			GiveActiveCanvasFocus();
-			return 1;				// Don't let the recipent know it was activated
-		}
-	}
-
-// useful code to see where focus events originate from. Set a breakpoint below and look
-// at the call stack
-	if ( event.GetEventType() == wxEVT_SET_FOCUS )
-	{
-		TRACEUSER("luke", _T("CCamApp::FilterEvent focus to %s"), pEventObject->GetClassInfo()->GetClassName());
-/*		if (pEventObject->IsKindOf(CLASSINFO(CRenderWnd)))
-		{
 			INT32 i=1;
-		} */
-	}
+			} */
+    }
 
-	if ( event.GetEventType() == wxEVT_KILL_FOCUS )
-	{
+  if ( event.GetEventType() == wxEVT_KILL_FOCUS )
+    {
 #if defined(_DEBUG)
-		wxFocusEvent&	FocusEvent = (wxFocusEvent&)event;
-		TRACEUSER( "luke", _T("CCamApp::FilterEvent kill focus to %016x from 0x%016x"), FocusEvent.GetWindow(),
-				FocusEvent.GetEventObject() );
+      wxFocusEvent&	FocusEvent = (wxFocusEvent&)event;
+      TRACEUSER( "luke", _T("CCamApp::FilterEvent kill focus to %016x from 0x%016x"), FocusEvent.GetWindow(),
+		 FocusEvent.GetEventObject() );
 #endif
 
-		// Any loss of focus could well a good time to kill cursor
-		wxSetCursor( *wxSTANDARD_CURSOR );
-	}
+      // Any loss of focus could well a good time to kill cursor
+      wxSetCursor( *wxSTANDARD_CURSOR );
+    }
 
-	if (( event.GetEventType() == wxEVT_CREATE )
-		&& pEventObject
-		&& (pEventObject->IsKindOf(CLASSINFO(wxTopLevelWindow)))
-		&& !(pEventObject->IsKindOf(CLASSINFO(wxAdvSplashScreen))) // Don't trigger this on the creation of the splash screen itself
-		&& !(pEventObject->IsKindOf(CLASSINFO(wxSplashScreen)))
-		)
-	{
-		// a top level window is about to be created. End the splash screen if it is up as it may obscure it
-		CamResource::DoneInit(FALSE);
-	}
+  if (( event.GetEventType() == wxEVT_CREATE )
+      && pEventObject
+      && (pEventObject->IsKindOf(CLASSINFO(wxTopLevelWindow)))
+      && !(pEventObject->IsKindOf(CLASSINFO(wxAdvSplashScreen))) // Don't trigger this on the creation of the splash screen itself
+      && !(pEventObject->IsKindOf(CLASSINFO(wxSplashScreen)))
+      )
+    {
+      // a top level window is about to be created. End the splash screen if it is up as it may obscure it
+      CamResource::DoneInit(FALSE);
+    }
 
 #if defined(_DEBUG)
-	if( event.GetEventType() == wxEVT_CHAR )
+  if( event.GetEventType() == wxEVT_CHAR )
+    {
+      if (pEventObject)
 	{
-		if (pEventObject)
-		{
-			TRACEUSER( "jlh92", _T("KeyEvent 4 %s CH\n"),
-				((wxWindow*)pEventObject)->GetClassInfo()->GetClassName() );
-		}
+	  TRACEUSER( "jlh92", _T("KeyEvent 4 %s CH\n"),
+		     ((wxWindow*)pEventObject)->GetClassInfo()->GetClassName() );
 	}
+    }
 #endif
 
-	if( event.GetEventType() == wxEVT_KEY_DOWN ||
-		event.GetEventType() == wxEVT_KEY_UP )
-	{
-		// Use timestamp to detect events which are passing
-		// down the chain (which we've tested)
-		if( lLastTimeStamp == event.GetTimestamp() )
-			return -1;
-		lLastTimeStamp = event.GetTimestamp();
-
-		TRACEUSER( "jlh92", _T("KeyEvent 4 %s %s\n"),
-			((wxWindow*)pEventObject)->GetClassInfo()->GetClassName(),
-			event.GetEventType() == wxEVT_KEY_DOWN ? _T("KD") : _T("KU") );
-
-		// Is the object allowed to recieve keys? We have to go done the object hierarchy
-		// since some control (notably Combos) will produce temporary windows which can get
-		// key events.
-		wxWindow* pScanObj = (wxWindow*)pEventObject;
-		while( NULL != pScanObj )
-		{
-			wxClassInfo* pClassInfo = pScanObj->GetClassInfo();
-#if defined(DEBUG_KEYPRESS_SPEW)
-			{
-				wxClassInfo *pTmpInfo = pClassInfo;
-				while( NULL != pTmpInfo )
-				{
-					TRACEUSER( "jlh92", _T("Class %s\n"), PCTSTR(pTmpInfo->GetClassName()) );
-
-					PCTSTR	pszName = pTmpInfo->GetBaseClassName1();
-					pTmpInfo = NULL == pszName ? NULL : wxClassInfo::FindClass( pszName );
-				}
-				TRACEUSER( "jlh92", _T("----------------------\n") );
-			}
-#endif
-			TRACEUSER("amb", _T("CCamApp::FilterEvent key for %s"), pClassInfo->GetClassName());
-
-			if( pClassInfo->IsKindOf( CLASSINFO(wxTextCtrl) ) ||
-				pClassInfo->IsKindOf( CLASSINFO(wxComboBox) ) ||
-				pClassInfo->IsKindOf( CLASSINFO(wxSliderCombo) ) ||
-				pClassInfo->IsKindOf( CLASSINFO(wxOwnerDrawnComboBox) ) ||
-				pClassInfo->IsKindOf( CLASSINFO(wxComboCtrl) )
-				)
-			{
-				TRACEUSER("amb", _T("CCamApp::FilterEvent gets keys as special"));
-				TRACEUSER( "jlh92", _T("Control gets keys") );
-				// Yes, pass on as usual
-				return -1;
-			}
-
-			pScanObj = pScanObj->GetParent();
-		}
-
-		// Scan down ancestors looking for either wxPanels (always non-modal) and
-		// wxDailogs (can be modal, so we check)
-		wxWindow *pWnd = (wxWindow*)pEventObject;
-		while( NULL != pWnd && !pWnd->IsKindOf( CLASSINFO(wxPanel) ) )
-		{
-			// Dialogs may-be modal so check
-			if( pWnd->IsKindOf( CLASSINFO(wxDialog) ) )
-			{
-				// Pass event down chain if modal
-				if( ((wxDialog*)pWnd)->IsModal() )
-				{
-					TRACEUSER( "jlh92", _T("Modal dialog\n") );
-					TRACEUSER("amb", _T("CCamApp::FilterEvent gets keys as modal"));
-					return -1;
-				}
-
-				// Non-modal dialog so do focus handling
-				break;
-			}
-
-			pWnd = pWnd->GetParent();
-		}
-
-		TRACEUSER("amb", _T("CCamApp::FilterEvent handle"));
-		TRACEUSER( "jlh92", _T("Handled!\n") );
-
-		// Do our best to see if the object is deleted.
-		wxWindowDeletionWatcher * wd = NULL;
-		if (pEventObject->IsKindOf(CLASSINFO(wxWindow)))
-		{
-			wd = new wxWindowDeletionWatcher((wxWindow*)pEventObject);
-			if (!wd)
-				return -1;
-		}
-
-		// Process keyboard messages (and mark event as handled)
-		if( HandleKeyPress( (wxKeyEvent&)event ) )
-		{
-			BOOL deleted = wd && wd->HasBeenDeleted();
-			if (wd)
-				delete wd;
-			if (deleted)
-				return 1; // event handled. Do NOT anything else here as the object may by now
-						// have been deleted (e.g. FileClose hotkey).
-			else
-				return -1;
-		}
-		if (wd)
-			delete wd;
-	}
-
+  if( event.GetEventType() == wxEVT_KEY_DOWN ||
+      event.GetEventType() == wxEVT_KEY_UP )
+    {
+      // Use timestamp to detect events which are passing
+      // down the chain (which we've tested)
+      if( lLastTimeStamp == event.GetTimestamp() )
 	return -1;
+      lLastTimeStamp = event.GetTimestamp();
+
+      TRACEUSER( "jlh92", _T("KeyEvent 4 %s %s\n"),
+		 ((wxWindow*)pEventObject)->GetClassInfo()->GetClassName(),
+		 event.GetEventType() == wxEVT_KEY_DOWN ? _T("KD") : _T("KU") );
+
+      // Is the object allowed to recieve keys? We have to go done the object hierarchy
+      // since some control (notably Combos) will produce temporary windows which can get
+      // key events.
+      wxWindow* pScanObj = (wxWindow*)pEventObject;
+      while( NULL != pScanObj )
+	{
+	  wxClassInfo* pClassInfo = pScanObj->GetClassInfo();
+#if defined(DEBUG_KEYPRESS_SPEW)
+	  {
+	    wxClassInfo *pTmpInfo = pClassInfo;
+	    while( NULL != pTmpInfo )
+	      {
+		TRACEUSER( "jlh92", _T("Class %s\n"), PCTSTR(pTmpInfo->GetClassName()) );
+
+		PCTSTR	pszName = pTmpInfo->GetBaseClassName1();
+		pTmpInfo = NULL == pszName ? NULL : wxClassInfo::FindClass( pszName );
+	      }
+	    TRACEUSER( "jlh92", _T("----------------------\n") );
+	  }
+#endif
+	  TRACEUSER("amb", _T("CCamApp::FilterEvent key for %s"), pClassInfo->GetClassName());
+
+	  if( pClassInfo->IsKindOf( CLASSINFO(wxTextCtrl) ) ||
+	      pClassInfo->IsKindOf( CLASSINFO(wxComboBox) ) ||
+	      pClassInfo->IsKindOf( CLASSINFO(wxSliderCombo) ) ||
+	      pClassInfo->IsKindOf( CLASSINFO(wxOwnerDrawnComboBox) ) ||
+	      pClassInfo->IsKindOf( CLASSINFO(wxComboCtrl) )
+	      )
+	    {
+	      TRACEUSER("amb", _T("CCamApp::FilterEvent gets keys as special"));
+	      TRACEUSER( "jlh92", _T("Control gets keys") );
+	      // Yes, pass on as usual
+	      return -1;
+	    }
+
+	  pScanObj = pScanObj->GetParent();
+	}
+
+      // Scan down ancestors looking for either wxPanels (always non-modal) and
+      // wxDailogs (can be modal, so we check)
+      wxWindow *pWnd = (wxWindow*)pEventObject;
+      while( NULL != pWnd && !pWnd->IsKindOf( CLASSINFO(wxPanel) ) )
+	{
+	  // Dialogs may-be modal so check
+	  if( pWnd->IsKindOf( CLASSINFO(wxDialog) ) )
+	    {
+	      // Pass event down chain if modal
+	      if( ((wxDialog*)pWnd)->IsModal() )
+		{
+		  TRACEUSER( "jlh92", _T("Modal dialog\n") );
+		  TRACEUSER("amb", _T("CCamApp::FilterEvent gets keys as modal"));
+		  return -1;
+		}
+
+	      // Non-modal dialog so do focus handling
+	      break;
+	    }
+
+	  pWnd = pWnd->GetParent();
+	}
+
+      TRACEUSER("amb", _T("CCamApp::FilterEvent handle"));
+      TRACEUSER( "jlh92", _T("Handled!\n") );
+
+      // Do our best to see if the object is deleted.
+      wxWindowDeletionWatcher * wd = NULL;
+      if (pEventObject->IsKindOf(CLASSINFO(wxWindow)))
+	{
+	  wd = new wxWindowDeletionWatcher((wxWindow*)pEventObject);
+	  if (!wd)
+	    return -1;
+	}
+
+      // Process keyboard messages (and mark event as handled)
+      if( HandleKeyPress( (wxKeyEvent&)event ) )
+	{
+	  BOOL deleted = wd && wd->HasBeenDeleted();
+	  if (wd)
+	    delete wd;
+	  if (deleted)
+	    return 1; // event handled. Do NOT anything else here as the object may by now
+	  // have been deleted (e.g. FileClose hotkey).
+	  else
+	    return -1;
+	}
+      if (wd)
+	delete wd;
+    }
+
+  return -1;
 }
 
 static bool GiveFocusToFocusableOffspring( wxWindow* pWnd )
@@ -563,64 +568,85 @@ public:
 
 // Global so we can use it for parsing second instance
 static const wxCmdLineEntryDesc cmdLineDesc[] =
-{
+  {
 #if defined(_DEBUG)
-	{ wxCMD_LINE_OPTION, "u", "user", "set username for debug tracing" },
-	{ wxCMD_LINE_SWITCH, "m", "memorycheck", "check memory" },
-	{ wxCMD_LINE_OPTION, "l", "listdebug", "list debug level" , wxCMD_LINE_VAL_NUMBER },
+    { wxCMD_LINE_OPTION, "u", "user", "set username for debug tracing" },
+    { wxCMD_LINE_SWITCH, "m", "memorycheck", "check memory" },
+    { wxCMD_LINE_OPTION,
+      "l",
+      "listdebug",
+      "list debug level (currently only values 1 and 2 have any effect)",
+      wxCMD_LINE_VAL_NUMBER },
 #endif
-	{ wxCMD_LINE_SWITCH, "h", "help",	"Display this help", wxCMD_LINE_VAL_NONE, wxCMD_LINE_OPTION_HELP },
-	{ wxCMD_LINE_SWITCH, "v", "version",	"Display the version information" },
-	{ wxCMD_LINE_OPTION, "r", "resource",	"resource directory" },
-	{ wxCMD_LINE_SWITCH, "x", "xrccheckgen", "generate xrc.check file" },
-	{ wxCMD_LINE_PARAM, NULL, NULL, "input file", wxCMD_LINE_VAL_STRING,
-										wxCMD_LINE_PARAM_OPTIONAL|wxCMD_LINE_PARAM_MULTIPLE },
-	{ wxCMD_LINE_NONE }
-};
+    { wxCMD_LINE_SWITCH, "h", "help",
+      "Display this help", wxCMD_LINE_VAL_NONE, wxCMD_LINE_OPTION_HELP },
+    { wxCMD_LINE_SWITCH, "v", "version","Display the version information" },
+    { wxCMD_LINE_OPTION, "r", "resource", "resource directory" },
+    { wxCMD_LINE_SWITCH, "x", "xrccheckgen", "generate xrc.check file" },
+    { wxCMD_LINE_PARAM, NULL, NULL, "input file", wxCMD_LINE_VAL_STRING,
+      wxCMD_LINE_PARAM_OPTIONAL|wxCMD_LINE_PARAM_MULTIPLE },
+    { wxCMD_LINE_NONE }
+  };
 
-// static const wxCmdLineEntryDesc cmdLineDesc[] =
-// {
-// #if defined(_DEBUG)
-// 	{ wxCMD_LINE_OPTION, _T("u"), _T("user"), _T("set username for debug tracing") },
-// 	{ wxCMD_LINE_SWITCH, _T("m"), _T("memorycheck"), _T("check memory") },
-// 	{ wxCMD_LINE_OPTION, _T("l"), _T("listdebug"), _T("list debug level") , wxCMD_LINE_VAL_NUMBER },
-// #endif
-// 	{ wxCMD_LINE_SWITCH, _T("h"), _T("help"),	_T("Display this help"), wxCMD_LINE_VAL_NONE, wxCMD_LINE_OPTION_HELP },
-// 	{ wxCMD_LINE_SWITCH, _T("v"), _T("version"),	_T("Display the version information") },
-// 	{ wxCMD_LINE_OPTION, _T("r"), _T("resource"),	_T("resource directory") },
-// 	{ wxCMD_LINE_SWITCH, _T("x"), _T("xrccheckgen"), _T("generate xrc.check file") },
-// 	{ wxCMD_LINE_PARAM, NULL, NULL, _T("input file"), wxCMD_LINE_VAL_STRING,
-// 										wxCMD_LINE_PARAM_OPTIONAL|wxCMD_LINE_PARAM_MULTIPLE },
-// 	{ wxCMD_LINE_NONE }
-// };
+BOOL CCamApp::OnSecondInstance(wxChar** argv, INT32 argc) {
+  // Parse command line. We do this early so we get flags which
+  // are useful for init, such as -u
+  wxCmdLineParser parser(argc,argv);
+  parser.SetDesc(cmdLineDesc);
+  // Handles help automatically
+  if (parser.Parse()) {
+    return FALSE;
+  }
+  if (parser.GetParamCount()>=1) {
+    for ( UINT32 i=0 ; i<parser.GetParamCount() ; i++ )
+      m_docManager->CreateDocument(parser.GetParam(i),wxDOC_SILENT);
+  }
+  m_pMainFrame->Raise();
+  return TRUE;
+}
 
-BOOL CCamApp::OnSecondInstance(wxChar** argv, INT32 argc)
-{
-	// Parse command line. We do this early so we get flags which
-	// are useful for init, such as -u
-	//
-	wxCmdLineParser parser(argc,argv);
-	parser.SetDesc(cmdLineDesc);
-	if (parser.Parse()) // Handles help automatically
-	{
-		return FALSE;
-	}
-	if (parser.GetParamCount()>=1)
-	{
-		for ( UINT32 i=0 ; i<parser.GetParamCount() ; i++ )
-			m_docManager->CreateDocument(parser.GetParam(i),wxDOC_SILENT);
-	}
-	m_pMainFrame->Raise();
-	return TRUE;
+void CCamApp::SetupTracing(wxCmdLineParser& parser) {
+#if defined(_DEBUG)
+  if (parser.Found(_T("m"))) {
+    SimpleCCObject::CheckMemoryFlag = 1;
+  }
+  // TYPENOTE: Correct - wxWidgets doesn't know about INT32 etc.
+  long listlevel;
+  if (parser.Found("l", &listlevel)) {
+    List::ListDebugLevel = listlevel;
+  }
+  // Set up the username for tracing We should default this to the
+  // environment setting for (say) LOGNAME
+  wxString Username = "";
+  // Overwrite with LOGNAME if it is set
+  wxGetEnv("LOGNAME", &Username);
+  // Overwrite with -u option if it is set
+  parser.Found("u", &Username);
+  Error::SetUserName(Username);
+  if (Username==_T("")) {
+    TRACEUSER("ALL", _T("No user specific trace output\n"));
+  } else {
+    wxString msg = "Tracing output where user is %s\n";
+    TRACEUSER(((const char*)"ALL"),
+	      msg,
+	      ((const char*)Username));
+  }
+  // wxString str1 = "ALL";
+  wxString msg = "Memory debugging %d, List debugging %d\n";
+  TRACEUSER(((const char*)"ALL"),
+	    msg,
+	    ((int)SimpleCCObject::CheckMemoryFlag),
+	    ((int)List::ListDebugLevel));
+#endif
 }
 
 bool CCamApp::OnInit() {
   // Don't allow the user to try carrying on working
   InInitOrDeInit = TRUE;
   ::wxHandleFatalExceptions(TRUE);
-  // Parse command line. We do this early so we get flags which
-  // are useful for init, such as -u
-  wxCmdLineParser parser(argc,argv);
+  // Parse command line. We do this early so we get flags which are
+  // useful for init, such as -u
+  wxCmdLineParser parser(argc, argv);
   parser.SetDesc(cmdLineDesc);
   // Handles help automatically
   if (parser.Parse()) {
@@ -636,46 +662,26 @@ bool CCamApp::OnInit() {
       }
   }
   if( parser.Found( _T("v"))) {
-      wxString			strMessage;
-#if defined(__WXMSW__)
-      strMessage = wxString::Format(wxT("Xara Xtreme\nVersion: %s\nCDraw Version: %d.%03d\n"),
-				    g_pszAppVersion, HIWORD(GDraw_GetVersion()), LOWORD(GDraw_GetVersion()) );
-#else
+      wxString strMessage;
 #if FALSE == wxUSE_UNICODE
-      TCHAR*			pszCDrawVer = GDraw_GetSvnVersion();
+      TCHAR* pszCDrawVer = GDraw_GetSvnVersion();
 #else
-      TCHAR			pszCDrawVer[32];
-      camMbstowcs( pszCDrawVer, GDraw_GetSvnVersion(), 31 );
+      TCHAR pszCDrawVer[32];
+      camMbstowcs(pszCDrawVer, GDraw_GetSvnVersion(), 31);
 #endif
-      strMessage = wxString::Format( wxT("Xara Xtreme\nVersion: %s (%s)\nCDraw Version: %d.%03d (%s)\nBuild date: %s\n"),
-				     g_pszAppVersion, g_pszSvnVersion, HIWORD(GDraw_GetVersion()), LOWORD(GDraw_GetVersion()), pszCDrawVer, CAMELOT_BUILD_DATE );
-#endif
-      camPrintf( strMessage.c_str() );
+      strMessage =
+	wxString::Format("Xara Xtreme\nVersion: %s (%s)\nCDraw Version: "
+			 "%d.%03d (%s)\nBuild date: %s\n",
+			 g_pszAppVersion,
+			 g_pszSvnVersion,
+			 HIWORD(GDraw_GetVersion()),
+			 LOWORD(GDraw_GetVersion()),
+			 pszCDrawVer,
+			 CAMELOT_BUILD_DATE);
+      camPrintf(strMessage.c_str());
       return FALSE;
-    }
-#if defined(_DEBUG)
-  if (parser.Found(_T("m"))) SimpleCCObject::CheckMemoryFlag=1;
-  long listlevel; // TYPENOTE: Correct - wxWidgets doesn't know about INT32 etc.
-  if (parser.Found(_T("l"), &listlevel))
-    {
-      List::ListDebugLevel = listlevel;
-    }
-  // Set up the username for tracing
-  // We should default this to the environment setting for (say) LOGNAME
-  wxString Username = _T("");
-  // Overwrite with LOGNAME if it is set
-  wxGetEnv(_T("LOGNAME"), &Username);
-  // Overwrite with -u option if it is set
-  parser.Found(_T("u"), &Username);
-  Error::SetUserName(Username);
-  if (Username==_T("")) {
-    TRACEUSER("ALL", _T("No user specific trace output\n"));
-  } else {
-    //		TRACEUSER("ALL",_T("Tracing output where user is %s\n"),(const char *)Username.mb_str(wxConvUTF8));
-    TRACEUSER("ALL",_T("Tracing output where user is %s\n"),(const TCHAR *)Username.c_str());
   }
-  TRACEUSER("ALL",_T("Memory debugging %d, List debugging %d\n"), SimpleCCObject::CheckMemoryFlag, List::ListDebugLevel);
-#endif
+  SetupTracing(parser);
   // OK, now we've handled the help case, and some VERY early init, we
   // should see if another instance is running.  Set and check for
   // single instance running
@@ -771,7 +777,7 @@ bool CCamApp::OnInit() {
   CamProfile::ActivateProfiling(TRUE);
   // Indicate time from now on should be assigned to "OTHER"
   CamProfile::AtBase(CAMPROFILE_OTHER);
-  TRACET(_T("CCamApp::OnInit first available time to trace"));
+  TRACET("CCamApp::OnInit first available time to trace");
   // Initialize resources system
   if (!CamResource::Init()) return FALSE;
   // Initialize the art provider - needed for dialogs

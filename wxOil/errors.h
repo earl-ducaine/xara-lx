@@ -467,160 +467,133 @@ return retparam;
 
 #define MAXERRORFORMATLENGTH 256
 
-/***********************************************************************************************
-
+/***************************************************************************
 >	class Error
 
-	Author:		Jim_Lynn (Xara Group Ltd) <camelotdev@xara.com>
-	Created:	9/7/93
-	Purpose:	The Error class consists only of static variables, one for the ID of the error,
-				another for the string, and another for the ID of the module that generated the
-				error (0 if the error happened in the kernel). The string is a simple TCHAR array
-				to avoid the need for dynamic memory allocation during error handling. These
-				variables must be set whenever an error condition manifests itself. The class
-				provides static functions to do this, which are called by the ERRORIF and
-				NERROR macros
-	SeeAlso:	ERRORIF; ERROR
-
-***********************************************************************************************/
-
+	Author:	 Jim_Lynn (Xara Group Ltd) <camelotdev@xara.com>
+	Created: 9/7/93
+	Purpose: The Error class consists only of static variables,
+		 one for the ID of the error, another for the string,
+		 and another for the ID of the module that generated
+		 the error (0 if the error happened in the
+		 kernel). The string is a simple TCHAR array to avoid
+		 the need for dynamic memory allocation during error
+		 handling. These variables must be set whenever an
+		 error condition manifests itself. The class provides
+		 static functions to do this, which are called by the
+		 ERRORIF and NERROR macros
+	SeeAlso: ERRORIF; ERROR
+****************************************************************************/
 class CCAPI Error
 {
-private:
-	static UINT32 ErrorID;
-
-	// Chris introduced RalphErrorID during ralph error handling
-	// ralph needs this so that he can map the ID to a HRESULT before passing it
-	// back to a harness - the current ErrorId is cleared in SetSeriousError maybe by design
-	// To be safe we'll keep our own copy.
-
-	static UINT32 RalphErrorID;
-	static UINT32 ModuleID;
-	static TCHAR ErrorString[256];
-	static UINT32	RenderThread;			// This is incremented each time we start something that looks
-										// like a render, and decremented as we thread out. So if an error
-										// occurs, we know we have to be very careful
-
-	static UINT32 LastErrorLine;			// line number of last error (or 0)
-	static const char *LastErrorFile;	// ptr to filename of last error
-
-	static wxString UserName;
-
-	static void TraceWrite(wxString buf, va_list args);
-	static void FixFormat (const TCHAR * fmt, TCHAR * fmt2);
+ private:
+  static UINT32 ErrorID;
+  // Chris introduced RalphErrorID during ralph error handling
+  // ralph needs this so that he can map the ID to a HRESULT
+  // before passing it back to a harness - the current ErrorId
+  // is cleared in SetSeriousError maybe by design To be safe
+  // we'll keep our own copy.
+  static UINT32 RalphErrorID;
+  static UINT32 ModuleID;
+  static TCHAR ErrorString[256];
+  static UINT32	RenderThread;
+  // This is incremented each time we start something that looks
+  // like a render, and decremented as we thread out. So if an
+  // error occurs, we know we have to be very careful line
+  // number of last error (or 0)
+  static UINT32 LastErrorLine;
+  // ptr to filename of last error
+  static const char *LastErrorFile;
+  static wxString UserName;
+  static void FixFormat (const TCHAR * fmt, TCHAR * fmt2);
 #if 0 != wxUSE_UNICODE
-	// In UNICODE builds ONLY we allow an additional char *
-	// version of which copes with old code that does
-	// ERROR3PF("foo", ...), not ERROR3PF(_T("foo", ....). We
-	// don't include these in the non-Unicode version as they
-	// clash with the TCHAR stuff
-	static void FixFormat (const char * fmt, TCHAR * fmt2);
+  // In UNICODE builds ONLY we allow an additional char *
+  // version of which copes with old code that does
+  // ERROR3PF("foo", ...), not ERROR3PF(_T("foo", ....). We
+  // don't include these in the non-Unicode version as they
+  // clash with the TCHAR stuff
+  static void FixFormat (const char * fmt, TCHAR * fmt2);
 #endif
 
-public:
-	Error()
-	{
-		ErrorString[0] = 0;
-		RalphErrorID =ErrorID = ModuleID = 0;
-	}
+ public:
+  Error() {
+      ErrorString[0] = 0;
+      RalphErrorID =ErrorID = ModuleID = 0;
+    }
 
-	static BOOL IsUserName(const char *wanted);
-
-	static void SetUserName(wxString User) { UserName = User; }
-
-	// convert ID's to HRESULT for ralph harness's
-	static HRESULT ErrIDToHRESULT(UINT32 ErrID);
+  static BOOL IsUserName(const char *wanted);
+  static void SetUserName(wxString User) { UserName = User; }
+  // convert ID's to HRESULT for ralph harness's
+  static HRESULT ErrIDToHRESULT(UINT32 ErrID);
 
 #if !defined(EXCLUDE_FROM_XARLIB)
-	static HRESULT GetRalphError();
+  static HRESULT GetRalphError();
 #endif
 
-	~Error();
-	static void SetError(UINT32 number, const TCHAR* errstring, UINT32 module);
-	static void SetError(UINT32 number, UINT32 module = 0);
-	static void SetErrorTool(UINT32 number, UINT32 toolid);
-	static void SetErrorSerious( const TCHAR* );
-
-	static void ClearError();
-
-	inline static TCHAR* GetErrorString();
-
-	inline static UINT32 GetErrorNumber();
-	inline static UINT32 GetRalphErrorNumber();
-
-	inline static UINT32 GetErrorModule();
-
-	inline static void RenderThreadIn() { RenderThread++; }
-	inline static void RenderThreadOut() { RenderThread--; }
-	inline static void RenderThreadReset() { RenderThread = 0; }
-	inline static BOOL IsInRenderThread() { return ( RenderThread != 0 ); }
-
-	static void DirectStatus( BOOL = FALSE );
-
-	static void MarkError( UINT32 LineNumber, const char *Filename )
-	#if INLINE_MARKERROR
-		MARKERROR_BODY( LineNumber, Filename )
-	#else
-		;
-	#endif
-
-
-	static void CDECL XSetErrorC();
-	static void CDECL XSetError(const TCHAR *fmt, ...);
-#if 0 != wxUSE_UNICODE
-	// In UNICODE builds ONLY we allow an additional char *
-	// version of which copes with old code that does
-	// ERROR3PF("foo", ...), not ERROR3PF(_T("foo", ....). We
-	// don't include these in the non-Unicode version as they
-	// clash with the TCHAR stuff
-	static void CDECL XSetError(const char *fmt, ...);
-#endif
-	static void CDECL XSetError(UINT32, ...);
-	static void CDECL ReleaseTrace(LPCTSTR, ...);
-	static void CDECL XComplain(const TCHAR* fmt, ...);
-# if 0 != wxUSE_UNICODE
-	// In UNICODE builds ONLY we allow an additional char *
-	// version of which copes with old code that does
-	// ERROR3PF("foo", ...), not ERROR3PF(_T("foo", ....). We
-	// don't include these in the non-Unicode version as they
-	// clash with the TCHAR stuff
-	// static void CDECL XComplain(const char* fmt, ...);
-# endif
-
-	
-#ifdef _DEBUG
-# if 0 != wxUSE_UNICODE
-	// In UNICODE builds ONLY we allow an additional char *
-	// version of which copes with old code that does
-	// ERROR3PF("foo", ...), not ERROR3PF(_T("foo", ....). We
-	// don't include these in the non-Unicode version as they
-	// clash with the TCHAR stuff
-	// static void CDECL XComplain(const char* fmt, ...);
-# endif
-	static void CDECL TraceUser(const char *, LPCTSTR, ...);
-	static void CDECL TraceAll(wxString, ...);
-	static void CDECL TraceTime(const TCHAR * t);
+  ~Error();
+  
+  static void SetError(UINT32 number, const TCHAR* errstring, UINT32 module);
+  static void SetError(UINT32 number, UINT32 module = 0);
+  static void SetErrorTool(UINT32 number, UINT32 toolid);
+  static void SetErrorSerious( const TCHAR* );
+  static void ClearError();
+  inline static TCHAR* GetErrorString();
+  inline static UINT32 GetErrorNumber();
+  inline static UINT32 GetRalphErrorNumber();
+  inline static UINT32 GetErrorModule();
+  inline static void RenderThreadIn() { RenderThread++; }
+  inline static void RenderThreadOut() { RenderThread--; }
+  inline static void RenderThreadReset() { RenderThread = 0; }
+  inline static BOOL IsInRenderThread() { return ( RenderThread != 0 ); }
+  static void DirectStatus( BOOL = FALSE );
+  static void MarkError( UINT32 LineNumber, const char *Filename )
+#if INLINE_MARKERROR
+    MARKERROR_BODY( LineNumber, Filename )
 #else
-	static void CDECL TraceUser(const char *, LPCTSTR, ...) { }
-	static void CDECL TraceAll(wxString, ...) { }
-	static void CDECL TraceTime(const TCHAR*) { }
+    ;
 #endif
 
-	// Stack walking stuff
-public:
-	static void DumpStack(UINT32 frames=0);
+  static void XSetErrorC();
+  static void XSetError(const TCHAR *fmt, ...);
+#if 0 != wxUSE_UNICODE
+  // In UNICODE builds ONLY we allow an additional char *
+  // version of which copes with old code that does
+  // ERROR3PF("foo", ...), not ERROR3PF(_T("foo", ....). We
+  // don't include these in the non-Unicode version as they
+  // clash with the TCHAR stuff
+  static void XSetError(const char *fmt, ...);
+#endif
+  static void XSetError(UINT32, ...);
+  static void ReleaseTrace(LPCTSTR, ...);
+  static void XComplain(const TCHAR* fmt, ...);
 
-// FreeBSD does not provide backtrace()
+  static void TraceTimeAlt(wxString wxstr);
+#ifdef _DEBUG
+  static void TraceUser(const char *, LPCTSTR, ...);
+  static void TraceAll(wxString, ...);
+  static void TraceTime(const char* c);
+  static void TraceTime(const TCHAR* t);
+#else
+  static void TraceTime(const char* c) {}
+  static void TraceUser(const char *, LPCTSTR, ...) { }
+  static void TraceAll(wxString, ...) { }
+  static void TraceTime(const TCHAR*) { }
+#endif
+
+ public:
+  // Stack walking stuff
+  static void DumpStack(UINT32 frames=0);
+
+  // FreeBSD does not provide backtrace()
 #if !defined(__WXMAC__) && !defined(__FreeBSD__)
-	class StackWalker : public wxStackWalker
-	{
-		public:
-			virtual void OnStackFrame(const wxStackFrame & frame);
-	};
+  class StackWalker : public wxStackWalker
+  {
+  public:
+    virtual void OnStackFrame(const wxStackFrame & frame);
+  };
 #endif
 
-	static UINT32 ErrorBoxRecurse;
-
+  static UINT32 ErrorBoxRecurse;
 };
 
 /***********************************************************************************************

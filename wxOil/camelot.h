@@ -1,7 +1,7 @@
 // $Id: camelot.h 1714 2006-08-23 14:52:52Z luke $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
- 
+
                Xara LX, a vector drawing and manipulation program.
                     Copyright (C) 1993-2006 Xara Group Ltd.
        Copyright on certain contributions may be held in joint with their
@@ -32,7 +32,7 @@ ADDITIONAL RIGHTS
 
 Conditional upon your continuing compliance with the GNU General Public
 License described above, Xara Group Ltd grants to you certain additional
-rights. 
+rights.
 
 The additional rights are to use, modify, and distribute the software
 together with the wxWidgets library, the wxXtra library, and the "CDraw"
@@ -100,114 +100,104 @@ service marks of Xara Group Ltd. All rights in these marks are reserved.
 
 #if !defined(EXCLUDE_FROM_XARLIB)
 
-#include "dlgmgr.h"     
+#include "dlgmgr.h"
 
 class CCamFrame;
 
 class CCamApp : public wxApp
 {
+  // Constructors/Destructors
 public:
-	CCamApp();
+  CCamApp();
 
-	bool OnInit();
-	INT32 OnExit();
-	void OnAppExit();
+  // Methods
+public:
+  bool OnInit();
+  INT32 OnExit();
+  void OnAppExit();
+  wxMDIChildFrame*CreateChildFrame(wxDocument *doc, wxView *view);
+  // Functions required to enable/disable the systems functionality.
+  static void DisableSystem(CWindowID WindowID=NULL);
+  static void EnableSystem();
+  static inline bool IsDisabled() {return s_bIsDisabled;}
+  // Display our about box
+  static void DoAboutBox();
+  // Used to access the dialog manager
+  static DialogManager *GetDlgManager();
 
-    wxMDIChildFrame *CreateChildFrame( wxDocument *doc, wxView *view );
+  // Access the DocManager for templates
+  wxDocManager *GetDocumentManager() const {
+    return m_docManager.get();
+  }
 
-	// Functions required to enable/disable the systems functionality.   
-	static void DisableSystem(CWindowID WindowID=NULL); 
-    static void EnableSystem();
-	static inline bool IsDisabled() {return s_bIsDisabled;}
+  bool OnRecentFile(INT32 RecentFileNumber);
+  bool GetRecentFileText(INT32 Index, String_256* pszText);
+  void OnIdle(wxIdleEvent  &event);
+  void OnTimer(wxTimerEvent &event);
+  bool HandleKeyPress(wxKeyEvent &event);
+  void OnHelpIndex();
+  void GiveActiveCanvasFocus();
+  int FilterEvent(wxEvent& event);
+  void OnFatalException();
+  void OnFileOpen();
+  void OnFilePrintSetup();
+  static BOOL LaunchWebBrowser(const wxString& strUrl);
+  static bool LaunchMediaApp(const wxString& strUrl);
+  static bool SelectMediaApp();
+  // Get the path to the root of the resource directory structure
+  static StringBase& GetResourceDirectory();
+  BOOL OnSecondInstance(wxChar** argv, INT32 argc = 0);
 
-    // Display our about box             
-	static void DoAboutBox();
-	
-    // Used to access the dialog manager             
-    static DialogManager *GetDlgManager();
+  // Properties
+public:
+  // user maximized preference
+  static BOOL MainWndMaximized;
+  // user maximized preference
+  static BOOL MainWndMinimized;
+  // user window position
+  static String_256 MainWndPosString;
+  // TRUE if this is the first time the app has been run
+  static BOOL bFirstRun;
+  // (first time with this set of preferences) if a copy of camelot is
+  // open, and we try do load another one,
+  BOOL allowRegistryWrite;
+  // and exit (we prevent this), then we don't wan't to write to the
+  // registry !!!!
+  static void NeedMoreIdles() { ::wxWakeUpIdle(); }
 
-	// Access the DocManager for templates
-	wxDocManager *GetDocumentManager() const
-	{
-		return m_docManager.get();
-	}
-	
-	bool OnRecentFile( INT32 RecentFileNumber );
-	bool GetRecentFileText( INT32 Index, String_256* pszText );
-
-    void OnIdle		( wxIdleEvent  &event );
-	void OnTimer	( wxTimerEvent &event );
-
-	bool HandleKeyPress( wxKeyEvent &event );
-
-	void OnHelpIndex();
-
-	void GiveActiveCanvasFocus();
-	
-	int /*TYPENOTE: Correct*/ FilterEvent( wxEvent& event );
-
-	void OnFatalException();
-
-	void OnFileOpen();
-
-	void OnFilePrintSetup();
-
-	static BOOL LaunchWebBrowser(const wxString& strUrl);
-
-	static bool LaunchMediaApp( const wxString& strUrl );
-	static bool SelectMediaApp();
-	
-	// Get the path to the root of the resource directory structure
-	static StringBase& GetResourceDirectory();
-
-private:
-	INT32 RunFalseMainLoop();
-
-	wxDocument* OpenDocumentFile( PCTSTR lpcszFileName );
-	void AddToRecentFileList( LPCTSTR pPathName );
-	BOOL MakeDocumentNative(wxDocument* pDoc, PathName* Path);
-
+  // Properties
 protected:
-	std::auto_ptr<wxDocManager> m_docManager;
-	CCamFrame			   *m_pMainFrame;
+  std::auto_ptr<wxDocManager> m_docManager;
+  CCamFrame* m_pMainFrame;
+  static bool s_bIsDisabled;
+  // The usually bound in resources
+  static wxString m_strResourcePath;
+  // External resources (i.e. help files)
+  static String_256 m_strResourceDirPath;
+  // Version in preference file
+  static String_256 m_strResourceDirPathOverride;
+  // The media replay application the user chose
+  static String_256 m_strMediaApplication;
+  wxTimer m_Timer;
+  wxSingleInstanceChecker * m_pSingleInstanceChecker;
+  // IPC server
+  wxServerBase* m_pServer;
 
-	static bool			s_bIsDisabled;
-
-	static wxString		m_strResourcePath;		// The usually bound in resources
-	static String_256	m_strResourceDirPath;	// External resources (i.e. help files)
-	static String_256	m_strResourceDirPathOverride;	// Version in preference file
-
-	static String_256	m_strMediaApplication;	// The media replay application the user chose
-
-	wxTimer				m_Timer;
-
-	wxSingleInstanceChecker * m_pSingleInstanceChecker;
-	wxServerBase * m_pServer; // IPC server
-
-public:
-	BOOL OnSecondInstance(wxChar** argv, INT32 argc = 0);
-
+  // Methods
 private:
-	static BOOL LaunchBrowserApp(const wxString& strAppName, wxString strCommand);
+  INT32 RunFalseMainLoop();
+  wxDocument* OpenDocumentFile(PCTSTR lpcszFileName);
+  void AddToRecentFileList(LPCTSTR pPathName);
+  BOOL MakeDocumentNative(wxDocument* pDoc, PathName* Path);
+  static BOOL LaunchBrowserApp(const wxString& strAppName, wxString strCommand);
+  void SetupTracing(wxCmdLineParser& parser);
 
-	static DialogManager m_DlgMgr; 		// The dialog manager handles all oily dialog functions
-
-	static BOOL InInitOrDeInit;
-
-	DECLARE_EVENT_TABLE()
-
-public:
-	// Window
-	static BOOL MainWndMaximized;					// user maximized preference
-	static BOOL MainWndMinimized;					// user maximized preference
-	static String_256 MainWndPosString;				// user window position
-
-	static BOOL bFirstRun;							// TRUE if this is the first time the app has been run
-													// (first time with this set of preferences)
-	BOOL allowRegistryWrite;						// if a copy of camelot is open, and we try do load another one,
-													// and exit (we prevent this), then we don't wan't to write to
-													// the registry !!!!
-	static void NeedMoreIdles() { ::wxWakeUpIdle(); }
+  // Properties
+private:
+  // The dialog manager handles all oily dialog functions
+  static DialogManager m_DlgMgr;
+  static BOOL InInitOrDeInit;
+  DECLARE_EVENT_TABLE()
 };
 
 DECLARE_APP( CCamApp )
@@ -245,7 +235,7 @@ inline BOOL IsWindows2000()
 	Created:	02/07/2006
 	Purpose:	A derived event to watch for the deletion of windows
 	Notes:		In the OIL
-	See Also:	
+	See Also:
 
 ********************************************************************************************/
 
@@ -339,7 +329,7 @@ public:
 				wxWindowDeletionWatcher * next = pWDW->m_pNext; // as removing from the list erases the next pointer
 				pWDW->m_HasBeenDeleted = TRUE;
 				pWDW->RemoveFromList(); // note we don't delete the WDW object
-				pWDW = next;			
+				pWDW = next;
 			}
 		}
 	}

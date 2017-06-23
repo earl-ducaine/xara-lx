@@ -52,3 +52,11 @@
    #+BEGIN_SRC sh
      ./XaraLX
    #+END_SRC
+
+** Misc. dev notes
+
+*** Macros
+    The following macro can always be considered to be undefine in
+    XaraLX, so always use just its contents.
+
+    #if !defined(EXCLUDE_FROM_XARLIB)

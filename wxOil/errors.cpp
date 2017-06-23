@@ -1085,102 +1085,75 @@ BOOL Error::IsUserName(const char *wanted)
 }
 
 #ifdef _DEBUG
-
-void Error::TraceWrite(wxString bufp, va_list args) {
-  // wxWidgets doesn't expect newlines in the string, but
-  // Camelot source provides them. So we print each bit
-  // separately
-  // # if 1
-  // replace \n by a space - the real solution is to remove the \n
-  // from all the trace statements (yawn)
-  // TCHAR buf[MAXERRORFORMATLENGTH];
-  // camStrncpy(buf, bufp, MAXERRORFORMATLENGTH);
-  // buf[MAXERRORFORMATLENGTH-1]=0;
-  // TCHAR* b = buf;
-  // do {
-  //   if (*b == '\n') {
-  //     *b=' ';
-  //   }
-  // } while(*b++);
-  wxVLogDebug(bufp, args);
-// # else
-//   // this way is bad as it doesn't work with args either side of the
-//   // newline
-//   TCHAR* newline;
-//   do {
-//     newline = camStrchr(bufp, _T('\n'));
-//     if (newline) *newline++=0;
-//     // We really should pass only the args before the newline here, but...
-//     wxVLogDebug(bufp, args);
-//     bufp=newline;
-//   } while (bufp && *bufp);
-// # endif
-}
-
 # if 0 != wxUSE_UNICODE
 // wxWidgets does this if we let it use the vsnprintf in wxLogDebug
 // so we don't currently do this - this one converts from a char *
 // and is only enabled on Unicode builds
-void Error::FixFormat (const char * fmt, TCHAR * fmt2)
-{
-	wxString FString(fmt, wxConvUTF8);
-	FixFormat(FString.wx_str(), fmt2);
+void Error::FixFormat (const char * fmt, TCHAR * fmt2) {
+  wxString FString(fmt, wxConvUTF8);
+  FixFormat(FString.wx_str(), fmt2);
 }
 # endif
 
-// wxWidgets does this if we let it use the vsnprintf in wxLogDebug
-// so we don't currently do this
-void Error::FixFormat (const TCHAR * fmt, TCHAR * fmt2)
-{
-	// Unicode - replace %s with %ls
-	INT32 i=0;
-	INT32 j=0;
-	TCHAR c;
-
-	do
-	{
-		c = fmt[i++];
-		fmt2[j++]=c;
-		if ( (c == _T('%')) && (fmt[i]==_T('s')) )
-			fmt2[j++]=_T('l'); // this is safe as we know we had at least 2 spare chars
-	} while ( c && (j < MAXERRORFORMATLENGTH-1)); // Strict comparison deliberate
-
-	// for safety
-	fmt2[MAXERRORFORMATLENGTH-1]=_T('\0');
+// wxWidgets does this if we let it use the vsnprintf in wxLogDebug so
+// we don't currently do this
+void Error::FixFormat (const TCHAR * fmt, TCHAR * fmt2) {
+  // Unicode - replace %s with %ls
+  INT32 i = 0;
+  INT32 j = 0;
+  TCHAR c;
+  // Strict comparison deliberate
+  do {
+    c = fmt[i++];
+    fmt2[j++] = c;
+    if ((c == _T('%')) && (fmt[i] == _T('s'))) {
+      // this is safe as we know we had at least 2 spare chars
+      fmt2[j++] = _T('l'); 
+    }
+  } while (c && (j < MAXERRORFORMATLENGTH - 1)); 
+  // for safety
+  fmt2[MAXERRORFORMATLENGTH-1] = _T('\0');
 }
 
-void CDECL Error::TraceUser(const char *User, LPCTSTR fmt, ...)
-{
-	if (!IsUserName(User)) return;
-
-	va_list marker;
-	va_start( marker, fmt );
-//	wxVLogDebug(fmt, marker);
-	TraceWrite(fmt, marker);
-	va_end( marker );
+void Error::TraceUser(const char *User, LPCTSTR fmt, ...) {
+  if (!IsUserName(User)) {
+    return;
+  }
+  va_list marker;
+  va_start(marker, fmt);
+  wxVLogDebug(fmt, marker);
+  va_end(marker);
 }
 
-void CDECL Error::TraceAll(wxString fmt, ...) {
-	va_list marker;
-	va_start(marker, fmt);
-//	wxVLogDebug(fmt, marker);
-	TraceWrite(fmt, marker);
-	va_end(marker);
+void Error::TraceAll(wxString fmt, ...) {
+  va_list marker;
+  va_start(marker, fmt);
+  wxVLogDebug(fmt, marker);
+  va_end(marker);
 }
 
-void CDECL Error::TraceTime (const TCHAR* t) {
-	TCHAR buf[256];
-# if !defined(EXCLUDE_FROM_XARLIB)
-	CamProfile::GetTimeString(buf, 256);
-# else
-	camStrcpy(buf, _T("unknown"));
-# endif
-	TraceAll(_T("[%s] %s"), buf, t);
+void Error::TraceTime (const char* c) {
+  wxString wxstr = c;
+  TraceTimeAlt(wxstr);
+}
+
+void Error::TraceTime(const TCHAR* t) {
+  wxString wxstr = t;
+  TraceTimeAlt(wxstr);
+}
+
+void Error::TraceTimeAlt(wxString wxstr) {
+  TCHAR buf[256];
+  CamProfile::GetTimeString(buf, 256);
+  wxString time = buf;
+  wxString msg;
+  msg.Printf("[%s] %s", time, wxstr);
+  TraceAll(msg);
 }
 
 #endif
 
-void CDECL Error::ReleaseTrace(LPCTSTR fmt, ...)
+void Error::ReleaseTrace(LPCTSTR fmt, ...)
 {
 	TCHAR				buf[256];
 	va_list				marker;
@@ -1245,7 +1218,7 @@ static void CalcInternalMessage( LPTCHAR result, UINT32 Line, const TCHAR* Filen
 
 /********************************************************************************************
 
->	void CDECL Error::XSetError( const TCHAR *fmt, ...)
+>	void Error::XSetError( const TCHAR *fmt, ...)
 
 	Author:		Andy_Pennell (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	4/10/94
@@ -1258,7 +1231,7 @@ static void CalcInternalMessage( LPTCHAR result, UINT32 Line, const TCHAR* Filen
 ********************************************************************************************/
 #ifndef RALPH
 // ** normal XSetError **
-void CDECL Error::XSetError( const TCHAR *fmt, ...)
+void Error::XSetError( const TCHAR *fmt, ...)
 {
 #ifdef _DEBUG
 	TCHAR				buf[256];
@@ -1284,7 +1257,7 @@ void CDECL Error::XSetError( const TCHAR *fmt, ...)
 }
 #if 0 != wxUSE_UNICODE
 // ** normal XSetError ** extra version for Unicode build
-void CDECL Error::XSetError( const char *fmt, ...)
+void Error::XSetError( const char *fmt, ...)
 {
 #ifdef _DEBUG
 	TCHAR				buf[256];
@@ -1307,7 +1280,7 @@ void CDECL Error::XSetError( const char *fmt, ...)
 #endif
 #else
 // ** RALPH XSetError() **
-void CDECL Error::XSetError( const TCHAR *fmt, ...)
+void Error::XSetError( const TCHAR *fmt, ...)
 {
 	TCHAR buf[256];
 	TRACEUSER( "Chris", _T("oOoOo Ralph Set Error \n"));
@@ -1335,7 +1308,7 @@ void CDECL Error::XSetError( const TCHAR *fmt, ...)
 }
 #if 0 != wxUSE_UNICODE
 // Extra version for Unicode build
-void CDECL Error::XSetError( const char *fmt, ...)
+void Error::XSetError( const char *fmt, ...)
 {
 	TCHAR buf[256];
 	TRACEUSER( "Chris", _T("oOoOo Ralph Set Error \n"));
@@ -1362,7 +1335,7 @@ void CDECL Error::XSetError( const char *fmt, ...)
 
 /********************************************************************************************
 
->	void CDECL Error::XSetErrorC()
+>	void Error::XSetErrorC()
 
 	Author:		Alex_Bligh (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	30/5/95
@@ -1372,7 +1345,7 @@ void CDECL Error::XSetError( const char *fmt, ...)
 
 ********************************************************************************************/
 
-void CDECL Error::XSetErrorC()
+void Error::XSetErrorC()
 {
 	TCHAR				buf[256];
 	// the error we set features a coded version of where the problem was
@@ -1384,7 +1357,7 @@ void CDECL Error::XSetErrorC()
 
 /********************************************************************************************
 
->	void CDECL Error::XSetError( UINT32 errID, ...)
+>	void Error::XSetError( UINT32 errID, ...)
 
 	Author:		Andy_Pennell (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	4/10/94
@@ -1394,7 +1367,7 @@ void CDECL Error::XSetErrorC()
 
 ********************************************************************************************/
 
-void CDECL Error::XSetError( UINT32 errID, ...)
+void Error::XSetError( UINT32 errID, ...)
 {
 
 
@@ -1447,7 +1420,7 @@ void CDECL Error::XSetError( UINT32 errID, ...)
 
 /********************************************************************************************
 
->	void CDECL Error::XComplain( const TCHAR *fmt, ...)
+>	void Error::XComplain( const TCHAR *fmt, ...)
 
 	Author:		Andy_Pennell (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	4/10/94
@@ -1460,7 +1433,7 @@ void CDECL Error::XSetError( UINT32 errID, ...)
 ********************************************************************************************/
 
 // #ifdef _DEBUG
-// void CDECL Error::XComplain( const TCHAR *fmt, ...)
+// void Error::XComplain( const TCHAR *fmt, ...)
 // {
 //   #ifdef _DEBUG
 // 	TCHAR				buf[256];
@@ -1483,7 +1456,7 @@ void CDECL Error::XSetError( UINT32 errID, ...)
 // }
 
 #if 0 != wxUSE_UNICODE
-void CDECL Error::XComplain(const TCHAR* fmt, ...)
+void Error::XComplain(const TCHAR* fmt, ...)
 {
 #ifdef _DEBUG
 
