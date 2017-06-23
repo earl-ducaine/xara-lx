@@ -1,0 +1,17 @@
+
+
+* high-level principals
+  - Must have a natural hierarchy.
+  - Must have a type system that's extensible and can be integrated
+    with key words.
+  - Type system should be mathematical as well.
+  - object system must be integrated into type system
+  - Dev environment must be integrated into type system.
+  - Dev enviroment must be able to 'unroll' multiple inheritance most
+    significant issue: determining the flow of control.
+  - Must be easy to understand (intuitive)
+  - Must be very easy to use
+  - is alowed to be more difficult to set up a full system.
+  - Must be amenable to iterative and dynamic
+  - Must have reasonable performance.  Or at least theoretically
+    possible to extract good performance from the system.
