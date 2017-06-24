@@ -95,25 +95,16 @@ service marks of Xara Group Ltd. All rights in these marks are reserved.
 
 =================================XARAHEADEREND============================
  */
-// Implementation of the Line tool operations
 
-/*
-*/
+// Implementation of the Line tool operations
 
 #include "camtypes.h"
 #include "opbezier.h"	
-
-//#include "app.h" - in camtypes.h [AUTOMATICALLY REMOVED]
 #include "beztool.h"
 #include "blobs.h"
-//#include "docview.h" - in camtypes.h [AUTOMATICALLY REMOVED]
-//#include "jim.h"
 #include "nodepath.h"
 #include "progress.h"
-//#include "rik.h"
 #include "bubbleid.h"
-
-DECLARE_SOURCE( "$Revision: 1282 $" );
 
 CC_IMPLEMENT_DYNCREATE(OpSelectPathPoints, UndoableOperation)
 CC_IMPLEMENT_DYNCREATE(OpInsertFloater, UndoableOperation)
@@ -122,51 +113,44 @@ CC_IMPLEMENT_DYNCREATE(RemoveFloaterAction, Action)
 CC_IMPLEMENT_DYNCREATE(InsertFloaterAction, Action)
 CC_IMPLEMENT_MEMDUMP(InsertFloaterParam, OpParam)
 
-
 // Must come after the last CC_IMPLEMENT.. macro
 #define new CAM_DEBUG_NEW     
 
 
-///////////////////////////////////////////////////////////////////////////////////////////
 //  The OpSelectPathPoints Operation
-
 BOOL OpSelectPathPoints::DragUnderway = FALSE;
 
-/********************************************************************************************
-
+/***************************************************************************
 >	OpSelectPathPoints::OpSelectPathPoints()
 
 	Author:		Jim_Lynn (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	29/6/94
-	Purpose:	Constructor. This simply sets a few of the operation flags.
 
-********************************************************************************************/
-
+	Purpose:        Constructor. This simply sets a few of the operation
+	                flags.
+***************************************************************************/
 OpSelectPathPoints::OpSelectPathPoints()
 {
 }
 
-/********************************************************************************************
-
+/***************************************************************************
 >	BOOL OpSelectPathPoints::Init()
 
 	Author:		Jim_Lynn (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	22/7/94
 	Returns:	TRUE if all went OK, False otherwise
-	Purpose:	Adds the operation to the list of all known operations
-
-********************************************************************************************/
-
-BOOL OpSelectPathPoints::Init()
-{
-	return (RegisterOpDescriptor(	0, 
-									_R(IDS_NODEPATH_EDIT),
-									CC_RUNTIME_CLASS(OpSelectPathPoints), 
-									OPTOKEN_NODEPATH,
-									OpSelectPathPoints::GetState,
-									0,	/* help ID */
-									_R(IDBBL_NODEPATHOP),
-									0	/* bitmap ID */));	   
+	Purpose:        Adds the operation to the list of all known
+	                operations
+***************************************************************************/
+BOOL OpSelectPathPoints::Init() {
+  return (RegisterOpDescriptor(0, 
+			       _R(IDS_NODEPATH_EDIT),
+			       CC_RUNTIME_CLASS(OpSelectPathPoints), 
+			       OPTOKEN_NODEPATH,
+			       OpSelectPathPoints::GetState,
+			       0,	// help ID
+			       _R(IDBBL_NODEPATHOP),
+			       0	// bitmap ID
 }
 
 

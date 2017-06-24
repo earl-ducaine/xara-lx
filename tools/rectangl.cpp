@@ -95,40 +95,30 @@ service marks of Xara Group Ltd. All rights in these marks are reserved.
 
 =================================XARAHEADEREND============================
  */
+
 // The Rectangle Tool
 // Created by Mario Shamtani on 13/9/93
 
-/*
-*/
 
 
 #include "camtypes.h"
 #include "rectangl.h"
-
 #include "oilfiles.h"
 #include "oprshape.h"
-//#include "mario.h"
-//#include "markn.h"
-//#include "viewrc.h"
 
-//#include "will2.h"
+// These are still char* while we wait for resource technology to be
+// developed for modules
+TCHAR* RectangleTool::FamilyName = _T("Shape Tools");
+TCHAR* RectangleTool::ToolName = _T("Rectangle Tool");
+TCHAR* RectangleTool::Purpose = _T("Manipulating rectangles");
+TCHAR* RectangleTool::Author = _T("Peter Arnold");
 
-DECLARE_SOURCE( "$Revision: 1464 $" );
-
-// These are still char* while we wait for resource technology to be developed for modules
-TCHAR *		RectangleTool::FamilyName = _T("Shape Tools");
-TCHAR * 		RectangleTool::ToolName = _T("Rectangle Tool");
-TCHAR *		RectangleTool::Purpose = _T("Manipulating rectangles");
-TCHAR *		RectangleTool::Author = _T("Peter Arnold");
-
-
-CC_IMPLEMENT_MEMDUMP( RectangleTool, QuickShapeBase )
+CC_IMPLEMENT_MEMDUMP(RectangleTool, QuickShapeBase)
 
 // Declare smart memory handling in Debug builds
 #define new CAM_DEBUG_NEW
 
-/********************************************************************************************
-
+/***************************************************************************
 >	RectangleTool::RectangleTool()
 
 	Author:		Peter_Arnold (Xara Group Ltd) <camelotdev@xara.com>
@@ -139,19 +129,13 @@ CC_IMPLEMENT_MEMDUMP( RectangleTool, QuickShapeBase )
 	Purpose:	Constructor for the QuickShape tool
 	Errors:		-
 	SeeAlso:	-
-
-********************************************************************************************/
-RectangleTool::RectangleTool() : QuickShapeBase()
-{
-	CreationMode = OpNewRegShape::BOUNDS;
+***************************************************************************/
+RectangleTool::RectangleTool() : QuickShapeBase() {
+  CreationMode = OpNewRegShape::BOUNDS;
 }
 
-
-
-/********************************************************************************************
-
+/***************************************************************************
 >	RectangleTool::~RectangleTool()
-
 	Author:		Peter_Arnold (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	18/03/95
 	Inputs:		-
@@ -160,50 +144,36 @@ RectangleTool::RectangleTool() : QuickShapeBase()
 	Purpose:	QuickShapes tools destructor
 	Errors:		-
 	SeeAlso:	-
-
-********************************************************************************************/
+****************************************************************************/
 RectangleTool::~RectangleTool()
 {
-
 }
 
-
-
-/********************************************************************************************
-
+/***************************************************************************
 >	void RectangleTool::Describe(void *InfoPtr)
 
 	Author:		Peter_Arnold (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	15/11/94
-	Inputs:		InfoPtr - 	A pointer to a tool info block.
-	Outputs:	InfoPtr - 	The structure pointed to by InfoPtr will have had all the info
-							that this version of the Tool knows about
+	Inputs:		InfoPtr - A pointer to a tool info block.
+	Outputs:        InfoPtr - The structure pointed to by InfoPtr will
+			have had all the info that this version of the
+			Tool knows about
 	Purpose:	Allows the tool manager to extract information about the tool
-
-********************************************************************************************/
-
-void RectangleTool::Describe(void *InfoPtr)
-{
-	// Cast structure into the latest one we understand.
-	ToolInfo_v1 *Info = (ToolInfo_v1 *) InfoPtr;
-
-	Info->InfoVersion = 1;
-	
-	Info->InterfaceVersion = GetToolInterfaceVersion();
-		
-	Info->Version = 1;
-	Info->ID      = GetID();
-	Info->TextID  = _R(IDS_RECTANGLE_TOOL);
-
-	Info->Family  = FamilyName;
-	Info->Name    = ToolName;
-	Info->Purpose = Purpose;
-	Info->Author  = Author;
-
-	Info->BubbleID = _R(IDBBL_RECT_TOOLBOX);
+****************************************************************************/
+void RectangleTool::Describe(void *InfoPtr) {
+  // Cast structure into the latest one we understand.
+  ToolInfo_v1 *Info = (ToolInfo_v1 *) InfoPtr;
+  Info->InfoVersion = 1;
+  Info->InterfaceVersion = GetToolInterfaceVersion();
+  Info->Version = 1;
+  Info->ID = GetID();
+  Info->TextID = _R(IDS_RECTANGLE_TOOL);
+  Info->Family = FamilyName;
+  Info->Name = ToolName;
+  Info->Purpose = Purpose;
+  Info->Author = Author;
+  Info->BubbleID = _R(IDBBL_RECT_TOOLBOX);
 }
-
-
 
 /********************************************************************************************
 

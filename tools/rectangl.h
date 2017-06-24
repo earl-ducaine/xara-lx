@@ -1,4 +1,4 @@
-// $Id: rectangl.h 751 2006-03-31 15:43:49Z alex $
+// Yo emacs! -*- mode: c++ ;  -*-
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
  
@@ -99,75 +99,122 @@ service marks of Xara Group Ltd. All rights in these marks are reserved.
 #ifndef INC_RECTANGLE
 #define INC_RECTANGLE
 
-
 #include "regshape.h"
-//#include "simon.h"
 
-#define OPTOKEN_RECTANGLE 	_T("RectangleTool")
+#define OPTOKEN_RECTANGLE _T("RectangleTool")
 
-
-/********************************************************************************************
-
+/***************************************************************************
 >	class RectangleTool : public QuickShapeBase
 
 	Author:		Peter_Arnold (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	27/03/95
 	Purpose:	The QuickShape Rectangle tool.
-
-********************************************************************************************/
-
+****************************************************************************/
 class CCAPI RectangleTool : public QuickShapeBase
 {
-CC_DECLARE_MEMDUMP(RectangleTool);
+  CC_DECLARE_MEMDUMP(RectangleTool);
 
-public:
-	RectangleTool();
-	~RectangleTool();
+  // Constructors/Destructors
+ public:
+  RectangleTool();
+  ~RectangleTool();
 
-	BOOL Init();
-	void Describe(void* InfoPtr);
-	UINT32 GetID() { return TOOLID_RECTANGLE; };
-
-	// The creation mode functions
-	INT32 GetNumSides() {return 4;};						
-	INT32 GetCreationMode() {return CreationMode;};
-	BOOL GetPolygon() {return TRUE;};
-	BOOL GetStellation() {return FALSE;};
-	BOOL GetCurved() {return FALSE;};
-	void SetNumSides(INT32 NewValue) {};
-	void SetCreationMode(INT32 NewValue) {CreationMode = NewValue;};
-	void SetPolygon(BOOL NewValue) {};
-	void SetStellation(BOOL NewValue) {};
-	void SetCurved(BOOL NewValue) {};
-	BOOL ForcePolygonToGrey() {return FALSE;};
-	BOOL ForceEllipseToGrey() {return TRUE;};
-	BOOL ForceStellationToGrey() {return TRUE;};
-	BOOL ForceCurvatureToGrey() {return FALSE;};
-	BOOL ForceNumSidesToGrey() {return TRUE;};
-	BOOL DoesPolygonExist() {return FALSE;};
-	BOOL DoesEllipseExist() {return FALSE;};
-	BOOL DoesStellationExist() {return FALSE;};
-	BOOL DoesCurvatureExist() {return TRUE;};
-	BOOL DoesReformSidesExist() {return FALSE;};
-	BOOL DoesNumSidesExist() {return FALSE;};
-	BOOL IsInterestingShape(NodeRegularShape* pShape);
-	INT32 GetShapesToAffect() {return EditRegularShapeParam::AFFECT_RECTANGLES;};
-	INT32 GetCursorID() {return _R(IDC_RECTTOOLCURSOR);};
-	INT32 GetShapeID() {return _R(IDS_RECTANGLE_DESCRS);};
-	INT32 GetShapesID() {return _R(IDS_RECTANGLE_DESCRP);};
-									    
-	virtual BOOL IsRectangle() {return TRUE;};
-
-private:
-	INT32 CreationMode;
-
-	// Standard tool static vars
-	static 	TCHAR* FamilyName;				
-	static 	TCHAR* ToolName;					
-	static 	TCHAR* Purpose;					
-	static 	TCHAR* Author;					
+  // Methods
+ public:
+  BOOL Init();
+  void Describe(void* InfoPtr);
+  UINT32 GetID() {
+    return TOOLID_RECTANGLE;
+  };
+  // The creation mode functions
+  INT32 GetNumSides() {
+    return 4;
+  };						
+  INT32 GetCreationMode() {
+    return CreationMode;
+  };
+  BOOL GetPolygon() {
+    return TRUE;
+  };
+  BOOL GetStellation() {
+    return FALSE;
+  };
+  BOOL GetCurved() {
+    return FALSE;
+  };
+  void SetNumSides(INT32 NewValue) {
+    // noop
+  };
+  void SetCreationMode(INT32 NewValue) {
+    CreationMode = NewValue;
+  };
+  void SetPolygon(BOOL NewValue) {
+    // noop
+  };
+  void SetStellation(BOOL NewValue) {
+    // noop
+  };
+  void SetCurved(BOOL NewValue) {
+    // noop
+  };
+  BOOL ForcePolygonToGrey() {
+    return FALSE;
+  };
+  BOOL ForceEllipseToGrey() {
+    return TRUE;
+  };
+  BOOL ForceStellationToGrey() {
+    return TRUE;
+  };
+  BOOL ForceCurvatureToGrey() {
+    return FALSE;
+  };
+  BOOL ForceNumSidesToGrey() {
+    return TRUE;
+  };
+  BOOL DoesPolygonExist() {
+    return FALSE;
+  };
+  BOOL DoesEllipseExist() {
+    return FALSE;
+  };
+  BOOL DoesStellationExist() {
+    return FALSE;
+  };
+  BOOL DoesCurvatureExist() {
+    return TRUE;
+  };
+  BOOL DoesReformSidesExist() {
+    return FALSE;
+  };
+  BOOL DoesNumSidesExist() {
+    return FALSE;
+  };
+  BOOL IsInterestingShape(NodeRegularShape* pShape);
+  INT32 GetShapesToAffect() {
+    return EditRegularShapeParam::AFFECT_RECTANGLES;
+  };
+  INT32 GetCursorID() {
+    return _R(IDC_RECTTOOLCURSOR);
+  };
+  INT32 GetShapeID() {
+    return _R(IDS_RECTANGLE_DESCRS);
+  };
+  INT32 GetShapesID() {
+    return _R(IDS_RECTANGLE_DESCRP);
+  };
+  virtual BOOL IsRectangle() {
+    return TRUE;
+  };
+  
+ private:
+  INT32 CreationMode;
+  // Standard tool static vars
+  static TCHAR* FamilyName;				
+  static TCHAR* ToolName;					
+  static TCHAR* Purpose;					
+  static TCHAR* Author;					
 };
-
 
 #endif	// INC_Rectangle
 

@@ -936,10 +936,10 @@ void OpAlign::DoWithParam(OpDescriptor* pOp, OpParam* pAlignParam)
 }
 
 /******************************************************************************
- following routines used by the 'C' library qsort() in OpAlign::AlignOneAxis()
+ following routines used by the 'C' library qsort() in
+ OpAlign::AlignOneAxis()
 ******************************************************************************/
-extern "C" INT32 CompareObjInfoLow(const void* elem1, const void* elem2)
-{
+extern "C" INT32 CompareObjInfoLow(const void* elem1, const void* elem2) {
 	ObjInfo* a=(ObjInfo*)elem1;
 	ObjInfo* b=(ObjInfo*)elem2;
 	if (a->lo == b->lo)
@@ -947,9 +947,8 @@ extern "C" INT32 CompareObjInfoLow(const void* elem1, const void* elem2)
 	else
 		return (a->lo < b->lo ? -1 : 1);
 }
-/*****************************************************************************/
-extern "C" INT32 CompareObjInfoHigh(const void* elem1, const void* elem2)
-{
+
+extern "C" INT32 CompareObjInfoHigh(const void* elem1, const void* elem2) {
 	ObjInfo* a=(ObjInfo*)elem1;
 	ObjInfo* b=(ObjInfo*)elem2;
 	if (a->hi == b->hi)
@@ -957,7 +956,7 @@ extern "C" INT32 CompareObjInfoHigh(const void* elem1, const void* elem2)
 	else
 		return (a->hi < b->hi ? -1 : 1);
 }
-/*****************************************************************************/
+
 extern "C" INT32 CompareObjInfoCentre(const void* elem1, const void* elem2)
 {
 	ObjInfo* a=(ObjInfo*)elem1;

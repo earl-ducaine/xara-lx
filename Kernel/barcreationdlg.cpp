@@ -2136,131 +2136,121 @@ BOOL BarRedefineStateDlg::IsAttribInSelected(Node * pNode)
 }
 
 
-BOOL BarRedefineStateDlg::RedefineState()
-{
-	// get the barname from the drop down
-	m_BarName = GetStringGadgetValue(_R(IDC_BAR_NO_COMBO));
-
-	// get the no of buttons in the bar
-	INT32 NoOfButtons = SliceHelper::CountButtonsInBar(m_BarName);
-
-	NodeBarProperty* pNodeBarProperty = (NodeBarProperty*) Document::GetCurrent()->GetSetSentinel()->FindBarProperty();
-	INT32 BarNumber = SliceHelper::GetBarNumberFromBarName(m_BarName);
-
-	if (!pNodeBarProperty || BarNumber >= pNodeBarProperty->HowMany())
-		return FALSE;
-
-	BarDataType NewBarData = pNodeBarProperty->Bar(BarNumber);
-
-	// we need to check if the user doesn't have selected all the elements of a button from this bar
-	// if not warn the user that elements not selected will be deleted
-	// first which button is it that we think we have selected - if none then use a different warning
-	String_256 ButtonName = "";
-
-	Node * pNode = NULL;
-	Layer * pLayer = NULL;
-	String_256 templayer = "";
-
-	switch (m_State)
+BOOL BarRedefineStateDlg::RedefineState() {
+  // get the barname from the drop down
+  m_BarName = GetStringGadgetValue(_R(IDC_BAR_NO_COMBO));
+  // get the no of buttons in the bar
+  INT32 NoOfButtons = SliceHelper::CountButtonsInBar(m_BarName);
+  NodeBarProperty* pNodeBarProperty =
+    (NodeBarProperty*) Document::GetCurrent()->GetSetSentinel()->FindBarProperty();
+  INT32 BarNumber = SliceHelper::GetBarNumberFromBarName(m_BarName);
+  if (!pNodeBarProperty || BarNumber >= pNodeBarProperty->HowMany()){
+    return FALSE;
+  }
+  BarDataType NewBarData = pNodeBarProperty->Bar(BarNumber);
+  // we need to check if the user doesn't have selected all the
+  // elements of a button from this bar if not warn the user that
+  // elements not selected will be deleted first which button is it
+  // that we think we have selected - if none then use a different
+  // warning
+  String_256 ButtonName = "";
+  Node * pNode = NULL;
+  Layer * pLayer = NULL;
+  String_256 templayer = "";
+  switch (m_State) {
+    case 0:
+      templayer.Load(_R(IDS_ROLLOVER_DEFAULT));
+      break;
+    case 1:
+      templayer.Load(_R(IDS_ROLLOVER_MOUSE));
+      break;
+    case 2:
+      templayer.Load(_R(IDS_ROLLOVER_CLICKED));
+      break;
+    case 3:
+      templayer.Load(_R(IDS_ROLLOVER_SELECTED));
+      break;
+    case 4:
+      templayer.Load(_R(IDS_BACK_BAR));
+      break;
+    }
+  if (!templayer.IsEmpty())
+    pLayer = SliceHelper::FindLayerCalled(templayer);
+  if (!pLayer)
+    return FALSE;
+  BOOL FoundSelected = FALSE;
+  // scan this layer for which button is selected
+  pNode = SliceHelper::FindNextOfClass(pLayer, pLayer,
+				       CC_RUNTIME_CLASS(TemplateAttribute));
+  while (pNode && !FoundSelected)
+    {
+      if (m_BarName.CompareTo(SliceHelper::GetBarName((TemplateAttribute *)pNode)) == 0)
 	{
-	case 0:
-		templayer.Load(_R(IDS_ROLLOVER_DEFAULT));
-		break;
-
-	case 1:
-		templayer.Load(_R(IDS_ROLLOVER_MOUSE));
-		break;
-
-	case 2:
-		templayer.Load(_R(IDS_ROLLOVER_CLICKED));
-		break;
-
-	case 3:
-		templayer.Load(_R(IDS_ROLLOVER_SELECTED));
-		break;
-
-	case 4:
-		templayer.Load(_R(IDS_BACK_BAR));
-		break;
+	  // set the button name we are looking for
+	  if (IsAttribInSelected(pNode)) 
+	    {
+	      ButtonName = ((TemplateAttribute *)pNode)->GetParam();
+	      FoundSelected = TRUE;
+	    }
 	}
 
-	if (!templayer.IsEmpty())
-		pLayer = SliceHelper::FindLayerCalled(templayer);
+      pNode = SliceHelper::FindNextOfClass(pNode, pLayer, CC_RUNTIME_CLASS(TemplateAttribute));
+    }
 
-	if (!pLayer)
-		return FALSE;
-
-	BOOL FoundSelected = FALSE;
-
-	// scan this layer for which button is selected
-	pNode = SliceHelper::FindNextOfClass(pLayer, pLayer, CC_RUNTIME_CLASS(TemplateAttribute));
-	while (pNode && !FoundSelected)
+  // scan this layer for none selected elements of the button
+  pNode = SliceHelper::FindNextOfClass(pLayer, pLayer, CC_RUNTIME_CLASS(TemplateAttribute));
+  while (FoundSelected && pNode)
+    {
+      if (m_BarName.CompareTo(SliceHelper::GetBarName((TemplateAttribute *)pNode)) == 0)
 	{
-		if (m_BarName.CompareTo(SliceHelper::GetBarName((TemplateAttribute *)pNode)) == 0)
+	  // if we have found a selected button name are other
+	  if (ButtonName.CompareTo(((TemplateAttribute *)pNode)->GetParam()) == 0)
+	    {
+	      if (!IsAttribInSelected(pNode))
 		{
-			// set the button name we are looking for
-			if (IsAttribInSelected(pNode)) 
-			{
-				ButtonName = ((TemplateAttribute *)pNode)->GetParam();
-				FoundSelected = TRUE;
-			}
+		  INT32 msg = InformWarning(_R(IDS_BUTTON_NOT_ALL_SELECTED), _R(IDS_CANCEL), _R(IDS_CARRY_ON));
+		  if (msg == 1)
+		    return FALSE; // give up & go back
+		  else
+		    break; // stop the test and go ahead
 		}
-
-		pNode = SliceHelper::FindNextOfClass(pNode, pLayer, CC_RUNTIME_CLASS(TemplateAttribute));
+	    }
 	}
 
-	// scan this layer for none selected elements of the button
-	pNode = SliceHelper::FindNextOfClass(pLayer, pLayer, CC_RUNTIME_CLASS(TemplateAttribute));
-	while (FoundSelected && pNode)
-	{
-		if (m_BarName.CompareTo(SliceHelper::GetBarName((TemplateAttribute *)pNode)) == 0)
-		{
-			// if we have found a selected button name are other
-			if (ButtonName.CompareTo(((TemplateAttribute *)pNode)->GetParam()) == 0)
-			{
-				if (!IsAttribInSelected(pNode))
-				{
-					INT32 msg = InformWarning(_R(IDS_BUTTON_NOT_ALL_SELECTED), _R(IDS_CANCEL), _R(IDS_CARRY_ON));
-					if (msg == 1)
-						return FALSE; // give up & go back
-					else
-						break; // stop the test and go ahead
-				}
-			}
-		}
+      pNode = SliceHelper::FindNextOfClass(pNode, pLayer, CC_RUNTIME_CLASS(TemplateAttribute));
+    }
 
-		pNode = SliceHelper::FindNextOfClass(pNode, pLayer, CC_RUNTIME_CLASS(TemplateAttribute));
-	}
+  OpDescriptor* pOpDesc = OpDescriptor::FindOpDescriptor(OPTOKEN_BARCREATIONOP); 
 
-	OpDescriptor* pOpDesc = OpDescriptor::FindOpDescriptor(OPTOKEN_BARCREATIONOP); 
+  if (!pOpDesc)
+    return FALSE;
 
-	if (!pOpDesc)
-		return FALSE;
+  // dont extend
+  BYTE ExtendFlags = 0; 
 
-	BYTE ExtendFlags = 0; // dont extend
+  if (NewBarData.ButtonsExtend)
+    ExtendFlags = X_EXTEND | Y_EXTEND;
+  else
+    if (NewBarData.ButtonsScale)
+      ExtendFlags = X_STRETCH | Y_STRETCH;
 
-	if (NewBarData.ButtonsExtend)
-		ExtendFlags = X_EXTEND | Y_EXTEND;
-	else
-		if (NewBarData.ButtonsScale)
-			ExtendFlags = X_STRETCH | Y_STRETCH;
-
-	OpParamBarCreation BarParam(m_State == 1,	//ms_WantMouse,
-								m_State == 2,	//ms_WantClicked,
-								m_State == 3,	//ms_WantSelected,
-								m_State == 4,	//(ms_StateToCreate == BACKBAR),
-								NewBarData.IsHorizontal ? FALSE : TRUE,
-								FALSE,
-								NoOfButtons,
-								m_State == 0, // ms_WantDefault - dont use this to make the default from this dlg
-								REPLACE_SOME_STATES,
-								NewBarData.Spacing,
-								NewBarData.RequiresShuffle,
-								NewBarData.SameSize,
-								m_BarName,
-								TRUE, // alsways from selection
-								ExtendFlags);
-	pOpDesc->Invoke(&BarParam);
-
-	return TRUE;
+  OpParamBarCreation BarParam(m_State == 1,	//ms_WantMouse,
+			      m_State == 2,	//ms_WantClicked,
+			      m_State == 3,	//ms_WantSelected,
+			      m_State == 4,	//(ms_StateToCreate == BACKBAR),
+			      NewBarData.IsHorizontal ? FALSE : TRUE,
+			      FALSE,
+			      NoOfButtons,
+			       // ms_WantDefault - dont use this to
+			       // make the default from this dlg
+			      m_State == 0,
+			      REPLACE_SOME_STATES,
+			      NewBarData.Spacing,
+			      NewBarData.RequiresShuffle,
+			      NewBarData.SameSize,
+			      m_BarName,
+			      TRUE, // alsways from selection
+			      ExtendFlags);
+  pOpDesc->Invoke(&BarParam);
+  return TRUE;
 }

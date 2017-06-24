@@ -96,9 +96,6 @@ service marks of Xara Group Ltd. All rights in these marks are reserved.
 =================================XARAHEADEREND============================
  */
 
-/*
-//*/ 
-
 // Include files 
 #include "camtypes.h"
 //#include "attrmgr.h" - in camtypes.h [AUTOMATICALLY REMOVED]
