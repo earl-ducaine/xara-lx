@@ -58,3 +58,8 @@ camPrintf( (TCHAR*)DiagOutput);
 		  // if( !CheckValidator() ) {
 		  //   return false;			/*TYPENOTE: Correct*/
 		  // }
+
+** generic building blocks of a protocol
+   - Can a 'bus' model be effectively layered over other aspects of a
+     protocol?
+ 

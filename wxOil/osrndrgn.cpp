@@ -1110,152 +1110,124 @@ void OSRenderRegion::CalcLogBrush(wxBrush* lpBrush, DocColour &Col)
 	}
 }
 
-/********************************************************************************************
-
+/***************************************************************************
 >	void OSRenderRegion::CreateNewPen()
 
 	Author:		Will_Cowling (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	31/5/93
-	Purpose:	Creates a new Pen, based on the current line attributes.
+	Purpose:	Creates a new Pen, based on the current line
+                        attributes.
 	Scope:		Private
-
-********************************************************************************************/
-
-void OSRenderRegion::CreateNewPen()
-{
-
-	BOOL EmptyPen = RR_STROKECOLOUR().IsTransparent();
-	const enum Quality::Line LineQuality = RRQuality.GetLineQuality();
-
-	// if no filling going on then must have a pen
-	if ( RRQuality.GetFillQuality() <= Quality::NoFill )
-		EmptyPen = FALSE;
-
-	if (
-//		RFlags.GDI32 &&								// must be GDI32
-		!RenderFlags.VeryMono &&   					// not to bitmaps (special colour rules)
-		!RenderFlags.bImmediateRender &&			// not when immediate (XORing messes up)
-		(LineQuality >= Quality::FullLine) &&		// not on simple lines
-		!EmptyPen									// not on NULL pens (over complex)
-	   )
-	{
-//		Windows version would have used brush calculation to set pen properties
-//		CalcLogBrush( &Brush, RR_STROKECOLOUR() );
-
-		INT32 PenWidth = MPtoLP(RR_LINEWIDTH());
-		if (IsPrinting())
-		{
-			// Make sure we don't user single pixel width pens as they won't dither.
-			if (PenWidth < 2)
-				PenWidth = 2;
-		}
-
-		INT32 R,G,B;
-		RR_STROKECOLOUR().GetRGBValue(&R,&G,&B);
-		RenderPen[CurrentPen] = wxPen(wxColour(R,G,B), PenWidth, wxSOLID);
-
-		// work out pen type
-		switch (RR_STARTCAP())
-		{
-			case LineCapRound:
-				RenderPen[CurrentPen].SetCap(wxCAP_ROUND);
-				break;
-
-			case LineCapSquare:
-				RenderPen[CurrentPen].SetCap(wxCAP_PROJECTING);
-				break;
-
-			case LineCapButt:
-				RenderPen[CurrentPen].SetCap(wxCAP_BUTT);
-				break;
-
-			default:
-				ENSURE(FALSE, "Bad startcap");
-				break;
-		}
-		switch (RR_JOINTYPE())
-		{
-			case BevelledJoin:
-				RenderPen[CurrentPen].SetJoin(wxJOIN_BEVEL);
-				break;
-
-			case MitreJoin:
-				RenderPen[CurrentPen].SetJoin(wxJOIN_MITER);
-				break;
-
-			case RoundJoin:
-				RenderPen[CurrentPen].SetJoin(wxJOIN_ROUND);
-				break;
-
-			default:
-				ENSURE(FALSE, "bad jointype");
-				break;
-		}
-		return ;
-	}
-
-	// fall through to use old-fashioned 16-bit GDI pen creation if failed
-
-	if (EmptyPen)
-		RenderPen[CurrentPen] = wxPen(*wxTRANSPARENT_PEN);
-	else
-	{
-		INT32 PenWidth = MPtoLP(RR_LINEWIDTH());
-
-		if (RR_LINEWIDTH()==0 || LineQuality < Quality::FullLine)
-			PenWidth = 0;
-		else
-		{
-			MILLIPOINT LineWidth = RR_LINEWIDTH();
-			if ((RenderFlags.VeryMono || RenderFlags.HitDetect) && LineWidth < GetScaledPixelWidth())
-				PenWidth = MPtoLP(GetScaledPixelWidth());
-		}
-
-		wxColour Colour(0,0,0);
-		if (RenderFlags.VeryMono || LineQuality < Quality::ThinLine)
-			Colour = *wxBLACK;
-		else if (DrawingMode==DM_EORPEN)
-			Colour = CalcEORColour(RR_STROKECOLOUR());
-		else
-		{
-			INT32 R,G,B;
-			RR_STROKECOLOUR().GetRGBValue(&R,&G,&B);
-			Colour = wxColour(R, G, B);
-		}
-
-		RenderPen[CurrentPen] = wxPen(Colour, PenWidth, wxSOLID);
-	}
+****************************************************************************/
+void OSRenderRegion::CreateNewPen() {
+  BOOL EmptyPen = RR_STROKECOLOUR().IsTransparent();
+  const enum Quality::Line LineQuality = RRQuality.GetLineQuality();
+  // if no filling going on then must have a pen
+  if (RRQuality.GetFillQuality() <= Quality::NoFill) {
+    EmptyPen = FALSE;
+  }
+  // RFlags.GDI32 &&
+  // not to bitmaps (special colour rules)
+  if (!RenderFlags.VeryMono &&
+      // not when immediate (XORing messes up)
+      !RenderFlags.bImmediateRender &&
+      // not on simple lines
+      (LineQuality >= Quality::FullLine) &&
+      // not on NULL pens (over complex)
+      !EmptyPen) {
+    // Windows version would have used brush calculation to set pen
+    // properties CalcLogBrush( &Brush, RR_STROKECOLOUR() );
+    INT32 PenWidth = MPtoLP(RR_LINEWIDTH());
+    if (IsPrinting()) {
+      // Make sure we don't user single pixel width pens as they won't
+      // dither.
+      if (PenWidth < 2) {
+	PenWidth = 2;
+      }
+    }
+    INT32 R, G, B;
+    RR_STROKECOLOUR().GetRGBValue(&R,&G,&B);
+    RenderPen[CurrentPen] = wxPen(wxColour(R,G,B), PenWidth, wxSOLID);
+    // work out pen type
+    switch (RR_STARTCAP()) {
+    case LineCapRound:
+      RenderPen[CurrentPen].SetCap(wxCAP_ROUND);
+      break;
+    case LineCapSquare:
+      RenderPen[CurrentPen].SetCap(wxCAP_PROJECTING);
+      break;
+    case LineCapButt:
+      RenderPen[CurrentPen].SetCap(wxCAP_BUTT);
+      break;
+    default:
+      ENSURE(FALSE, "Bad startcap");
+      break;
+    }
+    switch (RR_JOINTYPE())
+      {
+      case BevelledJoin:
+	RenderPen[CurrentPen].SetJoin(wxJOIN_BEVEL);
+	break;
+      case MitreJoin:
+	RenderPen[CurrentPen].SetJoin(wxJOIN_MITER);
+	break;
+      case RoundJoin:
+	RenderPen[CurrentPen].SetJoin(wxJOIN_ROUND);
+	break;
+      default:
+	ENSURE(FALSE, "bad jointype");
+	break;
+      }
+    return ;
+  }
+  // fall through to use old-fashioned 16-bit GDI pen creation if failed
+  if (EmptyPen) {
+    RenderPen[CurrentPen] = wxPen(*wxTRANSPARENT_PEN);
+  } else {
+    INT32 PenWidth = MPtoLP(RR_LINEWIDTH());
+    if (RR_LINEWIDTH()== 0 || LineQuality < Quality::FullLine) {
+      PenWidth = 0;
+    }else {
+      MILLIPOINT LineWidth = RR_LINEWIDTH();
+      if ((RenderFlags.VeryMono || RenderFlags.HitDetect) &&
+	  LineWidth < GetScaledPixelWidth()) {
+	PenWidth = MPtoLP(GetScaledPixelWidth());
+      }
+    }
+    wxColour Colour(0,0,0);
+    if (RenderFlags.VeryMono || LineQuality < Quality::ThinLine) {
+      Colour = *wxBLACK;
+    } else if (DrawingMode==DM_EORPEN) {
+      Colour = CalcEORColour(RR_STROKECOLOUR());
+    } else {
+      INT32 R,G,B;
+      RR_STROKECOLOUR().GetRGBValue(&R,&G,&B);
+      Colour = wxColour(R, G, B);
+    }
+    RenderPen[CurrentPen] = wxPen(Colour, PenWidth, wxSOLID);
+  }
 }
 
-void OSRenderRegion::SelectNewPen()
-{
-	// Swap pens
-	CurrentPen = 1 - CurrentPen;
-
-	// Create and select the new pen
-	CreateNewPen();
-
-	RenderDC->SetPen(RenderPen[CurrentPen]);
-
-	RFlags.ValidPen = TRUE;
+void OSRenderRegion::SelectNewPen() {
+  // Swap pens
+  CurrentPen = 1 - CurrentPen;
+  // Create and select the new pen
+  CreateNewPen();
+  RenderDC->SetPen(RenderPen[CurrentPen]);
+  RFlags.ValidPen = TRUE;
 }
 
-
-/********************************************************************************************
-
+/***************************************************************************
 >	void OSRenderRegion::CreateNewBrush()
 
 	Author:		Will_Cowling (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	31/5/93
-	Purpose:	Creates a new Brush, based on the current fill attributes.
+	Purpose:	Creates a new Brush, based on the current fill
+                        attributes.
 	Scope:		Private
-
-********************************************************************************************/
-
-void OSRenderRegion::CreateNewBrush()
-{
-	if (RRQuality.GetFillQuality() <= Quality::NoFill )
-	{
+****************************************************************************/
+void OSRenderRegion::CreateNewBrush() {
+	if (RRQuality.GetFillQuality() <= Quality::NoFill) {
 		RenderBrush[CurrentBrush].SetColour(*wxBLACK);
 		RenderBrush[CurrentBrush].SetStyle(wxTRANSPARENT);
 	}
@@ -1263,61 +1235,54 @@ void OSRenderRegion::CreateNewBrush()
 		CalcLogBrush( &RenderBrush[CurrentBrush], RR_FILLCOLOUR() );
 }
 
-/********************************************************************************************
-
+/***************************************************************************
 >	void OSRenderRegion::SelectNewBrush()
 
 	Author:		Andy_Pennell (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	15/10/93
-	Purpose:	Selects RenderBrush while setting its new origin. A common operation that is in its
-				own function to cope with things such as metafiles which cannot do this.
+	Purpose:        Selects RenderBrush while setting its new origin. A
+			common operation that is in its own function
+			to cope with things such as metafiles which
+			cannot do this.
 	Scope:		Private
-
-********************************************************************************************/
-
-void OSRenderRegion::SelectNewBrush()
-{
-	// Swap brushes
-	CurrentBrush = 1 - CurrentBrush;
-
-	// Make the new brush
-	CreateNewBrush();
-
-	// Set up the brush origin
-	if (!RFlags.Metafile)
-	{
-//		RenderBrush[CurrentBrush]->UnrealizeObject();
-		// this fn will assert if done on a metafile
-	PORTNOTE("other","OSRenderRegion::SelectNewBrush - removed setting of brush origin");
+****************************************************************************/
+void OSRenderRegion::SelectNewBrush() {
+  // Swap brushes
+  CurrentBrush = 1 - CurrentBrush;
+  // Make the new brush
+  CreateNewBrush();
+  // Set up the brush origin
+  if (!RFlags.Metafile) {
+    // RenderBrush[CurrentBrush]->UnrealizeObject();
+    // this fn will assert if done on a metafile
+    PORTNOTE("other", "OSRenderRegion::SelectNewBrush - "
+	     "removed setting of brush origin");
 #if !defined(EXCLUDE_FROM_XARALX)
-		RenderDC->SetBrushOrg(NewBrushOrg);
+    RenderDC->SetBrushOrg(NewBrushOrg);
 #endif
-	}
-
-	// And select the new brush
-	RenderDC->SetBrush(RenderBrush[CurrentBrush]);
-
-	// Set winding rule as required
-	if (RR_WINDINGRULE() == EvenOddWinding)
-		nFillStyle = wxODDEVEN_RULE;
-	else
-		nFillStyle = wxWINDING_RULE;
-
-	// We've now got a valid brush
-	RFlags.ValidBrush = TRUE;
+  }
+  // And select the new brush
+  RenderDC->SetBrush(RenderBrush[CurrentBrush]);
+  // Set winding rule as required
+  if (RR_WINDINGRULE() == EvenOddWinding) {
+    nFillStyle = wxODDEVEN_RULE;
+  } else {
+    nFillStyle = wxWINDING_RULE;
+  }
+  // We've now got a valid brush
+  RFlags.ValidBrush = TRUE;
 }
 
-
-void OSRenderRegion::GetValidPen()
-{
-	if (!RFlags.ValidPen)
-		SelectNewPen();
+void OSRenderRegion::GetValidPen() {
+  if (!RFlags.ValidPen) {
+    SelectNewPen();
+  }
 }
 
-void OSRenderRegion::GetValidBrush()
-{
-	if (!RFlags.ValidBrush)
-		SelectNewBrush();
+void OSRenderRegion::GetValidBrush() {
+  if (!RFlags.ValidBrush) {
+    SelectNewBrush();
+  }
 }
 
 
@@ -1776,8 +1741,7 @@ void OSRenderRegion::SetSolidColours(BOOL SetSolid)
 
 
 
-/********************************************************************************************
-
+/***************************************************************************
 >	void OSRenderRegion::DrawPathToOutputDevice(Path* PathToDraw)
 
 	Author:		Will_Cowling (Xara Group Ltd) <camelotdev@xara.com>
@@ -1785,24 +1749,19 @@ void OSRenderRegion::SetSolidColours(BOOL SetSolid)
 	Inputs:		PathToDraw is a pointer to a Path object to render
 	Purpose:	Renders a path object to the GDI
 	SeeAlso:	OSRenderRegion::DrawRect()
-
-********************************************************************************************/
-
-void OSRenderRegion::DrawPathToOutputDevice(Path* PathToDraw, PathShape)
-{
-	// If we are not drawing complex shapes and this shape is, then return
-	if ((!RenderComplexShapes) && (TestForComplexShape(&Caps)))
-		return;
-
-	// We want to draw it, so get pens and brushs
-	GetValidPen();
-	GetValidBrush();
-
-	// and draw the path
-	RenderPath(PathToDraw);					// Render the Path
-
-	// draw the arrow heads on to it.
-	DrawPathArrowHeads(NORMALPATH(PathToDraw));
+****************************************************************************/
+void OSRenderRegion::DrawPathToOutputDevice(Path* PathToDraw, PathShape) {
+  // If we are not drawing complex shapes and this shape is, then return
+  if ((!RenderComplexShapes) && (TestForComplexShape(&Caps))) {
+    return;
+  }
+  // We want to draw it, so get pens and brushs
+  GetValidPen();
+  GetValidBrush();
+  // and Render the Path
+  RenderPath(PathToDraw);
+  // draw the arrow heads on to it.
+  DrawPathArrowHeads(NORMALPATH(PathToDraw));
 }
 
 /********************************************************************************************

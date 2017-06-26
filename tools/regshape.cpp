@@ -1,7 +1,7 @@
 // $Id: regshape.cpp 1282 2006-06-09 09:46:49Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
- 
+
                Xara LX, a vector drawing and manipulation program.
                     Copyright (C) 1993-2006 Xara Group Ltd.
        Copyright on certain contributions may be held in joint with their
@@ -32,7 +32,7 @@ ADDITIONAL RIGHTS
 
 Conditional upon your continuing compliance with the GNU General Public
 License described above, Xara Group Ltd grants to you certain additional
-rights. 
+rights.
 
 The additional rights are to use, modify, and distribute the software
 together with the wxWidgets library, the wxXtra library, and the "CDraw"
@@ -101,7 +101,7 @@ service marks of Xara Group Ltd. All rights in these marks are reserved.
 */
 
 #include "camtypes.h"
-#include "regshape.h"	
+#include "regshape.h"
 
 //#include "app.h" - in camtypes.h [AUTOMATICALLY REMOVED]
 //#include "attrmgr.h" - in camtypes.h [AUTOMATICALLY REMOVED]
@@ -117,23 +117,23 @@ service marks of Xara Group Ltd. All rights in these marks are reserved.
 #include "opnudge.h"
 #include "oprshape.h"
 #include "optsmsgs.h"
-//#include "peter.h"		
+//#include "peter.h"
 //#include "rndrgn.h" - in camtypes.h [AUTOMATICALLY REMOVED]
 //#include "rshapbar.h"
 //#include "simon.h"
 #include "shapeops.h"
 //#include "spread.h" - in camtypes.h [AUTOMATICALLY REMOVED]
-//#include "viewrc.h"	 
+//#include "viewrc.h"
 //#include "will2.h"
 
 DECLARE_SOURCE( "$Revision: 1282 $" );
 
 CC_IMPLEMENT_MEMDUMP(QuickShapeBase, Tool_v1)
 CC_IMPLEMENT_MEMDUMP(QuickShapeTool, QuickShapeBase)
-CC_IMPLEMENT_DYNCREATE(QuickShapeBaseInfoBarOp, InformationBarOp)	  
+CC_IMPLEMENT_DYNCREATE(QuickShapeBaseInfoBarOp, InformationBarOp)
 
 // Must come after the last CC_IMPLEMENT.. macro
-#define new CAM_DEBUG_NEW     
+#define new CAM_DEBUG_NEW
 
 TCHAR* QuickShapeTool::FamilyName	= _T("Shape Tools");
 TCHAR* QuickShapeTool::ToolName		= _T("QuickShape Tool");
@@ -202,149 +202,109 @@ QuickShapeBase::~QuickShapeBase()
 
 ********************************************************************************************/
 
-BOOL QuickShapeBase::Init()
-{
-	// Declare all your ops here and only succeed if all declarations succeed
+BOOL QuickShapeBase::Init() {
+  // Declare all your ops here and only succeed if all declarations succeed
 
-	BOOL ok = OpNewRegShape::Declare();
+  BOOL ok = OpNewRegShape::Declare();
 
-	// This section reads in the infobar definition and creates an instance of
-	// QuickShapeBaseInfoBarOp.  Also pQuickShapeBaseInfoBarOp, the ptr to the tool's infobar, is set up
-	// after the infobar is successfully read and created.
-	if (ok)
-	{
-		pQuickShapeBaseInfoBarOp = new QuickShapeBaseInfoBarOp(this, _R(IDD_REGSHAPETOOLBAR));
-		ok=(pQuickShapeBaseInfoBarOp!=NULL);
-PORTNOTE("dialog", "Removed Bar reading")
-#if 0
-		CCResTextFile 			file;				// Resource File
-		QuickShapeBaseInfoBarOpCreate BarCreate;			// Object that creates QuickShapeBaseInfoBarOp objects
+  // This section reads in the infobar definition and creates an
+  // instance of QuickShapeBaseInfoBarOp.  Also
+  // pQuickShapeBaseInfoBarOp, the ptr to the tool's infobar, is set
+  // up after the infobar is successfully read and created.
+  if (ok)
+    {
+      pQuickShapeBaseInfoBarOp = new QuickShapeBaseInfoBarOp(this, _R(IDD_REGSHAPETOOLBAR));
+      ok=(pQuickShapeBaseInfoBarOp!=NULL);
+      PORTNOTE("dialog", "Removed Bar reading")
+      ERROR2IF(!ok,FALSE,"Error finding the RegShape tool info bar");
 
-		 		ok = file.open(_R(IDM_REGSHAPE_BAR), _R(IDT_INFO_BAR_RES));	// Open resource
-		if (ok) ok = DialogBarOp::ReadBarsFromFile(file,BarCreate);	// Read and create info bar
-		if (ok) file.close();									 	// Close resource
+    }
 
-		ERROR2IF(!ok,FALSE,"Unable to load RegShBar.ini from resource"); 
-
-		// Info bar now exists.  Now get a pointer to it
-		String_32 str(_R(IDS_REGSHAPE_INFOBARNAME));
-		DialogBarOp* pDialogBarOp = DialogBarOp::FindDialogBarOp(str);
-		
-		ERROR2IF(pDialogBarOp==NULL, FALSE, "infobar not found\n");
-
-		ok = pDialogBarOp->IsKindOf(CC_RUNTIME_CLASS(QuickShapeBaseInfoBarOp));
-		if (ok)
-		{
-			pQuickShapeBaseInfoBarOp = (QuickShapeBaseInfoBarOp*)pDialogBarOp;
-			pQuickShapeBaseInfoBarOp->pQuickShapeBase = this;
-		}
-#endif
-		ERROR2IF(!ok,FALSE,"Error finding the RegShape tool info bar");
-
-	}
-
-	return (ok);
+  return (ok);
 }
 
 
 
-/********************************************************************************************
-
+/****************************************************************************
 >	virtual void QuickShapeBase::SelectChange(BOOL isSelected)
 
 	Author:		Peter_Arnold (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	15/11/94
-	Inputs:		isSelected	- TRUE  = tool has been selected
-							- FALSE = tool has been deselected
+	Inputs:         isSelected - TRUE = tool has been selected, FALSE =
+                        tool has been deselected
 	Outputs:	-
 	Returns:	-
 	Purpose:	Starts up and closes down the RegShape tool
 	SeeAlso:	-
-
-********************************************************************************************/
-
-void QuickShapeBase::SelectChange(BOOL isSelected)
-{
-	if (isSelected)
-	{
-		if (!CreateCursors()) return;
-		CurrentCursorID = CursorStack::GPush(pcNormalCursor, FALSE);		// Push cursor but don't display now
-		pcCurrentCursor = pcNormalCursor;
-
-		// Create and display the tool's info bar
-		pQuickShapeBaseInfoBarOp->Create();
-		pQuickShapeBaseInfoBarOp->SetCreationMode(GetCreationMode());
-		pQuickShapeBaseInfoBarOp->SetHelp();
-		
-		// Say which blobs to display
-		BlobManager* BlobMgr = GetApplication()->GetBlobManager();
-		if (BlobMgr != NULL)
-		{
-			// Decide which blobs we will display
-			BlobStyle MyBlobs;
-			MyBlobs.Object = TRUE;
-
-			// Tell the blob manager
-			BlobMgr->ToolInterest(MyBlobs);
-		}
-	}
-	else
-	{
-		// Deselection - destroy the tool's cursors, if they exist.
-		if (pcCurrentCursor != NULL)
-		{
-			CursorStack::GPop(CurrentCursorID);
-			CurrentCursorID = 0;
-			pcCurrentCursor = NULL;
-		}
-		DestroyCursors();
-
-		// Remove the info bar from view by deleting the actual underlying window
-		pQuickShapeBaseInfoBarOp->Delete();
-	}
-
-		// ensure any tool object blobs are removed.
-		BlobManager* BlobMgr = GetApplication()->GetBlobManager();
-		if (BlobMgr != NULL)
-		{
-			BlobStyle bsRemoves;
-			bsRemoves.ToolObject = TRUE;
-			BlobMgr->RemoveInterest(bsRemoves);
-		}
+****************************************************************************/
+void QuickShapeBase::SelectChange(BOOL isSelected) {
+  if (isSelected) {
+    if (!CreateCursors()) {
+      return;
+    }
+    // Push cursor but don't display now
+    CurrentCursorID = CursorStack::GPush(pcNormalCursor, FALSE);
+    pcCurrentCursor = pcNormalCursor;
+    // Create and display the tool's info bar
+    pQuickShapeBaseInfoBarOp->Create();
+    pQuickShapeBaseInfoBarOp->SetCreationMode(GetCreationMode());
+    pQuickShapeBaseInfoBarOp->SetHelp();
+    // Say which blobs to display
+    BlobManager* BlobMgr = GetApplication()->GetBlobManager();
+    if (BlobMgr != NULL) {
+      // Decide which blobs we will display
+      BlobStyle MyBlobs;
+      MyBlobs.Object = TRUE;
+      // Tell the blob manager
+      BlobMgr->ToolInterest(MyBlobs);
+    }
+  } else {
+    // Deselection - destroy the tool's cursors, if they exist.
+    if (pcCurrentCursor != NULL) {
+      CursorStack::GPop(CurrentCursorID);
+      CurrentCursorID = 0;
+      pcCurrentCursor = NULL;
+    }
+    DestroyCursors();
+    // Remove the info bar from view by deleting the actual underlying window
+    pQuickShapeBaseInfoBarOp->Delete();
+  }
+  // ensure any tool object blobs are removed.
+  BlobManager* BlobMgr = GetApplication()->GetBlobManager();
+  if (BlobMgr != NULL) {
+    BlobStyle bsRemoves;
+    bsRemoves.ToolObject = TRUE;
+    BlobMgr->RemoveInterest(bsRemoves);
+  }
 }
 
-
-
-/********************************************************************************************
-
+/***************************************************************************
 >	BOOL QuickShapeBase::CreateCursors()
 
 	Author:		Peter_Arnold (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	15/11/94
 	Inputs:		-
 	Outputs:	-
-	Returns:	TRUE if all the RegShape tool cursors have been successfully created
+	Returns:        TRUE if all the RegShape tool cursors have been
+	                successfully created
 	Purpose:	Creates all the RegShape tool cursors
 	SeeAlso:	-
+***************************************************************************/
+BOOL QuickShapeBase::CreateCursors() {
+  // This tool has just been selected.  Create the cursors.
+  pcNormalCursor = new Cursor(this, GetCursorID());
+  pcBlobCursor = new Cursor(this, _R(IDC_MOVEBEZIERCURSOR));
+  pcEdgeCursor = new Cursor(this, _R(IDC_RESHAPECURSOR));
 
-********************************************************************************************/
-
-BOOL QuickShapeBase::CreateCursors()
-{
-	// This tool has just been selected.  Create the cursors.
-	pcNormalCursor = new Cursor(this, GetCursorID());
-	pcBlobCursor = new Cursor(this, _R(IDC_MOVEBEZIERCURSOR));
-	pcEdgeCursor = new Cursor(this, _R(IDC_RESHAPECURSOR));
-
-	if ( pcNormalCursor==NULL || !pcNormalCursor->IsValid() ||
-		 pcEdgeCursor==NULL || !pcEdgeCursor->IsValid() ||
-		 pcBlobCursor==NULL || !pcBlobCursor->IsValid()	)
-	{
-		DestroyCursors();
-		return FALSE;
-	}
-	else
-		return TRUE;
+  if ( pcNormalCursor==NULL || !pcNormalCursor->IsValid() ||
+       pcEdgeCursor==NULL || !pcEdgeCursor->IsValid() ||
+       pcBlobCursor==NULL || !pcBlobCursor->IsValid()	)
+    {
+      DestroyCursors();
+      return FALSE;
+    }
+  else
+    return TRUE;
 }
 
 
@@ -363,48 +323,54 @@ BOOL QuickShapeBase::CreateCursors()
 
 ********************************************************************************************/
 
-void QuickShapeBase::DestroyCursors()
-{
-	if (pcNormalCursor != NULL) delete pcNormalCursor;
-	if (pcEdgeCursor != NULL) delete pcEdgeCursor;
-	if (pcBlobCursor != NULL) delete pcBlobCursor;
+void QuickShapeBase::DestroyCursors() {
+  if (pcNormalCursor != NULL) delete pcNormalCursor;
+  if (pcEdgeCursor != NULL) delete pcEdgeCursor;
+  if (pcBlobCursor != NULL) delete pcBlobCursor;
 
-	pcNormalCursor = NULL;
-	pcBlobCursor = NULL;
-	pcEdgeCursor = NULL;
+  pcNormalCursor = NULL;
+  pcBlobCursor = NULL;
+  pcEdgeCursor = NULL;
 }
 
 
 
-/********************************************************************************************
-
->	void QuickShapeBase::OnClick( DocCoord PointerPos, ClickType Click, ClickModifiers ClickMods,
-						Spread* pSpread )
+/****************************************************************************
+>	void QuickShapeBase::OnClick(DocCoord PointerPos,
+                                     ClickType Click,
+                                     ClickModifiers ClickMods,
+				     Spread* pSpread)
 
 	Author:		Peter_Arnold (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	15/11/94
-	Inputs:		PointerPos 	- 	The DocCoord of the point where the mouse button was clicked
-				Click 		-	Describes the type of click that was detected. 
-				ClickMods 	-	Indicates which buttons caused the click and which modifers were
-								pressed at the same time
-				pSpread 	- 	The spread in which the click happened
+	Inputs:         PointerPos - The DocCoord of the point where the mouse
+	                button was clicked
+
+			Click - Describes the type of click that was detected.
+
+			ClickMods - Indicates which buttons caused the
+			click and which modifers were pressed at the
+			same time
+
+			pSpread - The spread in which the click happened
+
 	Returns:	-
 	Purpose:	To handle a Mouse Click event for the RegShape Tool.
 	SeeAlso:	Tool::MouseClick; ClickType; ClickModifiers
-
-********************************************************************************************/
-void QuickShapeBase::OnClick( DocCoord PointerPos, ClickType Click, ClickModifiers ClickMods,
-						Spread* pSpread )
-{
-	if (ClickMods.Menu) return;							// Don't do anything if the user clicked the Menu button
-
-	NodeRegularShape* HitShape = NULL;
+ ****************************************************************************/
+void QuickShapeBase::OnClick(DocCoord PointerPos,
+			     ClickType Click,
+			     ClickModifiers ClickMods,
+			     Spread* pSpread) {
+  // Don't do anything if the user clicked the Menu button
+  if (ClickMods.Menu) {
+    return;
+  }
+   	NodeRegularShape* HitShape = NULL;
 	ShapeClickEffect TestEffect = DetermineClickEffect(PointerPos, pSpread, &HitShape);
-
 	// Get the infobar into the right mode so immediate drags are shown
 	EditModeIDS NewMode;
-	switch (TestEffect)
-	{
+	switch (TestEffect) {
 		case SHAPECLICK_CENTRE:
 			NewMode = EDITF_CENTRE;
 			break;
@@ -442,7 +408,7 @@ void QuickShapeBase::OnClick( DocCoord PointerPos, ClickType Click, ClickModifie
 	else
 	{
 		// call the base class ....
-		
+
 		DragTool::OnClick (PointerPos, Click, ClickMods, pSpread);
 	}
 
@@ -489,7 +455,7 @@ void QuickShapeBase::OnClick( DocCoord PointerPos, ClickType Click, ClickModifie
 				Curvature = pQuickShapeBaseInfoBarOp->IsCurvedCreate();
 			}
 
-			pOpNewRegShape->DoDrag( pSpread, PointerPos, NumberOfSides, CreateMode, PolyGone, Stellation, Curvature); 
+			pOpNewRegShape->DoDrag( pSpread, PointerPos, NumberOfSides, CreateMode, PolyGone, Stellation, Curvature);
 			DialogBarOp::SetSystemStateChanged();
 		}
 	}
@@ -555,7 +521,7 @@ void QuickShapeBase::DisplayStatusBarHelp(DocCoord DocPos, Spread* pSpread, Clic
 	String_256 StatusMsg("");
 
 	GetCurrentStatusLineText(&StatusMsg, pSpread, DocPos, ClickMods);
-	GetApplication()->UpdateStatusBarText(&StatusMsg);							 
+	GetApplication()->UpdateStatusBarText(&StatusMsg);
 }
 
 
@@ -611,7 +577,7 @@ void QuickShapeBase::GetCurrentStatusLineText(String_256* ptext, Spread* pSpread
 			String_32 shape;
 			if (pShape->IsPrimaryCurvature() || pShape->IsStellationCurvature())
 				shape.Load(_R(IDS_REGSHAPETOOL_RCURVE));
-			else			
+			else
 				shape.Load(_R(IDS_REGSHAPETOOL_ACURVE));
 			ptext->MakeMsg(_R(IDS_REGSHAPETOOL_DRAGPVERTEX), (TCHAR*)shape);
 			break;
@@ -626,7 +592,7 @@ void QuickShapeBase::GetCurrentStatusLineText(String_256* ptext, Spread* pSpread
 			String_32 shape;
 			if (pShape->IsPrimaryCurvature() || pShape->IsStellationCurvature())
 				shape.Load(_R(IDS_REGSHAPETOOL_RCURVE));
-			else			
+			else
 				shape.Load(_R(IDS_REGSHAPETOOL_ACURVE));
 			ptext->MakeMsg(_R(IDS_REGSHAPETOOL_DRAGSVERTEX), (TCHAR*)shape);
 			break;
@@ -640,7 +606,7 @@ void QuickShapeBase::GetCurrentStatusLineText(String_256* ptext, Spread* pSpread
 			String_32 shape;
 			if (pShape->IsCircular())
 				shape.Load(_R(IDS_REGSHAPETOOL_SPOLYGON));
-			else			
+			else
 				shape.Load(_R(IDS_REGSHAPETOOL_SELLIPSE));
 			ptext->MakeMsg(_R(IDS_REGSHAPETOOL_DRAGCENTRE), (TCHAR*)shape);
 			break;
@@ -653,12 +619,12 @@ void QuickShapeBase::GetCurrentStatusLineText(String_256* ptext, Spread* pSpread
 
 			if (pShape->IsCircular())
 				ID = _R(IDS_REGSHAPETOOL_DRAGEDGE1);
-			else			
+			else
 				ID = _R(IDS_REGSHAPETOOL_DRAGEDGE2);
 
 			if (pShape->IsStellated())
 				extra.Load(_R(IDS_REGSHAPETOOL_RSTELL));
-			else			
+			else
 				extra.Load(_R(IDS_REGSHAPETOOL_SSTELL));
 
 			ptext->MakeMsg(ID, (TCHAR*)extra);
@@ -699,85 +665,79 @@ void QuickShapeBase::ExpandShapeString(StringBase* pString, INT32 StringID, BOOL
 	pString->MakeMsg(StringID, (TCHAR*)Name);
 }
 
-
-
-/*******************************************************************************************
-
-> ShapeClickEffect QuickShapeBase::DetermineClickEffect(DocCoord PointerPos, Spread* pSpread, NodeRegularShape** ReturnShape = NULL)
+/****************************************************************************
+> ShapeClickEffect
+QuickShapeBase::DetermineClickEffect(DocCoord PointerPos,
+                                     Spread* pSpread,
+                                     NodeRegularShape** ReturnShape = NULL)
 
 	Author:		Peter_Arnold (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	12/12/94
-	Inputs:		PointerPos is the mouse position
-				pSpread is a pointer to the spread containing the mouse position
-	Outputs:	ReturnShape returns a pointer to the shape the mouse would click on (NULL is
-				returned if there is no excited shape)
+	Inputs:         PointerPos is the mouse position pSpread is a pointer
+			to the spread containing the mouse position
+	Outputs:        ReturnShape returns a pointer to the shape the mouse
+	                would click on (NULL is returned if there is
+	                no excited shape)
 	Returns:	The effect of clicking.
-	Purpose:	Used when the cursor moves and when single clicking. This routine determines
-				what effect a click will have by looking at the object under the pointer.
-				The last position and result is cached so we can avoid excessive document scans
+	Purpose:        Used when the cursor moves and when single
+			clicking. This routine determines what effect
+			a click will have by looking at the object
+			under the pointer.  The last position and
+			result is cached so we can avoid excessive
+			document scans
 	Errors:		ERROR2 if there is no current DocView
 	SeeAlso:	ShapeClickEffect
-
-********************************************************************************************/
-
-ShapeClickEffect QuickShapeBase::DetermineClickEffect(DocCoord PointerPos, Spread* pSpread, NodeRegularShape** ReturnShape)
-{
-//	// See if we can supply the result from the cache.
-//	if ((OldDeterminePos == PointerPos) && (OldDetermineSpread == pSpread) && IsInterestingShape(OldDetermineShape))
-//	{
-//		*ReturnShape = OldDetermineShape;
-//		return OldDetermineResult;
-//	}
-
-	OldDeterminePos = PointerPos;
-	OldDetermineSpread = pSpread;
-	ShapeClickEffect WhatToDo = SHAPECLICK_NONE;
-
-	// Scan through the selected shapes, and see if any of them want the click
-	DocRect BlobRect;
-	DocView* pDocView = DocView::GetCurrent();
-	ERROR2IF( pDocView==NULL, WhatToDo, "QuickShapeBase::DetermineClickEffect: Can't find current DocView");
-
-	// Find the selected range of objects
-	SelRange* Selected = GetApplication()->FindSelection();
-	Node* pNode = Selected->FindFirst();
-
-	while (pNode != NULL)
-	{
-		if (IS_A(pNode, NodeRegularShape) && IsInterestingShape((NodeRegularShape*)pNode))
-		{
-			NodeRegularShape* CurrentHit = (NodeRegularShape*) pNode;
-			INT32 ClickPointNumber;
-			WhatToDo = CurrentHit->DetermineClickEffect(&PointerPos, pSpread, &ClickPointNumber);
-
-			// Ignore edge reforming if the tool shouldn't do it
-			if ( ( (WhatToDo ==	SHAPECLICK_EDGE1) || (WhatToDo == SHAPECLICK_EDGE2) ) && !CanReformEdges())
-				WhatToDo = SHAPECLICK_NONE; 
-
-			if (WhatToDo != SHAPECLICK_NONE)
-			{
-				if (ReturnShape != NULL)
-					*ReturnShape = CurrentHit;
-				OldDetermineShape = CurrentHit;
-				return (OldDetermineResult = WhatToDo);
-			}
-    	}
-
-		// Now find the next selected node
-		pNode = Selected->FindNext(pNode);
+****************************************************************************/
+ShapeClickEffect
+QuickShapeBase::DetermineClickEffect(DocCoord PointerPos,
+				     Spread* pSpread,
+				     NodeRegularShape** ReturnShape) {
+  OldDeterminePos = PointerPos;
+  OldDetermineSpread = pSpread;
+  ShapeClickEffect WhatToDo = SHAPECLICK_NONE;
+  // Scan through the selected shapes, and see if any of them want the
+  // click
+  DocRect BlobRect;
+  DocView* pDocView = DocView::GetCurrent();
+  ERROR2IF(pDocView == NULL, WhatToDo,
+	   "QuickShapeBase::DetermineClickEffect: Can't find current DocView");
+  // Find the selected range of objects
+  SelRange* Selected = GetApplication()->FindSelection();
+  Node* pNode = Selected->FindFirst();
+  while (pNode != NULL) {
+      if (IS_A(pNode, NodeRegularShape) &&
+	  IsInterestingShape((NodeRegularShape*)pNode)) {
+	NodeRegularShape* CurrentHit = (NodeRegularShape*) pNode;
+	INT32 ClickPointNumber;
+	WhatToDo = CurrentHit->DetermineClickEffect(&PointerPos, pSpread,
+						    &ClickPointNumber);
+	// Ignore edge reforming if the tool shouldn't do it
+	if (((WhatToDo == SHAPECLICK_EDGE1) ||
+	     (WhatToDo == SHAPECLICK_EDGE2)) &&
+	    !CanReformEdges()) {
+	  WhatToDo = SHAPECLICK_NONE;
 	}
-
-	// Didn't find anything
-	if (ReturnShape != NULL)
-		*ReturnShape = NULL;
-	OldDetermineShape = NULL;
-	return (OldDetermineResult = SHAPECLICK_NONE);
+	if (WhatToDo != SHAPECLICK_NONE) {
+	  if (ReturnShape != NULL) {
+	    *ReturnShape = CurrentHit;
+	  }
+	  OldDetermineShape = CurrentHit;
+	  return (OldDetermineResult = WhatToDo);
+	}
+      }
+      // Now find the next selected node
+      pNode = Selected->FindNext(pNode);
+    }
+  // Didn't find anything
+  if (ReturnShape != NULL) {
+    *ReturnShape = NULL;
+  }
+  OldDetermineShape = NULL;
+  return (OldDetermineResult = SHAPECLICK_NONE);
 }
 
-
-
-/********************************************************************************************
->	MsgResult QuickShapeBaseInfoBarOp::Message(Msg* Message) 
+/***************************************************************************
+>	MsgResult QuickShapeBaseInfoBarOp::Message(Msg* Message)
 
 	Author:		Peter_Arnold (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	15/11/94
@@ -787,59 +747,51 @@ ShapeClickEffect QuickShapeBase::DetermineClickEffect(DocCoord PointerPos, Sprea
 	Purpose:	RegShape info bar message handler
 	Errors:		-
 	SeeAlso:	QuickShapeBaseInfoBarOp::DialogMessage
-********************************************************************************************/
-MsgResult QuickShapeBaseInfoBarOp::Message(Msg* Message) 
-{
-	BOOL UpdateInfo = FALSE;
-	
-	if (IS_OUR_DIALOG_MSG(Message))
-	{
-		MsgResult Result = DialogMessage((DialogMsg*)Message);
-		if (Result != OK)
-			return Result;
-	}
-	else if (MESSAGE_IS_A(Message,OpMsg)) 	// Update the bar after an operation has finished
-	{
-		if ( ((OpMsg*)Message)->MsgType == OpMsg::END) 
-			UpdateInfo = TRUE;
-	}
-	else if (MESSAGE_IS_A(Message,UnitMsg)) 	// Update the bar as someone has changd a unit
-	{
-		UpdateInfo = TRUE;
-	}
-	else if (MESSAGE_IS_A(Message, OptionsChangingMsg))	// Or a units-changing message?
-	{
-		if (((OptionsChangingMsg*)Message)->State == OptionsChangingMsg::NEWUNITS)
-			UpdateInfo = TRUE;
-	}
-	else if (MESSAGE_IS_A(Message,SelChangingMsg)) 	// Update the bar after the selection has changed
-	{
-		if ( ((SelChangingMsg*)Message)->State == SelChangingMsg::SELECTIONCHANGED) 
-			UpdateInfo = TRUE;
-	}
-	else if (MESSAGE_IS_A(Message,DocChangingMsg)) 	// Update the bar after an operation has finished
-	{
-		if ( ((DocChangingMsg*)Message)->State == DocChangingMsg::SELCHANGED) 
-			UpdateInfo = TRUE;
-	}
-	else if (MESSAGE_IS_A(Message,ShapeEditedMsg)) 	// Update the bar during shape drag
-	{
-		UpdateEditFields(((ShapeEditedMsg*)Message)->pShape, ((ShapeEditedMsg*)Message)->pSpread);
-	}
+****************************************************************************/
+MsgResult QuickShapeBaseInfoBarOp::Message(Msg* Message) {
+  BOOL UpdateInfo = FALSE;
+  if (IS_OUR_DIALOG_MSG(Message)) {
+    MsgResult Result = DialogMessage((DialogMsg*)Message);
+    if (Result != OK) {
+      return Result;
+    }
+  } else if (MESSAGE_IS_A(Message, OpMsg)) {
+    // Update the bar after an operation has finished
+    if (((OpMsg*)Message)->MsgType == OpMsg::END) {
+      UpdateInfo = TRUE;
+    }
+  } else if (MESSAGE_IS_A(Message, UnitMsg)) {
+    // Update the bar as someone has changd a unit
+    UpdateInfo = TRUE;
+  } else if (MESSAGE_IS_A(Message, OptionsChangingMsg)) {
+    // Or a units-changing message?
+    if (((OptionsChangingMsg*)Message)->State == OptionsChangingMsg::NEWUNITS) {
+      UpdateInfo = TRUE;
+    }
+  } else if (MESSAGE_IS_A(Message,SelChangingMsg)) {
+    // Update the bar after the selection has changed
+    if ( ((SelChangingMsg*)Message)->State == SelChangingMsg::SELECTIONCHANGED) {
+      UpdateInfo = TRUE;
+    }
+  }
+  else if (MESSAGE_IS_A(Message,DocChangingMsg))  {
+    // Update the bar after an operation has finished
+    if (((DocChangingMsg*)Message)->State == DocChangingMsg::SELCHANGED){
+      UpdateInfo = TRUE;
+    }
+  } else if (MESSAGE_IS_A(Message,ShapeEditedMsg)) {
+    // Update the bar during shape drag
+    UpdateEditFields(((ShapeEditedMsg*)Message)->pShape, ((ShapeEditedMsg*)Message)->pSpread);
+  }
+  if (UpdateInfo) {
+    UpdateInfobar();
+    BuildEditMenu();
+  }
+  // Pass the message on to our parent class
+  return (InformationBarOp::Message(Message));
+}
 
-	if (UpdateInfo) 
-	{
-		UpdateInfobar();
-		BuildEditMenu();
-	}
-
-	// Pass the message on to our parent class
-	return (InformationBarOp::Message(Message));
-}    
-
-
-
-/********************************************************************************************
+/***************************************************************************
 >	MsgResult QuickShapeBaseInfoBarOp::DialogMessage(DialogMsg* Msg)
 
 	Author:		Peter_Arnold (Xara Group Ltd) <camelotdev@xara.com>
@@ -847,295 +799,248 @@ MsgResult QuickShapeBaseInfoBarOp::Message(Msg* Message)
 	Inputs:		Msg = The message to handle
 	Outputs:	-
 	Returns:	Message Result
-	Purpose:	RegShape info bar dialog message handler (deals with dialog specifc messages)
+	Purpose:        RegShape info bar dialog message handler (deals with
+	                dialog specifc messages)
 	Errors:		-
 	SeeAlso:	QuickShapeBaseInfoBarOp::Message
-********************************************************************************************/
-MsgResult QuickShapeBaseInfoBarOp::DialogMessage(DialogMsg* Msg)
-{
-	Path NewPath;
-	// Check if the message is a CANCEL
-	if (Msg->DlgMsg == DIM_CANCEL)
-	{
-		Close(); // Close the dialog 
+****************************************************************************/
+MsgResult QuickShapeBaseInfoBarOp::DialogMessage(DialogMsg* Msg) {
+  Path NewPath;
+  // Check if the message is a CANCEL
+  if (Msg->DlgMsg == DIM_CANCEL) {
+    // Close the dialog
+    Close();
+  } else if (Msg->DlgMsg == DIM_CREATE) {
+    InitialiseInfobar();
+  } else {
+    BOOL CauseShapeEdit = FALSE;
+    EditRegularShapeParam ChangeData(NULL);
+    if (pQuickShapeBase != NULL) {
+      ChangeData.ShapesToAffect =
+	(EditRegularShapeParam::AffectShape)pQuickShapeBase->GetShapesToAffect();
+    }
+    if ((Msg->GadgetID == _R(IDC_BTN_REGSHAPETOOL_RADIUS)) &&
+	(Msg->DlgMsg == DIM_LFT_BN_CLICKED) &&
+	(pQuickShapeBase != NULL)) {
+      pQuickShapeBase->SetCreationMode(OpNewRegShape::RADIUS);
+      SetCreationMode(OpNewRegShape::RADIUS);
+    } else if ((Msg->GadgetID == _R(IDC_BTN_REGSHAPETOOL_DIAMETER)) &&
+	       (Msg->DlgMsg == DIM_LFT_BN_CLICKED) &&
+	       (pQuickShapeBase != NULL)) {
+      pQuickShapeBase->SetCreationMode(OpNewRegShape::DIAMETER);
+      SetCreationMode(OpNewRegShape::DIAMETER);
+    } else if ((Msg->GadgetID == _R(IDC_BTN_REGSHAPETOOL_BOUNDBOX)) &&
+	       (Msg->DlgMsg==DIM_LFT_BN_CLICKED) &&
+	       (pQuickShapeBase!=NULL)) {
+      pQuickShapeBase->SetCreationMode(OpNewRegShape::BOUNDS);
+      SetCreationMode(OpNewRegShape::BOUNDS);
+    } else if ((Msg->GadgetID == _R(IDC_BTN_REGSHAPETOOL_STELLATION)) &&
+	       (Msg->DlgMsg == DIM_LFT_BN_CLICKED) &&
+	       (pQuickShapeBase != NULL)) {
+      BOOL NewStellSetting = IsStellationCreate();
+      pQuickShapeBase->SetStellation(NewStellSetting);
+      // Pop the button out as the bitmap buttons are stupid
+      if (!NewStellSetting) {
+	SetLongGadgetValue(_R(IDC_BTN_REGSHAPETOOL_STELLATION), FALSE);
+      }
+      if (ChangeMode) {
+	// Set the operation parameters
+	if (NewStellSetting) {
+	  ChangeData.NewStellated = EditRegularShapeParam::CHANGE_SETTRUE;
+	} else {
+	  ChangeData.NewStellated = EditRegularShapeParam::CHANGE_SETFALSE;
 	}
-	else if (Msg->DlgMsg == DIM_CREATE)
-	{
-		InitialiseInfobar();
+	CauseShapeEdit = TRUE;
+      }
+    } else if (Msg->GadgetID ==_R(IDC_BTN_REGSHAPETOOL_CURVATURE)) {
+      if (Msg->DlgMsg == DIM_LFT_BN_CLICKED && pQuickShapeBase != NULL) {
+	BOOL NewCurveSetting = IsCurvedCreate();
+	pQuickShapeBase->SetCurved(NewCurveSetting);
+	// Pop the button out as the bitmap buttons are stupid
+	if (!NewCurveSetting) {
+	  SetLongGadgetValue(_R(IDC_BTN_REGSHAPETOOL_CURVATURE), FALSE);
 	}
-	else
-	{
-		BOOL	CauseShapeEdit = FALSE;
-		EditRegularShapeParam ChangeData(NULL);
-		if (pQuickShapeBase!=NULL)
-			ChangeData.ShapesToAffect = (EditRegularShapeParam::AffectShape)pQuickShapeBase->GetShapesToAffect();
-
-		if (Msg->GadgetID == _R(IDC_BTN_REGSHAPETOOL_RADIUS))
-		{
-			if (Msg->DlgMsg==DIM_LFT_BN_CLICKED && pQuickShapeBase!=NULL)
-			{
-				pQuickShapeBase->SetCreationMode(OpNewRegShape::RADIUS);
-				SetCreationMode(OpNewRegShape::RADIUS);
-			}
-		}
-		else if (Msg->GadgetID == _R(IDC_BTN_REGSHAPETOOL_DIAMETER))
-		{
-			if (Msg->DlgMsg==DIM_LFT_BN_CLICKED && pQuickShapeBase!=NULL)
-			{
-				pQuickShapeBase->SetCreationMode(OpNewRegShape::DIAMETER);
-				SetCreationMode(OpNewRegShape::DIAMETER);
-			}
-		}
-		else if (Msg->GadgetID == _R(IDC_BTN_REGSHAPETOOL_BOUNDBOX))
-		{
-			if (Msg->DlgMsg==DIM_LFT_BN_CLICKED && pQuickShapeBase!=NULL)
-			{
-				pQuickShapeBase->SetCreationMode(OpNewRegShape::BOUNDS);
-				SetCreationMode(OpNewRegShape::BOUNDS);
-			}
-		}			
-		else if (Msg->GadgetID == _R(IDC_BTN_REGSHAPETOOL_STELLATION))
-		{
-			if (Msg->DlgMsg==DIM_LFT_BN_CLICKED && pQuickShapeBase!=NULL)
-			{
-				BOOL NewStellSetting = IsStellationCreate();
-				pQuickShapeBase->SetStellation(NewStellSetting);
-				// Pop the button out as the bitmap buttons are stupid
-				if (!NewStellSetting)
-				{
-					SetLongGadgetValue(_R(IDC_BTN_REGSHAPETOOL_STELLATION), FALSE);
-				}
-				if (ChangeMode)
-				{
-					// Set the operation parameters
-					if (NewStellSetting)
-						ChangeData.NewStellated = EditRegularShapeParam::CHANGE_SETTRUE;
-					else
-						ChangeData.NewStellated = EditRegularShapeParam::CHANGE_SETFALSE;
-					CauseShapeEdit = TRUE;
-				}
-			}
-		}
-		else if (Msg->GadgetID ==_R(IDC_BTN_REGSHAPETOOL_CURVATURE))
-		{
-			if (Msg->DlgMsg==DIM_LFT_BN_CLICKED && pQuickShapeBase!=NULL)
-			{
-				BOOL NewCurveSetting = IsCurvedCreate();
-				pQuickShapeBase->SetCurved(NewCurveSetting);
-				// Pop the button out as the bitmap buttons are stupid
-				if (!NewCurveSetting)
-				{
-					SetLongGadgetValue(_R(IDC_BTN_REGSHAPETOOL_CURVATURE), FALSE);
-				}
-				if (ChangeMode)
-				{
-					// Set the operation parameters
-					if (NewCurveSetting)
-					{
-						ChangeData.NewPrimaryCurvature = EditRegularShapeParam::CHANGE_SETTRUE;
-						ChangeData.NewStellationCurvature = EditRegularShapeParam::CHANGE_SETTRUE;
-					}
-					else
-					{
-						ChangeData.NewPrimaryCurvature = EditRegularShapeParam::CHANGE_SETFALSE;
-						ChangeData.NewStellationCurvature = EditRegularShapeParam::CHANGE_SETFALSE;
-					}
-					CauseShapeEdit = TRUE;
-				}
-			}
-		}
-		else if (Msg->GadgetID == _R(IDC_BTN_REGSHAPETOOL_POLYGON))
-		{
-			if (Msg->DlgMsg==DIM_LFT_BN_CLICKED && pQuickShapeBase!=NULL)
-			{
-				pQuickShapeBase->SetPolygon(TRUE);
-				if (ChangeMode)
-				{
-					// Set the operation parameters
-					ChangeData.NewCircular = EditRegularShapeParam::CHANGE_SETFALSE;
-					CauseShapeEdit = TRUE;
-				}	
-				else
-				{
-					SetPolygonCreate(TRUE);
-				}
-			}
-		}
-		else if (Msg->GadgetID == _R(IDC_BTN_REGSHAPETOOL_ELLIPSE))
-		{
-			if (Msg->DlgMsg==DIM_LFT_BN_CLICKED && pQuickShapeBase!=NULL)
-			{
-				pQuickShapeBase->SetPolygon(FALSE);
-				if (ChangeMode)
-				{
-					// Set the operation parameters
-					ChangeData.NewCircular = EditRegularShapeParam::CHANGE_SETTRUE;
-					CauseShapeEdit = TRUE;
-				}
-				else
-				{
-					SetPolygonCreate(FALSE);
-				}
-			}
-		}
-		else if (Msg->GadgetID == _R(IDC_BTN_REGSHAPETOOL_LINES))
-		{
-				if (Msg->DlgMsg==DIM_LFT_BN_CLICKED)
-				{
-					NewPath.Initialise(4,1);
-					NewPath.AddMoveTo(DocCoord(0,0));
-					NewPath.AddLineTo(DocCoord(72000,0));
-					ChangeData.NewEdgePath1 = &NewPath;
-					ChangeData.NewEdgePath2 = &NewPath;
-					CauseShapeEdit = TRUE;
-				}
-		}
-		else if (Msg->GadgetID == _R(IDC_EDIT_REGSHAPETOOL_BUMPLEFT))
-		{
-			if (IsEnabled(_R(IDC_EDIT_REGSHAPETOOL_BUMPLEFT)))
-			{
-				if (Msg->DlgMsg==DIM_LFT_BN_CLICKED)
-				{
-					if (!BumpLeft())
-						InformError();
-				}
-				else if (Msg->DlgMsg == DIM_LFT_BN_UP)
-				{
-					if (!EditCommit(TRUE))
-						InformError();
-					UpdateEditFields();
-				}
-			}
-		}
-		else if (Msg->GadgetID ==  _R(IDC_EDIT_REGSHAPETOOL_BUMPRIGHT))
-		{
-			if (IsEnabled(_R(IDC_EDIT_REGSHAPETOOL_BUMPRIGHT)))
-			{
-				if (Msg->DlgMsg==DIM_LFT_BN_CLICKED)
-				{
-					if (!BumpRight())
-						InformError();
-				}
-				else if (Msg->DlgMsg == DIM_LFT_BN_UP)
-				{
-					if (!EditCommit(TRUE))
-						InformError();
-					UpdateEditFields();
-				}
-			}
-		}
-		else if (Msg->GadgetID == _R(IDC_EDIT_REGSHAPETOOL_BUMPUP))
-		{
-			if (IsEnabled(_R(IDC_EDIT_REGSHAPETOOL_BUMPUP)))
-			{
-				if (Msg->DlgMsg == DIM_LFT_BN_CLICKED)
-				{
-					if (!BumpUp())
-						InformError();
-				}
-				else if (Msg->DlgMsg == DIM_LFT_BN_UP)
-				{
-					if (!EditCommit(FALSE))
-						InformError();
-					UpdateEditFields();
-				}
-			}
-		}
-		else if (Msg->GadgetID == _R(IDC_EDIT_REGSHAPETOOL_BUMPDOWN))
-		{
-			if (IsEnabled(_R(IDC_EDIT_REGSHAPETOOL_BUMPDOWN)))
-			{
-				if (Msg->DlgMsg == DIM_LFT_BN_CLICKED)
-				{
-					if (!BumpDown())
-						InformError();
-				}
-				else if (Msg->DlgMsg == DIM_LFT_BN_UP)
-				{
-					if (!EditCommit(FALSE))
-						InformError();
-					UpdateEditFields();
-				}
-			}
-		}
-		// Number of sides edit/drop down box
-		else if (Msg->GadgetID == _R(IDC_EDIT_REGSHAPETOOL_SIDES))
-		{
-			if (Msg->DlgMsg==DIM_SELECTION_CHANGED && pQuickShapeBase!=NULL)
-			{
-				INT32 NewNumSides = GetNumSides(TRUE);
-				if (NewNumSides != -1)
-				{
-					pQuickShapeBase->SetNumSides(NewNumSides);
-					if (ChangeMode)
-					{
-						// Set the operation parameters
-						ChangeData.NewNumSides = NewNumSides;
-						CauseShapeEdit = TRUE;
-					}
-				}
-			}
-			else if (Msg->DlgMsg== DIM_TEXT_CHANGED && pQuickShapeBase!=NULL)
-			{
-				BOOL Valid;
-				String_256 string = GetStringGadgetValue(_R(IDC_EDIT_REGSHAPETOOL_SIDES),&Valid);
-				if (!string.IsEmpty())
-				{
-					pQuickShapeBase->SetNumSides(GetLongGadgetValue(_R(IDC_EDIT_REGSHAPETOOL_SIDES), 1, 99, 0, &Valid));
-					if (!Valid)
-					{
-						InformError(_R(IDE_REGSHAPETOOL_SIDES));
-						pQuickShapeBase->SetNumSides(3);
-						UpdateInfobar();
-					}
-				}
-			}
-		}
-		else if (Msg->GadgetID == _R(IDC_EDIT_REGSHAPETOOL_POS))
-		{
-			if (Msg->DlgMsg==DIM_SELECTION_CHANGED && pQuickShapeBase!=NULL)
-			{
-				WORD temp;
-				GetValueIndex(_R(IDC_EDIT_REGSHAPETOOL_POS), &temp);
-				pQuickShapeBase->EditFieldMode = pQuickShapeBase->EditFieldOptions[temp];
-				UpdateEditFields();
-			}
-		}
-		else if (Msg->GadgetID == _R(IDC_EDIT_REGSHAPETOOL_UPPER))
-		{
-			if (Msg->DlgMsg == DIM_SELECTION_CHANGED)
-			{
-				if (!EditCommit(TRUE))
-					InformError();
-				UpdateEditFields();
-			}
-		}	
-		else if (Msg->GadgetID == _R(IDC_EDIT_REGSHAPETOOL_LOWER))
-		{
-			if (Msg->DlgMsg == DIM_SELECTION_CHANGED)
-			{
-				if (!EditCommit(FALSE))
-					InformError();
-				UpdateEditFields();
-			}
-		}
-
-		// Invoke an operation to perform changes, if requested
-		if (CauseShapeEdit)
-		{
-			OpDescriptor* Apple = OpDescriptor::FindOpDescriptor(CC_RUNTIME_CLASS(OpEditRegularShape));
-			if (Apple != NULL)
-				Apple->Invoke(&ChangeData);
-		}
+	if (ChangeMode) {
+	  // Set the operation parameters
+	  if (NewCurveSetting) {
+	    ChangeData.NewPrimaryCurvature = EditRegularShapeParam::CHANGE_SETTRUE;
+	    ChangeData.NewStellationCurvature = EditRegularShapeParam::CHANGE_SETTRUE;
+	  } else {
+	    ChangeData.NewPrimaryCurvature = EditRegularShapeParam::CHANGE_SETFALSE;
+	    ChangeData.NewStellationCurvature = EditRegularShapeParam::CHANGE_SETFALSE;
+	  }
+	  CauseShapeEdit = TRUE;
 	}
-
-	return OK;
+      }
+    } else if (Msg->GadgetID == _R(IDC_BTN_REGSHAPETOOL_POLYGON)) {
+      if (Msg->DlgMsg == DIM_LFT_BN_CLICKED && pQuickShapeBase!=NULL) {
+	pQuickShapeBase->SetPolygon(TRUE);
+	if (ChangeMode) {
+	  // Set the operation parameters
+	  ChangeData.NewCircular = EditRegularShapeParam::CHANGE_SETFALSE;
+	  CauseShapeEdit = TRUE;
+	} else {
+	  SetPolygonCreate(TRUE);
+	}
+      }
+    } else if (Msg->GadgetID == _R(IDC_BTN_REGSHAPETOOL_ELLIPSE)) {
+      if (Msg->DlgMsg == DIM_LFT_BN_CLICKED && pQuickShapeBase != NULL) {
+	pQuickShapeBase->SetPolygon(FALSE);
+	if (ChangeMode) {
+	  // Set the operation parameters
+	  ChangeData.NewCircular = EditRegularShapeParam::CHANGE_SETTRUE;
+	  CauseShapeEdit = TRUE;
+	} else {
+	  SetPolygonCreate(FALSE);
+	}
+      }
+    } else if (Msg->GadgetID == _R(IDC_BTN_REGSHAPETOOL_LINES)) {
+      if (Msg->DlgMsg==DIM_LFT_BN_CLICKED) {
+	NewPath.Initialise(4, 1);
+	NewPath.AddMoveTo(DocCoord(0,0));
+	NewPath.AddLineTo(DocCoord(72000,0));
+	ChangeData.NewEdgePath1 = &NewPath;
+	ChangeData.NewEdgePath2 = &NewPath;
+	CauseShapeEdit = TRUE;
+      }
+    } else if (Msg->GadgetID == _R(IDC_EDIT_REGSHAPETOOL_BUMPLEFT)) {
+      if (IsEnabled(_R(IDC_EDIT_REGSHAPETOOL_BUMPLEFT))) {
+	if (Msg->DlgMsg==DIM_LFT_BN_CLICKED) {
+	  if (!BumpLeft()) {
+	    InformError();
+	  }
+	}
+	else if (Msg->DlgMsg == DIM_LFT_BN_UP)
+	  {
+	    if (!EditCommit(TRUE))
+	      InformError();
+	    UpdateEditFields();
+	  }
+      }
+    }
+    else if (Msg->GadgetID ==  _R(IDC_EDIT_REGSHAPETOOL_BUMPRIGHT))
+      {
+	if (IsEnabled(_R(IDC_EDIT_REGSHAPETOOL_BUMPRIGHT)))
+	  {
+	    if (Msg->DlgMsg==DIM_LFT_BN_CLICKED)
+	      {
+		if (!BumpRight())
+		  InformError();
+	      }
+	    else if (Msg->DlgMsg == DIM_LFT_BN_UP)
+	      {
+		if (!EditCommit(TRUE))
+		  InformError();
+		UpdateEditFields();
+	      }
+	  }
+      }
+    else if (Msg->GadgetID == _R(IDC_EDIT_REGSHAPETOOL_BUMPUP))
+      {
+	if (IsEnabled(_R(IDC_EDIT_REGSHAPETOOL_BUMPUP)))
+	  {
+	    if (Msg->DlgMsg == DIM_LFT_BN_CLICKED)
+	      {
+		if (!BumpUp())
+		  InformError();
+	      }
+	    else if (Msg->DlgMsg == DIM_LFT_BN_UP)
+	      {
+		if (!EditCommit(FALSE))
+		  InformError();
+		UpdateEditFields();
+	      }
+	  }
+      }
+    else if (Msg->GadgetID == _R(IDC_EDIT_REGSHAPETOOL_BUMPDOWN))
+      {
+	if (IsEnabled(_R(IDC_EDIT_REGSHAPETOOL_BUMPDOWN)))
+	  {
+	    if (Msg->DlgMsg == DIM_LFT_BN_CLICKED)
+	      {
+		if (!BumpDown())
+		  InformError();
+	      }
+	    else if (Msg->DlgMsg == DIM_LFT_BN_UP)
+	      {
+		if (!EditCommit(FALSE))
+		  InformError();
+		UpdateEditFields();
+	      }
+	  }
+      }
+    // Number of sides edit/drop down box
+    else if (Msg->GadgetID == _R(IDC_EDIT_REGSHAPETOOL_SIDES))
+      {
+	if (Msg->DlgMsg==DIM_SELECTION_CHANGED && pQuickShapeBase!=NULL)
+	  {
+	    INT32 NewNumSides = GetNumSides(TRUE);
+	    if (NewNumSides != -1)
+	      {
+		pQuickShapeBase->SetNumSides(NewNumSides);
+		if (ChangeMode)
+		  {
+		    // Set the operation parameters
+		    ChangeData.NewNumSides = NewNumSides;
+		    CauseShapeEdit = TRUE;
+		  }
+	      }
+	  }
+	else if (Msg->DlgMsg== DIM_TEXT_CHANGED && pQuickShapeBase!=NULL)
+	  {
+	    BOOL Valid;
+	    String_256 string = GetStringGadgetValue(_R(IDC_EDIT_REGSHAPETOOL_SIDES),&Valid);
+	    if (!string.IsEmpty())
+	      {
+		pQuickShapeBase->SetNumSides(GetLongGadgetValue(_R(IDC_EDIT_REGSHAPETOOL_SIDES), 1, 99, 0, &Valid));
+		if (!Valid)
+		  {
+		    InformError(_R(IDE_REGSHAPETOOL_SIDES));
+		    pQuickShapeBase->SetNumSides(3);
+		    UpdateInfobar();
+		  }
+	      }
+	  }
+      }
+    else if (Msg->GadgetID == _R(IDC_EDIT_REGSHAPETOOL_POS))
+      {
+	if (Msg->DlgMsg==DIM_SELECTION_CHANGED && pQuickShapeBase!=NULL)
+	  {
+	    WORD temp;
+	    GetValueIndex(_R(IDC_EDIT_REGSHAPETOOL_POS), &temp);
+	    pQuickShapeBase->EditFieldMode = pQuickShapeBase->EditFieldOptions[temp];
+	    UpdateEditFields();
+	  }
+      } else if (Msg->GadgetID == _R(IDC_EDIT_REGSHAPETOOL_UPPER)) {
+      if (Msg->DlgMsg == DIM_SELECTION_CHANGED) {
+	if (!EditCommit(TRUE)) {
+	  InformError();
+	}
+	UpdateEditFields();
+      }
+    } else if (Msg->GadgetID == _R(IDC_EDIT_REGSHAPETOOL_LOWER)) {
+      if (Msg->DlgMsg == DIM_SELECTION_CHANGED) {
+	if (!EditCommit(FALSE)) {
+	  InformError();
+	}
+	UpdateEditFields();
+      }
+    }
+    // Invoke an operation to perform changes, if requested
+    if (CauseShapeEdit){
+      OpDescriptor* Apple =
+	OpDescriptor::FindOpDescriptor(CC_RUNTIME_CLASS(OpEditRegularShape));
+      if (Apple != NULL){
+	Apple->Invoke(&ChangeData);
+      }
+    }
+  }
+  return OK;
 }
 
 
 
-/********************************************************************************************
-
+/***************************************************************************
 >	BOOL QuickShapeBaseInfoBarOp::InitialiseInfobar()
 
 	Author:		Peter_Arnold (Xara Group Ltd) <camelotdev@xara.com>
@@ -1143,176 +1048,157 @@ MsgResult QuickShapeBaseInfoBarOp::DialogMessage(DialogMsg* Msg)
 	Inputs:		-
 	Outputs:	-
 	Returns:	TRUE if all went OK, otherwise FALSE
-	Purpose:	To initialise the regular shape tool's infobar.  In particular it sets up the 
-				number of sides listbox, and puts the buttons into a sensible default state.
+	Purpose:        To initialise the regular shape tool's infobar.  In
+			particular it sets up the number of sides
+			listbox, and puts the buttons into a sensible
+			default state.
 	Errors:		-
 	SeeAlso:	-
-
-********************************************************************************************/
-BOOL QuickShapeBaseInfoBarOp::InitialiseInfobar()
-{
-	if (WindowID==NULL || pQuickShapeBase==NULL)
-		return TRUE;
-
-	// build the list for the number of sides menu
-	if (pQuickShapeBase->DoesNumSidesExist())
-	{
-		String_32 Str;
-		for (INT32 i = 3; i <= 10; i++)
-		{
-			Str._MakeMsg(_T("#1%d"),i);
-			SetStringGadgetValue(_R(IDC_EDIT_REGSHAPETOOL_SIDES),Str);
-		}
-		SetComboListLength(_R(IDC_EDIT_REGSHAPETOOL_SIDES)); 
-		SetNumSides(pQuickShapeBase->GetNumSides());
-		PaintGadgetNow(_R(IDC_EDIT_REGSHAPETOOL_SIDES)); 
+****************************************************************************/
+BOOL QuickShapeBaseInfoBarOp::InitialiseInfobar() {
+  if (WindowID==NULL || pQuickShapeBase==NULL)
+    return TRUE;
+  // build the list for the number of sides menu
+  if (pQuickShapeBase->DoesNumSidesExist()) {
+      String_32 Str;
+      for (INT32 i = 3; i <= 10; i++) {
+	  Str._MakeMsg(_T("#1%d"),i);
+	  SetStringGadgetValue(_R(IDC_EDIT_REGSHAPETOOL_SIDES),Str);
 	}
-	
-	PreviousCurvature = FALSE;  
-	PreviousStellation = FALSE;  
-	PreviousCircular = FALSE;  
-	BuildEditMenu(TRUE);
-
-	UpdateInfobar();
-
-	return TRUE;
+      SetComboListLength(_R(IDC_EDIT_REGSHAPETOOL_SIDES));
+      SetNumSides(pQuickShapeBase->GetNumSides());
+      PaintGadgetNow(_R(IDC_EDIT_REGSHAPETOOL_SIDES));
+    }
+  PreviousCurvature = FALSE;
+  PreviousStellation = FALSE;
+  PreviousCircular = FALSE;
+  BuildEditMenu(TRUE);
+  UpdateInfobar();
+  return TRUE;
 }
 
+/***************************************************************************
+>     void QuickShapeBaseInfoBarOp::BuildEditMenu(BOOL UpdateImmediate = FALSE)
 
-
-/********************************************************************************************
-
->	void QuickShapeBaseInfoBarOp::BuildEditMenu(BOOL UpdateImmediate = FALSE)
-
-	Author:		Peter_Arnold (Xara Group Ltd) <camelotdev@xara.com>
-	Created:	10/1/95
-	Inputs:		UpdateImmediate TRUE if the menu should be forced to redraw
-	Outputs:	-
-	Returns:	-
-	Purpose:	Builds the list-box menu for the the edit fields.  The contents of the menu
-				are dependent on the currenty selected shapes (whether or not thay have curvature)
-	Errors:		-
-	SeeAlso:	-
-
-********************************************************************************************/
-void QuickShapeBaseInfoBarOp::BuildEditMenu(BOOL UpdateImmediate)
-{
-	if (WindowID==NULL || pQuickShapeBase==NULL)
-		return;
-
-	BOOL HasCurvature = FALSE;
-	BOOL HasStellation = FALSE;
-	BOOL JustCircular = TRUE;
-
-	// scan the selected shapes to see if any have curvature
-	SelRange*	Selection = GetApplication()->FindSelection();
-	Node*	pNode = Selection->FindFirst();
-
-	while ((pNode != NULL) && !(HasCurvature && HasStellation))
-	{
-		if (IS_A(pNode, NodeRegularShape) && pQuickShapeBase->IsInterestingShape((NodeRegularShape*)pNode))
-		{
-			NodeRegularShape*	pShape = (NodeRegularShape*)pNode;
-
-			if (pShape->IsPrimaryCurvature() ||	pShape->IsStellationCurvature())
-				HasCurvature = TRUE;
-
-			if (pShape->IsStellated())
-				HasStellation = TRUE;
-
-			if (!pShape->IsCircular())
-				JustCircular = FALSE;
-		}
-
-		pNode = Selection->FindNext(pNode);
+      Author:		Peter_Arnold (Xara Group Ltd) <camelotdev@xara.com>
+      Created:	        10/1/95
+      Inputs:		UpdateImmediate TRUE if the menu should be forced to
+                        redraw
+      Outputs:	        -
+      Returns:	        -
+      Purpose:          Builds the list-box menu for the the edit fields.  The
+		        contents of the menu are dependent on the
+		        currenty selected shapes (whether or not thay
+		        have curvature)
+      Errors:		-
+      SeeAlso:	        -
+****************************************************************************/
+void QuickShapeBaseInfoBarOp::BuildEditMenu(BOOL UpdateImmediate) {
+  if (WindowID==NULL || pQuickShapeBase==NULL)
+    return;
+  BOOL HasCurvature = FALSE;
+  BOOL HasStellation = FALSE;
+  BOOL JustCircular = TRUE;
+  // scan the selected shapes to see if any have curvature
+  SelRange*	Selection = GetApplication()->FindSelection();
+  Node*	pNode = Selection->FindFirst();
+  while ((pNode != NULL) && !(HasCurvature && HasStellation)) {
+      if (IS_A(pNode, NodeRegularShape) &&
+	  pQuickShapeBase->IsInterestingShape((NodeRegularShape*)pNode)) {
+	  NodeRegularShape* pShape = (NodeRegularShape*)pNode;
+	  if (pShape->IsPrimaryCurvature() ||
+	      pShape->IsStellationCurvature()) {
+	    HasCurvature = TRUE;
+	  }
+	  if (pShape->IsStellated())
+	    HasStellation = TRUE;
+	  if (!pShape->IsCircular())
+	    JustCircular = FALSE;
 	}
-
-	if (JustCircular)
-	{
-		HasCurvature = HasStellation = FALSE;
+      pNode = Selection->FindNext(pNode);
+    }
+  if (JustCircular) {
+      HasCurvature = HasStellation = FALSE;
+    }
+  // Re-build the drop down menu
+  if ((PreviousCurvature != HasCurvature) || (PreviousStellation != HasStellation) ||
+      (PreviousCircular != JustCircular) || UpdateImmediate) {
+      PreviousCircular = JustCircular;
+      PreviousCurvature = HasCurvature;
+      PreviousStellation = HasStellation;
+      String_32 Str;
+      const INT32 MenuEntries = 4;
+      BOOL ResPresent[MenuEntries] = {TRUE, TRUE, HasStellation, HasCurvature};
+      UINT32 ResIDs[MenuEntries] = {_R(IDS_REGSHAPETOOL_MENUCENTRE), _R(IDS_REGSHAPETOOL_MENUMAJOR),
+				    _R(IDS_REGSHAPETOOL_MENUSTELL), _R(IDS_REGSHAPETOOL_MENUCURVE)};
+      QuickShapeBase::EditModeIDS OptionIDs[MenuEntries] =
+	{QuickShapeBase::EDITF_CENTRE,
+	 QuickShapeBase::EDITF_MAJOR,
+	 QuickShapeBase::EDITF_STELLATION,
+	 QuickShapeBase::EDITF_CURVE};
+      // By hiding and showing the gadget it forces closed an open
+      // drop-down list
+      HideGadget(_R(IDC_EDIT_REGSHAPETOOL_POS), TRUE);
+      DeleteAllValues(_R(IDC_EDIT_REGSHAPETOOL_POS));
+      HideGadget(_R(IDC_EDIT_REGSHAPETOOL_POS), FALSE);
+      // Fill in the standard menu options
+      INT32 CurrentCount = 0;
+      for (INT32 i = 0; i < MenuEntries; i++) {
+	  if (ResPresent[i]) {
+	      // Get the string and set the option name to it
+	      UINT32 StringResource = ResIDs[i];
+	      if ((i == 1) &&
+		  (pQuickShapeBase->IsEllipse() || pQuickShapeBase->IsRectangle())) {
+		  StringResource = _R(IDS_REGSHAPETOOL_MENUSIZE);
+		  pQuickShapeBase->EditFieldOptions[CurrentCount++] =
+		    QuickShapeBase::EDITF_SIZE;
+		} else
+		pQuickShapeBase->EditFieldOptions[CurrentCount++] = OptionIDs[i];
+	      Str.MakeMsg(StringResource);
+	      SetStringGadgetValue(_R(IDC_EDIT_REGSHAPETOOL_POS),Str);
+	    }
 	}
-
-	// Re-build the drop down menu
-	if ((PreviousCurvature != HasCurvature) || (PreviousStellation != HasStellation) ||
-									(PreviousCircular != JustCircular) || UpdateImmediate) 
+      // Ellipse and Rectangle tools have special rotate option
+      if (pQuickShapeBase->IsEllipse() || pQuickShapeBase->IsRectangle())
 	{
-		PreviousCircular = JustCircular;
-		PreviousCurvature = HasCurvature;
-		PreviousStellation = HasStellation;
-		String_32 Str;
-		const INT32 MenuEntries = 4;
-		BOOL ResPresent[MenuEntries] = {TRUE, TRUE, HasStellation, HasCurvature};
-		UINT32 ResIDs[MenuEntries] = {_R(IDS_REGSHAPETOOL_MENUCENTRE), _R(IDS_REGSHAPETOOL_MENUMAJOR),
-									_R(IDS_REGSHAPETOOL_MENUSTELL), _R(IDS_REGSHAPETOOL_MENUCURVE)};
-		QuickShapeBase::EditModeIDS OptionIDs[MenuEntries] = {QuickShapeBase::EDITF_CENTRE, QuickShapeBase::EDITF_MAJOR, QuickShapeBase::EDITF_STELLATION, QuickShapeBase::EDITF_CURVE};
-
-		// By hiding and showing the gadget it forces closed an open drop-down list
-		HideGadget(_R(IDC_EDIT_REGSHAPETOOL_POS), TRUE);
-		DeleteAllValues(_R(IDC_EDIT_REGSHAPETOOL_POS));
-		HideGadget(_R(IDC_EDIT_REGSHAPETOOL_POS), FALSE);
-
-		// Fill in the standard menu options
-		INT32 CurrentCount = 0;
-		for (INT32 i = 0; i < MenuEntries; i++)
-		{
-			if (ResPresent[i])
-			{
-				// Get the string and set the option name to it
-				UINT32 StringResource = ResIDs[i];
-				if ((i == 1) && (pQuickShapeBase->IsEllipse() || pQuickShapeBase->IsRectangle()))
-				{
-					StringResource = _R(IDS_REGSHAPETOOL_MENUSIZE);
-					pQuickShapeBase->EditFieldOptions[CurrentCount++] = QuickShapeBase::EDITF_SIZE;
-				}
-				else
-					pQuickShapeBase->EditFieldOptions[CurrentCount++] = OptionIDs[i];
-					
-				Str.MakeMsg(StringResource);
-				SetStringGadgetValue(_R(IDC_EDIT_REGSHAPETOOL_POS),Str);
-			}
-		}
-
-		// Ellipse and Rectangle tools have special rotate option
-		if (pQuickShapeBase->IsEllipse() || pQuickShapeBase->IsRectangle())
-		{
-			Str.MakeMsg(_R(IDS_REGSHAPETOOL_MENUROT));
-			pQuickShapeBase->EditFieldOptions[CurrentCount++] = QuickShapeBase::EDITF_ROT;
-			SetStringGadgetValue(_R(IDC_EDIT_REGSHAPETOOL_POS),Str);
-		}
-		SetComboListLength(_R(IDC_EDIT_REGSHAPETOOL_POS));
-
-		// Ensure that the selected mode is valid for this particular tool
-		if ((!HasCurvature && (pQuickShapeBase->EditFieldMode == QuickShapeBase::EDITF_CURVE)) ||
-		 	(!HasStellation && (pQuickShapeBase->EditFieldMode == QuickShapeBase::EDITF_STELLATION)) )
-		{
-			pQuickShapeBase->EditFieldMode = QuickShapeBase::EDITF_CENTRE;
-		}
-		if (!pQuickShapeBase->IsEllipse() && !pQuickShapeBase->IsRectangle() 
-							&& ((pQuickShapeBase->EditFieldMode == QuickShapeBase::EDITF_SIZE)
-							|| (pQuickShapeBase->EditFieldMode == QuickShapeBase::EDITF_ROT)))
-		{
-			pQuickShapeBase->EditFieldMode = QuickShapeBase::EDITF_MAJOR;
-		}
-		INT32 SelectedItem = (INT32)pQuickShapeBase->EditFieldMode;
-		if (SelectedItem == 3)
-		{
-			if (!HasStellation)
-				SelectedItem = 2;
-		}
-		if (SelectedItem == (INT32)(QuickShapeBase::EDITF_SIZE))
-			SelectedItem = 1;
-		if (SelectedItem == (INT32)(QuickShapeBase::EDITF_ROT))
-		{
-			if (HasCurvature)
-				SelectedItem = 3;
-			else
-				SelectedItem = 2;
-		}
-		SetSelectedValueIndex(_R(IDC_EDIT_REGSHAPETOOL_POS),SelectedItem);
-		PaintGadgetNow(_R(IDC_EDIT_REGSHAPETOOL_POS));
+	  Str.MakeMsg(_R(IDS_REGSHAPETOOL_MENUROT));
+	  pQuickShapeBase->EditFieldOptions[CurrentCount++] = QuickShapeBase::EDITF_ROT;
+	  SetStringGadgetValue(_R(IDC_EDIT_REGSHAPETOOL_POS),Str);
 	}
+      SetComboListLength(_R(IDC_EDIT_REGSHAPETOOL_POS));
 
-	UpdateEditFields();
+      // Ensure that the selected mode is valid for this particular tool
+      if ((!HasCurvature && (pQuickShapeBase->EditFieldMode == QuickShapeBase::EDITF_CURVE)) ||
+	  (!HasStellation && (pQuickShapeBase->EditFieldMode == QuickShapeBase::EDITF_STELLATION)) )
+	{
+	  pQuickShapeBase->EditFieldMode = QuickShapeBase::EDITF_CENTRE;
+	}
+      if (!pQuickShapeBase->IsEllipse() && !pQuickShapeBase->IsRectangle()
+	  && ((pQuickShapeBase->EditFieldMode == QuickShapeBase::EDITF_SIZE)
+	      || (pQuickShapeBase->EditFieldMode == QuickShapeBase::EDITF_ROT)))
+	{
+	  pQuickShapeBase->EditFieldMode = QuickShapeBase::EDITF_MAJOR;
+	}
+      INT32 SelectedItem = (INT32)pQuickShapeBase->EditFieldMode;
+      if (SelectedItem == 3)
+	{
+	  if (!HasStellation)
+	    SelectedItem = 2;
+	}
+      if (SelectedItem == (INT32)(QuickShapeBase::EDITF_SIZE))
+	SelectedItem = 1;
+      if (SelectedItem == (INT32)(QuickShapeBase::EDITF_ROT))
+	{
+	  if (HasCurvature)
+	    SelectedItem = 3;
+	  else
+	    SelectedItem = 2;
+	}
+      SetSelectedValueIndex(_R(IDC_EDIT_REGSHAPETOOL_POS),SelectedItem);
+      PaintGadgetNow(_R(IDC_EDIT_REGSHAPETOOL_POS));
+    }
+
+  UpdateEditFields();
 }
 
 
@@ -1405,7 +1291,7 @@ void QuickShapeBaseInfoBarOp::UpdateEditFields(NodeRegularShape* ShapeToShow, Sp
 					if (Length != MajorRadius)
 						MultipleMajorRadius = TRUE;
 				}
-			}	
+			}
 
 			// Test minor axes radi
 			if (!MultipleMinorRadius)
@@ -1421,7 +1307,7 @@ void QuickShapeBaseInfoBarOp::UpdateEditFields(NodeRegularShape* ShapeToShow, Sp
 					if (Length != MinorRadius)
 						MultipleMinorRadius = TRUE;
 				}
-			}	
+			}
 
 			// Test major axes angle
 			if (!MultipleMajorAngle)
@@ -1441,7 +1327,7 @@ void QuickShapeBaseInfoBarOp::UpdateEditFields(NodeRegularShape* ShapeToShow, Sp
 					if ((INT32)(Angle*100) != (INT32)(MajorAngle*100))
 						MultipleMajorAngle = TRUE;
 				}
-			}	
+			}
 
 			if (!pShape->IsCircular())
 			{
@@ -1459,7 +1345,7 @@ void QuickShapeBaseInfoBarOp::UpdateEditFields(NodeRegularShape* ShapeToShow, Sp
 						if (Length != StellationRadius)
 							MultipleStellationRadius = TRUE;
 					}
-				}	
+				}
 
 				// Test stellation offset angle ratio
 				if (!MultipleStellationOffset)
@@ -1473,11 +1359,11 @@ void QuickShapeBaseInfoBarOp::UpdateEditFields(NodeRegularShape* ShapeToShow, Sp
 					}
 					else
 					{
-						if (((INT32)(Offset*1000) != (INT32)(StellationOffset*1000)) || 
+						if (((INT32)(Offset*1000) != (INT32)(StellationOffset*1000)) ||
 											(PreviousNumSides != pShape->GetNumSides()))
 							MultipleStellationOffset = TRUE;
 					}
-				}	
+				}
 
 				// Test Primary Curvature
 				if (!MultiplePrimaryCurvature)
@@ -1539,7 +1425,7 @@ void QuickShapeBaseInfoBarOp::UpdateEditFields(NodeRegularShape* ShapeToShow, Sp
 				}
 				else
 				{
-					if(!SetEditPosition(_R(IDC_EDIT_REGSHAPETOOL_UPPER), _R(IDC_EDIT_REGSHAPETOOL_LOWER), 
+					if(!SetEditPosition(_R(IDC_EDIT_REGSHAPETOOL_UPPER), _R(IDC_EDIT_REGSHAPETOOL_LOWER),
 																	Centre, CurrentSpread, FastUpdate))
 					{
 						Blank = TRUE;
@@ -1570,7 +1456,7 @@ void QuickShapeBaseInfoBarOp::UpdateEditFields(NodeRegularShape* ShapeToShow, Sp
 						MajorAngle = -MajorAngle;
 						if (MajorAngle >= 360.0)
 							MajorAngle = 0.0;
-						
+
 						Blank = !SetDoubleGadgetValue(_R(IDC_EDIT_REGSHAPETOOL_LOWER), MajorAngle);
 						if (FastUpdate)
 							PaintGadgetNow(_R(IDC_EDIT_REGSHAPETOOL_LOWER));
@@ -1659,7 +1545,7 @@ void QuickShapeBaseInfoBarOp::UpdateEditFields(NodeRegularShape* ShapeToShow, Sp
 					Blank = !SetEdit(_R(IDC_EDIT_REGSHAPETOOL_LOWER), (INT32)MajorRadius, FastUpdate);
 				}
 				break;
-	
+
 			case QuickShapeBase::EDITF_ROT:
 				if (MultipleMajorAngle)
 					MakeUpperMany = TRUE;
@@ -1672,7 +1558,7 @@ void QuickShapeBaseInfoBarOp::UpdateEditFields(NodeRegularShape* ShapeToShow, Sp
 					MajorAngle = -MajorAngle;
 					if (MajorAngle >= 360.0)
 						MajorAngle = 0.0;
-					
+
 					Blank = !SetDoubleGadgetValue(_R(IDC_EDIT_REGSHAPETOOL_UPPER), MajorAngle);
 					Str.Empty();
 					SetStringGadgetValue(_R(IDC_EDIT_REGSHAPETOOL_LOWER),Str);
@@ -1717,11 +1603,11 @@ void QuickShapeBaseInfoBarOp::UpdateEditFields(NodeRegularShape* ShapeToShow, Sp
  	if (ShapeToShow == NULL)
  	{
 	 	EnableGadget(_R(IDC_EDIT_REGSHAPETOOL_UPPER), EnableArray[0]);
-		EnableGadget(_R(IDC_EDIT_REGSHAPETOOL_LOWER), EnableArray[1]);	 
-		EnableGadget(_R(IDC_EDIT_REGSHAPETOOL_BUMPLEFT), EnableArray[2]); 
+		EnableGadget(_R(IDC_EDIT_REGSHAPETOOL_LOWER), EnableArray[1]);
+		EnableGadget(_R(IDC_EDIT_REGSHAPETOOL_BUMPLEFT), EnableArray[2]);
 		EnableGadget(_R(IDC_EDIT_REGSHAPETOOL_BUMPRIGHT), EnableArray[3]);
-		EnableGadget(_R(IDC_EDIT_REGSHAPETOOL_BUMPUP), EnableArray[4]);	 
-		EnableGadget(_R(IDC_EDIT_REGSHAPETOOL_BUMPDOWN), EnableArray[5]); 
+		EnableGadget(_R(IDC_EDIT_REGSHAPETOOL_BUMPUP), EnableArray[4]);
+		EnableGadget(_R(IDC_EDIT_REGSHAPETOOL_BUMPDOWN), EnableArray[5]);
 	}
 
 	SetHelp();
@@ -1790,7 +1676,7 @@ BOOL QuickShapeBaseInfoBarOp::IsEnabled(CGadgetID gid)
 				spread, converts it to text and writes in into the edit-field.
 	Errors:		-
 	SeeAlso:	SelectorInfoBarOp::SetEdit
-	
+
 ********************************************************************************************/
 
 BOOL QuickShapeBaseInfoBarOp::SetEdit(CGadgetID gid, INT32 nValue, BOOL PaintNow)
@@ -1801,7 +1687,7 @@ BOOL QuickShapeBaseInfoBarOp::SetEdit(CGadgetID gid, INT32 nValue, BOOL PaintNow
 		// and convert to its units.
 		DimScale* pDimScale = DimScale::GetPtrDimScale((Node*) CurrentSpread);
 		ERROR2IF (pDimScale == NULL, FALSE, "Null DimScale* in QuickShapeBaseInfoBarOp::SetEdit");
-	
+
 		// Convert to units & text and display.
 		String_256 str;
 		pDimScale->ConvertToUnits((INT32) nValue, &str);
@@ -1836,7 +1722,7 @@ BOOL QuickShapeBaseInfoBarOp::SetEdit(CGadgetID gid, INT32 nValue, BOOL PaintNow
 				spread, converts it to text and writes in into the edit-field.
 	Errors:		-
 	SeeAlso:	SelectorInfoBarOp::SetEdit
-	
+
 ********************************************************************************************/
 
 BOOL QuickShapeBaseInfoBarOp::SetEditPosition(CGadgetID gidX, CGadgetID gidY, DocCoord loc, Spread* pSpread, BOOL PaintNow)
@@ -1847,7 +1733,7 @@ BOOL QuickShapeBaseInfoBarOp::SetEditPosition(CGadgetID gidX, CGadgetID gidY, Do
 	String_256	YText;
 
 	pSpread->SpreadCoordToText(&XText, &YText, loc);
-	
+
 	BOOL UpdatedX = UpdateStringGadgetValue(gidX, &XText);
 	BOOL UpdatedY = UpdateStringGadgetValue(gidY, &YText);
 
@@ -1873,7 +1759,7 @@ BOOL QuickShapeBaseInfoBarOp::SetEditPosition(CGadgetID gidX, CGadgetID gidY, Do
 	Purpose:	Called when the user has committed a value in either of the edit fields
 	Errors:		-
 	SeeAlso:	-
-	
+
 ********************************************************************************************/
 BOOL QuickShapeBaseInfoBarOp::EditCommit(BOOL UpperCommit)
 {
@@ -1882,7 +1768,7 @@ BOOL QuickShapeBaseInfoBarOp::EditCommit(BOOL UpperCommit)
 
 	EditRegularShapeParam ChangeData(NULL);
 	ChangeData.ShapesToAffect = (EditRegularShapeParam::AffectShape)pQuickShapeBase->GetShapesToAffect();
-		
+
 	// Put changes into ChangeData depending on selected edit
 	switch (pQuickShapeBase->EditFieldMode)
 	{
@@ -1912,9 +1798,9 @@ BOOL QuickShapeBaseInfoBarOp::EditCommit(BOOL UpperCommit)
 			break;
 		default:
 			ERROR3("Unknown edit field mode found when committing");
-	} 
+	}
 
-	// Invoke an operation to perform the changes 
+	// Invoke an operation to perform the changes
 	OpDescriptor* Apple = OpDescriptor::FindOpDescriptor(CC_RUNTIME_CLASS(OpEditRegularShape));
 	ERROR2IF(Apple == NULL, FALSE, "Couldn't find OpEditRegularShape's OpDescriptor");
 	Apple->Invoke(&ChangeData);
@@ -1954,19 +1840,19 @@ BOOL QuickShapeBaseInfoBarOp::GetFieldCoord(DocCoord* pCoord, Spread* pSpread)
 	strX = GetStringGadgetValue(_R(IDC_EDIT_REGSHAPETOOL_UPPER), &Valid);
 	if (strX == ManyField)
 		Valid = FALSE;
-	if (Valid) 
+	if (Valid)
 		strY = GetStringGadgetValue(_R(IDC_EDIT_REGSHAPETOOL_LOWER), &Valid);
 	if (strY == ManyField)
 		Valid = FALSE;
 
 	if (Valid)
 		Valid = pSpread->TextToSpreadCoord(pCoord, &strX, &strY);
-		
+
 	if (!Valid)
 		Error::SetError(_R(IDE_INVALID_CENTRE));
-	
+
 	return Valid;
-}		
+}
 
 
 
@@ -1989,7 +1875,7 @@ void QuickShapeBaseInfoBarOp::SetToolMode()
 	if (pQuickShapeBase!=NULL)
 	{
 		String_16	Text;
-		
+
 		if (AreShapesSelected())
 			Text.Load(_R(IDS_BEZTOOL_CHANGE),Tool::GetModuleID(pQuickShapeBase->GetID()));
 		else
@@ -2019,24 +1905,24 @@ INT32 QuickShapeBaseInfoBarOp::GetCreationMode()
 	// Is the radius button selected?
 	if (GetLongGadgetValue(_R(IDC_BTN_REGSHAPETOOL_RADIUS), 0, 1))
 	{
-		return (OpNewRegShape::RADIUS); 
+		return (OpNewRegShape::RADIUS);
 	}
 	// Is the diameter button selected?
 	if (GetLongGadgetValue(_R(IDC_BTN_REGSHAPETOOL_DIAMETER), 0, 1))
 	{
-		return (OpNewRegShape::DIAMETER); 
+		return (OpNewRegShape::DIAMETER);
 	}
 	// Is the bounds button selected?
 	if (GetLongGadgetValue(_R(IDC_BTN_REGSHAPETOOL_BOUNDBOX), 0, 1))
 	{
-		return (OpNewRegShape::BOUNDS); 
+		return (OpNewRegShape::BOUNDS);
 	}
 	// To get here no button was selected - in debug builds do an ERROR3
-	// In retail builds select the radius button and return that	  
+	// In retail builds select the radius button and return that
 	ERROR3("No creation mode button was selected!");
 	SetCreationMode(OpNewRegShape::RADIUS);
-	return (OpNewRegShape::RADIUS); 					 
-}						 
+	return (OpNewRegShape::RADIUS);
+}
 
 
 
@@ -2279,7 +2165,7 @@ INT32 QuickShapeBaseInfoBarOp::GetNumSides(BOOL	Error)
 	{
 		BOOL Valid;
 		INT32 Result;
-	
+
 		if (Error)
 			Result = GetLongGadgetValue(_R(IDC_EDIT_REGSHAPETOOL_SIDES), 3, 99, _R(IDE_REGSHAPETOOL_SIDES), &Valid);
 		else
@@ -2308,7 +2194,7 @@ INT32 QuickShapeBaseInfoBarOp::GetNumSides(BOOL	Error)
 	Inputs:		NumberSides - the number to display	in the edit field
 	Outputs:	-
 	Returns:	-
-	Purpose:	To initialise the regular shape tool's infobar.  In particular it sets up the 
+	Purpose:	To initialise the regular shape tool's infobar.  In particular it sets up the
 				number of sides listbox.  A value of -1 means clear the field.
 	Errors:		ERROR3's if NumberSides is less than three or greater than the maximum
 	SeeAlso:	QuickShapeBaseInfoBarOp::GetNumSides
@@ -2350,7 +2236,7 @@ void QuickShapeBaseInfoBarOp::SetNumSides(INT32 NumberSides)
 	Purpose:	Scans the selected items.  If any Regular shapes are found then the infobar
 				is setup using their parameters.
 	Errors:		-
-	SeeAlso:	QuickShapeBaseInfoBarOp::SetCreationMode, QuickShapeBaseInfoBarOp::SetPolygonCreate, 
+	SeeAlso:	QuickShapeBaseInfoBarOp::SetCreationMode, QuickShapeBaseInfoBarOp::SetPolygonCreate,
 				QuickShapeBaseInfoBarOp::SetStellationCreate, QuickShapeBaseInfoBarOp::SetCurvedCreate,
 				QuickShapeBaseInfoBarOp::SetNumSides
 
@@ -2373,13 +2259,13 @@ BOOL QuickShapeBaseInfoBarOp::SetBarFromSelection()
 	INT32		NumSides = 0;
 	BOOL	FoundMultipleSides = FALSE;
 	BOOL	FoundReformed = FALSE;
-	
+
 	while (pNode != NULL)
 	{
 		if (IS_A(pNode, NodeRegularShape) && pQuickShapeBase->IsInterestingShape((NodeRegularShape*)pNode))
 		{
 			NodeRegularShape*	pShape = (NodeRegularShape*)pNode;
-			
+
 			// If we haven't found a shape so far then set our var
 			if (NumSides == 0)
 				NumSides = pShape->GetNumSides();
@@ -2387,7 +2273,7 @@ BOOL QuickShapeBaseInfoBarOp::SetBarFromSelection()
 			{
 				if (!FoundMultipleSides && (NumSides != (INT32)pShape->GetNumSides()))
 				{
-					FoundMultipleSides = TRUE; 
+					FoundMultipleSides = TRUE;
 					NumSides = -1;
 				}
 			}
@@ -2444,7 +2330,7 @@ BOOL QuickShapeBaseInfoBarOp::SetBarFromSelection()
 				EnableGadget(_R(IDC_EDIT_REGSHAPETOOL_SIDES), TRUE);
 		}
 		else
-		{																		 
+		{
 			SetPolygonCreate(FoundPolygon);
 		}
 		SetNumSides(NumSides);
@@ -2487,7 +2373,7 @@ BOOL QuickShapeBaseInfoBarOp::AreShapesSelected()
 
 	SelRange*	Selection = GetApplication()->FindSelection();
 	Node*	pNode = Selection->FindFirst();
-	
+
 	while (pNode != NULL)
 	{
 		if (IS_A(pNode, NodeRegularShape) && pQuickShapeBase->IsInterestingShape((NodeRegularShape*)pNode))
@@ -2558,7 +2444,7 @@ BOOL QuickShapeBaseInfoBarOp::BumpLeft()
 
 	// Get the current edit field
 	BOOL Valid = TRUE;
-	ERROR2IF(CurrentSpread == NULL, FALSE, "BumpLeft found CurrentSpread was NULL");	
+	ERROR2IF(CurrentSpread == NULL, FALSE, "BumpLeft found CurrentSpread was NULL");
 	DimScale* pDimScale = DimScale::GetPtrDimScale((Node*) CurrentSpread);
 	ERROR2IF(pDimScale == NULL, FALSE, "NULL DimScalePtr");
 	String_256 FieldContents = GetStringGadgetValue(_R(IDC_EDIT_REGSHAPETOOL_UPPER), &Valid);
@@ -2593,7 +2479,7 @@ BOOL QuickShapeBaseInfoBarOp::BumpLeft()
 				}
 			}
 			break;
-			
+
 			case QuickShapeBase::EDITF_CURVE:
 			{
 				double CurrentCurve = GetDoubleGadgetValue(_R(IDC_EDIT_REGSHAPETOOL_UPPER), 0, 100, 0, &Valid);
@@ -2621,10 +2507,10 @@ BOOL QuickShapeBaseInfoBarOp::BumpLeft()
 
 			default:
 				ERROR2(FALSE, "Unknown edit field mode found when bumping left");
-		} 
+		}
 		PaintGadgetNow(_R(IDC_EDIT_REGSHAPETOOL_UPPER));
 	}
-	
+
 	return TRUE;
 }
 
@@ -2651,7 +2537,7 @@ BOOL QuickShapeBaseInfoBarOp::BumpRight()
 
 	// Get the current edit field
 	BOOL Valid = TRUE;
-	ERROR2IF(CurrentSpread == NULL, FALSE, "BumpRight found CurrentSpread was NULL");	
+	ERROR2IF(CurrentSpread == NULL, FALSE, "BumpRight found CurrentSpread was NULL");
 	DimScale* pDimScale = DimScale::GetPtrDimScale((Node*) CurrentSpread);
 	ERROR2IF(pDimScale == NULL, FALSE, "NULL DimScalePtr");
 	String_256 FieldContents = GetStringGadgetValue(_R(IDC_EDIT_REGSHAPETOOL_UPPER), &Valid);
@@ -2676,7 +2562,7 @@ BOOL QuickShapeBaseInfoBarOp::BumpRight()
 				}
 			}
 			break;
-			
+
 			case QuickShapeBase::EDITF_CURVE:
 			{
 				double CurrentCurve = GetDoubleGadgetValue(_R(IDC_EDIT_REGSHAPETOOL_UPPER), 0, 100, 0, &Valid);
@@ -2702,10 +2588,10 @@ BOOL QuickShapeBaseInfoBarOp::BumpRight()
 
 			default:
 				ERROR2(FALSE, "Unknown edit field mode found when bumping right");
-		} 
+		}
 		PaintGadgetNow(_R(IDC_EDIT_REGSHAPETOOL_UPPER));
 	}
-	
+
 	return TRUE;
 }
 
@@ -2732,7 +2618,7 @@ BOOL QuickShapeBaseInfoBarOp::BumpUp()
 
 	// Get the current edit field
 	BOOL Valid = TRUE;
-	ERROR2IF(CurrentSpread == NULL, FALSE, "BumpRight found CurrentSpread was NULL");	
+	ERROR2IF(CurrentSpread == NULL, FALSE, "BumpRight found CurrentSpread was NULL");
 	DimScale* pDimScale = DimScale::GetPtrDimScale((Node*) CurrentSpread);
 	ERROR2IF(pDimScale == NULL, FALSE, "NULL DimScalePtr");
 	String_256 FieldContents = GetStringGadgetValue(_R(IDC_EDIT_REGSHAPETOOL_LOWER), &Valid);
@@ -2754,7 +2640,7 @@ BOOL QuickShapeBaseInfoBarOp::BumpUp()
 				}
 			}
 			break;
-			
+
 			case QuickShapeBase::EDITF_SIZE:
 			{
 				MILLIPOINT CurrentPos = 0;
@@ -2808,9 +2694,9 @@ BOOL QuickShapeBaseInfoBarOp::BumpUp()
 
 			default:
 				ERROR2(FALSE, "Unknown edit field mode found when bumping up");
-		} 
+		}
 	}
-	
+
 	PaintGadgetNow(_R(IDC_EDIT_REGSHAPETOOL_LOWER));
 	return TRUE;
 }
@@ -2838,7 +2724,7 @@ BOOL QuickShapeBaseInfoBarOp::BumpDown()
 
 	// Get the current edit field
 	BOOL Valid = TRUE;
-	ERROR2IF(CurrentSpread == NULL, FALSE, "BumpRight found CurrentSpread was NULL");	
+	ERROR2IF(CurrentSpread == NULL, FALSE, "BumpRight found CurrentSpread was NULL");
 	DimScale* pDimScale = DimScale::GetPtrDimScale((Node*) CurrentSpread);
 	ERROR2IF(pDimScale == NULL, FALSE, "NULL DimScalePtr");
 	String_256 FieldContents = GetStringGadgetValue(_R(IDC_EDIT_REGSHAPETOOL_LOWER), &Valid);
@@ -2860,7 +2746,7 @@ BOOL QuickShapeBaseInfoBarOp::BumpDown()
 				}
 			}
 			break;
-			
+
 			case QuickShapeBase::EDITF_SIZE:
 			{
 				MILLIPOINT CurrentPos = 0;
@@ -2912,9 +2798,9 @@ BOOL QuickShapeBaseInfoBarOp::BumpDown()
 
 			default:
 				ERROR2(FALSE, "Unknown edit field mode found when bumping down");
-		} 
+		}
 	}
-	
+
 	PaintGadgetNow(_R(IDC_EDIT_REGSHAPETOOL_LOWER));
 	return TRUE;
 }
@@ -2978,7 +2864,7 @@ double QuickShapeBaseInfoBarOp::RestrictAngleMinus180(double Current)
 	Outputs:	-
 	Returns:	-
 	Purpose:	Sets the bubble and status line help on the edit fields depending on the current
-				menu setting. 
+				menu setting.
 	Errors:		-
 	SeeAlso:	-
 ********************************************************************************************/
@@ -2989,32 +2875,32 @@ void QuickShapeBaseInfoBarOp::SetHelp()
 		switch (pQuickShapeBase->EditFieldMode)
 		{
 			case QuickShapeBase::EDITF_CENTRE:
-				SetGadgetHelp(_R(IDC_EDIT_REGSHAPETOOL_UPPER), _R(IDBBL_REGSHAPETOOL_CENTREX), _R(IDS_REGSHAPETOOL_CENTREX)); 
-				SetGadgetHelp(_R(IDC_EDIT_REGSHAPETOOL_LOWER), _R(IDBBL_REGSHAPETOOL_CENTREY), _R(IDS_REGSHAPETOOL_CENTREY)); 
+				SetGadgetHelp(_R(IDC_EDIT_REGSHAPETOOL_UPPER), _R(IDBBL_REGSHAPETOOL_CENTREX), _R(IDS_REGSHAPETOOL_CENTREX));
+				SetGadgetHelp(_R(IDC_EDIT_REGSHAPETOOL_LOWER), _R(IDBBL_REGSHAPETOOL_CENTREY), _R(IDS_REGSHAPETOOL_CENTREY));
 				break;
 			case QuickShapeBase::EDITF_MAJOR:
-				SetGadgetHelp(_R(IDC_EDIT_REGSHAPETOOL_UPPER), _R(IDBBL_REGSHAPETOOL_SIZE), _R(IDS_REGSHAPETOOL_SIZE)); 
-				SetGadgetHelp(_R(IDC_EDIT_REGSHAPETOOL_LOWER), _R(IDBBL_REGSHAPETOOL_ROTATION), _R(IDS_REGSHAPETOOL_ROTATION)); 
+				SetGadgetHelp(_R(IDC_EDIT_REGSHAPETOOL_UPPER), _R(IDBBL_REGSHAPETOOL_SIZE), _R(IDS_REGSHAPETOOL_SIZE));
+				SetGadgetHelp(_R(IDC_EDIT_REGSHAPETOOL_LOWER), _R(IDBBL_REGSHAPETOOL_ROTATION), _R(IDS_REGSHAPETOOL_ROTATION));
 				break;
 			case QuickShapeBase::EDITF_STELLATION:
-				SetGadgetHelp(_R(IDC_EDIT_REGSHAPETOOL_UPPER), _R(IDBBL_REGSHAPETOOL_STELLSIZE), _R(IDS_REGSHAPETOOL_STELLSIZE)); 
-				SetGadgetHelp(_R(IDC_EDIT_REGSHAPETOOL_LOWER), _R(IDBBL_REGSHAPETOOL_STELLOFF), _R(IDS_REGSHAPETOOL_STELLOFF)); 
+				SetGadgetHelp(_R(IDC_EDIT_REGSHAPETOOL_UPPER), _R(IDBBL_REGSHAPETOOL_STELLSIZE), _R(IDS_REGSHAPETOOL_STELLSIZE));
+				SetGadgetHelp(_R(IDC_EDIT_REGSHAPETOOL_LOWER), _R(IDBBL_REGSHAPETOOL_STELLOFF), _R(IDS_REGSHAPETOOL_STELLOFF));
 				break;
 			case QuickShapeBase::EDITF_CURVE:
-				SetGadgetHelp(_R(IDC_EDIT_REGSHAPETOOL_UPPER), _R(IDBBL_REGSHAPETOOL_PRIMER), _R(IDS_REGSHAPETOOL_PRIMER)); 
-				SetGadgetHelp(_R(IDC_EDIT_REGSHAPETOOL_LOWER), _R(IDBBL_REGSHAPETOOL_STELLR), _R(IDS_REGSHAPETOOL_STELLR)); 
+				SetGadgetHelp(_R(IDC_EDIT_REGSHAPETOOL_UPPER), _R(IDBBL_REGSHAPETOOL_PRIMER), _R(IDS_REGSHAPETOOL_PRIMER));
+				SetGadgetHelp(_R(IDC_EDIT_REGSHAPETOOL_LOWER), _R(IDBBL_REGSHAPETOOL_STELLR), _R(IDS_REGSHAPETOOL_STELLR));
 				break;
 			case QuickShapeBase::EDITF_SIZE:
-				SetGadgetHelp(_R(IDC_EDIT_REGSHAPETOOL_UPPER), _R(IDBBL_REGSHAPE_WIDTH), _R(IDS_REGSHAPE_WIDTH)); 
-				SetGadgetHelp(_R(IDC_EDIT_REGSHAPETOOL_LOWER), _R(IDBBL_REGSHAPE_HEIGHT), _R(IDS_REGSHAPE_HEIGHT)); 
+				SetGadgetHelp(_R(IDC_EDIT_REGSHAPETOOL_UPPER), _R(IDBBL_REGSHAPE_WIDTH), _R(IDS_REGSHAPE_WIDTH));
+				SetGadgetHelp(_R(IDC_EDIT_REGSHAPETOOL_LOWER), _R(IDBBL_REGSHAPE_HEIGHT), _R(IDS_REGSHAPE_HEIGHT));
 				break;
 			case QuickShapeBase::EDITF_ROT:
-				SetGadgetHelp(_R(IDC_EDIT_REGSHAPETOOL_UPPER), _R(IDBBL_REGSHAPETOOL_ROTATION), _R(IDS_REGSHAPETOOL_ROTATION)); 
-				SetGadgetHelp(_R(IDC_EDIT_REGSHAPETOOL_LOWER), 0, 0); 
+				SetGadgetHelp(_R(IDC_EDIT_REGSHAPETOOL_UPPER), _R(IDBBL_REGSHAPETOOL_ROTATION), _R(IDS_REGSHAPETOOL_ROTATION));
+				SetGadgetHelp(_R(IDC_EDIT_REGSHAPETOOL_LOWER), 0, 0);
 				break;
 			default:
 				ERROR3("Unknown edit field mode found when setting help");
-		} 
+		}
 	}
 }
 
@@ -3028,7 +2914,7 @@ void QuickShapeBaseInfoBarOp::SetHelp()
 	Purpose:	The way shapes are created by dragging.
 	SeeAlso:	-
 
-**********************************************************************************************/ 
+**********************************************************************************************/
 /*********************************************************************************************
 
 	Preference:	NumSides
@@ -3037,7 +2923,7 @@ void QuickShapeBaseInfoBarOp::SetHelp()
 	Purpose:	The number of sides to create shapes with
 	SeeAlso:	-
 
-**********************************************************************************************/ 
+**********************************************************************************************/
 /*********************************************************************************************
 
 	Preference:	CreatePolygons
@@ -3046,7 +2932,7 @@ void QuickShapeBaseInfoBarOp::SetHelp()
 	Purpose:	Whether to create polygons (TRUE) or ellipses (FALSE)
 	SeeAlso:	-
 
-**********************************************************************************************/ 
+**********************************************************************************************/
 /*********************************************************************************************
 
 	Preference:	CreateStellated
@@ -3055,7 +2941,7 @@ void QuickShapeBaseInfoBarOp::SetHelp()
 	Purpose:	Whether to create stellated shapes or not
 	SeeAlso:	-
 
-**********************************************************************************************/ 
+**********************************************************************************************/
 /*********************************************************************************************
 
 	Preference:	CreateCurved
@@ -3064,7 +2950,7 @@ void QuickShapeBaseInfoBarOp::SetHelp()
 	Purpose:	Whether to create shapes with rounded corners
 	SeeAlso:	-
 
-**********************************************************************************************/ 
+**********************************************************************************************/
 
 
 
@@ -3124,18 +3010,17 @@ QuickShapeTool::~QuickShapeTool()
 	SeeAlso:	QuickShapeBase::Init
 
 ********************************************************************************************/
-BOOL QuickShapeTool::Init()
-{
-	// Rread in the preference settings from the file
-	GetApplication()->DeclareSection(_T("RegularShapeTool"),5);
-	GetApplication()->DeclarePref(_T("RegularShapeTool"),_T("CreationType"), &CreationMode, OpNewRegShape::RADIUS, OpNewRegShape::BOUNDS);
-	GetApplication()->DeclarePref(_T("RegularShapeTool"),_T("NumberSides"), &NumSides, 3, 99);
-	GetApplication()->DeclarePref(_T("RegularShapeTool"),_T("CreatePolygons"), &CreatePolygons, 0, 1);
-	GetApplication()->DeclarePref(_T("RegularShapeTool"),_T("CreateStellated"), &CreateStellated, 0, 1);
-	GetApplication()->DeclarePref(_T("RegularShapeTool"),_T("CreateCurved"), &CreateCurved, 0, 1);
+BOOL QuickShapeTool::Init() {
+  // Rread in the preference settings from the file
+  GetApplication()->DeclareSection(_T("RegularShapeTool"),5);
+  GetApplication()->DeclarePref(_T("RegularShapeTool"),_T("CreationType"), &CreationMode, OpNewRegShape::RADIUS, OpNewRegShape::BOUNDS);
+  GetApplication()->DeclarePref(_T("RegularShapeTool"),_T("NumberSides"), &NumSides, 3, 99);
+  GetApplication()->DeclarePref(_T("RegularShapeTool"),_T("CreatePolygons"), &CreatePolygons, 0, 1);
+  GetApplication()->DeclarePref(_T("RegularShapeTool"),_T("CreateStellated"), &CreateStellated, 0, 1);
+  GetApplication()->DeclarePref(_T("RegularShapeTool"),_T("CreateCurved"), &CreateCurved, 0, 1);
 
-	// Initialise the base class first
-	return QuickShapeBase::Init();
+  // Initialise the base class first
+  return QuickShapeBase::Init();
 }
 
 
@@ -3159,9 +3044,9 @@ void QuickShapeTool::Describe(void *InfoPtr)
 	ToolInfo_v1 *Info = (ToolInfo_v1 *) InfoPtr;
 
 	Info->InfoVersion = 1;
-	
+
 	Info->InterfaceVersion = GetToolInterfaceVersion();
-		
+
 	Info->Version = 1;
 	Info->ID      = GetID();
 	Info->TextID  = _R(IDS_REGSHAPE_TOOL);
@@ -3293,13 +3178,13 @@ BOOL QuickShapeBaseInfoBarOp::EditCommitSizeAndRotation(BOOL UpperCommit, EditRe
 	EditFieldString = GetStringGadgetValue(_R(IDC_EDIT_REGSHAPETOOL_UPPER), &Valid);
 	if (ManyField == EditFieldString)
 		Many = TRUE;
-	
+
 	// Convert the length string to millipoints
 	DimScale* pDimScale = DimScale::GetPtrDimScale((Node*) CurrentSpread);
 	ERROR2IF (pDimScale == NULL, FALSE, "Null DimScale* in QuickShapeBaseInfoBarOp::GetFieldCoord");
 	INT32 Length = 0;
 	if (Valid && !Many)
-		Valid = pDimScale->ConvertToMillipoints(EditFieldString, &Length); 
+		Valid = pDimScale->ConvertToMillipoints(EditFieldString, &Length);
 
 	if (!Valid && UpperCommit)
 	{
@@ -3388,7 +3273,7 @@ BOOL QuickShapeBaseInfoBarOp::EditCommitStellation(BOOL UpperCommit, EditRegular
 	ERROR2IF (pDimScale == NULL, FALSE, "Null DimScale*");
 	INT32 Length = 0;
 	if (Valid)
-		Valid = pDimScale->ConvertToMillipoints(EditFieldString, &Length); 
+		Valid = pDimScale->ConvertToMillipoints(EditFieldString, &Length);
 
 	if (!Valid && UpperCommit)
 	{
@@ -3499,13 +3384,13 @@ BOOL QuickShapeBaseInfoBarOp::EditCommitWidthAndHeight(BOOL UpperCommit, EditReg
 	EditFieldString = GetStringGadgetValue(_R(IDC_EDIT_REGSHAPETOOL_UPPER), &Valid);
 	if (ManyField == EditFieldString)
 		Many = TRUE;
-	
+
 	// Convert string to millipoints
 	DimScale* pDimScale = DimScale::GetPtrDimScale((Node*) CurrentSpread);
 	ERROR2IF (pDimScale == NULL, FALSE, "Null DimScale* in QuickShapeBaseInfoBarOp::GetFieldCoord");
 	INT32 Length = 0;
 	if (Valid && !Many)
-		Valid = pDimScale->ConvertToMillipoints(EditFieldString, &Length); 
+		Valid = pDimScale->ConvertToMillipoints(EditFieldString, &Length);
 
 	if (!Valid && UpperCommit)
 	{
@@ -3547,9 +3432,9 @@ BOOL QuickShapeBaseInfoBarOp::EditCommitWidthAndHeight(BOOL UpperCommit, EditReg
 	EditFieldString = GetStringGadgetValue(_R(IDC_EDIT_REGSHAPETOOL_LOWER), &Valid);
 	if (ManyField == EditFieldString)
 		Many = TRUE;
-	
+
 	if (Valid && !Many)
-		Valid = pDimScale->ConvertToMillipoints(EditFieldString, &Length); 
+		Valid = pDimScale->ConvertToMillipoints(EditFieldString, &Length);
 
 	if (!Valid && !UpperCommit)
 	{
@@ -3603,30 +3488,29 @@ BOOL QuickShapeBaseInfoBarOp::EditCommitWidthAndHeight(BOOL UpperCommit, EditReg
 	Purpose:	Does the processing involved when the user changes a vales in the edit fields
 				when in rotation mode.
 ********************************************************************************************/
-BOOL QuickShapeBaseInfoBarOp::EditCommitRotation(BOOL UpperCommit, EditRegularShapeParam* ChangeData)
-{
-	// The lower field is the rotation angle to set on all the shapes
-	String_16 ManyField(_R(IDS_MANY));
-	BOOL Valid = TRUE;
-	BOOL Many = (ManyField == GetStringGadgetValue(_R(IDC_EDIT_REGSHAPETOOL_UPPER), &Valid));
-	double Angle = GetDoubleGadgetValue(_R(IDC_EDIT_REGSHAPETOOL_UPPER), -360.0, 360.0, 0, &Valid);
-
-	if (!Valid && UpperCommit)
-	{
-		Error::SetError(_R(IDE_INVALID_ANGLE));
-		return FALSE;
-	}
-	else
-	{
-		// convert Angle back from the display value
-		if (Valid && !Many)
-		{
-			Angle = -Angle;
-			if (Angle > 0)
-				Angle -= 360;
-			ChangeData->RotateTo = Angle*(PI/180) + (PI/2);
-		}
-	}
-
-	return TRUE;
+BOOL
+QuickShapeBaseInfoBarOp::EditCommitRotation(BOOL UpperCommit,
+					    EditRegularShapeParam* ChangeData){
+  // The lower field is the rotation angle to set on all the shapes
+  String_16 ManyField(_R(IDS_MANY));
+  BOOL Valid = TRUE;
+  BOOL Many = (ManyField == GetStringGadgetValue(_R(IDC_EDIT_REGSHAPETOOL_UPPER),
+						 &Valid));
+  double Angle =
+    GetDoubleGadgetValue(_R(IDC_EDIT_REGSHAPETOOL_UPPER),
+				      -360.0, 360.0, 0, &Valid);
+  if (!Valid && UpperCommit) {
+      Error::SetError(_R(IDE_INVALID_ANGLE));
+      return FALSE;
+    } else {
+    // convert Angle back from the display value
+    if (Valid && !Many) {
+      Angle = -Angle;
+      if (Angle > 0) {
+	Angle -= 360;
+      }
+      ChangeData->RotateTo = Angle*(PI/180) + (PI/2);
+    }
+  }
+  return TRUE;
 }

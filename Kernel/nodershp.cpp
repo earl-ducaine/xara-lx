@@ -1,7 +1,7 @@
 // $Id: nodershp.cpp 1776 2007-06-27 11:16:49Z luke $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
- 
+
                Xara LX, a vector drawing and manipulation program.
                     Copyright (C) 1993-2006 Xara Group Ltd.
        Copyright on certain contributions may be held in joint with their
@@ -32,7 +32,7 @@ ADDITIONAL RIGHTS
 
 Conditional upon your continuing compliance with the GNU General Public
 License described above, Xara Group Ltd grants to you certain additional
-rights. 
+rights.
 
 The additional rights are to use, modify, and distribute the software
 together with the wxWidgets library, the wxXtra library, and the "CDraw"
@@ -128,7 +128,7 @@ service marks of Xara Group Ltd. All rights in these marks are reserved.
 #include "cxfrgshp.h"
 
 // Resource headers.
-//#include "mario.h"	 
+//#include "mario.h"
 //#include "peter.h"
 //#include "rik.h"
 //#include "simon.h"
@@ -178,7 +178,7 @@ static const double CurveFactor = 0.552;
 				MonoOn Direction: MonoOff
 				Specifies the direction in which the node is to be attached to the
 				ContextNode. The values this variable can take are as follows:
-								  
+
 				PREV      : Attach node as a previous sibling of the context node
 				NEXT      : Attach node as a next sibling of the context node
 				FIRSTCHILD: Attach node as the first child of the context node
@@ -187,7 +187,7 @@ static const double CurveFactor = 0.552;
 				BoundingRect: Bounding rectangle
 
 				The remaining inputs specify the status of the node:
-			
+
 				Locked:     Is node locked ?
 				Mangled:    Is node mangled ?
 				Marked:     Is node marked ?
@@ -201,28 +201,28 @@ static const double CurveFactor = 0.552;
     Errors:		An ENSURE will occur if ContextNode is NULL
 
 ***********************************************************************************************/
-NodeRegularShape::NodeRegularShape(Node* ContextNode,  
-					AttachNodeDirection Direction,  
-					BOOL Locked, 
-					BOOL Mangled,  
-					BOOL Marked, 
-					BOOL Selected    
+NodeRegularShape::NodeRegularShape(Node* ContextNode,
+					AttachNodeDirection Direction,
+					BOOL Locked,
+					BOOL Mangled,
+					BOOL Marked,
+					BOOL Selected
 			  ) : NodeRenderableInk(ContextNode, Direction, Locked, Mangled, Marked, Selected )
-{                         
+{
 	InitialiseMemberVars();
-}                        
- 
+}
+
 
 
 /*********************************************************************************************
 
->	NodeRegularShape::NodeRegularShape() 
+>	NodeRegularShape::NodeRegularShape()
 
 	Author:		Peter_Arnold (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	16/11/94
 	Purpose:	This constructor creates a NodeRegularShape linked to no other.
 	Note:		SetUpShape() should be called to change the NodeRegularShape before use!
-	SeeAlso:	NodeRegularShape::SetUpShape                                                        
+	SeeAlso:	NodeRegularShape::SetUpShape
 
 **********************************************************************************************/
 NodeRegularShape::NodeRegularShape() : NodeRenderableInk()
@@ -246,11 +246,11 @@ NodeRegularShape::NodeRegularShape() : NodeRenderableInk()
 **********************************************************************************************/
 void NodeRegularShape::InitialiseMemberVars()
 {
-	Circular = FALSE;	
-	Stellated = FALSE;	
-	PrimaryCurvature = FALSE;	
+	Circular = FALSE;
+	Stellated = FALSE;
+	PrimaryCurvature = FALSE;
 	StellationCurvature = FALSE;
-	NumSides = 6;			
+	NumSides = 6;
 	StellRadiusToPrimary = 0.5;
 	PrimaryCurveToPrimary = 0.2;
 	StellCurveToStell = 0.2;
@@ -263,7 +263,7 @@ void NodeRegularShape::InitialiseMemberVars()
 
 /*********************************************************************************************
 
->	NodeRegularShape::~NodeRegularShape() 
+>	NodeRegularShape::~NodeRegularShape()
 
 	Author:		Peter_Arnold (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	31/1/95
@@ -297,7 +297,7 @@ Node* NodeRegularShape::SimpleCopy()
     	CopyNodeContents(NodeCopy);
 
 	return NodeCopy;
-}            
+}
 
 
 
@@ -322,19 +322,19 @@ void NodeRegularShape::CopyNodeContents(NodeRegularShape* NodeCopy)
 
 	// If the dest shape has any cached object pointers, delete them before copying over
 	delete NodeCopy->CachedRenderPath;
-	
+
 	// Copy from the base class
 	NodeRenderableInk::CopyNodeContents(NodeCopy);
-	
+
 	//Copy contents specific to derived class here
-	NodeCopy->NumSides = NumSides;			    
-	NodeCopy->Circular = Circular;			    
-	NodeCopy->Stellated = Stellated;			
-	NodeCopy->PrimaryCurvature = PrimaryCurvature;	    
-	NodeCopy->StellationCurvature = StellationCurvature;	
-	NodeCopy->StellRadiusToPrimary = StellRadiusToPrimary;	
-	NodeCopy->PrimaryCurveToPrimary = PrimaryCurveToPrimary;	
-	NodeCopy->StellCurveToStell = StellCurveToStell;    
+	NodeCopy->NumSides = NumSides;
+	NodeCopy->Circular = Circular;
+	NodeCopy->Stellated = Stellated;
+	NodeCopy->PrimaryCurvature = PrimaryCurvature;
+	NodeCopy->StellationCurvature = StellationCurvature;
+	NodeCopy->StellRadiusToPrimary = StellRadiusToPrimary;
+	NodeCopy->PrimaryCurveToPrimary = PrimaryCurveToPrimary;
+	NodeCopy->StellCurveToStell = StellCurveToStell;
 	NodeCopy->StellOffsetRatio = StellOffsetRatio;
 	NodeCopy->UTCentrePoint = UTCentrePoint;
 	NodeCopy->UTMajorAxes = UTMajorAxes;
@@ -344,7 +344,7 @@ void NodeRegularShape::CopyNodeContents(NodeRegularShape* NodeCopy)
 	NodeCopy->TransformMatrix = TransformMatrix;
 
 	// When copying the paths we could run out of memory (so?)
-	if (NodeCopy->EdgePath1.Initialise(EdgePath1.GetNumCoords(),1) 
+	if (NodeCopy->EdgePath1.Initialise(EdgePath1.GetNumCoords(),1)
 		&& NodeCopy->EdgePath2.Initialise(EdgePath2.GetNumCoords(),1) )
 	{
 		NodeCopy->EdgePath1.CopyPathDataFrom(&EdgePath1);
@@ -363,7 +363,7 @@ void NodeRegularShape::CopyNodeContents(NodeRegularShape* NodeCopy)
     Purpose:    Polymorphically copies the contents of this node to another
 	Errors:     An assertion failure will occur if NodeCopy is NULL
     Scope:      protected
-								     
+
 ***********************************************************************************************/
 
 void NodeRegularShape::PolyCopyNodeContents(NodeRenderable* pNodeCopy)
@@ -389,11 +389,11 @@ void NodeRegularShape::PolyCopyNodeContents(NodeRenderable* pNodeCopy)
 ***********************************************************************************************/
 #ifdef _DEBUG
 void NodeRegularShape::ShowDebugTreeDetails() const
-{                     
+{
 	// Display a bit of debugging info
 	// For now, we will just call the base class version
 	TRACEALL( _T("NodeRegularShape  ") );
-	NodeRenderableInk::ShowDebugTreeDetails();	
+	NodeRenderableInk::ShowDebugTreeDetails();
 }
 #endif
 
@@ -415,10 +415,10 @@ void NodeRegularShape::GetDebugDetails( StringBase* Str )
 #if DEBUG_TREE
 	// Call base class
 	NodeRenderableInk::GetDebugDetails( Str );
-	
+
 	String_256 TempStr;
 	String_256 TempStr2;
-		
+
 	(*Str) += TEXT( "\r\nRegular Path Data Dump\r\n" );
 
 	DocRect BlobRect = GetBlobBoundingRect();
@@ -481,7 +481,7 @@ void NodeRegularShape::GetDebugDetails( StringBase* Str )
 	(*Str) += TempStr;
 	TempStr._MakeMsg( TEXT("Minor axes :\t#1%ld,\t#2%ld\r\n"), UTMinorAxes.x, UTMinorAxes.y);
 	(*Str) += TempStr;
-	
+
 	TempStr._MakeMsg( TEXT("\r\nTransformed"));
 	(*Str) += TempStr;
 	TempStr._MakeMsg( TEXT("Centre Point :\t#1%ld,\t#2%ld\r\n"), GetCentrePoint().x, GetCentrePoint().y);
@@ -495,7 +495,7 @@ void NodeRegularShape::GetDebugDetails( StringBase* Str )
 	INT32	bobby[2];
 	TransformMatrix.GetComponents(billy, bobby);
 
-	TempStr._MakeMsg( TEXT("\r\nMatrix\r\n"));	 
+	TempStr._MakeMsg( TEXT("\r\nMatrix\r\n"));
 	(*Str) += TempStr;
 	camSnprintf( floatStr, 20, _T("%f,%f"), billy[0].MakeDouble(), billy[1].MakeDouble());
 	TempStr._MakeMsg( TEXT("a, b :\t#1%s\r\n"), floatStr);
@@ -563,7 +563,7 @@ void NodeRegularShape::GetDebugDetails( StringBase* Str )
 
 	Author:		Peter_Arnold (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	16/11/94
-	Inputs:		- 
+	Inputs:		-
 	Returns:	TRUE if the shape was init'ed ok, FALSE otherwise
 	Purpose:	To initialise the paths used by the shape into a state that can be used,
 				by allocating memory, setting up member variables properly.
@@ -617,12 +617,12 @@ void NodeRegularShape::Transform( TransformBase& Trans )
 
 	EmergencyFixShape();
 
-	// Mark the bounding rect as invalid							
+	// Mark the bounding rect as invalid
 	InvalidateBoundingRect();
 	InvalidateCache();
 
 	DocRect dr = GetBoundingRect();
-	
+
 	// Transform all the children...
 	TransformChildren(Trans);
 
@@ -661,111 +661,94 @@ void NodeRegularShape::TransformCentreAndAxes( TransformBase& Trans )
 
 	EmergencyFixShape();
 
-	// Mark the bounding rect as invalid							
+	// Mark the bounding rect as invalid
 	InvalidateBoundingRect();
 	InvalidateCache();
 }
 
 
 
-/***********************************************************************************************
-
+/***************************************************************************
 >	BOOL NodeRegularShape::BuildShapePath(Path** RenderPath)
 
 	Author:		Peter_Arnold (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	16/11/94
 	Inputs:		RenderPath - Pointer to an pointer to a Path object.
-	Outputs:	RenderPath will point to a path that describes the whole regular shape.  This can
-				then be used to render the shape or EOR its outline.
-	Returns:	FALSE if the path could not be created (eg out of memory).  TRUE if RenderPath
-				points to a valid path.
-	Purpose:	Will build up a path representing the path from the edge paths stored in the
-				NodeRegularShape object.
-				NOTES: This rountine needs to be as quick as possible as it is called all the
-				time anyone does anything involving the path.  It may be necessary to hold
-				the render path in the shape and only regenerate it when required.
+ 	Outputs:        RenderPath will point to a path that describes the
+ 	                whole regular shape.  This can then be used to
+ 	                render the shape or EOR its outline.
+ 	Returns:        FALSE if the path could not be created (eg out of
+                        memory).  TRUE if RenderPath points to a valid
+                        path.
+ 	Purpose:        Will build up a path representing the path from the
+ 			edge paths stored in the NodeRegularShape
+ 			object.  NOTES: This rountine needs to be as
+ 			quick as possible as it is called all the time
+ 			anyone does anything involving the path.  It
+ 			may be necessary to hold the render path in
+ 			the shape and only regenerate it when
+ 			required.
 	SeeAlso:	RegShape.doc
 	Errors:		SetError will have been called if FALSE is returned.
-
-***********************************************************************************************/
-
-BOOL NodeRegularShape::BuildShapePath(Path** RenderPath)
-{ 
-	if ((CachedRenderPath == NULL) || PathCacheInvalid)
-	{
-		DeleteCachedPath();
-
-		CachedRenderPath = new (Path);
-		if (CachedRenderPath == NULL)
-			return FALSE;
-
-		BOOL Success = TRUE;
-	
-		if (IsCircular())
-		{
-			Success = BuildEllipsePath(CachedRenderPath);
-		}
-		else
-		{
-			DocCoord*	pArray;
-			Success = BuildPolygonPoints(&pArray);
-			if (Success)
-				Success = BuildPolygonPath(CachedRenderPath, pArray);
-			if (pArray != NULL)
-				delete [] pArray;
-		}
-
-		if (Success)
-		{
-			DocCoord* Coords = CachedRenderPath->GetCoordArray();
-			TransformMatrix.transform((Coord*)Coords, CachedRenderPath->GetNumCoords()); 
-
-			*RenderPath = CachedRenderPath;
-			PathCacheInvalid = FALSE;
-			return TRUE;
-		}
-		else
-		{
-			DeleteCachedPath();
-			return FALSE;
-		}
-	}
-	else
-	{
-		*RenderPath = CachedRenderPath;
-		return TRUE;
-	}
+// *************************************************************************/
+BOOL NodeRegularShape::BuildShapePath(Path** RenderPath) {
+  if ((CachedRenderPath == NULL) || PathCacheInvalid) {
+    DeleteCachedPath();
+    CachedRenderPath = new (Path);
+    if (CachedRenderPath == NULL) {
+      return FALSE;
+    }
+    BOOL Success = TRUE;
+    if (IsCircular()) {
+      Success = BuildEllipsePath(CachedRenderPath);
+    } else {
+      DocCoord*	pArray;
+      Success = BuildPolygonPoints(&pArray);
+      if (Success) {
+	Success = BuildPolygonPath(CachedRenderPath, pArray);
+      }
+      if (pArray != NULL) {
+	delete [] pArray;
+      }
+    }
+    if (Success) {
+      DocCoord* Coords = CachedRenderPath->GetCoordArray();
+      TransformMatrix.transform((Coord*)Coords,
+				CachedRenderPath->GetNumCoords());
+      *RenderPath = CachedRenderPath;
+      PathCacheInvalid = FALSE;
+      return TRUE;
+    } else {
+      DeleteCachedPath();
+      return FALSE;
+    }
+  } else {
+    *RenderPath = CachedRenderPath;
+    return TRUE;
+  }
 }
 
-
-
-/********************************************************************************************
-
+/***************************************************************************
 >	void NodeRegularShape::Render ( RenderRegion* pRender )
 
 	Author:		Graeme_Sutherland (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	9/6/00
 	Inputs:		pRender	- Pointer to a render region.
-	Purpose:	Creates a path from the renderable shape's characterisitics, which it passes
-				to the DrawPath method of the render region that it's exporting to.
+	Purpose:        Creates a path from the renderable shape's
+			characterisitics, which it passes to the
+			DrawPath method of the render region that it's
+			exporting to.
+****************************************************************************/
+void NodeRegularShape::Render (RenderRegion* pRender) {
+  Path* pRenderPath = NULL;
+  // Attempt to build a shape path.
+  if (BuildShapePath (&pRenderPath)) {
+    // Write the path out to the file.
+    pRender->DrawPath ( pRenderPath, NULL, GetPathShape () );
+  }
+}
 
-********************************************************************************************/
-void NodeRegularShape::Render ( RenderRegion* pRender )
-{
-	Path* pRenderPath = NULL;
-
-	// Attempt to build a shape path.
-	if ( BuildShapePath ( &pRenderPath ) )
-	{
-		// Write the path out to the file.
-		pRender->DrawPath ( pRenderPath, NULL, GetPathShape () );
-	}
-}  
-
-
-
-/********************************************************************************************
-
+/***************************************************************************
 >	void NodeRegularShape::RenderEorDrag( RenderRegion* pRender )
 
 	Author:		Peter_Arnold (Xara Group Ltd) <camelotdev@xara.com>
@@ -773,14 +756,11 @@ void NodeRegularShape::Render ( RenderRegion* pRender )
 	Inputs:		pRender - A Pointer to the current RenderRegion
 	Purpose:	Renders a version of the shape for EORed dragging.
 	SeeAlso:	NodeRenderableInk::RenderEorDrag
-
-********************************************************************************************/
-void NodeRegularShape::RenderEorDrag( RenderRegion* pRender )
-{
-	Path* RenderPath = NULL;
-	
-	if (BuildShapePath(&RenderPath))
-		pRender->DrawPath(RenderPath);
+****************************************************************************/
+void NodeRegularShape::RenderEorDrag(RenderRegion* pRender) {
+  Path* RenderPath = NULL;
+  if (BuildShapePath(&RenderPath))
+    pRender->DrawPath(RenderPath);
 }
 
 
@@ -845,7 +825,7 @@ void NodeRegularShape::RenderObjectBlobs(RenderRegion* pRender)
 						pRender->DrawLine(Array[Counter+1], Array[Counter+2]);
 						pRender->SetLineColour(COLOUR_NONE);
 						Counter += 3;
-					}			
+					}
 					else
 						pRender->DrawBlob(Array[Counter++], BT_UNSELECTED);
 				}
@@ -928,7 +908,7 @@ DocRect NodeRegularShape::GetBoundingRect(BOOL DontUseAttrs, BOOL HitTest)
 {
 	// Something to put the new bounding rectangle in
 	DocRect NewBoundingRect(GetCentrePoint(),GetCentrePoint());
-	
+
 	if (!IsBoundingRectValid || DontUseAttrs)
 	{
 		Path* RenderPath = NULL;
@@ -971,7 +951,7 @@ DocRect NodeRegularShape::GetBoundingRect(BOOL DontUseAttrs, BOOL HitTest)
 						{
 							// Get the bounds of the attribute and Union it with
 							// the path bounds
-							DocRect AttrBounds = 
+							DocRect AttrBounds =
 								((NodeAttribute*)pVal)->GetAttrBoundingRect(this, &AttribMap);
 							NewBoundingRect = NewBoundingRect.Union(AttrBounds);
 						}
@@ -1053,7 +1033,7 @@ DocRect NodeRegularShape::GetBlobBoundingRect()
 						pBlobMgr->GetBlobRect(Array[Counter+2], &BlobSize);
 						Rect = Rect.Union(BlobSize);
 						Counter += 3;
-					}			
+					}
 					else
 					{
 						pBlobMgr->GetBlobRect(Array[Counter++], &BlobSize);
@@ -1113,15 +1093,15 @@ DocRect NodeRegularShape::GetBlobBoundingRect()
 
 	Author:		Peter_Arnold (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	16/11/94
-	Returns:	The size of the node in bytes 
-	Purpose:	For finding the size of the node 
+	Returns:	The size of the node in bytes
+	Purpose:	For finding the size of the node
 	SeeAlso:	Node::GetSubtreeSize
 
 ********************************************************************************************/
-UINT32 NodeRegularShape::GetNodeSize() const 
-{     
-	return (sizeof(NodeRegularShape)); 
-}  
+UINT32 NodeRegularShape::GetNodeSize() const
+{
+	return (sizeof(NodeRegularShape));
+}
 
 
 
@@ -1262,10 +1242,10 @@ BOOL NodeRegularShape::OnToolClick( DocCoord PointerPos, ClickType Click, ClickM
 	Inputs:		InkClass: The class	of object
 				pNumObjects = ptr to place number of objects of type pClass that will be created (Note: can be NULL).
 							  *pNumObects in undefined on entry
-	Returns:	TRUE if the node, or any of its children can transmogrify themselves to become 
+	Returns:	TRUE if the node, or any of its children can transmogrify themselves to become
 				an InkClass object
-	Purpose:	This function is used by the convert to shapes operation. It determines if 
-				the node or any of its children can convert themselves into an InkClass object. 
+	Purpose:	This function is used by the convert to shapes operation. It determines if
+				the node or any of its children can convert themselves into an InkClass object.
 
 				The number you put into pNumObjects (if it's not NULL) should exactly equal the total number
 				of pClass objects you create.  It should NOT contain any additional objects you may produce
@@ -1289,10 +1269,10 @@ BOOL NodeRegularShape::CanBecomeA(BecomeA* pBecomeA)
 }
 
 
-		   
+
 /********************************************************************************************
 
->	virtual BOOL NodeRegularShape::DoBecomeA(BecomeA* pBecomeA) 
+>	virtual BOOL NodeRegularShape::DoBecomeA(BecomeA* pBecomeA)
 
 	Author:		Peter_Arnold (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	25/11/94
@@ -1300,14 +1280,14 @@ BOOL NodeRegularShape::CanBecomeA(BecomeA* pBecomeA)
 							type of node.
 	Outputs:	-
 	Returns:	TRUE if the object has been transformed, FALSE if we run out of memory
-	Purpose:	Transforms the object into another type of object. 
+	Purpose:	Transforms the object into another type of object.
 	SeeAlso:	NodeRegularShape::CanBecomeA
 
 ********************************************************************************************/
 
 BOOL NodeRegularShape::DoBecomeA(BecomeA* pBecomeA)
 {
-	// Check for a NULL entry param							   
+	// Check for a NULL entry param
 	ERROR2IF_PF(pBecomeA == NULL,FALSE,("pBecomeA is NULL"));
 
 	// This lump checks that the Reason is one that we understand
@@ -1324,7 +1304,7 @@ BOOL NodeRegularShape::DoBecomeA(BecomeA* pBecomeA)
 		// We need to create a new NodePath, no matter what the reason.
 
 		// Allocate a new NodePath node
-		ALLOC_WITH_FAIL(pNewNodePath, (new NodePath), pBecomeA->GetUndoOp()); 
+		ALLOC_WITH_FAIL(pNewNodePath, (new NodePath), pBecomeA->GetUndoOp());
 		Success = (pNewNodePath != NULL);
 
 		// Get the shapes render path into the node path.
@@ -1332,9 +1312,9 @@ BOOL NodeRegularShape::DoBecomeA(BecomeA* pBecomeA)
 		if (Success)
 			Success = BuildShapePath(&ShapePath);
 		pNewNodePath->InkPath.Initialise(ShapePath->GetNumCoords(),1);
-	
+
 		if (Success) CALL_WITH_FAIL(pNewNodePath->InkPath.CopyPathDataFrom(ShapePath), pBecomeA->GetUndoOp(), Success);
-	
+
 
 		// If Success is TRUE, then we now have a new NodePath object that contains this shape's path
 		if (Success)
@@ -1347,7 +1327,7 @@ BOOL NodeRegularShape::DoBecomeA(BecomeA* pBecomeA)
 					UndoableOperation* pOp = pBecomeA->GetUndoOp();
 
 					// Firstly, hide this node
-					NodeHidden* pNodeHidden = NULL; 
+					NodeHidden* pNodeHidden = NULL;
 					if (pOp != NULL)
 						Success = pBecomeA->GetUndoOp()->DoHideNode(this, TRUE, &pNodeHidden);
 
@@ -1360,22 +1340,22 @@ BOOL NodeRegularShape::DoBecomeA(BecomeA* pBecomeA)
 							pNewNodePath->AttachNode(this,NEXT);
 
 						// Copy the node's attributes
-						CALL_WITH_FAIL(CopyChildrenTo(pNewNodePath), pBecomeA->GetUndoOp(), Success); 
+						CALL_WITH_FAIL(CopyChildrenTo(pNewNodePath), pBecomeA->GetUndoOp(), Success);
 
 						if (Success)
 						{
-							// Set the bounds  
+							// Set the bounds
 							pNewNodePath->InvalidateBoundingRect();
 							pNewNodePath->SetSelected(IsSelected());
 
-							// Create a hide node action to hide the node when we undo 
+							// Create a hide node action to hide the node when we undo
 							if (pOp != NULL)
 							{
-								HideNodeAction* UndoHideNodeAction;     
+								HideNodeAction* UndoHideNodeAction;
 								Success = (HideNodeAction::Init(pBecomeA->GetUndoOp(),
 												  		 pBecomeA->GetUndoOp()->GetUndoActionList(),
-										 				 pNewNodePath, 
-										 				 TRUE, 		 // Include subtree size 
+										 				 pNewNodePath,
+										 				 TRUE, 		 // Include subtree size
 								  		 				 ( Action**)(&UndoHideNodeAction))
 								  		  				 != AC_FAIL);
 							}
@@ -1384,7 +1364,7 @@ BOOL NodeRegularShape::DoBecomeA(BecomeA* pBecomeA)
 								UnlinkNodeFromTree();
 								CascadeDelete();	// Delete all of the children
 								delete this;		// SCARY!
-							 	return TRUE; 
+							 	return TRUE;
 							}
 						}
 					}
@@ -1409,7 +1389,7 @@ BOOL NodeRegularShape::DoBecomeA(BecomeA* pBecomeA)
 		{
 			// Delete all the NodePath's children (if it has any) and unlink it from the tree (if it's linked)
 			// This is all done by CascadeDelete()
-			pNewNodePath->CascadeDelete(); 
+			pNewNodePath->CascadeDelete();
 			delete pNewNodePath;
 			pNewNodePath = NULL;
 		}
@@ -1421,10 +1401,10 @@ BOOL NodeRegularShape::DoBecomeA(BecomeA* pBecomeA)
 
 /***********************************************************************************************
 >  	virtual NodePath* NodeRegularShape::GetVariableWidthStrokePath()
-    
+
 	Author:     Diccon_Yamanaka (Xara Group Ltd) <camelotdev@xara.com>
     Created:    15-5-2000
-	Inputs:     -  
+	Inputs:     -
     Outputs:    -
     Returns:    a nodepath containing the path that is generated by any variable width strokes that
 				are applied to us, or NULL if there aren't any
@@ -1435,8 +1415,8 @@ BOOL NodeRegularShape::DoBecomeA(BecomeA* pBecomeA)
 				In this version we provide our own path by using BuildShapePath
 
 	See also:   NodePath::GetVariableWidthStrokePath, NodeRegularShape::GetVariableWidthStrokePath
-				
-	
+
+
 ***********************************************************************************************/
 
 NodePath* NodeRegularShape::GetVariableWidthStrokePath()
@@ -1450,19 +1430,19 @@ NodePath* NodeRegularShape::GetVariableWidthStrokePath()
 	// next find the stroke attribute that actually does the work
 	AttrStrokeType* pStroke = NULL;
 	FindAppliedAttribute(CC_RUNTIME_CLASS(AttrStrokeType), (NodeAttribute**)&pStroke);
-	
+
 	NodePath* pRetNode = NULL;
 	if (pStroke && pStroke->HasPathProcessor())
 	{
 		PathProcessorStroke* pPPS = pStroke->GetPathProcessor();
-			
-		// Get the shapes render path 
+
+		// Get the shapes render path
 		Path* pShapePath = NULL;
 		if (BuildShapePath(&pShapePath))
 			pRetNode = pPPS->GetProcessedPath(pShapePath, this);
 
 		ERROR2IF(!pRetNode, NULL, "Failed to get a Processed Path");
-				
+
 		// now we have a choice, pass in the stroking flag to produce a path that works with bevels
 		Path CopyPath;
 		CopyPath.Initialise();
@@ -1483,7 +1463,7 @@ NodePath* NodeRegularShape::GetVariableWidthStrokePath()
 		//Smoothness value is important - too little smoothness and you'll still have an over-complicated
 		//path - too much and you'll lose detail...
 		double smoothness = 15.0;
-			
+
 		//Use the retro smoother on all points without rendering to screen the EOR'd version...
 		RetroSmooth rSmoother;
 		rSmoother.Initialise();
@@ -1494,20 +1474,20 @@ NodePath* NodeRegularShape::GetVariableWidthStrokePath()
 		rSmoother.Changing(pRetNode, pSpread, smoothness);
 		rSmoother.FinishedNoUndo(pRetNode);
 		pRetNode->InkPath.ClearSubSelection();
-		
+
 	}
-		
-	return pRetNode;	
+
+	return pRetNode;
 }
 
 
 
 /***********************************************************************************************
 >  	virtual NodePath* NodeRegularShape::GetSmoothVariableWidthStrokePath()
-    
+
 	Author:     Diccon_Yamanaka (Xara Group Ltd) <camelotdev@xara.com>
     Created:    15-5-2000
-	Inputs:     -  
+	Inputs:     -
     Outputs:    -
     Returns:    a nodepath containing the path that is generated by any variable width strokes that
 				are applied to us, or NULL if there aren't any
@@ -1518,8 +1498,8 @@ NodePath* NodeRegularShape::GetVariableWidthStrokePath()
 				In this version we provide our own path by using BuildShapePath
 
 	See also:   NodePath::GetVariableWidthStrokePath, NodeRegularShape::GetVariableWidthStrokePath
-				
-	
+
+
 ***********************************************************************************************/
 
 NodePath* NodeRegularShape::GetSmoothVariableWidthStrokePath()
@@ -1533,17 +1513,17 @@ NodePath* NodeRegularShape::GetSmoothVariableWidthStrokePath()
 	// next find the stroke attribute that actually does the work
 	AttrStrokeType* pStroke = NULL;
 	FindAppliedAttribute(CC_RUNTIME_CLASS(AttrStrokeType), (NodeAttribute**)&pStroke);
-	
+
 	NodePath* pRetNode = NULL;
 	if (pStroke && pStroke->HasPathProcessor())
 	{
 		PathProcessorStroke* pPPS = pStroke->GetPathProcessor();
-			
-		// Get the shapes render path 
+
+		// Get the shapes render path
 		Path* pShapePath = NULL;
 		if (BuildShapePath(&pShapePath))
 			pRetNode = pPPS->GetSmoothProcessedPath(pShapePath, this);
-				
+
 		// now we have a choice, pass in the stroking flag to produce a path that works with bevels
 		Path CopyPath;
 		CopyPath.Initialise();
@@ -1559,8 +1539,8 @@ NodePath* NodeRegularShape::GetSmoothVariableWidthStrokePath()
 
 		pRetNode->InkPath.InitialiseFlags();
 	}
-		
-	return pRetNode;	
+
+	return pRetNode;
 }
 
 
@@ -1577,13 +1557,13 @@ NodePath* NodeRegularShape::GetSmoothVariableWidthStrokePath()
     Outputs:    If the point is snapped then pDocCoord will contain the point of attraction.
     Returns:    TRUE 	- the DocCoord has been snapped to the shapes path.
     			FALSE	- the DocCoord has not been processed.
-    			                                  		 
+
     Purpose:    Snaps to given coord to the nearest point on the shapes render path.  If it is
     			not appropriate to snap the coord to the shape (at the moment this means the
     			coord is too far awawy), then FALSE is returned.
-    Errors:     -   
+    Errors:     -
 	Scope:      public
-	       
+
 **********************************************************************************************/
 
 BOOL NodeRegularShape::Snap(DocCoord* pDocCoord)
@@ -1610,20 +1590,20 @@ BOOL NodeRegularShape::Snap(DocCoord* pDocCoord)
 	Inputs:     pDocCoord	- the rectangle to snap
 				StartDrag	- Start coord of drag
 				EndDrag		- End coord of drag
-    Outputs:    
+    Outputs:
     Returns:    TRUE 	- the DocRect been snapped to the grid.
     			FALSE	- the DocRect has not been processed.
-    			                                  		 
+
     Purpose:    Snaps the given rect to the nearest position on the grid, preserving its width
     			and height.
     			The coords of the rect used for the snapping are determined by the PrevCoord and
 				CurCoord coords supplied.  This is done to allow the user to control how a
-				selection rectangle is snapped to the grid by the direction of his/her last mouse 
+				selection rectangle is snapped to the grid by the direction of his/her last mouse
 				movement.
-				To force the bottom left hand corner of the rect to be snapped, 
+				To force the bottom left hand corner of the rect to be snapped,
 				supply PrevCoord=(0,0) and CurCoord(-1,-1).
 	Scope:      public
-	       
+
 **********************************************************************************************/
 
 BOOL NodeRegularShape::Snap(DocRect* pDocRect,const DocCoord& PrevCoord,const DocCoord& CurCoord)
@@ -1651,7 +1631,7 @@ BOOL NodeRegularShape::SnapToCoords(DocCoord* pDocCoord)
 {
 #if !defined(EXCLUDE_FROM_RALPH)
 	BOOL IsSnapped = FALSE;
-	
+
 	// We can try snapping to the objects centre point
 	DocCoord Centre=GetCentrePoint();
 	if (IsMagneticallyClose(&Centre, pDocCoord))
@@ -1718,42 +1698,42 @@ BOOL NodeRegularShape::SnapToCoords(DocCoord* pDocCoord)
 	Author:		Peter_Arnold (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	22/11/94
 	Inputs:		Plural: Flag indicating if the string description should be plural or
-				singular. 
-	Returns:	Description of the object                                    
+				singular.
+	Returns:	Description of the object
 	Purpose:	To return a description of the NodeRegularShape object in either the singular
 				or the plural. This method is called by the DescribeRange method.
-				The description will always begin with a lower case letter.   
-	Errors:		A resource exception will be thrown if a problem occurs when loading the 
-				string resource. 
+				The description will always begin with a lower case letter.
+	Errors:		A resource exception will be thrown if a problem occurs when loading the
+				string resource.
 
 ********************************************************************************************/
-              
-String NodeRegularShape::Describe(BOOL Plural, BOOL Verbose) 
-{     
+
+String NodeRegularShape::Describe(BOOL Plural, BOOL Verbose)
+{
 	// Are we a circle?
 	if (IsCircular())
 	{
 		if (Plural)
-			return(String(_R(IDS_ELLIPSE_DESCRP)));  
+			return(String(_R(IDS_ELLIPSE_DESCRP)));
 		else
-			return(String(_R(IDS_ELLIPSE_DESCRS))); 
+			return(String(_R(IDS_ELLIPSE_DESCRS)));
 	}
 
 	// Are we a rectangle?
 	if (IsARectangle())
 	{
 		if (Plural)
-			return(String(_R(IDS_RECTANGLE_DESCRP)));  
+			return(String(_R(IDS_RECTANGLE_DESCRP)));
 		else
-			return(String(_R(IDS_RECTANGLE_DESCRS))); 
+			return(String(_R(IDS_RECTANGLE_DESCRS)));
 	}
-	
+
 	// OK, we are a boring old QuickShape
 	if (Plural)
-		return(String(_R(IDS_REGSHAPE_PLURAL)));  
+		return(String(_R(IDS_REGSHAPE_PLURAL)));
 	else
-		return(String(_R(IDS_REGSHAPE_SINGULAR))); 
-}; 
+		return(String(_R(IDS_REGSHAPE_SINGULAR)));
+};
 
 
 
@@ -1768,7 +1748,7 @@ String NodeRegularShape::Describe(BOOL Plural, BOOL Verbose)
 				Ratio - the distance along the line to set PosPoint.  0 sets it at CentrePoint,
 				1 sets it at EndPoint.
 	Outputs:	Stores the location of the point in PosPoint.
-	Returns:	-                                   
+	Returns:	-
 	Purpose:	To obtain the position of a point at any position along any line from the
 				(Untransformed) CentrePoint of the Regular shape.
 	Errors:		-
@@ -1778,7 +1758,7 @@ void NodeRegularShape::PositionPointFromRatio(DocCoord* PosPoint, const DocCoord
 {
 	PosPoint->x = UTCentrePoint.x + (INT32)((EndPoint->x - UTCentrePoint.x)*Ratio) ;
 	PosPoint->y = UTCentrePoint.y + (INT32)((EndPoint->y - UTCentrePoint.y)*Ratio) ;
-} 
+}
 
 
 
@@ -1790,7 +1770,7 @@ void NodeRegularShape::PositionPointFromRatio(DocCoord* PosPoint, const DocCoord
 	Created:	13/12/94
 	Inputs:		RegularPoint - the DocCoord defining the regularness ofthe shape
 	Outputs:	-
-	Returns:	FALSE if error occured 
+	Returns:	FALSE if error occured
 	Purpose:	To make a shape regular, 1:1 aspect ratio
 	Errors:		-
 
@@ -1812,7 +1792,7 @@ BOOL NodeRegularShape::MakeRegular(DocCoord RegularPoint)
 #else
 	return FALSE;
 #endif
-} 
+}
 
 
 
@@ -1824,9 +1804,9 @@ BOOL NodeRegularShape::MakeRegular(DocCoord RegularPoint)
 	Created:	10/1/95
 	Inputs:		StraightenOne TRUE if EdgePath1 should be made a line, FALSE to straighten EdgePath2.
 	Outputs:	Either EdgePath1 or EdgePath2 will have been made a straight line.
-	Returns:	FALSE if error occured (SetError will have been called)                                   
+	Returns:	FALSE if error occured (SetError will have been called)
 	Purpose:	Call this function to reset a shapes edge path back to a straight line.  An
-				OpEditRegularShape is created to carry out the change.  
+				OpEditRegularShape is created to carry out the change.
 	Errors:		Will complain if it runs out of memory
 
 ********************************************************************************************/
@@ -1839,7 +1819,7 @@ BOOL NodeRegularShape::MakeStraight(BOOL StraightenOne)
 	EditRegularShapeParam ChangeData(this);
 	Path NewEdge;
 
-	// Create the straight path 
+	// Create the straight path
 	if (NewEdge.Initialise(4, 1))
 	{
 		DocCoord Fred1(0,0);
@@ -1861,7 +1841,7 @@ BOOL NodeRegularShape::MakeStraight(BOOL StraightenOne)
 
 	// Now do the operation
 	OpDescriptor* Apple = OpDescriptor::FindOpDescriptor(CC_RUNTIME_CLASS(OpEditRegularShape));
-	if (Apple != NULL)	
+	if (Apple != NULL)
 	{
 		Apple->Invoke(&ChangeData);
 		return TRUE;
@@ -1874,7 +1854,7 @@ BOOL NodeRegularShape::MakeStraight(BOOL StraightenOne)
 #else
 	return TRUE;
 #endif
-} 
+}
 
 
 
@@ -1882,7 +1862,7 @@ BOOL NodeRegularShape::MakeStraight(BOOL StraightenOne)
 
 > ShapeClickEffect NodeRegularShape::DetermineClickEffect(	DocCoord* pPos,
 															Spread* pSpread,
-															INT32* pPointNum, 
+															INT32* pPointNum,
 															DocCoord* pStart = NULL,
 															DocCoord* pEnd = NULL)
 	Author:		Peter_Arnold (Xara Group Ltd) <camelotdev@xara.com>
@@ -1893,7 +1873,7 @@ BOOL NodeRegularShape::MakeStraight(BOOL StraightenOne)
 	Outputs:	pPos is adjusted to the point on the shape that was clicked on eg, a point
 				near the centre point returns SHAPECLICK_CENTRE and pPos will be set to the
 				centre point of the shape.
-				pPointNum is the significant point number if the hit point, -1 if it isn't 
+				pPointNum is the significant point number if the hit point, -1 if it isn't
 				numbered (eg centre point)
 				pStart points to the start of the edge that contains the hit object
 				pEnd points to the end of the edge that contains the hit object
@@ -1949,7 +1929,7 @@ ShapeClickEffect NodeRegularShape::DetermineClickEffect(DocCoord* pPos, Spread* 
 				if (IsPrimaryCurvature())
 					EndOffset++ ;
 				PrimeEnd = Array[Counter + EndOffset];
-			
+
 				GetApplication()->GetBlobManager()->GetBlobRect(Array[Counter++],&BlobBounds);
 				if (BlobBounds.ContainsCoord(*pPos))
 				{
@@ -1978,7 +1958,7 @@ ShapeClickEffect NodeRegularShape::DetermineClickEffect(DocCoord* pPos, Spread* 
 						TempEffect = SHAPECLICK_PRIMARYCURVE;
 						goto FoundBlob;
 					}
-				}  
+				}
 
 				if (IsStellated())
 				{
@@ -1998,7 +1978,7 @@ ShapeClickEffect NodeRegularShape::DetermineClickEffect(DocCoord* pPos, Spread* 
 							goto FoundBlob;
 						}
 					}
-					
+
 					// Test the stellation point itself
 					GetApplication()->GetBlobManager()->GetBlobRect(Array[Counter++],&BlobBounds);
 					if (BlobBounds.ContainsCoord(*pPos))
@@ -2013,7 +1993,7 @@ ShapeClickEffect NodeRegularShape::DetermineClickEffect(DocCoord* pPos, Spread* 
 					if (IsStellationCurvature())
 					{
 						GetApplication()->GetBlobManager()->GetBlobRect(Array[Counter++],&BlobBounds);
-						if (BlobBounds.ContainsCoord(*pPos))	
+						if (BlobBounds.ContainsCoord(*pPos))
 						{
 							*pPos = Array[Counter-1];
 							*pPointNum = Counter-1;
@@ -2024,7 +2004,7 @@ ShapeClickEffect NodeRegularShape::DetermineClickEffect(DocCoord* pPos, Spread* 
 							TempEffect = SHAPECLICK_STELLATIONCURVE;
 							goto FoundBlob;
 						}
-					} 
+					}
 				}
 
 				if (IsPrimaryCurvature())
@@ -2044,9 +2024,9 @@ ShapeClickEffect NodeRegularShape::DetermineClickEffect(DocCoord* pPos, Spread* 
 						if (pStart != NULL)
 							*pStart = PrimeEnd;
 						TempEffect = SHAPECLICK_PRIMARYCURVE;
-						goto FoundBlob;						
+						goto FoundBlob;
 					}
-				}  
+				}
 			}
 		}
 		FoundBlob:
@@ -2099,7 +2079,7 @@ ShapeClickEffect NodeRegularShape::DetermineClickEffect(DocCoord* pPos, Spread* 
 	GetApplication()->GetBlobManager()->GetBlobRect(Interest,&BlobBounds);
 	if (BlobBounds.ContainsCoord(*pPos))
 	{
-		*pPos = Interest;		
+		*pPos = Interest;
 		return SHAPECLICK_CENTRE;
 	}
 
@@ -2175,7 +2155,7 @@ ShapeClickEffect NodeRegularShape::DetermineClickEffect(DocCoord* pPos, Spread* 
 				Edge points to the edge path
 				NewEnd is the point the new edge should end on.
 	Outputs:	Appends a new edge onto the path pointed to by RenderPath
-	Returns:	TRUE or FALSE depending on sucess 
+	Returns:	TRUE or FALSE depending on sucess
 	Purpose:	Adds another edge onto the current shape.  The edge runs from the current end
 				of RenderPath to the point defined by NewEnd
 				NOTE: Currently this routine assumes that the edge path consists of one Bezier
@@ -2223,7 +2203,7 @@ BOOL NodeRegularShape::InsertShapeEdge(Path* RenderPath, Path* Edge, DocCoord Ne
 		double c = -ScaleFactor * sin(theta);
 		double d = ScaleFactor * cos(theta);
 		INT32 e = InsertStart.x;
-		INT32 f = InsertStart.y;									   
+		INT32 f = InsertStart.y;
 
 		Trans2DMatrix	Trans(Matrix(a,b,c,d,e,f));
 		Trans.Transform( ControlPoints, 2);
@@ -2259,7 +2239,7 @@ BOOL NodeRegularShape::BuildEllipsePath(Path* RenderPath)
 		return FALSE;
 	}
 
-	RenderPath->SetPathPosition(0);		   
+	RenderPath->SetPathPosition(0);
 
 	// Get the major and minor axes, and the points opposite them.
 	const DocCoord w( UTMinorAxes);
@@ -2347,7 +2327,7 @@ public:
 	Inputs:		pArray points to a pointer to a DocCoord
 				NumPoints points to an INT32
 	Outputs:	pArray will point to an array of DocCoords.  The array contains the
-				significant points of the shape 
+				significant points of the shape
 				NumPoints will contain the number of points in pArray
 	Returns:	TRUE or FALSE for success/failure
 	Purpose:	Use this function to build a array of significant locations on a polygonal shape
@@ -2357,7 +2337,7 @@ public:
 				NOTE: The first two points in the array are duplicated at the end of the array
 				to make BuildPolygonPath's life easier
 	SeeAlso:	NodeRegularShape::BuildShapePath, NodeRegularShape::BuildPolygonPath
-	Errors:		ERROR2 Validity checks on shape 
+	Errors:		ERROR2 Validity checks on shape
 
 ********************************************************************************************/
 BOOL NodeRegularShape::BuildPolygonPoints(DocCoord** pArray, INT32* NumPoints)
@@ -2398,7 +2378,7 @@ BOOL NodeRegularShape::BuildPolygonPoints(DocCoord** pArray, INT32* NumPoints)
 			delete [] pFloatArray;
 		return FALSE;
 	}
-	
+
 	// Fill in the FloatArray with normalised coordinates
 	double CurrentAngle = (float)(PI/NumSides);
 	const double AngleInc = (float)((2*PI)/NumSides);
@@ -2430,7 +2410,7 @@ BOOL NodeRegularShape::BuildPolygonPoints(DocCoord** pArray, INT32* NumPoints)
 		// Now do the stellation point if the shape is stellated
 		if (Stellated)
 		{
-			TempCoord.X = (float)(InitialStellationPoint.X*cos(CurrentAngle+StellationInc) 
+			TempCoord.X = (float)(InitialStellationPoint.X*cos(CurrentAngle+StellationInc)
 								- InitialStellationPoint.Y*sin(CurrentAngle+StellationInc) + MaxRadius);
 			TempCoord.Y = (float)(InitialStellationPoint.X*sin(CurrentAngle+StellationInc)
 								+ InitialStellationPoint.Y*cos(CurrentAngle+StellationInc) + MaxRadius);
@@ -2439,7 +2419,7 @@ BOOL NodeRegularShape::BuildPolygonPoints(DocCoord** pArray, INT32* NumPoints)
 
 		CurrentAngle += AngleInc;
 	}
-	
+
 	pFloatArray[FloatCounter] = pFloatArray[0];
 	ERROR3IF(FloatCounter >= FloatElements, "Ran over end of FloatCoord array");
 
@@ -2456,7 +2436,7 @@ for (CurrentSide = 0; CurrentSide < NumSides; CurrentSide++)
 	// Also insert the curvature points as required...
 	DocCoord OuterMajor =  UTMajorAxes;
 	DocCoord OuterMinor = UTMinorAxes;
-	
+
 	// if the stellations points are further from the centre than the primary points
 	// then adjust the positioning length
 	if (IsStellated() && (GetStellRadiusToPrimary() > 1.0))
@@ -2467,7 +2447,7 @@ for (CurrentSide = 0; CurrentSide < NumSides; CurrentSide++)
 
 	// Get the origin and two adjacent coordinates of the parallogram that we are trying to fit the
 	// normalised coordinates into.
-	const DocCoord ParallelOrigin(UTCentrePoint.x*3 - (OuterMajor.x + OuterMinor.x), 
+	const DocCoord ParallelOrigin(UTCentrePoint.x*3 - (OuterMajor.x + OuterMinor.x),
 											UTCentrePoint.y*3 - (OuterMajor.y + OuterMinor.y));
 	const DocCoord ParallelA((OuterMajor.x - (OuterMinor.x-UTCentrePoint.x)) - ParallelOrigin.x,
 								(OuterMajor.y - (OuterMinor.y-UTCentrePoint.y)) - ParallelOrigin.y);
@@ -2479,7 +2459,7 @@ for (CurrentSide = 0; CurrentSide < NumSides; CurrentSide++)
 	DocCoord PrimaryPoint;
 	DocCoord StellationPoint(0,0);
 	DocCoord NextPrimary;
-	
+
 	// initialise NextPrimary for the first loop iteration
 	FloatCoord InitPrimeFloat = pFloatArray[FloatCounter++];
 	NextPrimary.x = (INT32)(InitPrimeFloat.X*ParallelB.x + InitPrimeFloat.Y*ParallelA.x) + ParallelOrigin.x;
@@ -2560,11 +2540,11 @@ for (CurrentSide = 0; CurrentSide < NumSides; CurrentSide++)
 				{
 					FitRatio = PrimaryCurvatureLength / DistanceToNext;
 					if ((PrimaryCurvatureLength + StellationCurvatureLength) > DistanceToNext)
-					{	
+					{
 						double Scaler = DistanceToNext / (PrimaryCurvatureLength + StellationCurvatureLength);
 						FitRatio = (PrimaryCurvatureLength * Scaler) / DistanceToNext;
 					}
-					TempCoord = DocCoord::PositionPointFromRatio(PrimaryPoint, StellationPoint, FitRatio); 
+					TempCoord = DocCoord::PositionPointFromRatio(PrimaryPoint, StellationPoint, FitRatio);
 				}
 			}
 			else
@@ -2578,8 +2558,8 @@ for (CurrentSide = 0; CurrentSide < NumSides; CurrentSide++)
 				{
 					if ((PrimaryCurvatureLength + PrimaryCurvatureLength) < DistanceToNext)
 						FitRatio = PrimaryCurvatureLength / DistanceToNext;
-			
-					TempCoord = DocCoord::PositionPointFromRatio(PrimaryPoint, NextPrimary, FitRatio);  
+
+					TempCoord = DocCoord::PositionPointFromRatio(PrimaryPoint, NextPrimary, FitRatio);
 				}
 			}
 			pDocArray[DocCounter+1]	= TempCoord;
@@ -2598,7 +2578,7 @@ for (CurrentSide = 0; CurrentSide < NumSides; CurrentSide++)
 						double Scaler = DistanceToNext / (PrimaryCurvatureLength + StellationCurvatureLength);
 						FitRatio = (StellationCurvatureLength * Scaler) / DistanceToNext;
 					}
-					TempCoord = DocCoord::PositionPointFromRatio(StellationPoint, PrimaryPoint, FitRatio); 
+					TempCoord = DocCoord::PositionPointFromRatio(StellationPoint, PrimaryPoint, FitRatio);
 				}
 				pDocArray[DocCounter+2] = TempCoord;
 
@@ -2614,7 +2594,7 @@ for (CurrentSide = 0; CurrentSide < NumSides; CurrentSide++)
 						double Scaler = DistanceToNext / (PrimaryCurvatureLength + StellationCurvatureLength);
 						FitRatio = (StellationCurvatureLength * Scaler) / DistanceToNext;
 					}
-					TempCoord = DocCoord::PositionPointFromRatio(StellationPoint, NextPrimary, FitRatio); 
+					TempCoord = DocCoord::PositionPointFromRatio(StellationPoint, NextPrimary, FitRatio);
 				}
 				pDocArray[DocCounter+4]	= TempCoord;
 			}
@@ -2635,9 +2615,9 @@ for (CurrentSide = 0; CurrentSide < NumSides; CurrentSide++)
 						double Scaler = DistanceToNext / (PrimaryCurvatureLength + StellationCurvatureLength);
 						FitRatio = (PrimaryCurvatureLength * Scaler) / DistanceToNext;
 					}
-					TempCoord = DocCoord::PositionPointFromRatio(NextPrimary, StellationPoint, FitRatio); 
+					TempCoord = DocCoord::PositionPointFromRatio(NextPrimary, StellationPoint, FitRatio);
 				}
-			
+
 				pDocArray[DocCounter+5]	= TempCoord;
 			}
 			else
@@ -2652,7 +2632,7 @@ for (CurrentSide = 0; CurrentSide < NumSides; CurrentSide++)
 					if ((PrimaryCurvatureLength + PrimaryCurvatureLength) < DistanceToNext)
 						FitRatio = PrimaryCurvatureLength / DistanceToNext;
 
-					TempCoord = DocCoord::PositionPointFromRatio(NextPrimary, PrimaryPoint, FitRatio);  
+					TempCoord = DocCoord::PositionPointFromRatio(NextPrimary, PrimaryPoint, FitRatio);
 				}
 				pDocArray[DocCounter+2]	= TempCoord;
 			}
@@ -2692,7 +2672,7 @@ for (CurrentSide = 0; CurrentSide < NumSides; CurrentSide++)
 	if (NumPoints != NULL)
 		*NumPoints = DocCounter+1;
 	return TRUE;
-}	
+}
 
 
 
@@ -2702,10 +2682,10 @@ for (CurrentSide = 0; CurrentSide < NumSides; CurrentSide++)
 
 	Author:		Peter_Arnold (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	4/1/95
-	Inputs:		RenderPath points to the path to build the path into 
+	Inputs:		RenderPath points to the path to build the path into
 				pArray points to the significant points array.
 	Outputs:	RenderPath will contain a path describing the polygon.
-	Returns:	TRUE or FALSE if the path build succedes/fails 
+	Returns:	TRUE or FALSE if the path build succedes/fails
 	Purpose:	Use this function to build a polygonal path.  The path forms a closed and
 				filled shape
 	Errors:		Validation checks on the shape
@@ -2846,7 +2826,7 @@ BOOL NodeRegularShape::BuildPolygonPath(Path* RenderPath, DocCoord* pArray)
 				right hand one should move.
 	Outputs:	The control point in the Coords array will have moved
 	Returns:	FALSE if an error occured
-	Purpose:	This function is used to smooth the joins between edges paths and the 
+	Purpose:	This function is used to smooth the joins between edges paths and the
 				curvature segments
 	Errors:		Can error if the opposite control point cannot be found.
 	SeeAlso:	OpEditRegularShape::Do
@@ -2897,7 +2877,7 @@ BOOL NodeRegularShape::SmoothCurvatureJoin(Path* RenderPath, DocCoord* Coords, I
 	Created:	6/1/95
 	Inputs:		-
 	Outputs:	The shape will have has its Primary and Setllation Curvature state toggled
-	Returns:	TRUE or FALSE if the path toggle succedes/fails 
+	Returns:	TRUE or FALSE if the path toggle succedes/fails
 	Purpose:	This function will toggle the curvature state of the shape in an undoable
 				way by firing off an OpEditRegularShape
 	Errors:		-
@@ -3027,7 +3007,7 @@ BOOL NodeRegularShape::ClickCentre(DocCoord PointerPos, ClickType Click, ClickMo
 				ChangeData.NewCircular = EditRegularShapeParam::CHANGE_SETTRUE;
 			OpDescriptor* Apple = OpDescriptor::FindOpDescriptor(CC_RUNTIME_CLASS(OpEditRegularShape));
 			if (Apple != NULL)
-				Apple->Invoke(&ChangeData);	
+				Apple->Invoke(&ChangeData);
 			return TRUE;
 			break;
 		}
@@ -3192,7 +3172,7 @@ BOOL NodeRegularShape::ClickPCurve(DocCoord PointerPos, ClickType Click, ClickMo
 			{
 				pOp->DoStartDragEditCurve( this, PointerPos, pSpread,
 														OpDragRegularShape::DRAG_PRIMARYCURVE, Start, End);
-			}	
+			}
 			return TRUE;
 			break;
 		}
@@ -3274,7 +3254,7 @@ BOOL NodeRegularShape::ClickSCurve(DocCoord PointerPos, ClickType Click, ClickMo
 				SingleClick - unused
 				DoubleClick - If constrained then reset the path edit to a straight line
 							  In unconstrained then toggle stellation state
-				Drag - Reform the edge path 
+				Drag - Reform the edge path
 	Errors:		-
 	SeeAlso:	-
 
@@ -3436,7 +3416,7 @@ UINT32 NodeRegularShape::GetNumSides() const
 	Inputs:		NewNumSides - The new number of sides
 	Outputs:	-
 	Returns:	-
-	Purpose:	Call this function to set the number of side in the current object 
+	Purpose:	Call this function to set the number of side in the current object
 	Errors:		-
 	SeeAlso:	NodeRegularShape::GetNumSides
 
@@ -3444,14 +3424,14 @@ UINT32 NodeRegularShape::GetNumSides() const
 void NodeRegularShape::SetNumSides(UINT32 NewNumSides)
 {
 	if (NewNumSides >= REGULARSHAPE_MINSIDES)
-	{	NumSides = NewNumSides; 
+	{	NumSides = NewNumSides;
 		InvalidateCache();
 	}
 	else
 	{
 	  ERROR3_PF((_T("Attempted to set %d number of sides"),NewNumSides));
 	}
-}		       
+}
 
 
 
@@ -3539,7 +3519,7 @@ void NodeRegularShape::SetStellated(BOOL Value)
 {
 	Stellated = Value;
 	InvalidateCache();
-}			   
+}
 
 
 
@@ -3670,7 +3650,7 @@ void NodeRegularShape::SetStellRadiusToPrimary(double Value)
 {
 	StellRadiusToPrimary = Value;
 	InvalidateCache();
-}			       
+}
 
 
 
@@ -3705,7 +3685,7 @@ double NodeRegularShape::GetPrimaryCurveToPrimary() const
 	Inputs:		Value - the new value of the primary curvature ratio
 	Outputs:	-
 	Returns:	-
-	Purpose:	Call this function to set the value of the primary curvature ratio 
+	Purpose:	Call this function to set the value of the primary curvature ratio
 	Errors:		-
 	SeeAlso:	NodeRegularShape::GetPrimaryCurveToPrimary
 
@@ -3758,7 +3738,7 @@ void NodeRegularShape::SetStellCurveToStell(double Value)
 {
 	StellCurveToStell = Value;
 	InvalidateCache();
-}			       
+}
 
 
 
@@ -3792,7 +3772,7 @@ double NodeRegularShape::GetStellationRatio() const
 	Inputs:		Value - the new value of the stellation offset
 	Outputs:	-
 	Returns:	-
-	Purpose:	Call this function to set the stellation offset 
+	Purpose:	Call this function to set the stellation offset
 	Errors:		-
 	SeeAlso:	NodeRegularShape::GetStellationRatio
 
@@ -3892,7 +3872,7 @@ void NodeRegularShape::SetCentrePoint(DocCoord Value)
 {
 	UTCentrePoint = Value;
 	InvalidateCache();
-}			       
+}
 
 
 
@@ -3915,7 +3895,7 @@ void NodeRegularShape::SetMinorAxes(DocCoord Value)
 {
 	UTMinorAxes = Value;
 	InvalidateCache();
-}			       
+}
 
 
 
@@ -3928,7 +3908,7 @@ void NodeRegularShape::SetMinorAxes(DocCoord Value)
 	Inputs:		Value - the new location of the major point
 	Outputs:	-
 	Returns:	-
-	Purpose:	Call this function to set the location of the major axes point 
+	Purpose:	Call this function to set the location of the major axes point
 				DO NOT use this function to move shapes around - apply transforms to it instead
 	Errors:		-
 	SeeAlso:	NodeRegularShape::GetMajorAxes
@@ -3938,7 +3918,7 @@ void NodeRegularShape::SetMajorAxes(DocCoord Value)
 {
 	UTMajorAxes = Value;
 	InvalidateCache();
-}		
+}
 
 
 
@@ -3993,7 +3973,7 @@ void NodeRegularShape::SetTransformMatrix(const Matrix* newmatrix)
 	Inputs:		pRegion - points to the export render region
 	Outputs:	-
 	Returns:	-
-	Purpose:	This function is called just before the shape is exported.  It outputs the 
+	Purpose:	This function is called just before the shape is exported.  It outputs the
 				shapes start token
 	Errors:		-
 	SeeAlso:	NodeRegularShape::ExportRender
@@ -4028,7 +4008,7 @@ void NodeRegularShape::PreExportRender(RenderRegion* pRegion)
 	SeeAlso:	NodeRegularShape::PreExportRender
 
 ********************************************************************************************/
-BOOL NodeRegularShape::ExportRender(RenderRegion* pRegion) 
+BOOL NodeRegularShape::ExportRender(RenderRegion* pRegion)
 {
 #ifdef DO_EXPORT
 	if (pRegion->IsKindOf(CC_RUNTIME_CLASS(NativeRenderRegion)))
@@ -4041,9 +4021,9 @@ BOOL NodeRegularShape::ExportRender(RenderRegion* pRegion)
 			(StrokeColourAttribute *) pRegion->GetCurrentAttribute(ATTR_STROKECOLOUR);
 		INT32 IsStroked = !pStrokeColour->Colour.IsTransparent();
 
-		ColourFillAttribute *pFillAttr = 
+		ColourFillAttribute *pFillAttr =
 			(ColourFillAttribute *) pRegion->GetCurrentAttribute(ATTR_FILLGEOMETRY);
-	
+
 		if (pFillAttr->IsKindOf(CC_RUNTIME_CLASS(FlatFillAttribute)) &&
 			pFillAttr->Colour.IsTransparent())
 		{
@@ -4093,7 +4073,7 @@ BOOL NodeRegularShape::ExportRender(RenderRegion* pRegion)
 		// End the regular shape object
 		pDC->OutputToken(_T("cers"));
 		pDC->OutputNewLine();
-				
+
 		// Tell caller we rendered ourselves ok
 		return TRUE;
 	}
@@ -4172,16 +4152,16 @@ BOOL NodeRegularShape::IsARectangle() const
 /******************************************************************************************
 
 >	INT32 NodeRegularShape::GetRectWidth()
-	
+
 	  Author:	Claude_Quemerais (Xara Group Ltd) <camelotdev@xara.com>
 	  Created:	08/08/96
 	  Inputs: -
 	  Outputs: The rectangle's width if it's a rectangle
 				-1 if it's not
-	  Purpose: Use this function to get the width  
+	  Purpose: Use this function to get the width
 
 ******************************************************************************************/
-INT32 NodeRegularShape::GetRectWidth() 
+INT32 NodeRegularShape::GetRectWidth()
 {
 	if(!IsARectangle())
 		return -1;
@@ -4193,13 +4173,13 @@ INT32 NodeRegularShape::GetRectWidth()
 /******************************************************************************************
 
 >	INT32 NodeRegularShape::GetRectHeight()
-	
+
 	  Author:	Claude_Quemerais (Xara Group Ltd) <camelotdev@xara.com>
 	  Created:	08/08/96
 	  Inputs: -
 	  Outputs: The rectangle's height if it's a rectangle
 				-1 if it's not
-	  Purpose: Use this function to get the height 
+	  Purpose: Use this function to get the height
 
 ******************************************************************************************/
 INT32 NodeRegularShape::GetRectHeight()
@@ -4230,7 +4210,7 @@ BOOL NodeRegularShape::OnNodePopUp(Spread* pSpread, DocCoord PointerPos, Context
 {
 #if !defined(EXCLUDE_FROM_RALPH)
 	BOOL ok = TRUE;
-	
+
 	ok = ok && pMenu->BuildCommand(TOOL_OPTOKEN_REGSHAPE, TRUE);
 
 	ok = ok && pMenu->BuildCommand(OPTOKEN_TOGGLEELIPPOLY, TRUE);
@@ -4285,7 +4265,7 @@ BOOL NodeRegularShape::IsARegularShape() const
 	Outputs:	-
 	Returns:	The length of the radius of the shape, ie the distance from the centre of the
 				shape to a primary point, or a stellation point, whichever is the longer.
-	Purpose:	Gets the length of the longest radius of the shape.  
+	Purpose:	Gets the length of the longest radius of the shape.
 
 ********************************************************************************************/
 double NodeRegularShape::GetMajorRadiusSize()
@@ -4335,12 +4315,12 @@ BOOL NodeRegularShape::MakeRectangle(const INT32 Width, const INT32 Height, cons
 	// Set the curvature
 	if (CurvatureRadius < 1)
 	{
-		PrimaryCurvature = FALSE;	
+		PrimaryCurvature = FALSE;
 		StellationCurvature = FALSE;
 	}
 	else
 	{
-		PrimaryCurvature = TRUE;	
+		PrimaryCurvature = TRUE;
 		StellationCurvature = TRUE;
 		PrimaryCurveToPrimary = ((double)CurvatureRadius) / ((double)MajorLength);
 		StellCurveToStell = PrimaryCurveToPrimary;
@@ -4432,7 +4412,7 @@ BOOL NodeRegularShape::WritePreChildrenWeb(BaseCamelotFilter * pFilter)
 #endif
 }
 
-  
+
 
 /********************************************************************************************
 >	void NodeRegularShape::DeleteCachedPath()
@@ -4536,7 +4516,7 @@ PathShape NodeRegularShape::GetPathShape()
 
 	//It's neither an ellipse or a rectangle.
 	//So return the generic "Path" shape
-	
+
 	return PATHSHAPE_PATH;
 }
 
@@ -4575,7 +4555,7 @@ PathShape NodeRegularShape::GetPathShape()
 				can be defined for an unrotated rectangle (one with its sides
 				parallel to the X and Y axes) but not for a rotated rectangle.
 
-  See Also:		NodeRegularShape::GetPathShape(), 
+  See Also:		NodeRegularShape::GetPathShape(),
 				ImagemapRenderRegion::DrawPathToOutputDevice
 ********************************************************************************************/
 BOOL NodeRegularShape::IsRotated()
@@ -4601,7 +4581,7 @@ BOOL NodeRegularShape::IsRotated()
 
 	//No, the shape has not been rotated
 	return TRUE;
-	
+
 }
 
 /********************************************************************************************
@@ -4668,7 +4648,7 @@ BOOL NodeRegularShape::AxesArePerpendicular()
 
 	//And now get the scalar product between them
 	INT32 lScalarProduct=lMajorVectorX*lMinorVectorX+lMajorVectorY*lMinorVectorY;
-							 
+
 	//And return TRUE if the scalar product is zero to a set tolerance
 	INT32 lDifference=labs(lScalarProduct);
 
@@ -4684,13 +4664,13 @@ BOOL NodeRegularShape::AxesArePerpendicular()
 	Author:		Karim_MacDonald (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	25/11/1999
 	Inputs:		ExtParams		parameters describing the extension.
-	Outputs:	
+	Outputs:
 	Returns:	TRUE if this regular shape can be validly extended,
 				FALSE otherwise.
 	Purpose:	Tests to see whether this shape's extend-centre is positioned so as to make
 				an extend operation irreversible.
-	Errors:		
-	See also:	
+	Errors:
+	See also:
 
 ********************************************************************************************/
 DocRect NodeRegularShape::ValidateExtend(const ExtendParams& ExtParams)
@@ -4719,14 +4699,14 @@ DocRect NodeRegularShape::ValidateExtend(const ExtendParams& ExtParams)
 	Created:	25/11/1999
 	Inputs:		ExtParams		parameters describing the extension.
 	Outputs:	this NodeRegularShape will be extended in accordance with ExtParams.
-	Returns:	
+	Returns:
 	Purpose:	Perform an Extend operation on this shape. Behaviour is as follows:
 
 				* the shape extends separately along each axis.
 				* if the shape is asked to stretch, it scales along the corresponding axes.
 				* if the shape is asked to extend, it is translated as a whole, as described
 																				by ExtParams.
-	Errors:		
+	Errors:
 	See also:	class Extender
 
 ********************************************************************************************/

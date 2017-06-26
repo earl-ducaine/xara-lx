@@ -1,7 +1,7 @@
 // $Id: rndrgn.cpp 1609 2006-07-30 09:47:03Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
- 
+
                Xara LX, a vector drawing and manipulation program.
                     Copyright (C) 1993-2006 Xara Group Ltd.
        Copyright on certain contributions may be held in joint with their
@@ -32,7 +32,7 @@ ADDITIONAL RIGHTS
 
 Conditional upon your continuing compliance with the GNU General Public
 License described above, Xara Group Ltd grants to you certain additional
-rights. 
+rights.
 
 The additional rights are to use, modify, and distribute the software
 together with the wxWidgets library, the wxXtra library, and the "CDraw"
@@ -206,7 +206,7 @@ UINT32 RenderRegion::MultiStageSelectedBlobSize   = 4;
 	Range:		0 - 30
 	Purpose:	The number represents the size of the blobs on the control points of selected
 				objects. The UnSelected Blob Size is the size of the blobs when the object is
-				selected, but none of its control points have been clicked on (and are not 
+				selected, but none of its control points have been clicked on (and are not
 				themselves selected)
 	SeeAlso:	SelectedBlobSize
 
@@ -270,7 +270,7 @@ BOOL RenderRegion::InitPrefs()
 ********************************************************************************************/
 /*
 void CCAPI RenderRegion::SetMergeTestWait(BOOL OnOff)
-{ 
+{
 	MergeTestWait = OnOff;
 }
 
@@ -549,7 +549,7 @@ RenderRegion::RenderRegion(const RenderRegion &other)
 	IsInkRenderStarted = other.IsInkRenderStarted;
 
 
-	// Now setup the render state 
+	// Now setup the render state
 	CurrentRenderState = other.CurrentRenderState;
 //	CurrentSubRenderState = other.CurrentSubRenderState;
 	CurrentSubRenderState = NULL;
@@ -565,7 +565,7 @@ RenderRegion::RenderRegion(const RenderRegion &other)
 		InformError();
 		return;
 	}
-	
+
 	// Now make a copy of the ContextSatck
 	if (!TheStack.Copy(&other.TheStack, this))
 	{
@@ -678,7 +678,7 @@ RenderRegion::~RenderRegion()
 // This has been taken out of Webster builds as it can cause fatal access violations with Paper render regions.
 // It is new path processor code that not's totally bug-free, and as path processors are not used in Webster,
 // it can be safely taken out.
-// Now taken out via new VECTOR_STROKING flag Neville 2/10/97 
+// Now taken out via new VECTOR_STROKING flag Neville 2/10/97
 #ifdef VECTOR_STROKING
 	// Ask the RenderStack to pop all attributes off itself. This gives them a chance
 	// to clean up properly (remove PathProcessors etc).
@@ -694,7 +694,7 @@ RenderRegion::~RenderRegion()
 
 // WEBSTER - markn 16/7/97
 // This hides a bug in the text tool, which won't go off if you don't use Path processors
-// The bug - 
+// The bug -
 //		create a multi-line paragraph text object
 //		Select all and apply -5 base line shift
 //		Change to a large font
@@ -704,7 +704,7 @@ RenderRegion::~RenderRegion()
 //
 // I have no idea what the problem is (I'd fix it if I knew), and don't have time to spend on it.
 // Should be looked into though...
-// Now taken out via new VECTOR_STROKING flag Neville 2/10/97 
+// Now taken out via new VECTOR_STROKING flag Neville 2/10/97
 #ifdef VECTOR_STROKING
 			// Tell the attribute that it's being chucked out of scope
 		//	CurrentAttrs[i].pAttr->GoingOutOfScope(this);
@@ -799,7 +799,7 @@ BOOL RenderRegion::CopyRenderInfo( const RenderRegion &Other)
 		InformError();
 		return FALSE;
 	}
-	
+
 
 	// Now make a copy of the ContextSatck
 	// Actually don't, or you get some attributes left from this render region at the bottom
@@ -852,7 +852,7 @@ BOOL RenderRegion::CopyRenderInfo( const RenderRegion &Other)
 				The Spread is just stored for external referance and is used to continue
 				rendering during BackGnd redraw.
 
-				NB. This function should be called before doing anything else in the 
+				NB. This function should be called before doing anything else in the
 				AttachDevice() function of a derived class.
 
 	Errors:		If ViewToAttach is NULL => ERROR2
@@ -1398,7 +1398,7 @@ if (GetMasterCapture()!=NULL)
 	Returns:	A DocRect describing the tightest bounding box around the clipping region
 	Purpose:	Returns the clipping rectangle of the Render Region
 	Errors:		-
-	SeeAlso:	RenderRegion::SetClipRect(); RenderRegion::RenderRegion() 
+	SeeAlso:	RenderRegion::SetClipRect(); RenderRegion::RenderRegion()
 
 ********************************************************************************************/
 
@@ -1431,7 +1431,7 @@ DocRect RenderRegion::GetClipRect()
 				changes - or a combination of the two, of course.
 				Some render regions (e.g. GRenderRegions) don't need to do anything about
 				this at all as all attributes are invoked whenever anything is rendered.
-				If this is the case, then this should be over-ridden to have a NULL 
+				If this is the case, then this should be over-ridden to have a NULL
 				implementation because this will improve rendering speed.
 	SeeAlso:	ChangeAttrType
 
@@ -1450,7 +1450,7 @@ void RenderRegion::SetTextAttributes(ChangeFillAttrType Type)
 			TextFlags.ValidTracking		= FALSE;
 			TextFlags.ValidFontSize		= FALSE;
 			TextFlags.ValidJustify		= FALSE;
-			TextFlags.ValidScript		= FALSE; 
+			TextFlags.ValidScript		= FALSE;
 			TextFlags.ValidBaseLine		= FALSE;
 			TextFlags.ValidLineSpace	= FALSE;
 			TextFlags.ValidLeftMargin   = FALSE;
@@ -1544,7 +1544,7 @@ void RenderRegion::SetTextAttributes(ChangeFillAttrType Type)
 				changes - or a combination of the two, of course.
 				Some render regions (e.g. GRenderRegions) don't need to do anything about
 				this at all as all attributes are invoked whenever anything is rendered.
-				If this is the case, then this should be over-ridden to have a NULL 
+				If this is the case, then this should be over-ridden to have a NULL
 				implementation because this will improve rendering speed.
 	SeeAlso:	ChangeLineAttrType
 
@@ -1634,7 +1634,7 @@ void RenderRegion::SetLineAttributes(ChangeLineAttrType Type)
 				changes - or a combination of the two, of course.
 				Some render regions (e.g. GRenderRegions) don't need to do anything about
 				this at all as all attributes are invoked whenever anything is rendered.
-				If this is the case, then this should be over-ridden to have a NULL 
+				If this is the case, then this should be over-ridden to have a NULL
 				implementation because this will improve rendering speed.
 	SeeAlso:	ChangeAttrType
 
@@ -1725,7 +1725,7 @@ BOOL RenderRegion::SaveAttribute(UINT32 Index, AttributeValue *pAttr, BOOL Temp)
 	// the 'current' one.
 	if (TheStack.Push(CurrentAttrs[Index].pAttr, CurrentAttrs[Index].Temp))
 	{
-		CurrentAttrs[Index].pAttr = pAttr; 
+		CurrentAttrs[Index].pAttr = pAttr;
 		CurrentAttrs[Index].Temp = Temp;
 
 		// Everything worked ok.
@@ -1790,11 +1790,11 @@ void RenderRegion::RestoreAttribute(UINT32 Index, AttributeValue *pAttr, BOOL Te
 
 	// If the current attribute is a temporary one, then delete it as we're about to stop
 	// using it.
-	if (CurrentAttrs[Index].Temp) 
+	if (CurrentAttrs[Index].Temp)
 		delete CurrentAttrs[Index].pAttr;
 
 	// Install the new attribute.
-	CurrentAttrs[Index].pAttr = pAttr; 
+	CurrentAttrs[Index].pAttr = pAttr;
 	CurrentAttrs[Index].Temp = Temp;
 }
 
@@ -1846,7 +1846,7 @@ BOOL RenderRegion::CopyCurrentAttributes(const RenderRegion &Other)
 		{
 			// Get the runtime class info on this object
 			CCRuntimeClass *pCCRuntimeClass = CurrentAttrs[i].pAttr->GetRuntimeClass();
-	
+
 			// Create another object of the same type
 			AttributeValue *pNewAttr = (AttributeValue *) pCCRuntimeClass->CreateObject();
 
@@ -1854,7 +1854,7 @@ BOOL RenderRegion::CopyCurrentAttributes(const RenderRegion &Other)
 			{
 				// Failed to create object - quit with error, but first ensure that all
 				// the rest of the attributes are marked as non-temporary.
-				// Otherwise the destructor will attempt to delete objects that belong 
+				// Otherwise the destructor will attempt to delete objects that belong
 				// to the other render region.
 				for (INT32 j = i; j < NumCurrentAttrs; j++)
 					CurrentAttrs[j].Temp = FALSE;
@@ -1908,8 +1908,8 @@ BOOL RenderRegion::CopyCurrentAttributes(const RenderRegion &Other)
 
 				This function takes the appropriate attribute and determines if it needs
 				to be changed. If it does, a new, replacement, attribute is created and
-				returned, which the caller should use in place of the 
-	
+				returned, which the caller should use in place of the
+
 	SeeAlso:	RenderRegion::SetFillGeometry; RenderRegion::SetLineColour
 
 ********************************************************************************************/
@@ -1979,7 +1979,7 @@ StrokeColourAttribute *RenderRegion::PrepareLineColour(StrokeColourAttribute *So
 		if (RenderView->GetPrintControl() != NULL)
 		{
 			TypesetInfo *TPInfo = RenderView->GetPrintControl()->GetTypesetInfo();
-			
+
 			if (TPInfo != NULL && TPInfo->AlwaysOverprintBlack())
 			{
 				// It is enabled, so check if this is a CMYK colour with more than 95% Key in it.
@@ -2048,13 +2048,13 @@ StrokeColourAttribute *RenderRegion::PrepareLineColour(StrokeColourAttribute *So
 
 				This function takes the appropriate attribute and determines if it needs
 				to be changed. If it does, a new, replacement, attribute is created and
-				returned, which the caller should use in place of the 
+				returned, which the caller should use in place of the
 
 	Notes:		This function has one other purpose: It fixes bogus graduated fills.
 				A no-colour to no-colour grad fill is (strangely) rendered as a solid
 				black fill, so this methid will convert these silly attributes into flat
 				no-colour fills.
-	
+
 	SeeAlso:	RenderRegion::SetFillGeometry; RenderRegion::SetLineColour
 
 ********************************************************************************************/
@@ -2248,7 +2248,7 @@ ColourFillAttribute *RenderRegion::PrepareFillGeometry(ColourFillAttribute *Sour
 			if (RenderView->GetPrintControl() != NULL)
 			{
 				TypesetInfo *TPInfo = RenderView->GetPrintControl()->GetTypesetInfo();
-				
+
 				if (TPInfo != NULL && TPInfo->AlwaysOverprintBlack())
 				{
 					// It is enabled, so check if this is a CMYK colour with more than 95% Key in it.
@@ -2514,7 +2514,7 @@ void RenderRegion::RestorePrintOnAllPlates(PrintOnAllPlatesAttrValue *NewAttr, B
 	Author:		Tim_Browse (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	12/04/94
 	Inputs:		NewLineColour - the colour to set the line colour to.
-	Purpose:	Set the line colour to a specific colour, pushing the current line colour 
+	Purpose:	Set the line colour to a specific colour, pushing the current line colour
 				onto the context stack.
 	SeeAlso:	RenderRegion::RestoreLineColour
 
@@ -2541,7 +2541,7 @@ void RenderRegion::SetLineColour(DocColour &NewLineColour)
 	Author:		Tim_Browse (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	12/04/94
 	Inputs:		NewLineColour - the colour to set the line colour to.
-	Purpose:	Set the line colour to a specific colour, pushing the current line colour 
+	Purpose:	Set the line colour to a specific colour, pushing the current line colour
 				onto the context stack.
 	SeeAlso:	RenderRegion::RestoreLineColour
 
@@ -2817,7 +2817,7 @@ void RenderRegion::RestoreVariableWidth(VariableWidthAttrValue *pAttr, BOOL Temp
 	Author:		Tim_Browse (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	12/04/94
 	Inputs:		NewFillColour - the colour to set the fill colour to.
-	Purpose:	Set the fill colour to a specific colour, pushing the current fill colour 
+	Purpose:	Set the fill colour to a specific colour, pushing the current fill colour
 				onto the context stack.
 	SeeAlso:	RenderRegion::RestoreFillColour
 
@@ -2826,10 +2826,10 @@ void RenderRegion::RestoreVariableWidth(VariableWidthAttrValue *pAttr, BOOL Temp
 void RenderRegion::SetFillColour(DocColour &NewFillColour)
 {
 	// Don't bother if it doesn't cause a change
-	ColourFillAttribute *pAttr = 
+	ColourFillAttribute *pAttr =
 		(ColourFillAttribute *) CurrentAttrs[ATTR_FILLGEOMETRY].pAttr;
 
-	if ((pAttr != NULL) && 
+	if ((pAttr != NULL) &&
 		(pAttr->GetRuntimeClass() == CC_RUNTIME_CLASS(FlatFillAttribute)) &&
 		(NewFillColour == ((FlatFillAttribute *) pAttr)->Colour))
 		return;
@@ -2840,38 +2840,29 @@ void RenderRegion::SetFillColour(DocColour &NewFillColour)
 }
 
 
-/********************************************************************************************
-
+/****************************************************************************
 >	void RenderRegion::SetFillColour(StockColour NewFillColour)
 
 	Author:		Tim_Browse (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	12/04/94
 	Inputs:		NewFillColour - the colour to set the fill colour to.
-	Purpose:	Set the fill colour to a specific colour, pushing the current fill colour 
-				onto the context stack.
+	Purpose:        Set the fill colour to a specific colour, pushing the
+			current fill colour onto the context stack.
 	SeeAlso:	RenderRegion::RestoreFillColour
-
-********************************************************************************************/
-
-void RenderRegion::SetFillColour(StockColour New)
-{
-	DocColour NewFillColour(New);
-
-	// Don't bother if it doesn't cause a change
-	ColourFillAttribute *pAttr = 
-		(ColourFillAttribute *) CurrentAttrs[ATTR_FILLGEOMETRY].pAttr;
-
-	if ((pAttr != NULL) && 
-		(pAttr->GetRuntimeClass() == CC_RUNTIME_CLASS(FlatFillAttribute)) &&
-		(NewFillColour == ((FlatFillAttribute *) pAttr)->Colour))
-		return;
-
-	// Create a temporary attribute and use it to set the line colour.
-	pAttr = new FlatFillAttribute(NewFillColour);
-	SetFillGeometry(pAttr, TRUE);
+****************************************************************************/
+void RenderRegion::SetFillColour(StockColour New) {
+  DocColour NewFillColour(New);
+  // Don't bother if it doesn't cause a change
+  ColourFillAttribute *pAttr =
+    (ColourFillAttribute *) CurrentAttrs[ATTR_FILLGEOMETRY].pAttr;
+  if ((pAttr != NULL) &&
+      (pAttr->GetRuntimeClass() == CC_RUNTIME_CLASS(FlatFillAttribute)) &&
+      (NewFillColour == ((FlatFillAttribute *) pAttr)->Colour))
+    return;
+  // Create a temporary attribute and use it to set the line colour.
+  pAttr = new FlatFillAttribute(NewFillColour);
+  SetFillGeometry(pAttr, TRUE);
 }
-
-
 
 /********************************************************************************************
 
@@ -3186,7 +3177,7 @@ void RenderRegion::RestoreTranspFillMapping(TranspFillMappingAttribute *pAttr, B
 	Author:		Tim_Browse (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	12/04/94
 	Inputs:		NewLineWidth - the size to set the line width to.
-	Purpose:	Set the line width to a specific size, pushing the current line width 
+	Purpose:	Set the line width to a specific size, pushing the current line width
 				onto the context stack.
 	SeeAlso:	RenderRegion::RestoreLineColour
 
@@ -3269,7 +3260,7 @@ void RenderRegion::RestoreLineWidth(LineWidthAttribute *pAttr, BOOL Temp)
 	Author:		Will_Cowling (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	13/10/94
 	Inputs:		NewDashPattern - the on-off pattern of the dash.
-	Purpose:	Set the dash pattern, pushing the current dash pattern 
+	Purpose:	Set the dash pattern, pushing the current dash pattern
 				onto the context stack.
 	SeeAlso:	RenderRegion::RestoreDashPattern
 
@@ -3295,7 +3286,7 @@ void RenderRegion::SetDashPattern(DashRec& NewDashPattern)
 	Author:		Will_Cowling (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	13/10/94
 	Inputs:		NewDashPattern - the on-off pattern of the dash.
-	Purpose:	Set the dash pattern, pushing the current dash pattern 
+	Purpose:	Set the dash pattern, pushing the current dash pattern
 				onto the context stack.
 	SeeAlso:	RenderRegion::RestoreDashPattern
 
@@ -3325,7 +3316,7 @@ void RenderRegion::SetDashPattern(StockDash NewDashPattern)
 	Author:		Will_Cowling (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	13/10/94
 	Inputs:		NewDashPattern - the on-off pattern of the dash.
-	Purpose:	Set the dash pattern, pushing the current dash pattern 
+	Purpose:	Set the dash pattern, pushing the current dash pattern
 				onto the context stack.
 	SeeAlso:	RenderRegion::RestoreDashPattern
 
@@ -3351,7 +3342,7 @@ void RenderRegion::SetDeviceDashPattern(DashRec& NewDashPattern)
 	Author:		Will_Cowling (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	13/10/94
 	Inputs:		NewDashPattern - the on-off pattern of the dash.
-	Purpose:	Set the dash pattern, pushing the current dash pattern 
+	Purpose:	Set the dash pattern, pushing the current dash pattern
 				onto the context stack.
 	SeeAlso:	RenderRegion::RestoreDashPattern
 
@@ -3577,7 +3568,7 @@ void RenderRegion::RestoreJoinType(JoinTypeAttribute *pAttr, BOOL Temp)
 
 	Author:		Tim_Browse (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	12/04/94
-	Purpose:	Set the quality attribute to the default setting, pushing the current 
+	Purpose:	Set the quality attribute to the default setting, pushing the current
 				quality level onto the context stack.
 	SeeAlso:	RenderRegion::RestoreQuality
 
@@ -3599,7 +3590,7 @@ void RenderRegion::SetDefaultQuality()
 	Inputs:		pAttr - the object specifying the quality to use.
 				Tmp - indicates if pAttr points to a temporary attribute that should be
 					  deleted when it's finished with.
-	Purpose:	Set the current display quality according to an AttributeValue object, 
+	Purpose:	Set the current display quality according to an AttributeValue object,
 				pushing	the current quality onto the context stack.
 	SeeAlso:	RenderRegion::RestoreQuality
 
@@ -3624,7 +3615,7 @@ void RenderRegion::SetQuality(QualityAttribute *pAttr,BOOL Temp)
 	Inputs:		pAttr - the object specifying the quality level to use.
 				Tmp - indicates if pAttr points to a temporary attribute that should be
 					  deleted when it's finished with.
-	Purpose:	Get rid of the current quality level, and restore the specified quality 
+	Purpose:	Get rid of the current quality level, and restore the specified quality
 				level.
 	SeeAlso:	RenderRegion::SetQuality
 
@@ -3671,7 +3662,7 @@ void RenderRegion::SetQualityLevel()
 					  deleted when it's finished with.
 	Purpose:	Set the current WebAddress
 
-				This attribute has no effect on rendering, so there's no need to 
+				This attribute has no effect on rendering, so there's no need to
 				change anything in the rendering system itself when we do this.
 
 	SeeAlso:	RenderRegion::RestoreWebAddress
@@ -3990,7 +3981,7 @@ void RenderRegion::RestoreMitreLimit(MitreLimitAttribute *pAttr,BOOL Temp)
 	Author:		Tim_Browse (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	12/04/94
 	Inputs:		NewWindingRule - the winding rule to use.
-	Purpose:	Set the winding rule, pushing the current winding rule onto the context 
+	Purpose:	Set the winding rule, pushing the current winding rule onto the context
 				stack.
 	SeeAlso:	RenderRegion::RestoreWindingRule
 
@@ -3999,7 +3990,7 @@ void RenderRegion::RestoreMitreLimit(MitreLimitAttribute *pAttr,BOOL Temp)
 void RenderRegion::SetWindingRule(WindingType NewWindingRule)
 {
 	// Don't bother if it doesn't cause a change
-	WindingRuleAttribute *pAttr = 
+	WindingRuleAttribute *pAttr =
 		(WindingRuleAttribute *) CurrentAttrs[ATTR_WINDINGRULE].pAttr;
 	if ((pAttr != NULL) && (NewWindingRule == pAttr->WindingRule))
 		return;
@@ -4065,7 +4056,7 @@ void RenderRegion::RestoreWindingRule(WindingRuleAttribute *pAttr, BOOL Temp)
 	Author:		Tim_Browse (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	12/04/94
 	Inputs:		NewDrawingMode - the drawing mode to use.
-	Purpose:	Set the drawing mode, pushing the current drawing mode onto the context 
+	Purpose:	Set the drawing mode, pushing the current drawing mode onto the context
 				stack.
 	SeeAlso:	RenderRegion::RestoreDrawingMode
 
@@ -4074,7 +4065,7 @@ void RenderRegion::RestoreWindingRule(WindingRuleAttribute *pAttr, BOOL Temp)
 void RenderRegion::SetDrawingMode(DrawModeType NewDrawingMode)
 {
 	// Don't bother if it doesn't cause a change
-	DrawingModeAttribute *pAttr = 
+	DrawingModeAttribute *pAttr =
 		(DrawingModeAttribute *) CurrentAttrs[DrawingModeAttribute::ID].pAttr;
 	if ((pAttr != NULL) && (NewDrawingMode == pAttr->DrawingMode))
 		return;
@@ -4161,7 +4152,7 @@ void RenderRegion::RestoreDrawingMode(DrawingModeAttribute *pAttr, BOOL Temp)
 	Inputs:		pAttr - the object specifying the colour to use.
 				Tmp - indicates if pAttr points to a temporary attribute that should be
 					  deleted when it's finished with.
-	Purpose:	Set the current Text Font Typeface according to an AttributeValue object, 
+	Purpose:	Set the current Text Font Typeface according to an AttributeValue object,
 				pushing the current Font Typeface onto the context stack.
 	SeeAlso:	RenderRegion::RestoreTxtFontTypeface
 
@@ -4185,7 +4176,7 @@ void RenderRegion::SetTxtFontTypeface(TxtFontTypefaceAttribute *pAttr, BOOL Temp
 	Inputs:		pAttr - the object specifying the colour to use.
 				Tmp - indicates if pAttr points to a temporary attribute that should be
 					  deleted when it's finished with.
-	Purpose:	Get rid of the current Text Font Typeface, and restore the specified 
+	Purpose:	Get rid of the current Text Font Typeface, and restore the specified
 				Typeface value.
 	SeeAlso:	RenderRegion::SetTxtFontTypeface
 
@@ -4209,7 +4200,7 @@ void RenderRegion::RestoreTxtFontTypeface(TxtFontTypefaceAttribute *pAttr, BOOL 
 	Inputs:		pAttr - the object specifying the colour to use.
 				Tmp - indicates if pAttr points to a temporary attribute that should be
 					  deleted when it's finished with.
-	Purpose:	Set the current Text Boldness according to an AttributeValue object, 
+	Purpose:	Set the current Text Boldness according to an AttributeValue object,
 				pushing the current Boldness onto the context stack.
 	SeeAlso:	RenderRegion::RestoreTxtBold
 
@@ -4233,7 +4224,7 @@ void RenderRegion::SetTxtBold(TxtBoldAttribute *pAttr, BOOL Temp)
 	Inputs:		pAttr - the object specifying the colour to use.
 				Tmp - indicates if pAttr points to a temporary attribute that should be
 					  deleted when it's finished with.
-	Purpose:	Get rid of the current Text Boldness, and restore the specified 
+	Purpose:	Get rid of the current Text Boldness, and restore the specified
 				Boldness value.
 	SeeAlso:	RenderRegion::SetTxtBold
 
@@ -4256,7 +4247,7 @@ void RenderRegion::RestoreTxtBold(TxtBoldAttribute *pAttr, BOOL Temp)
 	Inputs:		pAttr - the object specifying the colour to use.
 				Tmp - indicates if pAttr points to a temporary attribute that should be
 					  deleted when it's finished with.
-	Purpose:	Set the current Text Italicness according to an AttributeValue object, 
+	Purpose:	Set the current Text Italicness according to an AttributeValue object,
 				pushing the current Italicness onto the context stack.
 	SeeAlso:	RenderRegion::RestoreTxtItalic
 
@@ -4280,7 +4271,7 @@ void RenderRegion::SetTxtItalic(TxtItalicAttribute *pAttr, BOOL Temp)
 	Inputs:		pAttr - the object specifying the colour to use.
 				Tmp - indicates if pAttr points to a temporary attribute that should be
 					  deleted when it's finished with.
-	Purpose:	Get rid of the current Text Italicness, and restore the specified 
+	Purpose:	Get rid of the current Text Italicness, and restore the specified
 				Italicness value.
 	SeeAlso:	RenderRegion::SetTxtItalic
 
@@ -4303,7 +4294,7 @@ void RenderRegion::RestoreTxtItalic(TxtItalicAttribute *pAttr, BOOL Temp)
 	Inputs:		pAttr - the object specifying the font size to use.
 				Tmp - indicates if pAttr points to a temporary attribute that should be
 					  deleted when it's finished with.
-	Purpose:	Set the current Font Size according to an AttributeValue object, 
+	Purpose:	Set the current Font Size according to an AttributeValue object,
 				pushing the current font size state onto the context stack.
 
 ********************************************************************************************/
@@ -4325,10 +4316,10 @@ void RenderRegion::SetTxtFontSize(TxtFontSizeAttribute *pAttr, BOOL Temp)
 
 	Author:		Simon_Maneggio (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	13/03/95
-	Inputs:		pAttr - the object specifying the font size 
+	Inputs:		pAttr - the object specifying the font size
 				Tmp - indicates if pAttr points to a temporary attribute that should be
 					  deleted when it's finished with.
-	Purpose:	Get rid of the current font size, and restore the specified 
+	Purpose:	Get rid of the current font size, and restore the specified
 				font size
 	SeeAlso:	RenderRegion::SetTxtFontSize
 
@@ -4353,7 +4344,7 @@ void RenderRegion::RestoreTxtFontSize(TxtFontSizeAttribute *pAttr, BOOL Temp)
 	Inputs:		pAttr - the object specifying the colour to use.
 				Tmp - indicates if pAttr points to a temporary attribute that should be
 					  deleted when it's finished with.
-	Purpose:	Set the current Text Underline state according to an AttributeValue object, 
+	Purpose:	Set the current Text Underline state according to an AttributeValue object,
 				pushing the current Underline state onto the context stack.
 
 ********************************************************************************************/
@@ -4376,7 +4367,7 @@ void RenderRegion::SetTxtUnderline(TxtUnderlineAttribute *pAttr, BOOL Temp)
 	Inputs:		pAttr - the object specifying the colour to use.
 				Tmp - indicates if pAttr points to a temporary attribute that should be
 					  deleted when it's finished with.
-	Purpose:	Get rid of the current Text underline state, and restore the specified 
+	Purpose:	Get rid of the current Text underline state, and restore the specified
 				underline value.
 	SeeAlso:	RenderRegion::SetTxtUnderline
 
@@ -4398,7 +4389,7 @@ void RenderRegion::RestoreTxtUnderline(TxtUnderlineAttribute *pAttr, BOOL Temp)
 	Inputs:		pAttr - the object specifying the colour to use.
 				Tmp - indicates if pAttr points to a temporary attribute that should be
 					  deleted when it's finished with.
-	Purpose:	Set the current Text Aspect Ratio according to an AttributeValue object, 
+	Purpose:	Set the current Text Aspect Ratio according to an AttributeValue object,
 				pushing the current Aspect Ratio onto the context stack.
 	SeeAlso:	RenderRegion::RestoreTxtAspectRatio
 
@@ -4422,7 +4413,7 @@ void RenderRegion::SetTxtAspectRatio(TxtAspectRatioAttribute *pAttr, BOOL Temp)
 	Inputs:		pAttr - the object specifying the colour to use.
 				Tmp - indicates if pAttr points to a temporary attribute that should be
 					  deleted when it's finished with.
-	Purpose:	Get rid of the current Text Aspect Ratio, and restore the specified 
+	Purpose:	Get rid of the current Text Aspect Ratio, and restore the specified
 				Aspect Ratio value.
 	SeeAlso:	RenderRegion::SetTxtAspectRatio
 
@@ -4444,7 +4435,7 @@ void RenderRegion::RestoreTxtAspectRatio(TxtAspectRatioAttribute *pAttr, BOOL Te
 	Inputs:		pAttr - the object specifying the colour to use.
 				Tmp - indicates if pAttr points to a temporary attribute that should be
 					  deleted when it's finished with.
-	Purpose:	Set the current Text Justification according to an AttributeValue object, 
+	Purpose:	Set the current Text Justification according to an AttributeValue object,
 				pushing the current Justification onto the context stack.
 	SeeAlso:	RenderRegion::RestoreTxtJustification
 
@@ -4468,7 +4459,7 @@ void RenderRegion::SetTxtJustification(TxtJustificationAttribute *pAttr, BOOL Te
 	Inputs:		pAttr - the object specifying the colour to use.
 				Tmp - indicates if pAttr points to a temporary attribute that should be
 					  deleted when it's finished with.
-	Purpose:	Get rid of the current Text Justification, and restore the specified 
+	Purpose:	Get rid of the current Text Justification, and restore the specified
 				Justification value.
 	SeeAlso:	RenderRegion::SetTxtJustification
 
@@ -4490,7 +4481,7 @@ void RenderRegion::RestoreTxtJustification(TxtJustificationAttribute *pAttr, BOO
 	Inputs:		pAttr - the object specifying the colour to use.
 				Tmp - indicates if pAttr points to a temporary attribute that should be
 					  deleted when it's finished with.
-	Purpose:	Set the current Text Tracking according to an AttributeValue object, 
+	Purpose:	Set the current Text Tracking according to an AttributeValue object,
 				pushing the current Tracking onto the context stack.
 	SeeAlso:	RenderRegion::RestoreTxtTracking
 
@@ -4514,7 +4505,7 @@ void RenderRegion::SetTxtTracking(TxtTrackingAttribute *pAttr, BOOL Temp)
 	Inputs:		pAttr - the object specifying the colour to use.
 				Tmp - indicates if pAttr points to a temporary attribute that should be
 					  deleted when it's finished with.
-	Purpose:	Get rid of the current Text Tracking, and restore the specified 
+	Purpose:	Get rid of the current Text Tracking, and restore the specified
 				Tracking value.
 	SeeAlso:	RenderRegion::SetTxtTracking
 
@@ -4538,7 +4529,7 @@ void RenderRegion::RestoreTxtTracking(TxtTrackingAttribute *pAttr, BOOL Temp)
 	Inputs:		pAttr - the object specifying the colour to use.
 				Tmp - indicates if pAttr points to a temporary attribute that should be
 					  deleted when it's finished with.
-	Purpose:	Set the current Text Script according to an AttributeValue object, 
+	Purpose:	Set the current Text Script according to an AttributeValue object,
 				pushing the current Script onto the context stack.
 	SeeAlso:	RenderRegion::RestoreTxtScript
 
@@ -4562,7 +4553,7 @@ void RenderRegion::SetTxtScript(TxtScriptAttribute *pAttr, BOOL Temp)
 	Inputs:		pAttr - the object specifying the colour to use.
 				Tmp - indicates if pAttr points to a temporary attribute that should be
 					  deleted when it's finished with.
-	Purpose:	Get rid of the current Text Script, and restore the specified 
+	Purpose:	Get rid of the current Text Script, and restore the specified
 				Script value.
 	SeeAlso:	RenderRegion::SetTxtScript
 
@@ -4585,7 +4576,7 @@ void RenderRegion::RestoreTxtScript(TxtScriptAttribute *pAttr, BOOL Temp)
 	Inputs:		pAttr - the object specifying the colour to use.
 				Tmp - indicates if pAttr points to a temporary attribute that should be
 					  deleted when it's finished with.
-	Purpose:	Set the current Text BaseLine according to an AttributeValue object, 
+	Purpose:	Set the current Text BaseLine according to an AttributeValue object,
 				pushing the current BaseLine onto the context stack.
 	SeeAlso:	RenderRegion::RestoreTxtBaseLine
 
@@ -4609,7 +4600,7 @@ void RenderRegion::SetTxtBaseLine(TxtBaseLineAttribute *pAttr, BOOL Temp)
 	Inputs:		pAttr - the object specifying the colour to use.
 				Tmp - indicates if pAttr points to a temporary attribute that should be
 					  deleted when it's finished with.
-	Purpose:	Get rid of the current Text BaseLine, and restore the specified 
+	Purpose:	Get rid of the current Text BaseLine, and restore the specified
 				BaseLine value.
 	SeeAlso:	RenderRegion::SetTxtBaseLine
 
@@ -4632,7 +4623,7 @@ void RenderRegion::RestoreTxtBaseLine(TxtBaseLineAttribute *pAttr, BOOL Temp)
 	Inputs:		pAttr - the object specifying the colour to use.
 				Tmp - indicates if pAttr points to a temporary attribute that should be
 					  deleted when it's finished with.
-	Purpose:	Set the current Text LineSpace according to an AttributeValue object, 
+	Purpose:	Set the current Text LineSpace according to an AttributeValue object,
 				pushing the current LineSpace onto the context stack.
 	SeeAlso:	RenderRegion::RestoreTxtLineSpace
 
@@ -4656,7 +4647,7 @@ void RenderRegion::SetTxtLineSpace(TxtLineSpaceAttribute *pAttr, BOOL Temp)
 	Inputs:		pAttr - the object specifying the colour to use.
 				Tmp - indicates if pAttr points to a temporary attribute that should be
 					  deleted when it's finished with.
-	Purpose:	Get rid of the current Text LineSpace, and restore the specified 
+	Purpose:	Get rid of the current Text LineSpace, and restore the specified
 				LineSpace value.
 	SeeAlso:	RenderRegion::SetTxtLineSpace
 
@@ -4827,7 +4818,7 @@ void RenderRegion::SetOffscreen(OffscreenAttrValue* pAttr)
 
 	// Ensure that we have minimum pixel dimensions
 	// Expand cliprect if more pixels required
-	// NB expanding by GRR->ScaledPixelWidth will ensure we increase bmp size 
+	// NB expanding by GRR->ScaledPixelWidth will ensure we increase bmp size
 	// by exactly the no. of pixels required
 	UINT32 RequiredWidth, RequiredHeight;
 	pAttr->GetMinimumOffscreenBmpDimensions(&RequiredWidth,&RequiredHeight);
@@ -4892,7 +4883,7 @@ void RenderRegion::SetOffscreen(OffscreenAttrValue* pAttr)
 
 	//---------------------------------------------
 	// Now startup the offscreen capture...
-	// 
+	//
 	// If a non-mix attribute is already in scope we must not start capturing transparently
 	// because transparent bitmaps can't render non-mix transparencies correctly
 	// (See SetTranspFillGeometry and ChangeCapture)
@@ -4950,7 +4941,7 @@ void RenderRegion::SetOffscreen(OffscreenAttrValue* pAttr)
 /*void RenderRegion::RestoreOffscreen(OffscreenAttrValue* pAttr)
 {
 	// Restore the old attribute.
-	CurrentOffscreenAttr = pAttr; 
+	CurrentOffscreenAttr = pAttr;
 }*/
 
 
@@ -4980,7 +4971,7 @@ void RenderRegion::RestoreOffscreen(OffscreenAttrValue* pAttr)
 
 //	RenderRegion::RestoreOffscreen(pAttr);
 
-	CurrentOffscreenAttr = pAttr; 
+	CurrentOffscreenAttr = pAttr;
 }
 
 
@@ -5013,7 +5004,7 @@ void RenderRegion::SetClipRegion(ClipRegionAttribute* pAttr, BOOL Temp)
 	Inputs:		pAttr	the new ClipRegionAttribute.
 				Temp	whether the new attribute is temporary, and should therefore be
 						deleted when it is finished with.
-	Purpose:	Restore this render-region's current clipping region, using the attribute 
+	Purpose:	Restore this render-region's current clipping region, using the attribute
 				supplied.
 	See also:	ClipRegionAttribute::Restore(), RenderRegion::SetClipRegion().
 
@@ -5117,132 +5108,120 @@ void RenderRegion::SetFixedSystemTextColours(DocColour *TextCol, DocColour *Back
 
 ********************************************************************************************/
 
-void RenderRegion::GetFixedSystemTextSize(StringBase *TheText, DocRect *BoundsRect, double* atDpi)
-{
-	if (BoundsRect != NULL)
-		*BoundsRect = DocRect(0,0,0,0);
-
-	ERROR2RAW("Attempt to call unsupported RenderRegion::GetFixedSystemTextSize method");
+void RenderRegion::GetFixedSystemTextSize(StringBase *TheText, DocRect *BoundsRect,
+					  double* atDpi) {
+  if (BoundsRect != NULL)
+    *BoundsRect = DocRect(0,0,0,0);
+  ERROR2RAW("Attempt to call unsupported RenderRegion::GetFixedSystemTextSize method");
 }
 
 
 
-/********************************************************************************************
-
->	void RenderRegion::DrawPath(Path *pPath, PathProcessor *pCaller = NULL, PathShape shapePath=PATHSHAPE_PATH)
+/***************************************************************************
+>	void RenderRegion::DrawPath(Path *pPath, PathProcessor *pCaller = NULL,
+                                    PathShape shapePath=PATHSHAPE_PATH)
 
 	Author:		Jason_Williams (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	19/12/96
+
 	Inputs:		pPath	- Points to the path to be rendered
-				pCaller	- NULL, or if you're calling this from a path processor,
-						  pass your 'this' pointer in here to support the recursion
-				shapePath - (Graham 14/4/97)
-							A tag which describes what shape the path is.
 
-							For example, if shapeThis=PATHSHAPE_RECTANGLE, then
-							RenderRegions that want to treat rectangles
-							differently can do so.
+			pCaller - NULL, or if you're calling this from
+			a path processor, pass your 'this' pointer in
+			here to support the recursion
 
-							Ideally we should replace this so that rectangles
-							are rendered by calling the DrawRect function, circles
-							by calling the DrawCircle function, and so on.
+			shapePath - (Graham 14/4/97) A tag which
+			describes what shape the path is.
 
-	Purpose:	Renders a path (main entry-point).
-				May start a binary-recursive rendering pipeline off by calling
-				any active path processors to do their stuff.
+			For example, if shapeThis=PATHSHAPE_RECTANGLE,
+			then RenderRegions that want to treat
+			rectangles differently can do so.
+
+			Ideally we should replace this so that
+			rectangles are rendered by calling the
+			DrawRect function, circles by calling the
+			DrawCircle function, and so on.
+
+	Purpose:        Renders a path (main entry-point).  May start a
+			binary-recursive rendering pipeline off by
+			calling any active path processors to do their
+			stuff.
 
 	SeeAlso:	RenderRegion::DrawPathToOutputDevice
-
-********************************************************************************************/
-
-void RenderRegion::DrawPath(Path *pPath, PathProcessor *pCaller, PathShape shapePath)
-{
-	ERROR3IF(pPath == NULL, "Illegal NULL param");
-
-	PathProcessor *pNextProcessor = NULL;
-	if (pCaller == NULL)
-	{
-		pNextProcessor = PathProcessorStack;					// First call
+****************************************************************************/
+void RenderRegion::DrawPath(Path *pPath, PathProcessor *pCaller,
+			    PathShape shapePath) {
+  ERROR3IF(pPath == NULL, "Illegal NULL param");
+  PathProcessor *pNextProcessor = NULL;
+  if (pCaller == NULL) {
+    // First call
+      pNextProcessor = PathProcessorStack;
+    } else {
+    // Recursive call
+      pNextProcessor = pCaller->GetNextProcessor();
+    }
+  // see if any of our processors actually do anything
+  while (pNextProcessor != NULL &&
+	 (!pNextProcessor->DoesActuallyDoAnything(this))) {
+    pNextProcessor = pNextProcessor->GetNextProcessor();
+  }
+  // we seem to be getting problems with two path processor brushes on
+  // the stack if we blend between a brush and a bevel
+  if ((pNextProcessor != NULL) &&
+      (pCaller != NULL) &&
+      pNextProcessor->IsAPathProcessorBrush() &&
+      pCaller->IsAPathProcessorBrush()) {
+      BrushHandle ThisHandle =
+	((PathProcessorBrush*)pCaller)->GetBrushDefinitionHandle();
+      BrushHandle NextHandle =
+	((PathProcessorBrush*)pNextProcessor)->GetBrushDefinitionHandle();
+      if (NextHandle == ThisHandle) {
+	pNextProcessor = NULL;
+      }
+    }
+  // If we found another PathProcessor to call, recursively call it
+  if (pNextProcessor != NULL) {
+      // Does the processor change both fill & stroke independently?
+      if (pNextProcessor->WillChangeFillAndStrokeSeparately()) {
+	  // Remember current path settings - we have to poke it directly
+	  // to be efficient about changing it.
+	  BOOL WasFilled = pPath->IsFilled;
+	  BOOL WasStroked = pPath->IsStroked;
+	  // Call the PathProcessor to only fill the path, if it is
+	  // filled.  There's a hideous special case in here for
+	  // non-contoned bitmaps (which have a fill colour of
+	  // TRANSPARENT! Arrrrgh!)
+	  if (WasFilled &&
+	      (!RR_FILLCOLOUR().IsTransparent() ||
+	       ((ColourFillAttribute*)CurrentAttrs[ATTR_FILLGEOMETRY].pAttr)->IsABitmapFill())) {
+	    pPath->IsStroked = FALSE;
+	    pPath->IsFilled = TRUE;
+	    pNextProcessor->ProcessPath(pPath, this, shapePath);
+	  }
+	  // And then call it again to only stroke the path
+	  if (WasStroked && !RR_STROKECOLOUR().IsTransparent()) {
+	      pPath->IsStroked = TRUE;
+	      pPath->IsFilled = FALSE;
+	      pNextProcessor->ProcessPath(pPath, this, shapePath);
+	    }
+	  // Restore previous path settings
+	  pPath->IsFilled  = WasFilled;
+	  pPath->IsStroked = WasStroked;
+	  return;
 	}
-	else
-	{
-		pNextProcessor = pCaller->GetNextProcessor();			// Recursive call
-	}
-
-	// see if any of our processors actually do anything
-	while (pNextProcessor != NULL && (!pNextProcessor->DoesActuallyDoAnything(this)))
-	{
-		pNextProcessor = pNextProcessor->GetNextProcessor();
-	}
-
-	// we seem to be getting problems with two path processor brushes on the stack
-	// if we blend between a brush and a bevel
-	if (pNextProcessor != NULL && pCaller != NULL &&
-		pNextProcessor->IsAPathProcessorBrush() && pCaller->IsAPathProcessorBrush())
-	{
-		BrushHandle ThisHandle = ((PathProcessorBrush*)pCaller)->GetBrushDefinitionHandle();
-		BrushHandle NextHandle = ((PathProcessorBrush*)pNextProcessor)->GetBrushDefinitionHandle();
-		if (NextHandle == ThisHandle)
-			pNextProcessor = NULL;
-	}
-
-	// If we found another PathProcessor to call, recursively call it
-	if (pNextProcessor != NULL)
-	{
-		// Does the processor change both fill & stroke independently?
-		if (pNextProcessor->WillChangeFillAndStrokeSeparately())
-		{
-			// Remember current path settings - we have to poke it directly
-			// to be efficient about changing it.
-			BOOL WasFilled	= pPath->IsFilled;
-			BOOL WasStroked	= pPath->IsStroked;
-
-			// Call the PathProcessor to only fill the path, if it is filled.
-			// There's a hideous special case in here for non-contoned bitmaps (which have a 
-			// fill colour of TRANSPARENT! Arrrrgh!)
-			if (WasFilled &&
-				(!RR_FILLCOLOUR().IsTransparent() ||
-				 ((ColourFillAttribute   *) CurrentAttrs[ATTR_FILLGEOMETRY].pAttr)->IsABitmapFill()
-				)
-			   )
-			{
-				pPath->IsStroked = FALSE;
-				pPath->IsFilled = TRUE;
-				pNextProcessor->ProcessPath(pPath, this, shapePath);
-			}
-
-			// And then call it again to only stroke the path
-			if (WasStroked && !RR_STROKECOLOUR().IsTransparent())
-			{
-				pPath->IsStroked = TRUE;
-				pPath->IsFilled = FALSE;
-				pNextProcessor->ProcessPath(pPath, this, shapePath);
-			}
-			
-			// Restore previous path settings
-			pPath->IsFilled  = WasFilled;
-			pPath->IsStroked = WasStroked;
-			return;
-		}
-
-		// It can be passed through as a single path
-		pNextProcessor->ProcessPath(pPath, this, shapePath);
-		return;
-	}
-
-
-	// We have now called any active path processors, so simply output the final
-	// path to the output device
-
-	//Graham 14/4/97: Also pass along the PathShape parameter to let the renderregion
-	//know if the path is a special shape
-	DrawPathToOutputDevice(pPath, shapePath);
+      // It can be passed through as a single path
+      pNextProcessor->ProcessPath(pPath, this, shapePath);
+      return;
+    }
+  // We have now called any active path processors, so simply output
+  // the final path to the output device
+  //
+  // Graham 14/4/97: Also pass along the PathShape parameter to let
+  // the renderregion know if the path is a special shape
+  DrawPathToOutputDevice(pPath, shapePath);
 }
 
-
-
 /********************************************************************************************
-
 >	void RenderRegion::PushPathProcessor(PathProcessor *pProcessor)
 
 	Author:		Jason_Williams (Xara Group Ltd) <camelotdev@xara.com>
@@ -5256,117 +5235,94 @@ void RenderRegion::DrawPath(Path *pPath, PathProcessor *pCaller, PathShape shape
 	Notes:		The render region must be supplied a new PathProcessor every
 				time you push one, because PathProcessors generally have an
 				internal state, and this must be preserved when background
-				rendering or multi-threading causes the same thing to be 
+				rendering or multi-threading causes the same thing to be
 				rendered "simultaneously".
 
 	SeeAlso:	PathProcessor; RenderRegion::PopPathProcessor
-
 ********************************************************************************************/
-
-void RenderRegion::PushPathProcessor(PathProcessor *pProcessor)
-{
-	ERROR3IF(pProcessor == NULL, "Illegal NULL param");
-
-
+void RenderRegion::PushPathProcessor(PathProcessor *pProcessor) {
+  ERROR3IF(pProcessor == NULL, "Illegal NULL param");
 #if _DEBUG
-	// BLOCK
-	{
-		// In debug builds, scan the entire PathProcessor stack, checking that this
-		// processor is ot already in it.
-		ERROR3IF(pProcessor->GetNextProcessor() != NULL,
-					"PushPathProcessor - processor is already in a stack");
-		PathProcessor *pPP = PathProcessorStack;
-		while (pPP != NULL)
-		{
-//			TRACEUSER( "Jason", _T("  "));		// More indent for each processor on the stack
-			ERROR3IF(pPP == pProcessor, "PushPathProcessor - Processor pushed TWICE!");
-			pPP = pPP->GetNextProcessor();
-		}
-	}
-
-//	TRACEUSER( "Jason", _T("  >> PushPathProcessor %x\n"), pProcessor);
+  // BLOCK
+  {
+    // In debug builds, scan the entire PathProcessor stack, checking
+    // that this processor is ot already in it.
+    ERROR3IF(pProcessor->GetNextProcessor() != NULL,
+	     "PushPathProcessor - processor is already in a stack");
+    PathProcessor *pPP = PathProcessorStack;
+    while (pPP != NULL) {
+      // More indent for each processor on the stack
+      TRACEUSER("path-processor", _T("  "));
+      ERROR3IF(pPP == pProcessor,
+	       "PushPathProcessor - Processor pushed TWICE!");
+      pPP = pPP->GetNextProcessor();
+    }
+  }
+  TRACEUSER("path-processor", _T("  >> PushPathProcessor %x\n"), pProcessor);
 #endif
-
-	if (pProcessor != NULL)
-	{
-		pProcessor->SetNextProcessor(PathProcessorStack);		// Make TOS the second
-		PathProcessorStack = pProcessor;						// And point TOS at new item
-	}
+  if (pProcessor != NULL) {
+    // Make TOS the second
+    pProcessor->SetNextProcessor(PathProcessorStack);
+    // And point TOS at new item
+    PathProcessorStack = pProcessor;
+  }
 }
 
-
-
-/********************************************************************************************
-
+/***************************************************************************
 >	void RenderRegion::PopPathProcessor(void)
 
 	Author:		Jason_Williams (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	20/12/96
-
-	Purpose:	Pops a PathProcessor from the top of the rendering PathProcessor stack
-
+	Purpose:        Pops a PathProcessor from the top of the rendering
+	                PathProcessor stack
 	Notes:		The PathProcessor is deleted after being popped.
-
 	SeeAlso:	PathProcessor; RenderRegion::PushPathProcessor
-
-********************************************************************************************/
-
-void RenderRegion::PopPathProcessor(void)
-{
+****************************************************************************/
+void RenderRegion::PopPathProcessor(void) {
 #if _DEBUG
-	// BLOCK
-	{
-		PathProcessor *pPP = PathProcessorStack;
-		while (pPP != NULL)
-		{
-//			TRACEUSER( "Jason", _T("  "));		// More indent for each processor on the stack
-			pPP = pPP->GetNextProcessor();
-		}
-
-//		TRACEUSER( "Jason", _T("<< PopPathProcessor %x\n"), PathProcessorStack);
-	}
+  // BLOCK
+  {
+    PathProcessor *pPP = PathProcessorStack;
+    while (pPP != NULL) {
+      // More indent for each processor on the stack
+      TRACEUSER("path-processor", _T("  "));
+      pPP = pPP->GetNextProcessor();
+    }
+    TRACEUSER("path-processor", _T("<< PopPathProcessor %x\n"), PathProcessorStack);
+  }
 #endif
-
-
-	PathProcessor *TOS = PathProcessorStack;
-
-	if (TOS != NULL)
-	{
-		PathProcessorStack = TOS->GetNextProcessor();	// Link TOS to 2nd processor in chain
-		TOS->SetNextProcessor(NULL);					// And make the popped one "clean"
-
-		// Finally, delete the path processor
-		delete TOS;
-	}
+  PathProcessor *TOS = PathProcessorStack;
+  if (TOS != NULL) {
+    // Link TOS to 2nd processor in chain
+    PathProcessorStack = TOS->GetNextProcessor();
+    // And make the popped one "clean"
+    TOS->SetNextProcessor(NULL);
+    // Finally, delete the path processor
+    delete TOS;
+  }
 }
 
-/********************************************************************************************
-
+/***************************************************************************
 >	void RenderRegion::EnableAllBrushPathProcessors(BOOL Enable)
-
 	Author:		Jason_Williams (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	20/12/96
 	Inputs:		Enable - whether we wish to enable the processors or not
-
-	Purpose:	Enables or disables all the brush path processors on the stack.
-
-********************************************************************************************/
-
-void RenderRegion::EnableAllBrushPathProcessors(BOOL Enable)
-{
-	PathProcessor* pPP = PathProcessorStack;
-
-	while (pPP != NULL)
-	{
-		if (pPP->IsAPathProcessorBrush())
-			pPP->SetDisabled(!Enable);
-		pPP = pPP->GetNextProcessor();
-	}
+	Purpose:        Enables or disables all the brush path processors on
+	                the stack.
+****************************************************************************/
+void RenderRegion::EnableAllBrushPathProcessors(BOOL Enable) {
+  PathProcessor* pPP = PathProcessorStack;
+  while (pPP != NULL) {
+    if (pPP->IsAPathProcessorBrush()) {
+      pPP->SetDisabled(!Enable);
+    }
+    pPP = pPP->GetNextProcessor();
+  }
 }
 
-/********************************************************************************************
-
->	BOOL RenderRegion::DrawPathArrowHeads(DocCoord* Coords, PathVerb* Verbs, INT32 NumCoords)
+/***************************************************************************
+>	BOOL RenderRegion::DrawPathArrowHeads(DocCoord* Coords, PathVerb* Verbs,
+                                              INT32 NumCoords)
 
 	Author:		Will_Cowling (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	3/4/95
@@ -5374,303 +5330,231 @@ void RenderRegion::EnableAllBrushPathProcessors(BOOL Enable)
 	Purpose:	Draws arrows heads on the start or end of an open path,
 				according to the current ArrowHead Attributes.
 	SeeAlso:	-
-
-********************************************************************************************/
-
-BOOL RenderRegion::DrawPathArrowHeads(DocCoord* Coords, PathVerb* Verbs, INT32 NumCoords)
-{
-	BOOL ArrowRendered = FALSE;
-
-	if (!RR_STARTARROW().IsNullArrow())
-	{
-		INT32 PathIndex = 0;
-		DocCoord ArrowCentre;
-		DocCoord ArrowDirection;
-		DocCoord ArrowBase;
-
-		// Find the first position of an ArrowHead
-		BOOL GotPos = ArrowRec::GetFirstArrowPos(TRUE,
-												 Coords, Verbs, NumCoords, 
-									   			 &PathIndex, &ArrowCentre, &ArrowDirection);
-
-		while (GotPos)
-		{
-			DrawArrowHead(RR_STARTARROW(), ArrowCentre, ArrowDirection, &ArrowBase);
-
-			// DMc Update 25/2/99 so that arrows are drawn on the path - not after it !
-			// find the coord which caused the arrow to be drawn
-			BOOL bFound = FALSE;
-
-			INT32 i;
-			for (i = PathIndex - 1  ; i >= 0 && !bFound; i--)
-			{
-				if (Verbs[i] == PT_MOVETO)
-				{
-					bFound = TRUE;
-				}
-			}
-
-			if (bFound && !(RR_STARTARROW().m_bExtendPath))
-			{
-				// move the coord in the path back by arrow size
-				Coords[i+1].x = ArrowBase.x;
-				Coords[i+1].y = ArrowBase.y;						
-			}
-
-			ArrowRendered = TRUE;
-
-			// Find the next Arrow position (if there are any more subpaths)
-			GotPos = ArrowRec::GetNextArrowPos(TRUE,
-									 		   Coords, Verbs, NumCoords, 
-								     		   &PathIndex, &ArrowCentre, &ArrowDirection);
-		}
+****************************************************************************/
+BOOL RenderRegion::DrawPathArrowHeads(DocCoord* Coords, PathVerb* Verbs,
+				      INT32 NumCoords) {
+  BOOL ArrowRendered = FALSE;
+  if (!RR_STARTARROW().IsNullArrow()) {
+    INT32 PathIndex = 0;
+    DocCoord ArrowCentre;
+    DocCoord ArrowDirection;
+    DocCoord ArrowBase;
+    // Find the first position of an ArrowHead
+    BOOL GotPos = ArrowRec::GetFirstArrowPos(TRUE,
+					     Coords, Verbs, NumCoords,
+					     &PathIndex, &ArrowCentre, &ArrowDirection);
+    while (GotPos) {
+	DrawArrowHead(RR_STARTARROW(), ArrowCentre, ArrowDirection, &ArrowBase);
+	// DMc Update 25/2/99 so that arrows are drawn on the path - not after it !
+	// find the coord which caused the arrow to be drawn
+	BOOL bFound = FALSE;
+	INT32 i;
+	for (i = PathIndex - 1  ; i >= 0 && !bFound; i--) {
+	  if (Verbs[i] == PT_MOVETO) {
+	    bFound = TRUE;
+	  }
 	}
-
-	if (!RR_ENDARROW().IsNullArrow())
-	{
-		INT32 PathIndex = 0;
-		DocCoord ArrowCentre;
-		DocCoord ArrowDirection;
-		DocCoord ArrowBase;
-
-		// Find the first position of an ArrowHead
-		BOOL GotPos = ArrowRec::GetFirstArrowPos(FALSE,
-												 Coords, Verbs, NumCoords, 
-									   			 &PathIndex, &ArrowCentre, &ArrowDirection);
-		while (GotPos)
-		{
-			DrawArrowHead(RR_ENDARROW(), ArrowCentre, ArrowDirection, &ArrowBase);
-
-			// move the coordinate on the path
-			if (!(RR_ENDARROW().m_bExtendPath))
-			{
-				Coords[PathIndex-1].x = ArrowBase.x;
-				Coords[PathIndex-1].y = ArrowBase.y;
-			}
-
-			ArrowRendered = TRUE;
-
-			// Find the next Arrow position (if there are any more subpaths)
-			GotPos = ArrowRec::GetNextArrowPos(FALSE,
-									 		   Coords, Verbs, NumCoords, 
-								     		   &PathIndex, &ArrowCentre, &ArrowDirection);
-		}
+	if (bFound && !(RR_STARTARROW().m_bExtendPath)) {
+	  // move the coord in the path back by arrow size
+	  Coords[i+1].x = ArrowBase.x;
+	  Coords[i+1].y = ArrowBase.y;
 	}
-
-	return ArrowRendered;
+	ArrowRendered = TRUE;
+	// Find the next Arrow position (if there are any more subpaths)
+	GotPos = ArrowRec::GetNextArrowPos(TRUE,
+					   Coords, Verbs, NumCoords,
+					   &PathIndex, &ArrowCentre, &ArrowDirection);
+      }
+  }
+  if (!RR_ENDARROW().IsNullArrow()) {
+    INT32 PathIndex = 0;
+    DocCoord ArrowCentre;
+    DocCoord ArrowDirection;
+    DocCoord ArrowBase;
+    // Find the first position of an ArrowHead
+    BOOL GotPos = ArrowRec::GetFirstArrowPos(FALSE,
+					     Coords, Verbs, NumCoords,
+					     &PathIndex, &ArrowCentre, &ArrowDirection);
+    while (GotPos) {
+      DrawArrowHead(RR_ENDARROW(), ArrowCentre, ArrowDirection, &ArrowBase);
+      // move the coordinate on the path
+      if (!(RR_ENDARROW().m_bExtendPath)) {
+	Coords[PathIndex-1].x = ArrowBase.x;
+	Coords[PathIndex-1].y = ArrowBase.y;
+      }
+      ArrowRendered = TRUE;
+      // Find the next Arrow position (if there are any more subpaths)
+      GotPos = ArrowRec::GetNextArrowPos(FALSE,
+					 Coords, Verbs, NumCoords,
+					 &PathIndex, &ArrowCentre, &ArrowDirection);
+    }
+  }
+  return ArrowRendered;
 }
 
-/********************************************************************************************
-
+/***************************************************************************
 >	BOOL RenderRegion::DrawArrowHead(ArrowRec &ArrowToDraw,
-									 DocCoord &Centre, DocCoord &Direction)
+                                         DocCoord &Centre, DocCoord &Direction)
 
 	Author:		Will_Cowling (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	3/4/95
-	Inputs:		An ArrowRec defining the Arrowhead, the Centre point of the Arrow and a 
-				point defining the direction of the Arrow.
+	Inputs:         An ArrowRec defining the Arrowhead, the Centre point
+			of the Arrow and a point defining the
+			direction of the Arrow.
 	Purpose:	Draw an Arrow head on the start or end of a line.
 	SeeAlso:	-
-
 ********************************************************************************************/
-
-BOOL RenderRegion::DrawArrowHead(ArrowRec &ArrowToDraw,
-								 DocCoord &Centre, DocCoord &Direction, DocCoord * RetnCentre)
-{
-	// Get a matrix to transform the Arrow
-	Trans2DMatrix Trans;
-	ArrowToDraw.GetArrowMatrix(Centre, Direction, RR_LINEWIDTH(), &Trans);
-
-	// Get the current Render Matrix, and merge the arrow head
-	// matrix with it.
-//	Matrix NewRenderMatrix = Trans.GetMatrix();
-//	NewRenderMatrix *= RenderMatrix;
-
-	Path* TransPath = new Path();
-	if (TransPath == NULL)
-		return FALSE;
-
-	BOOL 	ok = TransPath->Initialise(ArrowToDraw.ArrowShape->GetNumCoords());
-	if (ok) ok = TransPath->CopyPathDataFrom(ArrowToDraw.ArrowShape);
-
-	if (!ok)
-	{
-		// Tidy up if we failed
-		delete TransPath;
-		return FALSE;
-	}
-
-	// calculate the start point of the arrow & put it into RetnCentre
-	DocCoord Base;
-	ArrowToDraw.GetArrowBase(&Base);
-	
-	Trans.Transform(&Base, 1);
-
-	if (RetnCentre)
-	{
-		*RetnCentre = Base;
-	}
-
-	Trans.Transform(TransPath->GetCoordArray(), 
-					TransPath->GetNumCoords() );
-
-    SaveContext();	// We have to change the Line and Fill colours
-
-	// First make sure we don't try and draw Arrows on our Arrow heads !!!
-	BOOL OldStartArrowState = RR_STARTARROW().IsNull;				
-	BOOL OldEndArrowState 	= RR_ENDARROW().IsNull;				
-	RR_STARTARROW().IsNull = TRUE;				
-    RR_ENDARROW().IsNull   = TRUE;			
-
-	// Set the fill colour to the line colour and the line colour to transparent
-    SetFillColour(RR_STROKECOLOUR());
-	SetLineColour(COLOUR_TRANS);
-
-	// Now set the Fill transparency to be a flat transparency, the
-	// same as the current line transparency.
-	FlatTranspFillAttribute* pAttr = new FlatTranspFillAttribute;
-	pAttr->SetStartTransp(RR_STROKETRANSP()->GetStartTransp());
-	pAttr->SetTranspType(RR_STROKETRANSP()->GetTranspType());
-	SetTranspFillGeometry(pAttr, TRUE);
-
-	// Make sure the Arrow Path is valid.
-//	ArrowToDraw.ArrowShape->IsFilled  = TRUE;
-//	ArrowToDraw.ArrowShape->IsStroked = FALSE;
-	TransPath->IsFilled  = TRUE;
-	TransPath->IsStroked = FALSE;
-
-	// Draw the Arrow head
-//	DrawPath(ArrowToDraw.ArrowShape);
-
-	DrawPath(TransPath);
-
-	RR_STARTARROW().IsNull = OldStartArrowState;				
-    RR_ENDARROW().IsNull   = OldEndArrowState;			
-
-	RestoreContext();	// Get our Attributes Back.
-
-	// Restore the old Rendering Matrix
-
-	delete TransPath;
-
-	return TRUE;
+BOOL RenderRegion::DrawArrowHead(ArrowRec &ArrowToDraw, DocCoord &Centre,
+				 DocCoord &Direction, DocCoord * RetnCentre) {
+  // Get a matrix to transform the Arrow
+  Trans2DMatrix Trans;
+  ArrowToDraw.GetArrowMatrix(Centre, Direction, RR_LINEWIDTH(), &Trans);
+  // Get the current Render Matrix, and merge the arrow head matrix
+  // with it.
+  //
+  // Matrix NewRenderMatrix = Trans.GetMatrix();
+  // NewRenderMatrix *= RenderMatrix;
+  Path* TransPath = new Path();
+  if (TransPath == NULL) {
+    return FALSE;
+  }
+  BOOL 	ok = TransPath->Initialise(ArrowToDraw.ArrowShape->GetNumCoords());
+  if (ok) {
+    ok = TransPath->CopyPathDataFrom(ArrowToDraw.ArrowShape);
+  }
+  if (!ok) {
+      // Tidy up if we failed
+      delete TransPath;
+      return FALSE;
+    }
+  // calculate the start point of the arrow & put it into RetnCentre
+  DocCoord Base;
+  ArrowToDraw.GetArrowBase(&Base);
+  Trans.Transform(&Base, 1);
+  if (RetnCentre) {
+      *RetnCentre = Base;
+    }
+  Trans.Transform(TransPath->GetCoordArray(),
+		  TransPath->GetNumCoords() );
+  // We have to change the Line and Fill colours
+  SaveContext();
+  // First make sure we don't try and draw Arrows on our Arrow heads !!!
+  BOOL OldStartArrowState = RR_STARTARROW().IsNull;
+  BOOL OldEndArrowState 	= RR_ENDARROW().IsNull;
+  RR_STARTARROW().IsNull = TRUE;
+  RR_ENDARROW().IsNull   = TRUE;
+  // Set the fill colour to the line colour and the line colour to transparent
+  SetFillColour(RR_STROKECOLOUR());
+  SetLineColour(COLOUR_TRANS);
+  // Now set the Fill transparency to be a flat transparency, the
+  // same as the current line transparency.
+  FlatTranspFillAttribute* pAttr = new FlatTranspFillAttribute;
+  pAttr->SetStartTransp(RR_STROKETRANSP()->GetStartTransp());
+  pAttr->SetTranspType(RR_STROKETRANSP()->GetTranspType());
+  SetTranspFillGeometry(pAttr, TRUE);
+  // Make sure the Arrow Path is valid.
+  //	ArrowToDraw.ArrowShape->IsFilled  = TRUE;
+  //	ArrowToDraw.ArrowShape->IsStroked = FALSE;
+  TransPath->IsFilled  = TRUE;
+  TransPath->IsStroked = FALSE;
+  // Draw the Arrow head
+  //	DrawPath(ArrowToDraw.ArrowShape);
+  DrawPath(TransPath);
+  RR_STARTARROW().IsNull = OldStartArrowState;
+  RR_ENDARROW().IsNull   = OldEndArrowState;
+  RestoreContext();	// Get our Attributes Back.
+  // Restore the old Rendering Matrix
+  delete TransPath;
+  return TRUE;
 }
 
-
-BOOL RenderRegion::DrawTransformedBitmap(NodeBitmap *pNodeBitmap)
-{
-	// If we are not drawing complex shapes and this shape is, then return
-	RRCaps Caps;
-	GetRenderRegionCaps(&Caps);
-	if ((!RenderComplexShapes) && (TestForComplexShape(&Caps)))
-		return TRUE;
-
-	if ((!RenderComplexShapes) && (pNodeBitmap->NeedsTransparency()))
-		return TRUE;
-
-	KernelBitmap* pkBitmap = pNodeBitmap->GetBitmap();
-	if (pkBitmap==NULL || pkBitmap->GetWidth()==0 || pkBitmap->GetHeight()==0)
-		return TRUE;
-
-	// By default, we can't do arbitrarily transformed bitmaps - use a bitmap fill.
-	SaveContext();
-
-	// No lines on the rectangle
-	SetLineColour(COLOUR_TRANS);
-	SetLineWidth(0);
-
-	if (RRQuality.GetFillQuality() == Quality::Bitmaps)
-	{
-		// The quality is set to show Bitmaps, with everything else in outline
-		// mode, so we'll fake this by temorarily setting the quality to 'Solid'
-		// just while we render this node.
-
-		Quality NewQuality;
-		NewQuality.SetQuality(31);	// Force solid fills while we render this node
-
-		QualityAttribute* pQualityAttr = new QualityAttribute(NewQuality);
-		SetQuality(pQualityAttr, TRUE);
-	}
-
-	// Simple bitmap fill which fills the whole shape
-	BitmapFillAttribute *pBitmapAttr = new BitmapFillAttribute;
-	pBitmapAttr->GetBitmapRef()->SetBitmap(pNodeBitmap->GetBitmap());
-
-	if (IsVeryMono() && !pNodeBitmap->NeedsTransparency())
-	{
-		// VeryMono, so plot as black (unless it's a masked bitmap)
-		DocColour ColBlack = COLOUR_BLACK;
-		pBitmapAttr->SetStartColour(&ColBlack);
-	}
-
-	// (ChrisG - 7/11/00) Removed as the CanBeContoned bool is not supported. 
-	//	This default value was stopping derived render regions from overriding
-	//	this function, so almost all bitmaps were drawn by this code...
-	// Err no ChrisG the header file used to be CanBeContoned = TRUE
-	// so we DO RUN THIS CODE all the time ie all bitmaps CAN be contoned (sjk 19/11/00)
-	else // if(CanBeContoned)
-	{
-		if (pNodeBitmap->GetStartColour())
-			pBitmapAttr->SetStartColour(pNodeBitmap->GetStartColour());
-	
-		if (pNodeBitmap->GetEndColour())
-			pBitmapAttr->SetEndColour(pNodeBitmap->GetEndColour());
-	}
-
-	DocCoord *Coords = pNodeBitmap->InkPath.GetCoordArray();
-
-	pBitmapAttr->StartPoint = Coords[3];
-	pBitmapAttr->EndPoint   = Coords[2];
-	pBitmapAttr->EndPoint2 	= Coords[0];
-
-	// Set bitmap attribute, and get the render region to throw it away when it's finished
-	// with (hence the TRUE parameter).
-	SetFillGeometry(pBitmapAttr, TRUE);
-
-	// Set the mapping to have no repeat, otherwise we get artifacts at the edges when
-	// anti-aliasing is enabled (see bug 1391).
-	FillMappingLinearAttribute *pNoRepeatAttr = new FillMappingLinearAttribute;
-
-	// Repeat value of '3' means 'repeat inverted' (there are no symbolic names for
-	// these repeat values - shout at Will if you want some!).
-//	pNoRepeatAttr->Repeat = 3;
-	pNoRepeatAttr->Repeat = 0;
-
-	// Set mapping attribute, and get the render region to throw it away when it's finished
-	// with (hence the TRUE parameter).
-	SetFillMapping(pNoRepeatAttr, TRUE);
-
-	// Draw the bitmap by rendering a bitmap filled path.
-	pNodeBitmap->InkPath.IsFilled = TRUE;
-	DrawPath(&pNodeBitmap->InkPath);
-
-	RestoreContext();
-
-	// All done
-	return TRUE;
+BOOL RenderRegion::DrawTransformedBitmap(NodeBitmap *pNodeBitmap) {
+  // If we are not drawing complex shapes and this shape is, then return
+  RRCaps Caps;
+  GetRenderRegionCaps(&Caps);
+  if ((!RenderComplexShapes) && (TestForComplexShape(&Caps)))
+    return TRUE;
+  if ((!RenderComplexShapes) && (pNodeBitmap->NeedsTransparency()))
+    return TRUE;
+  KernelBitmap* pkBitmap = pNodeBitmap->GetBitmap();
+  if (pkBitmap==NULL || pkBitmap->GetWidth()==0 || pkBitmap->GetHeight()==0)
+    return TRUE;
+  // By default, we can't do arbitrarily transformed bitmaps - use a bitmap fill.
+  SaveContext();
+  // No lines on the rectangle
+  SetLineColour(COLOUR_TRANS);
+  SetLineWidth(0);
+  if (RRQuality.GetFillQuality() == Quality::Bitmaps) {
+      // The quality is set to show Bitmaps, with everything else in
+      // outline mode, so we'll fake this by temorarily setting the
+      // quality to 'Solid' just while we render this node.
+      Quality NewQuality;
+      // Force solid fills while we render this node
+      NewQuality.SetQuality(31);
+      QualityAttribute* pQualityAttr = new QualityAttribute(NewQuality);
+      SetQuality(pQualityAttr, TRUE);
+    }
+  // Simple bitmap fill which fills the whole shape
+  BitmapFillAttribute *pBitmapAttr = new BitmapFillAttribute;
+  pBitmapAttr->GetBitmapRef()->SetBitmap(pNodeBitmap->GetBitmap());
+  if (IsVeryMono() && !pNodeBitmap->NeedsTransparency())
+    {
+      // VeryMono, so plot as black (unless it's a masked bitmap)
+      DocColour ColBlack = COLOUR_BLACK;
+      pBitmapAttr->SetStartColour(&ColBlack);
+    }
+  // (ChrisG - 7/11/00) Removed as the CanBeContoned bool is not supported.
+  //	This default value was stopping derived render regions from overriding
+  //	this function, so almost all bitmaps were drawn by this code...
+  // Err no ChrisG the header file used to be CanBeContoned = TRUE
+  // so we DO RUN THIS CODE all the time ie all bitmaps CAN be contoned (sjk 19/11/00)
+  else // if(CanBeContoned)
+    {
+      if (pNodeBitmap->GetStartColour())
+	pBitmapAttr->SetStartColour(pNodeBitmap->GetStartColour());
+      if (pNodeBitmap->GetEndColour())
+	pBitmapAttr->SetEndColour(pNodeBitmap->GetEndColour());
+    }
+  DocCoord *Coords = pNodeBitmap->InkPath.GetCoordArray();
+  pBitmapAttr->StartPoint = Coords[3];
+  pBitmapAttr->EndPoint   = Coords[2];
+  pBitmapAttr->EndPoint2 	= Coords[0];
+  // Set bitmap attribute, and get the render region to throw it away
+  // when it's finished with (hence the TRUE parameter).
+  SetFillGeometry(pBitmapAttr, TRUE);
+  // Set the mapping to have no repeat, otherwise we get artifacts at
+  // the edges when anti-aliasing is enabled (see bug 1391).
+  FillMappingLinearAttribute *pNoRepeatAttr = new FillMappingLinearAttribute;
+  // Repeat value of '3' means 'repeat inverted' (there are no symbolic names for
+  // these repeat values - shout at Will if you want some!).
+  //	pNoRepeatAttr->Repeat = 3;
+  pNoRepeatAttr->Repeat = 0;
+  // Set mapping attribute, and get the render region to throw it away
+  // when it's finished with (hence the TRUE parameter).
+  SetFillMapping(pNoRepeatAttr, TRUE);
+  // Draw the bitmap by rendering a bitmap filled path.
+  pNodeBitmap->InkPath.IsFilled = TRUE;
+  DrawPath(&pNodeBitmap->InkPath);
+  RestoreContext();
+  // All done
+  return TRUE;
 }
 
 /********************************************************************************************
-
 >	EFFECTTYPE RenderRegion::GetFillEffect()
 
 	Author:		Will_Cowling (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	24/8/94
 	Returns:	TRUE, if should use HSV fades.
-				FALSE, if should use RGB fades.
+			FALSE, if should use RGB fades.
 	Purpose:	Decide what type of colour fade to use.
 	Scope:		Public
-
 ********************************************************************************************/
-
-EFFECTTYPE RenderRegion::GetFillEffect()
-{
+EFFECTTYPE RenderRegion::GetFillEffect() {
 	// Get the current Fill Effect
 	FillEffectAttribute* FillEffect = RR_FILLEFFECT();
-
 	// What kind of fill effect is this ?
 	CCRuntimeClass* Effect = FillEffect->GetRuntimeClass();
-
 	if (Effect == CC_RUNTIME_CLASS(FillEffectFadeAttribute))
 		return EFFECT_RGB;			// Use RGB space
 
@@ -5680,10 +5564,8 @@ EFFECTTYPE RenderRegion::GetFillEffect()
 	if (Effect == CC_RUNTIME_CLASS(FillEffectAltRainbowAttribute))
 		return EFFECT_HSV_LONG;		// Use HSV INT32 path
 
-	return EFFECT_RGB;				// Default to RGB space	
+	return EFFECT_RGB;				// Default to RGB space
 }
-
-
 
 /********************************************************************************************
 
@@ -5758,8 +5640,7 @@ void RenderRegion::DrawDashLine(const DocCoord &StartPoint, const DocCoord &EndP
 	DrawPath(&ThePath);
 }
 
-/********************************************************************************************
-
+/***************************************************************************
 >	virtual void RenderRegion::DrawPixelRect(DocRect *RectToRender)
 
 	Author:		Neville_Humphrys (Xara Group Ltd) <camelotdev@xara.com>
@@ -5767,58 +5648,55 @@ void RenderRegion::DrawDashLine(const DocCoord &StartPoint, const DocCoord &EndP
 	Inputs:		RectToRender - The rectangle we wish to render.
 	Outputs:	-
 	Returns:	-
-	Purpose:	To try and plot a single pixel rectangle outline. It does this by using filled
-				rectangles rather than just drawing the line itself. This is required because
-				although GDI and GDraw fills can be made to match up, their outlines can't
-				(at the time of writing).
-				Assumes fill colour and line colour have already been set up along with a line
-				width, usually assumed to be zero which means plot single-pixel lines. Usually,
-				the fill colour is set to be the required line colour and the line colour is
-				set to be transparent (COLOUR_TRANS).
-	SeeAlso:	OSRenderRegion::DrawRect; GRenderRegion::DrawRect; RenderRegion::DrawPixelLine;
+	Purpose:        To try and plot a single pixel rectangle outline. It
+			does this by using filled rectangles rather
+			than just drawing the line itself. This is
+			required because although GDI and GDraw fills
+			can be made to match up, their outlines can't
+			(at the time of writing).  Assumes fill colour
+			and line colour have already been set up along
+			with a line width, usually assumed to be zero
+			which means plot single-pixel lines. Usually,
+			the fill colour is set to be the required line
+			colour and the line colour is set to be
+			transparent (COLOUR_TRANS).
+	SeeAlso:	OSRenderRegion::DrawRect; GRenderRegion::DrawRect;
+                        RenderRegion::DrawPixelLine;
+****************************************************************************/
+void RenderRegion::DrawPixelRect(DocRect *RectToRender) {
+  // Below is some conditional code.
+  // The correct code is directly below in the IF clause and just in fact calls the standard
+  // DrawRect call.
+  // The bodged version is the code in the ELSE clause and renders the single pixel outline
+  // using filled rectangles. This is required because although GDI and GDraw fills
+  // can be made to match up, their outlines can't (at the time of writing).
+  //
+  // By the way, Gavin says, it's faster to plot four upright rects than to stroke a path
+  // to become the outline of the page!!!
 
-********************************************************************************************/
+  // Get the scaled pixel size for the view
+  FIXED16 ScaledPixelWidth,
+    ScaledPixelHeight;
+  RenderView->GetScaledPixelSize(&ScaledPixelWidth, &ScaledPixelHeight);
 
-void RenderRegion::DrawPixelRect(DocRect *RectToRender)
-{
-// Below is some conditional code.
-// The correct code is directly below in the IF clause and just in fact calls the standard
-// DrawRect call.
-// The bodged version is the code in the ELSE clause and renders the single pixel outline
-// using filled rectangles. This is required because although GDI and GDraw fills
-// can be made to match up, their outlines can't (at the time of writing).
-//
-// By the way, Gavin says, it's faster to plot four upright rects than to stroke a path
-// to become the outline of the page!!!
-//
-#if 0
-		// Draw that page rectangle	using the standard call
-    	DrawRect(RectToRender); 
-#else
-		// Get the scaled pixel size for the view
-		FIXED16 ScaledPixelWidth,
-				ScaledPixelHeight;
-		RenderView->GetScaledPixelSize(&ScaledPixelWidth, &ScaledPixelHeight);
+  // Draw a rectangle using 4 filled rectangles.
+  DocRect VertRect(RectToRender->lo.x,
+		   RectToRender->lo.y,
+		   RectToRender->lo.x + ScaledPixelWidth.MakeLong(),
+		   RectToRender->hi.y + ScaledPixelHeight.MakeLong());
+  DrawRect(&VertRect);				// Left
 
-		// Draw a rectangle using 4 filled rectangles.
-		DocRect VertRect(RectToRender->lo.x,
-						 RectToRender->lo.y,
-						 RectToRender->lo.x + ScaledPixelWidth.MakeLong(),
-						 RectToRender->hi.y + ScaledPixelHeight.MakeLong());
-		DrawRect(&VertRect);				// Left
+  VertRect.Translate(RectToRender->Width(),0);
+  DrawRect(&VertRect);				// Right
 
-		VertRect.Translate(RectToRender->Width(),0);
-		DrawRect(&VertRect);				// Right
+  DocRect HorzRect(RectToRender->lo.x,
+		   RectToRender->lo.y,
+		   RectToRender->hi.x,
+		   RectToRender->lo.y + ScaledPixelHeight.MakeLong());
+  DrawRect(&HorzRect);				// Bottom
 
-		DocRect HorzRect(RectToRender->lo.x,
-						 RectToRender->lo.y,
-						 RectToRender->hi.x,
-						 RectToRender->lo.y + ScaledPixelHeight.MakeLong());
-		DrawRect(&HorzRect);				// Bottom
-
-		HorzRect.Translate(0,RectToRender->Height());
-		DrawRect(&HorzRect);				// Top
-#endif
+  HorzRect.Translate(0,RectToRender->Height());
+  DrawRect(&HorzRect);				// Top
 }
 
 /********************************************************************************************
@@ -5855,7 +5733,7 @@ void RenderRegion::DrawPixelLine(const DocCoord &StartPoint, const DocCoord &End
 // to become the outline of the page!!!
 //
 #if 0
-    	DrawLine(StartPoint, EndPoint); 
+    	DrawLine(StartPoint, EndPoint);
 #else
 		// Get the scaled pixel size for the view
 		FIXED16 ScaledPixelWidth,
@@ -5921,14 +5799,14 @@ AttributeValue *RenderRegion::GetCurrentAttribute(UINT32 Index)
 
 ********************************************************************************************/
 
-BOOL RenderRegion::TryToFuzzyClip(Path* pPath, DocCoord** pNewCoords, PathVerb** pNewVerbs, 
+BOOL RenderRegion::TryToFuzzyClip(Path* pPath, DocCoord** pNewCoords, PathVerb** pNewVerbs,
 								  UINT32 *NewNumCoords)
 {
 	// Start out by setting all the return values to something sensible
 	*pNewCoords = NULL;
 	*pNewVerbs = NULL;
 	*NewNumCoords = 0;
-	
+
 	// Decide if we need to clip this path in order to draw it
 	// Only bother if we are zoomed in a bit (400%)
 	if (RenderView->GetViewScale() > FIXED16(4))
@@ -5937,7 +5815,7 @@ BOOL RenderRegion::TryToFuzzyClip(Path* pPath, DocCoord** pNewCoords, PathVerb**
 		DocCoord* pOldCoords = pPath->GetCoordArray();
 		PathVerb* pOldVerbs = pPath->GetVerbArray();
 		size_t OldNumCoords = (size_t)pPath->GetNumCoords();
-		
+
 		// Allow the new path to have a few extra points in it as this is possible.
 		// If it gets to be more than this, then it will simply be unclipped
 		// Usually the number of points is reduced when clipping.
@@ -6033,7 +5911,7 @@ void RenderRegion::SetupFuzzyClipRects()
 BOOL RenderRegion::RenderChar(WCHAR ch, Matrix* pMatrix)
 {
 	ERROR2IF(pMatrix==NULL,FALSE,"RenderRegion::RenderChar() - pMatrix==NULL");
-	
+
 	// create the char's path
 	Path* pCharPath=CreateCharPath(ch,pMatrix);
 	if (pCharPath==NULL)
@@ -6136,7 +6014,7 @@ Path* RenderRegion::CreateCharPath(WCHAR ch, Matrix* pMatrix)
 	DocCoord* pCoords=pPath->GetCoordArray();
 	BOOL ok=(pCoords!=NULL);
 	if (ok)	matrix.transform((Coord*)pCoords, points);
-	
+
 	// if not OK, delete path and set return value to NULL
 	if (!ok)
 	{
@@ -6181,7 +6059,7 @@ BOOL RenderRegion::GetCharAttributeMatrix(Matrix* pAttrMatrix)
 
 	Author:		Rik_Heywood (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	20/3/95
-	Returns:	The rect of the actual region. 
+	Returns:	The rect of the actual region.
 	Purpose:	This function returns the size of the whole render region.
 				Note that this may be different from the Clip rect. If the region is banded,
 				then the Clip rect will hold the rect of the band that is being rendered,
@@ -6218,7 +6096,7 @@ void RenderRegion::ResizeRegion(DocRect &NewClipRect)
 	Author:		Rik_Heywood (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	4/5/95
 	Purpose:	Resets the render region (after it has been merged), so that it no longer
-				thinks it is banded etc. It also takes the Regions rectangle from the 
+				thinks it is banded etc. It also takes the Regions rectangle from the
 				Current Clipping rectangle, so set this correctly before calling this
 				function
 
@@ -6232,7 +6110,7 @@ void RenderRegion::ResetRegion(DocRect &NewClipRect)
 	// appears you can only render into the Area specified as invalid by
 	// the message.  I tried clearing the clipping region etc, but this
 	// made no difference.  There must be some way to do it though.
-	// A solution would be to flag that the paper needs re-rendering, 
+	// A solution would be to flag that the paper needs re-rendering,
 	// and do it on the next 'StartRender' call.
 
 	Capture* pCapture = GetTopCapture();
@@ -6262,13 +6140,13 @@ void RenderRegion::ResetRegion(DocRect &NewClipRect)
 	// time past after it is reset.
 	// Unfortunately this causes large amounts of unecessary blitting when scrolling
 	// an empty document around with the push tool
-	// Arrghh.  No we don't.  We clear the IsPaperRendered flag so that the paper is 
+	// Arrghh.  No we don't.  We clear the IsPaperRendered flag so that the paper is
 	// rendered into the region on the next render timeslice if the region requires it
 	// This should eliminate all unecessary blitting
 	// Gerry Iles 13/01/2006
 //	NeedsOSPaper = FALSE;
 	IsPaperRendered = FALSE;
-	
+
 	// No Banding please
 	IsRegionBanded = FALSE;
 	IsWaitingForRAM = FALSE;
@@ -6320,7 +6198,7 @@ void RenderRegion::ResetRender()
 	while (PathProcessorStack != NULL)
 		PopPathProcessor();
 
-	// Now setup the render state 
+	// Now setup the render state
 	CurrentRenderState = NULL;
 	SubRenderStateLocked = FALSE;
 	if (CurrentSubRenderState!=NULL)
@@ -6499,15 +6377,15 @@ BOOL RenderRegion::TestForComplexShape(RRCaps* pCaps)
 
 		if (pTransAttr->GetEndTransp2())
 			pAmount3 = pTransAttr->GetEndTransp2();
-		
+
 		if (pTransAttr->GetEndTransp3())
 			pAmount4 = pTransAttr->GetEndTransp3();
 
 		// See if there is any transparency in it
 		if ((Type != 1) ||
-			(*pAmount1 > 1) || 
-			(*pAmount2 > 1) || 
-			(*pAmount3 > 1) || 
+			(*pAmount1 > 1) ||
+			(*pAmount2 > 1) ||
+			(*pAmount3 > 1) ||
 			(*pAmount4 > 1))
 		{
 			// we found something that might be a bit transparent
@@ -6537,7 +6415,7 @@ BOOL RenderRegion::TestForComplexShape(RRCaps* pCaps)
 		if (!IsComplex)
 		{
 			// if there is a colour ramp, then the shape is complex ....
-			
+
 			if (pFillAttr->GetColourRamp () != NULL)
 			{
 				IsComplex = TRUE;
@@ -6569,10 +6447,10 @@ BOOL RenderRegion::TestForComplexShape(RRCaps* pCaps)
 			// First check for the simple case of clipped bitmaps, as opposed to tiled
 			// bitmap fills.
 			FillMappingAttribute* pMapAttr = (FillMappingAttribute*) CurrentAttrs[ATTR_FILLMAPPING].pAttr;
-			if ((pMapAttr->Repeat == 1) && 
+			if ((pMapAttr->Repeat == 1) &&
 				(pCaps->ClippedSimpleBitmaps || pCaps->ClippedArbitraryBitmaps))
 			{
-				// 'Simple' bitmap fill - is it a simple stretch, or has it been 
+				// 'Simple' bitmap fill - is it a simple stretch, or has it been
 				// arbitrarily transformed?
 				if (!pCaps->ClippedArbitraryBitmaps)
 				{
@@ -6621,7 +6499,7 @@ BOOL RenderRegion::TestForComplexShape(RRCaps* pCaps)
 		// Get the current fill attr
 		ColourFillAttribute* pFillAttr = (ColourFillAttribute*) CurrentAttrs[ATTR_FILLGEOMETRY].pAttr;
 		FillMappingAttribute* pMapAttr = (FillMappingAttribute*) CurrentAttrs[ATTR_FILLMAPPING].pAttr;
-		
+
 		// see if it is a graduated fill, and if it is, mark the shape as complex
 		if (pFillAttr->IsAGradFill())
 		{
@@ -6632,7 +6510,7 @@ BOOL RenderRegion::TestForComplexShape(RRCaps* pCaps)
 				// It's perspectivised, and we can't do that.
 				IsComplex = TRUE;
 			else if (pFillAttr->IsASquareFill() && !pCaps->Grad3and4Fills)
-				// We use the same flag rather than put a new one in as this fill type 
+				// We use the same flag rather than put a new one in as this fill type
 				// will probably be supported soon
 				IsComplex = TRUE;
 			else if (pFillAttr->IsAThreeColFill() && !pCaps->Grad3and4Fills)
@@ -6730,7 +6608,7 @@ BOOL RenderRegion::SetRenderComplexShapes(BOOL NewState)
 
 /********************************************************************************************
 
->	virtual SlowJobResult RenderRegion::DrawMaskedBitmap(const DocRect &Rect, KernelBitmap* pBitmap, 
+>	virtual SlowJobResult RenderRegion::DrawMaskedBitmap(const DocRect &Rect, KernelBitmap* pBitmap,
 								    MaskedRenderRegion* pMask, ProgressDisplay *Progress)
 
 
@@ -6747,7 +6625,7 @@ BOOL RenderRegion::SetRenderComplexShapes(BOOL NewState)
 
 ********************************************************************************************/
 
-SlowJobResult RenderRegion::DrawMaskedBitmap(const DocRect &Rect, KernelBitmap* pBitmap, 
+SlowJobResult RenderRegion::DrawMaskedBitmap(const DocRect &Rect, KernelBitmap* pBitmap,
 								    MaskedRenderRegion* pMask, ProgressDisplay *Progress)
 {
 	return SLOWJOB_SUCCESS;
@@ -6810,7 +6688,7 @@ void RenderRegion::SetBackgroundColour ( DocColour &Colour )
 				Info - The bitmap info header
 
 				Palette - Must point to a (RGBQUAD *) which we can fill in (see outputs)
-	
+
 	Outputs:	Palette - Will be returned NULL if you should use the original bitmap's
 				palette, else is a pointer to a CCMalloc'd block of memory containing a
 				colour corrected RGBQUAD palette to use instead -in which case you MUST
@@ -6911,19 +6789,19 @@ void RenderRegion::ColourCorrectBitmap(BitmapFillAttribute* Fill, BITMAPINFO *In
 	Outputs:	TRUE if rendering was interrupted (by reaching the end of a timeslice typically)
 				FALSE if rendering was completed
 	Purpose:	To render a specified subtree in this RenderRegion.
-				The dominating factor in this routine is that it renders the document with as 
-				little time overhead as possible. Obviously, this is mainly down to 
-				RenderRegions and the tree scanning routines working fast but we can do a bit 
+				The dominating factor in this routine is that it renders the document with as
+				little time overhead as possible. Obviously, this is mainly down to
+				RenderRegions and the tree scanning routines working fast but we can do a bit
 				to help.
 
 ********************************************************************************************/
 /*
 Technical notes:
-				This routine stores and restores its position in the document tree from the 
+				This routine stores and restores its position in the document tree from the
 				RenderRegion.
 
-				When the routine hits the end of the tree it will pass a NULL in for the 
-				RenderRegion to store as its state. This can be used a a signal that rendering 
+				When the routine hits the end of the tree it will pass a NULL in for the
+				RenderRegion to store as its state. This can be used a a signal that rendering
 				in this RenderRegion is complete and that the RenderRegion can be destroyed.
 
 				The routine contains all the decision making about how the traversal of the
@@ -6938,7 +6816,7 @@ BOOL RenderRegion::RenderTree(Node* pRoot,
 							  RenderCallback* pCallback)
 {
 //	TRACEUSER( "Gerry", _T("In RenderTree CC = 0x%08x\n"), GetColourContext()->GetColourPlate());
-	
+
 	Node* pNode = NULL;
 	Node* pRunToNode = NULL;
 	DocRect ClipRect;
@@ -7009,7 +6887,7 @@ PORTNOTE("other","PerfCounter not used under Linux")
 	{
 //		TRACEUSER( "Gerry", _T("    CC = 0x%08x\n"), GetColourContext()->GetColourPlate());
 //		if (GetColourContext()->GetColourPlate() == (ColourPlate*)0xfeeefeee) { __asm {INT32 3}; }
-		
+
 		// At this point pNode ALWAYS refers to a node/subtree that has NOT yet been rendered!
 		// (Er, unless there's a SubRenderContext stored - in which case we must continue
 		// to render the current node without entering its subtree.)
@@ -7094,7 +6972,7 @@ PORTNOTE("other","PerfCounter not used under Linux")
 		// Balance the call to RenderSubtree
 		if (!(pCallback && pCallback->AfterSubtree(this, pNode)))
 			pNode->RenderAfterSubtree(this);
-		
+
 		// -----------------------------------------------
 		// --- Move on to next subtree ---
 		//
@@ -7171,7 +7049,7 @@ PORTNOTE("other","PerfCounter not used under Linux")
 		}
 
 		// We should move the current node pointer on if we know that
-		// the 
+		// the
 		if (pNextNode && pNode!=pRoot) pNode = pNextNode;
 
 PORTNOTE("other","PerfCounter not used under Linux")
@@ -7181,7 +7059,7 @@ PORTNOTE("other","PerfCounter not used under Linux")
 		QueryPerformanceCounter(&countEnd);
 		m_countTotal = countOrigTotal + countEnd.QuadPart - countStart.QuadPart;
 #endif
-		
+
 		// See if we are time slicing and we still have more time available
 		Continue = RenderTreeCanContinue();
 	}
@@ -7298,7 +7176,7 @@ BOOL RenderRegion::RenderTreeCanContinue()
 /********************************************************************************************
 
 >	BOOL RenderRegion::RenderTreeNoCache(Node* pRoot)
-					
+
 	Author:		Phil_Martin (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	20/07/2005
 	Inputs:pNode - pointer to root node of subtree to render
@@ -7420,7 +7298,7 @@ Capture* RenderRegion::StartCapture(CCObject* pOwner,
 	// 2) save current
 	// 3) change to new offscreen state
 
-	// If there's already a capture running and this one is nested but wants to change 
+	// If there's already a capture running and this one is nested but wants to change
 	// the transparency type then we must notify existing captures of the change...
 	Capture* pCurrentCapture = GetTopCapture();
 	if (pCurrentCapture!=NULL && cinfo.caType==ctNESTABLE && !cinfo.caFlags.GrabRendered && pCurrentCapture->IsTransparent() && !bTransparent)
@@ -7529,9 +7407,9 @@ BOOL RenderRegion::StopCapture(CCObject* pOwner,
 	return TRUE;
 }
 
-	
-	
-	
+
+
+
 /********************************************************************************************
 
 >	BOOL RenderRegion::ChangeCapture(CAPTUREINFO cinfo,
@@ -7631,8 +7509,8 @@ BOOL RenderRegion::RenderBits(LPBITMAPINFO lpBitmapInfo, LPBYTE lpBits, DocRect 
 	return RenderBits(lpBitmapInfo, lpBits, (DocCoord*)&rect, 2, bForceNoTransp, pEffectsOwner);
 }
 
-	
-	
+
+
 /********************************************************************************************
 
 >	BOOL RenderRegion::RenderBits(LPBITMAPINFO lpBitmapInfo, LPBYTE lpBits, DocCoord* pCoords, INT32 numcoords, BOOL bForceNoTransp = TRUE, Node* pEffectsOwner = NULL)
@@ -7682,8 +7560,8 @@ BOOL RenderRegion::RenderBits(LPBITMAPINFO lpBitmapInfo, LPBYTE lpBits, DocCoord
 	return TRUE;
 }
 
-	
-	
+
+
 /********************************************************************************************
 
 >	BOOL RenderRegion::RenderBits(KernelBitmap* pBitmap, DocCoord* pCoords, INT32 numcoords, BOOL bForceNoTransp = TRUE, Node* pEffectsOwner = NULL)
@@ -7788,8 +7666,8 @@ BOOL RenderRegion::RenderBits(KernelBitmap* pkBitmap, DocCoord* pCoords, INT32 n
 	return TRUE;
 }
 
-	
-	
+
+
 #ifdef _DEBUG
 void RenderRegion::DebugTrace()
 {

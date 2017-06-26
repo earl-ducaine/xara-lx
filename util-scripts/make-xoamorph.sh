@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-function build_wx_30 {
+function build-wx-30 {
     if [ ! -d wxWidgets-3.0.3 ]; then
 	if [ ! -f wxGTK-3.0.3.tar.gz ]; then
 	    curl -LO https://github.com/wxWidgets/wxWidgets/releases/download/v3.0.3/wxWidgets-3.0.3.tar.bz2
@@ -47,7 +47,7 @@ function build_wx_from_git {
     cd ..
 }
 
-function build_ecl_from_git {
+function build-ecl-from-git {
     # Used to have multip local versions
     VERSION=ecl
     if [ ! -d $VERSION ]; then
@@ -61,12 +61,9 @@ function build_ecl_from_git {
     ./configure --enable-debug=yes --with-debug-cflags=yes --with-profile-cflags=yes
     export PATH="/usr/lib/ccache:$PATH"; make -j 8
     cd ..
-    cd ..
 }
 
-
-
-function build_xoamorph {
+function build-xoamorph {
     ./autogen.sh
     ./configure --enable-debug --with-wx-config=wxWidgets-3.0.3/buildgtk/wx-config --enable-static-exec
     # cd libs/x86_64
