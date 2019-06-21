@@ -7,6 +7,7 @@ AC_DEFUN([AC_DATAROOTDIR_CHECKED])
 AC_PREFIX_PROGRAM(pkg-config)
 PKG_PROG_PKG_CONFIG([0.10.1])
 
+
 AM_OPTIONS_WXCONFIG
 reqwx=2.4.0
 
@@ -101,7 +102,7 @@ if test $ac_compiler_gnu = "yes"; then
 
 	if test -n "$GccVersion" && test "$GccVersion" -ge 3004000; then
 		AC_MSG_RESULT([gcc >= 3.4.0, PreCompiled headers enabled])
-		WARN_FLAGS="$WARNFLAGS $WARN_FLAGS34"
+		WARN_FLAGS="$WARNFLAGS $WARN_FLAGS34 -std=c++11"
 		OPT_FLAGS="$OPT_FLAGS $OPT_FLAGS34"
 		PrecompileEnable="yes"
 	else
@@ -144,7 +145,6 @@ AC_CHECK_SIZEOF(int)
 AC_CHECK_SIZEOF(char)
 AC_CHECK_SIZEOF(short)
 AC_CHECK_SIZEOF(__int64)
-
 
 WXCONFIG=wx-config
 AC_ARG_WITH(wx-config,

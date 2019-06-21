@@ -49,7 +49,7 @@ function build_wx_from_git {
 
 function build_xoamorph {
     ./autogen.sh
-    ./configure --enable-debug --with-wx-config=wxWidgets-3.0.3/buildgtk/wx-config --enable-static-exec
+    ./configure --enable-debug --with-wx-config=wxWidgets-3.0.3/buildgtk/wx-config --enable-static-exec --with-freetype-config=/home/rett/dev/xoamorph/xara-lx/freetype-2.8.1/builds/unix/freetype-config
     # cd libs/x86_64
     #  ar -s -r libCDraw.a *.o
     # cd ../..

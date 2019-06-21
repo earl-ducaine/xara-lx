@@ -31,7 +31,7 @@
       #+END_SRC
    4) Build and install the dev version of wxWidgets 4.8:
       #+BEGIN_SRC sh
-        build_wx
+        build_wx_30
       #+END_SRC
    5) Build the libpng v1.2.57 library
       #+BEGIN_SRC sh
