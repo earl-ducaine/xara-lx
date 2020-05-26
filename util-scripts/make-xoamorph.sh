@@ -47,9 +47,25 @@ function build_wx_from_git {
     cd ..
 }
 
-function build_xoamorph {
+function build_freetype_281 {
+
+    if [ ! -d freetype-2.8 ]; then
+	if [ ! -f freetype-2.8.1.tar.bz2 ]; then
+	    curl -LO https://bigsearcher.com/mirrors/nongnu/freetype/freetype-2.8.1.tar.bz2
+	fi
+	tar xf freetype-2.8.1.tar.bz2
+    fi
+    cd freetype-2.8.1
     ./autogen.sh
-    ./configure --enable-debug --with-wx-config=wxWidgets-3.0.3/buildgtk/wx-config --enable-static-exec --with-freetype-config=/home/rett/dev/xoamorph/xara-lx/freetype-2.8.1/builds/unix/freetype-config
+    ./configure
+    make -j 8
+    cd ..
+}
+
+function build_xoamorph {
+    ./autogen
+    ./configure --enable-debug --with-wx-config=wxWidgets-3.0.3/buildgtk/wx-config --enable-static-exec --with-freetype-config=freetype-2.8.1/builds/unix/freetype-config
+    build_freetype_281
     # cd libs/x86_64
     #  ar -s -r libCDraw.a *.o
     # cd ../..
