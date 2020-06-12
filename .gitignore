@@ -1,6 +1,7 @@
 *.deps
 Makefile.in
 
+XaraLX
 
 
 xarlib/*.o
