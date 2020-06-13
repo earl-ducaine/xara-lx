@@ -63,9 +63,9 @@ function build_freetype_281 {
 }
 
 function build_xoamorph {
-    ./autogen
-    ./configure --enable-debug --with-wx-config=wxWidgets-3.0.3/buildgtk/wx-config --enable-static-exec --with-freetype-config=freetype-2.8.1/builds/unix/freetype-config
+    autoreconf -i -f
     build_freetype_281
+    ./configure --enable-debug --with-wx-config=wxWidgets-3.0.3/buildgtk/wx-config --enable-static-exec --with-freetype-config=freetype-2.8.1/builds/unix/freetype-config
     # cd libs/x86_64
     #  ar -s -r libCDraw.a *.o
     # cd ../..

@@ -24,4 +24,4 @@ filters/*.o
 Makefile
 
 
-
+*.m4
