@@ -1,7 +1,8 @@
+/* -*- tab-width: 4; c-basic-offset: 4 -*- */
 // $Id: oprshape.cpp 1282 2006-06-09 09:46:49Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
- 
+
                Xara LX, a vector drawing and manipulation program.
                     Copyright (C) 1993-2006 Xara Group Ltd.
        Copyright on certain contributions may be held in joint with their
@@ -32,7 +33,7 @@ ADDITIONAL RIGHTS
 
 Conditional upon your continuing compliance with the GNU General Public
 License described above, Xara Group Ltd grants to you certain additional
-rights. 
+rights.
 
 The additional rights are to use, modify, and distribute the software
 together with the wxWidgets library, the wxXtra library, and the "CDraw"
@@ -101,7 +102,7 @@ service marks of Xara Group Ltd. All rights in these marks are reserved.
 */
 
 #include "camtypes.h"
-#include "oprshape.h"	
+#include "oprshape.h"
 
 //#include "app.h" - in camtypes.h [AUTOMATICALLY REMOVED]
 //#include "attrmgr.h" - in camtypes.h [AUTOMATICALLY REMOVED]
@@ -113,7 +114,7 @@ service marks of Xara Group Ltd. All rights in these marks are reserved.
 #include "noderect.h"
 #include "nodershp.h"
 //#include "peter.h"
-#include "progress.h"							   
+#include "progress.h"
 //#include "resource.h"
 //#include "rndrgn.h" - in camtypes.h [AUTOMATICALLY REMOVED]
 #include "shapeops.h"
@@ -126,7 +127,7 @@ DECLARE_SOURCE( "$Revision: 1282 $" );
 
 CC_IMPLEMENT_DYNCREATE(OpNewRegShape, SelOperation)
 
-#define new CAM_DEBUG_NEW     
+#define new CAM_DEBUG_NEW
 
 
 /********************************************************************************************
@@ -163,13 +164,13 @@ OpNewRegShape::OpNewRegShape()
 				Curved - TRUE if the created shape has rounded corners.
 	Purpose:	Starts dragging from the coordinate passed in.
 				For RADIUS mode you are dragging the major axes from a fixed centre point
-				For DIAMETER mode you are dragging the major axes, the centre point is the 
+				For DIAMETER mode you are dragging the major axes, the centre point is the
 				midpoint of the line between the start and current points.
 				For BOUNDS mode you are dragging a bounding box.  The major and minor axes
 				just touch the edge of the box.
 
 ********************************************************************************************/
-void OpNewRegShape::DoDrag( Spread* pSpread, DocCoord Anchor, INT32 NumSides, CreateMode DragMode, 
+void OpNewRegShape::DoDrag( Spread* pSpread, DocCoord Anchor, INT32 NumSides, CreateMode DragMode,
 												BOOL Circular, BOOL Stellated, BOOL Curved)
 {
 	DocView::SnapCurrent(pSpread, &Anchor);
@@ -179,7 +180,7 @@ void OpNewRegShape::DoDrag( Spread* pSpread, DocCoord Anchor, INT32 NumSides, Cr
 	StartPoint = Anchor;
 	LastPoint = Anchor;
 	CreationMode = DragMode;
-	
+
 	// Create the shape that is to be dragged around.
 	NewShape = new (NodeRegularShape);
 
@@ -217,9 +218,9 @@ void OpNewRegShape::DoDrag( Spread* pSpread, DocCoord Anchor, INT32 NumSides, Cr
 
 /********************************************************************************************
 
->	void OpNewRegShape::DragPointerMove( DocCoord PointerPos, ClickModifiers ClickMods, 
+>	void OpNewRegShape::DragPointerMove( DocCoord PointerPos, ClickModifiers ClickMods,
 								   Spread* pSpread, BOOL bSolidDrag)
-	
+
 	Author:		Peter_Arnold (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	21/11/94
 	Inputs:		PointerPos - The current position of the mouse in Doc Coords
@@ -231,12 +232,16 @@ void OpNewRegShape::DoDrag( Spread* pSpread, DocCoord Anchor, INT32 NumSides, Cr
 
 ********************************************************************************************/
 
-void OpNewRegShape::DragPointerMove( DocCoord PointerPos, ClickModifiers ClickMods, 
+void OpNewRegShape::DragPointerMove( DocCoord PointerPos, ClickModifiers ClickMods,
 								   Spread* pSpread, BOOL bSolidDrag)
 {
 	// Rub out the old shape
 	DocRect EditPathBBox = NewShape->GetBoundingRect();
 	RenderDragBlobs(DocRect(0,0,0,0), StartSpread, bSolidDrag);
+
+
+	// Hack to see if the accomplished our goal of redrawing.
+	DocView::GetCurrent()->ForceRedraw(FALSE);
 
 	// make sure the rect does not wrap around the edge of the spread
 	if (pSpread != StartSpread)
@@ -257,10 +262,10 @@ void OpNewRegShape::DragPointerMove( DocCoord PointerPos, ClickModifiers ClickMo
 		if (TempCreationMode == BOUNDS)
 		{
 			double length = StartPoint.Distance(PointerPos);
-		
+
 			if (length != 0.0)
 			{
-				DocCoord Offset = PointerPos - StartPoint; 
+				DocCoord Offset = PointerPos - StartPoint;
 				double rotangle = atan2((double)Offset.y, (double)Offset.x);
 
 				if ((rotangle >= 0) && (rotangle <= PI/2))
@@ -272,8 +277,8 @@ void OpNewRegShape::DragPointerMove( DocCoord PointerPos, ClickModifiers ClickMo
 				if (rotangle < -PI/2)
 					rotangle = -3*(PI/4);
 
-				PointerPos.x = StartPoint.x + (INT32)length; 
-				PointerPos.y = StartPoint.y; 
+				PointerPos.x = StartPoint.x + (INT32)length;
+				PointerPos.y = StartPoint.y;
 
 				Trans2DMatrix Trans(StartPoint, rotangle*(180/PI));
 				Trans.Transform(&PointerPos, 1);
@@ -295,7 +300,7 @@ void OpNewRegShape::DragPointerMove( DocCoord PointerPos, ClickModifiers ClickMo
 	switch (TempCreationMode)
 	{
 		case RADIUS:
-		{	// The major axes point is the current mouse pos rotated around the	centre point by  
+		{	// The major axes point is the current mouse pos rotated around the	centre point by
 			// 180 degrees.  The minor point is the same point rotated by a further 90 degrees
 			DocCoord OldCentre = NewShape->GetCentrePoint();
 			DocCoord NewMajor = PointerPos - OldCentre;
@@ -332,7 +337,7 @@ void OpNewRegShape::DragPointerMove( DocCoord PointerPos, ClickModifiers ClickMo
 			break;
 		}
 		case BOUNDS:
-		{	
+		{
 			DocCoord NewCentre;
 			DocCoord NewMajor;
 			DocCoord NewMinor;
@@ -364,9 +369,9 @@ void OpNewRegShape::DragPointerMove( DocCoord PointerPos, ClickModifiers ClickMo
 				InflateShape(&BoundsRect, &NewCentre, &NewMajor, &NewMinor);
 			}
 
-			NewShape->SetCentrePoint(DocCoord(0,0));    
-			NewShape->SetMajorAxes(NewMajor - NewCentre);    
-			NewShape->SetMinorAxes(NewMinor - NewCentre);    
+			NewShape->SetCentrePoint(DocCoord(0,0));
+			NewShape->SetMajorAxes(NewMajor - NewCentre);
+			NewShape->SetMinorAxes(NewMinor - NewCentre);
 			Matrix InitialMat(NewCentre.x, NewCentre.y);
 			NewShape->SetTransformMatrix(&InitialMat);
 			break;
@@ -388,10 +393,10 @@ void OpNewRegShape::DragPointerMove( DocCoord PointerPos, ClickModifiers ClickMo
 
 /********************************************************************************************
 
->	void OpNewRegShape::DragFinished( DocCoord PointerPos, ClickModifiers ClickMods, 
+>	void OpNewRegShape::DragFinished( DocCoord PointerPos, ClickModifiers ClickMods,
 								Spread* pSpread, BOOL Success, BOOL bSolidDrag)
 
-    
+
 	Author:		Peter_Arnold (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	22/11/94
 	Inputs:		PointerPos - The position of the mouse at the end of the drag
@@ -406,22 +411,22 @@ void OpNewRegShape::DragPointerMove( DocCoord PointerPos, ClickModifiers ClickMo
 
 ********************************************************************************************/
 
-void OpNewRegShape::DragFinished( DocCoord PointerPos, ClickModifiers ClickMods, 
+void OpNewRegShape::DragFinished( DocCoord PointerPos, ClickModifiers ClickMods,
 								Spread* pSpread, BOOL Success, BOOL bSolidDrag)
 {
 	// Start a slow job
 	BeginSlowJob();
 
-	// End the Drag                             
+	// End the Drag
 	EndDrag();
 
 	// First Rub out the old box
 	DocRect EditPathBBox = NewShape->GetBoundingRect();
 	RenderDragBlobs(EditPathBBox, StartSpread, bSolidDrag);
-		
+
 	// If we should carry on, then do it
 	BOOL Worked = FALSE;
-	if ( Success && (StartPoint != PointerPos) ) 
+	if ( Success && (StartPoint != PointerPos) )
 		Worked = CompleteOperation();
 
 	// if it did not work or the user pressed ESCAPE then fail
@@ -466,7 +471,7 @@ BOOL OpNewRegShape::CompleteOperation()
 	Document* pDoc = GetWorkingDoc();
 	if (pDoc==NULL)
 	{
-		TRACEALL( _T("OpNewRegShape::CompleteOperation has no working document.")); 
+		TRACEALL( _T("OpNewRegShape::CompleteOperation has no working document."));
 		return FALSE;
 	}
 
@@ -476,7 +481,7 @@ BOOL OpNewRegShape::CompleteOperation()
 
 	// Delete any applied join attribute
 	NodeAttribute* pAppliedJoin = NewShape->GetChildAttrOfType(CC_RUNTIME_CLASS(AttrJoinType));
-	if (pAppliedJoin != NULL) 
+	if (pAppliedJoin != NULL)
 	{
 		pAppliedJoin->CascadeDelete();
 		delete pAppliedJoin;
@@ -532,7 +537,7 @@ void OpNewRegShape::InflateShape(DocRect *Bounds, DocCoord* NewCentre, DocCoord*
 	NewMajor->y = Bounds->hi.y;
 	NewMinor->x = Bounds->hi.x;
 	NewMinor->y = (Bounds->lo.y + Bounds->hi.y) / 2;
-	
+
 	// Move them if required
 	if (!NewShape->IsCircular())
 	{
@@ -587,7 +592,7 @@ void OpNewRegShape::RenderDragBlobs(DocRect Rect, Spread* pSpread, BOOL bSolidDr
 	RenderRegion* pRegion = DocView::RenderOnTop(NULL, pSpread, ClippedEOR);
 	while (pRegion)
 	{
-		// Set the line colour 
+		// Set the line colour
 		pRegion -> SetFillColour(COLOUR_NONE);
 		pRegion -> SetLineColour(COLOUR_XORNEW);
 
@@ -606,7 +611,7 @@ void OpNewRegShape::RenderDragBlobs(DocRect Rect, Spread* pSpread, BOOL bSolidDr
 >	BOOL OpNewRegShape::Declare()
 
 	Author:		Peter_Arnold (Xara Group Ltd) <camelotdev@xara.com>
-	Created:	16/11/94																		
+	Created:	16/11/94
 	Returns:	TRUE if all went OK, False otherwise
 	Purpose:	Adds the operation to the list of all known operations
 
@@ -614,9 +619,9 @@ void OpNewRegShape::RenderDragBlobs(DocRect Rect, Spread* pSpread, BOOL bSolidDr
 BOOL OpNewRegShape::Declare()
 {
 	return (RegisterOpDescriptor(
-								0, 
+								0,
 								_R(IDS_NEWREGULARSHAPEOP),
-								CC_RUNTIME_CLASS(OpNewRegShape), 
+								CC_RUNTIME_CLASS(OpNewRegShape),
 								OPTOKEN_NEWREGSHAPE,
 								OpNewRegShape::GetState));
 
@@ -638,7 +643,6 @@ BOOL OpNewRegShape::Declare()
 OpState OpNewRegShape::GetState(String_256* Description, OpDescriptor*)
 {
 	OpState Blobby;
-	
+
 	return Blobby;
 }
-
