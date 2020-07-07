@@ -1,27 +1,30 @@
+
 *.deps
-Makefile.in
+*.m4
+*~
 
-XaraLX
-
-
-xarlib/*.o
-wxXtra/*.o
-wxOil/*.o
-wxGTK-2.8.12/*.o
-
-
-
-tools/*.o
-po/*.o
-
-
-libpng-1.2.57
-Kernel/*.o
 GDraw/*.o
+Kernel/*.o
+
+Makefile
+Makefile.in
+XaraLX
+autom4te.cache
+config.guess
+config.status
+config.sub
+
 filters/*.o
 
-*~
-Makefile
+libpng-*
 
+po/*.o
+tools/*.o
+wxGTK-2.8.12/*.o
+wxOil/*.o
+wxXtra/*.o
+xarlib/*.o
 
-*.m4
+freetype-*
+wxWidgets-*
+
