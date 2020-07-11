@@ -1,4 +1,4 @@
-/* -*- tab-width: 4; c-basic-offset: 4 -*- */
+/* -*- tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4; fill-column: 90 -*- */
 // $Id: oprshape.cpp 1282 2006-06-09 09:46:49Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
@@ -132,140 +132,140 @@ CC_IMPLEMENT_DYNCREATE(OpNewRegShape, SelOperation)
 
 /********************************************************************************************
 
->	OpNewRegShape::OpNewRegShape()
+>   OpNewRegShape::OpNewRegShape()
 
-	Author:		Peter_Arnold (Xara Group Ltd) <camelotdev@xara.com>
-	Created:	22/11/94
-	Purpose:	Constructor. This simply sets a few of the operation flags.
+    Author:     Peter_Arnold (Xara Group Ltd) <camelotdev@xara.com>
+    Created:    22/11/94
+    Purpose:    Constructor. This simply sets a few of the operation flags.
 
 ********************************************************************************************/
 
 OpNewRegShape::OpNewRegShape()
 {
-	pCursor = NULL;
-	IsShiftDown = FALSE;
+    pCursor = NULL;
+    IsShiftDown = FALSE;
 }
 
 
 
 /********************************************************************************************
 
->	void OpNewRegShape::DoDrag( Spread* pSpread, DocCoord Anchor, INT32 NumSides, CreateMode DragMode
-											BOOL Circular, BOOL Stellated, BOOL Curved)
+>   void OpNewRegShape::DoDrag( Spread* pSpread, DocCoord Anchor, INT32 NumSides, CreateMode DragMode
+                                            BOOL Circular, BOOL Stellated, BOOL Curved)
 
-	Author:		Peter_Arnold (Xara Group Ltd) <camelotdev@xara.com>
-	Created:	22/11/94
-	Inputs:		pSpread - The spread that the drag was started on
-				Anchor - starting position of the drag
-				NumSides - the number of sides the new regular shape should have (0 implies an ellipse)
-				CreateMode - the way the drag and the new object should interact.  Either RADIUS,
-				DIAMETER or BOUNDS
-				Circular - TRUE to base the created shape on a circle, FALSE if it is a polygon
-				Curved - TRUE if the created shape has rounded corners.
-	Purpose:	Starts dragging from the coordinate passed in.
-				For RADIUS mode you are dragging the major axes from a fixed centre point
-				For DIAMETER mode you are dragging the major axes, the centre point is the
-				midpoint of the line between the start and current points.
-				For BOUNDS mode you are dragging a bounding box.  The major and minor axes
-				just touch the edge of the box.
+    Author:     Peter_Arnold (Xara Group Ltd) <camelotdev@xara.com>
+    Created:    22/11/94
+    Inputs:     pSpread - The spread that the drag was started on
+                Anchor - starting position of the drag
+                NumSides - the number of sides the new regular shape should have (0 implies an ellipse)
+                CreateMode - the way the drag and the new object should interact.  Either RADIUS,
+                DIAMETER or BOUNDS
+                Circular - TRUE to base the created shape on a circle, FALSE if it is a polygon
+                Curved - TRUE if the created shape has rounded corners.
+    Purpose:    Starts dragging from the coordinate passed in.
+                For RADIUS mode you are dragging the major axes from a fixed centre point
+                For DIAMETER mode you are dragging the major axes, the centre point is the
+                midpoint of the line between the start and current points.
+                For BOUNDS mode you are dragging a bounding box.  The major and minor axes
+                just touch the edge of the box.
 
 ********************************************************************************************/
 void OpNewRegShape::DoDrag( Spread* pSpread, DocCoord Anchor, INT32 NumSides, CreateMode DragMode,
-												BOOL Circular, BOOL Stellated, BOOL Curved)
+                                                BOOL Circular, BOOL Stellated, BOOL Curved)
 {
-	DocView::SnapCurrent(pSpread, &Anchor);
+    DocView::SnapCurrent(pSpread, &Anchor);
 
-	// We had better take a note of the starting point of the drag.
-	StartSpread = pSpread;
-	StartPoint = Anchor;
-	LastPoint = Anchor;
-	CreationMode = DragMode;
+    // We had better take a note of the starting point of the drag.
+    StartSpread = pSpread;
+    StartPoint = Anchor;
+    LastPoint = Anchor;
+    CreationMode = DragMode;
 
-	// Create the shape that is to be dragged around.
-	NewShape = new (NodeRegularShape);
+    // Create the shape that is to be dragged around.
+    NewShape = new (NodeRegularShape);
 
-	if ((NewShape == NULL) || !NewShape->SetUpShape() )
-	{
-		InformError(_R(IDS_OUT_OF_MEMORY), _R(IDS_OK));
-		return;
-	}
+    if ((NewShape == NULL) || !NewShape->SetUpShape() )
+    {
+        InformError(_R(IDS_OUT_OF_MEMORY), _R(IDS_OK));
+        return;
+    }
 
-	// And make sure it is filled in
-	NewShape->SetNumSides(NumSides);
+    // And make sure it is filled in
+    NewShape->SetNumSides(NumSides);
 
-	const DocCoord Origin(0,0);
-	NewShape->SetCentrePoint(Origin);
-	NewShape->SetMajorAxes(Origin);
-	NewShape->SetMinorAxes(Origin);
+    const DocCoord Origin(0,0);
+    NewShape->SetCentrePoint(Origin);
+    NewShape->SetMajorAxes(Origin);
+    NewShape->SetMinorAxes(Origin);
 
-	NewShape->SetCircular(Circular);
-	NewShape->SetStellated(Stellated);
-	NewShape->SetPrimaryCurvature(Curved);
-	NewShape->SetStellationCurvature(Curved);
+    NewShape->SetCircular(Circular);
+    NewShape->SetStellated(Stellated);
+    NewShape->SetPrimaryCurvature(Curved);
+    NewShape->SetStellationCurvature(Curved);
 
-	Matrix InitialMat(StartPoint.x, StartPoint.y);
-	NewShape->SetTransformMatrix(&InitialMat);
+    Matrix InitialMat(StartPoint.x, StartPoint.y);
+    NewShape->SetTransformMatrix(&InitialMat);
 
-	// Eor the rectangle on for the first time
-	DocRect EditPathBBox = NewShape->GetBoundingRect();
-	RenderDragBlobs(EditPathBBox, StartSpread, FALSE);
+    // Eor the rectangle on for the first time
+    DocRect EditPathBBox = NewShape->GetBoundingRect();
+    RenderDragBlobs(EditPathBBox, StartSpread, FALSE);
 
-	// And tell the Dragging system that we need drags to happen
-	StartDrag( DRAGTYPE_AUTOSCROLL, NULL, &Anchor, FALSE );
+    // And tell the Dragging system that we need drags to happen
+    StartDrag( DRAGTYPE_AUTOSCROLL, NULL, &Anchor, FALSE );
 }
 
 
 
 /********************************************************************************************
 
->	void OpNewRegShape::DragPointerMove( DocCoord PointerPos, ClickModifiers ClickMods,
-								   Spread* pSpread, BOOL bSolidDrag)
+>   void OpNewRegShape::DragPointerMove( DocCoord PointerPos, ClickModifiers ClickMods,
+                                   Spread* pSpread, BOOL bSolidDrag)
 
-	Author:		Peter_Arnold (Xara Group Ltd) <camelotdev@xara.com>
-	Created:	21/11/94
-	Inputs:		PointerPos - The current position of the mouse in Doc Coords
-				ClickMods - Which key modifiers are being pressed
-				pSpread - The spread that the mouse pointer is over
-	Purpose:	Takes the pointer position of the corner of the shape being dragged
-				and redisplays the outline
-	SeeAlso:	ClickModifiers
+    Author:     Peter_Arnold (Xara Group Ltd) <camelotdev@xara.com>
+    Created:    21/11/94
+    Inputs:     PointerPos - The current position of the mouse in Doc Coords
+                ClickMods - Which key modifiers are being pressed
+                pSpread - The spread that the mouse pointer is over
+    Purpose:    Takes the pointer position of the corner of the shape being dragged
+                and redisplays the outline
+    SeeAlso:    ClickModifiers
 
 ********************************************************************************************/
 
 void OpNewRegShape::DragPointerMove( DocCoord PointerPos, ClickModifiers ClickMods,
-								   Spread* pSpread, BOOL bSolidDrag)
+                                   Spread* pSpread, BOOL bSolidDrag)
 {
-	// Rub out the old shape
-	DocRect EditPathBBox = NewShape->GetBoundingRect();
-	RenderDragBlobs(DocRect(0,0,0,0), StartSpread, bSolidDrag);
+    // Rub out the old shape
+    DocRect EditPathBBox = NewShape->GetBoundingRect();
+    RenderDragBlobs(DocRect(0,0,0,0), StartSpread, bSolidDrag);
 
 
-	// Hack to see if the accomplished our goal of redrawing.
-	DocView::GetCurrent()->ForceRedraw(FALSE);
+    // Hack to see if the accomplished our goal of redrawing.
+     DocView::GetCurrent()->ForceRedraw(FALSE);
 
-	// make sure the rect does not wrap around the edge of the spread
-	if (pSpread != StartSpread)
-		PointerPos = MakeRelativeToSpread(StartSpread, pSpread, PointerPos);
+    // make sure the rect does not wrap around the edge of the spread
+    if (pSpread != StartSpread)
+        PointerPos = MakeRelativeToSpread(StartSpread, pSpread, PointerPos);
 
-	// If the SHIFT key is down then drop into RADIUS mode
-	CreateMode TempCreationMode = CreationMode;
-	if (ClickMods.Adjust && CreationMode == DIAMETER)
-		TempCreationMode = RADIUS;
-	if (ClickMods.Adjust && ClickMods.Constrain && CreationMode == BOUNDS)
-		TempCreationMode = RADIUS;
+    // If the SHIFT key is down then drop into RADIUS mode
+    CreateMode TempCreationMode = CreationMode;
+    if (ClickMods.Adjust && CreationMode == DIAMETER)
+        TempCreationMode = RADIUS;
+    if (ClickMods.Adjust && ClickMods.Constrain && CreationMode == BOUNDS)
+        TempCreationMode = RADIUS;
 
-	// Now see if we should constrain the point
-	if (ClickMods.Constrain)
-	{
-		// If we are in bounds creation mode then we want to restrict to 45, 135 225, and 315 degrees
-		// This stops thin shapes (ie zero wdith or height)
-		if (TempCreationMode == BOUNDS)
-		{
-			double length = StartPoint.Distance(PointerPos);
+    // Now see if we should constrain the point
+    if (ClickMods.Constrain)
+    {
+        // If we are in bounds creation mode then we want to restrict to 45, 135 225, and 315 degrees
+        // This stops thin shapes (ie zero wdith or height)
+        if (TempCreationMode == BOUNDS)
+        {
+            double length = StartPoint.Distance(PointerPos);
 
-			if (length != 0.0)
-			{
-				DocCoord Offset = PointerPos - StartPoint;
+            if (length != 0.0)
+            {
+                DocCoord Offset = PointerPos - StartPoint;
 				double rotangle = atan2((double)Offset.y, (double)Offset.x);
 
 				if ((rotangle >= 0) && (rotangle <= PI/2))
@@ -440,6 +440,10 @@ void OpNewRegShape::DragFinished( DocCoord PointerPos, ClickModifiers ClickMods,
 	}
 
 	End();
+
+    // For some reason DragFinished() doesn't trigger a full redraw, so we need to
+    // explicity request one here.
+    DocView::GetCurrent()->ForceRedraw(FALSE);
 }
 
 

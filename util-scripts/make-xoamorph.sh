@@ -10,7 +10,7 @@ function build_wx_30 {
     cd wxWidgets-3.0.3
     if [ -d buildgtk ]; then
 	cd buildgtk
-	sudo make uninstall
+	make uninstall
 	cd ..
 	rm -rf buildgtk
     fi
@@ -48,7 +48,6 @@ function build_wx_from_git {
 }
 
 function build_freetype_281 {
-
     if [ ! -d freetype-2.8 ]; then
 	if [ ! -f freetype-2.8.1.tar.bz2 ]; then
 	    curl -LO https://bigsearcher.com/mirrors/nongnu/freetype/freetype-2.8.1.tar.bz2
@@ -62,16 +61,33 @@ function build_freetype_281 {
     cd ..
 }
 
+function build_xoamorph_debug {
+    build_xoamorph "--enable-debug"
+}
+
 function build_xoamorph {
+    # Don't rebuild wxWidgets if folder already exists.
+    if [ ! -d wxWidgets-3.0.3 ]; then
+	echo "Building xwWidgets..."
+	build_wx_30
+    fi
+    # Don't rebuild freetype if folder already exists.
+    if [ ! -d freetype-2.8 ]; then
+	echo "Building freetype-2.8..."
+	build_freetype_281
+    fi
     autoreconf -i -f
-    build_freetype_281
-    ./configure --enable-debug --with-wx-config=wxWidgets-3.0.3/buildgtk/wx-config --enable-static-exec --with-freetype-config=freetype-2.8.1/builds/unix/freetype-config
+    ./configure $1 --with-wx-config=wxWidgets-3.0.3/buildgtk/wx-config \
+		--enable-static-exec \
+		--with-freetype-config=freetype-2.8.1/builds/unix/freetype-config \
+	|| echo "Unable to build Xoamporph. Check make-error.txt"
     # cd libs/x86_64
     #  ar -s -r libCDraw.a *.o
     # cd ../..
     # ar -xv libCDraw.a
     export PATH="/usr/lib/ccache:$PATH"; make -j 4 1> make-out.txt 2>make-error.txt
     # make -j 4
+    # Turn off debug
 }
 
 function make_tags {

@@ -1,10 +1,12 @@
 
 *.deps
 *.m4
+*.pc
 *~
 
 GDraw/*.o
 Kernel/*.o
+libs/x86_64/orphaned-object-files/*.o
 
 Makefile
 Makefile.in
@@ -13,6 +15,7 @@ autom4te.cache
 config.guess
 config.status
 config.sub
+configure
 
 filters/*.o
 
