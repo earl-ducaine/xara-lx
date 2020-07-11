@@ -10,6 +10,7 @@ libs/x86_64/orphaned-object-files/*.o
 
 Makefile
 Makefile.in
+TAGS
 XaraLX
 autom4te.cache
 config.guess
