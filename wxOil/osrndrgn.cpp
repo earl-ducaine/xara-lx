@@ -1,4 +1,4 @@
-/* -*- tab-width: 4; c-basic-offset: 4 -*- */
+/* -*- tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4; fill-column: 90 -*- */
 // $Id: osrndrgn.cpp 1571 2006-07-27 15:18:28Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
@@ -95,12 +95,12 @@ service marks of Xara Group Ltd. All rights in these marks are reserved.
                         http://www.xara.com/
 
 =================================XARAHEADEREND============================
-*/
+ */
 
 // OSRenderRegion class is responsible for rendering through GDI
 
 /*
- */
+*/
 
 
 #include "camtypes.h"
@@ -271,40 +271,40 @@ OSRRFontInfo::OSRRFontInfo()
 BOOL OSRenderRegion::Init()
 {
     if (Camelot.DeclareSection(TEXT("DisplayKludges"), 10))
-        {
-            Camelot.DeclarePref( NULL, TEXT("SlowRectangles"), &BodgeRectangles, FALSE, TRUE );
-        }
+    {
+        Camelot.DeclarePref( NULL, TEXT("SlowRectangles"), &BodgeRectangles, FALSE, TRUE );
+    }
 
     if (Camelot.DeclareSection(TEXT("Printing"), 10))
-        {
-            Camelot.DeclarePref( NULL, TEXT("PrintRotatedTextAsShapes"), &PrintRotatedTextAsPaths, FALSE, TRUE );
-        }
+    {
+        Camelot.DeclarePref( NULL, TEXT("PrintRotatedTextAsShapes"), &PrintRotatedTextAsPaths, FALSE, TRUE );
+    }
 
     if (Camelot.DeclareSection(TEXT("Screen"), 10))
+    {
+        Camelot.DeclarePref(NULL, TEXT("GDIPalette"), &WantGDIPalette, FALSE, TRUE );
+        Camelot.DeclarePref(NULL, TEXT("BetterLines"), &WantBetterLines, 0, 2 );
+
+        switch (WantBetterLines)
         {
-            Camelot.DeclarePref(NULL, TEXT("GDIPalette"), &WantGDIPalette, FALSE, TRUE );
-            Camelot.DeclarePref(NULL, TEXT("BetterLines"), &WantBetterLines, 0, 2 );
+        case 0:
+            DoBetterLines = TRUE;
+            break;
 
-            switch (WantBetterLines)
-                {
-                case 0:
-                    DoBetterLines = TRUE;
-                    break;
+        case 1:
+            DoBetterLines = TRUE;
+            break;
 
-                case 1:
-                    DoBetterLines = TRUE;
-                    break;
-
-                case 2:
-                    DoBetterLines = FALSE;
-                    break;
-                }
+        case 2:
+            DoBetterLines = FALSE;
+            break;
         }
+    }
 
     if (Camelot.DeclareSection(TEXT("Mouse"), 10))
-        {
-            Camelot.DeclarePref(NULL, TEXT("HitTestRadius"), &HitTestRadius, 0, 10);
-        }
+    {
+        Camelot.DeclarePref(NULL, TEXT("HitTestRadius"), &HitTestRadius, 0, 10);
+    }
 
     return TRUE;
 }
@@ -347,214 +347,233 @@ BOOL OSRenderRegion::Init()
 
 ********************************************************************************************/
 
-RenderRegion* OSRenderRegion::Create(DocRect ClipRect,
-                                     Matrix ConvertMatrix,
-                                     FIXED16 ViewScale,
-                                     RenderType rType,
-                                     View* pView,
-                                     BOOL UseOSRendering,
-                                     BOOL bForce32BPP) {
-    // const bool bCanDo32 = true;
-    /* GAT
-       BOOL bCanDo32 = FALSE;
+RenderRegion* OSRenderRegion::Create(DocRect ClipRect, Matrix ConvertMatrix,
+                                     FIXED16 ViewScale, RenderType rType,
+                                     View* pView, BOOL UseOSRendering, BOOL bForce32BPP)
+{
+//  const bool bCanDo32 = true;
+/* GAT
+   BOOL bCanDo32 = FALSE;
 
-       #if WIN32
-       if ( IsWin32NT() || IsWin32c() )
-       {
-       // Running on 32-bit GDI - use special NT-only Win32 GDI functions for those devices that
-       // make sense. Currently only 16-bit Metafiles are not done using 32-bit GDI
-       // so that paths are manually flattened.
-       if (rType != RENDERTYPE_METAFILE16)
-       bCanDo32 = TRUE;
-       }
-       #endif
-    */
+   #if WIN32
+   if ( IsWin32NT() || IsWin32c() )
+   {
+   // Running on 32-bit GDI - use special NT-only Win32 GDI functions for those devices that
+   // make sense. Currently only 16-bit Metafiles are not done using 32-bit GDI
+   // so that paths are manually flattened.
+   if (rType != RENDERTYPE_METAFILE16)
+   bCanDo32 = TRUE;
+   }
+   #endif
+*/
     OSRenderRegion *pOS = NULL;
-    if (rType == RENDERTYPE_MONOBITMAP ||
-        rType == RENDERTYPE_COLOURBITMAP ||
-        rType == RENDERTYPE_HITDETECT) {
+
+    if (rType == RENDERTYPE_MONOBITMAP || rType == RENDERTYPE_COLOURBITMAP || rType == RENDERTYPE_HITDETECT)
+    {
         RenderRegion *pRender = OSRenderBitmap::Create(ClipRect, ConvertMatrix, ViewScale, rType);
-        if (pRender) {
+
+        if (pRender)
+        {
             // if its not a OSRenderRegion, then return it directly, otherwise fall through
             // to set the flags on it
-            if (!pRender->IsKindOf( CC_RUNTIME_CLASS(OSRenderRegion))) {
+            if (!pRender->IsKindOf( CC_RUNTIME_CLASS(OSRenderRegion) ))
                 return pRender;
-            }
+
             pOS = (OSRenderRegion*) pRender;
         }
-    } else if (rType == RENDERTYPE_SCREENPAPER) {
+    }
+    else if (rType == RENDERTYPE_SCREENPAPER)
+    {
         // Special render region for paper rendering.
-        //      TRACE(_T("Creating SCREENPAPER region (%d, %d) - (%d, %d)\n"), ClipRect.lo.x, ClipRect.lo.y, ClipRect.hi.x, ClipRect.hi.y);
+//      TRACE(_T("Creating SCREENPAPER region (%d, %d) - (%d, %d)\n"), ClipRect.lo.x, ClipRect.lo.y, ClipRect.hi.x, ClipRect.hi.y);
         pOS = new PaperRenderRegion(ClipRect, ConvertMatrix, ViewScale);
     }
     else if ((rType == RENDERTYPE_PRINTER) || (rType == RENDERTYPE_PRINTER_PS))
-        {
+    {
 #ifndef STANDALONE
-            // Work out what kind of printer region to get - find document's print control info.
-            Document *pDoc = pView->GetDoc();
-            ERROR3IF(pDoc == NULL, "No document attached to view when printing!");
-            if (pDoc != NULL)
-                {
-                    // Get print information for this document.
-                    PrintComponent *pPrint =
-                        (PrintComponent *) pDoc->GetDocComponent(CC_RUNTIME_CLASS(PrintComponent));
-                    ERROR2IF(pPrint == NULL, NULL, "Unable to find PrintComponent in document.");
+        // Work out what kind of printer region to get - find document's print control info.
+        Document *pDoc = pView->GetDoc();
+        ERROR3IF(pDoc == NULL, "No document attached to view when printing!");
+        if (pDoc != NULL)
+        {
+            // Get print information for this document.
+            PrintComponent *pPrint =
+                (PrintComponent *) pDoc->GetDocComponent(CC_RUNTIME_CLASS(PrintComponent));
+            ERROR2IF(pPrint == NULL, NULL, "Unable to find PrintComponent in document.");
 
-                    PrintControl *pPrintControl = pPrint->GetPrintControl();
-                    ERROR2IF(pPrintControl == NULL, NULL,
-                             "Unable to find PrintControl object in document component.");
+            PrintControl *pPrintControl = pPrint->GetPrintControl();
+            ERROR2IF(pPrintControl == NULL, NULL,
+                     "Unable to find PrintControl object in document component.");
 
-                    PrintMethodType PrintType = pPrintControl->GetPrintMethod();
+            PrintMethodType PrintType = pPrintControl->GetPrintMethod();
 
-                    // Work out whether or not to use straight Gavin bitmap for printing
-                    if ((PrintType == PRINTMETHOD_AABITMAP) ||
-                        (PrintType == PRINTMETHOD_BITMAP))
-                        {
-                            // GDraw - use GRenderPrint region.
-                            return GRenderRegion::Create(ClipRect, ConvertMatrix, ViewScale,
-                                                         rType, pView);
-                        }
-                }
-
-            // Is this a PostScript printer?
-            if (rType == RENDERTYPE_PRINTER_PS)
-                {
-                    // Yes - make a PostScript render region
-                    return new PrintPSRenderRegion(ClipRect, ConvertMatrix, ViewScale);
-                }
-#endif
-            // If we get here, then we should use normal OS rendering.
-            // TRACE(_T("Creating PRINTER region (%d, %d) - (%d, %d)  OSRenderRegion\n"),
-            //      ClipRect.lo.x,
-            //      ClipRect.lo.y,
-            //      ClipRect.hi.x,
-            //      ClipRect.hi.y);
-            return new OSRenderRegion(ClipRect, ConvertMatrix, ViewScale);
-        } else {
-        // Always try for a GRenderRegion first - unless the caller
-        // specifically asked for the OSRenderRegion, the whole
-        // OSRenderRegion, and nothing but the OSRenderRegion.  (But by
-        // default, we'll give 'em a GRenderRegion if we can)
-        if ((!UseOSRendering) && (rType != RENDERTYPE_PRINTER)) {
-            RenderRegion *pRender;
-            pRender = GRenderRegion::Create(ClipRect, ConvertMatrix, ViewScale, rType, pView, bForce32BPP);
-            if (pRender) {
-                return pRender;
+            // Work out whether or not to use straight Gavin bitmap for printing
+            if ((PrintType == PRINTMETHOD_AABITMAP) ||
+                (PrintType == PRINTMETHOD_BITMAP))
+            {
+                // GDraw - use GRenderPrint region.
+                return GRenderRegion::Create(ClipRect, ConvertMatrix, ViewScale,
+                                             rType, pView);
             }
         }
+
+        // Is this a PostScript printer?
+        if (rType == RENDERTYPE_PRINTER_PS)
+        {
+            // Yes - make a PostScript render region
+            return new PrintPSRenderRegion(ClipRect, ConvertMatrix, ViewScale);
+        }
+#endif
+        // If we get here, then we should use normal OS rendering.
+//      TRACE(_T("Creating PRINTER region (%d, %d) - (%d, %d)  OSRenderRegion\n"), ClipRect.lo.x, ClipRect.lo.y, ClipRect.hi.x, ClipRect.hi.y);
+        return new OSRenderRegion(ClipRect, ConvertMatrix, ViewScale);
+    }
+    else
+    {
+        // Always try for a GRenderRegion first - unless the caller specifically asked for
+        // the OSRenderRegion, the whole OSRenderRegion, and nothing but the OSRenderRegion.
+        // (But by default, we'll give 'em a GRenderRegion if we can)
+        if ((!UseOSRendering) && (rType != RENDERTYPE_PRINTER))
+        {
+            RenderRegion *pRender;
+            pRender = GRenderRegion::Create(ClipRect, ConvertMatrix, ViewScale, rType, pView, bForce32BPP);
+            if (pRender)
+                return pRender;
+        }
+
         // if failed, use normal ones
-        // TRACE(_T("Creating OTHER region (%d, %d) - (%d, %d)  OSRenderRegion\n"),
-        //      ClipRect.lo.x,
-        //      ClipRect.lo.y,
-        //      ClipRect.hi.x,
-        //      ClipRect.hi.y);
+//      TRACE(_T("Creating OTHER region (%d, %d) - (%d, %d)  OSRenderRegion\n"), ClipRect.lo.x, ClipRect.lo.y, ClipRect.hi.x, ClipRect.hi.y);
         pOS = new OSRenderRegion(ClipRect, ConvertMatrix, ViewScale);
     }
-    if (!pOS){
-        // if call failed
-        return NULL;
-    }
+
+    if (!pOS)
+        return NULL;                                // if call failed
+
     // created a new one OK - must set RFlags suitably
-    if ((rType == RENDERTYPE_METAFILE16) ||
-        (rType == RENDERTYPE_METAFILE32)) {
-        // mark metafiles correctly
-        pOS -> RFlags.Metafile = TRUE;
-    }
-    // (this fn is a friend so can get to it)
-    if (rType == RENDERTYPE_MONOBITMAP) {
+
+    if (
+        (rType == RENDERTYPE_METAFILE16) ||
+        (rType == RENDERTYPE_METAFILE32)
+        )
+        pOS -> RFlags.Metafile = TRUE;              // mark metafiles correctly
+                                                    // (this fn is a friend so can get to it)
+
+    if (rType == RENDERTYPE_MONOBITMAP)
+    {
         pOS -> RenderFlags.VeryMono = TRUE;
     }
-    if (rType == RENDERTYPE_HITDETECT) {
+
+    if (rType == RENDERTYPE_HITDETECT)
+    {
         pOS -> RenderFlags.VeryMono = FALSE;
         pOS -> RenderFlags.HitDetect = TRUE;
         pOS -> m_DoCompression = TRUE;
     }
-    if (rType == RENDERTYPE_COLOURBITMAP) {
+
+    if (rType == RENDERTYPE_COLOURBITMAP)
+    {
         pOS -> RenderFlags.VeryMono = FALSE;
         pOS -> m_DoCompression = TRUE;
     }
-    if ((rType == RENDERTYPE_SCREEN) ||
+
+    if (
+        (rType == RENDERTYPE_SCREEN) ||
         (rType == RENDERTYPE_SCREENPAPER) ||
-        (rType == RENDERTYPE_SCREENXOR)) {
+        (rType == RENDERTYPE_SCREENXOR)
+        )
+    {
         // if going to the screen, might have a palette selected
-        if (WantGDIPalette && PaletteManager::UsePalette()) {
+        if (WantGDIPalette && PaletteManager::UsePalette())
             pOS->RFlags.UsePalette = TRUE;
-        }
     }
-    //  pOS->RFlags.GDI32 = bCanDo32;
+
+//  pOS->RFlags.GDI32 = bCanDo32;
+
     return pOS;
 }
 
 
 
-/***************************************************************************
->   OSRenderRegion::OSRenderRegion(DocRect ClipRect, Matrix ConvertMatrix,
-                                       FIXED16 ViewScale)
+/********************************************************************************************
+
+>   OSRenderRegion::OSRenderRegion(DocRect ClipRect, Matrix ConvertMatrix, FIXED16 ViewScale)
 
     Author:     Will_Cowling (Xara Group Ltd) <camelotdev@xara.com>
     Created:    11/5/93
-    Inputs:         ClipRect is a DocRect defining the invalid rectangle
-            to be rendered.  ConvertMatrix is a Matrix for
-            converting Doc coords to OS coords.  ViewScale
-            is the scale factor of the view, used to
-            calculate how much to flatten paths etc.
-    Purpose:        Constructor for OSRenderRegion, allowing a invalid
-            rectangle to be specified.  The matrix passed
-            is used to convert Document coords into device
-            coords, taking into account scaling, scroll
-            offsets etc. All RFlags values default to
-            FALSE. The creator should set them.
-***************************************************************************/
-OSRenderRegion::OSRenderRegion(DocRect ClipRect, Matrix ConvertMatrix,
-                               FIXED16 ViewScale)
-    : RenderRegion(ClipRect, ConvertMatrix,
-                   ViewScale) {
+    Inputs:     ClipRect is a DocRect defining the invalid rectangle to be rendered.
+                ConvertMatrix is a Matrix for converting Doc coords to OS coords.
+                ViewScale is the scale factor of the view, used to calculate how much to
+                flatten paths etc.
+    Purpose:    Constructor for OSRenderRegion, allowing a invalid rectangle to be specified.
+                The matrix passed is used to convert Document coords into device coords,
+                taking into account scaling, scroll offsets etc. All RFlags values default
+                to FALSE. The creator should set them.
+
+********************************************************************************************/
+
+OSRenderRegion::OSRenderRegion(DocRect ClipRect, Matrix ConvertMatrix, FIXED16 ViewScale)
+    : RenderRegion(ClipRect, ConvertMatrix, ViewScale)
+{
     CurrentPen = 0;
     CurrentBrush = 0;
+//  OldBrush = NULL;
+//  OldPen = NULL;
     OldFont = NULL;
     OSClipRegion = NULL;
     OldPalette = NULL;
     FontInfo.pRenderFont = NULL;
     FontInfo.pOldFont = NULL;
+
     RFlags.Metafile   = FALSE;
+//  RFlags.GDI32      = FALSE;
     RFlags.ValidPen   = FALSE;
     RFlags.ValidBrush = FALSE;
     RFlags.UsePalette = FALSE;
-    // We don't bother rendering paper for OSRenderRegions cos it's
-    // already been done by the PaperRenderRegion
+
+    // We don't bother rendering paper for OSRenderRegions cos it's already been done by the
+    // PaperRenderRegion
     IsPaperRendered = TRUE;
+
     // Set the render caps up
     GetRenderRegionCaps(&Caps);
+
     // Initialise the SepTables pointer
     SepTables = NULL;
 }
 
-/***************************************************************************
+/********************************************************************************************
+
 >   OSRenderRegion::OSRenderRegion(const OSRenderRegion &other)
 
     Author:     Will_Cowling (Xara Group Ltd) <camelotdev@xara.com>
     Created:    15/7/93
     Inputs:     An OSRenderRegion to copy
-    Purpose:        Copy Constructor for OSRenderRegion.  Constructs an
-            OSRenderRegion that is a copy of
-            another. Calls RenderRegion copy constructor
-            to make a copy of the current ContextStack.
+    Purpose:    Copy Constructor for OSRenderRegion.  Constructs an OSRenderRegion that is a
+                copy of another. Calls RenderRegion copy constructor to make a copy of the
+                current ContextStack.
     SeeAlso:    RenderRegion(const RenderRegion &other)
-***************************************************************************/
+
+********************************************************************************************/
+
 OSRenderRegion::OSRenderRegion(const OSRenderRegion &other, FIXED16 ViewScale)
-    : RenderRegion(other) {
-    // We assume that the RenderRegion being copied is not curently
-    // rendering.
+    : RenderRegion(other)
+{
+    // We assume that the RenderRegion being copied is not curently rendering.
     CurrentPen = 0;
     CurrentBrush = 0;
+//  OldBrush = NULL;
+//  OldPen = NULL;
     OldFont = NULL;
     OSClipRegion = NULL;
     OldPalette = NULL;
     FontInfo.pRenderFont = NULL;
     FontInfo.pOldFont = NULL;
+
     RFlags = other.RFlags;
+
     // Set the render caps up
     GetRenderRegionCaps(&Caps);
+
     // Initialise the SepTables pointer
     SepTables = NULL;
 }
@@ -572,20 +591,20 @@ OSRenderRegion::OSRenderRegion(const OSRenderRegion &other, FIXED16 ViewScale)
 OSRenderRegion::~OSRenderRegion()
 {
     if (RenderFlags.Rendering)
-        {
-            TRACE( _T("StopRender() was not called before destructor\n") );
-            StopRender();
-        }
+    {
+        TRACE( _T("StopRender() was not called before destructor\n") );
+        StopRender();
+    }
 
     // A bug used to cause OSClipRegion to be left undeleted when a clipping rect was set
     // externally.  This check is here just to make sure it doesn't creep back !!
     ENSURE(OSClipRegion == NULL, "Clip Region wasn't deleted");
 
     if (SepTables != NULL)
-        {
-            CCFree(SepTables);
-            SepTables = NULL;
-        }
+    {
+        CCFree(SepTables);
+        SepTables = NULL;
+    }
 }
 
 
@@ -642,23 +661,25 @@ BOOL OSRenderRegion::InitDevice()
         return FALSE;
 
     // Get the HDC so we can reconstruct the CDC later.
-    //  DCHandle = RenderDC->GetSafeHdc();
+//  DCHandle = RenderDC->GetSafeHdc();
 
     // Ignore any error from GBrush initialisation - we can live without GBrush.
     // However, we only want GBrush on the screen thanks
     if (IsPrinting())
-        {
-            // if we don't do this, bitmaps printed at the same DPI as the printer come
-            // out wrong on NT drivers
-            // Note: although this is claimed to be a Win32s-compatible function,
-            // GDI16 generates an error for it (invalid value 4)
-            // Note2: The MFC version of this function looks like the 16-bit API call,
-            // so we call the API directly here
-            //::SetStretchBltMode( RenderDC->m_hDC, HALFTONE );
-        } else {
+    {
+        // if we don't do this, bitmaps printed at the same DPI as the printer come
+        // out wrong on NT drivers
+        // Note: although this is claimed to be a Win32s-compatible function,
+        // GDI16 generates an error for it (invalid value 4)
+        // Note2: The MFC version of this function looks like the 16-bit API call,
+        // so we call the API directly here
+        //::SetStretchBltMode( RenderDC->m_hDC, HALFTONE );
+    }
+    else
+    {
         // Invalidate any active brushes.
         GDrawBrush.NewBrushState();
-        GDrawBrush.Init(RenderDC);
+        GDrawBrush.Init( RenderDC );
     }
 
     // Find out what grad fill quality to use.
@@ -671,20 +692,20 @@ BOOL OSRenderRegion::InitDevice()
         FillQuality = PRINTFILLQUALITY_MEDIUM;
 
     switch (FillQuality)
-        {
-        case PRINTFILLQUALITY_LOW:
-            GradFillQuality = 2;
-            break;
+    {
+    case PRINTFILLQUALITY_LOW:
+        GradFillQuality = 2;
+        break;
 
-        case PRINTFILLQUALITY_HIGH:
-            GradFillQuality = 0;
-            break;
+    case PRINTFILLQUALITY_HIGH:
+        GradFillQuality = 0;
+        break;
 
-        case PRINTFILLQUALITY_MEDIUM:
-        default:
-            GradFillQuality = 1;
-            break;
-        }
+    case PRINTFILLQUALITY_MEDIUM:
+    default:
+        GradFillQuality = 1;
+        break;
+    }
 
 
     // All ok
@@ -715,27 +736,26 @@ void OSRenderRegion::InitClipping()
     // now the seemingly spurious 1,1s have been removed as they are indeed spurious
     WinRect OSClipRect = DocRectToWin(CurrentClipRect, 0,0,0,0);
 
-    //  ENSURE(OSClipRect.top >= 0, "Blobby!");
+//  ENSURE(OSClipRect.top >= 0, "Blobby!");
 
-    //  This line commented out by Alex, to fix Bugzilla #991, per Neil, Gavin
-    //  ERROR3IF((OSClipRect.x < 0) || (OSClipRect.y < 0), "OSRenderRegion::InitClipping bad clip");
+//  This line commented out by Alex, to fix Bugzilla #991, per Neil, Gavin
+//  ERROR3IF((OSClipRect.x < 0) || (OSClipRect.y < 0), "OSRenderRegion::InitClipping bad clip");
 
     // we can't clip within a metafile, but we can set the origin & extent based on it
-    //  if (RFlags.Metafile)
-    //  {
-    //      RenderDC->SetWindowOrg( OSClipRect.x, OSClipRect.y );
-    //      RenderDC->SetWindowExt( OSClipRect.width, OSClipRect.height );
-    //  }
-    //  else
+//  if (RFlags.Metafile)
+//  {
+//      RenderDC->SetWindowOrg( OSClipRect.x, OSClipRect.y );
+//      RenderDC->SetWindowExt( OSClipRect.width, OSClipRect.height );
+//  }
+//  else
     {
         delete OSClipRegion;    // This will be NULL if no previous CRgn defined.
         OSClipRegion = new wxRegion(OSClipRect);
         ENSURE(OSClipRegion != NULL,"'new' failed when creating OSClipRegion");
 
         // Set the Clipping Region
-        if (OSClipRegion) {
+        if (OSClipRegion)
             RenderDC->SetClippingRegion(*OSClipRegion);
-        }
     }
 }
 
@@ -776,69 +796,69 @@ void OSRenderRegion::InitAttributes()
 {
     CurrentPen = 0;
     CurrentBrush = 0;
-    //  OldBrush = NULL;
-    //  OldPen = NULL;
+//  OldBrush = NULL;
+//  OldPen = NULL;
     OldFont = NULL;
 
     if (!RFlags.Metafile)
-        {
-            // Set the default font (intended for kernel-rendered dialogues)
-            // Don't bother for metafiles (because we can't read text from them anyhow)
-            PORTNOTE("other","OSRenderRegion::InitAttributes - removed setting of default font");
+    {
+        // Set the default font (intended for kernel-rendered dialogues)
+        // Don't bother for metafiles (because we can't read text from them anyhow)
+        PORTNOTE("other","OSRenderRegion::InitAttributes - removed setting of default font");
 #if !defined(EXCLUDE_FROM_XARALX)
-            wxFont* FixedSystemFont = FontFactory::GetCFont(STOCKFONT_RNDRGNFIXEDTEXT);
-            FixedSystemFont.Scale(2.0);
-            if (FixedSystemFont != NULL)
-                OldFont = RenderDC->SetFont(*FixedSystemFont);
+        wxFont* FixedSystemFont = FontFactory::GetCFont(STOCKFONT_RNDRGNFIXEDTEXT);
+        FixedSystemFont.Scale(2.0);
+        if (FixedSystemFont != NULL)
+            OldFont = RenderDC->SetFont(*FixedSystemFont);
 #endif
-        }
+    }
 
     SetOSDrawingMode();
     SetLineAttributes();    // Create a default Pen
     SetFillAttributes();    // Create a default Brush
 
     if (!RFlags.Metafile)
+    {
+        // Metafiles don't need brush origin calculations
+
+        // Now we calculate the Origin for the Brush fill pattern, so that fill patterns
+        // are always aligned as we scroll around the page.
+
+        // (First we get the Origin of the Document in DocCoords)
+        // Actually, at Jim's suggestion Andy now bases this on (0,0).
+        DocCoord DocOrigin;
+        DocOrigin.x = 0;                    //was MinDocCoord+0x20000;
+        DocOrigin.y = 0;                    //was MaxDocCoord-0x20000;
+
+//      f1 = f;
+        // Then we transform it into OSCoords
+        WinCoord OSOrigin;
+        OSOrigin = DocCoordToWin(DocOrigin);
+
+        // when running on some machine combinations, we need to further adjust the point
+        // relative to the screen. The only combination that works is a 32-bit version
+        // running on NT. Everyone else has to fix it up.
+        PORTNOTE("other", "Check this");
+//      if (IsWin32s())
         {
-            // Metafiles don't need brush origin calculations
-
-            // Now we calculate the Origin for the Brush fill pattern, so that fill patterns
-            // are always aligned as we scroll around the page.
-
-            // (First we get the Origin of the Document in DocCoords)
-            // Actually, at Jim's suggestion Andy now bases this on (0,0).
-            DocCoord DocOrigin;
-            DocOrigin.x = 0;                    //was MinDocCoord+0x20000;
-            DocOrigin.y = 0;                    //was MaxDocCoord-0x20000;
-
-            //      f1 = f;
-            // Then we transform it into OSCoords
-            WinCoord OSOrigin;
-            OSOrigin = DocCoordToWin(DocOrigin);
-
-            // when running on some machine combinations, we need to further adjust the point
-            // relative to the screen. The only combination that works is a 32-bit version
-            // running on NT. Everyone else has to fix it up.
-            PORTNOTE("other", "Check this");
-            //      if (IsWin32s())
+            if (RenderView)
             {
-                if (RenderView)
-                    {
-                        // Get the OIL window and get it to do the conversion for us.
-                        CCamView* RenderWindow = RenderView->GetConnectionToOilView();
-                        if ( RenderWindow!=NULL && RenderWindow->GetFrame()!=NULL )
-                            RenderWindow->GetFrame()->ClientToScreen(OSOrigin);
-                        // In galleries, RenderView used to be NULL, so this code was never called.
-                        // This has changed, so suddenly this ensure was going off. Now it won't.
-                        //else
-                        //  ERROR2RAW("No render window in OSRenderRegion::InitAttributes()");
-                    }
+                // Get the OIL window and get it to do the conversion for us.
+                CCamView* RenderWindow = RenderView->GetConnectionToOilView();
+                if ( RenderWindow!=NULL && RenderWindow->GetFrame()!=NULL )
+                    RenderWindow->GetFrame()->ClientToScreen(OSOrigin);
+                // In galleries, RenderView used to be NULL, so this code was never called.
+                // This has changed, so suddenly this ensure was going off. Now it won't.
+                //else
+                //  ERROR2RAW("No render window in OSRenderRegion::InitAttributes()");
             }
-
-            // The Brush Origin is set to a value between 0 and 7 calculated from the position of the
-            // transformed origin.
-            NewBrushOrg.x = OSOrigin.x & 7;
-            NewBrushOrg.y = OSOrigin.y & 7;
         }
+
+        // The Brush Origin is set to a value between 0 and 7 calculated from the position of the
+        // transformed origin.
+        NewBrushOrg.x = OSOrigin.x & 7;
+        NewBrushOrg.y = OSOrigin.y & 7;
+    }
 
 }
 
@@ -855,34 +875,34 @@ void OSRenderRegion::InitAttributes()
 void OSRenderRegion::DeInitAttributes()
 {
     // Get rid of pen and/or brush if we used them.
-    /*  if (OldPen != NULL)
-        {
-        //ENSURE(OldPen->m_hObject != NULL, "NULL object selected!");
-        RenderDC->SetPen(*OldPen);
-        }
+/*  if (OldPen != NULL)
+    {
+    //ENSURE(OldPen->m_hObject != NULL, "NULL object selected!");
+    RenderDC->SetPen(*OldPen);
+    }
 
-        if (OldBrush != NULL)
-        {
-        //ENSURE(OldBrush->m_hObject != NULL, "NULL object selected!");
-        RenderDC->SetBrush(*OldBrush);
-        }
-    */
+    if (OldBrush != NULL)
+    {
+    //ENSURE(OldBrush->m_hObject != NULL, "NULL object selected!");
+    RenderDC->SetBrush(*OldBrush);
+    }
+*/
 
     // Deselect the FixedSystem font from the DC
     if (OldFont != NULL)
-        {
-            RenderDC->SetFont(*OldFont);
-            OldFont = NULL;
-        }
+    {
+        RenderDC->SetFont(*OldFont);
+        OldFont = NULL;
+    }
 
     // Deselect the normal rendering font from the DC
     if (FontInfo.pRenderFont != NULL)
-        {
-            RenderDC->SetFont(*FontInfo.pOldFont);
-            FontInfo.pOldFont = NULL;
-            delete FontInfo.pRenderFont;
-            FontInfo.pRenderFont = NULL;
-        }
+    {
+        RenderDC->SetFont(*FontInfo.pOldFont);
+        FontInfo.pOldFont = NULL;
+        delete FontInfo.pRenderFont;
+        FontInfo.pRenderFont = NULL;
+    }
 }
 
 
@@ -959,76 +979,76 @@ wxColour OSRenderRegion::CalcEORColour( DocColour &Wanted, COLORREF Background )
     INT32 R,G,B;
     Wanted.GetRGBValue(&R,&G,&B);
     return wxColour(
-                    GetRValue(Background)^R,
-                    GetGValue(Background)^G,
-                    GetBValue(Background)^B
-                    );
-    /*
+        GetRValue(Background)^R,
+        GetGValue(Background)^G,
+        GetBValue(Background)^B
+        );
+/*
 
-      if (EORCache.Valid && (EORCache.SourceColour == Wanted))
-      return(EORCache.EORColour);
+  if (EORCache.Valid && (EORCache.SourceColour == Wanted))
+  return(EORCache.EORColour);
 
-      COLORREF Result;
-      INT32 Red, Green, Blue;
-      Wanted.GetRGBValue(&Red, &Green, &Blue);
+  COLORREF Result;
+  INT32 Red, Green, Blue;
+  Wanted.GetRGBValue(&Red, &Green, &Blue);
 
-      if (RFlags.UsePalette)
-      {
-      // a palette device has to be quite different - get palette indices and XOR
-      // them together, then return that as a palette index
-      const UINT32 BGIndex = PaletteManager::GetPalette()->GetNearestPaletteIndex( Background );
-      const UINT32 FGIndex = PaletteManager::GetPalette()->GetNearestPaletteIndex( RGB(Red,Green,Blue) );
+  if (RFlags.UsePalette)
+  {
+  // a palette device has to be quite different - get palette indices and XOR
+  // them together, then return that as a palette index
+  const UINT32 BGIndex = PaletteManager::GetPalette()->GetNearestPaletteIndex( Background );
+  const UINT32 FGIndex = PaletteManager::GetPalette()->GetNearestPaletteIndex( RGB(Red,Green,Blue) );
 
-      Result = PALETTEINDEX( BGIndex ^ FGIndex );
-      }
-      else
-      {
-      // non-palette devices we XOR into a little bitmap to work it out
-      CBitmap Tiny, *OldBitmap;
-      CDC MemDC;
+  Result = PALETTEINDEX( BGIndex ^ FGIndex );
+  }
+  else
+  {
+  // non-palette devices we XOR into a little bitmap to work it out
+  CBitmap Tiny, *OldBitmap;
+  CDC MemDC;
 
-      BOOL bStatus;
+  BOOL bStatus;
 
-      bStatus = MemDC.CreateCompatibleDC( RenderDC );
-      ENSURE(bStatus, "cant create comp DC");
+  bStatus = MemDC.CreateCompatibleDC( RenderDC );
+  ENSURE(bStatus, "cant create comp DC");
 
-      bStatus = Tiny.CreateCompatibleBitmap( RenderDC, 1, 1 );      // make a tiny bitmap
-      // compatible with screen
-      // so colours OK
-      ENSURE(bStatus, "cant create Tiny bitmap");
+  bStatus = Tiny.CreateCompatibleBitmap( RenderDC, 1, 1 );        // make a tiny bitmap
+  // compatible with screen
+  // so colours OK
+  ENSURE(bStatus, "cant create Tiny bitmap");
 
-      OldBitmap = MemDC.SelectObject( &Tiny );
-      if (OldBitmap == NULL)
-      {
-      ENSURE(FALSE, "Cant select tiny bitmap");
-      return RGB(255,255,255);                                  // return WHITE
-      }
+  OldBitmap = MemDC.SelectObject( &Tiny );
+  if (OldBitmap == NULL)
+  {
+  ENSURE(FALSE, "Cant select tiny bitmap");
+  return RGB(255,255,255);                                    // return WHITE
+  }
 
-      MemDC.SetPixel( 0,0, Background );
-      MemDC.SetROP2( R2_XORPEN );                                       // into XOR mode
+  MemDC.SetPixel( 0,0, Background );
+  MemDC.SetROP2( R2_XORPEN );                                     // into XOR mode
 
-      MemDC.SetPixel( 0,0, RGB(Red, Green, Blue) );
-
-
-      Result = MemDC.GetPixel( 0,0 );
-      ENSURE( Result!=0xFFFFFFFF, "GetPixel failed");
-
-      //TRACE( _T("Converted %d.%d.%d to %d.%d.%d\n"), Wanted.Red, Wanted.Green, Wanted.Blue,
-      //                                            GetRValue(Result), GetGValue(Result), GetBValue(Result) );
-
-      MemDC.SelectObject( OldBitmap );                              // restore normality
-
-      // automatic destruction of HDC and Bitmaps will occur naturally
-      }
+  MemDC.SetPixel( 0,0, RGB(Red, Green, Blue) );
 
 
-      // Cache this result
-      EORCache.SourceColour = Wanted;
-      EORCache.EORColour = Result;
-      EORCache.Valid = TRUE;
+  Result = MemDC.GetPixel( 0,0 );
+  ENSURE( Result!=0xFFFFFFFF, "GetPixel failed");
 
-      return Result;
-    */
+  //TRACE( _T("Converted %d.%d.%d to %d.%d.%d\n"), Wanted.Red, Wanted.Green, Wanted.Blue,
+  //                                          GetRValue(Result), GetGValue(Result), GetBValue(Result) );
+
+  MemDC.SelectObject( OldBitmap );                                // restore normality
+
+  // automatic destruction of HDC and Bitmaps will occur naturally
+  }
+
+
+  // Cache this result
+  EORCache.SourceColour = Wanted;
+  EORCache.EORColour = Result;
+  EORCache.Valid = TRUE;
+
+  return Result;
+*/
 }
 
 
@@ -1072,43 +1092,43 @@ void OSRenderRegion::FlushEORCache(void)
 void OSRenderRegion::CalcLogBrush(wxBrush* lpBrush, DocColour &Col)
 {
     if (Col.IsTransparent())
-        {
-            lpBrush->SetColour(*wxBLACK);
-            lpBrush->SetStyle(wxTRANSPARENT);
-        }
+    {
+        lpBrush->SetColour(*wxBLACK);
+        lpBrush->SetStyle(wxTRANSPARENT);
+    }
     else
-        {
-            // VeryMono devices have everything that is not transparent as Black
-            if (RenderFlags.VeryMono)
-                // Unless the quality says don't fill!!!
-                if (RRQuality.GetFillQuality() <= Quality::NoFill)
-                    {
-                        lpBrush->SetColour(*wxBLACK);
-                        lpBrush->SetStyle(wxTRANSPARENT);
-                    }
-                else
-                    {
-                        lpBrush->SetStyle(wxSOLID);
-                        lpBrush->SetColour(*wxBLACK);
-                    }
-            else if (DrawingMode != DM_EORPEN)
-                {
-                    if (GDrawBrush.Available())
-                        GDrawBrush.GetLogBrush( CurrentColContext, Col, lpBrush );
-                    else
-                        {
-                            INT32 R,G,B;
-                            Col.GetRGBValue(&R, &G, &B);
-                            lpBrush->SetStyle(wxSOLID);
-                            lpBrush->SetColour(R, G, B);
-                        }
-                }
+    {
+        // VeryMono devices have everything that is not transparent as Black
+        if (RenderFlags.VeryMono)
+            // Unless the quality says don't fill!!!
+            if (RRQuality.GetFillQuality() <= Quality::NoFill)
+            {
+                lpBrush->SetColour(*wxBLACK);
+                lpBrush->SetStyle(wxTRANSPARENT);
+            }
             else
-                {
-                    lpBrush->SetStyle(wxSOLID);
-                    lpBrush->SetColour(CalcEORColour(Col));
-                }
+            {
+                lpBrush->SetStyle(wxSOLID);
+                lpBrush->SetColour(*wxBLACK);
+            }
+        else if (DrawingMode != DM_EORPEN)
+        {
+            if (GDrawBrush.Available())
+                GDrawBrush.GetLogBrush( CurrentColContext, Col, lpBrush );
+            else
+            {
+                INT32 R,G,B;
+                Col.GetRGBValue(&R, &G, &B);
+                lpBrush->SetStyle(wxSOLID);
+                lpBrush->SetColour(R, G, B);
+            }
         }
+        else
+        {
+            lpBrush->SetStyle(wxSOLID);
+            lpBrush->SetColour(CalcEORColour(Col));
+        }
+    }
 }
 
 /********************************************************************************************
@@ -1133,99 +1153,99 @@ void OSRenderRegion::CreateNewPen()
         EmptyPen = FALSE;
 
     if (
-        //      RFlags.GDI32 &&                             // must be GDI32
+//      RFlags.GDI32 &&                             // must be GDI32
         !RenderFlags.VeryMono &&                    // not to bitmaps (special colour rules)
         !RenderFlags.bImmediateRender &&            // not when immediate (XORing messes up)
         (LineQuality >= Quality::FullLine) &&       // not on simple lines
         !EmptyPen                                   // not on NULL pens (over complex)
         )
+    {
+//      Windows version would have used brush calculation to set pen properties
+//      CalcLogBrush( &Brush, RR_STROKECOLOUR() );
+
+        INT32 PenWidth = MPtoLP(RR_LINEWIDTH());
+        if (IsPrinting())
         {
-            //      Windows version would have used brush calculation to set pen properties
-            //      CalcLogBrush( &Brush, RR_STROKECOLOUR() );
-
-            INT32 PenWidth = MPtoLP(RR_LINEWIDTH());
-            if (IsPrinting())
-                {
-                    // Make sure we don't user single pixel width pens as they won't dither.
-                    if (PenWidth < 2)
-                        PenWidth = 2;
-                }
-
-            INT32 R,G,B;
-            RR_STROKECOLOUR().GetRGBValue(&R,&G,&B);
-            RenderPen[CurrentPen] = wxPen(wxColour(R,G,B), PenWidth, wxSOLID);
-
-            // work out pen type
-            switch (RR_STARTCAP())
-                {
-                case LineCapRound:
-                    RenderPen[CurrentPen].SetCap(wxCAP_ROUND);
-                    break;
-
-                case LineCapSquare:
-                    RenderPen[CurrentPen].SetCap(wxCAP_PROJECTING);
-                    break;
-
-                case LineCapButt:
-                    RenderPen[CurrentPen].SetCap(wxCAP_BUTT);
-                    break;
-
-                default:
-                    ENSURE(FALSE, "Bad startcap");
-                    break;
-                }
-            switch (RR_JOINTYPE())
-                {
-                case BevelledJoin:
-                    RenderPen[CurrentPen].SetJoin(wxJOIN_BEVEL);
-                    break;
-
-                case MitreJoin:
-                    RenderPen[CurrentPen].SetJoin(wxJOIN_MITER);
-                    break;
-
-                case RoundJoin:
-                    RenderPen[CurrentPen].SetJoin(wxJOIN_ROUND);
-                    break;
-
-                default:
-                    ENSURE(FALSE, "bad jointype");
-                    break;
-                }
-            return ;
+            // Make sure we don't user single pixel width pens as they won't dither.
+            if (PenWidth < 2)
+                PenWidth = 2;
         }
+
+        INT32 R,G,B;
+        RR_STROKECOLOUR().GetRGBValue(&R,&G,&B);
+        RenderPen[CurrentPen] = wxPen(wxColour(R,G,B), PenWidth, wxSOLID);
+
+        // work out pen type
+        switch (RR_STARTCAP())
+        {
+        case LineCapRound:
+            RenderPen[CurrentPen].SetCap(wxCAP_ROUND);
+            break;
+
+        case LineCapSquare:
+            RenderPen[CurrentPen].SetCap(wxCAP_PROJECTING);
+            break;
+
+        case LineCapButt:
+            RenderPen[CurrentPen].SetCap(wxCAP_BUTT);
+            break;
+
+        default:
+            ENSURE(FALSE, "Bad startcap");
+            break;
+        }
+        switch (RR_JOINTYPE())
+        {
+        case BevelledJoin:
+            RenderPen[CurrentPen].SetJoin(wxJOIN_BEVEL);
+            break;
+
+        case MitreJoin:
+            RenderPen[CurrentPen].SetJoin(wxJOIN_MITER);
+            break;
+
+        case RoundJoin:
+            RenderPen[CurrentPen].SetJoin(wxJOIN_ROUND);
+            break;
+
+        default:
+            ENSURE(FALSE, "bad jointype");
+            break;
+        }
+        return ;
+    }
 
     // fall through to use old-fashioned 16-bit GDI pen creation if failed
 
     if (EmptyPen)
         RenderPen[CurrentPen] = wxPen(*wxTRANSPARENT_PEN);
     else
+    {
+        INT32 PenWidth = MPtoLP(RR_LINEWIDTH());
+
+        if (RR_LINEWIDTH()==0 || LineQuality < Quality::FullLine)
+            PenWidth = 0;
+        else
         {
-            INT32 PenWidth = MPtoLP(RR_LINEWIDTH());
-
-            if (RR_LINEWIDTH()==0 || LineQuality < Quality::FullLine)
-                PenWidth = 0;
-            else
-                {
-                    MILLIPOINT LineWidth = RR_LINEWIDTH();
-                    if ((RenderFlags.VeryMono || RenderFlags.HitDetect) && LineWidth < GetScaledPixelWidth())
-                        PenWidth = MPtoLP(GetScaledPixelWidth());
-                }
-
-            wxColour Colour(0,0,0);
-            if (RenderFlags.VeryMono || LineQuality < Quality::ThinLine)
-                Colour = *wxBLACK;
-            else if (DrawingMode==DM_EORPEN)
-                Colour = CalcEORColour(RR_STROKECOLOUR());
-            else
-                {
-                    INT32 R,G,B;
-                    RR_STROKECOLOUR().GetRGBValue(&R,&G,&B);
-                    Colour = wxColour(R, G, B);
-                }
-
-            RenderPen[CurrentPen] = wxPen(Colour, PenWidth, wxSOLID);
+            MILLIPOINT LineWidth = RR_LINEWIDTH();
+            if ((RenderFlags.VeryMono || RenderFlags.HitDetect) && LineWidth < GetScaledPixelWidth())
+                PenWidth = MPtoLP(GetScaledPixelWidth());
         }
+
+        wxColour Colour(0,0,0);
+        if (RenderFlags.VeryMono || LineQuality < Quality::ThinLine)
+            Colour = *wxBLACK;
+        else if (DrawingMode==DM_EORPEN)
+            Colour = CalcEORColour(RR_STROKECOLOUR());
+        else
+        {
+            INT32 R,G,B;
+            RR_STROKECOLOUR().GetRGBValue(&R,&G,&B);
+            Colour = wxColour(R, G, B);
+        }
+
+        RenderPen[CurrentPen] = wxPen(Colour, PenWidth, wxSOLID);
+    }
 }
 
 void OSRenderRegion::SelectNewPen()
@@ -1256,10 +1276,10 @@ void OSRenderRegion::SelectNewPen()
 void OSRenderRegion::CreateNewBrush()
 {
     if (RRQuality.GetFillQuality() <= Quality::NoFill )
-        {
-            RenderBrush[CurrentBrush].SetColour(*wxBLACK);
-            RenderBrush[CurrentBrush].SetStyle(wxTRANSPARENT);
-        }
+    {
+        RenderBrush[CurrentBrush].SetColour(*wxBLACK);
+        RenderBrush[CurrentBrush].SetStyle(wxTRANSPARENT);
+    }
     else
         CalcLogBrush( &RenderBrush[CurrentBrush], RR_FILLCOLOUR() );
 }
@@ -1286,14 +1306,14 @@ void OSRenderRegion::SelectNewBrush()
 
     // Set up the brush origin
     if (!RFlags.Metafile)
-        {
-            //      RenderBrush[CurrentBrush]->UnrealizeObject();
-            // this fn will assert if done on a metafile
-            PORTNOTE("other","OSRenderRegion::SelectNewBrush - removed setting of brush origin");
+    {
+//      RenderBrush[CurrentBrush]->UnrealizeObject();
+        // this fn will assert if done on a metafile
+        PORTNOTE("other","OSRenderRegion::SelectNewBrush - removed setting of brush origin");
 #if !defined(EXCLUDE_FROM_XARALX)
-            RenderDC->SetBrushOrg(NewBrushOrg);
+        RenderDC->SetBrushOrg(NewBrushOrg);
 #endif
-        }
+    }
 
     // And select the new brush
     RenderDC->SetBrush(RenderBrush[CurrentBrush]);
@@ -1353,41 +1373,41 @@ BOOL OSRenderRegion::SelectNewFont(WORD Typeface, BOOL Bold, BOOL Italic,
         (FontInfo.Width == Width) &&
         (FontInfo.Height == Height) &&
         (FontInfo.Rotation == Rotation))
-        {
-            // It is the same as the currently selected/cached font
-            TRACEUSER( "Tim", _T("Using the cached font\n"));
-            return TRUE;
-        }
+    {
+        // It is the same as the currently selected/cached font
+        TRACEUSER( "Tim", _T("Using the cached font\n"));
+        return TRUE;
+    }
 
     // Is it rotated, and if so, can this DC do rotated fonts?
     if (Rotation != FIXED16(0))
-        {
-            // Don't use GetDeviceCaps to ask printers about their capabilities!
-            // It tells lies.
-            // Even Worse - many printers claim to be unable to render rotated
-            // text, when they are actually perfectly cpaable of doing so!
-            //
-            // So, to maintain compatibility with previous versions just test
-            // a Preference here and if it's set return FALSE like 1.5 and all
-            // previous versions did.
-            if (PrintRotatedTextAsPaths)
-                return FALSE;
-        }
+    {
+        // Don't use GetDeviceCaps to ask printers about their capabilities!
+        // It tells lies.
+        // Even Worse - many printers claim to be unable to render rotated
+        // text, when they are actually perfectly cpaable of doing so!
+        //
+        // So, to maintain compatibility with previous versions just test
+        // a Preference here and if it's set return FALSE like 1.5 and all
+        // previous versions did.
+        if (PrintRotatedTextAsPaths)
+            return FALSE;
+    }
 
     TRACEUSER( "Tim", _T("Font cache invalid - generating font to use\n"));
 
     // Not the cached font - ok, deselect and delete the cached font.
     if (FontInfo.pOldFont != NULL)
-        {
-            RenderDC->SelectObject(FontInfo.pOldFont);
-            FontInfo.pOldFont = NULL;
-        }
+    {
+        RenderDC->SelectObject(FontInfo.pOldFont);
+        FontInfo.pOldFont = NULL;
+    }
 
     if (FontInfo.pRenderFont != NULL)
-        {
-            delete FontInfo.pRenderFont;
-            FontInfo.pRenderFont = NULL;
-        }
+    {
+        delete FontInfo.pRenderFont;
+        FontInfo.pRenderFont = NULL;
+    }
 
 
     ENUMLOGFONT *pEnumLogFont = FONTMANAGER->GetEnumLogFont(Typeface);
@@ -1397,13 +1417,13 @@ BOOL OSRenderRegion::SelectNewFont(WORD Typeface, BOOL Bold, BOOL Italic,
 
     // Create the font and select it into the DC
     TRY
-        {
-            FontInfo.pRenderFont = new wxFont;
-        }
+    {
+        FontInfo.pRenderFont = new wxFont;
+    }
     CATCH (CMemoryException, e)
-        {
-            return FALSE;
-        }
+    {
+        return FALSE;
+    }
     END_CATCH
 
         // Work out the font weight - bold or normal?
@@ -1414,109 +1434,109 @@ BOOL OSRenderRegion::SelectNewFont(WORD Typeface, BOOL Bold, BOOL Italic,
     FIXED16 fxPixWidth = 0;
     FIXED16 fxPixHeight = 0;
 
-    //  if (RFlags.Metafile)
-    //  {
+//  if (RFlags.Metafile)
+//  {
     // Metafile - don't care about the view scale
-    //      RenderView->GetPixelSize(&fxPixWidth, &fxPixHeight);
-    //  }
-    //  else
-    //  {
+//      RenderView->GetPixelSize(&fxPixWidth, &fxPixHeight);
+//  }
+//  else
+//  {
     RenderView->GetScaledPixelSize(&fxPixWidth, &fxPixHeight);
-    //  }
+//  }
 
     INT32 FontWidth = (INT32) (Width / fxPixWidth.MakeDouble());
     INT32 FontHeight = (INT32) (Height / fxPixHeight.MakeDouble());
 
     if (FontHeight == FontWidth)
-        {
-            // Aspect ratio is 100% - use width of 0, and the GDI font engine gives us 100%
-            // ratio automatically
-            FontWidth = 0;
-        }
+    {
+        // Aspect ratio is 100% - use width of 0, and the GDI font engine gives us 100%
+        // ratio automatically
+        FontWidth = 0;
+    }
     else
+    {
+        // Aspect ratio is not 100% - we need to do some clever stuff to work out
+        // how wide we want the font to be.  Because fonts are generally much taller
+        // than they are wide, we can't just pass in FontWidth directly - we must
+        // transform it to the correct width.
+
+        // BODGETEXT: ideally, we should use a NEWTEXTMETRIC structure here, to work out
+        //            the correct width, but this involves calling EnumLogFontFamily() or
+        //            whatever, which is too slow.  As the text code caches the LOGFONT
+        //            for each font, it could also cache the NEWTEXTMETRIC structure,
+        //            which this routine could then use.
+        //            Having said all that, this code seems to work!
+
+        //            Indeed the font manager code to cache the LOGFONTS could also
+        //            cache the NEWTEXTMETRIC structures (or the TEXTMETRIC structures
+        //            since NEWTEXTMETRIC structures only exist for TrueType fonts.)
+        //            But at the moment it doesn't - the whole of the font system
+        //            needs thinking through and rewriting.
+        //                                                                  ach - 15/08/96
+
+        // Create the font - the first time is to find out how wide the characters are,
+        // so we can scale the width correctly. (So we give a width of 0 to get the normal
+        // width for the given height)
+        // (We do it at 100 units high so we get decent accuracy for the aspect ratio.)
+        if (FontInfo.pRenderFont->CreateFont(-100, 0, 0, 0, FontWeight, Italic,
+                                             FALSE, FALSE, DEFAULT_CHARSET,
+                                             OUT_TT_PRECIS, CLIP_TT_ALWAYS,
+                                             PROOF_QUALITY, DEFAULT_PITCH | FF_DONTCARE,
+                                             pEnumLogFont->elfLogFont.lfFaceName) == 0)
         {
-            // Aspect ratio is not 100% - we need to do some clever stuff to work out
-            // how wide we want the font to be.  Because fonts are generally much taller
-            // than they are wide, we can't just pass in FontWidth directly - we must
-            // transform it to the correct width.
-
-            // BODGETEXT: ideally, we should use a NEWTEXTMETRIC structure here, to work out
-            //            the correct width, but this involves calling EnumLogFontFamily() or
-            //            whatever, which is too slow.  As the text code caches the LOGFONT
-            //            for each font, it could also cache the NEWTEXTMETRIC structure,
-            //            which this routine could then use.
-            //            Having said all that, this code seems to work!
-
-            //            Indeed the font manager code to cache the LOGFONTS could also
-            //            cache the NEWTEXTMETRIC structures (or the TEXTMETRIC structures
-            //            since NEWTEXTMETRIC structures only exist for TrueType fonts.)
-            //            But at the moment it doesn't - the whole of the font system
-            //            needs thinking through and rewriting.
-            //                                                                  ach - 15/08/96
-
-            // Create the font - the first time is to find out how wide the characters are,
-            // so we can scale the width correctly. (So we give a width of 0 to get the normal
-            // width for the given height)
-            // (We do it at 100 units high so we get decent accuracy for the aspect ratio.)
-            if (FontInfo.pRenderFont->CreateFont(-100, 0, 0, 0, FontWeight, Italic,
-                                                 FALSE, FALSE, DEFAULT_CHARSET,
-                                                 OUT_TT_PRECIS, CLIP_TT_ALWAYS,
-                                                 PROOF_QUALITY, DEFAULT_PITCH | FF_DONTCARE,
-                                                 pEnumLogFont->elfLogFont.lfFaceName) == 0)
-                {
-                    // Unable to select the font.
-                    delete FontInfo.pRenderFont;
-                    FontInfo.pRenderFont = NULL;
-                    return FALSE;
-                }
-
-            // Used to hold information about the font
-            TEXTMETRIC Metrics;
-
-            if (TRUE) //RFlags.Metafile)
-                {
-                    // Metafile - we need to use the screen DC to do this
-                    wxDC* pDesktopDC = CWnd::GetDesktopWindow()->GetDC();
-
-                    // Get the metrics
-                    FontInfo.pOldFont = pDesktopDC->SetFont(FontInfo.pRenderFont);
-                    pDesktopDC->GetTextMetrics(&Metrics);
-
-                    // Select old font back into screen DC
-                    pDesktopDC->SetFont(FontInfo.pOldFont);
-                    CWnd::GetDesktopWindow()->ReleaseDC(pDesktopDC);
-                }
-            else
-                {
-                    // Normal rendering - use the DC as we can use 'Getxxx' functions on it
-                    // because it is not a metafile DC.
-                    FontInfo.pOldFont = RenderDC->SelectObject(FontInfo.pRenderFont);
-
-                    // Get the metrics
-                    RenderDC->GetTextMetrics(&Metrics);
-
-                    // Select old font back into screen DC
-                    RenderDC->SelectObject(FontInfo.pOldFont);
-                }
-
-            // Scale the width by the font's aspect ratio:
-            // ActualWidth = (RealWidth / Height) * Width
-            FontWidth = MulDiv(Metrics.tmAveCharWidth, FontWidth, 100);
-
-            // Delete the font
+            // Unable to select the font.
             delete FontInfo.pRenderFont;
+            FontInfo.pRenderFont = NULL;
+            return FALSE;
+        }
 
-            // Create the 'proper' font and select it into the DC
-            TRY
-                {
-                    FontInfo.pRenderFont = new CFont;
-                }
-            CATCH (CMemoryException, e)
-                {
-                    return FALSE;
-                }
-            END_CATCH
-                }
+        // Used to hold information about the font
+        TEXTMETRIC Metrics;
+
+        if (TRUE) //RFlags.Metafile)
+        {
+            // Metafile - we need to use the screen DC to do this
+            wxDC* pDesktopDC = CWnd::GetDesktopWindow()->GetDC();
+
+            // Get the metrics
+            FontInfo.pOldFont = pDesktopDC->SetFont(FontInfo.pRenderFont);
+            pDesktopDC->GetTextMetrics(&Metrics);
+
+            // Select old font back into screen DC
+            pDesktopDC->SetFont(FontInfo.pOldFont);
+            CWnd::GetDesktopWindow()->ReleaseDC(pDesktopDC);
+        }
+        else
+        {
+            // Normal rendering - use the DC as we can use 'Getxxx' functions on it
+            // because it is not a metafile DC.
+            FontInfo.pOldFont = RenderDC->SelectObject(FontInfo.pRenderFont);
+
+            // Get the metrics
+            RenderDC->GetTextMetrics(&Metrics);
+
+            // Select old font back into screen DC
+            RenderDC->SelectObject(FontInfo.pOldFont);
+        }
+
+        // Scale the width by the font's aspect ratio:
+        // ActualWidth = (RealWidth / Height) * Width
+        FontWidth = MulDiv(Metrics.tmAveCharWidth, FontWidth, 100);
+
+        // Delete the font
+        delete FontInfo.pRenderFont;
+
+        // Create the 'proper' font and select it into the DC
+        TRY
+        {
+            FontInfo.pRenderFont = new CFont;
+        }
+        CATCH (CMemoryException, e)
+        {
+            return FALSE;
+        }
+        END_CATCH
+            }
 
     // Work out the rotation of the font, in tenths of degrees.
     INT32 lfRotation;
@@ -1531,13 +1551,13 @@ BOOL OSRenderRegion::SelectNewFont(WORD Typeface, BOOL Bold, BOOL Italic,
                                          OUT_TT_PRECIS, CLIP_TT_ALWAYS,
                                          PROOF_QUALITY, DEFAULT_PITCH | FF_DONTCARE,
                                          pEnumLogFont->elfLogFont.lfFaceName) == 0)
-        {
-            // Unable to select the font - probably because device cannot rotate fonts
-            // arbitrarily.
-            delete FontInfo.pRenderFont;
-            FontInfo.pRenderFont = NULL;
-            return FALSE;
-        }
+    {
+        // Unable to select the font - probably because device cannot rotate fonts
+        // arbitrarily.
+        delete FontInfo.pRenderFont;
+        FontInfo.pRenderFont = NULL;
+        return FALSE;
+    }
 
     // Select the real font into the DC.
     FontInfo.pOldFont = RenderDC->SetFont(FontInfo.pRenderFont);
@@ -1569,23 +1589,23 @@ void OSRenderRegion::SetOSDrawingMode()
 {
     // Set ROP2 code accordingly.
     switch (DrawingMode)
-        {
-        case DM_COPYPEN:
-            if (!RenderDC->IsKindOf(CLASSINFO(wxPostScriptDC))) // ignore for PS as it is the only option and
-                RenderDC->SetLogicalFunction(wxCOPY);// it asserts (ridiculous but true)
-            break;
-        case DM_EORPEN:
-        case DM_EORDITHER:
-            // Same as EORPEN, except we want the brush to be set to what we ask for,
-            // and not messed about with, so we use this enum value instead.
-            // The ROP2 code is the same as we use for DM_EORPEN - it is CalcLogBrush()
-            // that behaves differently with DM_EORDITHER.
-            RenderDC->SetLogicalFunction(wxXOR);
-            break;
+    {
+    case DM_COPYPEN:
+        if (!RenderDC->IsKindOf(CLASSINFO(wxPostScriptDC))) // ignore for PS as it is the only option and
+            RenderDC->SetLogicalFunction(wxCOPY);// it asserts (ridiculous but true)
+        break;
+    case DM_EORPEN:
+    case DM_EORDITHER:
+        // Same as EORPEN, except we want the brush to be set to what we ask for,
+        // and not messed about with, so we use this enum value instead.
+        // The ROP2 code is the same as we use for DM_EORPEN - it is CalcLogBrush()
+        // that behaves differently with DM_EORDITHER.
+        RenderDC->SetLogicalFunction(wxXOR);
+        break;
 
-        default:
-            ERROR3("Bad drawing mode in OSRenderRegion::SetOSDrawingMode()");
-        }
+    default:
+        ERROR3("Bad drawing mode in OSRenderRegion::SetOSDrawingMode()");
+    }
 
     // When we change the ROP2 code, we also have to recreate the pen and brush objects,
     // otherwise we don't get an awful lot happening.  This was found out by trial and
@@ -1629,8 +1649,8 @@ BOOL OSRenderRegion::StartRender()
     GDrawBrush.Start();
 
 #if defined(_DEBUG) && defined(__WXMSW__)
-    // **** DEBUG BODGE - Make GDI redraw everything immediately
-    // instead of buffering stuff, so we can see exactly when stuff goes wrong
+// **** DEBUG BODGE - Make GDI redraw everything immediately
+// instead of buffering stuff, so we can see exactly when stuff goes wrong
     GdiSetBatchLimit(1);
 #endif
 
@@ -1655,8 +1675,8 @@ BOOL OSRenderRegion::StartRender()
 
 BOOL OSRenderRegion::StopRender()
 {
-    // ************************************************************
-    // Some Debug code to plot the clipping rectangle
+// ************************************************************
+// Some Debug code to plot the clipping rectangle
 #if 0
     {
         TRACE( _T("OSRR# DebugClipRect = (%d, %d) - (%d, %d)\n"), CurrentClipRect.lo.x, CurrentClipRect.lo.y, CurrentClipRect.hi.x, CurrentClipRect.hi.y);
@@ -1720,7 +1740,7 @@ BOOL OSRenderRegion::StopRender()
         RestoreContext();
     }
 #endif
-    // ************************************************************
+// ************************************************************
 
     // Check that Initialise was called
     ENSURE(RenderFlags.Rendering, "DeInitialise called before Initialise");
@@ -1729,10 +1749,10 @@ BOOL OSRenderRegion::StopRender()
     DeInitAttributes();
 
     if (OldPalette)
-        {
-            PaletteManager::StopPaintPalette(RenderDC, OldPalette);
-            OldPalette = NULL;
-        }
+    {
+        PaletteManager::StopPaintPalette(RenderDC, OldPalette);
+        OldPalette = NULL;
+    }
 
     // Clean out the Fuzzy Rectangles
     InnerRect.MakeEmpty();
@@ -1744,10 +1764,10 @@ BOOL OSRenderRegion::StopRender()
     GDrawBrush.Stop();
 
     if (SepTables != NULL)
-        {
-            CCFree(SepTables);
-            SepTables = NULL;
-        }
+    {
+        CCFree(SepTables);
+        SepTables = NULL;
+    }
 
     return TRUE;
 }
@@ -1861,10 +1881,10 @@ void OSRenderRegion::DrawRect(DocRect* RectToRend)
     GetValidPen();
     GetValidBrush();
 
-    //  TRACEUSER("Gavin",_T("RectToRend      : %08x %08x %08x %08x"),
-    //        RectToRend->lo.x,RectToRend->lo.y,RectToRend->hi.x,RectToRend->hi.y);
-    //  TRACEUSER("Gavin",_T("CurrentClipRect : %08x %08x %08x %08x"),
-    //        CurrentClipRect.lo.x,CurrentClipRect.lo.y,CurrentClipRect.hi.x,CurrentClipRect.hi.y);
+//  TRACEUSER("Gavin",_T("RectToRend      : %08x %08x %08x %08x"),
+//        RectToRend->lo.x,RectToRend->lo.y,RectToRend->hi.x,RectToRend->hi.y);
+//  TRACEUSER("Gavin",_T("CurrentClipRect : %08x %08x %08x %08x"),
+//        CurrentClipRect.lo.x,CurrentClipRect.lo.y,CurrentClipRect.hi.x,CurrentClipRect.hi.y);
 
     // First see if the rect intersects with the clip rect
     if (!RectToRend->IsIntersectedWith(CurrentClipRect))
@@ -1873,42 +1893,42 @@ void OSRenderRegion::DrawRect(DocRect* RectToRend)
     // OK, it intersects, but we should try to clip it with the inner rect
     DocRect DrawRect = RectToRend->Intersection(InnerRect);
 
-    //  TRACEUSER("Gavin",_T("DrawRect        : %08x %08x %08x %08x *"),
-    //        DrawRect.lo.x,DrawRect.lo.y,DrawRect.hi.x,DrawRect.hi.y);
+//  TRACEUSER("Gavin",_T("DrawRect        : %08x %08x %08x %08x *"),
+//        DrawRect.lo.x,DrawRect.lo.y,DrawRect.hi.x,DrawRect.hi.y);
 
-    // NOTE
-    // Sometimes the PasteBoard and Page rects are dissapearing at high zoom.
-    // This seems to be because of the GDI 16 bit limit being exceeded.
-    // We need to check for the overflow, or clip the rects ourselves. Hence the
-    // TRUE args on the end of DocRectToWin
+// NOTE
+// Sometimes the PasteBoard and Page rects are dissapearing at high zoom.
+// This seems to be because of the GDI 16 bit limit being exceeded.
+// We need to check for the overflow, or clip the rects ourselves. Hence the
+// TRUE args on the end of DocRectToWin
     WinRect Rect;
 
     // Ok, all the Fuzzy clipping has been taken care of, now convert and draw the rectangle we have left
-    /*  if (BodgeRectangles)
-        {
-        // if using Ploygon to draw rectangles, no bodging of co-ords is required at all
-        // (as you would expect)
-        */      Rect = DocRectToWin(DrawRect, 0,0,0,0, TRUE);
-    /*  }
-        else if (RR_STROKECOLOUR().IsTransparent())
-        {
-        Rect = DocRectToWin(DrawRect, 0,0,1,1, TRUE);
-        }
-        else
-        {
-        Rect = DocRectToWin(DrawRect, 0,-1,1,0, TRUE);
-        }
+/*  if (BodgeRectangles)
+    {
+    // if using Ploygon to draw rectangles, no bodging of co-ords is required at all
+    // (as you would expect)
+    */      Rect = DocRectToWin(DrawRect, 0,0,0,0, TRUE);
+/*  }
+    else if (RR_STROKECOLOUR().IsTransparent())
+    {
+    Rect = DocRectToWin(DrawRect, 0,0,1,1, TRUE);
+    }
+    else
+    {
+    Rect = DocRectToWin(DrawRect, 0,-1,1,0, TRUE);
+    }
 
-        BOOL RectOK;
+    BOOL RectOK;
 
-        // Draw the Rectangle
-        if (BodgeRectangles)
-        {
-        RectOK = SlowRectangle(RenderDC, Rect);
-        ENSURE(RectOK,"CDC::Rectangle failed in DrawRect");
-        }
-        else
-    */      RenderDC->DrawRectangle(Rect);
+    // Draw the Rectangle
+    if (BodgeRectangles)
+    {
+    RectOK = SlowRectangle(RenderDC, Rect);
+    ENSURE(RectOK,"CDC::Rectangle failed in DrawRect");
+    }
+    else
+*/      RenderDC->DrawRectangle(Rect);
 
 }
 
@@ -1930,10 +1950,10 @@ void OSRenderRegion::DrawDragRect(DocRect* RectToDraw)
     GetValidPen();
     GetValidBrush();
 
-    // NOTE
-    // Sometimes the PasteBoard and Page rects are dissapearing at high zoom.
-    // This seems to be because of the GDI 16 bit limit being exceeded.
-    // We need to check for the overflow, or clip the rects ourselves.
+// NOTE
+// Sometimes the PasteBoard and Page rects are dissapearing at high zoom.
+// This seems to be because of the GDI 16 bit limit being exceeded.
+// We need to check for the overflow, or clip the rects ourselves.
 
     WinRect Rect = DocRectToWin(*RectToDraw, 0,0,0,0);
 
@@ -1943,9 +1963,9 @@ void OSRenderRegion::DrawDragRect(DocRect* RectToDraw)
 
     if ( DrawingMode != DM_EORPEN ||                    // if not EOR then always
          (
-          Rect.width !=1 &&         // else must have width
-          Rect.height!=1                // and height
-          ) )
+             Rect.width !=1 &&           // else must have width
+             Rect.height!=1              // and height
+             ) )
         RenderDC->DrawRectangle(Rect);      // Draw the Rectangle
 }
 
@@ -2077,9 +2097,8 @@ void OSRenderRegion::DrawLine(const DocCoord &StartPoint, const DocCoord &EndPoi
     if (!StartArrow.IsNull)
         DrawLineArrow(StartArrow, StartPoint, EndPoint);
 
-    if (!EndArrow.IsNull) {
+    if (!EndArrow.IsNull)
         DrawLineArrow(EndArrow, EndPoint, StartPoint);
-    }
 #endif
 }
 
@@ -2097,8 +2116,8 @@ void OSRenderRegion::DrawLine(const DocCoord &StartPoint, const DocCoord &EndPoi
 void OSRenderRegion::DrawPixel(const DocCoord &Point)
 {
     wxPoint LinePoint = DocCoordToWin(Point);
-    //  RenderDC->SetPixel(LinePoint,
-    //              ConvertColourToScreenWord(CurrentColContext, &RR_STROKECOLOUR()));
+//  RenderDC->SetPixel(LinePoint,
+//              ConvertColourToScreenWord(CurrentColContext, &RR_STROKECOLOUR()));
     INT32 R,G,B;
     RR_STROKECOLOUR().GetRGBValue(&R,&G,&B);
     RenderDC->SetPen(wxColour(R,G,B));
@@ -2178,9 +2197,7 @@ void OSRenderRegion::DrawCross(const DocCoord &Point, const UINT32 Size)
 
 ********************************************************************************************/
 
-void OSRenderRegion::DrawFixedSystemText(StringBase *TheText,
-                                         DocRect &BoundsRect,
-                                         UINT32 uFormat /* = FORMAT_SINGLELINE | FORMAT_NOPREFIX | FORMAT_VCENTER */)
+void OSRenderRegion::DrawFixedSystemText(StringBase *TheText, DocRect &BoundsRect, UINT32 uFormat /* = FORMAT_SINGLELINE | FORMAT_NOPREFIX | FORMAT_VCENTER */)
 {
     wxString Text = (wxString)(TCHAR *)(*TheText);
     wxRect Rect(0,0,0,0);
@@ -2198,29 +2215,29 @@ void OSRenderRegion::DrawFixedSystemText(StringBase *TheText,
     INT32 LineHeight = RenderDC->GetCharHeight();
 
     if (uFormat & FORMAT_CALCRECT) // just calculate the rect needed to draw the text and return
+    {
+        // This won't actually draw the text, instead it returns a rectangle in 'Rect'
+        // LineHeight = RenderDC->DrawText((TCHAR *) (*TheText), -1, &Rect, uFormat);
+        wxCoord w, h;
+        RenderDC->GetTextExtent(Text, &w, &h);
+        Rect = wxRect(0, 0, w, h);
+
+
+        if(XDPI == 0 || YDPI == 0 || LineHeight == 0)
         {
-            // This won't actually draw the text, instead it returns a rectangle in 'Rect'
-            // LineHeight = RenderDC->DrawText((TCHAR *) (*TheText), -1, &Rect, uFormat);
-            wxCoord w, h;
-            RenderDC->GetTextExtent(Text, &w, &h);
-            Rect = wxRect(0, 0, w, h);
-
-
-            if(XDPI == 0 || YDPI == 0 || LineHeight == 0)
-                {
-                    ERROR3("Can not calculate text size");
-                    BoundsRect = DocRect(0, 0, 0, 0);
-                    RenderDC->SetFont(SaveFont);
-                    return;
-                }
-            // For some reason, Rect.bottom and Rect.top seem to be incorrect, so we have
-            // to use the returned LineHeight value
-            BoundsRect = DocRect(0, 0,
-                                 (INT32)(((double)Rect.width * IN_MP_VAL) / XDPI),
-                                 (INT32)(((double)LineHeight * IN_MP_VAL) / YDPI) );
+            ERROR3("Can not calculate text size");
+            BoundsRect = DocRect(0, 0, 0, 0);
             RenderDC->SetFont(SaveFont);
             return;
         }
+        // For some reason, Rect.bottom and Rect.top seem to be incorrect, so we have
+        // to use the returned LineHeight value
+        BoundsRect = DocRect(0, 0,
+                             (INT32)(((double)Rect.width * IN_MP_VAL) / XDPI),
+                             (INT32)(((double)LineHeight * IN_MP_VAL) / YDPI) );
+        RenderDC->SetFont(SaveFont);
+        return;
+    }
 
     // We plot using the TOP of the rectangle supplied (that's the highest DocCoord
     // but we need to center it (i.e. reduce the value
@@ -2235,30 +2252,30 @@ void OSRenderRegion::DrawFixedSystemText(StringBase *TheText,
     // further to the right than the rectangle. This just ensures that the text is always
     // clipped inside the rectangle rather than outside (at worst, a pixel too far inside)
     if (Rect.width>0)       // Still a valid rectangle?
-        {
-            //      Rect.x--;
+    {
+//      Rect.x--;
 
-            // wxWidgets seems to corrupt the current brush here, which we need to preserve
-            wxBrush SaveBrush=RenderDC->GetBrush();
-            INT32 SaveBackgroundMode=RenderDC->GetBackgroundMode();
+        // wxWidgets seems to corrupt the current brush here, which we need to preserve
+        wxBrush SaveBrush=RenderDC->GetBrush();
+        INT32 SaveBackgroundMode=RenderDC->GetBackgroundMode();
 
-            // Draw the text
-            RenderDC->SetBackgroundMode(wxTRANSPARENT);
-            RenderDC->DrawText(Text, Rect.GetLeft(), Rect.GetTop());
+        // Draw the text
+        RenderDC->SetBackgroundMode(wxTRANSPARENT);
+        RenderDC->DrawText(Text, Rect.GetLeft(), Rect.GetTop());
 
-            // Restore the brush. First we have to ensure SetBrush really works. This is
-            // because the GTK brush is corrupted whilst the wxWidgets one is still right.
-            // So we have to select a different brush or wxWidgets will skip the call
-            // that would otherwise fix the GTK brush - wxWidgets bug #148096
-            RenderDC->SetBackgroundMode(SaveBackgroundMode);
-            RenderDC->SetBrush(*wxTRANSPARENT_BRUSH);
-            RenderDC->SetBrush(wxNullBrush);
-            RenderDC->SetBrush(SaveBrush);
+        // Restore the brush. First we have to ensure SetBrush really works. This is
+        // because the GTK brush is corrupted whilst the wxWidgets one is still right.
+        // So we have to select a different brush or wxWidgets will skip the call
+        // that would otherwise fix the GTK brush - wxWidgets bug #148096
+        RenderDC->SetBackgroundMode(SaveBackgroundMode);
+        RenderDC->SetBrush(*wxTRANSPARENT_BRUSH);
+        RenderDC->SetBrush(wxNullBrush);
+        RenderDC->SetBrush(SaveBrush);
 
-            //      LineHeight = RenderDC->DrawText((TCHAR *) (*TheText), -1, &Rect, uFormat);
+//      LineHeight = RenderDC->DrawText((TCHAR *) (*TheText), -1, &Rect, uFormat);
 
-            //      ENSURE(LineHeight > 0, "OSRenderRegion::DrawFixedSystemText failed");
-        }
+//      ENSURE(LineHeight > 0, "OSRenderRegion::DrawFixedSystemText failed");
+    }
 
     RenderDC->SetFont(SaveFont);
 }
@@ -2304,16 +2321,16 @@ void OSRenderRegion::DrawFixedSystemText(StringBase *TheText,
 void OSRenderRegion::SetFixedSystemTextColours(DocColour *TextCol, DocColour *Background)
 {
     if (TextCol != NULL)
-        {
-            COLORREF Clr = ConvertColourToScreenWord(CurrentColContext, TextCol);
-            RenderDC->SetTextForeground(Clr);
-        }
+    {
+        COLORREF Clr = ConvertColourToScreenWord(CurrentColContext, TextCol);
+        RenderDC->SetTextForeground(Clr);
+    }
 
     if (Background != NULL)
-        {
-            COLORREF Clr = ConvertColourToScreenWord(CurrentColContext, Background);
-            RenderDC->SetTextBackground(Clr);
-        }
+    {
+        COLORREF Clr = ConvertColourToScreenWord(CurrentColContext, Background);
+        RenderDC->SetTextBackground(Clr);
+    }
 }
 
 
@@ -2374,11 +2391,11 @@ void OSRenderRegion::GetFixedSystemTextSize(StringBase *TheText, DocRect *Bounds
     INT32 YDPI = DPI.GetHeight();
 
     if(XDPI == 0 || YDPI == 0 || LineHeight == 0)
-        {
-            ERROR3("Can not calculate text size");
-            *BoundsRect = DocRect(0, 0, 0, 0);
-            return;
-        }
+    {
+        ERROR3("Can not calculate text size");
+        *BoundsRect = DocRect(0, 0, 0, 0);
+        return;
+    }
     // For some reason, Rect.bottom and Rect.top seem to be incorrect, so we have
     // to use the returned LineHeight value
     *BoundsRect = DocRect(0, 0,
@@ -2393,72 +2410,52 @@ void OSRenderRegion::GetFixedSystemTextSize(StringBase *TheText, DocRect *Bounds
 #define MAX_POLYGONS    256
 
 
-/****************************************************************************
->   INT32 OSRenderRegion::RawRenderPath(DocCoord *const Coords,
-                                            PathVerb *const Verbs,
-                        INT32 NumCoords,
-                        INT32 *PolyCount,
-                        INT32 *ResCount,
-                        INT32 Flatness = 0,
-                                            INT32 *pActualFlatness = NULL)
+/********************************************************************************************
 
-    Author:       Andy_Pennell (Xara Group Ltd) <camelotdev@xara.com>
-    Created:      20/4/94
-    Inputs:       Coords - A path to be drawn (in DocCoords).
-                      Verbs
-                      NumCoords
-              wFlatness - the value to use when flattening a curve.
+>   INT32 OSRenderRegion::RawRenderPath( DocCoord *const Coords, PathVerb *const Verbs,
+                                       INT32 NumCoords, INT32 *PolyCount, INT32 *ResCount,
+                                       INT32 Flatness = 0, INT32 *pActualFlatness = NULL )
 
-              pActualFlatness - if the caller wants to know
-              what flatness was eventually reached while
-              flattening the path, it passes in a pointer here
-              to be filled in.  If the path could not be
-              flattened, this contains the last flatness level
-              that was tried before giving up.
-
-    Outputs:      PolyCount - must point to an array of MAX_POLYGONS
-              ints which will be filled in with a list of
-              polygon sizes (can be just 1 big if ResCount is
-              NULL).
-
-                      ResCount will be updated with the number of
-              polygons. If it is NULL then the routine returns
-              after the end of the first sub-path has been
-              found.  The points calculated from this will be
-              in the PointArray variable.
-
-    Returns:      Number of points read, 0 if failed (e.g. not enough
-                  memory or too complex).
-
-    Purpose:      Low level primitive for rendering paths without
-              GDI32. Note that PointArray should be freed by
-              the caller upon completion.
-
+    Author:     Andy_Pennell (Xara Group Ltd) <camelotdev@xara.com>
+    Created:    20/4/94
+    Inputs:     A path to be drawn (in DocCoords).
+                Flatness - the value to use when flattening a curve.
+                pActualFlatness - if the caller wants to know what flatness was eventually
+                                  reached while flattening the path, it passes in a pointer
+                                  here to be filled in.  If the path could not be flattened,
+                                  this contains the last flatness level that was tried
+                                  before giving up.
+    Outputs:    PolyCounts must point to an array of MAX_POLYGONS ints which will be filled
+                in with a list of polygon sizes (can be just 1 big if ResCount is NULL).
+                *ResCount will be updated with the number of polygons. If it is NULL then the
+                routine returns after the end of the first sub-path has been found.
+                The points calculated from this will be in the PointArray variable.
+    Returns:    Number of points read, 0 if failed (e.g. not enough memory or too complex).
+    Purpose:    Low level primitive for rendering paths without GDI32. Note that PointArray
+                should be freed by the caller upon completion.
     Errors:     -
     Scope:      Private
     SeeAlso:    RawRenderPath32
-****************************************************************************/
-INT32 OSRenderRegion::RawRenderPath(DocCoord *const Coords,
-                                    PathVerb *const Verbs,
-                                    INT32 NumCoords,
-                                    INT32 *PolyCounts,
-                                    INT32 *ResCount,
-                                    INT32 Flatness,
-                                    INT32 *pActualFlatness) {
+
+********************************************************************************************/
+
+INT32 OSRenderRegion::RawRenderPath( DocCoord *const Coords, PathVerb *const Verbs, INT32 NumCoords,
+                                     INT32 *PolyCounts, INT32 *ResCount,
+                                     INT32 Flatness, INT32 *pActualFlatness )
+{
     // Flatness less than 0 will screw up, so let's ignore it
-    if (Flatness < 0) {
+    if (Flatness < 0)
         return 0;
-    }
-    // We have to manually flatten the beziers in the curve and decide
-    // when to draw them.
+
+    // We have to manually flatten the beziers in the curve and decide when to draw them.
     INT32 MaxFlatness;
-    // Decide how flat we are going to make this curve, if the caller
-    // has not specified
-    //
-    // (Tim says: these figures are a bit arbitrary, especially the
-    // MaxFlatness ones)
-    if (Flatness == 0) {
-        if (RFlags.Metafile) {
+
+    // Decide how flat we are going to make this curve, if the caller has not specified
+    if (Flatness == 0)
+    {
+        // (Tim says: these figures are a bit arbitrary, especially the MaxFlatness ones)
+        if (RFlags.Metafile)
+        {
 #if !defined(EXCLUDE_FROM_RALPH) && !defined(EXCLUDE_FROM_XARALX)
             // If this is a Metafile view then go and find out the flatness
             if (RenderView->IS_KIND_OF(MetafileView))
@@ -2466,140 +2463,174 @@ INT32 OSRenderRegion::RawRenderPath(DocCoord *const Coords,
             else
 #endif
                 Flatness = 512;
-        } else {
+        }
+        else
+        {
             Flatness = CalcPathFlattening();
         }
     }
+
     MaxFlatness = Flatness * 8;
+
     // The number of polygons found so far
     INT32 Count = 0;
+
     // The number of points that have been placed in complete polygons
     INT32 PointsSoFar = 0;
+
     // Position we are reading points from
     INT32 ReadPos = 0;
+
     // Flatten curve until it works or flatness becomes too inaccurate.
     BOOL Worked = FALSE;
-    while (!Worked && (Flatness <= MaxFlatness) && (Flatness > 0)) {
+    while (!Worked && (Flatness <= MaxFlatness) &&(Flatness > 0))
+    {
         // Position we are adding points at
         InsertPos = 0;
+
         ReadPos = 0;
         Count = 0;
         PointsSoFar = 0;
+
         Worked = TRUE;
         BOOL KeepGoing = TRUE;
+
         // loop through the whole path
-        while (KeepGoing &&
-               (ReadPos < NumCoords) &&
-               Worked) {
-            if (InsertPos >= SIZEOF_POLYLINE_BUFFER) {
-                // this check is enough for those times when
-                // CurrentPoint is simply incrememented, but is
-                // insufficient when it is increased by more than one,
-                // so additional checks are needed elsewhere
+        while (
+            KeepGoing &&
+            (ReadPos < NumCoords) &&
+            Worked
+            )
+        {
+            if ( InsertPos >= SIZEOF_POLYLINE_BUFFER )
+            {
+                // this check is enough for those times when CurrentPoint is simply incrememented,
+                // but is insufficient when it is increased by more than one, so additional checks
+                // are needed elsewhere
                 TRACE( _T("Path too complex to flatten\n"));
                 InsertPos = 0;
                 Worked = FALSE;
                 break;
             }
-            // Find out the type of element that we are over (after the
-            // close flag has been removed)
+
+            // Find out the type of element that we are over (after the close flag has been removed)
             Coord P[4];
             INT32 OldInsertPos;
-            switch ((Verbs[ReadPos]) & (~PT_CLOSEFIGURE)) {
+
+            switch ( (Verbs[ReadPos]) & (~PT_CLOSEFIGURE) )
+            {
             case PT_MOVETO:
-                // This represents the start of a new polygon, so finish the
-                // last one
-                if (InsertPos > 0) {
-                    // We have put points into the polygon, so this is not the
-                    // first one
+                // This represents the start of a new polygon, so finish the last one
+                if (InsertPos>0)
+                {
+                    // We have put points into the polygon, so this is not the first one
                     PolyCounts[Count] = InsertPos - PointsSoFar;
-                    // Keep tabs on how many points have been put in polygons so
-                    // far
+
+                    // Keep tabs on how many points have been put in polygons so far
                     PointsSoFar = InsertPos;
+
                     // Count the number of polygons
                     Count++;
+
                     // Make sure its not too many
-                    if (Count == MAX_POLYGONS) {
-                        TRACE(_T("Too many polygons in path to render\n"));
+                    if (Count == MAX_POLYGONS)
+                    {
+                        TRACE( _T("Too many polygons in path to render\n") );
                         InsertPos = 0;
                         Worked = FALSE;
                         break;
                     }
-                    if (ResCount == NULL) {
+
+                    if (ResCount==NULL)
+                    {
                         // sub-path has ended, stop the loop now
                         KeepGoing = FALSE;
                         break;
                     }
                 }
+
                 // Put the MoveTo into the point array
                 PointArray[InsertPos] = DocCoordToWin(Coords[ReadPos]);
                 InsertPos++;
                 ReadPos++;
                 break;
+
+
             case PT_LINETO:
                 // Put the LineTo into the point array
                 PointArray[InsertPos] = DocCoordToWin(Coords[ReadPos]);
                 InsertPos++;
                 ReadPos++;
                 break;
+
+
             case PT_BEZIERTO:
-                // If this point is a bezier, then the next 2 points
-                // should be beziers to
-                ENSURE((Verbs[ReadPos+1]) & (~PT_CLOSEFIGURE),
-                       "Bezier found with 1 point");
-                ENSURE((Verbs[ReadPos+2]) & (~PT_CLOSEFIGURE),
-                       "Bezier found with 2 points");
+                // If this point is a bezier, then the next 2 points should be beziers to
+                ENSURE((Verbs[ReadPos+1]) & (~PT_CLOSEFIGURE), "Bezier found with 1 point");
+                ENSURE((Verbs[ReadPos+2]) & (~PT_CLOSEFIGURE), "Bezier found with 2 points");
+
                 // Make sure that this is not at the start of the path
                 ENSURE(ReadPos>0, "Broken path found while flattening" );
                 OldInsertPos = InsertPos;
+
                 // Flatten the bezier out
                 P[0] = DocCoordToOS256(Coords[ReadPos-1]);
                 P[1] = DocCoordToOS256(Coords[ReadPos]);
                 P[2] = DocCoordToOS256(Coords[ReadPos+1]);
                 P[3] = DocCoordToOS256(Coords[ReadPos+2]);
-                if (!Bezier(P[0].x, P[0].y, P[1].x, P[1].y, P[2].x, P[2].y,
-                            P[3].x, P[3].y, Flatness)) {
+
+                if (!Bezier(P[0].x,P[0].y, P[1].x,P[1].y, P[2].x,P[2].y, P[3].x,P[3].y, Flatness))
+                {
                     // Not enough room to flatten bezier.
                     Worked = FALSE;
                     break;
                 }
-                // If the curve was already flat then check to see if
-                // the curve was a vertical or horizontal line.  If it
-                // was then ensure the coords are the same to avoid
-                // kinks.
-                if (InsertPos == OldInsertPos+1) {
-                    if (Coords[ReadPos-1].x == Coords[ReadPos+2].x) {
+
+                // If the curve was already flat then check to see if the curve was a vertical
+                // or horizontal line.  If it was then ensure the coords are the same to avoid kinks.
+                if (InsertPos == OldInsertPos+1)
+                {
+                    if (Coords[ReadPos-1].x == Coords[ReadPos+2].x)
                         PointArray[OldInsertPos].x = PointArray[OldInsertPos-1].x;
-                    }
-                    if (Coords[ReadPos-1].y == Coords[ReadPos+2].y) {
+                    if (Coords[ReadPos-1].y == Coords[ReadPos+2].y)
                         PointArray[OldInsertPos].y = PointArray[OldInsertPos-1].y;
-                    }
                 }
+
                 // Update the positions and break
                 // InsertPos is updated by the bezier functions as the number of points
                 // that they add depends on the curve
                 ReadPos+=3;
                 break;
+
             default:
                 ENSURE( FALSE, "We found a Path Element that does not exist!" );
                 break;
             }
-            if (ResCount == NULL) {
+
+            if (ResCount==NULL)
+            {
                 // caller wants sub-paths, better check for close markers
                 if (Verbs[ReadPos-1] & PT_CLOSEFIGURE)
                     KeepGoing = FALSE;
             }
         }
+
         // Increase flatness in case we need to try again.
         Flatness *= 2;
     }
-    if (!Worked) {
+
+    if (!Worked)
+    {
         // oops - didn't work
-    } else if (InsertPos > 0) {
-        // complete the information about the last polygon in the list
+    }
+    // complete the information about the last polygon in the list
+    else if (InsertPos>0)
+    {
         PolyCounts[Count] = InsertPos - PointsSoFar;
         Count++;
-        if (ResCount) {
+
+        if (ResCount)
+        {
             *ResCount = Count;
         }
     } else {
@@ -2610,10 +2641,11 @@ INT32 OSRenderRegion::RawRenderPath(DocCoord *const Coords,
             Worked = FALSE;                                     // don't use incomplete data
         }
     }
+
     // Tell the caller what flatness we used if necessary
-    if (pActualFlatness != NULL) {
+    if (pActualFlatness != NULL)
         *pActualFlatness = Flatness;
-    }
+
     // return value is number of verb/coord pairs read.
     return Worked ? ReadPos : 0;
 }
@@ -2634,13 +2666,14 @@ INT32 OSRenderRegion::RawRenderPath(DocCoord *const Coords,
 
 ********************************************************************************************/
 
-BOOL OSRenderRegion::SetClipToPathTemporary( Path *const PathToDraw) {
-    PORTNOTETRACE("other",
-                  "OSRenderRegion::SetClipToPathTemporary - do nothing");
+BOOL OSRenderRegion::SetClipToPathTemporary( Path *const PathToDraw)
+{
+    PORTNOTETRACE("other","OSRenderRegion::SetClipToPathTemporary - do nothing");
 #ifndef EXCLUDE_FROM_XARALX
     BOOL Worked;
-    Worked = RawRenderPath32(PathToDraw);
-    if (!Worked) {
+    Worked = RawRenderPath32( PathToDraw );
+    if (!Worked)
+    {
         TRACE( _T("RawPath32 failed in Clip"));
     }
     return Worked;
@@ -2678,37 +2711,37 @@ BOOL OSRenderRegion::StrokeProperly( Path *const DrawPath )
 
     // Don't do dash patten if there isn't one, or if the line has zero width.
     if ((RR_DASHPATTERN().Elements == 0) || (RR_LINEWIDTH() == 0))
-        {
-            // No dash pattern
-            pDashRec = &GavinDash;
-            MakeDashType(RR_DASHPATTERN(), pDashRec);
-        }
+    {
+        // No dash pattern
+        pDashRec = &GavinDash;
+        MakeDashType(RR_DASHPATTERN(), pDashRec);
+    }
     else
+    {
+        // Dash pattern - convert to Gavin-ness...
+        MILLIPOINT Width = RR_LINEWIDTH();
+        DashRec &DashPattern = RR_DASHPATTERN();
+
+        if ((RRQuality.GetLineQuality() >= Quality::FullLine) && DashPattern.Elements > 0)
         {
-            // Dash pattern - convert to Gavin-ness...
-            MILLIPOINT Width = RR_LINEWIDTH();
-            DashRec &DashPattern = RR_DASHPATTERN();
+            INT32 Length = DashPattern.Elements;
 
-            if ((RRQuality.GetLineQuality() >= Quality::FullLine) && DashPattern.Elements > 0)
-                {
-                    INT32 Length = DashPattern.Elements;
+            if (Length > 8) Length = 8;
 
-                    if (Length > 8) Length = 8;
+            BOOL DoScale = DashPattern.ScaleWithLineWidth;
+            FIXED16 Scale = DoScale ? (double(Width) / double(DashPattern.LineWidth)) : 1;
 
-                    BOOL DoScale = DashPattern.ScaleWithLineWidth;
-                    FIXED16 Scale = DoScale ? (double(Width) / double(DashPattern.LineWidth)) : 1;
+            GavinDash.Length = Length;
+            GavinDash.Offset = LongMulFixed16(DashPattern.DashStart, Scale);
 
-                    GavinDash.Length = Length;
-                    GavinDash.Offset = LongMulFixed16(DashPattern.DashStart, Scale);
+            for (INT32 el = 0; el < Length; el++)
+            {
+                GavinDash.Array[el] = LongMulFixed16(DashPattern.ElementData[el], Scale);
+            }
 
-                    for (INT32 el = 0; el < Length; el++)
-                        {
-                            GavinDash.Array[el] = LongMulFixed16(DashPattern.ElementData[el], Scale);
-                        }
-
-                    pDashRec = &GavinDash;
-                }
+            pDashRec = &GavinDash;
         }
+    }
 
     INT32 Result = GRenderRegion::StrokePathToPath( DrawPath->GetCoordArray(),
                                                     DrawPath->GetVerbArray(),
@@ -2723,71 +2756,71 @@ BOOL OSRenderRegion::StrokeProperly( Path *const DrawPath )
                                                     RR_JOINTYPE(),
                                                     pDashRec );
     if (Result>0)
-        {
-            // Gavin has converted to another path - lets flatten & render that
+    {
+        // Gavin has converted to another path - lets flatten & render that
 
-            // switch filling colour to lines
-            wxBrush NewBrush;
+        // switch filling colour to lines
+        wxBrush NewBrush;
 #if TEST_MANUAL_LINES
-            // for debugging, lets have a nice red pen and no fill
-            NewBrush.CreateStockObject( NULL_BRUSH );
-            wxPen DPen(wxBLACK,0);
-            wxPen DOldPen = GetPen();
-            RenderDC->SetPen( &DPen );
+        // for debugging, lets have a nice red pen and no fill
+        NewBrush.CreateStockObject( NULL_BRUSH );
+        wxPen DPen(wxBLACK,0);
+        wxPen DOldPen = GetPen();
+        RenderDC->SetPen( &DPen );
 #else
-            // no quality checks here cos we only do this for high quality
-            //      LOGBRUSH BrushType;
-            //      CalcLogBrush( &BrushType, RR_STROKECOLOUR() );
-            //      NewBrush.CreateBrushIndirect( &BrushType );
-            CalcLogBrush(&NewBrush,RR_STROKECOLOUR());
+        // no quality checks here cos we only do this for high quality
+//      LOGBRUSH BrushType;
+//      CalcLogBrush( &BrushType, RR_STROKECOLOUR() );
+//      NewBrush.CreateBrushIndirect( &BrushType );
+        CalcLogBrush(&NewBrush,RR_STROKECOLOUR());
 #endif
-            wxBrush OldBrush = RenderDC->GetBrush();
-            RenderDC->SetBrush(NewBrush);
+        wxBrush OldBrush = RenderDC->GetBrush();
+        RenderDC->SetBrush(NewBrush);
 
-            // we whip through Gavin's sub-paths manually so we are less likely to
-            // run out of memory when flattening them. It also stops PolyPolygon from
-            // rampantly filling them wrongly. The PointArray will be allocated the first
-            // time and we leave it alone
+        // we whip through Gavin's sub-paths manually so we are less likely to
+        // run out of memory when flattening them. It also stops PolyPolygon from
+        // rampantly filling them wrongly. The PointArray will be allocated the first
+        // time and we leave it alone
 
-            INT32 PathSizeLeft = Result;                        // items in Gavins path
-            DocCoord* PathSoFar = ConvPoints;
-            PathVerb* VerbSoFar = ConvVerbs;
-            INT32 PolySize;                                 // size of this chunk
+        INT32 PathSizeLeft = Result;                        // items in Gavins path
+        DocCoord* PathSoFar = ConvPoints;
+        PathVerb* VerbSoFar = ConvVerbs;
+        INT32 PolySize;                                 // size of this chunk
 
-            while (PathSizeLeft > 0)
-                {
-                    // flatten little sub-path
-                    INT32 Read = RawRenderPath( PathSoFar, VerbSoFar, PathSizeLeft, &PolySize, NULL );
+        while (PathSizeLeft > 0)
+        {
+            // flatten little sub-path
+            INT32 Read = RawRenderPath( PathSoFar, VerbSoFar, PathSizeLeft, &PolySize, NULL );
 
-                    if (Read)
-                        {
-                            // (We don't bother to try again if GDI fails, as it is extremely unlikely as
-                            // we are only doing small Gavin sub-paths from the path stroking routines).
-                            RenderDC->DrawPolygon(PolySize, PointArray, 0, 0, nFillStyle);      // render it
-                            PathSoFar += Read;                              // inc pointers etc
-                            VerbSoFar += Read;
-                            PathSizeLeft -= Read;
-                            ENSURE(PathSizeLeft>=0, "Path backwards too far");
-                        }
-                    else
-                        {
-                            TRACE( _T("RawRenderPath failed\n"));
-                            break;                      // stop as we don't know how far to continue
-                        }
-                }
-            RenderDC->SetBrush( OldBrush );
+            if (Read)
+            {
+                // (We don't bother to try again if GDI fails, as it is extremely unlikely as
+                // we are only doing small Gavin sub-paths from the path stroking routines).
+                RenderDC->DrawPolygon(PolySize,PointArray,0,0,nFillStyle);      // render it
+                PathSoFar += Read;                              // inc pointers etc
+                VerbSoFar += Read;
+                PathSizeLeft -= Read;
+                ENSURE(PathSizeLeft>=0, "Path backwards too far");
+            }
+            else
+            {
+                TRACE( _T("RawRenderPath failed\n"));
+                break;                      // stop as we don't know how far to continue
+            }
+        }
+        RenderDC->SetBrush( OldBrush );
 
 #if TEST_MANUAL_LINES
-            RenderDC->SetPen( DOldPen );
-            DPen.DeleteObject();
+        RenderDC->SetPen( DOldPen );
+        DPen.DeleteObject();
 #endif
 
-            return TRUE;
-        }
+        return TRUE;
+    }
     else if (Result<0)
-        {
-            return FALSE;                               // as Gavin couldn't do it
-        }
+    {
+        return FALSE;                               // as Gavin couldn't do it
+    }
     else
         return TRUE;                                // no points is not an error
 }
@@ -2802,128 +2835,155 @@ void OSRenderRegion::MakeDashType(DashRec& KernelDash, DashType* GavinDash)
     GavinDash->Offset = KernelDash.DashStart;
 
     for (INT32 el = 0; el < Length; el++)
-        {
-            GavinDash->Array[el] = KernelDash.ElementData[el];
-        }
+    {
+        GavinDash->Array[el] = KernelDash.ElementData[el];
+    }
 }
 
-/****************************************************************************
+/********************************************************************************************
+
 >   void OSRenderRegion::RenderPath( Path *DrawPath )
 
     Author:     Will_Cowling (Xara Group Ltd) <camelotdev@xara.com>
     Created:    28/6/93
-    Purpose:        Renders a path to the GDI. Can recurse in the case of
-                    arrow heads.
+    Purpose:    Renders a path to the GDI. Can recurse in the case of arrow heads.
     Scope:      Private
-****************************************************************************/
-void OSRenderRegion::RenderPath(Path *DrawPath) {
+
+********************************************************************************************/
+
+
+void OSRenderRegion::RenderPath( Path *DrawPath )
+{
     /*
       26/9/94. Will.
+
       Changed RFlag test, because of problems with NT bezier flattening.
+
       if (RFlags.GDI32 && (RR_DASHPATTERN().Elements == 0))
       {
       RenderPath32( DrawPath );
       return;
       }
     */
-    // Flags to indicate whether fill-providers or stroke-providers have
-    // filled or stroke the path yet.
+
+    // Flags to indicate whether fill-providers or stroke-providers have filled or stroke
+    // the path yet.
     BOOL ExtendedFill = FALSE;
+
     // If this is not a simple fill, set the flag to indicate this.
     FillGeometryAttribute *pFillProvider =
         (FillGeometryAttribute *) CurrentAttrs[ATTR_FILLGEOMETRY].pAttr;
-    if (pFillProvider->GetRuntimeClass() !=
-        CC_RUNTIME_CLASS(FlatFillAttribute)) {
+
+    if (pFillProvider->GetRuntimeClass() != CC_RUNTIME_CLASS(FlatFillAttribute))
         ExtendedFill = TRUE;
-    }
+
     // we can't do fancy fills if quality is low
-    if (RRQuality.GetFillQuality() < Quality::Graduated) {
+    if (RRQuality.GetFillQuality() < Quality::Graduated)
         ExtendedFill = FALSE;
-    }
+
+    //
     // We ought to check for stroke-providers in here, when the great day comes that
     // we actually have them...
     //
-    // DY - 27/11/2000 The Great Day has arrived!!! If we have an
-    // AttrStrokeType AND an AttrVariableWidth then we don't want Gavin
-    // to mess with our line widths
+    // DY - 27/11/2000 The Great Day has arrived!!! If we have an AttrStrokeType
+    // AND an AttrVariableWidth then we don't want Gavin to mess with our line widths
+
     BOOL StrokeProvided = FALSE;
-    StrokeTypeAttrValue* pStroke =
-        (StrokeTypeAttrValue*) GetCurrentAttribute(ATTR_STROKETYPE);
-    VariableWidthAttrValue* pVarWidth =
-        (VariableWidthAttrValue*) GetCurrentAttribute(ATTR_VARWIDTH);
-    if (pVarWidth && pStroke) {
-        // Test that these attrs are active and not just defaults that
-        // don't do anything
-        if (pStroke->GetPathProcessor() != NULL &&
-            pVarWidth->GetWidthFunction() != NULL) {
+    StrokeTypeAttrValue* pStroke = (StrokeTypeAttrValue*) GetCurrentAttribute(ATTR_STROKETYPE);
+    VariableWidthAttrValue* pVarWidth = (VariableWidthAttrValue*) GetCurrentAttribute(ATTR_VARWIDTH);
+    if (pVarWidth && pStroke)
+    {
+        // Test that these attrs are active and not just defaults that don't do anything
+        if (pStroke->GetPathProcessor() != NULL && pVarWidth->GetWidthFunction() != NULL)
             StrokeProvided = TRUE;
-        }
     }
-    // Get the fill provider to fill the path - if it can't handle this
-    // sort of render region, then we fill the path for it.
-    if (ExtendedFill) {
-        if (!pFillProvider->RenderFill(this, DrawPath)) {
+
+    // Get the fill provider to fill the path - if it can't handle this sort of render
+    // region, then we fill the path for it.
+    if (ExtendedFill)
+    {
+        if (!pFillProvider->RenderFill(this, DrawPath))
             // Unable to render fill for this render region - default to simple fill.
             ExtendedFill = FALSE;
-        }
     }
+
     wxPen NewPen,OldPen;
+
     // can ge get Gavin to manually flatten the path? Is it worth it?
-    // Note that if we have already had a stroke provided (above then we
-    // don't want Gavin, and we also don't want GDI having a go either
+    // Note that if we have already had a stroke provided (above then we don't want Gavin,
+    // and we also don't want GDI having a go either
     BOOL ManualStroke = !StrokeProvided;
-    if (ManualStroke) {
+    if (ManualStroke)
         ManualStroke = GRenderRegion::StrokePathAvailable();
-    }
-    if (ManualStroke) {
-        // Is it worth it for this line? Must be wider than 1 pixel and
-        // high enough quality. First, is it disabled?
-        if (!DoBetterLines) {
+
+    if (ManualStroke)
+    {
+        // is it worth it for this line? Must be wider than 1 pixel and high enough quality
+
+        // First, is it disabled?
+        if (!DoBetterLines)
+        {
             ManualStroke = FALSE;
-            // We have to stroke for Dash patterns
-        } else if ((RR_DASHPATTERN().Elements != 0) && (RR_LINEWIDTH() > 0)) {
-            // Keep manual stroke as being TRUE...
-        } else {
-            INT32 dpLineWidth  = MPtoLP(RR_LINEWIDTH());
-            // If no 32-bit GDI then we have to stroke via Gavin if the
-            // line is wider than a few device pixels, because 16-bit
-            // GDI can't do end-caps/joins for toffee.
-            //(!RFlags.GDI32 && (dpLineWidth > 3))
-            if (dpLineWidth > 0) {
-                // Keep manual stroke as being TRUE...
-                // Don't bother with 0-width lines, or for very thin lines
-            } else if ((RR_LINEWIDTH() == 0) || (dpLineWidth <= 3)) {
-                ManualStroke = FALSE;
-                // if no line, don't bother
-                // if low quality, don't bother
-            } else if (RR_STROKECOLOUR().IsTransparent() ||
-                       (RRQuality.GetLineQuality() < Quality::FullLine)) {
-                ManualStroke = FALSE;
-            }
         }
-    }
-    if (ManualStroke || StrokeProvided) {
-        // if we're going to use Gavin for path stroking, or a stroke
-        // attribute has already stroked the path then better stop GDI
-        // from outlining the Polygons
+        // We have to stroke for Dash patterns
+        else if ((RR_DASHPATTERN().Elements != 0) && (RR_LINEWIDTH() > 0))
+        {
+            // Keep manual stroke as being TRUE...
+        }
+        else
+        {
+            INT32 dpLineWidth  = MPtoLP(RR_LINEWIDTH());
+
+            // If no 32-bit GDI then we have to stroke via Gavin if the line is wider than
+            // a few device pixels, because 16-bit GDI can't do end-caps/joins for toffee.
+			if (dpLineWidth > 0) //(!RFlags.GDI32 && (dpLineWidth > 3))
+			{
+				// Keep manual stroke as being TRUE...
+			}
+				// Don't bother with 0-width lines, or for very thin lines
+			else if ((RR_LINEWIDTH() == 0) || (dpLineWidth <= 3))
+			{
+				ManualStroke = FALSE;
+				// if no line, don't bother
+				// if low quality, don't bother
+			} else if (RR_STROKECOLOUR().IsTransparent() ||
+					   (RRQuality.GetLineQuality() < Quality::FullLine))
+			{
+				ManualStroke = FALSE;
+			}
+		}
+	}
+
+    if (ManualStroke || StrokeProvided)
+    {
+        // if we're going to use Gavin for path stroking, or a stroke attribute has
+        // already stroked the path then better stop GDI from outlining
+        // the Polygons
+//      NewPen.CreateStockObject( NULL_PEN );
         OldPen = RenderDC->GetPen();
-        // AMB thinks (15-Mar-05) the following will cause problems,
-        // because wx on GTK doesn't like drawing with the NULL pen. Use
-        // a transparent pen instead RenderDC->SetPen(wxNullPen);
+
+        // AMB thinks (15-Mar-05) the following will cause problems, because wx on GTK doesn't
+        // like drawing with the NULL pen. Use a transparent pen instead
+        // RenderDC->SetPen(wxNullPen);
         RenderDC->SetPen(*wxTRANSPARENT_PEN);
     }
+
     INT32 Count;
+
     // An array of the number of points in each polygon
     INT32 Verbs[MAX_POLYGONS];
-    // was flatness in
+
+    // Use default flattening
     INT32 DiscoveredPolyCounts[MAX_POLYGONS] =  { 0 };
     // was flatness out
     INT32 ResCount = 0;
     // In all, we reduce flattening 8 times before giving up (arbitrary number)
     INT32 Attempts = 16;
     BOOL Worked = FALSE;
+
     // Keep flattening until it works (or we have tried 8 times)
-    while (!Worked && (Attempts > 0)) {
+    while (!Worked && (Attempts > 0))
+    {
         Worked = RawRenderPath(DrawPath->GetCoordArray(),
                                DrawPath->GetVerbArray(),
                                DrawPath->GetNumCoords(),
@@ -2943,11 +3003,14 @@ void OSRenderRegion::RenderPath(Path *DrawPath) {
     // Note, it's apparanetly possible to generate a drag event in which
     // the sweep is effectively zero, and thus the RawRenderPath reduces
     // to a single point.
-    if (Worked) {
-        if (DrawPath->IsFilled && !ExtendedFill) {
+    if (Worked)
+    {
+        if (DrawPath->IsFilled && !ExtendedFill)
+        {
             // If we have just a single polygon we have to use a slightly
             // different wxWidgets method.
-            if (Count == 1) {
+            if (Count == 1)
+            {
                 RenderDC->DrawPolygon(Verbs[0],
                                       PointArray,
                                       0,
@@ -2955,31 +3018,34 @@ void OSRenderRegion::RenderPath(Path *DrawPath) {
                                       nFillStyle);
                 // } else if (ResCount > 1) {
                 // RenderDC->DrawPolyPolygon(Count, PolyCounts, PointArray, 0, 0, nFillStyle);
-            } else {
+            }
+            else
+            {
                 // Theoretically we could use DrawPolyPolygon for multiple
                 // polygons.  But it doesn't look like the code here
                 // ever supported that.
                 TRACE(_T("No polygon (or more than 1) found to draw."));
             }
-        } else {
+        }
+        else
+        {
             // (TODO -- This surely most be broken) Render the little
             // sub-paths. Win16 doesn't have Polypolyline
             wxPoint* PointList = PointArray;
             INT32 *CountList = DiscoveredPolyCounts;
-            INT32 count;
-            while (Count--) {
-                count = *CountList++;
-                RenderDC->DrawLines(count, PointList);
-                PointList += count;
-            }
+            RenderDC->DrawLines(Verbs[0], PointArray);
         }
-    } else {
+    }
+    else
+    {
         TRACE(_T("Unable to flatten path into out buffer\n"));
     }
+
     // Let Gavin have a go at the lines now
-    if (ManualStroke) {
-        StrokeProperly(DrawPath);
-        RenderDC->SetPen(OldPen);
+    if (ManualStroke)
+    {
+        StrokeProperly( DrawPath );
+        RenderDC->SetPen( OldPen );
     }
 }
 
@@ -3025,10 +3091,10 @@ BOOL OSRenderRegion::Bezier(INT32 Px0,INT32 Py0, INT32 Px1,INT32 Py1,
 
     // Is the straight line close enough to the curve ?
     if (diff > Flatness)
-        {
-            // Not close enough so split it into two and recurse for each half
-            return Split(Px0,Py0, Px1,Py1, Px2,Py2, Px3,Py3, Flatness);
-        }
+    {
+        // Not close enough so split it into two and recurse for each half
+        return Split(Px0,Py0, Px1,Py1, Px2,Py2, Px3,Py3, Flatness);
+    }
 
     INT32 dx1 = (Px2*3 - Px0 - Px3*2);
     dx1 = dx1 < 0 ? -dx1 : dx1;
@@ -3044,10 +3110,10 @@ BOOL OSRenderRegion::Bezier(INT32 Px0,INT32 Py0, INT32 Px1,INT32 Py1,
 
     // Is the straight line close enough to the curve ?
     if (diff > Flatness)
-        {
-            // Not close enough so split it into two and recurse for each half
-            return Split(Px0,Py0, Px1,Py1, Px2,Py2, Px3,Py3, Flatness);
-        }
+    {
+        // Not close enough so split it into two and recurse for each half
+        return Split(Px0,Py0, Px1,Py1, Px2,Py2, Px3,Py3, Flatness);
+    }
 
     if (InsertPos >= SIZEOF_POLYLINE_BUFFER)
         return FALSE;                                               // stop storing points
@@ -3179,12 +3245,12 @@ INT32 OSRenderRegion::MPtoLP(MILLIPOINT MPtoConvert)
 
 MILLIPOINT OSRenderRegion::CalcScaledPixelWidth()
 {
-    //  return (RenderView->GetPixelWidth() / ScaleFactor).MakeLong();
+//  return (RenderView->GetPixelWidth() / ScaleFactor).MakeLong();
     return (MILLIPOINT)( (RenderView->GetPixelWidth().MakeDouble() / ScaleFactor.MakeDouble()) + 0.5 );
-    /*
-      return MILLIPOINT(double(72000) /
-      (double(RenderDC->GetDeviceCaps(LOGPIXELSX)) * ScaleFactor.MakeDouble()));
-    */
+/*
+  return MILLIPOINT(double(72000) /
+  (double(RenderDC->GetDeviceCaps(LOGPIXELSX)) * ScaleFactor.MakeDouble()));
+*/
 }
 
 
@@ -3263,10 +3329,10 @@ void OSRenderRegion::DrawBitmap(const DocCoord &Point, KernelBitmap* pBitmap)
 
     // Is there a Bitmap ??
     if (pBitmap == NULL || pBitmap->ActualBitmap == NULL)
-        {
-            ERROR3("NULL Bitmap passed to DrawBitmap");
-            return;
-        }
+    {
+        ERROR3("NULL Bitmap passed to DrawBitmap");
+        return;
+    }
 
     // Get the 'Actual' windows Bitmap
     WinBitmap *WinBM = (WinBitmap*)pBitmap->ActualBitmap;
@@ -3299,10 +3365,10 @@ void OSRenderRegion::DrawBitmap(const DocCoord &Point, KernelBitmap* pBitmap)
     CBitmap* OldBmp = MemDC.SelectObject(&Bitmap);
 
     if (OldBmp == NULL)
-        {
-            TRACE( _T("Couldn't select Bitmap into CDC in DrawBitmap\n"));
-            return;
-        }
+    {
+        TRACE( _T("Couldn't select Bitmap into CDC in DrawBitmap\n"));
+        return;
+    }
 
     // Now copy the Bits from our Kernel Bitmap into the Memory DC
     SetDIBitsToDevice(          MemDC.m_hDC,
@@ -3315,7 +3381,7 @@ void OSRenderRegion::DrawBitmap(const DocCoord &Point, KernelBitmap* pBitmap)
                                 WinBM->BMBytes,
                                 WinBM->BMInfo,
                                 DIB_RGB_COLORS
-                                );
+        );
 
     // Copy the Bitmap onto this render region
     RenderDC->BitBlt(           Origin.x, Origin.y,
@@ -3324,7 +3390,7 @@ void OSRenderRegion::DrawBitmap(const DocCoord &Point, KernelBitmap* pBitmap)
                                 &MemDC,
                                 0,0,
                                 SRCCOPY
-                                );
+        );
 
     // Unselect the bitmap and delete it
     MemDC.SelectObject(OldBmp);
@@ -3378,54 +3444,54 @@ BOOL OSRenderRegion::DrawTransformedBitmap(NodeBitmap *pNodeBitmap)
     // If we are not printing, then we'll always render as a bitmap fill
     // (eg. Gallery items).
     if (IsPrinting())
+    {
+        // If we are not drawing complex shapes and this shape is, then return
+        if ((!RenderComplexShapes) && (TestForComplexShape(&Caps)))
+            return TRUE;
+
+        if ((!RenderComplexShapes) && (pNodeBitmap->NeedsTransparency()))
+            return TRUE;
+
+        // If we've not got a valid colour plate or it is disabled
+        if (CurrentColContext->GetColourPlate() == NULL ||
+            CurrentColContext->GetColourPlate()->IsDisabled())
         {
-            // If we are not drawing complex shapes and this shape is, then return
-            if ((!RenderComplexShapes) && (TestForComplexShape(&Caps)))
-                return TRUE;
+            // If it is a simple rectangular shape then
+            // we can use GDI to render it
+            if (pNodeBitmap->HasSimpleOrientation(this))
+            {
+                // Get hold of the coord array for the bitmap.
+                DocCoord *Coords = pNodeBitmap->InkPath.GetCoordArray();
 
-            if ((!RenderComplexShapes) && (pNodeBitmap->NeedsTransparency()))
-                return TRUE;
+                // Work out where to render the bitmap on the device context - find top left corner
+                OilCoord TopLeft(Coords[0].x, Coords[0].y);
+                RenderMatrix.transform(&TopLeft);
+                WinCoord DestTopLeft = TopLeft.ToWin(RenderView);
 
-            // If we've not got a valid colour plate or it is disabled
-            if (CurrentColContext->GetColourPlate() == NULL ||
-                CurrentColContext->GetColourPlate()->IsDisabled())
+                // Find required size of bitmap on device context.
+                MILLIPOINT Width  = Coords[1].x - Coords[0].x;
+                MILLIPOINT Height = Coords[0].y - Coords[3].y;
+
+                FIXED16 fxPixelSize = 0;
+                RenderView->GetScaledPixelSize(&fxPixelSize, &fxPixelSize);
+                double dPixelSize = fxPixelSize.MakeDouble();
+                INT32 DestWidth = (INT32) ((((double) Width) / dPixelSize) + 0.5);
+                INT32 DestHeight = (INT32) ((((double) Height) / dPixelSize) + 0.5);
+
+                // Get handle to bitmap (must be a WinBitmap as we are in winoil!)
+                CWxBitmap *WxBM = (CWxBitmap *) pNodeBitmap->GetBitmap()->ActualBitmap;
+
+                wxImage *pwxImage=WxBM->MakewxImage(DestWidth, DestHeight);
+
+                if (pwxImage)
                 {
-                    // If it is a simple rectangular shape then
-                    // we can use GDI to render it
-                    if (pNodeBitmap->HasSimpleOrientation(this))
-                        {
-                            // Get hold of the coord array for the bitmap.
-                            DocCoord *Coords = pNodeBitmap->InkPath.GetCoordArray();
-
-                            // Work out where to render the bitmap on the device context - find top left corner
-                            OilCoord TopLeft(Coords[0].x, Coords[0].y);
-                            RenderMatrix.transform(&TopLeft);
-                            WinCoord DestTopLeft = TopLeft.ToWin(RenderView);
-
-                            // Find required size of bitmap on device context.
-                            MILLIPOINT Width  = Coords[1].x - Coords[0].x;
-                            MILLIPOINT Height = Coords[0].y - Coords[3].y;
-
-                            FIXED16 fxPixelSize = 0;
-                            RenderView->GetScaledPixelSize(&fxPixelSize, &fxPixelSize);
-                            double dPixelSize = fxPixelSize.MakeDouble();
-                            INT32 DestWidth = (INT32) ((((double) Width) / dPixelSize) + 0.5);
-                            INT32 DestHeight = (INT32) ((((double) Height) / dPixelSize) + 0.5);
-
-                            // Get handle to bitmap (must be a WinBitmap as we are in winoil!)
-                            CWxBitmap *WxBM = (CWxBitmap *) pNodeBitmap->GetBitmap()->ActualBitmap;
-
-                            wxImage *pwxImage=WxBM->MakewxImage(DestWidth, DestHeight);
-
-                            if (pwxImage)
-                                {
-                                    wxBitmap TheBitmap(*pwxImage);
-                                    RenderDC->DrawBitmap(TheBitmap, DestTopLeft.x, DestTopLeft.y, TRUE);
-                                    delete pwxImage;
-                                }
-                        }
+                    wxBitmap TheBitmap(*pwxImage);
+                    RenderDC->DrawBitmap(TheBitmap, DestTopLeft.x, DestTopLeft.y, TRUE);
+                    delete pwxImage;
                 }
+            }
         }
+    }
 
     // We can't do arbitrarily transformed bitmaps - use a bitmap fill.
     RenderComplexShapes = TRUE;
@@ -3493,10 +3559,10 @@ void OSRenderRegion::DrawBitmapBlob(const DocCoord &Point, KernelBitmap* BlobSha
     CBitmap* OldBmp = MemDC.SelectObject(&Bitmap);
 
     if (OldBmp == NULL)
-        {
-            TRACE( _T("Couldn't select Bitmap into CDC in DrawBitmapBlob\n"));
-            return;
-        }
+    {
+        TRACE( _T("Couldn't select Bitmap into CDC in DrawBitmapBlob\n"));
+        return;
+    }
 
     // Now copy the Bits from our Kernel Bitmap into
     // the Memory DC
@@ -3510,7 +3576,7 @@ void OSRenderRegion::DrawBitmapBlob(const DocCoord &Point, KernelBitmap* BlobSha
                                 WinBM->BMBytes,
                                 WinBM->BMInfo,
                                 DIB_RGB_COLORS
-                                );
+        );
 
     // EOR the Bitmap onto this render region
     RenderDC->BitBlt(           Origin.x, Origin.y,
@@ -3519,7 +3585,7 @@ void OSRenderRegion::DrawBitmapBlob(const DocCoord &Point, KernelBitmap* BlobSha
                                 &MemDC,
                                 0,0,
                                 SRCINVERT
-                                );
+        );
 
     // Unselect the bitmap and delete it
     MemDC.SelectObject(OldBmp);
@@ -3548,10 +3614,10 @@ void OSRenderRegion::DrawBitmapBlob( const DocCoord &Point, ResourceID resID )
 {
     wxBitmap *pBitmap = (CamArtProvider::Get())->FindBitmap( resID );
     if( NULL == pBitmap )
-        {
-            TRACE( _T("wxBitmap failed to create in DrawBitmapBlob\n"));
-            return;
-        }
+    {
+        TRACE( _T("wxBitmap failed to create in DrawBitmapBlob\n"));
+        return;
+    }
 
     // Extract the Width and Height
     INT32 Width  = pBitmap->GetWidth();
@@ -3651,7 +3717,7 @@ void OSRenderRegion::GetBlobRect( FIXED16 Scale, const DocCoord& BlobPoint, Blob
 
     // Karim 22/06/2000 - we're gonna use a double instead. Not much accuracy
     // is needed for PelSize, but a MILLIPOINT gives us far too little!
-    //  const MILLIPOINT PelSize = (pDocView->GetPixelWidth() / Scale).MakeLong();
+//  const MILLIPOINT PelSize = (pDocView->GetPixelWidth() / Scale).MakeLong();
     const double PelSize = (pDocView->GetPixelWidth() / Scale).MakeDouble();
 
     // All of the sizes extracted by this Switch statement are RADII.
@@ -3659,46 +3725,46 @@ void OSRenderRegion::GetBlobRect( FIXED16 Scale, const DocCoord& BlobPoint, Blob
     //      PIXEL_DIAMETER = 2 * RADIUS + 1 Pixel!!!!!
     //
     switch (bType)
-        {
-        case BT_UNSELECTED:
-            BlobSize = (MILLIPOINT)((double)UnSelectedBlobSize * PelSize);
-            break;
+    {
+    case BT_UNSELECTED:
+        BlobSize = (MILLIPOINT)((double)UnSelectedBlobSize * PelSize);
+        break;
 
-        case BT_SELECTED:
-            BlobSize = (MILLIPOINT)((double)SelectedBlobSize * PelSize);
-            break;
+    case BT_SELECTED:
+        BlobSize = (MILLIPOINT)((double)SelectedBlobSize * PelSize);
+        break;
 
-        case BT_CLICKME:
-            BlobSize = (MILLIPOINT)((double)HitTestRadius * PelSize);
-            break;
+    case BT_CLICKME:
+        BlobSize = (MILLIPOINT)((double)HitTestRadius * PelSize);
+        break;
 
-        case BT_SELECTEDLARGEST:
-            BlobSize = max( (MILLIPOINT)((double)UnSelectedBlobSize * PelSize),
-                            (MILLIPOINT)((double)SelectedBlobSize * PelSize) );
-            break;
+    case BT_SELECTEDLARGEST:
+        BlobSize = max( (MILLIPOINT)((double)UnSelectedBlobSize * PelSize),
+                        (MILLIPOINT)((double)SelectedBlobSize * PelSize) );
+        break;
 
-        case BT_MSTAGEFILLUNSELECTED:
-            BlobSize = (MILLIPOINT)((double)MultiStageUnSelectedBlobSize * PelSize);
-            break;
+    case BT_MSTAGEFILLUNSELECTED:
+        BlobSize = (MILLIPOINT)((double)MultiStageUnSelectedBlobSize * PelSize);
+        break;
 
-        case BT_MSTAGEFILLSELECTED:
-            BlobSize = (MILLIPOINT)((double)MultiStageSelectedBlobSize * PelSize);
-            break;
+    case BT_MSTAGEFILLSELECTED:
+        BlobSize = (MILLIPOINT)((double)MultiStageSelectedBlobSize * PelSize);
+        break;
 
-        case BT_MSTAGESELECTEDLARGEST:
-            BlobSize = max( (MILLIPOINT)((double)MultiStageSelectedBlobSize * PelSize),
-                            (MILLIPOINT)((double)MultiStageUnSelectedBlobSize * PelSize) );
-            break;
+    case BT_MSTAGESELECTEDLARGEST:
+        BlobSize = max( (MILLIPOINT)((double)MultiStageSelectedBlobSize * PelSize),
+                        (MILLIPOINT)((double)MultiStageUnSelectedBlobSize * PelSize) );
+        break;
 
-        case BT_CLIPVIEW:
-            BlobSize = (MILLIPOINT)((double)ClipViewBlobSize * PelSize);
-            break;
+    case BT_CLIPVIEW:
+        BlobSize = (MILLIPOINT)((double)ClipViewBlobSize * PelSize);
+        break;
 
-        default:
-            ENSURE( FALSE, "GetBlobRect() was called with an invalid BlobType" );
-            BlobSize = 0;                           // so we get an empty rectangle
-            break;
-        }
+    default:
+        ENSURE( FALSE, "GetBlobRect() was called with an invalid BlobType" );
+        BlobSize = 0;                           // so we get an empty rectangle
+        break;
+    }
 
     // Build the rectangle of the appropriate size and centre it on the DocCoord given
     pResult->lo.x = BlobPoint.x - BlobSize - (MILLIPOINT)(PelSize/2.0);
@@ -3755,7 +3821,7 @@ WinCoord OSRenderRegion::DocCoordToWin(const DocCoord& DocPoint)
         RenderMatrix.e;
 
     OilPoint.y = MatrixCalc( RenderMatrix.b, DocPoint.x, RenderMatrix.d, DocPoint.y) +
-        RenderMatrix.f; // This was F1
+        RenderMatrix.f;    // This was F1
 
     return OilPoint.ToWin(RenderView);
 }
@@ -3780,17 +3846,17 @@ Coord OSRenderRegion::DocCoordToOS256(const DocCoord& DocPoint)
         RenderMatrix.e;
 
     OilPoint.y = MatrixCalc( RenderMatrix.b, DocPoint.x, RenderMatrix.d, DocPoint.y) +
-        RenderMatrix.f; // This was f1
+        RenderMatrix.f;    // This was f1
 
     Coord OS256Point;
 
     FIXED16 PixelWidth = RenderView->GetPixelWidth();
     OS256Point.x = MPtoOS256(OilPoint.x, PixelWidth);
-    //  OS256Point.y = -(MPtoOS256(OilPoint.y, PixelWidth) + 256);
+//  OS256Point.y = -(MPtoOS256(OilPoint.y, PixelWidth) + 256);
 
-    //  Above line commented out by Phil, 11/2/97
-    //  The above "+256" is spurious (see comments for OilCoordToWin)
-    //  Fixes a nasty printing bug.
+//  Above line commented out by Phil, 11/2/97
+//  The above "+256" is spurious (see comments for OilCoordToWin)
+//  Fixes a nasty printing bug.
     OS256Point.y = -(MPtoOS256(OilPoint.y, PixelWidth));
 
     return OS256Point;
@@ -3842,18 +3908,18 @@ WinRect OSRenderRegion::DocRectToWin(View *pView,
     MILLIPOINT Temp;
 
     if (OilLo.x > OilHi.x)
-        {
-            Temp = OilLo.x;
-            OilLo.x = OilHi.x;
-            OilHi.x = Temp;
-        }
+    {
+        Temp = OilLo.x;
+        OilLo.x = OilHi.x;
+        OilHi.x = Temp;
+    }
 
     if (OilLo.y > OilHi.y)
-        {
-            Temp = OilLo.y;
-            OilLo.y = OilHi.y;
-            OilHi.y = Temp;
-        }
+    {
+        Temp = OilLo.y;
+        OilLo.y = OilHi.y;
+        OilHi.y = Temp;
+    }
 
     WinCoord WinLo;
     WinCoord WinHi;
@@ -3869,16 +3935,16 @@ WinRect OSRenderRegion::DocRectToWin(View *pView,
     PORTNOTE("other", "Check this use of WIN32")
         if (
             MightClip
-            //#if WIN32
-            //       && IsWin32s()
-            //#endif
+//#if WIN32
+//       && IsWin32s()
+//#endif
             )
-            {
-                // assume MM_TEXT, clip to limits without being too close else we might effect
-                // the actual rendering (e.g. if a line crosses the clip rect boundary)
-                wxRect MaxRect(-100, -100, 32100, 32100 );
-                WinRect.Intersect(MaxRect);
-            }
+        {
+            // assume MM_TEXT, clip to limits without being too close else we might effect
+            // the actual rendering (e.g. if a line crosses the clip rect boundary)
+            wxRect MaxRect(-100, -100, 32100, 32100 );
+            WinRect.Intersect(MaxRect);
+        }
 
     return WinRect;
 }
@@ -3922,18 +3988,18 @@ WinRect OSRenderRegion::DocRectToWin(const Matrix &RenderMatrix, const DocRect& 
     MILLIPOINT Temp;
 
     if (OilLo.x > OilHi.x)
-        {
-            Temp = OilLo.x;
-            OilLo.x = OilHi.x;
-            OilHi.x = Temp;
-        }
+    {
+        Temp = OilLo.x;
+        OilLo.x = OilHi.x;
+        OilHi.x = Temp;
+    }
 
     if (OilLo.y > OilHi.y)
-        {
-            Temp = OilLo.y;
-            OilLo.y = OilHi.y;
-            OilHi.y = Temp;
-        }
+    {
+        Temp = OilLo.y;
+        OilLo.y = OilHi.y;
+        OilHi.y = Temp;
+    }
 
     WinCoord WinLo;
     WinCoord WinHi;
@@ -3978,10 +4044,10 @@ DocRect OSRenderRegion::WinRectToDoc(const Matrix &RenderMatrix, const WinRect& 
     WinCoord WinHi(WRect.GetRightEx(), WRect.y);
     OilCoord OilLo = OilCoord(  LongMulFixed16(WinLo.x, 72000L / dpi),
                                 -LongMulFixed16(WinLo.y, 72000L / dpi)
-                                );
+        );
     OilCoord OilHi = OilCoord(  LongMulFixed16(WinHi.x, 72000L / dpi),
                                 -LongMulFixed16(WinHi.y, 72000L / dpi)
-                                );
+        );
 
     Matrix inv = RenderMatrix.Inverse();
 
@@ -3995,18 +4061,18 @@ DocRect OSRenderRegion::WinRectToDoc(const Matrix &RenderMatrix, const WinRect& 
     MILLIPOINT Temp;
 
     if (dr.lo.x > dr.hi.x)
-        {
-            Temp = dr.lo.x;
-            dr.lo.x = dr.hi.x;
-            dr.hi.x = Temp;
-        }
+    {
+        Temp = dr.lo.x;
+        dr.lo.x = dr.hi.x;
+        dr.hi.x = Temp;
+    }
 
     if (dr.lo.y > dr.hi.y)
-        {
-            Temp = dr.lo.y;
-            dr.lo.y = dr.hi.y;
-            dr.hi.y = Temp;
-        }
+    {
+        Temp = dr.lo.y;
+        dr.lo.y = dr.hi.y;
+        dr.hi.y = Temp;
+    }
 
     return dr;
 }
@@ -4045,17 +4111,17 @@ WinRect OSRenderRegion::BitmapDocRectToWin(Matrix &RenderMatrix, const DocRect& 
     OilRec.hi.y = MatrixCalc( RenderMatrix.b, DRect.hi.x, RenderMatrix.d, DRect.hi.y ) + RenderMatrix.f;
 
     if (OilRec.lo.x > OilRec.hi.x)
-        {
-            MILLIPOINT Temp = OilRec.lo.x;
-            OilRec.lo.x = OilRec.hi.x;
-            OilRec.hi.x = Temp;
-        }
+    {
+        MILLIPOINT Temp = OilRec.lo.x;
+        OilRec.lo.x = OilRec.hi.x;
+        OilRec.hi.x = Temp;
+    }
     if (OilRec.lo.y > OilRec.hi.y)
-        {
-            MILLIPOINT Temp = OilRec.lo.y;
-            OilRec.lo.y = OilRec.hi.y;
-            OilRec.hi.y = Temp;
-        }
+    {
+        MILLIPOINT Temp = OilRec.lo.y;
+        OilRec.lo.y = OilRec.hi.y;
+        OilRec.hi.y = Temp;
+    }
 
     OilCoord OilSize(OilRec.hi.x-OilRec.lo.x, OilRec.hi.y-OilRec.lo.y);
 
@@ -4134,17 +4200,17 @@ BOOL OSRenderRegion::CalculateGavinOffsetsWinRect( const Matrix& RenderMatrix,
     OilRec.hi.y = MatrixCalc( RenderMatrix.b, DRect.hi.x, RenderMatrix.d, DRect.hi.y ) + RenderMatrix.f ;
 
     if (OilRec.lo.x > OilRec.hi.x)
-        {
-            MILLIPOINT Temp = OilRec.lo.x ;
-            OilRec.lo.x = OilRec.hi.x ;
-            OilRec.hi.x = Temp ;
-        }
+    {
+        MILLIPOINT Temp = OilRec.lo.x ;
+        OilRec.lo.x = OilRec.hi.x ;
+        OilRec.hi.x = Temp ;
+    }
     if (OilRec.lo.y > OilRec.hi.y)
-        {
-            MILLIPOINT Temp = OilRec.lo.y ;
-            OilRec.lo.y = OilRec.hi.y ;
-            OilRec.hi.y = Temp ;
-        }
+    {
+        MILLIPOINT Temp = OilRec.lo.y ;
+        OilRec.lo.y = OilRec.hi.y ;
+        OilRec.hi.y = Temp ;
+    }
     OilCoord OilSize( OilRec.hi.x-OilRec.lo.x, OilRec.hi.y-OilRec.lo.y ) ;
 
     /*  double OilXOffset = (NewOilSize.x-OilSize.x)/2.0-OilRec.lo.x ;
@@ -4159,18 +4225,18 @@ BOOL OSRenderRegion::CalculateGavinOffsetsWinRect( const Matrix& RenderMatrix,
     double WinYOffset = -OilRec.lo.y * Scale;
 
     if (bCentralise)
-        {
-            //
-            // The following performs the same calculation as ToWin. Doing it here ensures
-            // that the subsequent calculation of NewOilSize will be compatible.
-            //
-            WinCoord    WinSize( +(INT32)floor(OilSize.x*dpi/72000.0+0.5), -(INT32)floor(OilSize.y*dpi/72000.0+0.5) ) ;
-            OilCoord NewOilSize( +(INT32)floor(WinSize.x*72000.0/dpi+0.5), -(INT32)floor(WinSize.y*72000.0/dpi+0.5) ) ;
+    {
+        //
+        // The following performs the same calculation as ToWin. Doing it here ensures
+        // that the subsequent calculation of NewOilSize will be compatible.
+        //
+        WinCoord    WinSize( +(INT32)floor(OilSize.x*dpi/72000.0+0.5), -(INT32)floor(OilSize.y*dpi/72000.0+0.5) ) ;
+        OilCoord NewOilSize( +(INT32)floor(WinSize.x*72000.0/dpi+0.5), -(INT32)floor(WinSize.y*72000.0/dpi+0.5) ) ;
 
-            if (pdXCentralAdjust) *pdXCentralAdjust = ((NewOilSize.x-OilSize.x)/2.0) * Scale;
-            if (pdYCentralAdjust) *pdYCentralAdjust = ((NewOilSize.y-OilSize.y)/2.0) * Scale;
+        if (pdXCentralAdjust) *pdXCentralAdjust = ((NewOilSize.x-OilSize.x)/2.0) * Scale;
+        if (pdYCentralAdjust) *pdYCentralAdjust = ((NewOilSize.y-OilSize.y)/2.0) * Scale;
 
-        }
+    }
 
     // Adjust offsets either by calculated value or supplied value
     if (pdXCentralAdjust) WinXOffset += *pdXCentralAdjust;
@@ -4204,52 +4270,52 @@ BOOL OSRenderRegion::CalculateGavinOffsetsWinRect( const Matrix& RenderMatrix,
 
 ********************************************************************************************/
 /*
-  BOOL OSRenderRegion::NewPolyDraw( const POINT* PointList, const BYTE* VerbList, INT32 NumCoords)
-  {
-  if (IsWin32NT())
-  {
-  // NT can do PolyDraw, which expects our path structure exactly
-  return PolyDraw( RenderDC, PointList, VerbList, NumCoords );
-  }
-  else
-  {
-  // Chicago is damn stupid and cannot do it, so we whip through it manually
-  BOOL Worked = TRUE;
+BOOL OSRenderRegion::NewPolyDraw( const POINT* PointList, const BYTE* VerbList, INT32 NumCoords)
+{
+    if (IsWin32NT())
+    {
+        // NT can do PolyDraw, which expects our path structure exactly
+        return PolyDraw( RenderDC, PointList, VerbList, NumCoords );
+    }
+    else
+    {
+        // Chicago is damn stupid and cannot do it, so we whip through it manually
+        BOOL Worked = TRUE;
 
-  while (NumCoords && Worked)
-  {
-  switch (*VerbList++ & ~PT_CLOSEFIGURE)
-  {
-  case PT_MOVETO:
-  Worked = MoveToEx( RenderDC, PointList->x, PointList->y, NULL );
-  PointList++;
-  NumCoords--;
-  break;
+        while (NumCoords && Worked)
+        {
+            switch (*VerbList++ & ~PT_CLOSEFIGURE)
+            {
+                case PT_MOVETO:
+                    Worked = MoveToEx( RenderDC, PointList->x, PointList->y, NULL );
+                    PointList++;
+                    NumCoords--;
+                    break;
 
-  case PT_LINETO:
-  Worked = LineTo( RenderDC, PointList->x, PointList->y );
-  PointList++;
-  NumCoords--;
-  break;
+                case PT_LINETO:
+                    Worked = LineTo( RenderDC, PointList->x, PointList->y );
+                    PointList++;
+                    NumCoords--;
+                    break;
 
-  case PT_BEZIERTO:
-  Worked = PolyBezierTo( RenderDC, PointList, 3 );
-  PointList += 3;
-  VerbList += (3-1);                            // as 1 taken away above
-  NumCoords -= 3;
-  break;
+                case PT_BEZIERTO:
+                    Worked = PolyBezierTo( RenderDC, PointList, 3 );
+                    PointList += 3;
+                    VerbList += (3-1);                          // as 1 taken away above
+                    NumCoords -= 3;
+                    break;
 
-  default:
-  ENSURE(FALSE, "Bad verb in path");
-  PointList++;
-  NumCoords--;
-  break;
-  }
-  ENSURE( NumCoords>=0, "Messed up verb list");
-  }
-  return Worked;
-  }
-  }
+                default:
+                    ENSURE(FALSE, "Bad verb in path");
+                    PointList++;
+                    NumCoords--;
+                    break;
+            }
+            ENSURE( NumCoords>=0, "Messed up verb list");
+        }
+        return Worked;
+    }
+}
 */
 
 static inline INT32 GetDiagonal( const WinRect& Rectangle )
@@ -4286,9 +4352,9 @@ BOOL OSRenderRegion::RenderBitmapFill(Path *PathToDraw, BitmapFillAttribute* Fil
 
     ENSURE( Fill->GetBitmap()->ActualBitmap->IsKindOf( CC_RUNTIME_CLASS( CWxBitmap ) ), "Strange bitmapfill");
 
-    // Since the GDI cannot cope with anything other than very simple bitmaps,
-    // we will get GDraw to render the bitmap into a screen compatible DIB, and
-    // then get the GDI to plot that
+// Since the GDI cannot cope with anything other than very simple bitmaps,
+// we will get GDraw to render the bitmap into a screen compatible DIB, and
+// then get the GDI to plot that
 
     GDrawContext* GD = GRenderRegion::GetStaticDrawContext();
     CWxBitmap *WxBM = NULL;
@@ -4298,44 +4364,44 @@ BOOL OSRenderRegion::RenderBitmapFill(Path *PathToDraw, BitmapFillAttribute* Fil
     BYTE *pGreyTable = NULL;
 
     if (Fill->GetStartColour() != NULL && Fill->GetEndColour() != NULL)
-        {
-            // The bitmap is contoned ... so we need to use the greyscale version
-            WxBM = (CWxBitmap*)Fill->GetBitmap()->GetGreyscaleVersion();
+    {
+        // The bitmap is contoned ... so we need to use the greyscale version
+        WxBM = (CWxBitmap*)Fill->GetBitmap()->GetGreyscaleVersion();
 
-            if (WxBM == NULL && bpp == 8)
-                {
-                    // Aha, we're gunna do some clever palette jiggery pokery
-                    pGreyTable = Fill->GetBitmap()->ActualBitmap->GetGreyscaleTable();
-                }
+        if (WxBM == NULL && bpp == 8)
+        {
+            // Aha, we're gunna do some clever palette jiggery pokery
+            pGreyTable = Fill->GetBitmap()->ActualBitmap->GetGreyscaleTable();
         }
+    }
 
     // Now make sure that if the WinBitmap is 32 that we RENDER it into a tempory FULLY TRANSPARENT WHITE BMP.
     // This stops the CONVERT function later on stripping the alpha channel off producing solid, non-transparent
     // coloured objects on black black backgrounds! - MarkH 20/7/99.
     if (WxBM == NULL)
+    {
+        if (bpp != 32)
         {
-            if (bpp != 32)
-                {
-                    WxBM = (CWxBitmap*)Fill->GetBitmap()->ActualBitmap;
-                }
-            else
-                {
-                    WxBM = (CWxBitmap*)CBMPBits::RenderBMPFillAttrToTransparentWhiteRect(Fill);
-                }
+            WxBM = (CWxBitmap*)Fill->GetBitmap()->ActualBitmap;
         }
+        else
+        {
+            WxBM = (CWxBitmap*)CBMPBits::RenderBMPFillAttrToTransparentWhiteRect(Fill);
+        }
+    }
 
     if (!WxBM)              // we really should check this pointer!
-        {
-            return (FALSE);
-        }
+    {
+        return (FALSE);
+    }
 
     if( (WxBM->BMInfo==NULL) || (WxBM->BMBytes==NULL) )
         return FALSE;
 
     // Work out what Tempory bitmap we need
 
-    // Note we are forcing the bitmap to be a horizontal rectangular bitmap,
-    // as the GDI can't cope with rotating them
+// Note we are forcing the bitmap to be a horizontal rectangular bitmap,
+// as the GDI can't cope with rotating them
 
     wxPoint BottomLeft  = DocCoordToWin( Fill->StartPoint );
     wxPoint BottomRight = DocCoordToWin( Fill->EndPoint   );
@@ -4344,57 +4410,57 @@ BOOL OSRenderRegion::RenderBitmapFill(Path *PathToDraw, BitmapFillAttribute* Fil
     INT32 DestWidth  = BottomRight.x - BottomLeft.x;
     INT32 DestHeight = BottomLeft.y  - TopLeft.y;
     if (DestWidth==0 || DestHeight==0)
-        {
-            return TRUE;
-        }
+    {
+        return TRUE;
+    }
 
     if (IsPrinting())
+    {
+        if (CurrentColContext->GetColourPlate() == NULL ||
+            CurrentColContext->GetColourPlate()->IsDisabled())
         {
-            if (CurrentColContext->GetColourPlate() == NULL ||
-                CurrentColContext->GetColourPlate()->IsDisabled())
-                {
-                    PORTNOTE("other", "No StretchDIBits call in OSRenderRegion::RenderBitmapFill")
+            PORTNOTE("other", "No StretchDIBits call in OSRenderRegion::RenderBitmapFill")
 #ifndef EXCLUDE_FROM_XARALX
-                        // going to a printer? - let its driver stretch it about etc
-                        const LPBITMAPINFO bmInfo = WxBM->BMInfo;
+                // going to a printer? - let its driver stretch it about etc
+                const LPBITMAPINFO bmInfo = WxBM->BMInfo;
 
 #if 1
-                    // this is the correct legit code
-                    const BOOL SendDirectToPrinter = true;
+            // this is the correct legit code
+            const BOOL SendDirectToPrinter = true;
 #else
-                    // test code
-                    const BOOL SendDirectToPrinter = RFlags.Metafile;           // only metafiles
+            // test code
+            const BOOL SendDirectToPrinter = RFlags.Metafile;           // only metafiles
 #endif
 
-                    if (SendDirectToPrinter)
-                        {
-                            // pass bitmap straight to driver. Might have to band this call
-                            // up on low-capacity machines at some point. Also does this for
-                            // metafiles too.
-                            StretchDIBits( RenderDC->m_hDC,
-                                           BottomLeft.x, TopLeft.y,             // dest XY
-                                           DestWidth, DestHeight,                   // dest WH
-                                           0,0,                                 // source 0,0
-                                           bmInfo->bmiHeader.biWidth,           // source W
-                                           bmInfo->bmiHeader.biHeight,          // source H
-                                           WinBM->BMBytes,
-                                           bmInfo,
-                                           DIB_RGB_COLORS,
-                                           SRCCOPY );
+            if (SendDirectToPrinter)
+            {
+                // pass bitmap straight to driver. Might have to band this call
+                // up on low-capacity machines at some point. Also does this for
+                // metafiles too.
+                StretchDIBits( RenderDC->m_hDC,
+                               BottomLeft.x, TopLeft.y,                // dest XY
+                               DestWidth, DestHeight,                  // dest WH
+                               0,0,                                    // source 0,0
+                               bmInfo->bmiHeader.biWidth,          // source W
+                               bmInfo->bmiHeader.biHeight,         // source H
+                               WinBM->BMBytes,
+                               bmInfo,
+                               DIB_RGB_COLORS,
+                               SRCCOPY );
 
-                            return TRUE;
-                        }
+                return TRUE;
+            }
 #endif
 
-                    // if 16- or 32-bit, leave for later. We get Gavin to scale it to an output bitmap
-                    // then PlotDeepDIB it. Sadly, this requires serious amounts of RAM, so is prone
-                    // to failure. The solution would be a ScaleDeepDIB call, like PlotDeepDIB but
-                    // that can scale appropriately. Such a function would then be called here, avoiding
-                    // the need for a huge intermediate bitmap
-                }
+            // if 16- or 32-bit, leave for later. We get Gavin to scale it to an output bitmap
+            // then PlotDeepDIB it. Sadly, this requires serious amounts of RAM, so is prone
+            // to failure. The solution would be a ScaleDeepDIB call, like PlotDeepDIB but
+            // that can scale appropriately. Such a function would then be called here, avoiding
+            // the need for a huge intermediate bitmap
         }
+    }
 
-    // Setup a default matrix (we'll do everything in pixel-speak)
+// Setup a default matrix (we'll do everything in pixel-speak)
 
     GMATRIX GMatrix;
 
@@ -4406,50 +4472,50 @@ BOOL OSRenderRegion::RenderBitmapFill(Path *PathToDraw, BitmapFillAttribute* Fil
     GMatrix.CX = 0;
     GMatrix.CY = 0;
 
-    // Create a Tempory bitmap compatible with the output device
+// Create a Tempory bitmap compatible with the output device
 
     LPBITMAPINFO TempInfo;
     LPBYTE TempBits;
     INT32 DeviceDepth;
 
     if (IsPrinting())
-        {
-            // if printing, always convert to 24-bit (which as Gavin can't do 24- means 32-bit)
-            // as all drivers can handle those (source bitmap only 16- or 32-bit anyway)
-            DeviceDepth = 32;
-        }
+    {
+        // if printing, always convert to 24-bit (which as Gavin can't do 24- means 32-bit)
+        // as all drivers can handle those (source bitmap only 16- or 32-bit anyway)
+        DeviceDepth = 32;
+    }
     else
-        {
-            PORTNOTE("other", "Assume 24 bit output device in OSRenderRegion::RenderBitmapFill")
+    {
+        PORTNOTE("other", "Assume 24 bit output device in OSRenderRegion::RenderBitmapFill")
 #ifndef EXCLUDE_FROM_XARALX
-                DeviceDepth = GetDeviceCaps( RenderDC->m_hDC, BITSPIXEL ) *
-                GetDeviceCaps( RenderDC->m_hDC, PLANES );
+            DeviceDepth = GetDeviceCaps( RenderDC->m_hDC, BITSPIXEL ) *
+            GetDeviceCaps( RenderDC->m_hDC, PLANES );
 #else
-            DeviceDepth=24; // assume true colour
+        DeviceDepth=24; // assume true colour
 #endif
 
-            if (DeviceDepth ==24)
-                DeviceDepth = 32;   // GDraw cannot plot to 24-bit bitmaps
-        }
+        if (DeviceDepth ==24)
+            DeviceDepth = 32;   // GDraw cannot plot to 24-bit bitmaps
+    }
 
     TempInfo = AllocDIB(DestWidth, DestHeight, DeviceDepth, &TempBits);
 
     if (TempInfo==NULL)
-        {
-            TRACEALL( _T("Out of memory during OSRenderRegion::RenderBitmapFill") );
-            return FALSE;
-        }
+    {
+        TRACEALL( _T("Out of memory during OSRenderRegion::RenderBitmapFill") );
+        return FALSE;
+    }
 
-    // We may need to get a palette for the DIB.
+// We may need to get a palette for the DIB.
 
     UINT32 DIBPal = DIB_RGB_COLORS;
 
     if (DeviceDepth <= 8)   // We only need a palette for 256 colours or less.
-        {
-            DIBPal = GRenderRegion::SetPaletteEntries( TempInfo, RenderDC );
-        }
+    {
+        DIBPal = GRenderRegion::SetPaletteEntries( TempInfo, RenderDC );
+    }
 
-    // Setup GDraw with our Tempory Bitmap and Identity Matrix
+// Setup GDraw with our Tempory Bitmap and Identity Matrix
 
     GD->SetupBitmap(TempInfo->bmiHeader.biWidth,
                     TempInfo->bmiHeader.biHeight,
@@ -4469,28 +4535,28 @@ BOOL OSRenderRegion::RenderBitmapFill(Path *PathToDraw, BitmapFillAttribute* Fil
 
     // Now see if we need to muck around with the palette for the contoning
     if (pGreyTable != NULL)
+    {
+        ERROR3IF(bpp != 8, "Greytable should only be here when rendering an 8bpp bitmap");
+        RGBQUAD *OldPalette = Palette;
+
+        // Create a new palette
+        Palette = (RGBQUAD *) CCMalloc(256 * sizeof(RGBQUAD));
+        if (Palette == NULL)
         {
-            ERROR3IF(bpp != 8, "Greytable should only be here when rendering an 8bpp bitmap");
-            RGBQUAD *OldPalette = Palette;
-
-            // Create a new palette
-            Palette = (RGBQUAD *) CCMalloc(256 * sizeof(RGBQUAD));
-            if (Palette == NULL)
-                {
-                    ERROR3("No memory for palette");
-                    return FALSE;
-                }
-
-            // Copy the entries from the contone palette into the new one,
-            // using the Grey table as a guide
-            for (INT32 i=0; i<256; i++)
-                {
-                    Palette[i] = OldPalette[pGreyTable[i]];
-                }
-
-            if (OldPalette != WxBM->BMInfo->bmiColors)
-                CCFree(OldPalette);         // Don't need the contone palette any more
+            ERROR3("No memory for palette");
+            return FALSE;
         }
+
+        // Copy the entries from the contone palette into the new one,
+        // using the Grey table as a guide
+        for (INT32 i=0; i<256; i++)
+        {
+            Palette[i] = OldPalette[pGreyTable[i]];
+        }
+
+        if (OldPalette != WxBM->BMInfo->bmiColors)
+            CCFree(OldPalette);         // Don't need the contone palette any more
+    }
 
     // If we didn't create a temporary palette, then we'll use the original bitmap
     if (Palette == NULL)
@@ -4498,54 +4564,54 @@ BOOL OSRenderRegion::RenderBitmapFill(Path *PathToDraw, BitmapFillAttribute* Fil
 
     // Search for a transparent colour setting the Style flags if necessary...
     if (bpp <= 8)
+    {
+        INT32 NumCols;
+        switch (bpp)
         {
-            INT32 NumCols;
-            switch (bpp)
-                {
-                case 1:
-                    NumCols = 2;
-                    break;
+        case 1:
+            NumCols = 2;
+            break;
 
-                case 2:
-                    NumCols = 4;
-                    break;
+        case 2:
+            NumCols = 4;
+            break;
 
-                case 4:
-                    NumCols = 16;
-                    break;
+        case 4:
+            NumCols = 16;
+            break;
 
-                case 8:
-                    NumCols = 256;
-                    break;
+        case 8:
+            NumCols = 256;
+            break;
 
-                default:
-                    NumCols = 256;
-                    break;
-                }
-
-            for (INT32 i=0; i<NumCols; i++)
-                {
-                    if (Palette[i].rgbReserved == 0xFF)
-                        {
-                            RGBQUAD* TempPalette = (RGBQUAD*)CCMalloc(NumCols * sizeof(RGBQUAD));
-                            if (TempPalette)
-                                {
-                                    // We'll use a copy of the palette ...
-                                    memcpy(TempPalette, Palette, NumCols*sizeof(RGBQUAD));
-
-                                    // so we can force this entry to be white
-                                    TempPalette[i].rgbRed       = 0xFF;
-                                    TempPalette[i].rgbGreen     = 0xFF;
-                                    TempPalette[i].rgbBlue      = 0xFF;
-
-                                    Palette = TempPalette;
-                                    break;
-                                }
-                        }
-                }
+        default:
+            NumCols = 256;
+            break;
         }
 
-    // Now set the bitmap fill
+        for (INT32 i=0; i<NumCols; i++)
+        {
+            if (Palette[i].rgbReserved == 0xFF)
+            {
+                RGBQUAD* TempPalette = (RGBQUAD*)CCMalloc(NumCols * sizeof(RGBQUAD));
+                if (TempPalette)
+                {
+                    // We'll use a copy of the palette ...
+                    memcpy(TempPalette, Palette, NumCols*sizeof(RGBQUAD));
+
+                    // so we can force this entry to be white
+                    TempPalette[i].rgbRed       = 0xFF;
+                    TempPalette[i].rgbGreen     = 0xFF;
+                    TempPalette[i].rgbBlue      = 0xFF;
+
+                    Palette = TempPalette;
+                    break;
+                }
+            }
+        }
+    }
+
+// Now set the bitmap fill
 
     POINT PGram[3];
     PGram[0].x = 0;             PGram[0].y = 0;
@@ -4565,45 +4631,45 @@ BOOL OSRenderRegion::RenderBitmapFill(Path *PathToDraw, BitmapFillAttribute* Fil
 
     PORTNOTE("other", "No colour separation OSRenderRegion::RenderBitmapFill")
 #ifndef EXCLUDE_FROM_XARALX
-        // --- Add Separation Style bits as approriate to the current colour separation mode
-        if (bpp > 8)    // Only needed for deep bitmaps
+    // --- Add Separation Style bits as approriate to the current colour separation mode
+    if (bpp > 8)    // Only needed for deep bitmaps
+    {
+        // If we've got a valid colour plate and it is a composite preview
+        if (CurrentColContext->GetColourPlate() != NULL &&
+            !CurrentColContext->GetColourPlate()->IsDisabled())
+        {
+            if (CurrentColContext->GetColourPlate()->GetType() == COLOURPLATE_COMPOSITE)
             {
-                // If we've got a valid colour plate and it is a composite preview
-                if (CurrentColContext->GetColourPlate() != NULL &&
-                    !CurrentColContext->GetColourPlate()->IsDisabled())
-                    {
-                        if (CurrentColContext->GetColourPlate()->GetType() == COLOURPLATE_COMPOSITE)
-                            {
-                                // Fall through (shouldn't be used at the moment)
-                            }
-                        else if (CurrentColContext->GetColourPlate()->GetType() == COLOURPLATE_SPOT)
-                            {
-                                GD->SetColour(0xFFFFFF);
-                                bDoBitmapFill = FALSE;
-                            }
-                        else if (CurrentColContext->GetColourPlate()->GetType() != COLOURPLATE_NONE)
-                            {
-                                // Create a colour separated copy of the bitmap and render that instead
-                                pSepTables = (BYTE *) CCMalloc(5 * 256 * sizeof(BYTE));
-                                if (pSepTables != NULL)
-                                    {
-                                        XaraCMS* lpCMSMan = GetApplication()->GetCMSManager();
-                                        String_256 PrintProfile;
-                                        if (lpCMSMan)
-                                            lpCMSMan->GetPrinterProfile(&PrintProfile);
-                                        ColourContextCMYK *cc = new ColourContextCMYK(RenderView, &PrintProfile);
-                                        if (cc->GetProfileTables(pSepTables))
-                                            {
-                                                // Make a copy of the bitmap
-                                                pNewBitmap = (CWxBitmap*)WxBM->MakeSeparatedCopy(RenderView->GetColourPlate(), pSepTables);
-                                                OrigWxBM = WxBM;                    // Save original bitmap pointer
-                                                WxBM = pNewBitmap;                  // Use this bitmap instead
-                                            }
-                                        delete cc;
-                                    }
-                            }
-                    }
+                // Fall through (shouldn't be used at the moment)
             }
+            else if (CurrentColContext->GetColourPlate()->GetType() == COLOURPLATE_SPOT)
+            {
+                GD->SetColour(0xFFFFFF);
+                bDoBitmapFill = FALSE;
+            }
+            else if (CurrentColContext->GetColourPlate()->GetType() != COLOURPLATE_NONE)
+            {
+                // Create a colour separated copy of the bitmap and render that instead
+                pSepTables = (BYTE *) CCMalloc(5 * 256 * sizeof(BYTE));
+                if (pSepTables != NULL)
+                {
+                    XaraCMS* lpCMSMan = GetApplication()->GetCMSManager();
+                    String_256 PrintProfile;
+                    if (lpCMSMan)
+                        lpCMSMan->GetPrinterProfile(&PrintProfile);
+                    ColourContextCMYK *cc = new ColourContextCMYK(RenderView, &PrintProfile);
+                    if (cc->GetProfileTables(pSepTables))
+                    {
+                        // Make a copy of the bitmap
+                        pNewBitmap = (CWxBitmap*)WxBM->MakeSeparatedCopy(RenderView->GetColourPlate(), pSepTables);
+                        OrigWxBM = WxBM;                    // Save original bitmap pointer
+                        WxBM = pNewBitmap;                  // Use this bitmap instead
+                    }
+                    delete cc;
+                }
+            }
+        }
+    }
 #endif
 
     // Set the context to the default values
@@ -4614,20 +4680,20 @@ BOOL OSRenderRegion::RenderBitmapFill(Path *PathToDraw, BitmapFillAttribute* Fil
     GD->SetTileFilteringFlag(TRUE/*FALSE*/);
 
     if (bDoBitmapFill)
-        {
-            GD->SetBitmapFill(  &(WxBM->BMInfo->bmiHeader),
-                                WxBM->BMBytes,
-                                Style,
-                                PGram,
-                                DefaultColour,
-                                Palette,
-                                NULL, NULL, NULL,
-                                NULL,
-                                0
-                                );
-        }
+    {
+        GD->SetBitmapFill(  &(WxBM->BMInfo->bmiHeader),
+                            WxBM->BMBytes,
+                            Style,
+                            PGram,
+                            DefaultColour,
+                            Palette,
+                            NULL, NULL, NULL,
+                            NULL,
+                            0
+            );
+    }
 
-    // Now plot a filled rectangle
+// Now plot a filled rectangle
 
     RECT BmpRect;
     BmpRect.left    =  0;
@@ -4639,48 +4705,48 @@ BOOL OSRenderRegion::RenderBitmapFill(Path *PathToDraw, BitmapFillAttribute* Fil
 
 
     if (IsPrinting())
-        {
-            // we are going to the printer. We had a 16- or 32-bit DIB which we have now converted
-            // into a 32-bit one, so send it out
+    {
+        // we are going to the printer. We had a 16- or 32-bit DIB which we have now converted
+        // into a 32-bit one, so send it out
 
-            // PlotDeepDIB ends up doing a SetDIBitsToDevice in 24-bit slices
-            DIBUtil::PlotDeepDIB( RenderDC, TempInfo, TempBits,
-                                  BottomLeft.x, TopLeft.y,
-                                  DestWidth,DestHeight,
-                                  0,0,
-                                  CONVHINT_PRINTER );
-        }
+        // PlotDeepDIB ends up doing a SetDIBitsToDevice in 24-bit slices
+        DIBUtil::PlotDeepDIB( RenderDC, TempInfo, TempBits,
+                              BottomLeft.x, TopLeft.y,
+                              DestWidth,DestHeight,
+                              0,0,
+                              CONVHINT_PRINTER );
+    }
     else
-        {
-            // get the HPALETTE to pass to the plot bitmap call - crucial for quality Win32s DDB plotting
-            wxPalette * hPal = NULL;
-            if (RFlags.UsePalette)
-                hPal = PaletteManager::GetPalette();
+    {
+        // get the HPALETTE to pass to the plot bitmap call - crucial for quality Win32s DDB plotting
+        wxPalette * hPal = NULL;
+        if (RFlags.UsePalette)
+            hPal = PaletteManager::GetPalette();
 
-            // Finally call PlotBitmap, to render the DIB using the GDI.
-            // If the screen cannot cope with the depth of the bitmap, it will be converted
-            // for us. Isn't PlotBitmap wonderful?
+        // Finally call PlotBitmap, to render the DIB using the GDI.
+        // If the screen cannot cope with the depth of the bitmap, it will be converted
+        // for us. Isn't PlotBitmap wonderful?
 
-            GRenderRegion::StaticPlotBitmap( RenderDC,
-                                             DIBPal,
-                                             TempInfo,
-                                             TempBits,
-                                             BottomLeft.x,
-                                             TopLeft.y,
-                                             DestWidth,
-                                             DestHeight,
-                                             hPal,
-                                             0,0
-                                             );
-        }
+        GRenderRegion::StaticPlotBitmap( RenderDC,
+                                         DIBPal,
+                                         TempInfo,
+                                         TempBits,
+                                         BottomLeft.x,
+                                         TopLeft.y,
+                                         DestWidth,
+                                         DestHeight,
+                                         hPal,
+                                         0,0
+            );
+    }
 
     FreeDIB(TempInfo, TempBits);
 
     if (pNewBitmap)
-        {
-            WxBM = OrigWxBM;
-            delete pNewBitmap;
-        }
+    {
+        WxBM = OrigWxBM;
+        delete pNewBitmap;
+    }
 
     // Free any memory used for colour-corrected bitmap palettes.
     // If this pointer doesn't point at the original palette, then it has
@@ -4689,10 +4755,10 @@ BOOL OSRenderRegion::RenderBitmapFill(Path *PathToDraw, BitmapFillAttribute* Fil
         CCFree(Palette);
 
     if (pSepTables)
-        {
-            GD->SetSeparationTables();  // Defaults to setting everything to NULL
-            CCFree(pSepTables);
-        }
+    {
+        GD->SetSeparationTables();  // Defaults to setting everything to NULL
+        CCFree(pSepTables);
+    }
 
     if (pCyanSepTable)
         CCFree(pCyanSepTable);
@@ -4823,42 +4889,42 @@ static INT32 ColDifference(DocColour &Start, DocColour &End, INT32 Depth, EFFECT
 
     // See if HSV route requires larger number of steps...
     if (EffectType == EFFECT_HSV_SHORT || EffectType == EFFECT_HSV_LONG)
-        {
-            // Get an HSV context (quite fast - simple array lookup)
-            ColourContext *pContext = ColourContext::GetGlobalDefault(COLOURMODEL_HSVT);
-            ERROR3IF(pContext == NULL, "No HSV context?!");
+    {
+        // Get an HSV context (quite fast - simple array lookup)
+        ColourContext *pContext = ColourContext::GetGlobalDefault(COLOURMODEL_HSVT);
+        ERROR3IF(pContext == NULL, "No HSV context?!");
 
-            ColourHSVT StartDef;
-            pContext->ConvertColour(&Start, (ColourGeneric *) &StartDef);
+        ColourHSVT StartDef;
+        pContext->ConvertColour(&Start, (ColourGeneric *) &StartDef);
 
-            ColourHSVT EndDef;
-            pContext->ConvertColour(&End, (ColourGeneric *) &EndDef);
+        ColourHSVT EndDef;
+        pContext->ConvertColour(&End, (ColourGeneric *) &EndDef);
 
-            // HSV blend! We can go 2 ways, as HSV can 'wrap' from 1.0 back to 0.0
-            BOOL BlendNormally = TRUE;
+        // HSV blend! We can go 2 ways, as HSV can 'wrap' from 1.0 back to 0.0
+        BOOL BlendNormally = TRUE;
 
-            // Calc. the "simple" (non-wrapping) distance between the hues
-            const double StartHue   = StartDef.Hue.MakeDouble();
-            const double EndHue     = EndDef.Hue.MakeDouble();
+        // Calc. the "simple" (non-wrapping) distance between the hues
+        const double StartHue   = StartDef.Hue.MakeDouble();
+        const double EndHue     = EndDef.Hue.MakeDouble();
 
-            double SimpleDist = StartHue - EndHue;
-            if (SimpleDist < 0.0)
-                SimpleDist = -SimpleDist;
+        double SimpleDist = StartHue - EndHue;
+        if (SimpleDist < 0.0)
+            SimpleDist = -SimpleDist;
 
-            // Determine whether we do a simple blend, or we have to "wrap"
-            if (SimpleDist <= 0.5)
-                BlendNormally = !(EffectType == EFFECT_HSV_LONG);
-            else
-                BlendNormally = (EffectType == EFFECT_HSV_LONG);
+        // Determine whether we do a simple blend, or we have to "wrap"
+        if (SimpleDist <= 0.5)
+            BlendNormally = !(EffectType == EFFECT_HSV_LONG);
+        else
+            BlendNormally = (EffectType == EFFECT_HSV_LONG);
 
-            // Convert to 9 bit value
-            INT32 HSVDiff = (INT32) (360.0 * SimpleDist);
-            if (!BlendNormally)         // Go the long way around
-                HSVDiff = 360 - HSVDiff;
+        // Convert to 9 bit value
+        INT32 HSVDiff = (INT32) (360.0 * SimpleDist);
+        if (!BlendNormally)         // Go the long way around
+            HSVDiff = 360 - HSVDiff;
 
-            if (HSVDiff > Diff)         // Use this if it's larger.
-                Diff = HSVDiff;
-        }
+        if (HSVDiff > Diff)         // Use this if it's larger.
+            Diff = HSVDiff;
+    }
 
     return((Depth >= 24) ? Diff : Diff / 3);    // Decide how many steps to do based on colour depth.
 }
@@ -4869,11 +4935,11 @@ const INT32 MAX_FILL_STEPS = 128;
 const BOOL USE_GDI_CLIPPING = FALSE;
 
 typedef enum
-    {
-     GF_USE_GDICLIPPING,
-     GF_USE_GDIEOR,
-     GF_USE_GAVINCLIPPING
-    } GradFillMethodType;
+{
+    GF_USE_GDICLIPPING,
+    GF_USE_GDIEOR,
+    GF_USE_GAVINCLIPPING
+} GradFillMethodType;
 
 /********************************************************************************************
 
@@ -4938,177 +5004,177 @@ BOOL OSRenderRegion::RenderRadialFill(Path *PathToDraw, RadialFillAttribute *Fil
 
     // If we are rendering into a metafile, clip the path ourselves
     if (RFlags.Metafile)
-        {
-            RenderMethod = GF_USE_GAVINCLIPPING;
-        }
+    {
+        RenderMethod = GF_USE_GAVINCLIPPING;
+    }
     else
+    {
+        if (!SetClipToPathTemporary(PathToDraw))
         {
-            if (!SetClipToPathTemporary(PathToDraw))
-                {
-                    // Can't use clipping - fall back to EOR.
-                    RenderMethod = GF_USE_GDIEOR;
-                }
+            // Can't use clipping - fall back to EOR.
+            RenderMethod = GF_USE_GDIEOR;
         }
+    }
 
     INT32 RenderCount = 1;
 
     if (RenderMethod == GF_USE_GDIEOR)
-        {
-            SetDrawingMode(DM_EORDITHER);
-            RenderCount = 2;
-        }
+    {
+        SetDrawingMode(DM_EORDITHER);
+        RenderCount = 2;
+    }
 
     DocColour TempFillColour;
 
     while (RenderCount > 0)
+    {
+        COLORREF CurrentCol = RGB(ColourSteps[FillSteps - 1].rgbRed,
+                                  ColourSteps[FillSteps - 1].rgbGreen,
+                                  ColourSteps[FillSteps - 1].rgbBlue);
+
+        // Put the RGB value back into a DocColour so we can set it as the fill colour. We set it
+        // as non-separable, as it will have already been colour-separated by BuildGraduatedPalette
+        TempFillColour.SetRGBValue(ColourSteps[FillSteps - 1].rgbRed,
+                                   ColourSteps[FillSteps - 1].rgbGreen,
+                                   ColourSteps[FillSteps - 1].rgbBlue);
+        TempFillColour.SetSeparable(FALSE);
+
+        SetFillColour(TempFillColour);
+
+        GetValidBrush();
+        GetValidPen();
+
+        // First, fill in whole path with end colour
+        //RenderPath(PathToDraw);
+        Path PreviousPath;
+        PreviousPath.Initialise(PathToDraw->GetNumCoords() + 2, 12);
+        PreviousPath.CopyPathDataFrom(PathToDraw);
+
+        // Work out relative positions of start and end points.
+        DocCoord Steps[2];
+        Steps[0].x = Fill->StartPoint.x - Fill->EndPoint.x;
+        Steps[0].y = Fill->StartPoint.y - Fill->EndPoint.y;
+        Steps[1].x = Fill->StartPoint.x - Fill->EndPoint2.x;
+        Steps[1].y = Fill->StartPoint.y - Fill->EndPoint2.y;
+
+        // Construct the parallelogram that describes the biggest ellipse.
+        // (If I could draw a picture here, I would!)
+        DocCoord Parallel[4];
+        Parallel[0].x = Fill->StartPoint.x + (Steps[0].x + Steps[1].x);
+        Parallel[0].y = Fill->StartPoint.y + (Steps[0].y + Steps[1].y);
+        Parallel[1].x = Fill->StartPoint.x + (Steps[0].x - Steps[1].x);
+        Parallel[1].y = Fill->StartPoint.y + (Steps[0].y - Steps[1].y);
+        Parallel[2].x = Fill->StartPoint.x - (Steps[0].x + Steps[1].x);
+        Parallel[2].y = Fill->StartPoint.y - (Steps[0].y + Steps[1].y);
+        Parallel[3].x = Fill->StartPoint.x + (Steps[1].x - Steps[0].x);
+        Parallel[3].y = Fill->StartPoint.y + (Steps[1].y - Steps[0].y);
+
+        // Now convert the steps into the steps we should use to adjust the
+        // parallelogram after each fill step
+        Steps[0].x /= (FillSteps + 1);
+        Steps[0].y /= (FillSteps + 1);
+        Steps[1].x /= (FillSteps + 1);
+        Steps[1].y /= (FillSteps + 1);
+
+        // This are the paths we will use to create radial fills.
+        Path RadialFill;
+        RadialFill.Initialise(50,12);
+        Path EllipsePath;
+        EllipsePath.Initialise(15,12);
+
+        // This is the path we use for all clipped rendering.
+        Path ClippedPath;
+        ClippedPath.Initialise(12, 12);
+
+
+        // Now render the fill using concentric ellipses, starting with the biggest.
+        for (INT32 i = FillSteps; i > 0;)
         {
-            COLORREF CurrentCol = RGB(ColourSteps[FillSteps - 1].rgbRed,
-                                      ColourSteps[FillSteps - 1].rgbGreen,
-                                      ColourSteps[FillSteps - 1].rgbBlue);
+            MakeEllipticalPath(&EllipsePath, Parallel);
+            EllipsePath.IsFilled = TRUE;
 
-            // Put the RGB value back into a DocColour so we can set it as the fill colour. We set it
-            // as non-separable, as it will have already been colour-separated by BuildGraduatedPalette
-            TempFillColour.SetRGBValue(ColourSteps[FillSteps - 1].rgbRed,
-                                       ColourSteps[FillSteps - 1].rgbGreen,
-                                       ColourSteps[FillSteps - 1].rgbBlue);
-            TempFillColour.SetSeparable(FALSE);
+            // Use this and the previous path to make an elliptical disc.
+            RadialFill.ClearPath(FALSE);
+            RadialFill.MakeSpaceInPath(PreviousPath.GetNumCoords() + EllipsePath.GetNumCoords() + 2);
+            RadialFill.CopyPathDataFrom(&PreviousPath);
+            RadialFill.IsFilled = TRUE;
+            if (i > 1)
+            {
+                // For all except the last step, make a complex path (which is
+                // usually an elliptical disc).
+                ERROR2IF(!RadialFill.MergeTwoPaths(EllipsePath), FALSE, "could not merge paths");
+            }
 
-            SetFillColour(TempFillColour);
+            // Remember the elliptical path for next time
+            PreviousPath.ClearPath(FALSE);
+            PreviousPath.MakeSpaceInPath(EllipsePath.GetNumCoords() + 2);
+            PreviousPath.CopyPathDataFrom(&EllipsePath);
 
-            GetValidBrush();
-            GetValidPen();
+            if (RenderMethod != GF_USE_GAVINCLIPPING)
+            {
+                RenderPath(&RadialFill);
+            }
+            else
+            {
+                PathToDraw->ClipPathToPath(RadialFill, &ClippedPath, 2,
+                                           ClipTolerance, ClipFlatness, ClipFlatness);
+                ClippedPath.IsFilled = TRUE;
+                RenderPath(&ClippedPath);
+            }
 
-            // First, fill in whole path with end colour
-            //RenderPath(PathToDraw);
-            Path PreviousPath;
-            PreviousPath.Initialise(PathToDraw->GetNumCoords() + 2, 12);
-            PreviousPath.CopyPathDataFrom(PathToDraw);
+            // decrement loop counter here so that the next colour can be calculated
+            i--;
 
-            // Work out relative positions of start and end points.
-            DocCoord Steps[2];
-            Steps[0].x = Fill->StartPoint.x - Fill->EndPoint.x;
-            Steps[0].y = Fill->StartPoint.y - Fill->EndPoint.y;
-            Steps[1].x = Fill->StartPoint.x - Fill->EndPoint2.x;
-            Steps[1].y = Fill->StartPoint.y - Fill->EndPoint2.y;
-
-            // Construct the parallelogram that describes the biggest ellipse.
-            // (If I could draw a picture here, I would!)
-            DocCoord Parallel[4];
-            Parallel[0].x = Fill->StartPoint.x + (Steps[0].x + Steps[1].x);
-            Parallel[0].y = Fill->StartPoint.y + (Steps[0].y + Steps[1].y);
-            Parallel[1].x = Fill->StartPoint.x + (Steps[0].x - Steps[1].x);
-            Parallel[1].y = Fill->StartPoint.y + (Steps[0].y - Steps[1].y);
-            Parallel[2].x = Fill->StartPoint.x - (Steps[0].x + Steps[1].x);
-            Parallel[2].y = Fill->StartPoint.y - (Steps[0].y + Steps[1].y);
-            Parallel[3].x = Fill->StartPoint.x + (Steps[1].x - Steps[0].x);
-            Parallel[3].y = Fill->StartPoint.y + (Steps[1].y - Steps[0].y);
-
-            // Now convert the steps into the steps we should use to adjust the
-            // parallelogram after each fill step
-            Steps[0].x /= (FillSteps + 1);
-            Steps[0].y /= (FillSteps + 1);
-            Steps[1].x /= (FillSteps + 1);
-            Steps[1].y /= (FillSteps + 1);
-
-            // This are the paths we will use to create radial fills.
-            Path RadialFill;
-            RadialFill.Initialise(50,12);
-            Path EllipsePath;
-            EllipsePath.Initialise(15,12);
-
-            // This is the path we use for all clipped rendering.
-            Path ClippedPath;
-            ClippedPath.Initialise(12, 12);
-
-
-            // Now render the fill using concentric ellipses, starting with the biggest.
-            for (INT32 i = FillSteps; i > 0;)
+            if (i > 0)
+            {
+                // Calculate next brush (except at the end of the loop)
+                const COLORREF NewFill = RGB(ColourSteps[i].rgbRed, ColourSteps[i].rgbGreen,
+                                             ColourSteps[i].rgbBlue);
+                if (NewFill != CurrentCol)
                 {
-                    MakeEllipticalPath(&EllipsePath, Parallel);
-                    EllipsePath.IsFilled = TRUE;
+                    // colour changed, make new brush
+                    CurrentCol = NewFill;
 
-                    // Use this and the previous path to make an elliptical disc.
-                    RadialFill.ClearPath(FALSE);
-                    RadialFill.MakeSpaceInPath(PreviousPath.GetNumCoords() + EllipsePath.GetNumCoords() + 2);
-                    RadialFill.CopyPathDataFrom(&PreviousPath);
-                    RadialFill.IsFilled = TRUE;
-                    if (i > 1)
-                        {
-                            // For all except the last step, make a complex path (which is
-                            // usually an elliptical disc).
-                            ERROR2IF(!RadialFill.MergeTwoPaths(EllipsePath), FALSE, "could not merge paths");
-                        }
+                    // Put the RGB value back into a DocColour so we can set it as the fill colour. We set it
+                    // as non-separable, as it will have already been colour-separated by BuildGraduatedPalette
+                    TempFillColour.SetRGBValue(ColourSteps[i].rgbRed,
+                                               ColourSteps[i].rgbGreen,
+                                               ColourSteps[i].rgbBlue);
+                    TempFillColour.SetSeparable(FALSE);
 
-                    // Remember the elliptical path for next time
-                    PreviousPath.ClearPath(FALSE);
-                    PreviousPath.MakeSpaceInPath(EllipsePath.GetNumCoords() + 2);
-                    PreviousPath.CopyPathDataFrom(&EllipsePath);
-
-                    if (RenderMethod != GF_USE_GAVINCLIPPING)
-                        {
-                            RenderPath(&RadialFill);
-                        }
-                    else
-                        {
-                            PathToDraw->ClipPathToPath(RadialFill, &ClippedPath, 2,
-                                                       ClipTolerance, ClipFlatness, ClipFlatness);
-                            ClippedPath.IsFilled = TRUE;
-                            RenderPath(&ClippedPath);
-                        }
-
-                    // decrement loop counter here so that the next colour can be calculated
-                    i--;
-
-                    if (i > 0)
-                        {
-                            // Calculate next brush (except at the end of the loop)
-                            const COLORREF NewFill = RGB(ColourSteps[i].rgbRed, ColourSteps[i].rgbGreen,
-                                                         ColourSteps[i].rgbBlue);
-                            if (NewFill != CurrentCol)
-                                {
-                                    // colour changed, make new brush
-                                    CurrentCol = NewFill;
-
-                                    // Put the RGB value back into a DocColour so we can set it as the fill colour. We set it
-                                    // as non-separable, as it will have already been colour-separated by BuildGraduatedPalette
-                                    TempFillColour.SetRGBValue(ColourSteps[i].rgbRed,
-                                                               ColourSteps[i].rgbGreen,
-                                                               ColourSteps[i].rgbBlue);
-                                    TempFillColour.SetSeparable(FALSE);
-
-                                    SetFillColour(TempFillColour);
-                                    GetValidBrush();
-                                    GetValidPen();
-                                }
-
-                            // Reduce size of paralleogram
-                            Parallel[0].x -= (Steps[0].x + Steps[1].x);
-                            Parallel[0].y -= (Steps[0].y + Steps[1].y);
-                            Parallel[1].x -= (Steps[0].x - Steps[1].x);
-                            Parallel[1].y -= (Steps[0].y - Steps[1].y);
-                            Parallel[2].x += (Steps[0].x + Steps[1].x);
-                            Parallel[2].y += (Steps[0].y + Steps[1].y);
-                            Parallel[3].x -= (Steps[1].x - Steps[0].x);
-                            Parallel[3].y -= (Steps[1].y - Steps[0].y);
-                        }
-                }
-
-            if ((RenderMethod == GF_USE_GDIEOR) && (RenderCount > 1))
-                {
-                    // Render the path in white
-                    SetDrawingMode(DM_COPYPEN);
-                    SetFillColour(COLOUR_BLACK);
-                    SetLineColour(COLOUR_TRANS);
+                    SetFillColour(TempFillColour);
                     GetValidBrush();
                     GetValidPen();
-                    RenderPath(PathToDraw);
-
-                    // Set back to mode required for grad fill rendering
-                    SetDrawingMode(DM_EORDITHER);
                 }
 
-            RenderCount--;
+                // Reduce size of paralleogram
+                Parallel[0].x -= (Steps[0].x + Steps[1].x);
+                Parallel[0].y -= (Steps[0].y + Steps[1].y);
+                Parallel[1].x -= (Steps[0].x - Steps[1].x);
+                Parallel[1].y -= (Steps[0].y - Steps[1].y);
+                Parallel[2].x += (Steps[0].x + Steps[1].x);
+                Parallel[2].y += (Steps[0].y + Steps[1].y);
+                Parallel[3].x -= (Steps[1].x - Steps[0].x);
+                Parallel[3].y -= (Steps[1].y - Steps[0].y);
+            }
         }
+
+        if ((RenderMethod == GF_USE_GDIEOR) && (RenderCount > 1))
+        {
+            // Render the path in white
+            SetDrawingMode(DM_COPYPEN);
+            SetFillColour(COLOUR_BLACK);
+            SetLineColour(COLOUR_TRANS);
+            GetValidBrush();
+            GetValidPen();
+            RenderPath(PathToDraw);
+
+            // Set back to mode required for grad fill rendering
+            SetDrawingMode(DM_EORDITHER);
+        }
+
+        RenderCount--;
+    }
 
     // now tidy up
     RestoreContext();
@@ -5208,81 +5274,127 @@ BOOL OSRenderRegion::RenderLinearFill(Path *PathToDraw, LinearFillAttribute *Fil
 
     // If we are rendering into a metafile, clip the path ourselves
     if (RFlags.Metafile)
-        {
-            RenderMethod = GF_USE_GAVINCLIPPING;
-        }
+    {
+        RenderMethod = GF_USE_GAVINCLIPPING;
+    }
     else
+    {
+        if (!SetClipToPathTemporary(PathToDraw))
         {
-            if (!SetClipToPathTemporary(PathToDraw))
-                {
-                    // Can't use clipping - fall back to EOR.
-                    RenderMethod = GF_USE_GDIEOR;
-                    SetDrawingMode(DM_EORDITHER);
-                    RenderCount = 2;
-                }
+            // Can't use clipping - fall back to EOR.
+            RenderMethod = GF_USE_GDIEOR;
+            SetDrawingMode(DM_EORDITHER);
+            RenderCount = 2;
         }
+    }
 
     DocColour TempFillColour;
 
     while (RenderCount > 0)
+    {
+        COLORREF CurrentCol = RGB(ColourSteps[0].rgbRed, ColourSteps[0].rgbGreen, ColourSteps[0].rgbBlue);
+
+        // Put the RGB value back into a DocColour so we can set it as the fill colour. We set it
+        // as non-separable, as it will have already been colour-separated by BuildGraduatedPalette
+        TempFillColour.SetRGBValue(ColourSteps[0].rgbRed,
+                                   ColourSteps[0].rgbGreen,
+                                   ColourSteps[0].rgbBlue);
+        TempFillColour.SetSeparable(FALSE);
+
+        SetFillColour(TempFillColour);
+        GetValidBrush();
+        GetValidPen();
+
+        // This is the path we will use to create linear fills.
+        Path LinearFill;
+        LinearFill.Initialise(12,12);
+
+        // This is the path we use for all clipped rendering.
+        Path ClippedPath;
+        ClippedPath.Initialise(12, 12);
+
+        // Work out differences in x and y coords for fill arrow.
+        double FillStepX = ((double) (Fill->EndPoint.x - Fill->StartPoint.x)) / (double) FillSteps;
+        double FillStepY = ((double) (Fill->EndPoint.y - Fill->StartPoint.y)) / (double) FillSteps;
+
+        double FillAngle = atan2((double)(Fill->EndPoint.x - Fill->StartPoint.x),
+                                 (double)(Fill->EndPoint.y - Fill->StartPoint.y));
+
+        // Used to find perpendicular angles.
+        const double HalfPI = PI/2.0;
+
+        DocCoord FillPoint = Fill->StartPoint;
+        DocCoord RectPoint[2];
+
+        // Find first two corners of rectangle
+        RectPoint[0].x = FillPoint.x + (INT32) (((double) Distance) * sin(FillAngle - HalfPI));
+        RectPoint[0].y = FillPoint.y + (INT32) (((double) Distance) * cos(FillAngle - HalfPI));
+        RectPoint[1].x = FillPoint.x + (INT32) (((double) Distance) * sin(FillAngle + HalfPI));
+        RectPoint[1].y = FillPoint.y + (INT32) (((double) Distance) * cos(FillAngle + HalfPI));
+
+
+
+        // Do the start colour shape - we need to find out how far we need
+        // to extend beyond the fill arrow.
+        TestPoint = BoundsRect.lo;
+        INT32 LastDistance = CalcDistance(Fill->EndPoint, TestPoint);
+        TestPoint.x = BoundsRect.hi.x;
+        NewDistance = CalcDistance(Fill->EndPoint, TestPoint);
+        LastDistance = max(LastDistance, NewDistance);
+        TestPoint = BoundsRect.hi;
+        NewDistance = CalcDistance(Fill->EndPoint, TestPoint);
+        LastDistance = max(LastDistance, NewDistance);
+        TestPoint.x = BoundsRect.lo.x;
+        NewDistance = CalcDistance(Fill->EndPoint, TestPoint);
+        LastDistance = max(LastDistance, NewDistance);
+
+        // Make the last (big) rectangle.
+        LinearFill.ClearPath();
+        LinearFill.FindStartOfPath();
+
+        // Create a rectangle
+        PathFlags NewFlags;
+        NewFlags.IsRotate = TRUE;
+
+        // Insert first two corners of rectangle.
+        LinearFill.InsertMoveTo(RectPoint[0], &NewFlags);
+        LinearFill.InsertLineTo(RectPoint[1], &NewFlags);
+
+        // Move past the fill arrow far enough to cover last bit of shape.
+        FillPoint.x = Fill->EndPoint.x - (MILLIPOINT) (LastDistance * sin(FillAngle));
+        FillPoint.y = Fill->EndPoint.y - (MILLIPOINT) (LastDistance * cos(FillAngle));
+
+        // Find other two corners of rectangle.
+        DocCoord EndPoint[2];
+        EndPoint[0].x = FillPoint.x + (INT32) (((double) Distance) * sin(FillAngle - HalfPI));
+        EndPoint[0].y = FillPoint.y + (INT32) (((double) Distance) * cos(FillAngle - HalfPI));
+        EndPoint[1].x = FillPoint.x + (INT32) (((double) Distance) * sin(FillAngle + HalfPI));
+        EndPoint[1].y = FillPoint.y + (INT32) (((double) Distance) * cos(FillAngle + HalfPI));
+
+        // Insert last two corners of rectangle.
+        LinearFill.InsertLineTo(EndPoint[1], &NewFlags);
+        LinearFill.InsertLineTo(EndPoint[0], &NewFlags);
+
+        // Close the path properly
+        LinearFill.CloseSubPath();
+
+        LinearFill.IsFilled = TRUE;
+        if (RenderMethod != GF_USE_GAVINCLIPPING)
         {
-            COLORREF CurrentCol = RGB(ColourSteps[0].rgbRed, ColourSteps[0].rgbGreen, ColourSteps[0].rgbBlue);
-
-            // Put the RGB value back into a DocColour so we can set it as the fill colour. We set it
-            // as non-separable, as it will have already been colour-separated by BuildGraduatedPalette
-            TempFillColour.SetRGBValue(ColourSteps[0].rgbRed,
-                                       ColourSteps[0].rgbGreen,
-                                       ColourSteps[0].rgbBlue);
-            TempFillColour.SetSeparable(FALSE);
-
-            SetFillColour(TempFillColour);
-            GetValidBrush();
-            GetValidPen();
-
-            // This is the path we will use to create linear fills.
-            Path LinearFill;
-            LinearFill.Initialise(12,12);
-
-            // This is the path we use for all clipped rendering.
-            Path ClippedPath;
-            ClippedPath.Initialise(12, 12);
-
-            // Work out differences in x and y coords for fill arrow.
-            double FillStepX = ((double) (Fill->EndPoint.x - Fill->StartPoint.x)) / (double) FillSteps;
-            double FillStepY = ((double) (Fill->EndPoint.y - Fill->StartPoint.y)) / (double) FillSteps;
-
-            double FillAngle = atan2((double)(Fill->EndPoint.x - Fill->StartPoint.x),
-                                     (double)(Fill->EndPoint.y - Fill->StartPoint.y));
-
-            // Used to find perpendicular angles.
-            const double HalfPI = PI/2.0;
-
-            DocCoord FillPoint = Fill->StartPoint;
-            DocCoord RectPoint[2];
-
-            // Find first two corners of rectangle
-            RectPoint[0].x = FillPoint.x + (INT32) (((double) Distance) * sin(FillAngle - HalfPI));
-            RectPoint[0].y = FillPoint.y + (INT32) (((double) Distance) * cos(FillAngle - HalfPI));
-            RectPoint[1].x = FillPoint.x + (INT32) (((double) Distance) * sin(FillAngle + HalfPI));
-            RectPoint[1].y = FillPoint.y + (INT32) (((double) Distance) * cos(FillAngle + HalfPI));
+            RenderPath(&LinearFill);
+        }
+        else
+        {
+            PathToDraw->ClipPathToPath(LinearFill, &ClippedPath, 2,
+                                       ClipTolerance, ClipFlatness, ClipFlatness);
+            ClippedPath.IsFilled = TRUE;
+            RenderPath(&ClippedPath);
+        }
 
 
-
-            // Do the start colour shape - we need to find out how far we need
-            // to extend beyond the fill arrow.
-            TestPoint = BoundsRect.lo;
-            INT32 LastDistance = CalcDistance(Fill->EndPoint, TestPoint);
-            TestPoint.x = BoundsRect.hi.x;
-            NewDistance = CalcDistance(Fill->EndPoint, TestPoint);
-            LastDistance = max(LastDistance, NewDistance);
-            TestPoint = BoundsRect.hi;
-            NewDistance = CalcDistance(Fill->EndPoint, TestPoint);
-            LastDistance = max(LastDistance, NewDistance);
-            TestPoint.x = BoundsRect.lo.x;
-            NewDistance = CalcDistance(Fill->EndPoint, TestPoint);
-            LastDistance = max(LastDistance, NewDistance);
-
-            // Make the last (big) rectangle.
+        // Now render the fill using rectangles.
+        for (INT32 i = 0; i < FillSteps;)
+        {
             LinearFill.ClearPath();
             LinearFill.FindStartOfPath();
 
@@ -5294,137 +5406,12 @@ BOOL OSRenderRegion::RenderLinearFill(Path *PathToDraw, LinearFillAttribute *Fil
             LinearFill.InsertMoveTo(RectPoint[0], &NewFlags);
             LinearFill.InsertLineTo(RectPoint[1], &NewFlags);
 
-            // Move past the fill arrow far enough to cover last bit of shape.
-            FillPoint.x = Fill->EndPoint.x - (MILLIPOINT) (LastDistance * sin(FillAngle));
-            FillPoint.y = Fill->EndPoint.y - (MILLIPOINT) (LastDistance * cos(FillAngle));
+            // increment loop counter here so that the next colour can be calculated
+            i++;
 
-            // Find other two corners of rectangle.
-            DocCoord EndPoint[2];
-            EndPoint[0].x = FillPoint.x + (INT32) (((double) Distance) * sin(FillAngle - HalfPI));
-            EndPoint[0].y = FillPoint.y + (INT32) (((double) Distance) * cos(FillAngle - HalfPI));
-            EndPoint[1].x = FillPoint.x + (INT32) (((double) Distance) * sin(FillAngle + HalfPI));
-            EndPoint[1].y = FillPoint.y + (INT32) (((double) Distance) * cos(FillAngle + HalfPI));
-
-            // Insert last two corners of rectangle.
-            LinearFill.InsertLineTo(EndPoint[1], &NewFlags);
-            LinearFill.InsertLineTo(EndPoint[0], &NewFlags);
-
-            // Close the path properly
-            LinearFill.CloseSubPath();
-
-            LinearFill.IsFilled = TRUE;
-            if (RenderMethod != GF_USE_GAVINCLIPPING)
-                {
-                    RenderPath(&LinearFill);
-                }
-            else
-                {
-                    PathToDraw->ClipPathToPath(LinearFill, &ClippedPath, 2,
-                                               ClipTolerance, ClipFlatness, ClipFlatness);
-                    ClippedPath.IsFilled = TRUE;
-                    RenderPath(&ClippedPath);
-                }
-
-
-            // Now render the fill using rectangles.
-            for (INT32 i = 0; i < FillSteps;)
-                {
-                    LinearFill.ClearPath();
-                    LinearFill.FindStartOfPath();
-
-                    // Create a rectangle
-                    PathFlags NewFlags;
-                    NewFlags.IsRotate = TRUE;
-
-                    // Insert first two corners of rectangle.
-                    LinearFill.InsertMoveTo(RectPoint[0], &NewFlags);
-                    LinearFill.InsertLineTo(RectPoint[1], &NewFlags);
-
-                    // increment loop counter here so that the next colour can be calculated
-                    i++;
-
-                    // Move along the arrow one step
-                    FillPoint.x = Fill->StartPoint.x + (MILLIPOINT) (i * FillStepX);
-                    FillPoint.y = Fill->StartPoint.y + (MILLIPOINT) (i * FillStepY);
-
-                    // Find other two corners of rectangle.
-                    RectPoint[0].x = FillPoint.x + (INT32) (((double) Distance) * sin(FillAngle - HalfPI));
-                    RectPoint[0].y = FillPoint.y + (INT32) (((double) Distance) * cos(FillAngle - HalfPI));
-                    RectPoint[1].x = FillPoint.x + (INT32) (((double) Distance) * sin(FillAngle + HalfPI));
-                    RectPoint[1].y = FillPoint.y + (INT32) (((double) Distance) * cos(FillAngle + HalfPI));
-
-                    // Insert last two corners of rectangle.
-                    LinearFill.InsertLineTo(RectPoint[1], &NewFlags);
-                    LinearFill.InsertLineTo(RectPoint[0], &NewFlags);
-
-                    // Close the path properly
-                    LinearFill.CloseSubPath();
-
-                    LinearFill.IsFilled = TRUE;
-                    if (RenderMethod != GF_USE_GAVINCLIPPING)
-                        {
-                            RenderPath(&LinearFill);
-                        }
-                    else
-                        {
-                            PathToDraw->ClipPathToPath(LinearFill, &ClippedPath, 2,
-                                                       ClipTolerance, ClipFlatness, ClipFlatness);
-                            ClippedPath.IsFilled = TRUE;
-                            RenderPath(&ClippedPath);
-                        }
-
-                    if (i != FillSteps)
-                        {
-                            // Calculate next brush
-                            const COLORREF NewFill = RGB(ColourSteps[i].rgbRed, ColourSteps[i].rgbGreen,
-                                                         ColourSteps[i].rgbBlue);
-                            if (NewFill != CurrentCol)
-                                {
-                                    // colour changed, make new brush
-                                    CurrentCol = NewFill;
-
-                                    // Put the RGB value back into a DocColour so we can set it as the fill colour. We set it
-                                    // as non-separable, as it will have already been colour-separated by BuildGraduatedPalette
-                                    TempFillColour.SetRGBValue(ColourSteps[i].rgbRed,
-                                                               ColourSteps[i].rgbGreen,
-                                                               ColourSteps[i].rgbBlue);
-                                    TempFillColour.SetSeparable(FALSE);
-
-                                    SetFillColour(TempFillColour);
-                                    GetValidBrush();
-                                    GetValidPen();
-                                }
-                        }
-                }
-
-            // Do the end colour shape - we need to find out how far we need
-            // to extend beyond the fill arrow.
-            TestPoint = BoundsRect.lo;
-            LastDistance = CalcDistance(Fill->EndPoint, TestPoint);
-            TestPoint.x = BoundsRect.hi.x;
-            NewDistance = CalcDistance(Fill->EndPoint, TestPoint);
-            LastDistance = max(LastDistance, NewDistance);
-            TestPoint = BoundsRect.hi;
-            NewDistance = CalcDistance(Fill->EndPoint, TestPoint);
-            LastDistance = max(LastDistance, NewDistance);
-            TestPoint.x = BoundsRect.lo.x;
-            NewDistance = CalcDistance(Fill->EndPoint, TestPoint);
-            LastDistance = max(LastDistance, NewDistance);
-
-            // Make the last (big) rectangle.
-            LinearFill.ClearPath();
-            LinearFill.FindStartOfPath();
-
-            // Create a rectangle
-            NewFlags.IsRotate = TRUE;
-
-            // Insert first two corners of rectangle.
-            LinearFill.InsertMoveTo(RectPoint[0], &NewFlags);
-            LinearFill.InsertLineTo(RectPoint[1], &NewFlags);
-
-            // Move past the fill arrow far enough to cover last bit of shape.
-            FillPoint.x = Fill->EndPoint.x + (MILLIPOINT) (LastDistance * sin(FillAngle));
-            FillPoint.y = Fill->EndPoint.y + (MILLIPOINT) (LastDistance * cos(FillAngle));
+            // Move along the arrow one step
+            FillPoint.x = Fill->StartPoint.x + (MILLIPOINT) (i * FillStepX);
+            FillPoint.y = Fill->StartPoint.y + (MILLIPOINT) (i * FillStepY);
 
             // Find other two corners of rectangle.
             RectPoint[0].x = FillPoint.x + (INT32) (((double) Distance) * sin(FillAngle - HalfPI));
@@ -5441,33 +5428,112 @@ BOOL OSRenderRegion::RenderLinearFill(Path *PathToDraw, LinearFillAttribute *Fil
 
             LinearFill.IsFilled = TRUE;
             if (RenderMethod != GF_USE_GAVINCLIPPING)
-                {
-                    RenderPath(&LinearFill);
-                }
+            {
+                RenderPath(&LinearFill);
+            }
             else
-                {
-                    PathToDraw->ClipPathToPath(LinearFill, &ClippedPath, 2,
-                                               ClipTolerance, ClipFlatness, ClipFlatness);
-                    ClippedPath.IsFilled = TRUE;
-                    RenderPath(&ClippedPath);
-                }
+            {
+                PathToDraw->ClipPathToPath(LinearFill, &ClippedPath, 2,
+                                           ClipTolerance, ClipFlatness, ClipFlatness);
+                ClippedPath.IsFilled = TRUE;
+                RenderPath(&ClippedPath);
+            }
 
-            if ((RenderMethod == GF_USE_GDIEOR) && (RenderCount > 1))
+            if (i != FillSteps)
+            {
+                // Calculate next brush
+                const COLORREF NewFill = RGB(ColourSteps[i].rgbRed, ColourSteps[i].rgbGreen,
+                                             ColourSteps[i].rgbBlue);
+                if (NewFill != CurrentCol)
                 {
-                    // Render the path in white
-                    SetDrawingMode(DM_COPYPEN);
-                    SetFillColour(COLOUR_BLACK);
-                    SetLineColour(COLOUR_TRANS);
+                    // colour changed, make new brush
+                    CurrentCol = NewFill;
+
+                    // Put the RGB value back into a DocColour so we can set it as the fill colour. We set it
+                    // as non-separable, as it will have already been colour-separated by BuildGraduatedPalette
+                    TempFillColour.SetRGBValue(ColourSteps[i].rgbRed,
+                                               ColourSteps[i].rgbGreen,
+                                               ColourSteps[i].rgbBlue);
+                    TempFillColour.SetSeparable(FALSE);
+
+                    SetFillColour(TempFillColour);
                     GetValidBrush();
                     GetValidPen();
-                    RenderPath(PathToDraw);
-
-                    // Set back to mode required for grad fill rendering
-                    SetDrawingMode(DM_EORDITHER);
                 }
-
-            RenderCount--;
+            }
         }
+
+        // Do the end colour shape - we need to find out how far we need
+        // to extend beyond the fill arrow.
+        TestPoint = BoundsRect.lo;
+        LastDistance = CalcDistance(Fill->EndPoint, TestPoint);
+        TestPoint.x = BoundsRect.hi.x;
+        NewDistance = CalcDistance(Fill->EndPoint, TestPoint);
+        LastDistance = max(LastDistance, NewDistance);
+        TestPoint = BoundsRect.hi;
+        NewDistance = CalcDistance(Fill->EndPoint, TestPoint);
+        LastDistance = max(LastDistance, NewDistance);
+        TestPoint.x = BoundsRect.lo.x;
+        NewDistance = CalcDistance(Fill->EndPoint, TestPoint);
+        LastDistance = max(LastDistance, NewDistance);
+
+        // Make the last (big) rectangle.
+        LinearFill.ClearPath();
+        LinearFill.FindStartOfPath();
+
+        // Create a rectangle
+        NewFlags.IsRotate = TRUE;
+
+        // Insert first two corners of rectangle.
+        LinearFill.InsertMoveTo(RectPoint[0], &NewFlags);
+        LinearFill.InsertLineTo(RectPoint[1], &NewFlags);
+
+        // Move past the fill arrow far enough to cover last bit of shape.
+        FillPoint.x = Fill->EndPoint.x + (MILLIPOINT) (LastDistance * sin(FillAngle));
+        FillPoint.y = Fill->EndPoint.y + (MILLIPOINT) (LastDistance * cos(FillAngle));
+
+        // Find other two corners of rectangle.
+        RectPoint[0].x = FillPoint.x + (INT32) (((double) Distance) * sin(FillAngle - HalfPI));
+        RectPoint[0].y = FillPoint.y + (INT32) (((double) Distance) * cos(FillAngle - HalfPI));
+        RectPoint[1].x = FillPoint.x + (INT32) (((double) Distance) * sin(FillAngle + HalfPI));
+        RectPoint[1].y = FillPoint.y + (INT32) (((double) Distance) * cos(FillAngle + HalfPI));
+
+        // Insert last two corners of rectangle.
+        LinearFill.InsertLineTo(RectPoint[1], &NewFlags);
+        LinearFill.InsertLineTo(RectPoint[0], &NewFlags);
+
+        // Close the path properly
+        LinearFill.CloseSubPath();
+
+        LinearFill.IsFilled = TRUE;
+        if (RenderMethod != GF_USE_GAVINCLIPPING)
+        {
+            RenderPath(&LinearFill);
+        }
+        else
+        {
+            PathToDraw->ClipPathToPath(LinearFill, &ClippedPath, 2,
+                                       ClipTolerance, ClipFlatness, ClipFlatness);
+            ClippedPath.IsFilled = TRUE;
+            RenderPath(&ClippedPath);
+        }
+
+        if ((RenderMethod == GF_USE_GDIEOR) && (RenderCount > 1))
+        {
+            // Render the path in white
+            SetDrawingMode(DM_COPYPEN);
+            SetFillColour(COLOUR_BLACK);
+            SetLineColour(COLOUR_TRANS);
+            GetValidBrush();
+            GetValidPen();
+            RenderPath(PathToDraw);
+
+            // Set back to mode required for grad fill rendering
+            SetDrawingMode(DM_EORDITHER);
+        }
+
+        RenderCount--;
+    }
 
     // now tidy up
     RestoreContext();
@@ -5569,145 +5635,145 @@ BOOL OSRenderRegion::RenderConicalFill(Path *PathToDraw, ConicalFillAttribute *F
 
     // If we are rendering into a metafile, clip the path ourselves
     if (RFlags.Metafile)
-        {
-            RenderMethod = GF_USE_GAVINCLIPPING;
-        }
+    {
+        RenderMethod = GF_USE_GAVINCLIPPING;
+    }
     else
+    {
+        if (!SetClipToPathTemporary(PathToDraw))
         {
-            if (!SetClipToPathTemporary(PathToDraw))
-                {
-                    // Can't use clipping - fall back to EOR.
-                    RenderMethod = GF_USE_GDIEOR;
-                }
+            // Can't use clipping - fall back to EOR.
+            RenderMethod = GF_USE_GDIEOR;
         }
+    }
 
     INT32 RenderCount = 1;
 
     if (RenderMethod == GF_USE_GDIEOR)
-        {
-            SetDrawingMode(DM_EORDITHER);
-            RenderCount = 2;
-        }
+    {
+        SetDrawingMode(DM_EORDITHER);
+        RenderCount = 2;
+    }
 
     DocColour TempFillColour;
 
     while (RenderCount > 0)
+    {
+        COLORREF CurrentCol = RGB(ColourSteps[FillSteps - 1].rgbRed,
+                                  ColourSteps[FillSteps - 1].rgbGreen,
+                                  ColourSteps[FillSteps - 1].rgbBlue);
+
+        // Put the RGB value back into a DocColour so we can set it as the fill colour. We set it
+        // as non-separable, as it will have already been colour-separated by BuildGraduatedPalette
+        TempFillColour.SetRGBValue(ColourSteps[FillSteps - 1].rgbRed,
+                                   ColourSteps[FillSteps - 1].rgbGreen,
+                                   ColourSteps[FillSteps - 1].rgbBlue);
+        TempFillColour.SetSeparable(FALSE);
+
+        SetFillColour(TempFillColour);
+        GetValidBrush();
+        GetValidPen();
+
+        // This is the path we will use to create conical fills.
+        Path ConicalFill;
+        ConicalFill.Initialise(12,12);
+
+        // This is the path we use for all clipped rendering.
+        Path ClippedPath;
+        ClippedPath.Initialise(12, 12);
+
+        double FillAngle = atan2((double)(Fill->EndPoint.x - Fill->StartPoint.x),
+                                 (double)(Fill->EndPoint.y - Fill->StartPoint.y));
+
+        double AngleInc = PI / FillSteps; // Actually (2 * PI) / (2 * FillSteps)
+
+        TestPoint.x = Fill->StartPoint.x + (INT32) (((double) Radius) * sin(FillAngle));
+        TestPoint.y = Fill->StartPoint.y + (INT32) (((double) Radius) * cos(FillAngle));
+
+        // Now render the fill using radiating triangles.
+        INT32 FillInc = -1;
+
+        // NB. This loop is unusual because we loop from FillSteps down to 0 and back
+        // up to FillSteps - because that's how conical fills work.
+        for (INT32 i = FillSteps - 1; i <= FillSteps; i += FillInc)
         {
-            COLORREF CurrentCol = RGB(ColourSteps[FillSteps - 1].rgbRed,
-                                      ColourSteps[FillSteps - 1].rgbGreen,
-                                      ColourSteps[FillSteps - 1].rgbBlue);
+            ConicalFill.ClearPath();
+            ConicalFill.FindStartOfPath();
 
-            // Put the RGB value back into a DocColour so we can set it as the fill colour. We set it
-            // as non-separable, as it will have already been colour-separated by BuildGraduatedPalette
-            TempFillColour.SetRGBValue(ColourSteps[FillSteps - 1].rgbRed,
-                                       ColourSteps[FillSteps - 1].rgbGreen,
-                                       ColourSteps[FillSteps - 1].rgbBlue);
-            TempFillColour.SetSeparable(FALSE);
-
-            SetFillColour(TempFillColour);
-            GetValidBrush();
-            GetValidPen();
-
-            // This is the path we will use to create conical fills.
-            Path ConicalFill;
-            ConicalFill.Initialise(12,12);
-
-            // This is the path we use for all clipped rendering.
-            Path ClippedPath;
-            ClippedPath.Initialise(12, 12);
-
-            double FillAngle = atan2((double)(Fill->EndPoint.x - Fill->StartPoint.x),
-                                     (double)(Fill->EndPoint.y - Fill->StartPoint.y));
-
-            double AngleInc = PI / FillSteps; // Actually (2 * PI) / (2 * FillSteps)
-
+            // Create a triangle
+            PathFlags NewFlags;
+            NewFlags.IsRotate = TRUE;
+            ConicalFill.InsertMoveTo(Fill->StartPoint, &NewFlags);
+            ConicalFill.InsertLineTo(TestPoint, &NewFlags);
+            FillAngle += AngleInc;
             TestPoint.x = Fill->StartPoint.x + (INT32) (((double) Radius) * sin(FillAngle));
             TestPoint.y = Fill->StartPoint.y + (INT32) (((double) Radius) * cos(FillAngle));
+            ConicalFill.InsertLineTo(TestPoint, &NewFlags);
 
-            // Now render the fill using radiating triangles.
-            INT32 FillInc = -1;
+            // Close the path properly
+            ConicalFill.CloseSubPath();
 
-            // NB. This loop is unusual because we loop from FillSteps down to 0 and back
-            // up to FillSteps - because that's how conical fills work.
-            for (INT32 i = FillSteps - 1; i <= FillSteps; i += FillInc)
+            ConicalFill.IsFilled = TRUE;
+
+            if (RenderMethod != GF_USE_GAVINCLIPPING)
+            {
+                RenderPath(&ConicalFill);
+            }
+            else
+            {
+                PathToDraw->ClipPathToPath(ConicalFill, &ClippedPath, 2,
+                                           ClipTolerance, ClipFlatness, ClipFlatness);
+                ClippedPath.IsFilled = TRUE;
+                RenderPath(&ClippedPath);
+            }
+
+            // decrement loop counter here so that the next colour can be calculated
+
+            if (i <= 0)
+                // We need to start going the other way!
+                FillInc = 1;
+
+            // Calculate next brush
+            if (i != FillSteps)
+            {
+                const COLORREF NewFill = RGB(ColourSteps[i].rgbRed,
+                                             ColourSteps[i].rgbGreen,
+                                             ColourSteps[i].rgbBlue);
+                if (NewFill != CurrentCol)
                 {
-                    ConicalFill.ClearPath();
-                    ConicalFill.FindStartOfPath();
+                    // colour changed, make new brush
+                    CurrentCol = NewFill;
 
-                    // Create a triangle
-                    PathFlags NewFlags;
-                    NewFlags.IsRotate = TRUE;
-                    ConicalFill.InsertMoveTo(Fill->StartPoint, &NewFlags);
-                    ConicalFill.InsertLineTo(TestPoint, &NewFlags);
-                    FillAngle += AngleInc;
-                    TestPoint.x = Fill->StartPoint.x + (INT32) (((double) Radius) * sin(FillAngle));
-                    TestPoint.y = Fill->StartPoint.y + (INT32) (((double) Radius) * cos(FillAngle));
-                    ConicalFill.InsertLineTo(TestPoint, &NewFlags);
+                    // Put the RGB value back into a DocColour so we can set it as the fill colour. We set it
+                    // as non-separable, as it will have already been colour-separated by BuildGraduatedPalette
+                    TempFillColour.SetRGBValue(ColourSteps[i].rgbRed,
+                                               ColourSteps[i].rgbGreen,
+                                               ColourSteps[i].rgbBlue);
+                    TempFillColour.SetSeparable(FALSE);
 
-                    // Close the path properly
-                    ConicalFill.CloseSubPath();
-
-                    ConicalFill.IsFilled = TRUE;
-
-                    if (RenderMethod != GF_USE_GAVINCLIPPING)
-                        {
-                            RenderPath(&ConicalFill);
-                        }
-                    else
-                        {
-                            PathToDraw->ClipPathToPath(ConicalFill, &ClippedPath, 2,
-                                                       ClipTolerance, ClipFlatness, ClipFlatness);
-                            ClippedPath.IsFilled = TRUE;
-                            RenderPath(&ClippedPath);
-                        }
-
-                    // decrement loop counter here so that the next colour can be calculated
-
-                    if (i <= 0)
-                        // We need to start going the other way!
-                        FillInc = 1;
-
-                    // Calculate next brush
-                    if (i != FillSteps)
-                        {
-                            const COLORREF NewFill = RGB(ColourSteps[i].rgbRed,
-                                                         ColourSteps[i].rgbGreen,
-                                                         ColourSteps[i].rgbBlue);
-                            if (NewFill != CurrentCol)
-                                {
-                                    // colour changed, make new brush
-                                    CurrentCol = NewFill;
-
-                                    // Put the RGB value back into a DocColour so we can set it as the fill colour. We set it
-                                    // as non-separable, as it will have already been colour-separated by BuildGraduatedPalette
-                                    TempFillColour.SetRGBValue(ColourSteps[i].rgbRed,
-                                                               ColourSteps[i].rgbGreen,
-                                                               ColourSteps[i].rgbBlue);
-                                    TempFillColour.SetSeparable(FALSE);
-
-                                    SetFillColour(TempFillColour);
-                                    GetValidBrush();
-                                    GetValidPen();
-                                }
-                        }
-                }
-
-            if ((RenderMethod == GF_USE_GDIEOR) && (RenderCount > 1))
-                {
-                    // Render the path in white
-                    SetDrawingMode(DM_COPYPEN);
-                    SetFillColour(COLOUR_BLACK);
-                    SetLineColour(COLOUR_TRANS);
+                    SetFillColour(TempFillColour);
                     GetValidBrush();
                     GetValidPen();
-                    RenderPath(PathToDraw);
-
-                    // Set back to mode required for grad fill rendering
-                    SetDrawingMode(DM_EORDITHER);
                 }
-
-            RenderCount--;
+            }
         }
+
+        if ((RenderMethod == GF_USE_GDIEOR) && (RenderCount > 1))
+        {
+            // Render the path in white
+            SetDrawingMode(DM_COPYPEN);
+            SetFillColour(COLOUR_BLACK);
+            SetLineColour(COLOUR_TRANS);
+            GetValidBrush();
+            GetValidPen();
+            RenderPath(PathToDraw);
+
+            // Set back to mode required for grad fill rendering
+            SetDrawingMode(DM_EORDITHER);
+        }
+
+        RenderCount--;
+    }
 
     // now tidy up
     RestoreContext();
@@ -5784,182 +5850,182 @@ BOOL OSRenderRegion::RenderSquareFill(Path *PathToDraw, SquareFillAttribute *Fil
 
     // If we are rendering into a metafile, clip the path ourselves
     if (RFlags.Metafile)
-        {
-            RenderMethod = GF_USE_GAVINCLIPPING;
-        }
+    {
+        RenderMethod = GF_USE_GAVINCLIPPING;
+    }
     else
+    {
+        if (!SetClipToPathTemporary(PathToDraw))
         {
-            if (!SetClipToPathTemporary(PathToDraw))
-                {
-                    // Can't use clipping - fall back to EOR.
-                    RenderMethod = GF_USE_GDIEOR;
-                }
+            // Can't use clipping - fall back to EOR.
+            RenderMethod = GF_USE_GDIEOR;
         }
+    }
 
     INT32 RenderCount = 1;
 
     if (RenderMethod == GF_USE_GDIEOR)
-        {
-            SetDrawingMode(DM_EORDITHER);
-            RenderCount = 2;
-        }
+    {
+        SetDrawingMode(DM_EORDITHER);
+        RenderCount = 2;
+    }
 
     DocColour TempFillColour;
 
     while (RenderCount > 0)
+    {
+        COLORREF CurrentCol = RGB(ColourSteps[FillSteps - 1].rgbRed,
+                                  ColourSteps[FillSteps - 1].rgbGreen,
+                                  ColourSteps[FillSteps - 1].rgbBlue);
+
+        // Put the RGB value back into a DocColour so we can set it as the fill colour. We set it
+        // as non-separable, as it will have already been colour-separated by BuildGraduatedPalette
+        TempFillColour.SetRGBValue(ColourSteps[FillSteps - 1].rgbRed,
+                                   ColourSteps[FillSteps - 1].rgbGreen,
+                                   ColourSteps[FillSteps - 1].rgbBlue);
+        TempFillColour.SetSeparable(FALSE);
+
+        SetFillColour(TempFillColour);
+
+        GetValidBrush();
+        GetValidPen();
+
+        // First, fill in whole path with end colour
+        //RenderPath(PathToDraw);
+        Path PreviousPath;
+        PreviousPath.Initialise(PathToDraw->GetNumCoords() + 2, 12);
+        PreviousPath.CopyPathDataFrom(PathToDraw);
+
+        // Work out relative positions of start and end points.
+        DocCoord Steps[2];
+        Steps[0].x = Fill->StartPoint.x - Fill->EndPoint.x;
+        Steps[0].y = Fill->StartPoint.y - Fill->EndPoint.y;
+        Steps[1].x = Fill->StartPoint.x - Fill->EndPoint2.x;
+        Steps[1].y = Fill->StartPoint.y - Fill->EndPoint2.y;
+
+        // Construct the parallelogram that describes the extent of the fill
+        DocCoord Parallel[4];
+        Parallel[0].x = Fill->StartPoint.x + (Steps[0].x + Steps[1].x);
+        Parallel[0].y = Fill->StartPoint.y + (Steps[0].y + Steps[1].y);
+        Parallel[1].x = Fill->StartPoint.x + (Steps[0].x - Steps[1].x);
+        Parallel[1].y = Fill->StartPoint.y + (Steps[0].y - Steps[1].y);
+        Parallel[2].x = Fill->StartPoint.x - (Steps[0].x + Steps[1].x);
+        Parallel[2].y = Fill->StartPoint.y - (Steps[0].y + Steps[1].y);
+        Parallel[3].x = Fill->StartPoint.x + (Steps[1].x - Steps[0].x);
+        Parallel[3].y = Fill->StartPoint.y + (Steps[1].y - Steps[0].y);
+
+        // Now convert the steps into the steps we should use to adjust the
+        // parallelogram after each fill step
+        Steps[0].x /= (FillSteps + 1);
+        Steps[0].y /= (FillSteps + 1);
+        Steps[1].x /= (FillSteps + 1);
+        Steps[1].y /= (FillSteps + 1);
+
+        // These are the paths we will use to create square fills.
+        Path SquareFill;
+        SquareFill.Initialise(50,12);
+        Path ParallelogramPath;
+        ParallelogramPath.Initialise(15,12);
+
+        // This is the path we use for all clipped rendering.
+        Path ClippedPath;
+        ClippedPath.Initialise(12, 12);
+
+        // Now render the fill using concentric parallelograms, starting with the biggest.
+        for (INT32 i = FillSteps; i > 0;)
         {
-            COLORREF CurrentCol = RGB(ColourSteps[FillSteps - 1].rgbRed,
-                                      ColourSteps[FillSteps - 1].rgbGreen,
-                                      ColourSteps[FillSteps - 1].rgbBlue);
+            // build a path
+            ParallelogramPath.ClearPath();
+            ParallelogramPath.FindStartOfPath();
+            ParallelogramPath.InsertMoveTo(Parallel[0]);
+            ParallelogramPath.InsertLineTo(Parallel[1]);
+            ParallelogramPath.InsertLineTo(Parallel[2]);
+            ParallelogramPath.InsertLineTo(Parallel[3]);
+            ParallelogramPath.InsertLineTo(Parallel[0]);
+            ParallelogramPath.IsFilled = TRUE;
 
-            // Put the RGB value back into a DocColour so we can set it as the fill colour. We set it
-            // as non-separable, as it will have already been colour-separated by BuildGraduatedPalette
-            TempFillColour.SetRGBValue(ColourSteps[FillSteps - 1].rgbRed,
-                                       ColourSteps[FillSteps - 1].rgbGreen,
-                                       ColourSteps[FillSteps - 1].rgbBlue);
-            TempFillColour.SetSeparable(FALSE);
+            // Use this and the previous path to make a parallelogram shaped 'washer'
+            SquareFill.ClearPath(FALSE);
+            SquareFill.MakeSpaceInPath(PreviousPath.GetNumCoords() + ParallelogramPath.GetNumCoords() + 2);
+            SquareFill.CopyPathDataFrom(&PreviousPath);
+            SquareFill.IsFilled = TRUE;
+            if (i > 1)
+            {
+                // For all except the last step, make a complex path (which is
+                // usually a parallelogram).
+                ERROR2IF(!SquareFill.MergeTwoPaths(ParallelogramPath), FALSE, "could not merge paths");
+            }
 
-            SetFillColour(TempFillColour);
+            // Remember the parallelogram path for next time
+            PreviousPath.ClearPath(FALSE);
+            PreviousPath.MakeSpaceInPath(ParallelogramPath.GetNumCoords() + 2);
+            PreviousPath.CopyPathDataFrom(&ParallelogramPath);
 
-            GetValidBrush();
-            GetValidPen();
+            if (RenderMethod != GF_USE_GAVINCLIPPING)
+            {
+                RenderPath(&SquareFill);
+            }
+            else
+            {
+                PathToDraw->ClipPathToPath(SquareFill, &ClippedPath, 2,
+                                           ClipTolerance, ClipFlatness, ClipFlatness);
+                ClippedPath.IsFilled = TRUE;
+                RenderPath(&ClippedPath);
+            }
 
-            // First, fill in whole path with end colour
-            //RenderPath(PathToDraw);
-            Path PreviousPath;
-            PreviousPath.Initialise(PathToDraw->GetNumCoords() + 2, 12);
-            PreviousPath.CopyPathDataFrom(PathToDraw);
+            // decrement loop counter here so that the next colour can be calculated
+            i--;
 
-            // Work out relative positions of start and end points.
-            DocCoord Steps[2];
-            Steps[0].x = Fill->StartPoint.x - Fill->EndPoint.x;
-            Steps[0].y = Fill->StartPoint.y - Fill->EndPoint.y;
-            Steps[1].x = Fill->StartPoint.x - Fill->EndPoint2.x;
-            Steps[1].y = Fill->StartPoint.y - Fill->EndPoint2.y;
-
-            // Construct the parallelogram that describes the extent of the fill
-            DocCoord Parallel[4];
-            Parallel[0].x = Fill->StartPoint.x + (Steps[0].x + Steps[1].x);
-            Parallel[0].y = Fill->StartPoint.y + (Steps[0].y + Steps[1].y);
-            Parallel[1].x = Fill->StartPoint.x + (Steps[0].x - Steps[1].x);
-            Parallel[1].y = Fill->StartPoint.y + (Steps[0].y - Steps[1].y);
-            Parallel[2].x = Fill->StartPoint.x - (Steps[0].x + Steps[1].x);
-            Parallel[2].y = Fill->StartPoint.y - (Steps[0].y + Steps[1].y);
-            Parallel[3].x = Fill->StartPoint.x + (Steps[1].x - Steps[0].x);
-            Parallel[3].y = Fill->StartPoint.y + (Steps[1].y - Steps[0].y);
-
-            // Now convert the steps into the steps we should use to adjust the
-            // parallelogram after each fill step
-            Steps[0].x /= (FillSteps + 1);
-            Steps[0].y /= (FillSteps + 1);
-            Steps[1].x /= (FillSteps + 1);
-            Steps[1].y /= (FillSteps + 1);
-
-            // These are the paths we will use to create square fills.
-            Path SquareFill;
-            SquareFill.Initialise(50,12);
-            Path ParallelogramPath;
-            ParallelogramPath.Initialise(15,12);
-
-            // This is the path we use for all clipped rendering.
-            Path ClippedPath;
-            ClippedPath.Initialise(12, 12);
-
-            // Now render the fill using concentric parallelograms, starting with the biggest.
-            for (INT32 i = FillSteps; i > 0;)
+            if (i > 0)
+            {
+                // Calculate next brush (except at the end of the loop)
+                const COLORREF NewFill = RGB(ColourSteps[i].rgbRed, ColourSteps[i].rgbGreen,
+                                             ColourSteps[i].rgbBlue);
+                if (NewFill != CurrentCol)
                 {
-                    // build a path
-                    ParallelogramPath.ClearPath();
-                    ParallelogramPath.FindStartOfPath();
-                    ParallelogramPath.InsertMoveTo(Parallel[0]);
-                    ParallelogramPath.InsertLineTo(Parallel[1]);
-                    ParallelogramPath.InsertLineTo(Parallel[2]);
-                    ParallelogramPath.InsertLineTo(Parallel[3]);
-                    ParallelogramPath.InsertLineTo(Parallel[0]);
-                    ParallelogramPath.IsFilled = TRUE;
+                    // colour changed, make new brush
+                    CurrentCol = NewFill;
 
-                    // Use this and the previous path to make a parallelogram shaped 'washer'
-                    SquareFill.ClearPath(FALSE);
-                    SquareFill.MakeSpaceInPath(PreviousPath.GetNumCoords() + ParallelogramPath.GetNumCoords() + 2);
-                    SquareFill.CopyPathDataFrom(&PreviousPath);
-                    SquareFill.IsFilled = TRUE;
-                    if (i > 1)
-                        {
-                            // For all except the last step, make a complex path (which is
-                            // usually a parallelogram).
-                            ERROR2IF(!SquareFill.MergeTwoPaths(ParallelogramPath), FALSE, "could not merge paths");
-                        }
+                    // Put the RGB value back into a DocColour so we can set it as the fill colour. We set it
+                    // as non-separable, as it will have already been colour-separated by BuildGraduatedPalette
+                    TempFillColour.SetRGBValue(ColourSteps[i].rgbRed,
+                                               ColourSteps[i].rgbGreen,
+                                               ColourSteps[i].rgbBlue);
+                    TempFillColour.SetSeparable(FALSE);
 
-                    // Remember the parallelogram path for next time
-                    PreviousPath.ClearPath(FALSE);
-                    PreviousPath.MakeSpaceInPath(ParallelogramPath.GetNumCoords() + 2);
-                    PreviousPath.CopyPathDataFrom(&ParallelogramPath);
-
-                    if (RenderMethod != GF_USE_GAVINCLIPPING)
-                        {
-                            RenderPath(&SquareFill);
-                        }
-                    else
-                        {
-                            PathToDraw->ClipPathToPath(SquareFill, &ClippedPath, 2,
-                                                       ClipTolerance, ClipFlatness, ClipFlatness);
-                            ClippedPath.IsFilled = TRUE;
-                            RenderPath(&ClippedPath);
-                        }
-
-                    // decrement loop counter here so that the next colour can be calculated
-                    i--;
-
-                    if (i > 0)
-                        {
-                            // Calculate next brush (except at the end of the loop)
-                            const COLORREF NewFill = RGB(ColourSteps[i].rgbRed, ColourSteps[i].rgbGreen,
-                                                         ColourSteps[i].rgbBlue);
-                            if (NewFill != CurrentCol)
-                                {
-                                    // colour changed, make new brush
-                                    CurrentCol = NewFill;
-
-                                    // Put the RGB value back into a DocColour so we can set it as the fill colour. We set it
-                                    // as non-separable, as it will have already been colour-separated by BuildGraduatedPalette
-                                    TempFillColour.SetRGBValue(ColourSteps[i].rgbRed,
-                                                               ColourSteps[i].rgbGreen,
-                                                               ColourSteps[i].rgbBlue);
-                                    TempFillColour.SetSeparable(FALSE);
-
-                                    SetFillColour(TempFillColour);
-                                    GetValidBrush();
-                                    GetValidPen();
-                                }
-
-                            // Reduce size of paralleogram
-                            Parallel[0].x -= (Steps[0].x + Steps[1].x);
-                            Parallel[0].y -= (Steps[0].y + Steps[1].y);
-                            Parallel[1].x -= (Steps[0].x - Steps[1].x);
-                            Parallel[1].y -= (Steps[0].y - Steps[1].y);
-                            Parallel[2].x += (Steps[0].x + Steps[1].x);
-                            Parallel[2].y += (Steps[0].y + Steps[1].y);
-                            Parallel[3].x -= (Steps[1].x - Steps[0].x);
-                            Parallel[3].y -= (Steps[1].y - Steps[0].y);
-                        }
-                }
-
-            if ((RenderMethod == GF_USE_GDIEOR) && (RenderCount > 1))
-                {
-                    // Render the path in white
-                    SetDrawingMode(DM_COPYPEN);
-                    SetFillColour(COLOUR_BLACK);
-                    SetLineColour(COLOUR_TRANS);
+                    SetFillColour(TempFillColour);
                     GetValidBrush();
                     GetValidPen();
-                    RenderPath(PathToDraw);
-
-                    // Set back to mode required for grad fill rendering
-                    SetDrawingMode(DM_EORDITHER);
                 }
 
-            RenderCount--;
+                // Reduce size of paralleogram
+                Parallel[0].x -= (Steps[0].x + Steps[1].x);
+                Parallel[0].y -= (Steps[0].y + Steps[1].y);
+                Parallel[1].x -= (Steps[0].x - Steps[1].x);
+                Parallel[1].y -= (Steps[0].y - Steps[1].y);
+                Parallel[2].x += (Steps[0].x + Steps[1].x);
+                Parallel[2].y += (Steps[0].y + Steps[1].y);
+                Parallel[3].x -= (Steps[1].x - Steps[0].x);
+                Parallel[3].y -= (Steps[1].y - Steps[0].y);
+            }
         }
+
+        if ((RenderMethod == GF_USE_GDIEOR) && (RenderCount > 1))
+        {
+            // Render the path in white
+            SetDrawingMode(DM_COPYPEN);
+            SetFillColour(COLOUR_BLACK);
+            SetLineColour(COLOUR_TRANS);
+            GetValidBrush();
+            GetValidPen();
+            RenderPath(PathToDraw);
+
+            // Set back to mode required for grad fill rendering
+            SetDrawingMode(DM_EORDITHER);
+        }
+
+        RenderCount--;
+    }
 
     // now tidy up
     RestoreContext();
@@ -6058,244 +6124,244 @@ BOOL OSRenderRegion::RenderFourColFill ( Path                   *PathToDraw,
     // out to the edges of the space being filled. There might be some way of spoofing this
     // using a linear gradient fill, and some kind of clipping region, or just rolling your
     // own code, and putting it in here.
-    /*
-      DocCoord          HeightVector    = Fill->EndPoint  - Fill->StartPoint;
-      DocCoord          WidthVector     = Fill->EndPoint2 - Fill->StartPoint;
-      INT32                 FillHeight      = CalcDistance ( Fill->StartPoint, Fill->EndPoint );
-      INT32                 FillWidth       = CalcDistance ( Fill->StartPoint, Fill->EndPoint2 );
-      INT32                 HeightSteps     = 0;
-      INT32                 WidthSteps      = 0;
-      INT32                 HeightColDiff   = 0;
-      INT32                 WidthColDiff    = 0;
-      FIXED16               PixelSize       = 0;
-      GradFillMethodType    RenderMethod    = GF_USE_GDICLIPPING;
-      EFFECTTYPE            EffectType      = GetFillEffect();
-      INT32             ClipFlatness    = 0;
-      INT32             ClipTolerance   = 0;
-      INT32                 RenderCount     = 1;
-      RGBQUAD               StartColours    [MAX_FILL_STEPS];
-      RGBQUAD               EndColours      [MAX_FILL_STEPS];
-      DocCoord          RowOffsets      [MAX_FILL_STEPS + 1];
-      DocCoord          ColumnOffsets   [MAX_FILL_STEPS + 1];
+/*
+  DocCoord            HeightVector    = Fill->EndPoint  - Fill->StartPoint;
+  DocCoord            WidthVector     = Fill->EndPoint2 - Fill->StartPoint;
+  INT32                   FillHeight      = CalcDistance ( Fill->StartPoint, Fill->EndPoint );
+  INT32                   FillWidth       = CalcDistance ( Fill->StartPoint, Fill->EndPoint2 );
+  INT32                   HeightSteps     = 0;
+  INT32                   WidthSteps      = 0;
+  INT32                   HeightColDiff   = 0;
+  INT32                   WidthColDiff    = 0;
+  FIXED16             PixelSize       = 0;
+  GradFillMethodType  RenderMethod    = GF_USE_GDICLIPPING;
+  EFFECTTYPE          EffectType      = GetFillEffect();
+  INT32               ClipFlatness    = 0;
+  INT32               ClipTolerance   = 0;
+  INT32                   RenderCount     = 1;
+  RGBQUAD             StartColours    [MAX_FILL_STEPS];
+  RGBQUAD             EndColours      [MAX_FILL_STEPS];
+  DocCoord            RowOffsets      [MAX_FILL_STEPS + 1];
+  DocCoord            ColumnOffsets   [MAX_FILL_STEPS + 1];
 
-      // We want to change the rendering context, so we save it.
-      SaveContext ();
+  // We want to change the rendering context, so we save it.
+  SaveContext ();
 
-      // No stroking while rendering the fill.
-      SetLineColour ( COLOUR_TRANS );
+  // No stroking while rendering the fill.
+  SetLineColour ( COLOUR_TRANS );
 
-      // Use device pixel size to work out how many steps to do.
-      GetRenderView ()->GetScaledPixelSize ( &PixelSize, &PixelSize );
+  // Use device pixel size to work out how many steps to do.
+  GetRenderView ()->GetScaledPixelSize ( &PixelSize, &PixelSize );
 
-      // Calculate the number of steps to be made for the fill in each direction, making a
-      // slice every four pixels.
-      HeightSteps       = FillHeight / ( PixelSize.MakeLong () * 4);
-      WidthSteps        = FillWidth  / ( PixelSize.MakeLong () * 4);
+  // Calculate the number of steps to be made for the fill in each direction, making a
+  // slice every four pixels.
+  HeightSteps     = FillHeight / ( PixelSize.MakeLong () * 4);
+  WidthSteps      = FillWidth  / ( PixelSize.MakeLong () * 4);
 
-      // Calculate the distance between colours.
-      HeightColDiff = min ( ColDifference ( Fill->Colour, Fill->EndColour,
-      IsPrinting () ? 24 : 8, EffectType ),
-      ColDifference ( Fill->EndColour2, Fill->EndColour3,
-      IsPrinting () ? 24 : 8, EffectType ) );
+  // Calculate the distance between colours.
+  HeightColDiff   = min ( ColDifference ( Fill->Colour, Fill->EndColour,
+  IsPrinting () ? 24 : 8, EffectType ),
+  ColDifference ( Fill->EndColour2, Fill->EndColour3,
+  IsPrinting () ? 24 : 8, EffectType ) );
 
-      WidthColDiff  = min ( ColDifference ( Fill->Colour, Fill->EndColour2,
-      IsPrinting () ? 24 : 8, EffectType ),
-      ColDifference ( Fill->EndColour, Fill->EndColour3,
-      IsPrinting () ? 24 : 8, EffectType ) );
+  WidthColDiff    = min ( ColDifference ( Fill->Colour, Fill->EndColour2,
+  IsPrinting () ? 24 : 8, EffectType ),
+  ColDifference ( Fill->EndColour, Fill->EndColour3,
+  IsPrinting () ? 24 : 8, EffectType ) );
 
-      // Use the number of discrete steps between colours, and the number of slices to
-      // determine just how many colours are needed.
-      HeightSteps       = min ( HeightSteps, HeightColDiff );
-      WidthSteps        = min ( WidthSteps,  WidthColDiff  );
+  // Use the number of discrete steps between colours, and the number of slices to
+  // determine just how many colours are needed.
+  HeightSteps     = min ( HeightSteps, HeightColDiff );
+  WidthSteps      = min ( WidthSteps,  WidthColDiff  );
 
-      // Limit fill steps to a maximum value.
-      HeightSteps       = min ( HeightSteps, MAX_FILL_STEPS );
-      WidthSteps        = min ( WidthSteps,  MAX_FILL_STEPS );
+  // Limit fill steps to a maximum value.
+  HeightSteps     = min ( HeightSteps, MAX_FILL_STEPS );
+  WidthSteps      = min ( WidthSteps,  MAX_FILL_STEPS );
 
-      // Use global Quality setting.
-      HeightSteps       = max ( HeightSteps / (1 << GradFillQuality), 10 );
-      WidthSteps        = max ( WidthSteps  / (1 << GradFillQuality), 10 );
+  // Use global Quality setting.
+  HeightSteps     = max ( HeightSteps / (1 << GradFillQuality), 10 );
+  WidthSteps      = max ( WidthSteps  / (1 << GradFillQuality), 10 );
 
-      // Work out what flatness and accuracy to use for Gavin's clipping functions.
-      // Gavin recommends 1/2 pixel for flattening, and 1/4 pixel for tolerance.
-      // (But these were kind of off the top of his head - Tim).
-      // PS. It seems we need maximum tolerance (i.e. 0) for accurate grad-fill rendering.
-      ClipFlatness = PixelSize.MakeLong () / 16;
+  // Work out what flatness and accuracy to use for Gavin's clipping functions.
+  // Gavin recommends 1/2 pixel for flattening, and 1/4 pixel for tolerance.
+  // (But these were kind of off the top of his head - Tim).
+  // PS. It seems we need maximum tolerance (i.e. 0) for accurate grad-fill rendering.
+  ClipFlatness = PixelSize.MakeLong () / 16;
 
-      // Build the gradient table. In the other gradient fills, they call the
-      // GradTable32::BuildGraduatedPalette () function. Unfortunately I need to operate
-      // in two dimensions...
+  // Build the gradient table. In the other gradient fills, they call the
+  // GradTable32::BuildGraduatedPalette () function. Unfortunately I need to operate
+  // in two dimensions...
 
-      // The first thing to do is to get a pair of gradient tables to act as the start and
-      // end colours for each row of the fill.
-      GradTable32::BuildGraduatedPalette ( Fill->Colour,
-      Fill->EndColour,
-      GetRenderView (),
-      EffectType,
-      HeightSteps,
-      StartColours );
+  // The first thing to do is to get a pair of gradient tables to act as the start and
+  // end colours for each row of the fill.
+  GradTable32::BuildGraduatedPalette ( Fill->Colour,
+  Fill->EndColour,
+  GetRenderView (),
+  EffectType,
+  HeightSteps,
+  StartColours );
 
-      GradTable32::BuildGraduatedPalette ( Fill->EndColour2,
-      Fill->EndColour3,
-      GetRenderView (),
-      EffectType,
-      HeightSteps,
-      EndColours );
+  GradTable32::BuildGraduatedPalette ( Fill->EndColour2,
+  Fill->EndColour3,
+  GetRenderView (),
+  EffectType,
+  HeightSteps,
+  EndColours );
 
-      // If we are rendering into a metafile, clip the path ourselves.
-      if ( RFlags.Metafile )
-      {
-      RenderMethod = GF_USE_GAVINCLIPPING;
-      }
-      else
-      {
-      if ( !SetClipToPathTemporary ( PathToDraw ) )
-      {
-      // Can't use clipping - fall back to EOR.
-      RenderMethod = GF_USE_GDIEOR;
-      }
-      }
+  // If we are rendering into a metafile, clip the path ourselves.
+  if ( RFlags.Metafile )
+  {
+  RenderMethod = GF_USE_GAVINCLIPPING;
+  }
+  else
+  {
+  if ( !SetClipToPathTemporary ( PathToDraw ) )
+  {
+  // Can't use clipping - fall back to EOR.
+  RenderMethod = GF_USE_GDIEOR;
+  }
+  }
 
-      // Set the drawing mode up.
-      if ( RenderMethod == GF_USE_GDIEOR )
-      {
-      SetDrawingMode ( DM_EORDITHER );
-      RenderCount = 2;
-      }
+  // Set the drawing mode up.
+  if ( RenderMethod == GF_USE_GDIEOR )
+  {
+  SetDrawingMode ( DM_EORDITHER );
+  RenderCount = 2;
+  }
 
-      // Pre-calculate the vectors between the various rows of tiles.
-      for ( INT32 i = 0; i <= HeightSteps; i++ )
-      {
-      DocCoord Temp ( ( HeightVector.x * i ) / HeightSteps,
-      ( HeightVector.y * i ) / HeightSteps);
+  // Pre-calculate the vectors between the various rows of tiles.
+  for ( INT32 i = 0; i <= HeightSteps; i++ )
+  {
+  DocCoord Temp ( ( HeightVector.x * i ) / HeightSteps,
+  ( HeightVector.y * i ) / HeightSteps);
 
-      RowOffsets [i] = Temp + Fill->StartPoint;
-      }
+  RowOffsets [i] = Temp + Fill->StartPoint;
+  }
 
-      // And between the various columns of tiles.
-      for ( INT32 j = 0; j <= WidthSteps; j++ )
-      {
-      ColumnOffsets [j] = DocCoord ( ( WidthVector.x * j ) / HeightSteps,
-      ( WidthVector.y * j ) / HeightSteps );
-      }
+  // And between the various columns of tiles.
+  for ( INT32 j = 0; j <= WidthSteps; j++ )
+  {
+  ColumnOffsets [j] = DocCoord ( ( WidthVector.x * j ) / HeightSteps,
+  ( WidthVector.y * j ) / HeightSteps );
+  }
 
-      // Create the fill pattern.
-      while ( RenderCount > 0 )
-      {
-      // Loop through the colour table, and create the necessary tiles to emulate the fill.
-      for ( INT32 y = 0; y < HeightSteps; y++ )
-      {
-      RGBQUAD       RowColours  [MAX_FILL_STEPS];
-      DocColour FirstColour;
-      DocColour LastColour;
-      DocCoord  TileHeight  = RowOffsets [y+1] - RowOffsets [y];
+  // Create the fill pattern.
+  while ( RenderCount > 0 )
+  {
+  // Loop through the colour table, and create the necessary tiles to emulate the fill.
+  for ( INT32 y = 0; y < HeightSteps; y++ )
+  {
+  RGBQUAD     RowColours  [MAX_FILL_STEPS];
+  DocColour   FirstColour;
+  DocColour   LastColour;
+  DocCoord    TileHeight  = RowOffsets [y+1] - RowOffsets [y];
 
-      // Initialise the start and end colours with values from the RGB quad. I need to
-      // do this because the BuildGraduatePalette method only takes DocColors, and only
-      // returns RGBQuads.
-      FirstColour.SetRGBValue ( StartColours [y].rgbRed,
-      StartColours [y].rgbGreen,
-      StartColours [y].rgbBlue );
+  // Initialise the start and end colours with values from the RGB quad. I need to
+  // do this because the BuildGraduatePalette method only takes DocColors, and only
+  // returns RGBQuads.
+  FirstColour.SetRGBValue ( StartColours [y].rgbRed,
+  StartColours [y].rgbGreen,
+  StartColours [y].rgbBlue );
 
-      LastColour.SetRGBValue  ( EndColours [y].rgbRed,
-      EndColours [y].rgbGreen,
-      EndColours [y].rgbBlue );
+  LastColour.SetRGBValue  ( EndColours [y].rgbRed,
+  EndColours [y].rgbGreen,
+  EndColours [y].rgbBlue );
 
-      // Create a new palette for this row of the fill.
-      GradTable32::BuildGraduatedPalette ( FirstColour,
-      LastColour,
-      GetRenderView (),
-      EffectType,
-      WidthSteps,
-      RowColours );
+  // Create a new palette for this row of the fill.
+  GradTable32::BuildGraduatedPalette ( FirstColour,
+  LastColour,
+  GetRenderView (),
+  EffectType,
+  WidthSteps,
+  RowColours );
 
-      // Now write out the row.
-      for ( INT32 x = 0; x < WidthSteps; x++ )
-      {
-      // Create the path for the tile to be rendered.
-      Path      TilePath;
-      PathFlags TileFlags;
-      DocColour FillColour;
+  // Now write out the row.
+  for ( INT32 x = 0; x < WidthSteps; x++ )
+  {
+  // Create the path for the tile to be rendered.
+  Path        TilePath;
+  PathFlags   TileFlags;
+  DocColour   FillColour;
 
-      // Initialise the path.
-      TilePath.Initialise ( 12, 12 );
+  // Initialise the path.
+  TilePath.Initialise ( 12, 12 );
 
-      // Set up the path.
-      TilePath.InsertMoveTo ( RowOffsets [y]   + ColumnOffsets [x], &TileFlags );
-      TilePath.InsertLineTo ( RowOffsets [y+1] + ColumnOffsets [x], &TileFlags );
-      TilePath.InsertLineTo ( RowOffsets [y+1] + ColumnOffsets [x+1],   &TileFlags );
-      TilePath.InsertLineTo ( RowOffsets [y]   + ColumnOffsets [x+1],   &TileFlags );
+  // Set up the path.
+  TilePath.InsertMoveTo ( RowOffsets [y]   + ColumnOffsets [x],   &TileFlags );
+  TilePath.InsertLineTo ( RowOffsets [y+1] + ColumnOffsets [x],   &TileFlags );
+  TilePath.InsertLineTo ( RowOffsets [y+1] + ColumnOffsets [x+1], &TileFlags );
+  TilePath.InsertLineTo ( RowOffsets [y]   + ColumnOffsets [x+1], &TileFlags );
 
-      // Mark the path as closed and filled.
-      TilePath.CloseSubPath ();
-      TilePath.IsFilled = TRUE;
+  // Mark the path as closed and filled.
+  TilePath.CloseSubPath ();
+  TilePath.IsFilled = TRUE;
 
-      // Set up the fill colour.
-      FillColour.SetRGBValue ( RowColours [x].rgbRed,
-      RowColours [x].rgbGreen,
-      RowColours [x].rgbBlue );
+  // Set up the fill colour.
+  FillColour.SetRGBValue ( RowColours [x].rgbRed,
+  RowColours [x].rgbGreen,
+  RowColours [x].rgbBlue );
 
-      FillColour.SetSeparable ( FALSE );
+  FillColour.SetSeparable ( FALSE );
 
-      // Set it as the rendering colour.
-      SetFillColour ( FillColour );
-      GetValidBrush ();
-      GetValidPen       ();
+  // Set it as the rendering colour.
+  SetFillColour   ( FillColour );
+  GetValidBrush   ();
+  GetValidPen     ();
 
-      // And write it out.
-      if ( RenderMethod != GF_USE_GAVINCLIPPING )
-      {
-      RenderPath ( &TilePath );
-      }
-      else
-      {
-      // Create a new path.
-      Path      ClippedPath;
+  // And write it out.
+  if ( RenderMethod != GF_USE_GAVINCLIPPING )
+  {
+  RenderPath ( &TilePath );
+  }
+  else
+  {
+  // Create a new path.
+  Path        ClippedPath;
 
-      // Initialise the path.
-      ClippedPath.Initialise ( 12, 12 );
+  // Initialise the path.
+  ClippedPath.Initialise ( 12, 12 );
 
-      // Clip the tile path to the drawing path to ensure that it fits into the
-      // shape being rendered.
-      PathToDraw->ClipPathToPath ( TilePath, &ClippedPath, 2, ClipTolerance,
-      ClipFlatness, ClipFlatness);
+  // Clip the tile path to the drawing path to ensure that it fits into the
+  // shape being rendered.
+  PathToDraw->ClipPathToPath ( TilePath, &ClippedPath, 2, ClipTolerance,
+  ClipFlatness, ClipFlatness);
 
-      // Set the IsFilled flag.
-      ClippedPath.IsFilled = TRUE;
+  // Set the IsFilled flag.
+  ClippedPath.IsFilled = TRUE;
 
-      // And render the path.
-      RenderPath ( &ClippedPath );
-      }
-      }
-      }
+  // And render the path.
+  RenderPath ( &ClippedPath );
+  }
+  }
+  }
 
-      // This comes at the end of the rendering loop.
-      if ( ( RenderMethod == GF_USE_GDIEOR ) && ( RenderCount > 1 ) )
-      {
-      // Render the path in white
-      SetDrawingMode    ( DM_COPYPEN );
-      SetFillColour ( COLOUR_BLACK );
-      SetLineColour ( COLOUR_TRANS );
-      GetValidBrush ();
-      GetValidPen       ();
-      RenderPath        ( PathToDraw );
+  // This comes at the end of the rendering loop.
+  if ( ( RenderMethod == GF_USE_GDIEOR ) && ( RenderCount > 1 ) )
+  {
+  // Render the path in white
+  SetDrawingMode  ( DM_COPYPEN );
+  SetFillColour   ( COLOUR_BLACK );
+  SetLineColour   ( COLOUR_TRANS );
+  GetValidBrush   ();
+  GetValidPen     ();
+  RenderPath      ( PathToDraw );
 
-      // Set back to mode required for grad fill rendering
-      SetDrawingMode    ( DM_EORDITHER );
-      }
+  // Set back to mode required for grad fill rendering
+  SetDrawingMode  ( DM_EORDITHER );
+  }
 
-      RenderCount--;
-      }
+  RenderCount--;
+  }
 
-      // Restore the original rendering state.
-      RestoreContext    ();
-      GetValidBrush ();
-      GetValidPen       ();
+  // Restore the original rendering state.
+  RestoreContext  ();
+  GetValidBrush   ();
+  GetValidPen     ();
 
-      // Lose the clipping region if we are using one.
-      if ( RenderMethod == GF_USE_GDICLIPPING )
-      RenderDC->SelectClipRgn ( OSClipRegion );
-    */
+  // Lose the clipping region if we are using one.
+  if ( RenderMethod == GF_USE_GDICLIPPING )
+  RenderDC->SelectClipRgn ( OSClipRegion );
+*/
     // Success.
     return TRUE;
 }
@@ -6319,10 +6385,10 @@ BOOL OSRenderRegion::RawRenderPath32( Path *const DrawPath )
     POINT* NTCoords = (POINT*)CCMalloc( sizeof(POINT)*NumCoords );
 
     if (NTCoords==NULL)
-        {
-            TRACE( _T("No memory to convert curve\n") );
-            return FALSE;
-        }
+    {
+        TRACE( _T("No memory to convert curve\n") );
+        return FALSE;
+    }
 
     // Convert the points to windows coords
     for (INT32 i=0; i<NumCoords; i++)
@@ -6331,11 +6397,11 @@ BOOL OSRenderRegion::RawRenderPath32( Path *const DrawPath )
     // render them
     Worked = BeginPath( RenderDC );
     if (Worked)
-        {
-            Worked = NewPolyDraw( NTCoords, DrawPath->GetVerbArray(), NumCoords );
-            if (Worked)
-                Worked = EndPath( RenderDC );
-        }
+    {
+        Worked = NewPolyDraw( NTCoords, DrawPath->GetVerbArray(), NumCoords );
+        if (Worked)
+            Worked = EndPath( RenderDC );
+    }
 
     CCFree( NTCoords );
 
@@ -6391,20 +6457,20 @@ void OSRenderRegion::RenderPath32( Path *DrawPath )
     // Get the fill provider to fill the path - if it can't handle this sort of render
     // region, then we fill the path for it.
     if (ExtendedFill)
-        {
-            if (!pFillProvider->RenderFill(this, DrawPath))
-                // Unable to render fill for this render region - default to simple fill.
-                ExtendedFill = FALSE;
-        }
+    {
+        if (!pFillProvider->RenderFill(this, DrawPath))
+            // Unable to render fill for this render region - default to simple fill.
+            ExtendedFill = FALSE;
+    }
 
     // actually do the rendering
     BOOL Result = RawRenderPath32( DrawPath );
 
     if (!Result)
-        {
-            TRACE( _T("RawRenderPath failed"));
-            return;
-        }
+    {
+        TRACE( _T("RawRenderPath failed"));
+        return;
+    }
 
     // Draw it either filled or not.
     // NB. If the fill-provider has already filled this path then we don't bother.
@@ -6446,7 +6512,7 @@ void OSRenderRegion::GetRenderRegionCaps(RRCaps* pCaps)
     // We only try simple bitmaps with GDI if printing
     pCaps->SimpleBitmaps = IsPrinting();
 
-    //  pCaps->CanDoAll();
+//  pCaps->CanDoAll();
 }
 
 
@@ -6473,11 +6539,11 @@ SlowJobResult OSRenderRegion::DrawMaskedBitmap(const DocRect &Rect, KernelBitmap
 #if !defined(STANDALONE) && !defined(EXCLUDE_FROM_XARALX)
     if (RenderView->GetColourPlate() != NULL &&
         !RenderView->GetColourPlate()->IsDisabled())
-        {
-            // We're colour separating. Indirect this call to the separation variant of this code
-            // (see below)
-            return(DrawSeparatedMaskedBitmap(Rect, pBitmap, pMask, Progress));
-        }
+    {
+        // We're colour separating. Indirect this call to the separation variant of this code
+        // (see below)
+        return(DrawSeparatedMaskedBitmap(Rect, pBitmap, pMask, Progress));
+    }
 
 
     // Make sure the world is in one piece
@@ -6512,32 +6578,32 @@ SlowJobResult OSRenderRegion::DrawMaskedBitmap(const DocRect &Rect, KernelBitmap
     // Convert the bitmap from a 32bpp bitmap to a 24bpp bitmap
     INT32 BitmapDepth = WinBM->GetBPP();
     if (BitmapDepth == 32)
+    {
+        // Can't plot 32bpp bitmaps to GDI as 16-bit GDI doesn't understand them,
+        // so we convert to 24bpp bitmap in-situ and render that...
+
+        // How many bytes to a source scanline?
+        const INT32 ScanlineBytes = WinBM->GetScanlineSize();
+
+        // How many bytes to a destination scanline
+        const INT32 DestlineBytes = DIBUtil::ScanlineSize(Width, 24);
+
+        // Now convert the bitmap in-situ
+        LPBYTE OriginalBuffer  = WinBM->BMBytes;
+        LPBYTE ConvertedBuffer = WinBM->BMBytes;
+
+        for (INT32 i=0; i<Height; i++)
         {
-            // Can't plot 32bpp bitmaps to GDI as 16-bit GDI doesn't understand them,
-            // so we convert to 24bpp bitmap in-situ and render that...
-
-            // How many bytes to a source scanline?
-            const INT32 ScanlineBytes = WinBM->GetScanlineSize();
-
-            // How many bytes to a destination scanline
-            const INT32 DestlineBytes = DIBUtil::ScanlineSize(Width, 24);
-
-            // Now convert the bitmap in-situ
-            LPBYTE OriginalBuffer  = WinBM->BMBytes;
-            LPBYTE ConvertedBuffer = WinBM->BMBytes;
-
-            for (INT32 i=0; i<Height; i++)
-                {
-                    DIBUtil::Convert32to24(Width, OriginalBuffer, ConvertedBuffer);
-                    OriginalBuffer += ScanlineBytes;
-                    ConvertedBuffer += DestlineBytes;
-                }
-
-            // Update bitmap info to show it is now a 24bpp bitmap...
-            WinBM->BMInfo->bmiHeader.biSizeImage = DestlineBytes * Height;
-            WinBM->BMInfo->bmiHeader.biBitCount  = 24;
-            BitmapDepth = 24;
+            DIBUtil::Convert32to24(Width, OriginalBuffer, ConvertedBuffer);
+            OriginalBuffer += ScanlineBytes;
+            ConvertedBuffer += DestlineBytes;
         }
+
+        // Update bitmap info to show it is now a 24bpp bitmap...
+        WinBM->BMInfo->bmiHeader.biSizeImage = DestlineBytes * Height;
+        WinBM->BMInfo->bmiHeader.biBitCount  = 24;
+        BitmapDepth = 24;
+    }
 
     // make sure we have a 24bpp bitmap
     ERROR3IF(BitmapDepth!=24, "Non 24bpp bitmap found in DrawMaskedBitmap");
@@ -6562,10 +6628,10 @@ SlowJobResult OSRenderRegion::DrawMaskedBitmap(const DocRect &Rect, KernelBitmap
 
     // Inform progress object how high this band is
     if (PrintMonitor::PrintMaskType==PrintMonitor::MASK_MASKED)
-        {
-            if (Progress!=NULL)
-                Progress->StartBitmapPhaseBand(Height);
-        }
+    {
+        if (Progress!=NULL)
+            Progress->StartBitmapPhaseBand(Height);
+    }
 
     // We need to create a tempory bitmap that we use to render each scan line
     LPBITMAPINFO    TempBitmapInfo = NULL;
@@ -6596,77 +6662,41 @@ SlowJobResult OSRenderRegion::DrawMaskedBitmap(const DocRect &Rect, KernelBitmap
     // do this as a masked blit (a scan line at a time), or in one go.
     // We do the masked blit under NT, or if the preference has been over-ridden by the user.
     if (PrintMonitor::PrintMaskType!=PrintMonitor::MASK_SIMPLE)
+    {
+        MaskRegion MaskInfo;
+        pMask->GetFirstMaskRegion(&MaskInfo);
+        while (MaskInfo.Length!=0)
         {
-            MaskRegion MaskInfo;
-            pMask->GetFirstMaskRegion(&MaskInfo);
-            while (MaskInfo.Length!=0)
-                {
-                    // Calculate the source buffer address from the x and y position
-                    SrcBuffer = WinBM->BMBytes;
-                    SrcBuffer += ScanLineBytes * MaskInfo.y;
-                    SrcBuffer += MaskInfo.x*BytesPerPixel;
-                    INT32 RegionWidth = MaskInfo.Length;
+            // Calculate the source buffer address from the x and y position
+            SrcBuffer = WinBM->BMBytes;
+            SrcBuffer += ScanLineBytes * MaskInfo.y;
+            SrcBuffer += MaskInfo.x*BytesPerPixel;
+            INT32 RegionWidth = MaskInfo.Length;
 
-                    // Update bitmap info to show the new scan line size
-                    TempBitmapInfo->bmiHeader.biWidth = RegionWidth;
-                    TempBitmapInfo->bmiHeader.biSizeImage = (RegionWidth*BytesPerPixel);
+            // Update bitmap info to show the new scan line size
+            TempBitmapInfo->bmiHeader.biWidth = RegionWidth;
+            TempBitmapInfo->bmiHeader.biSizeImage = (RegionWidth*BytesPerPixel);
 
-                    memcpy(DestBuffer, SrcBuffer, RegionWidth*BytesPerPixel);
-
-                    // Work out the coords of the destination rectangle
-                    INT32 DestX = Origin.x + INT32(ceil(MaskInfo.x*Ratio));
-                    INT32 DestY = Origin.y - INT32(ceil((MaskInfo.y+1)*Ratio));
-                    INT32 DestWidth = INT32(ceil(RegionWidth*Ratio));
-                    INT32 DestHeight = INT32(ceil(1*Ratio));
-
-                    // Blit the data to the screen
-                    StretchDIBits(  RenderDC->GetSafeHdc(),
-                                    DestX, DestY, DestWidth, DestHeight,
-                                    0, 0,
-                                    RegionWidth, 1,
-                                    TempBitmapBytes, TempBitmapInfo,
-                                    DIB_RGB_COLORS, SRCCOPY);
-
-                    // Update the progress display if necessary.
-                    if (PrintMonitor::PrintMaskType==PrintMonitor::MASK_MASKED)
-                        {
-                            if ((Progress!=NULL) && (!Progress->BitmapPhaseBandRenderedTo(MaskInfo.y)))
-                                {
-                                    // Put the blit mode back as it was
-                                    SetStretchBltMode(RenderDC->GetSafeHdc(), OldMode);
-                                    SetBrushOrgEx(RenderDC->m_hDC, OldOrg.x, OldOrg.y, NULL);
-
-                                    // Free up the tempory DIB I made
-                                    FreeDIB(TempBitmapInfo, TempBitmapBytes);
-
-                                    return SLOWJOB_USERABORT;
-                                }
-                        }
-
-                    // Find the next bit of scan line to plot
-                    pMask->GetNextMaskRegion(&MaskInfo);
-                }
-        }
-    else
-        {
-            // Blit in one go...
+            memcpy(DestBuffer, SrcBuffer, RegionWidth*BytesPerPixel);
 
             // Work out the coords of the destination rectangle
-            INT32 DestX = Origin.x;
-            INT32 DestY = Origin.y - INT32(ceil(Height * Ratio));
-            INT32 DestWidth = INT32(ceil(Width * Ratio));
-            INT32 DestHeight = INT32(ceil(Height * Ratio));
+            INT32 DestX = Origin.x + INT32(ceil(MaskInfo.x*Ratio));
+            INT32 DestY = Origin.y - INT32(ceil((MaskInfo.y+1)*Ratio));
+            INT32 DestWidth = INT32(ceil(RegionWidth*Ratio));
+            INT32 DestHeight = INT32(ceil(1*Ratio));
 
             // Blit the data to the screen
             StretchDIBits(  RenderDC->GetSafeHdc(),
                             DestX, DestY, DestWidth, DestHeight,
                             0, 0,
-                            Width, Height,
-                            WinBM->BMBytes, WinBM->BMInfo,
+                            RegionWidth, 1,
+                            TempBitmapBytes, TempBitmapInfo,
                             DIB_RGB_COLORS, SRCCOPY);
 
             // Update the progress display if necessary.
-            if ((Progress!=NULL) && (!Progress->BitmapPhaseBandRenderedTo(Height)))
+            if (PrintMonitor::PrintMaskType==PrintMonitor::MASK_MASKED)
+            {
+                if ((Progress!=NULL) && (!Progress->BitmapPhaseBandRenderedTo(MaskInfo.y)))
                 {
                     // Put the blit mode back as it was
                     SetStretchBltMode(RenderDC->GetSafeHdc(), OldMode);
@@ -6677,7 +6707,43 @@ SlowJobResult OSRenderRegion::DrawMaskedBitmap(const DocRect &Rect, KernelBitmap
 
                     return SLOWJOB_USERABORT;
                 }
+            }
+
+            // Find the next bit of scan line to plot
+            pMask->GetNextMaskRegion(&MaskInfo);
         }
+    }
+    else
+    {
+        // Blit in one go...
+
+        // Work out the coords of the destination rectangle
+        INT32 DestX = Origin.x;
+        INT32 DestY = Origin.y - INT32(ceil(Height * Ratio));
+        INT32 DestWidth = INT32(ceil(Width * Ratio));
+        INT32 DestHeight = INT32(ceil(Height * Ratio));
+
+        // Blit the data to the screen
+        StretchDIBits(  RenderDC->GetSafeHdc(),
+                        DestX, DestY, DestWidth, DestHeight,
+                        0, 0,
+                        Width, Height,
+                        WinBM->BMBytes, WinBM->BMInfo,
+                        DIB_RGB_COLORS, SRCCOPY);
+
+        // Update the progress display if necessary.
+        if ((Progress!=NULL) && (!Progress->BitmapPhaseBandRenderedTo(Height)))
+        {
+            // Put the blit mode back as it was
+            SetStretchBltMode(RenderDC->GetSafeHdc(), OldMode);
+            SetBrushOrgEx(RenderDC->m_hDC, OldOrg.x, OldOrg.y, NULL);
+
+            // Free up the tempory DIB I made
+            FreeDIB(TempBitmapInfo, TempBitmapBytes);
+
+            return SLOWJOB_USERABORT;
+        }
+    }
 
     // Put the blit mode back as it was
     SetStretchBltMode(RenderDC->GetSafeHdc(), OldMode);
@@ -6751,25 +6817,25 @@ SlowJobResult OSRenderRegion::DrawSeparatedMaskedBitmap(const DocRect &Rect, Ker
     // We cache them once we've used them. I would do this sort of set-up in StartRender
     // but of course all the derived classes just override that behaviour and we're stuffed
     if (SepTables == NULL && RenderView->GetColourPlate() != NULL)
+    {
+        ColourContextCMYK *cc = (ColourContextCMYK *)RenderView->GetColourContext(COLOURMODEL_CMYK);
+        if (cc != NULL)
         {
-            ColourContextCMYK *cc = (ColourContextCMYK *)RenderView->GetColourContext(COLOURMODEL_CMYK);
-            if (cc != NULL)
+            SepTables = (BYTE *) CCMalloc(5 * 256 * sizeof(BYTE));
+            if (SepTables != NULL)
+            {
+                if (!cc->GetProfileTables(SepTables))
                 {
-                    SepTables = (BYTE *) CCMalloc(5 * 256 * sizeof(BYTE));
-                    if (SepTables != NULL)
-                        {
-                            if (!cc->GetProfileTables(SepTables))
-                                {
-                                    CCFree(SepTables);
-                                    SepTables = NULL;
-                                }
-                        }
+                    CCFree(SepTables);
+                    SepTables = NULL;
                 }
-
-            ERROR3IF(SepTables == NULL, "Can't generate separation tables in OSRenderRegion");
-            if (SepTables == NULL)
-                return(SLOWJOB_FAILURE);
+            }
         }
+
+        ERROR3IF(SepTables == NULL, "Can't generate separation tables in OSRenderRegion");
+        if (SepTables == NULL)
+            return(SLOWJOB_FAILURE);
+    }
 
 
     // Remember the Size of the Bitmap (in pixels)
@@ -6800,10 +6866,10 @@ SlowJobResult OSRenderRegion::DrawSeparatedMaskedBitmap(const DocRect &Rect, Ker
 
     // Inform progress object how high this band is
     if (PrintMonitor::PrintMaskType==PrintMonitor::MASK_MASKED)
-        {
-            if (Progress!=NULL)
-                Progress->StartBitmapPhaseBand(Height);
-        }
+    {
+        if (Progress!=NULL)
+            Progress->StartBitmapPhaseBand(Height);
+    }
 
     // Allocate a 32bpp scanline buffer
     Pixel32bpp *pScanline = (Pixel32bpp *) CCMalloc(Width * sizeof(Pixel32bpp));
@@ -6818,12 +6884,12 @@ SlowJobResult OSRenderRegion::DrawSeparatedMaskedBitmap(const DocRect &Rect, Ker
 
     // Set up a simple greyscale palette for the bitmap
     for (INT32 i = 0; i < 256; i++)
-        {
-            pScanlineInfo->bmiColors[i].rgbRed =
-                pScanlineInfo->bmiColors[i].rgbGreen =
-                pScanlineInfo->bmiColors[i].rgbBlue = i;
-            pScanlineInfo->bmiColors[i].rgbReserved = 0;
-        }
+    {
+        pScanlineInfo->bmiColors[i].rgbRed =
+            pScanlineInfo->bmiColors[i].rgbGreen =
+            pScanlineInfo->bmiColors[i].rgbBlue = i;
+        pScanlineInfo->bmiColors[i].rgbReserved = 0;
+    }
 
     // Set the blit mode
     INT32 OldMode = SetStretchBltMode(RenderDC->GetSafeHdc(), HALFTONE);//COLORONCOLOR);
@@ -6841,47 +6907,47 @@ SlowJobResult OSRenderRegion::DrawSeparatedMaskedBitmap(const DocRect &Rect, Ker
     MaskRegion MaskInfo;
     pMask->GetFirstMaskRegion(&MaskInfo);
     while (MaskInfo.Length != 0)
+    {
+        // Update bitmap info to show the new scan line size
+        pScanlineInfo->bmiHeader.biWidth     = MaskInfo.Length;
+        pScanlineInfo->bmiHeader.biSizeImage = MaskInfo.Length * sizeof(BYTE);
+
+        // Read out the scanline into our pScanline buffer, converting it to a generic
+        // 32bpp format as we go. This is
+        WinBM->GetScanline32bpp(MaskInfo.y, TRUE, pScanline);
+
+        // Now colour separate it. We only bother separating the unmasked portion of the scanline
+        // which we place back in the left end of the scanline
+        WinBM->ColourSeparateScanline32to8(OutputContext, SepTables,
+                                           (BYTE *) pScanline,     // Output buffer (shared!)
+                                           pScanline + MaskInfo.x, // Input buffer - !pointer arithmetic!
+                                           MaskInfo.Length);
+
+        // Work out the coords of the destination rectangle
+        const INT32 DestX = Origin.x + INT32(ceil(MaskInfo.x * Ratio));
+        const INT32 DestY = Origin.y - INT32(ceil((MaskInfo.y + 1) * Ratio));
+        const INT32 DestWidth = INT32(ceil(MaskInfo.Length * Ratio));
+        const INT32 DestHeight = INT32(ceil(1 * Ratio));
+
+        // Blit the data to the screen
+        StretchDIBits(  RenderDC->GetSafeHdc(),
+                        DestX, DestY, DestWidth, DestHeight,
+                        0, 0,
+                        MaskInfo.Length, 1,
+                        (BYTE *) pScanline, pScanlineInfo,
+                        DIB_RGB_COLORS, SRCCOPY);
+
+        // Update the progress display if necessary.
+        if (PrintMonitor::PrintMaskType == PrintMonitor::MASK_MASKED &&
+            Progress != NULL && !Progress->BitmapPhaseBandRenderedTo(MaskInfo.y))
         {
-            // Update bitmap info to show the new scan line size
-            pScanlineInfo->bmiHeader.biWidth     = MaskInfo.Length;
-            pScanlineInfo->bmiHeader.biSizeImage = MaskInfo.Length * sizeof(BYTE);
-
-            // Read out the scanline into our pScanline buffer, converting it to a generic
-            // 32bpp format as we go. This is
-            WinBM->GetScanline32bpp(MaskInfo.y, TRUE, pScanline);
-
-            // Now colour separate it. We only bother separating the unmasked portion of the scanline
-            // which we place back in the left end of the scanline
-            WinBM->ColourSeparateScanline32to8(OutputContext, SepTables,
-                                               (BYTE *) pScanline,      // Output buffer (shared!)
-                                               pScanline + MaskInfo.x,  // Input buffer - !pointer arithmetic!
-                                               MaskInfo.Length);
-
-            // Work out the coords of the destination rectangle
-            const INT32 DestX = Origin.x + INT32(ceil(MaskInfo.x * Ratio));
-            const INT32 DestY = Origin.y - INT32(ceil((MaskInfo.y + 1) * Ratio));
-            const INT32 DestWidth = INT32(ceil(MaskInfo.Length * Ratio));
-            const INT32 DestHeight = INT32(ceil(1 * Ratio));
-
-            // Blit the data to the screen
-            StretchDIBits(  RenderDC->GetSafeHdc(),
-                            DestX, DestY, DestWidth, DestHeight,
-                            0, 0,
-                            MaskInfo.Length, 1,
-                            (BYTE *) pScanline, pScanlineInfo,
-                            DIB_RGB_COLORS, SRCCOPY);
-
-            // Update the progress display if necessary.
-            if (PrintMonitor::PrintMaskType == PrintMonitor::MASK_MASKED &&
-                Progress != NULL && !Progress->BitmapPhaseBandRenderedTo(MaskInfo.y))
-                {
-                    Result = SLOWJOB_USERABORT;
-                    break;      // User aborted, so quit rendering, and return USERABORT
-                }
-
-            // Find the next bit of scan line to plot
-            pMask->GetNextMaskRegion(&MaskInfo);
+            Result = SLOWJOB_USERABORT;
+            break;      // User aborted, so quit rendering, and return USERABORT
         }
+
+        // Find the next bit of scan line to plot
+        pMask->GetNextMaskRegion(&MaskInfo);
+    }
 
     // Put the blit mode back as it was
     SetStretchBltMode(RenderDC->GetSafeHdc(), OldMode);
@@ -6930,16 +6996,16 @@ BOOL OSRenderRegion::RenderChar(WCHAR ch, Matrix* pMatrix)
         return RenderRegion::RenderChar(ch, pMatrix);
 
     if (IsPrinting())
+    {
+        // Check for emulsion down printing, GDI cannot render text backwards
+        PrintControl *pPrintCtl;
+        View *pView = GetRenderView();
+        if (pView && (pPrintCtl=pView->GetPrintControl()))
         {
-            // Check for emulsion down printing, GDI cannot render text backwards
-            PrintControl *pPrintCtl;
-            View *pView = GetRenderView();
-            if (pView && (pPrintCtl=pView->GetPrintControl()))
-                {
-                    if (pPrintCtl->GetTypesetInfo()->PrintEmulsionDown())
-                        return RenderRegion::RenderChar(ch, pMatrix);
-                }
+            if (pPrintCtl->GetTypesetInfo()->PrintEmulsionDown())
+                return RenderRegion::RenderChar(ch, pMatrix);
         }
+    }
 
     // get overall matrix - attribute matrix concatenated with given matrix if supplied
     Matrix matrix;
@@ -6957,10 +7023,10 @@ BOOL OSRenderRegion::RenderChar(WCHAR ch, Matrix* pMatrix)
     // GDI can't do y-axis flips, so we do it as shapes if this is detected (and x-axis
     // flips, for consistency).
     if ((abcd[0] < FIXED16(0)) || (abcd[3] < FIXED16(0)))
-        {
-            // Flipped in one or both axes - render as a path.
-            return RenderRegion::RenderChar(ch, pMatrix);
-        }
+    {
+        // Flipped in one or both axes - render as a path.
+        return RenderRegion::RenderChar(ch, pMatrix);
+    }
 
     // Work out how complex the transformation is.
     FIXED16 ScaleX = 0;
@@ -6970,28 +7036,28 @@ BOOL OSRenderRegion::RenderChar(WCHAR ch, Matrix* pMatrix)
 
     if ((abcd[1] == FIXED16(0)) && (abcd[2] == FIXED16(0)) &&
         (abcd[0] >= FIXED16(0)) && (abcd[3] >= FIXED16(0)))
-        {
-            // Simple scaling transformation.
-            ScaleX   = abcd[0];
-            ScaleY   = abcd[3];
-            Rotation = FIXED16(0);
-            Shear    = FIXED16(0);
-        }
+    {
+        // Simple scaling transformation.
+        ScaleX   = abcd[0];
+        ScaleY   = abcd[3];
+        Rotation = FIXED16(0);
+        Shear    = FIXED16(0);
+    }
     else
-        {
-            // Decompose the matrix to find out how complex it is.
-            // Pass in NULL for translation as we already know it is in 'ef'.
-            FIXED16 Aspect;
-            BOOL Result = matrix.Decompose(&ScaleY, &Aspect, &Rotation, &Shear, NULL);
+    {
+        // Decompose the matrix to find out how complex it is.
+        // Pass in NULL for translation as we already know it is in 'ef'.
+        FIXED16 Aspect;
+        BOOL Result = matrix.Decompose(&ScaleY, &Aspect, &Rotation, &Shear, NULL);
 
-            if (!Result || (Shear != FIXED16(0)))
-                // Either there was a problem, or the character is sheared, in which case
-                // we can't do it with GDI.
-                return RenderRegion::RenderChar(ch, pMatrix);
+        if (!Result || (Shear != FIXED16(0)))
+            // Either there was a problem, or the character is sheared, in which case
+            // we can't do it with GDI.
+            return RenderRegion::RenderChar(ch, pMatrix);
 
-            // Set up the ScaleX based on the aspect ratio
-            ScaleX = ScaleY * Aspect;
-        }
+        // Set up the ScaleX based on the aspect ratio
+        ScaleX = ScaleY * Aspect;
+    }
 
     // Check for sideways printing - if the render matrix has rotation, then we are
     // printing at 270 degrees rotation, so adjust the rotation accordingly.
@@ -7009,10 +7075,10 @@ BOOL OSRenderRegion::RenderChar(WCHAR ch, Matrix* pMatrix)
 
     if (!SelectNewFont(RR_TXTFONTTYPEFACE(), RR_TXTBOLD(), RR_TXTITALIC(),
                        Width, Height, Rotation))
-        {
-            // Could not select font (maybe because device can't rotate fonts)
-            return RenderRegion::RenderChar(ch, pMatrix);
-        }
+    {
+        // Could not select font (maybe because device can't rotate fonts)
+        return RenderRegion::RenderChar(ch, pMatrix);
+    }
 
     // First, set up the text attributes that are not encoded in the font.
     UINT32 OldTextAlign = RenderDC->SetTextAlign(TA_BASELINE);
@@ -7079,7 +7145,8 @@ BOOL OSRenderRegion::RenderChar(WCHAR ch, Matrix* pMatrix)
 ********************************************************************************************/
 
 PaperRenderRegion::PaperRenderRegion(DocRect ClipRect, Matrix ConvertMatrix, FIXED16 ViewScale)
-    : OSRenderRegion(ClipRect, ConvertMatrix, ViewScale) {
+    : OSRenderRegion(ClipRect, ConvertMatrix, ViewScale)
+{
 }
 
 
@@ -7135,7 +7202,7 @@ BOOL PaperRenderRegion::AttachDevice(View *pView, Spread *pSpread, wxDC* pDC,
     SaveContext();
 
     // Call base class to attach device.
-    //  return OSRenderRegion::AttachDevice(pView, pDC, pSpread);
+//  return OSRenderRegion::AttachDevice(pView, pDC, pSpread);
     return(TRUE);
 }
 
@@ -7182,7 +7249,7 @@ void PaperRenderRegion::DetachDevice()
     Purpose:    Initialise the device specific mechanisms for this render region.
 
     Notes:      We use a single static PaperRenderRegion to save creating one all the
-            time. However, this means that the check to see if we should use the
+                time. However, this means that the check to see if we should use the
                 MainFrame window's palette only occurs once (in Create()), and unfortunately
                 this means that we always have the palette disabled due to the point at
                 which the original Create happens to occur in startup.
@@ -7196,12 +7263,11 @@ void PaperRenderRegion::DetachDevice()
 
 ********************************************************************************************/
 
-
-BOOL PaperRenderRegion::InitDevice() {
-    // As we use a static PaperRenderRegion, it has to check every time
-    // we go to use it if we should be using a palette - otherwise, we
-    // get the wrong idea when we're Create'd and then we fail to use
-    // the palette forever onwards!
+BOOL PaperRenderRegion::InitDevice()
+{
+    // As we use a static PaperRenderRegion, it has to check every time we go to use it if
+    // we should be using a palette - otherwise, we get the wrong idea when we're Create'd
+    // and then we fail to use the palette forever onwards!
     RFlags.UsePalette = FALSE;
     if (WantGDIPalette) {
         if (PaletteManager::UsePalette()) {
@@ -7209,13 +7275,12 @@ BOOL PaperRenderRegion::InitDevice() {
         }
     }
     // Call base class
-    if (!OSRenderRegion::InitDevice()) {
+    if (!OSRenderRegion::InitDevice())
         return FALSE;
-    }
+
     // All ok
     return TRUE;
 }
-
 
 /********************************************************************************************
 
@@ -7253,7 +7318,7 @@ wxSize OSRenderRegion::GetFixedDCPPI(wxDC &DC)
 
     // If it's not a Screen DC or a PaintDC we MIGHT just believe it!
     //if (! ( DC.IsKindOf(CLASSINFO(wxScreenDC)) || DC.IsKindOf(CLASSINFO(wxPaintDC)) ))
-    PPI =DC.GetPPI();
+        PPI=DC.GetPPI();
 
     return PPI;
 }
