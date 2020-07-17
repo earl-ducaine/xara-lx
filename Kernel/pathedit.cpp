@@ -1,7 +1,8 @@
+/* -*- tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4; fill-column: 90 -*- */
 // $Id: pathedit.cpp 1282 2006-06-09 09:46:49Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
- 
+
                Xara LX, a vector drawing and manipulation program.
                     Copyright (C) 1993-2006 Xara Group Ltd.
        Copyright on certain contributions may be held in joint with their
@@ -32,7 +33,7 @@ ADDITIONAL RIGHTS
 
 Conditional upon your continuing compliance with the GNU General Public
 License described above, Xara Group Ltd grants to you certain additional
-rights. 
+rights.
 
 The additional rights are to use, modify, and distribute the software
 together with the wxWidgets library, the wxXtra library, and the "CDraw"
@@ -134,7 +135,7 @@ service marks of Xara Group Ltd. All rights in these marks are reserved.
 #include "helpids.h"
 //#include "jim.h"
 //#include "peter.h"
-//#include "resource.h"    
+//#include "resource.h"
 //#include "barsdlgs.h"
 //#include "rik.h"
 //#include "simon.h"
@@ -153,14 +154,14 @@ service marks of Xara Group Ltd. All rights in these marks are reserved.
 #define PATRACE if(IsUserName("Peter")) TRACE
 
 // Useful macro, given a pointer to a CCObject (or an object derived
-// from it) and a string format, it will output the class name of the object. 
+// from it) and a string format, it will output the class name of the object.
 // Example usage PACLASSNAME(CurrentNode,"Node class = %s\n");
 // N.B. No checking is node or parameters.  Note semi-colon on end.
 #define PACLASSNAME(a,b) CCRuntimeClass* Blob; Blob = a->GetRuntimeClass(); PATRACE(b,Blob->m_lpszClassName)
 
 // Operations
 CC_IMPLEMENT_DYNCREATE( OpJoinShapes, SelOperation)
-CC_IMPLEMENT_DYNCREATE( OpBreakShapes, SelOperation) 
+CC_IMPLEMENT_DYNCREATE( OpBreakShapes, SelOperation)
 CC_IMPLEMENT_DYNCREATE( OpDeletePoints, SelOperation) 		// Deleting of path endpoints
 CC_IMPLEMENT_DYNCREATE( OpNodePathEditBlob, SelOperation)	// Dragging of a path endpoint
 CC_IMPLEMENT_DYNCREATE( OpToggleSmooth, SelOperation)		// Toggling smooth/cuspness of endpoints
@@ -197,8 +198,8 @@ CC_IMPLEMENT_DYNCREATE( SavePathArraysAction, Action)
 
 OpNodePathEditBlob::OpNodePathEditBlob()
 {
-	EndSnapped = FALSE;	
-	SnapToAnother = FALSE;	
+	EndSnapped = FALSE;
+	SnapToAnother = FALSE;
 	pMoveCursor = NULL;
 	SnapToPath = NULL;
 	DragStarted = FALSE;
@@ -227,7 +228,7 @@ OpNodePathEditBlob::OpNodePathEditBlob()
 void OpNodePathEditBlob::DoStartDragEdit(NodePath* OrigPath, DocCoord Anchor, Spread *pSpread)
 {
 	BOOL Success = TRUE;
-	
+
 	// We had better take a note of the starting point of the drag
 	LastMousePos = Anchor;
 	StartMousePos = Anchor;
@@ -282,14 +283,14 @@ void OpNodePathEditBlob::DoStartDragEdit(NodePath* OrigPath, DocCoord Anchor, Sp
 				if (IS_A (pCurrentNode, NodePath))
 				{
 					NodeListItem* pInsert = new NodeListItem ();
-					
+
 					if (pInsert)	// and insert into the paths list ....
 					{
 						pInsert->pNode = pCurrentNode;
 						OriginalPaths.AddHead (pInsert);
 					}
 				}
-				
+
 				pCurrentNode = (Node*) theSelection->FindNext (pCurrentNode);
 			}
 		}
@@ -299,7 +300,7 @@ void OpNodePathEditBlob::DoStartDragEdit(NodePath* OrigPath, DocCoord Anchor, Sp
 	//if (TRUE)
 	{
 		MultiplePaths = FALSE;
-		
+
 		OriginalPath = OrigPath;
 
 		// Now calculate DragPoint and UpdatePoint
@@ -311,7 +312,7 @@ void OpNodePathEditBlob::DoStartDragEdit(NodePath* OrigPath, DocCoord Anchor, Sp
 
 			for (INT32 i=0;i<NumCoords;i++)
 			{
-				if (Flags[i].IsEndPoint && Flags[i].IsSelected 
+				if (Flags[i].IsEndPoint && Flags[i].IsSelected
 								&& !(OriginalPath->InkPath.IsSubPathClosed(i) && (Verbs[i] == PT_MOVETO)) )
 				{
 					// If you are dragging a closepoint then you are actually dragging two points
@@ -374,7 +375,7 @@ void OpNodePathEditBlob::DoStartDragEdit(NodePath* OrigPath, DocCoord Anchor, Sp
 			Success = CreateCursors();
 		if (Success)
 			ChangeCursor(pCrossHairCursor);
-		
+
 	//	// Render the bits of the path that are different
 		DocRect EditPathBBox = EditPath.GetBoundingRect();
 	//	if (Success)
@@ -397,7 +398,7 @@ void OpNodePathEditBlob::DoStartDragEdit(NodePath* OrigPath, DocCoord Anchor, Sp
 		// BUT lets also try and do our extra stuff ....  I expect time MUCK UPS to occur !!!!
 
 		MultiplePaths = TRUE;
-		
+
 		OriginalPath = OrigPath;
 
 		// we need to make OrigPath the first one in our linked list ....
@@ -411,7 +412,7 @@ void OpNodePathEditBlob::DoStartDragEdit(NodePath* OrigPath, DocCoord Anchor, Sp
 			if (pOrigPath == OrigPath)
 			{
 				NodeListItem* newHead = (NodeListItem*) OriginalPaths.RemoveItem (pCurrentOrig);
-				
+
 				OriginalPaths.AddHead (newHead);
 
 				pCurrentOrig = NULL;
@@ -433,14 +434,14 @@ void OpNodePathEditBlob::DoStartDragEdit(NodePath* OrigPath, DocCoord Anchor, Sp
 			//while (pCurrentOrig)
 			{
 				NodePath* pOrigPath = (NodePath*) (pCurrentOrig->pNode);
-				
+
 				PathFlags* Flags = pOrigPath->InkPath.GetFlagArray();
 				PathVerb* Verbs = pOrigPath->InkPath.GetVerbArray();
 				INT32 NumCoords = pOrigPath->InkPath.GetNumCoords();
 
 				for (INT32 i=0;i<NumCoords;i++)
 				{
-					if (Flags[i].IsEndPoint && Flags[i].IsSelected 
+					if (Flags[i].IsEndPoint && Flags[i].IsSelected
 									&& !(pOrigPath->InkPath.IsSubPathClosed(i) && (Verbs[i] == PT_MOVETO)) )
 					{
 						// If you are dragging a closepoint then you are actually dragging two points
@@ -475,7 +476,7 @@ void OpNodePathEditBlob::DoStartDragEdit(NodePath* OrigPath, DocCoord Anchor, Sp
 		{
 			NodeListItem* pCurrentOrig = (NodeListItem*) OriginalPaths.GetHead ();
 			NodePath* pOrigPath = (NodePath*) (pCurrentOrig->pNode);
-			
+
 			ConstrainPoint = pOrigPath->InkPath.GetCoordArray()[DragPoint];
 
 			// Get the previous endpoint
@@ -513,23 +514,23 @@ void OpNodePathEditBlob::DoStartDragEdit(NodePath* OrigPath, DocCoord Anchor, Sp
 			{
 				NodePath* pOrigPath = (NodePath*) (pCurrentOrig->pNode);
 				Path* pEditPath = (Path*) (pCurrentEdit->pNode);
-				
+
 				//////////////////////		obchange stuff ....
-				
+
 				ObjChangePathEdit* NewEditObjChange = new ObjChangePathEdit;
-				
+
 				Success = (NewEditObjChange->ObjChangeStarting(pOrigPath,this,pEditPath,StartSpread,TRUE) == CC_OK);
 
 				NodeListItem* pInsert = new NodeListItem;
 				pInsert->pNode = (Node*) NewEditObjChange;
-		
+
 				ObjChanges.AddTail (pInsert);
 
 				//////////////////////		drag started stuff ....
 
 				BOOL* NewDragStartVal = new BOOL;
 				*NewDragStartVal = FALSE;
-				
+
 				NodeListItem* pInsert2 = new NodeListItem;
 				pInsert2->pNode = (Node*) NewDragStartVal;
 
@@ -549,7 +550,7 @@ void OpNodePathEditBlob::DoStartDragEdit(NodePath* OrigPath, DocCoord Anchor, Sp
 				}
 
 				//////////////////////		now delete stuff ....
-				
+
 				//delete (NewEditObjChange);
 		//		delete (NewDragStartVal);
 			}
@@ -560,7 +561,7 @@ void OpNodePathEditBlob::DoStartDragEdit(NodePath* OrigPath, DocCoord Anchor, Sp
 			Success = CreateCursors();
 		if (Success)
 			ChangeCursor(pCrossHairCursor);
-		
+
 	//	// Render the bits of the path that are different
 		DocRect EditPathBBox;// = EditPath.GetBoundingRect();
 
@@ -601,6 +602,9 @@ void OpNodePathEditBlob::DoStartDragEdit(NodePath* OrigPath, DocCoord Anchor, Sp
 
 void OpNodePathEditBlob::DragPointerMove( DocCoord PointerPos, ClickModifiers ClickMods, Spread *pSpread, BOOL bSolidDrag)
 {
+    // TODO -- Hack, to rub out the old shape
+    DocView::GetCurrent()->ForceRedraw(FALSE);
+
 	if (!MultiplePaths)
 	{
 		// If drag has moved onto a different spread, convert the coord to be relative to the
@@ -683,7 +687,7 @@ void OpNodePathEditBlob::DragPointerMove( DocCoord PointerPos, ClickModifiers Cl
 					if (EditPath.FindPrevEndPoint(&PrevEndpoint))
 					{
 						EditPath.FindStartOfSubPath(&i);			// i is the index of the start of the sub-path
-			
+
 						// If this sub-path is one element long then closing it is not allowed
 						if ((i != PrevEndpoint) && PointerBlobRect.ContainsCoord(Coords[i]))
 						{
@@ -695,7 +699,7 @@ void OpNodePathEditBlob::DragPointerMove( DocCoord PointerPos, ClickModifiers Cl
 				}
 			}
 		}
-		
+
 		// That detects snapping to the opposite endpoint, but what about snapping to another
 		// endpoint altogether? Time to check for that eventuality
 		if (!EndSnapped && DragPoint != -1 && (Verbs[DragPoint] == PT_MOVETO || DragPoint+1 == NumCoords || Verbs[DragPoint+1] == PT_MOVETO) )
@@ -706,7 +710,7 @@ void OpNodePathEditBlob::DragPointerMove( DocCoord PointerPos, ClickModifiers Cl
 			INT32 SubIndex,SubEnd;
 			while (pNode)
 			{
-				if ((pNode->FindParentSpread() == StartSpread) && 
+				if ((pNode->FindParentSpread() == StartSpread) &&
 					(pNode->GetRuntimeClass() == CC_RUNTIME_CLASS(NodePath)) /*&&
 					(pNode != OriginalPath)*/ )
 				{
@@ -714,7 +718,7 @@ void OpNodePathEditBlob::DragPointerMove( DocCoord PointerPos, ClickModifiers Cl
 					INT32 ThisNum = ThisPath->GetNumCoords();
 					SubIndex = 0;
 					SubEnd = 0;
-					while (SubIndex<ThisNum)		
+					while (SubIndex<ThisNum)
 					{
 						DocCoord tempStart,tempEnd;
 						ThisPath->SetPathPosition(SubIndex);	// Set the path's internal pos index
@@ -786,12 +790,12 @@ void OpNodePathEditBlob::DragPointerMove( DocCoord PointerPos, ClickModifiers Cl
 		// We don't allow closed paths consiting of two straight segments
 		if (EndSnapped && NumCoords < 4)
 			EndSnapped = FALSE;
-			
+
 		if ((EndSnapped || SnapToAnother) && (pMoveCursor != NULL))
 			ChangeCursor(pCloseCursor);
 		else
 			ChangeCursor(pCrossHairCursor);
-		
+
 		// Now constrain the mouse point
 		ERROR3IF(ConstrainPoint == DocCoord(-1,-1),"ConstrainPoint wasn't set");
 		ERROR3IF(ConstrainPrevPoint == DocCoord(-1,-1),"ConstrainPrevPoint wasn't set");
@@ -847,7 +851,7 @@ void OpNodePathEditBlob::DragPointerMove( DocCoord PointerPos, ClickModifiers Cl
 		SetStatusLineHelp();
 	}
 	else
-	{	
+	{
 		NodeListItem* pCurrentOrig = (NodeListItem*) OriginalPaths.GetHead ();
 		NodeListItem* pCurrentEdit = (NodeListItem*) EditPaths.GetHead ();
 		NodeListItem* pCurrentChange = (NodeListItem*) ObjChanges.GetHead ();
@@ -955,7 +959,7 @@ void OpNodePathEditBlob::DragPointerMove( DocCoord PointerPos, ClickModifiers Cl
 							if (pEditPath->FindPrevEndPoint(&PrevEndpoint))
 							{
 								pEditPath->FindStartOfSubPath(&i);			// i is the index of the start of the sub-path
-					
+
 								// If this sub-path is one element long then closing it is not allowed
 								if ((i != PrevEndpoint) && PointerBlobRect.ContainsCoord(Coords[i]))
 								{
@@ -967,7 +971,7 @@ void OpNodePathEditBlob::DragPointerMove( DocCoord PointerPos, ClickModifiers Cl
 						}
 					}
 				}
-			
+
 				// That detects snapping to the opposite endpoint, but what about snapping to another
 				// endpoint altogether? Time to check for that eventuality
 				if (!EndSnapped && DragPoint != -1 && (Verbs[DragPoint] == PT_MOVETO || DragPoint+1 == NumCoords || Verbs[DragPoint+1] == PT_MOVETO) )
@@ -981,8 +985,8 @@ void OpNodePathEditBlob::DragPointerMove( DocCoord PointerPos, ClickModifiers Cl
 					INT32 SubIndex,SubEnd;
 					while (pNode)
 					{
-	/////////////////////////////////////////////////////////////////////////////////////////////////					
-						if ((pNode->FindParentSpread() == StartSpread) && 
+	/////////////////////////////////////////////////////////////////////////////////////////////////
+						if ((pNode->FindParentSpread() == StartSpread) &&
 							(pNode->GetRuntimeClass() == CC_RUNTIME_CLASS(NodePath)) /*&&
 					(pNode != OriginalPath)*/ )
 						{
@@ -991,7 +995,7 @@ void OpNodePathEditBlob::DragPointerMove( DocCoord PointerPos, ClickModifiers Cl
 							INT32 ThisNum = ThisPath->GetNumCoords();
 							SubIndex = 0;
 							SubEnd = 0;
-							while (SubIndex<ThisNum)		
+							while (SubIndex<ThisNum)
 							{
 								DocCoord tempStart,tempEnd;
 								ThisPath->SetPathPosition(SubIndex);	// Set the path's internal pos index
@@ -1069,13 +1073,13 @@ void OpNodePathEditBlob::DragPointerMove( DocCoord PointerPos, ClickModifiers Cl
 					// We don't allow closed paths consiting of two straight segments
 					if (EndSnapped && NumCoords < 4)
 						EndSnapped = FALSE;
-						
+
 					if ((EndSnapped || SnapToAnother) && (pMoveCursor != NULL))
 						ChangeCursor(pCloseCursor);
 					else
 						ChangeCursor(pCrossHairCursor);
 				//}
-				
+
 				// Now constrain the mouse point
 				ERROR3IF(ConstrainPoint == DocCoord(-1,-1),"ConstrainPoint wasn't set");
 				ERROR3IF(ConstrainPrevPoint == DocCoord(-1,-1),"ConstrainPrevPoint wasn't set");
@@ -1144,7 +1148,7 @@ void OpNodePathEditBlob::DragPointerMove( DocCoord PointerPos, ClickModifiers Cl
 			pCurrentChange = (NodeListItem*) ObjChanges.GetNext (pCurrentChange);
 			pCurrentDragS = (NodeListItem*) PathsDragStarted.GetNext (pCurrentDragS);
 		}
-		
+
 		SetStatusLineHelp();
 	}
 }
@@ -1166,7 +1170,7 @@ void OpNodePathEditBlob::DragPointerMove( DocCoord PointerPos, ClickModifiers Cl
 
 ********************************************************************************************/
 
-void OpNodePathEditBlob::DragFinished( DocCoord PointerPos, ClickModifiers ClickMods, 
+void OpNodePathEditBlob::DragFinished( DocCoord PointerPos, ClickModifiers ClickMods,
 									   Spread* pSpread, BOOL Success, BOOL bSolidDrag)
 {
 	if (!MultiplePaths)
@@ -1176,10 +1180,10 @@ void OpNodePathEditBlob::DragFinished( DocCoord PointerPos, ClickModifiers Click
 		DestroyCursors();
 		EndDrag();
 		BeginSlowJob();
-		// ChangeCode Chge;									   
+		// ChangeCode Chge;
 
 		BOOL NotFailed = Success;
-		
+
 		// DY, if we are editing a brushed nodepath then we need a couple of extra actions
 		AttrBrushType* pAttrBrush = GetAppliedBrush();
 
@@ -1188,9 +1192,9 @@ void OpNodePathEditBlob::DragFinished( DocCoord PointerPos, ClickModifiers Click
 			if (!DragStarted)
 			{
 				INT32 i;
-				if (OriginalPath->InkPath.FindNearestPoint(	PointerPos, 
-														POINTFLAG_ENDPOINTS | 
-														POINTFLAG_CONTROLPOINTS | 
+				if (OriginalPath->InkPath.FindNearestPoint(	PointerPos,
+														POINTFLAG_ENDPOINTS |
+														POINTFLAG_CONTROLPOINTS |
 														POINTFLAG_ENDSFIRST,
 														&i)
 				)
@@ -1238,7 +1242,7 @@ void OpNodePathEditBlob::DragFinished( DocCoord PointerPos, ClickModifiers Click
 				BOOL OptimiseRedraw = CopyNeedToRenderFlags() && !(EndSnapped || SnapToAnother);
 				if (!IS_A(OriginalPath,NodePath))
 					OptimiseRedraw = FALSE;
-				
+
 				// if we are editing a brush we don't want to optimise either, as it redraws incorrectly
 				if (pAttrBrush != NULL)
 					OptimiseRedraw = FALSE;
@@ -1258,7 +1262,7 @@ void OpNodePathEditBlob::DragFinished( DocCoord PointerPos, ClickModifiers Click
 				// element of the copied path
 				if (NotFailed && EndSnapped)
 					SnapEndsTogether();
-		
+
 				// Go and copy the edited path back over the original path
 				if (NotFailed)
 					NotFailed = CopyEditedPathBack();
@@ -1287,21 +1291,21 @@ void OpNodePathEditBlob::DragFinished( DocCoord PointerPos, ClickModifiers Click
 			}
 		}
 
-		// DY 9/99 Check to see if we are editing a blend on a curve, if so we may wish to 
+		// DY 9/99 Check to see if we are editing a blend on a curve, if so we may wish to
 		// change the number of steps in the blend (making use of the path distance).
 		NodeGroup* pParent = GetGroupParentOfCurve();
-		
+
 		if (pParent != NULL)
 		{
 			if (pParent->IS_KIND_OF(NodeBlend))
 			{
 				if (NotFailed)
-					InsertChangeBlendStepsAction((NodeBlend*)pParent);               
+					InsertChangeBlendStepsAction((NodeBlend*)pParent);
 			}
-		
+
 		}
 
-	
+
 
 		// Inform all the parents of this node that it has been changed.
 		if (NotFailed)
@@ -1316,8 +1320,8 @@ void OpNodePathEditBlob::DragFinished( DocCoord PointerPos, ClickModifiers Click
 		  }
 		}
 
-		
-		if (!NotFailed)	
+
+		if (!NotFailed)
 			FailAndExecute();
 
 		OriginalPaths.DeleteAll ();
@@ -1337,10 +1341,10 @@ void OpNodePathEditBlob::DragFinished( DocCoord PointerPos, ClickModifiers Click
 		DestroyCursors();
 		EndDrag();
 		BeginSlowJob();
-		// ChangeCode Chge;		   
+		// ChangeCode Chge;
 
 		BOOL NotFailed = Success;
-		
+
 		// DY, if we are editing a brushed nodepath then we need a couple of extra actions
 		AttrBrushType* pAttrBrush = GetAppliedBrush();
 
@@ -1364,9 +1368,9 @@ void OpNodePathEditBlob::DragFinished( DocCoord PointerPos, ClickModifiers Click
 				if (*pDragStarted == FALSE)
 				{
 					INT32 i;
-					if (pOrigPath->InkPath.FindNearestPoint(PointerPos, 
-															POINTFLAG_ENDPOINTS | 
-															POINTFLAG_CONTROLPOINTS | 
+					if (pOrigPath->InkPath.FindNearestPoint(PointerPos,
+															POINTFLAG_ENDPOINTS |
+															POINTFLAG_CONTROLPOINTS |
 															POINTFLAG_ENDSFIRST,
 															&i)
 					)
@@ -1414,7 +1418,7 @@ void OpNodePathEditBlob::DragFinished( DocCoord PointerPos, ClickModifiers Click
 					BOOL OptimiseRedraw = CopyNeedToRenderFlags(pOrigPath, pEditPath) && !(EndSnapped || SnapToAnother);
 					if (!IS_A(pOrigPath,NodePath))
 						OptimiseRedraw = FALSE;
-					
+
 					// if we are editing a brush we don't want to optimise either, as it redraws incorrectly
 					if (pAttrBrush != NULL)
 						OptimiseRedraw = FALSE;
@@ -1431,17 +1435,17 @@ void OpNodePathEditBlob::DragFinished( DocCoord PointerPos, ClickModifiers Click
 						UpdateBrushAction* pAction;
 						NotFailed = (UpdateBrushAction::Init(this, &UndoActions,  pOrigPath, &pAction) != AC_FAIL);
 					}
-					
+
 					if (pCurrentOrig == (NodeListItem*) OriginalPaths.GetHead ())
 					{
 						// If the EndSnapped flag is set, we have to set the PT_CLOSEFIGURE flag in the last
 						// element of the copied path
 						if (NotFailed && EndSnapped)
-						{	
+						{
 							SnapEndsTogether (pEditPath);
 						}
 					}
-				
+
 					// Go and copy the edited path back over the original path
 					if (NotFailed)
 						NotFailed = CopyEditedPathBack(pOrigPath, pEditPath);
@@ -1471,7 +1475,7 @@ void OpNodePathEditBlob::DragFinished( DocCoord PointerPos, ClickModifiers Click
 							hHeadPath = &pHeadPath;
 
 							NotFailed = JoinWithOtherPath(hHeadPath);
-							
+
 							if (NotFailed)
 							{
 								useHeadPath = TRUE;
@@ -1500,7 +1504,7 @@ void OpNodePathEditBlob::DragFinished( DocCoord PointerPos, ClickModifiers Click
 						{
 							//NodeListItem* pHeadOrig = (NodeListItem*) OriginalPaths.GetHead ();
 							//NodePath* pHeadPath = (NodePath*) (pHeadOrig->pNode);
-							
+
 							// Force a redraw of the place where the path is now.
 							NotFailed = RecordBoundsAction::DoRecord(this, &UndoActions, (*hHeadPath), OptimiseRedraw) != AC_FAIL;
 						}
@@ -1508,16 +1512,16 @@ void OpNodePathEditBlob::DragFinished( DocCoord PointerPos, ClickModifiers Click
 				}
 			}
 
-			// DY 9/99 Check to see if we are editing a blend on a curve, if so we may wish to 
+			// DY 9/99 Check to see if we are editing a blend on a curve, if so we may wish to
 			// change the number of steps in the blend (making use of the path distance).
 			NodeGroup* pParent = GetGroupParentOfCurve(pOrigPath);
-			
+
 			if (pParent != NULL)
 			{
 				if (pParent->IS_KIND_OF(NodeBlend))
 				{
 					if (NotFailed)
-						InsertChangeBlendStepsAction((NodeBlend*)pParent);               
+						InsertChangeBlendStepsAction((NodeBlend*)pParent);
 				}
 			}
 
@@ -1539,8 +1543,8 @@ void OpNodePathEditBlob::DragFinished( DocCoord PointerPos, ClickModifiers Click
 			pCurrentChange = (NodeListItem*) ObjChanges.GetNext (pCurrentChange);
 			pCurrentDragS = (NodeListItem*) PathsDragStarted.GetNext (pCurrentDragS);
 		}
-		
-		if (!NotFailed)	
+
+		if (!NotFailed)
 			FailAndExecute();
 
 		GetApplication()->UpdateSelection();
@@ -1563,7 +1567,7 @@ void OpNodePathEditBlob::DragFinished( DocCoord PointerPos, ClickModifiers Click
 			delete (pEditPath);
 			delete (pObjChange);
 			delete (pDragStarted);
-			
+
 //			pCurrentOrig = (NodeListItem*) OriginalPaths.GetNext (pCurrentOrig);
 			pCurrentEdit = (NodeListItem*) EditPaths.GetNext (pCurrentEdit);
 			pCurrentChange = (NodeListItem*) ObjChanges.GetNext (pCurrentChange);
@@ -1594,7 +1598,7 @@ void OpNodePathEditBlob::DragFinished( DocCoord PointerPos, ClickModifiers Click
 				First the number of steps is calculated from the new path distance and if
 				different a new action is inserted
 	Errors:		Error2 if pNodeBlend is null
-	SeeAlso:	called from OpNodePathEditBlob::DragFinished or 
+	SeeAlso:	called from OpNodePathEditBlob::DragFinished or
 				OpNodePathAddEndpoint::CompleteThisPath
 
 ********************************************************************************************/
@@ -1611,8 +1615,8 @@ BOOL OpNodePathEditBlob::InsertChangeBlendStepsAction(NodeBlend* pNodeBlend)
 		double NewPathLength = EditPath.GetPathLength();
 		NewNumSteps = (UINT32)(NewPathLength/StepDistance);
 		BOOL ok = TRUE;
-		
-	
+
+
 		if (OldNumSteps != NewNumSteps)
 		{
 			ChangeBlendStepsAction* pAction;
@@ -1624,7 +1628,7 @@ BOOL OpNodePathEditBlob::InsertChangeBlendStepsAction(NodeBlend* pNodeBlend)
 		}
 
 		// added 9/9/99 now we are shifting the last object along the curve to ensure precise
-		// step distances.  To do this we must set the proportion of the curve used in the 
+		// step distances.  To do this we must set the proportion of the curve used in the
 		// NodeBlender objects.
 		if (ok)
 		{
@@ -1636,15 +1640,15 @@ BOOL OpNodePathEditBlob::InsertChangeBlendStepsAction(NodeBlend* pNodeBlend)
 			{
 				ChangeBlenderOpParam BlenderParam;
 				BlenderParam.m_ChangeType = CHANGEBLENDER_PATHEND;
-							
+
 				NodeBlender* pNodeBlender = pNodeBlend->FindFirstBlender();
 				INT32 NumBlenders = pNodeBlend->GetNumBlenders();
-						
+
 				while (pNodeBlender != NULL)
 				{
 					NumBlenders--;
 					if (NumBlenders ==0)
-					{									
+					{
 						BlenderParam.m_NewPathEnd = PathProportion;
 						ok = ChangeBlenderAction::Init(this, &UndoActions, pNodeBlender, BlenderParam);
 						if (ok)
@@ -1657,12 +1661,12 @@ BOOL OpNodePathEditBlob::InsertChangeBlendStepsAction(NodeBlend* pNodeBlend)
 								NodeRenderableInk* pEnd = pNodeBlender->GetNodeEnd();
 								NodeBlend* pNodeBlend = pNodeBlender->GetNodeBlend();
 								ok = ((pEnd != NULL) && (pNodeBlend != NULL));
-					
-								if (ok) 
+
+								if (ok)
 									ok = pNodeBlend->TransformNodeToPoint(pEnd,&NewPoint,this,ExtraParam);
 							}
 						}
-					}	
+					}
 					pNodeBlender = pNodeBlend->FindNextBlender(pNodeBlender);
 				}
 			} // end if (pathproportion..
@@ -1703,10 +1707,10 @@ void OpNodePathEditBlob::SnapEndsTogether()
 
 	// Now pos is the index of the selected point
 
-	// This next may seem like a lot of faffing around, but we don't know whether the 
+	// This next may seem like a lot of faffing around, but we don't know whether the
 	// selected point is the start or the end of the path, so this code doesn't care
 	// (thus it's not very optimal, but it shouldn't matter).
-	
+
 	// Move to the start of the edit path
 	INT32				startpos = pos;
 	EditPath.FindStartOfSubPath(&startpos);
@@ -1718,17 +1722,17 @@ void OpNodePathEditBlob::SnapEndsTogether()
 	// so we have to add 2 to move to the endpoint of the curve
 	if (Verbs[pos] == PT_BEZIERTO)
 		pos+=2;
-	
+
 	// Now simply set the PT_CLOSEFIGURE flag in this verb
 	Verbs[pos] |= PT_CLOSEFIGURE;
-	
+
 	// make sure the first and last points are selected, along with adjacent ctrl points
 	Flags[pos].IsSelected = TRUE;
 	// if it's a bezier, select previous control point and check state of smooth/rotate bits
 	if ((Verbs[pos] & ~PT_CLOSEFIGURE) == PT_BEZIERTO)
 	{
 		Flags[pos-1].IsSelected = TRUE;
-		
+
 		// if the smooth flag is not set, clear the rotate flag as well, otherwise
 		// We'll have something that looks like a cusp, but as soon as you drag a control
 		// point, the opposite point will rotate around.
@@ -1786,10 +1790,10 @@ void OpNodePathEditBlob::SnapEndsTogether(Path* pEditPath)
 
 	// Now pos is the index of the selected point
 
-	// This next may seem like a lot of faffing around, but we don't know whether the 
+	// This next may seem like a lot of faffing around, but we don't know whether the
 	// selected point is the start or the end of the path, so this code doesn't care
 	// (thus it's not very optimal, but it shouldn't matter).
-	
+
 	// Move to the start of the edit path
 	INT32 startpos = pos;
 	pEditPath->FindStartOfSubPath(&startpos);
@@ -1801,17 +1805,17 @@ void OpNodePathEditBlob::SnapEndsTogether(Path* pEditPath)
 	// so we have to add 2 to move to the endpoint of the curve
 	if (Verbs[pos] == PT_BEZIERTO)
 		pos+=2;
-	
+
 	// Now simply set the PT_CLOSEFIGURE flag in this verb
 	Verbs[pos] |= PT_CLOSEFIGURE;
-	
+
 	// make sure the first and last points are selected, along with adjacent ctrl points
 	Flags[pos].IsSelected = TRUE;
 	// if it's a bezier, select previous control point and check state of smooth/rotate bits
 	if ((Verbs[pos] & ~PT_CLOSEFIGURE) == PT_BEZIERTO)
 	{
 		Flags[pos-1].IsSelected = TRUE;
-		
+
 		// if the smooth flag is not set, clear the rotate flag as well, otherwise
 		// We'll have something that looks like a cusp, but as soon as you drag a control
 		// point, the opposite point will rotate around.
@@ -1845,10 +1849,10 @@ void OpNodePathEditBlob::SnapEndsTogether(Path* pEditPath)
 	Created:	5/10/94
 	Returns:	FALSE if it failed (lack of memory maybe) TRUE otherwise
 	Purpose:	Looks at the member variables dealing with snapping to another path and joins
-				the paths together. It will always join the other path to the original path, 
+				the paths together. It will always join the other path to the original path,
 				keeping the original path's attributes intact.
-				NOTE: This routine will alter the OriginalPath member variable if it joins paths, 
-				because it has to make a copy of the path for undo purposes. 
+				NOTE: This routine will alter the OriginalPath member variable if it joins paths,
+				because it has to make a copy of the path for undo purposes.
 	Errors:		If it runs out of memory then it will return FALSE
 
 ********************************************************************************************/
@@ -1864,7 +1868,7 @@ BOOL OpNodePathEditBlob::JoinWithOtherPath()
 	INT32 NumCoords = OriginalPath->InkPath.GetNumCoords();
 
 	NodePath* OldSnapPath = SnapToPath;
-	
+
 	INT32 MainIndex;
 	for (MainIndex=0; MainIndex<NumCoords; MainIndex++)
 	{
@@ -1875,7 +1879,7 @@ BOOL OpNodePathEditBlob::JoinWithOtherPath()
 	// on exit, MainIndex is the selected endpoint, or = NumCoords
 
 	ENSURE(MainIndex<NumCoords,"There isn't a selected endpoint in the original path (JoinWithAnotherPath)");
-	
+
 	// We're joining to another path, so the easiest way to handle undo is to make a deep copy
 	// of the original path, then join that with the othe path, put it back into the tree
 	// and delete the old one. Simple.
@@ -1894,7 +1898,7 @@ BOOL OpNodePathEditBlob::JoinWithOtherPath()
 		// no longer joining to OriginalPath.
 		if (SnapToPath == OriginalPath)
 			SnapToPath = MainPath;
-		
+
 		// If we're snapping to another, the first thing I have to do is change the control
 		// point of the point in the other path that we're snapping to, because it might
 		// have been smoothed.
@@ -1911,9 +1915,9 @@ BOOL OpNodePathEditBlob::JoinWithOtherPath()
 				if (SnapToPath == MainPath)
 					OtherCoords[SnapToIndex+1] = SnapToCoords[1];
 				else
-					DoAlterPathElement(	SnapToPath, 
-										SnapToIndex+1, 
-										SnapToCoords[1], 
+					DoAlterPathElement(	SnapToPath,
+										SnapToIndex+1,
+										SnapToCoords[1],
 										OtherFlags[SnapToIndex+1],
 										OtherVerbs[SnapToIndex+1]);
 			}
@@ -1922,9 +1926,9 @@ BOOL OpNodePathEditBlob::JoinWithOtherPath()
 				if (SnapToPath == MainPath)
 					OtherCoords[SnapToIndex-1] = SnapToCoords[1];
 				else
-					DoAlterPathElement(	SnapToPath, 
-										SnapToIndex-1, 
-										SnapToCoords[1], 
+					DoAlterPathElement(	SnapToPath,
+										SnapToIndex-1,
+										SnapToCoords[1],
 										OtherFlags[SnapToIndex-1],
 										OtherVerbs[SnapToIndex-1]);
 			}
@@ -1973,10 +1977,10 @@ BOOL OpNodePathEditBlob::JoinWithOtherPath()
 	Created:	17/5/00
 	Returns:	FALSE if it failed (lack of memory maybe) TRUE otherwise
 	Purpose:	Looks at the member variables dealing with snapping to another path and joins
-				the paths together. It will always join the other path to the original path, 
+				the paths together. It will always join the other path to the original path,
 				keeping the original path's attributes intact.
-				NOTE: This routine will alter the OriginalPath member variable if it joins paths, 
-				because it has to make a copy of the path for undo purposes. 
+				NOTE: This routine will alter the OriginalPath member variable if it joins paths,
+				because it has to make a copy of the path for undo purposes.
 	Errors:		If it runs out of memory then it will return FALSE
 
 ********************************************************************************************/
@@ -1992,7 +1996,7 @@ BOOL OpNodePathEditBlob::JoinWithOtherPath(NodePath** pOrigPath)
 	INT32 NumCoords = (*pOrigPath)->InkPath.GetNumCoords();
 
 	NodePath* OldSnapPath = SnapToPath;
-	
+
 	INT32 MainIndex;
 	for (MainIndex=0; MainIndex<NumCoords; MainIndex++)
 	{
@@ -2003,7 +2007,7 @@ BOOL OpNodePathEditBlob::JoinWithOtherPath(NodePath** pOrigPath)
 	// on exit, MainIndex is the selected endpoint, or = NumCoords
 
 	ENSURE(MainIndex<NumCoords,"There isn't a selected endpoint in the original path (JoinWithAnotherPath)");
-	
+
 	// We're joining to another path, so the easiest way to handle undo is to make a deep copy
 	// of the original path, then join that with the othe path, put it back into the tree
 	// and delete the old one. Simple.
@@ -2022,7 +2026,7 @@ BOOL OpNodePathEditBlob::JoinWithOtherPath(NodePath** pOrigPath)
 		// no longer joining to OriginalPath.
 		if (SnapToPath == (*pOrigPath))
 			SnapToPath = MainPath;
-		
+
 		// If we're snapping to another, the first thing I have to do is change the control
 		// point of the point in the other path that we're snapping to, because it might
 		// have been smoothed.
@@ -2039,9 +2043,9 @@ BOOL OpNodePathEditBlob::JoinWithOtherPath(NodePath** pOrigPath)
 				if (SnapToPath == MainPath)
 					OtherCoords[SnapToIndex+1] = SnapToCoords[1];
 				else
-					DoAlterPathElement(	SnapToPath, 
-										SnapToIndex+1, 
-										SnapToCoords[1], 
+					DoAlterPathElement(	SnapToPath,
+										SnapToIndex+1,
+										SnapToCoords[1],
 										OtherFlags[SnapToIndex+1],
 										OtherVerbs[SnapToIndex+1]);
 			}
@@ -2050,9 +2054,9 @@ BOOL OpNodePathEditBlob::JoinWithOtherPath(NodePath** pOrigPath)
 				if (SnapToPath == MainPath)
 					OtherCoords[SnapToIndex-1] = SnapToCoords[1];
 				else
-					DoAlterPathElement(	SnapToPath, 
-										SnapToIndex-1, 
-										SnapToCoords[1], 
+					DoAlterPathElement(	SnapToPath,
+										SnapToIndex-1,
+										SnapToCoords[1],
 										OtherFlags[SnapToIndex-1],
 										OtherVerbs[SnapToIndex-1]);
 			}
@@ -2125,7 +2129,7 @@ BOOL OpNodePathEditBlob::BuildEditPaths ()
 		BOOL SetNextEndPoint = FALSE;		// TRUE if we want to set the next EndPoint to render
 		BOOL SetNextNextEndPoint = FALSE;	// TRUE if we want the one after the next one to render
 		PathFlags* Flags = NewEditPath->GetFlagArray();
-		
+
 		for (UINT32 i=0; i<NumCoords; i++)
 		{
 			// Make all the flags FALSE by default
@@ -2170,16 +2174,16 @@ BOOL OpNodePathEditBlob::BuildEditPaths ()
 
 		NodeListItem* pInsert = new NodeListItem;
 		pInsert->pNode = (Node*) NewEditPath;
-		
+
 		EditPaths.AddTail (pInsert);//NewEditPath);
-		
+
 		pCurrent = (NodeListItem*) OriginalPaths.GetNext (pCurrent);
 
 		//delete (pInsert);
 
 //		delete (NewEditPath);				// cleanup that is necessary
 	}
-	
+
 	return (TRUE);
 }
 
@@ -2270,7 +2274,7 @@ BOOL OpNodePathEditBlob::CopyEditedPathBack()
 {
 	// Now to do some undo information. To do this, I have to look at each element in the path
 	// and each element in the copy, and see which ones differ. I then have to work out how many
-	// elements that was, and create a path to contain those elements, along with an array of indices 
+	// elements that was, and create a path to contain those elements, along with an array of indices
 	// telling me where those elements came from
 	INT32 NumElements = OriginalPath->InkPath.GetNumCoords();
 	PathVerb* SourceVerbs = OriginalPath->InkPath.GetVerbArray();
@@ -2288,7 +2292,7 @@ BOOL OpNodePathEditBlob::CopyEditedPathBack()
 	INT32 i;
 	for (i=0;i<NumElements;i++)
 	{
-		if (SourceVerbs[i] != DestVerbs[i] || SourceCoords[i] != DestCoords[i] || 
+		if (SourceVerbs[i] != DestVerbs[i] || SourceCoords[i] != DestCoords[i] ||
 			SourceFlags[i] != DestFlags[i] )
 		{
 			ChangedElements++;
@@ -2305,14 +2309,14 @@ BOOL OpNodePathEditBlob::CopyEditedPathBack()
 		}
 
 	}
-	
+
 
 	// ChangedElements is the number of elements in this path that will change.
 	// We have to create three arrays to contain the changed elements, plus one array
 	// to tell me where the elements should go (the indices)
 
 	// I also have to create an action object to contain these arrays. I have to create the action
-	// object first because that does all the work of deciding if there's enough memory in the 
+	// object first because that does all the work of deciding if there's enough memory in the
 	// undo buffer to store the action, and prompting the user accordingly of there isn't
 
 	if (ChangedElements > 0)
@@ -2329,13 +2333,13 @@ BOOL OpNodePathEditBlob::CopyEditedPathBack()
 			OriginalPath->InkPath.FindPrevEndPoint(&FirstChanged);
 			OriginalPath->InkPath.FindNextEndPoint(&LastChanged);
 		}
-		
+
 		AttrBrushType* pAttrBrush = GetAppliedBrush();
 		if (pAttrBrush != NULL)
 			EditBrushAttribute(FirstChanged, LastChanged, pAttrBrush);
 
 		ModifyPathAction* ModAction;
-	
+
 		ActionCode Act;
 		Act = ModifyPathAction::Init(this, &UndoActions, ChangedElements, (Action**)(&ModAction));
 		if (Act == AC_FAIL)
@@ -2354,7 +2358,7 @@ BOOL OpNodePathEditBlob::CopyEditedPathBack()
 		// NOTE - during unwind all actions return AC_OK with a NULL ModAction pointer!!
 		if ((Act!=AC_NORECORD) && (ModAction!=NULL))
 		{
-			// This next bit is a bit hellish. Any one of these four allocations can fail, in which case 
+			// This next bit is a bit hellish. Any one of these four allocations can fail, in which case
 			// we have to tidy up afterwards. Cue a lot of nested ifs and elses.
 
 			ALLOC_WITH_FAIL(ChangedVerbs,(PathVerb*) CCMalloc(ChangedElements * sizeof(PathVerb)),this);
@@ -2401,8 +2405,8 @@ BOOL OpNodePathEditBlob::CopyEditedPathBack()
 			INT32 index = 0;
 			for (i=0;i<NumElements;i++)
 			{
-				if (SourceVerbs[i] != DestVerbs[i] || 
-					SourceCoords[i] != DestCoords[i] || 
+				if (SourceVerbs[i] != DestVerbs[i] ||
+					SourceCoords[i] != DestCoords[i] ||
 					SourceFlags[i] != DestFlags[i]
 					)
 				{
@@ -2418,7 +2422,7 @@ BOOL OpNodePathEditBlob::CopyEditedPathBack()
 			ModAction->StoreArrays(ChangedVerbs, ChangedFlags, ChangedCoords, ChangedIndices, OriginalPath);
 		}
 	}
-		
+
 	if (!OriginalPath->InkPath.CopyPathDataFrom(&EditPath))
 		return FALSE;
 	else
@@ -2442,7 +2446,7 @@ BOOL OpNodePathEditBlob::CopyEditedPathBack(NodePath* pOrigPath, Path* pEditPath
 {
 	// Now to do some undo information. To do this, I have to look at each element in the path
 	// and each element in the copy, and see which ones differ. I then have to work out how many
-	// elements that was, and create a path to contain those elements, along with an array of indices 
+	// elements that was, and create a path to contain those elements, along with an array of indices
 	// telling me where those elements came from
 	INT32 NumElements = pOrigPath->InkPath.GetNumCoords();
 	PathVerb* SourceVerbs = pOrigPath->InkPath.GetVerbArray();
@@ -2453,12 +2457,12 @@ BOOL OpNodePathEditBlob::CopyEditedPathBack(NodePath* pOrigPath, Path* pEditPath
 	PathFlags* DestFlags = pEditPath->GetFlagArray();
 
 	INT32 ChangedElements = 0;
-	INT32 i;	
+	INT32 i;
 
 	for (i=0;i<NumElements;i++)
 	{
-		if (SourceVerbs[i] != DestVerbs[i] || 
-			SourceCoords[i] != DestCoords[i] || 
+		if (SourceVerbs[i] != DestVerbs[i] ||
+			SourceCoords[i] != DestCoords[i] ||
 			SourceFlags[i] != DestFlags[i]
 			)
 			ChangedElements++;
@@ -2469,13 +2473,13 @@ BOOL OpNodePathEditBlob::CopyEditedPathBack(NodePath* pOrigPath, Path* pEditPath
 	// to tell me where the elements should go (the indices)
 
 	// I also have to create an action object to contain these arrays. I have to create the action
-	// object first because that does all the work of deciding if there's enough memory in the 
+	// object first because that does all the work of deciding if there's enough memory in the
 	// undo buffer to store the action, and prompting the user accordingly of there isn't
 
 	if (ChangedElements > 0)
 	{
 		ModifyPathAction* ModAction;
-	
+
 		ActionCode Act;
 		Act = ModifyPathAction::Init(this, &UndoActions, ChangedElements, (Action**)(&ModAction));
 		if (Act == AC_FAIL)
@@ -2494,7 +2498,7 @@ BOOL OpNodePathEditBlob::CopyEditedPathBack(NodePath* pOrigPath, Path* pEditPath
 		// NOTE - during unwind all actions return AC_OK with a NULL ModAction pointer!!
 		if ((Act!=AC_NORECORD) && (ModAction!=NULL))
 		{
-			// This next bit is a bit hellish. Any one of these four allocations can fail, in which case 
+			// This next bit is a bit hellish. Any one of these four allocations can fail, in which case
 			// we have to tidy up afterwards. Cue a lot of nested ifs and elses.
 
 			ALLOC_WITH_FAIL(ChangedVerbs,(PathVerb*) CCMalloc(ChangedElements * sizeof(PathVerb)),this);
@@ -2541,8 +2545,8 @@ BOOL OpNodePathEditBlob::CopyEditedPathBack(NodePath* pOrigPath, Path* pEditPath
 			INT32 index = 0;
 			for (i=0;i<NumElements;i++)
 			{
-				if (SourceVerbs[i] != DestVerbs[i] || 
-					SourceCoords[i] != DestCoords[i] || 
+				if (SourceVerbs[i] != DestVerbs[i] ||
+					SourceCoords[i] != DestCoords[i] ||
 					SourceFlags[i] != DestFlags[i]
 					)
 				{
@@ -2558,7 +2562,7 @@ BOOL OpNodePathEditBlob::CopyEditedPathBack(NodePath* pOrigPath, Path* pEditPath
 			ModAction->StoreArrays(ChangedVerbs, ChangedFlags, ChangedCoords, ChangedIndices, pOrigPath);
 		}
 	}
-		
+
 	if (!pOrigPath->InkPath.CopyPathDataFrom(pEditPath))
 		return FALSE;
 	else
@@ -2590,7 +2594,7 @@ BOOL OpNodePathEditBlob::CopyNeedToRenderFlags()
 
 	PathFlags* EditFlags = EditPath.GetFlagArray();
 	PathFlags* OrigFlags = OriginalPath->InkPath.GetFlagArray();
-		
+
 	for (INT32 loop = 0; loop < EditLength; loop ++)
 	{
 		OrigFlags[loop].NeedToRender = EditFlags[loop].NeedToRender;
@@ -2625,7 +2629,7 @@ BOOL OpNodePathEditBlob::CopyNeedToRenderFlags(NodePath* pOrigPath, Path* pEditP
 
 	PathFlags* EditFlags = pEditPath->GetFlagArray();
 	PathFlags* OrigFlags = pOrigPath->InkPath.GetFlagArray();
-		
+
 	for (INT32 loop = 0; loop < EditLength; loop ++)
 	{
 		OrigFlags[loop].NeedToRender = EditFlags[loop].NeedToRender;
@@ -2638,7 +2642,7 @@ BOOL OpNodePathEditBlob::CopyNeedToRenderFlags(NodePath* pOrigPath, Path* pEditP
 
 /********************************************************************************************
 
->	void OpNodePathEditBlob::RecalculatePath( 	DocCoord Offset, 
+>	void OpNodePathEditBlob::RecalculatePath( 	DocCoord Offset,
 												BOOL SnapEnds = FALSE,
 												INT32 SnapIndex = 0 )
 
@@ -2676,7 +2680,7 @@ void OpNodePathEditBlob::RecalculatePath( DocCoord Offset, BOOL SnapEnds , INT32
 
 	// Now to snap (possibly) to another path, if the SnapToAnother flag is set
 	// This not only entails changing the part of the line we're dragging, but it might
-	// also mean we have to set the SnapToCoords array to contain a snapped bezier segment  
+	// also mean we have to set the SnapToCoords array to contain a snapped bezier segment
 	if (SnapToAnother)
 	{
 		// Get the array pointers
@@ -3007,7 +3011,7 @@ void OpNodePathEditBlob::RecalculatePath( DocCoord Offset, BOOL SnapEnds , INT32
 
 /********************************************************************************************
 
->	void OpNodePathEditBlob::RecalculatePaths( 	DocCoord Offset, 
+>	void OpNodePathEditBlob::RecalculatePaths( 	DocCoord Offset,
 												BOOL SnapEnds = FALSE,
 												INT32 SnapIndex = 0 )
 
@@ -3033,7 +3037,7 @@ void OpNodePathEditBlob::RecalculatePaths (Path* pEditPath, DocCoord Offset, BOO
 	//{
 		//NodePath* pOrigPath = (NodePath*) (pCurrentOrig->pNode);
 	//	Path* pEditPath = (Path*) (pCurrentEdit->pNode);
-	
+
 		// Get the array that I need
 		PathFlags* Flags  = pEditPath->GetFlagArray();
 		DocCoord*  Coords = pEditPath->GetCoordArray();
@@ -3185,7 +3189,7 @@ void OpNodePathEditBlob::RenderPathEditBlobs( DocRect Rect, Spread *pSpread )
 		RenderPath.InsertMoveTo(SnapToCoords[0]);
 		RenderPath.InsertCurveTo(SnapToCoords[1],SnapToCoords[2],SnapToCoords[3]);
 	}
-	
+
 	// Make sure that there is something to draw
 	if (RenderPath.GetNumCoords()==0)
 		return;
@@ -3194,7 +3198,7 @@ void OpNodePathEditBlob::RenderPathEditBlobs( DocRect Rect, Spread *pSpread )
 	RenderRegion* pRegion = DocView::RenderOnTop( NULL, StartSpread, ClippedEOR );
 	while (pRegion != NULL)
 	{
-		pRegion->SetLineColour( COLOUR_XORNEW );	// Set the line colour 
+		pRegion->SetLineColour( COLOUR_XORNEW );	// Set the line colour
 		pRegion->DrawPath( &RenderPath );			// Draw an EORed version of how the path will turn out
 		pRegion = DocView::GetNextOnTop( &Rect );	// Get the next render region
 	}
@@ -3294,7 +3298,7 @@ void OpNodePathEditBlob::RenderPathEditBlobs( Path* pEditPath, /*DocRect Rect,*/
 		RenderPath.InsertMoveTo(SnapToCoords[0]);
 		RenderPath.InsertCurveTo(SnapToCoords[1],SnapToCoords[2],SnapToCoords[3]);
 	}
-	
+
 	// Make sure that there is something to draw
 	if (RenderPath.GetNumCoords()==0)
 		return;
@@ -3303,7 +3307,7 @@ void OpNodePathEditBlob::RenderPathEditBlobs( Path* pEditPath, /*DocRect Rect,*/
 	RenderRegion* pRegion = DocView::RenderOnTop( NULL, StartSpread, ClippedEOR );
 	while (pRegion != NULL)
 	{
-		pRegion->SetLineColour( COLOUR_XORNEW );	// Set the line colour 
+		pRegion->SetLineColour( COLOUR_XORNEW );	// Set the line colour
 		pRegion->DrawPath( &RenderPath );			// Draw an EORed version of how the path will turn out
 		pRegion = DocView::GetNextOnTop( &Rect );	// Get the next render region
 	}
@@ -3324,9 +3328,9 @@ void OpNodePathEditBlob::RenderPathEditBlobs( Path* pEditPath, /*DocRect Rect,*/
 
 BOOL OpNodePathEditBlob::Init()
 {
-	return (RegisterOpDescriptor(	0, 
+	return (RegisterOpDescriptor(	0,
 									_R(IDS_NODEPATH_EDIT),
-									CC_RUNTIME_CLASS(OpNodePathEditBlob), 
+									CC_RUNTIME_CLASS(OpNodePathEditBlob),
 									OPTOKEN_NODEPATH,
 									OpNodePathEditBlob::GetState,
 									0,										// help ID
@@ -3351,7 +3355,7 @@ BOOL OpNodePathEditBlob::Init()
 OpState OpNodePathEditBlob::GetState(String_256* Description, OpDescriptor*)
 {
 	OpState Blobby;
-	
+
 	return Blobby;
 }
 
@@ -3476,7 +3480,7 @@ void OpNodePathEditControlBlob::DoStartDragEdit(NodePath* OrigPath, DocCoord Anc
 
 /********************************************************************************************
 
->	void OpNodePathEditControlBlob::DragPointerMove( DocCoord PointerPos, 
+>	void OpNodePathEditControlBlob::DragPointerMove( DocCoord PointerPos,
 												ClickModifiers ClickMods, Spread *pSpread,
 												BOOL bSolidDrag)
 
@@ -3493,7 +3497,7 @@ void OpNodePathEditControlBlob::DoStartDragEdit(NodePath* OrigPath, DocCoord Anc
 void OpNodePathEditControlBlob::DragPointerMove( DocCoord PointerPos, ClickModifiers ClickMods, Spread *pSpread, BOOL bSolidDrag)
 {
 	EndSnapped = FALSE;		// Always false in this operation
-	
+
 	// If drag has moved onto a different spread, convert the coord to be relative to the
 	// original spread.
 	if (pSpread != StartSpread)
@@ -3545,7 +3549,7 @@ void OpNodePathEditControlBlob::DragPointerMove( DocCoord PointerPos, ClickModif
 	LastMousePos = PointerPos;
 	RenderPathEditControlBlobs( EditPath.GetBoundingRect(), StartSpread );
 
-	// Now we want to update the Line tool infobar if the position of control point being 
+	// Now we want to update the Line tool infobar if the position of control point being
 	// dragged is being shown.
 	PathFlags* Flags = EditPath.GetFlagArray();
 //	DocCoord* Coords = EditPath.GetCoordArray();
@@ -3601,7 +3605,7 @@ BOOL OpNodePathEditControlBlob::BuildEditPath()
 
 	// Now do the same for the opposite control point, if the Rotate flag is set on the endpoint
 	if (Flags[EndPointIndex].IsRotate && OppositeIndex>=0 && OppositeIndex<NumCoords)
-	{	
+	{
 		if (Flags[OppositeIndex-1].IsEndPoint)
 			Flags[OppositeIndex+2].NeedToRender = TRUE;
 		else
@@ -3723,14 +3727,14 @@ void OpNodePathEditControlBlob::RenderPathEditControlBlobs( DocRect Rect, Spread
 		EditPath.DrawControlLine(pRegion, Coords[Index], Coords[EndPointIndex]);
 		if (Flags[EndPointIndex].IsRotate && OppositeIndex>=0 && OppositeIndex<NumCoords && Flags[Index].IsSelected)
 		{
-			
+
 			EditPath.DrawControlBlob(pRegion, Coords[OppositeIndex]);
 			EditPath.DrawControlLine(pRegion, Coords[OppositeIndex], Coords[EndPointIndex]);
-		}			
+		}
 
 		// Get the Next render region
 		pRegion = DocView::GetNextOnTop( &Rect );
-		
+
 	}
 }
 
@@ -3749,9 +3753,9 @@ BOOL OpNodePathEditControlBlob::Init()
 {
 	PORTNOTETRACE("other","OpNodePathEditControlBlob::Init - do nothing");
 	return (RegisterOpDescriptor(
-									0, 
+									0,
 									_R(IDS_NODEPATH_EDIT),
-									CC_RUNTIME_CLASS(OpNodePathEditControlBlob), 
+									CC_RUNTIME_CLASS(OpNodePathEditControlBlob),
 									OPTOKEN_NODEPATH,
 									OpNodePathEditControlBlob::GetState,
 									0,											// help ID
@@ -3777,7 +3781,7 @@ BOOL OpNodePathEditControlBlob::Init()
 OpState OpNodePathEditControlBlob::GetState(String_256* Description, OpDescriptor*)
 {
 	OpState Blobby;
-	
+
 	return Blobby;
 }
 
@@ -3804,8 +3808,8 @@ void OpNodePathEditControlBlob::SetStatusLineHelp()
 	Author:		Diccon_Yamanaka (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	26/9/99
 	inputs :    -
-	outputs:    
-	returns:    pointer to the first nodeblend in the selection if successful, 
+	outputs:
+	returns:    pointer to the first nodeblend in the selection if successful,
 				NULL otherwise
 	Purpose:	To determine if the current selection is a blend on a curve
 
@@ -3813,7 +3817,7 @@ void OpNodePathEditControlBlob::SetStatusLineHelp()
 *********************************************************************************************/
 
 NodeGroup* OpNodePathEditBlob::GetGroupParentOfCurve()
-{	
+{
 	if (OriginalPath == NULL)
 		return NULL;
 	Node* pParent = OriginalPath->FindParent();
@@ -3841,8 +3845,8 @@ NodeGroup* OpNodePathEditBlob::GetGroupParentOfCurve()
 	Author:		Chris_Snook (Xara Group Ltd) <camelotdev@xara.com> (based upon Diccon Yamanaka's)
 	Created:	20/4/2000
 	inputs :    -
-	outputs:    
-	returns:    pointer to the first nodeblend in the selection if successful, 
+	outputs:
+	returns:    pointer to the first nodeblend in the selection if successful,
 				NULL otherwise
 	Purpose:	To determine if the current selection is a blend on a curve
 
@@ -3894,7 +3898,7 @@ AttrBrushType* OpNodePathEditBlob::GetAppliedBrush()
 	NodeAttribute* pAttr = NULL;
 	AttrBrushType* pAttrBrush = NULL;
 	OriginalPath->FindAppliedAttribute(CC_RUNTIME_CLASS(AttrBrushType), &pAttr);
-	
+
 	if (pAttr != NULL)
 	{
 		// just check that our applied brush isn't the default
@@ -3931,14 +3935,14 @@ BOOL OpNodePathEditBlob::EditBrushAttribute(INT32 FirstIndex, INT32 LastIndex, A
 		//ERROR3("Invalid inputs to OpNodePathEditBlob::EditBrushAttribute");
 		return FALSE;
 	}
-	
+
 	// currently we only have pressure implemented, and if this attribute does not use
 	// pressure then theres nothing for us to do
 	CDistanceSampler* pDistSamp = pAttrBrush->GetPressureCache();
 	if (pDistSamp == NULL)
-		return TRUE;  // not an error 
-	
-	/* Basically what we want to do here is resample the data that applies to the changed 
+		return TRUE;  // not an error
+
+	/* Basically what we want to do here is resample the data that applies to the changed
 	 section of the path, so that we have the same data applying over a different distance.
 	 The way to implement this in an undoable way is this:
 	 1) Find out the new length of the changed section of the path;
@@ -3969,7 +3973,7 @@ BOOL OpNodePathEditBlob::EditBrushAttribute(INT32 FirstIndex, INT32 LastIndex, A
 	BOOL ok = pDistSamp->GetDataSection(OrigStartDist, OrigEndDist, pSection);
 	if (!ok)
 		return FALSE;
-	
+
 	// ask the section to resample itself
 	if (!pSection->ReSample(ChangedLength))
 	{
@@ -3987,9 +3991,9 @@ BOOL OpNodePathEditBlob::EditBrushAttribute(INT32 FirstIndex, INT32 LastIndex, A
 		return FALSE;
 	}
 
-	// now make a removepoints action 
-	RemovePressurePointsAction* pAction; 
-	
+	// now make a removepoints action
+	RemovePressurePointsAction* pAction;
+
 	if (RemovePressurePointsAction::Init(this, &UndoActions, pAttrBrush, StartPressIndex, NumIndexes, NULL, &pAction) == AC_FAIL)
 		return FALSE;
 
@@ -3998,13 +4002,13 @@ BOOL OpNodePathEditBlob::EditBrushAttribute(INT32 FirstIndex, INT32 LastIndex, A
 
 	// find out how many points we're inserting
 	size_t NumAddPoints = pSection->GetNumItems();
-	
+
 	if (AddPressurePointsAction::Init(this, &UndoActions, pAttrBrush, pSection, StartPressIndex, NumAddPoints,  &pAddAction) == AC_FAIL)
 	{
 		delete pSection;
 		return FALSE;
 	}
- 
+
 	return TRUE;
 }
 
@@ -4024,11 +4028,11 @@ BOOL OpNodePathEditBlob::EditBrushAttribute(INT32 FirstIndex, INT32 LastIndex, A
 	Purpose:	As above, if you want to know the distance between two points on the edit path
 				then this function is for you.
 
-	Notes:		I can't believe no-one has written a Path function to do this.  There must be 
+	Notes:		I can't believe no-one has written a Path function to do this.  There must be
 				a better way to do this but currently I must get the two coordinates corresponding
 				to the indexes, and call GetDistanceToPoint for both of them and do a subtraction.
 				I will shift this into Path at some point but I don't want to hang around for
-				the rebuild right now. 
+				the rebuild right now.
 
 ********************************************************************************************/
 
@@ -4046,7 +4050,7 @@ MILLIPOINT OpNodePathEditBlob::GetLengthOfPathSection(Path* pPath, INT32 FirstIn
 		ERROR3("Invalid inputs to OpNodePathEditBlob::GetLengthOfEditSection");
 		return -1;
 	}
-	
+
 	// get the coordinates
 	DocCoord* pCoords = pPath->GetCoordArray();
 	ERROR2IF(pCoords == NULL, -1, "Failed to get coord array in OpNodePathEditBlob::GetLengthOfEditSection");
@@ -4057,7 +4061,7 @@ MILLIPOINT OpNodePathEditBlob::GetLengthOfPathSection(Path* pPath, INT32 FirstIn
 	// Now get the distances along the path to these points
 	MILLIPOINT FirstDistance = -1;
 	MILLIPOINT LastDistance  = -1;
-	
+
 	BOOL ok = pPath->GetDistanceToPoint(FirstCoord, &FirstDistance);
 	if (ok)
 		ok = pPath->GetDistanceToPoint(LastCoord, &LastDistance);
@@ -4079,7 +4083,7 @@ MILLIPOINT OpNodePathEditBlob::GetLengthOfPathSection(Path* pPath, INT32 FirstIn
 	Inputs:		pPath - the path containing the index
 				Index - the index to which we wish to find the distance
 	Returns:	The distance along pPath to Index, or -1 if theres a problem
-	Purpose:	As above, 
+	Purpose:	As above,
 
 	Notes:		Should really move this into Path at some point
 
@@ -4089,7 +4093,7 @@ INT32 OpNodePathEditBlob::GetDistanceToPathIndex(Path* pPath, INT32 Index)
 {
 	// some checks
 	ERROR2IF(pPath == NULL, -1, "Path is NULL in OpNodePathEditBlob::GetDistanceToPathIndex");
-	
+
 	if (Index >= pPath->GetNumCoords())
 	{
 		ERROR3("Invalid index in OpNodePathEditBlob::GetDistanceToPathIndex");
@@ -4123,9 +4127,9 @@ INT32 OpNodePathEditBlob::GetDistanceToPathIndex(Path* pPath, INT32 Index)
 
 BOOL OpNodePathAddEndpoint::Init()
 {
-	return (RegisterOpDescriptor(	0, 
+	return (RegisterOpDescriptor(	0,
 									_R(IDS_NODEPATH_ADDENDPOINT),
-									CC_RUNTIME_CLASS(OpNodePathAddEndpoint), 
+									CC_RUNTIME_CLASS(OpNodePathAddEndpoint),
 									OPTOKEN_ADDENDPOINT,
 									OpNodePathAddEndpoint::GetState,
 									0,										// help ID
@@ -4151,7 +4155,7 @@ BOOL OpNodePathAddEndpoint::Init()
 OpState OpNodePathAddEndpoint::GetState(String_256* Description, OpDescriptor*)
 {
 	OpState Blobby;
-	
+
 	return Blobby;
 }
 
@@ -4184,9 +4188,9 @@ void OpNodePathAddEndpoint::SetStatusLineHelp()
 
 /********************************************************************************************
 
->	void OpNodePathAddEndpoint::DoStartDragEdit(NodePath* OrigPath, 
-												DocCoord Anchor, 
-												Spread *pSpread, 
+>	void OpNodePathAddEndpoint::DoStartDragEdit(NodePath* OrigPath,
+												DocCoord Anchor,
+												Spread *pSpread,
 												INT32 PathIndex,
 												BOOL CurveOrLine,
 												BOOL CloseThePath = FALSE,
@@ -4205,15 +4209,15 @@ void OpNodePathAddEndpoint::SetStatusLineHelp()
 				to add a line or curve element to the start or end of an open subpath.
 				Anchor is the point we are adding (that's where the user clicked) and
 				PathIndex tells us the nearest endpoint in the path. The flag CloseThePath
-				tells the operation if it should close the path and select both the start and 
+				tells the operation if it should close the path and select both the start and
 				endpoints to drag around.
 
 ********************************************************************************************/
 
-void OpNodePathAddEndpoint::DoStartDragEdit(NodePath* OrigPath, 
-											DocCoord Anchor, 
+void OpNodePathAddEndpoint::DoStartDragEdit(NodePath* OrigPath,
+											DocCoord Anchor,
 											Spread *pSpread,
-											ClickModifiers Mods, 
+											ClickModifiers Mods,
 											INT32 PathIndex,
 											BOOL CurveOrLine,
 											BOOL CloseThePath,
@@ -4230,7 +4234,7 @@ void OpNodePathAddEndpoint::DoStartDragEdit(NodePath* OrigPath,
 	IsPathClosing = CloseThePath;
 	AddCurveFlag = CurveOrLine;
 	AddSmoothFlag = SmoothOrCusp;
-	
+
 	// Now work out the position to constrain to.
 	PathFlags*	Flags = OrigPath->InkPath.GetFlagArray();
 	PathVerb*	Verbs = OrigPath->InkPath.GetVerbArray();
@@ -4254,7 +4258,7 @@ void OpNodePathAddEndpoint::DoStartDragEdit(NodePath* OrigPath,
 	DocView::SnapCurrent(pSpread, &LastMousePos);
 
 	BOOL ok = TRUE;
-	
+
 	// We also need to make a version of the path that we can change
 	if (ok)
 		ok = BuildEditPath(LastMousePos);
@@ -4265,7 +4269,7 @@ void OpNodePathAddEndpoint::DoStartDragEdit(NodePath* OrigPath,
 	{
 		if (ok)
 			ok = Complete(StartMousePos);
-	
+
 		if (!ok)
 		{
 			InformError();
@@ -4312,7 +4316,7 @@ void OpNodePathAddEndpoint::DoStartDragEdit(NodePath* OrigPath,
 	Input:		NewPoint is the point that's being inserted
 	Returns:	TRUE if it managed to build the path, FALSE if it failed
 	Purpose:	Builds a copy of the path that we can edit, without destroying the original
-				data. This version has to add an extra element which we will be dragging 
+				data. This version has to add an extra element which we will be dragging
 				around. It will look at the member variable IsPathClosing to see if the path
 				should be made to close.
 	Errors:		If it runs out of memory then it will return FALSE
@@ -4367,7 +4371,7 @@ BOOL OpNodePathAddEndpoint::BuildEditPath(DocCoord NewPoint)
 	// Now check the IsPathClosing flag to see if we should make the path closed
 	if (IsPathClosing)
 	{
-		// When closing the path, we have to snap the new endpoint to the opposite 
+		// When closing the path, we have to snap the new endpoint to the opposite
 		// endpoint. Thus, we need to know if this element was added to the start or end
 		// of the path. This we can discover by looking at the previous element to
 		// the element at NewPointIndex. If that is a MoveTo then the new point is
@@ -4396,9 +4400,9 @@ BOOL OpNodePathAddEndpoint::BuildEditPath(DocCoord NewPoint)
 		{
 			// Snap the endpoint coords to those of the moveto at the start, but first
 			// set the CloseFigure flag in the verb.
-			
+
 			INT32 EndCoord = NewPointIndex;
-			
+
 			if ((PathVerbs[NewPointIndex] & ~PT_CLOSEFIGURE) == PT_BEZIERTO)
 				EndCoord = NewPointIndex + 2;
 
@@ -4417,7 +4421,7 @@ BOOL OpNodePathAddEndpoint::BuildEditPath(DocCoord NewPoint)
 			Flags[i].IsSelected = TRUE;
 		}
 	}
-	
+
 	EditPath.SmoothCurve();
 
 	// Go though all the coords, with scary amounts of looking back and forwards
@@ -4474,9 +4478,9 @@ BOOL OpNodePathAddEndpoint::BuildEditPath(DocCoord NewPoint)
 
 /********************************************************************************************
 
->	void OpNodePathAddEndpoint::DragFinished(DocCoord Pos, 
-											ClickModifiers Mods, 
-											Spread* pSpread, 
+>	void OpNodePathAddEndpoint::DragFinished(DocCoord Pos,
+											ClickModifiers Mods,
+											Spread* pSpread,
 											BOOL Success,
 											BOOL bSolidDrag)
 
@@ -4496,9 +4500,9 @@ BOOL OpNodePathAddEndpoint::BuildEditPath(DocCoord NewPoint)
 
 ********************************************************************************************/
 
-void OpNodePathAddEndpoint::DragFinished(	DocCoord Pos, 
-											ClickModifiers Mods, 
-											Spread* pSpread, 
+void OpNodePathAddEndpoint::DragFinished(	DocCoord Pos,
+											ClickModifiers Mods,
+											Spread* pSpread,
 											BOOL Success,
 											BOOL bSolidDrag)
 {
@@ -4516,8 +4520,8 @@ void OpNodePathAddEndpoint::DragFinished(	DocCoord Pos,
 	else
 		FailAndExecute();
 
-	End();	
-	
+	End();
+
 
 }
 
@@ -4540,7 +4544,7 @@ BOOL OpNodePathAddEndpoint::Complete(DocCoord AddElementPoint)
 {
 	BeginSlowJob();
 	BOOL ok = TRUE;
-	
+
 	// Start the sel operation, removes blobs at start and end
 	if (ok)
 		ok = DoStartSelOp(TRUE,TRUE);
@@ -4614,7 +4618,7 @@ BOOL OpNodePathAddEndpoint::CompleteThisPath(DocCoord AddElementPoint)
 
 	if (IsPathClosing)
 		EndSnapped = TRUE;
-		
+
 	// If the ends snapped, set the filled bit on the path
 	if (ok)
 		ok = FillPathIfEndsSnapped() && JoinWithOtherPath() ;
@@ -4634,20 +4638,20 @@ BOOL OpNodePathAddEndpoint::CompleteThisPath(DocCoord AddElementPoint)
 	// DY 9/99 are we editing a blend on a curve? If so we may wish to change the number of
 	// steps in the blend
 	NodeGroup* pParent = GetGroupParentOfCurve();
-	
+
 	if (pParent != NULL)
 	{
 		if (pParent->IS_KIND_OF(NodeBlend))
 		{
 			if (ok)
-				InsertChangeBlendStepsAction((NodeBlend*)pParent);               
+				InsertChangeBlendStepsAction((NodeBlend*)pParent);
 		}
-	
+
 	}
 	ObjChangeFlags cFlags(FALSE,TRUE);
 	ObjChangeParam ObjChange(OBJCHANGE_FINISHED,cFlags,NULL,this);
 	ok = UpdateChangedNodes(&ObjChange);
-	
+
 	return ok;
 }
 
@@ -4667,7 +4671,7 @@ BOOL OpNodePathAddEndpoint::CompleteThisPath(DocCoord AddElementPoint)
 				and this brush attribute makes use of sampled pressure or time information then
 				the brush needs to resample its data.  So here we will insert a few actions to
 				make that happen.
-	
+
 	Notes:		Derived version does not do the remove points (as we are only adding here). Instead
 				it makes itself some new data and inserts it at the insert point.
 
@@ -4680,13 +4684,13 @@ BOOL OpNodePathAddEndpoint::EditBrushAttribute(INT32 FirstIndex, INT32 LastIndex
 		//ERROR3("Invalid inputs to OpNodePathEditBlob::EditBrushAttribute");
 		return FALSE;
 	}
-	
+
 	// currently we only have pressure implemented, and if this attribute does not use
 	// pressure then theres nothing for us to do
 	CDistanceSampler* pDistSamp = pAttrBrush->GetPressureCache();
 	if (pDistSamp == NULL)
-		return TRUE;  // not an error 
-	
+		return TRUE;  // not an error
+
 	// what we basically want to do here is to make a new section of data and insert ot
 	// either at the beginning or the end
 
@@ -4701,7 +4705,7 @@ BOOL OpNodePathAddEndpoint::EditBrushAttribute(INT32 FirstIndex, INT32 LastIndex
 	if (pNewSampler == NULL)
 		return FALSE;
 
-	if (!pNewSampler->InitialiseData(NumItems))  // initialise the array 
+	if (!pNewSampler->InitialiseData(NumItems))  // initialise the array
 	{
 		delete pNewSampler;
 		return FALSE;
@@ -4720,7 +4724,7 @@ BOOL OpNodePathAddEndpoint::EditBrushAttribute(INT32 FirstIndex, INT32 LastIndex
 		return FALSE;
 	}
 	DocCoord InsertCoord = pCoord[InsertIndex];
-	
+
 	MILLIPOINT InsertDistance = -1;
 	if (!EditPath.GetDistanceToPoint(InsertCoord, &InsertDistance))
 	{
@@ -4730,7 +4734,7 @@ BOOL OpNodePathAddEndpoint::EditBrushAttribute(INT32 FirstIndex, INT32 LastIndex
 
 	// we want to get the pressure at this distance
 	UINT32 InternalIndex = pDistSamp->GetInternalIndexFromDistance(InsertDistance);
-	
+
 	if (InternalIndex == (UINT32)-1) // we're over the end!
 		InternalIndex = UINT32(pDistSamp->GetNumItems() - 1);
 
@@ -4739,7 +4743,7 @@ BOOL OpNodePathAddEndpoint::EditBrushAttribute(INT32 FirstIndex, INT32 LastIndex
 
 	if (!pDistSamp->GetAt(InternalIndex, &TheItem))
 	{
-		ERROR3("Unable to retrieve pressure item in OpNodePathAddEndpoint::EditBrushAttribute"); 
+		ERROR3("Unable to retrieve pressure item in OpNodePathAddEndpoint::EditBrushAttribute");
 		delete pNewSampler;
 		return FALSE;
 	}
@@ -4757,13 +4761,13 @@ BOOL OpNodePathAddEndpoint::EditBrushAttribute(INT32 FirstIndex, INT32 LastIndex
 
 	// find out how many points we're inserting
 	size_t NumAddPoints = pNewSampler->GetNumItems() + 1;
-	
+
 	if (AddPressurePointsAction::Init(this, &UndoActions, pAttrBrush, pNewSampler, InternalIndex, NumAddPoints,  &pAddAction) == AC_FAIL)
 	{
 		delete pNewSampler;
 		return FALSE;
 	}
- 
+
 	return TRUE;
 }
 
@@ -4790,12 +4794,12 @@ void OpNodePathEditBlob::ChangeCursor(Cursor* cursor)
 	{	// only change if this cursor is different from the current cursor
 		if (MyCurrentCursor != NULL)
 		{	// If one of our cursors is on the stack then get it off
-			CursorStack::GPop(CurrentCursorID);	
+			CursorStack::GPop(CurrentCursorID);
 		}
 		MyCurrentCursor = cursor;
 		CurrentCursorID = CursorStack::GPush(cursor);
 	}
-}	
+}
 
 
 /********************************************************************************************
@@ -4825,14 +4829,14 @@ BOOL OpNodePathEditBlob::CreateCursors()
 		if ((!pMoveCursor || !pMoveCursor->IsValid())
 				|| (!pCloseCursor || !pCloseCursor->IsValid())
 				|| (!pCrossHairCursor || !pCrossHairCursor->IsValid()))
-		{	
+		{
 			// They did fail, so clean up
 			TRACE( _T("Cursors not created in OpNodePathEditBlob::CreateCursors\n"));
 			delete pMoveCursor;
 			delete pCloseCursor;
 			delete pCrossHairCursor;
 			pMoveCursor = NULL;
-			return FALSE;			
+			return FALSE;
 		}
 	}
 	return TRUE;
@@ -4861,7 +4865,7 @@ void OpNodePathEditBlob::DestroyCursors()
 	{	// If one is NULL then the rest don't exist
 		if (MyCurrentCursor != NULL)
 		{
-			CursorStack::GPop(CurrentCursorID);			
+			CursorStack::GPop(CurrentCursorID);
 		}
 		delete pMoveCursor;
 		delete pCloseCursor;
@@ -4934,8 +4938,8 @@ BOOL OpNodePathEditBlob::FillPathIfEndsSnapped(NodePath* pOrigPath)
 
 /********************************************************************************************
 
->	BOOL OpNodePathAddEndpoint::InsertElement(	DocCoord NewPoint, 
-												Path* DestPath, 
+>	BOOL OpNodePathAddEndpoint::InsertElement(	DocCoord NewPoint,
+												Path* DestPath,
 												INT32 InsPos,
 												INT32* NewPosition,
 												BOOL RecordUndo = FALSE,
@@ -4963,8 +4967,8 @@ BOOL OpNodePathEditBlob::FillPathIfEndsSnapped(NodePath* pOrigPath)
 
 ********************************************************************************************/
 
-BOOL OpNodePathAddEndpoint::InsertElement(	DocCoord NewPoint, 
-											Path* DestPath, 
+BOOL OpNodePathAddEndpoint::InsertElement(	DocCoord NewPoint,
+											Path* DestPath,
 											INT32 InsPos,
 											INT32* NewPosition,
 											BOOL RecordUndo,
@@ -5013,10 +5017,10 @@ BOOL OpNodePathAddEndpoint::InsertElement(	DocCoord NewPoint,
 			tempflags.IsSmooth = TRUE;
 			tempflags.IsRotate = FALSE;
 		}
-		
+
 		if (AddCurveFlag)
 		{
-			// We insert a curve element with all three coords the same, since 
+			// We insert a curve element with all three coords the same, since
 			// they will get smoothed
 			if (!DestPath->InsertCurveTo(tempcoord,tempcoord,tempcoord,&tempflags))
 				return FALSE;
@@ -5025,7 +5029,7 @@ BOOL OpNodePathAddEndpoint::InsertElement(	DocCoord NewPoint,
 		{
 			if (!DestPath->InsertLineTo(tempcoord, &tempflags))
 				return FALSE;
-		}		
+		}
 
 		// Read the pointers to the arrays.
 		PathFlags* Flags = DestPath->GetFlagArray();
@@ -5041,7 +5045,7 @@ BOOL OpNodePathAddEndpoint::InsertElement(	DocCoord NewPoint,
 		}
 		else
 		{
-			Flags[InsPos].IsSelected = TRUE;	
+			Flags[InsPos].IsSelected = TRUE;
 			if (AddCurveFlag)
 				Flags[InsPos+1].IsSelected = TRUE;
 		}
@@ -5050,7 +5054,7 @@ BOOL OpNodePathAddEndpoint::InsertElement(	DocCoord NewPoint,
 
 		if (RecordUndo)
 		{
-			Act = ModifyElementAction::Init(this, 
+			Act = ModifyElementAction::Init(this,
 											&UndoActions,
 											PathVerbs[InsPos],
 											Flags[InsPos],
@@ -5170,9 +5174,9 @@ OpToggleSmooth::OpToggleSmooth()
 ********************************************************************************************/
 BOOL OpToggleSmooth::Init()
 {
-	return (RegisterOpDescriptor(	0, 
+	return (RegisterOpDescriptor(	0,
 									_R(IDS_NODEPATH_EDIT),
-									CC_RUNTIME_CLASS(OpToggleSmooth), 
+									CC_RUNTIME_CLASS(OpToggleSmooth),
 									OPTOKEN_NODEPATH,
 									OpToggleSmooth::GetState,
 									0,									// help ID
@@ -5217,7 +5221,7 @@ OpState OpToggleSmooth::GetState(String_256* Description, OpDescriptor*)
 	Outputs:	-
 	Returns:	-
 	Purpose:	This operation will toggle the smoothness or otherwise of a point in a path.
-				If the point is smooth, this operation will reset the smoothing bits on any 
+				If the point is smooth, this operation will reset the smoothing bits on any
 				adjacent control points. It will also change their positions, making the point
 				visibly a corner. If the point is not smooth, this operation will set the
 				smoothing flags on the control points and perform a smoothing operation on the
@@ -5303,7 +5307,7 @@ void OpToggleSmooth::DoTogglePoint(NodePath* ThisNode, INT32 Index, Spread* pSpr
 	Outputs:	-
 	Returns:	FALSE if an error occured
 	Purpose:	This operation will toggle the smoothness or otherwise of a point in a path.
-				If the point is smooth, this operation will reset the smoothing bits on any 
+				If the point is smooth, this operation will reset the smoothing bits on any
 				adjacent control points. It will also change their positions, making the point
 				visibly a corner. If the point is not smooth, this operation will set the
 				smoothing flags on the control points and perform a smoothing operation on the
@@ -5356,7 +5360,7 @@ BOOL OpToggleSmooth::TogglePathPoints(NodePath* CurrentNode, INT32 Index, BOOL A
 		{	// Toggle single point
 			Test = Flags[CurrentIndex].IsEndPoint;
 		}
-		
+
 		// Toggle the smooth state of this endpoint
 		if (Test)
 		{
@@ -5369,7 +5373,7 @@ BOOL OpToggleSmooth::TogglePathPoints(NodePath* CurrentNode, INT32 Index, BOOL A
 //				// Store the paths sub-selection state
 //				if (Success)
 //					Success = (StorePathSubSelStateAction::DoRecord(this, &UndoActions, &CurrentNode->InkPath) != AC_FAIL);
-			
+
 				ChangedThisPath = TRUE;
 			}
 
@@ -5420,7 +5424,7 @@ BOOL OpToggleSmooth::MakePointCusp(NodePath* pPath, INT32 Index, BOOL DontMoveOn
 	ERROR2IF(pPath == NULL, FALSE, "Path pointer was NULL");
 	ERROR2IF(Index < 0, FALSE, "Path index was negative");
 	ERROR2IF(Index >= pPath->InkPath.GetNumCoords(), FALSE, "Path index off end of path");
-	
+
 	// Store the current state of the endpoint for undo then make it cusp
 	ModifyElementAction* UnAction = NULL;
 	PathFlags* Flags = NULL;
@@ -5432,7 +5436,7 @@ BOOL OpToggleSmooth::MakePointCusp(NodePath* pPath, INT32 Index, BOOL DontMoveOn
 																Coords[Index], Index, pPath, (Action**)&UnAction);
 	if (Act == AC_FAIL)
 		return FALSE;
-	Flags[Index].IsSmooth = FALSE;			
+	Flags[Index].IsSmooth = FALSE;
 	Flags[Index].IsRotate = FALSE;
 
 	// Modify the previous control point (if there is one)
@@ -5454,7 +5458,7 @@ BOOL OpToggleSmooth::MakePointCusp(NodePath* pPath, INT32 Index, BOOL DontMoveOn
 		Flags[PrevControl].IsRotate = FALSE;
 
 		// Cope with the possibility that we have made the start/end of a closed
-		// path a cusp - we can tell this if the endpoint associated with the 
+		// path a cusp - we can tell this if the endpoint associated with the
 		// previous control point is not the same as Index
 		if (Index != PrevControl+1)
 		{
@@ -5471,7 +5475,7 @@ BOOL OpToggleSmooth::MakePointCusp(NodePath* pPath, INT32 Index, BOOL DontMoveOn
 	INT32 NextControl = pPath->InkPath.FindNextControlPoint(Index);
 	if (NextControl != -1)
 	{
-		Act = ModifyElementAction::Init(this, &UndoActions, Verbs[NextControl], Flags[NextControl], 
+		Act = ModifyElementAction::Init(this, &UndoActions, Verbs[NextControl], Flags[NextControl],
 													Coords[NextControl], NextControl, pPath, (Action**)&UnAction);
 		if (Act == AC_FAIL)
 			return FALSE;
@@ -5502,7 +5506,7 @@ BOOL OpToggleSmooth::MakePointCusp(NodePath* pPath, INT32 Index, BOOL DontMoveOn
 				Index - the index of the path to modify
 	Outputs:	-
 	Returns:	TRUE/FALSE for success/failure
-	Purpose:	Makes the specified endpoint in the path a smooth join.  Has to move the 
+	Purpose:	Makes the specified endpoint in the path a smooth join.  Has to move the
 				control points around the endpoint.
 	Errors:		Parameter checks.  Creates actions which may fail
 	SeeAlso:	OpToggleSmooth::MakePointCusp
@@ -5513,7 +5517,7 @@ BOOL OpToggleSmooth::MakePointSmooth(NodePath* pPath, INT32 Index)
 	ERROR2IF(pPath == NULL, FALSE, "Path pointer was NULL");
 	ERROR2IF(Index < 0, FALSE, "Path index was negative");
 	ERROR2IF(Index >= pPath->InkPath.GetNumCoords(), FALSE, "Path index off end of path");
-	
+
 	// Store the current state of the endpoint for undo then make it smooth
 	ModifyElementAction* UnAction = NULL;
 	PathFlags* Flags = NULL;
@@ -5525,7 +5529,7 @@ BOOL OpToggleSmooth::MakePointSmooth(NodePath* pPath, INT32 Index)
 																Coords[Index], Index, pPath, (Action**)&UnAction);
 	if (Act == AC_FAIL)
 		return FALSE;
-	Flags[Index].IsSmooth = TRUE;			
+	Flags[Index].IsSmooth = TRUE;
 	Flags[Index].IsRotate = TRUE;
 
 	// Modify the previous control point (if there is one)
@@ -5584,9 +5588,9 @@ BOOL OpToggleSmooth::MakePointSmooth(NodePath* pPath, INT32 Index)
 
 BOOL OpNewPath::Init()
 {
-	return (RegisterOpDescriptor(	0, 
+	return (RegisterOpDescriptor(	0,
 									_R(IDS_NODEPATH_NEWPATH),
-									CC_RUNTIME_CLASS(OpNewPath), 
+									CC_RUNTIME_CLASS(OpNewPath),
 									OPTOKEN_NODEPATH,
 									OpNewPath::GetState,
 									0,								// help ID
@@ -5612,7 +5616,7 @@ BOOL OpNewPath::Init()
 OpState OpNewPath::GetState(String_256* Description, OpDescriptor*)
 {
 	OpState Blobby;
-	
+
 	return Blobby;
 }
 
@@ -5621,9 +5625,9 @@ OpState OpNewPath::GetState(String_256* Description, OpDescriptor*)
 /********************************************************************************************
 
 >	void OpNewPath::DoStartDragEdit(DocCoord FirstPoint,
-									DocCoord LastPoint, 
+									DocCoord LastPoint,
 									Spread *pSpread,
-									ClickModifiers Mods, 
+									ClickModifiers Mods,
 									BOOL MakeCurve,
 									BOOL MakeSmooth)
 
@@ -5641,7 +5645,7 @@ OpState OpNewPath::GetState(String_256* Description, OpDescriptor*)
 
 ********************************************************************************************/
 
-void OpNewPath::DoStartDragEdit(DocCoord FirstPoint, DocCoord LastPoint, Spread* pSpread, 
+void OpNewPath::DoStartDragEdit(DocCoord FirstPoint, DocCoord LastPoint, Spread* pSpread,
 										ClickModifiers Mods, BOOL MakeCurve, BOOL MakeSmooth)
 {
 	ConstrainPoint = FirstPoint;
@@ -5661,7 +5665,7 @@ void OpNewPath::DoStartDragEdit(DocCoord FirstPoint, DocCoord LastPoint, Spread*
 	AddSmoothFlag = MakeSmooth;
 
 	BOOL ok = CreateCursors();
-	
+
 	// We also need to make a version of the path that we can change
 	if (ok)
 		ok = BuildEditPath(FirstPoint, LastPoint);
@@ -5726,7 +5730,7 @@ BOOL OpNewPath::BuildEditPath(DocCoord FirstPoint, DocCoord LastPoint)
 		Flags[i].IsSmooth = TRUE;
 		Flags[i].IsRotate = AddSmoothFlag;
 	}
-	
+
 	// Now select the endpoint and the previous control point
 	if (AddCurveFlag)
 	{
@@ -5738,7 +5742,7 @@ BOOL OpNewPath::BuildEditPath(DocCoord FirstPoint, DocCoord LastPoint)
 		Flags[1].IsSelected = TRUE;
 		Flags[0].NeedToRender = Flags[1].NeedToRender = TRUE;
 	}
-	
+
 	EditPath.SmoothCurve();
 
 	// It worked
@@ -5747,9 +5751,9 @@ BOOL OpNewPath::BuildEditPath(DocCoord FirstPoint, DocCoord LastPoint)
 
 /********************************************************************************************
 
->	void OpNewPath::DragFinished(	DocCoord Pos, 
-											ClickModifiers Mods, 
-											Spread* pSpread, 
+>	void OpNewPath::DragFinished(	DocCoord Pos,
+											ClickModifiers Mods,
+											Spread* pSpread,
 											BOOL Success,
 											BOOL bSolidDrag)
 
@@ -5780,11 +5784,11 @@ void OpNewPath::DragFinished(DocCoord Pos, ClickModifiers Mods, Spread* pSpread,
 	NodePath* NewPath = NULL;
 	Document* pDoc = GetWorkingDoc();
 	ERROR3IF(pDoc == NULL, "Null Document while setting attributes for new NodePath");
-	
+
 	if (Success && (pDoc != NULL))
 	{
 		ok = DoStartSelOp(FALSE);
-		
+
 		// Create a path to hold the data
 		NodePath* NewPath = new NodePath;
 		ok = (NewPath != NULL);
@@ -5792,11 +5796,11 @@ void OpNewPath::DragFinished(DocCoord Pos, ClickModifiers Mods, Spread* pSpread,
 		// Initialise the path
 		if (ok)
 			ok = NewPath->SetUpPath(24, 12);
-		
+
 		// Copy the data from the edit path to the new path
 		if (ok)
 			ok = NewPath->InkPath.CopyPathDataFrom(&EditPath);
-		
+
 		// Apply attributes to the new node
 		if (ok)
 			ok = pDoc->GetAttributeMgr().ApplyCurrentAttribsToNode((NodeRenderableInk*)NewPath);
@@ -5807,7 +5811,7 @@ void OpNewPath::DragFinished(DocCoord Pos, ClickModifiers Mods, Spread* pSpread,
 
 		// Here we have to clear the floating endpoint condition that prevails in the line tool.
 		// To avoid grief in tool DLL builds lets just broadcast a message saying an new
-		// path has been created.  The line tool picks up this message and clears its floating endpoint 
+		// path has been created.  The line tool picks up this message and clears its floating endpoint
 		if (ok)
 			BROADCAST_TO_ALL(NewPathCreatedMsg(NewPath, this, &UndoActions));
 	}
@@ -5828,7 +5832,7 @@ void OpNewPath::DragFinished(DocCoord Pos, ClickModifiers Mods, Spread* pSpread,
 		FailAndExecute();
 	}
 
-	End();		
+	End();
 }
 
 
@@ -5838,7 +5842,7 @@ void OpNewPath::DragFinished(DocCoord Pos, ClickModifiers Mods, Spread* pSpread,
 
 	Author:		Mark_Neves (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	10/1/96
-	Purpose:	This is the class that is passed to other nodes when the combine op gets them to 
+	Purpose:	This is the class that is passed to other nodes when the combine op gets them to
 				to turn into other types via their DoBecomeA() method
 
 ***********************************************************************************************/
@@ -5853,7 +5857,7 @@ public:
 
 	~JoinShapesBecomeA();
 
-	// This function should be called when Reason == BECOMEA_PASSBACK 
+	// This function should be called when Reason == BECOMEA_PASSBACK
 	virtual BOOL PassBack(NodeRenderableInk* pNewNode,NodeRenderableInk* pCreatedByNode,CCAttrMap* pAttrMap);
 
 	CCAttrMap* GetLastAttrMap();
@@ -5874,7 +5878,7 @@ CC_IMPLEMENT_MEMDUMP(JoinShapesBecomeA,BecomeA);
 
 	Author:		Mark_Neves (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	15/1/96
-	Inputs:		
+	Inputs:
 	Outputs:	-
 	Returns:	-
 	Purpose:	The default destructor.
@@ -5904,14 +5908,14 @@ JoinShapesBecomeA::~JoinShapesBecomeA()
 
 	Author:		Mark_Neves (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	15/1/96
-	Inputs:		
+	Inputs:
 	Outputs:	-
 	Returns:	ptr to an attr map, or NULL if it fails
 	Purpose:	This returns a ptr to an attr map that contains ptrs to the attrs of the last selected object.
 
 				This attr map is the one that's applied to the new joined path, using NodeRenderableInk::ApplyAttributes()
 
-				Do not delete this map or any of the attrs within it.  
+				Do not delete this map or any of the attrs within it.
 
 	Errors:		-
 	SeeAlso:	NodeRenderableInk::ApplyAttributes()
@@ -5986,7 +5990,7 @@ BOOL JoinShapesBecomeA::PassBack(NodeRenderableInk* pNewNode,NodeRenderableInk* 
 
 	// Merge the new NodePath into our JoinedPath
 	BOOL ok = pJoinedPath->InkPath.MergeTwoPaths(((NodePath*)pNewNode)->InkPath);
-	
+
 	// Don't need the supplied NodePath anymore
 	pNewNode->CascadeDelete();
 	delete pNewNode;
@@ -5998,7 +6002,7 @@ BOOL JoinShapesBecomeA::PassBack(NodeRenderableInk* pNewNode,NodeRenderableInk* 
 
 /********************************************************************************************
 
->	OpJoinShapes::OpJoinShapes() 
+>	OpJoinShapes::OpJoinShapes()
 
 	Author:		Jim_Lynn (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	20/7/94
@@ -6010,10 +6014,10 @@ BOOL JoinShapesBecomeA::PassBack(NodeRenderableInk* pNewNode,NodeRenderableInk* 
 	SeeAlso:	-
 
 ********************************************************************************************/
-            
-            
-OpJoinShapes::OpJoinShapes(): SelOperation()								
-{                              
+
+
+OpJoinShapes::OpJoinShapes(): SelOperation()
+{
 }
 
  /********************************************************************************************
@@ -6024,11 +6028,11 @@ OpJoinShapes::OpJoinShapes(): SelOperation()
 	Created:	20/7/94
 	Inputs:		-
 	Outputs:	-
-	Returns:	TRUE if the operation could be successfully initialised 
-				FALSE if no more memory could be allocated 
-				
+	Returns:	TRUE if the operation could be successfully initialised
+				FALSE if no more memory could be allocated
+
 	Purpose:	OpJoinShapes initialiser method
-	Errors:		ERROR will be called if there was insufficient memory to allocate the 
+	Errors:		ERROR will be called if there was insufficient memory to allocate the
 				operation.
 	SeeAlso:	-
 
@@ -6046,10 +6050,10 @@ BOOL OpJoinShapes::Init()
  //							OpJoinShapes::GetState,
  //							0,	/* help ID */
  //							_R(IDBBL_NODEPATHOP),
- //							0	/* bitmap ID */)); 
+ //							0	/* bitmap ID */));
 
-}               
-    
+}
+
 /********************************************************************************************
 
 >	OpState	OpJoinShapes::GetState(String_256*, OpDescriptor*)
@@ -6059,7 +6063,7 @@ BOOL OpJoinShapes::Init()
 	Inputs:		-
 	Outputs:	-
 	Returns:	The state of the OpJoinShapes
-	Purpose:	For finding the OpJoinShapes's state. 
+	Purpose:	For finding the OpJoinShapes's state.
 	Errors:		-
 	SeeAlso:	-
 
@@ -6068,7 +6072,7 @@ BOOL OpJoinShapes::Init()
 OpState	OpJoinShapes::GetState(String_256* UIDescription, OpDescriptor*)
 {
 	OpState OpSt;
-	String_256 DisableReason; 
+	String_256 DisableReason;
 
 	// Ensure that a document exists
 	if (Document::GetSelected() == NULL)
@@ -6078,8 +6082,8 @@ OpState	OpJoinShapes::GetState(String_256* UIDescription, OpDescriptor*)
 
 		// Load reason why operation is disabled
 		DisableReason = String_256(_R(IDS_NO_DOC));
-	   	*UIDescription = DisableReason;	     
-	   	return OpSt;                                 
+	   	*UIDescription = DisableReason;
+	   	return OpSt;
 	}
 
 	OpSt.Greyed = FALSE;
@@ -6090,7 +6094,7 @@ OpState	OpJoinShapes::GetState(String_256* UIDescription, OpDescriptor*)
 	BOOL SelectedInside = FALSE;
 	BecomeA MyBecomeA(BECOMEA_TEST, CC_RUNTIME_CLASS(NodePath));
 	MyBecomeA.ResetCount();
-	
+
 	while (pNode != NULL)
 	{
 		if (pNode->CanBecomeA(&MyBecomeA))
@@ -6100,7 +6104,7 @@ OpState	OpJoinShapes::GetState(String_256* UIDescription, OpDescriptor*)
 		}
 		pNode = Selected->FindNext(pNode);
 	}
-	
+
 	// The operation is disabled if there are less than one path to join
 	if (MyBecomeA.GetCount() < 2)
 	{
@@ -6118,8 +6122,8 @@ OpState	OpJoinShapes::GetState(String_256* UIDescription, OpDescriptor*)
 			*UIDescription = DisableReason;
 		}
 	}
-	
-	return(OpSt);   
+
+	return(OpSt);
 }
 
 /********************************************************************************************
@@ -6131,17 +6135,17 @@ OpState	OpJoinShapes::GetState(String_256* UIDescription, OpDescriptor*)
 	Inputs:		OpDescriptor (unused)
 	Outputs:	-
 	Returns:	-
-	Purpose:	Performs the Join shapes operation. 
-				
+	Purpose:	Performs the Join shapes operation.
+
 	Errors:		-
 	SeeAlso:	-
 
 ********************************************************************************************/
 
 void OpJoinShapes::Do(OpDescriptor*)
-{   
+{
 	BOOL ok = TRUE;
-	
+
 	// remember the selection before the operation
 	if (ok)
 		ok = DoStartSelOp(FALSE,FALSE);
@@ -6210,15 +6214,15 @@ void OpJoinShapes::Do(OpDescriptor*)
 
 	// Tell the application to refresh the selection
 	GetApplication()->UpdateSelection();
-		
-	End();
-}			
 
-/*	
+	End();
+}
+
+/*
 void OpJoinShapes::Do(OpDescriptor*)
-{   
+{
 	BOOL ok = TRUE;
-	
+
 	// remember the selection before the operation
 	if (ok)
 		ok = DoStartSelOp(FALSE,FALSE);
@@ -6227,7 +6231,7 @@ void OpJoinShapes::Do(OpDescriptor*)
 	SelRange* Selected = GetApplication()->FindSelection();
 	if (ok)
 		ok = DoMakeShapes(*Selected);
-	
+
 	// First find the *last* pathnode selected,  Selected inside paths are ignored
 	NodePath* LastSelected = NULL;
 	Node* pNode = Selected->FindFirst();
@@ -6243,7 +6247,7 @@ void OpJoinShapes::Do(OpDescriptor*)
 			}
 			pNode = Selected->FindNext(pNode);
 		}
-	
+
 		if ((LastSelected == NULL) || (count < 2))
 		{
 			FailAndExecute();
@@ -6262,7 +6266,7 @@ void OpJoinShapes::Do(OpDescriptor*)
 		ok = NewPath != NULL;
 
 	// Now go through the selection, copying path data from selected paths into the new one
-	// and hiding the nodes. 
+	// and hiding the nodes.
 	pNode = Selected->FindFirst();
 	while (ok && (pNode != NULL))
 	{
@@ -6295,7 +6299,7 @@ void OpJoinShapes::Do(OpDescriptor*)
 
 	// Tell the application to refresh the selection
 	GetApplication()->UpdateSelection();
-		
+
 	// Now NewPath contains all the selected paths, so we have to insert this node in the tree
 	if (ok && !DoInsertNewNode(NewPath, LastSelected, NEXT, TRUE))
 	{
@@ -6315,12 +6319,12 @@ void OpJoinShapes::Do(OpDescriptor*)
 	}
 
 	End();
-}			
+}
 */
-    
+
 /********************************************************************************************
 
->	OpBreakShapes::OpBreakShapes() 
+>	OpBreakShapes::OpBreakShapes()
 
 	Author:		Jim_Lynn (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	22/7/94
@@ -6332,10 +6336,10 @@ void OpJoinShapes::Do(OpDescriptor*)
 	SeeAlso:	-
 
 ********************************************************************************************/
-            
-            
-OpBreakShapes::OpBreakShapes(): SelOperation()								
-{                              
+
+
+OpBreakShapes::OpBreakShapes(): SelOperation()
+{
 }
 
  /********************************************************************************************
@@ -6346,11 +6350,11 @@ OpBreakShapes::OpBreakShapes(): SelOperation()
 	Created:	22/7/94
 	Inputs:		-
 	Outputs:	-
-	Returns:	TRUE if the operation could be successfully initialised 
-				FALSE if no more memory could be allocated 
-				
+	Returns:	TRUE if the operation could be successfully initialised
+				FALSE if no more memory could be allocated
+
 	Purpose:	OpBreakShapes initialiser method
-	Errors:		ERROR will be called if there was insufficient memory to allocate the 
+	Errors:		ERROR will be called if there was insufficient memory to allocate the
 				operation.
 	SeeAlso:	-
 
@@ -6368,10 +6372,10 @@ BOOL OpBreakShapes::Init()
  //							OpJoinShapes::GetState,
  //							0,	/* help ID */
  //							_R(IDBBL_NODEPATHOP),
- //							0	/* bitmap ID */)); 
+ //							0	/* bitmap ID */));
 
-}               
-    
+}
+
 /********************************************************************************************
 
 >	OpState	OpBreakShapes::GetState(String_256*, OpDescriptor*)
@@ -6381,7 +6385,7 @@ BOOL OpBreakShapes::Init()
 	Inputs:		-
 	Outputs:	-
 	Returns:	The state of the OpBreakShapes
-	Purpose:	For finding the OpBreakShapes's state. 
+	Purpose:	For finding the OpBreakShapes's state.
 	Errors:		-
 	SeeAlso:	-
 
@@ -6390,7 +6394,7 @@ BOOL OpBreakShapes::Init()
 OpState	OpBreakShapes::GetState(String_256* UIDescription, OpDescriptor*)
 {
 	OpState OpSt;
-	String_256 DisableReason; 
+	String_256 DisableReason;
 
 	// Ensure that a document exists
 	if (Document::GetSelected() == NULL)
@@ -6399,8 +6403,8 @@ OpState	OpBreakShapes::GetState(String_256* UIDescription, OpDescriptor*)
 		OpSt.Greyed = TRUE;
 		// Load reason why operation is disabled
 		DisableReason = String_256(_R(IDS_NO_DOC));
-	   	*UIDescription = DisableReason;	     
-	   	return OpSt;                                 
+	   	*UIDescription = DisableReason;
+	   	return OpSt;
 	}
 
 
@@ -6430,7 +6434,7 @@ OpState	OpBreakShapes::GetState(String_256* UIDescription, OpDescriptor*)
 		}
 		pNode = Selected->FindNext(pNode);
 	}
-	
+
 	// The operation is disabled if there are no complex paths selected
 
 	if (!FoundComplex)
@@ -6449,8 +6453,8 @@ OpState	OpBreakShapes::GetState(String_256* UIDescription, OpDescriptor*)
 			*UIDescription = DisableReason;
 		}
 	}
-	
-	return(OpSt);   
+
+	return(OpSt);
 }
 
 /********************************************************************************************
@@ -6462,16 +6466,16 @@ OpState	OpBreakShapes::GetState(String_256* UIDescription, OpDescriptor*)
 	Inputs:		OpDescriptor (unused)
 	Outputs:	-
 	Returns:	-
-	Purpose:	Performs the Break shapes operation. 
-				
+	Purpose:	Performs the Break shapes operation.
+
 	Errors:		-
 	SeeAlso:	-
 
 ********************************************************************************************/
-	
+
 void OpBreakShapes::Do(OpDescriptor*)
-{   
-	// Obtain the current selections 
+{
+	// Obtain the current selections
 	SelRange* Selected = GetApplication()->FindSelection();
 
 	NodePath* NewPath;
@@ -6493,7 +6497,7 @@ void OpBreakShapes::Do(OpDescriptor*)
 		{
 			// get a pointer to the NodePath
 			NodePath* ThisPath = (NodePath*)(CurItem->pNode);
-			
+
 			// Start at the very beginning (a very good place to start)
 			INT32 SubPathIndex = 0;
 			INT32 NumCoords = ThisPath->InkPath.GetNumCoords();
@@ -6507,7 +6511,7 @@ void OpBreakShapes::Do(OpDescriptor*)
 				{
 					goto FailAndDeleteList;
 				}
-				
+
 				// Initialise the path
 				if (!NewPath->SetUpPath(24,12))
 				{
@@ -6524,7 +6528,7 @@ void OpBreakShapes::Do(OpDescriptor*)
 						BOOL ok;
 						Node* pAttrCopy;
 						CALL_WITH_FAIL(pAttr->NodeCopy(&pAttrCopy), this, ok);
-						if (!ok) 
+						if (!ok)
 						{
 							goto FailAndDeleteListAndPath;
 						}
@@ -6536,7 +6540,7 @@ void OpBreakShapes::Do(OpDescriptor*)
 				// Set the filled bit if the original path has the filled bit set
 				if (ThisPath->InkPath.IsFilled)
 					NewPath->InkPath.IsFilled = TRUE;
-				
+
 				// Now copy the current subpath into this object
 				// Find the last element in the subpath
 				INT32 EndOfSubPath = SubPathIndex;
@@ -6544,7 +6548,7 @@ void OpBreakShapes::Do(OpDescriptor*)
 				// Skip to the next element (this will give us the number of elements)
 				ThisPath->InkPath.FindNext(&EndOfSubPath);
 
-				// Now EndOfSubPath either points at the start of the next subpath, or 
+				// Now EndOfSubPath either points at the start of the next subpath, or
 				// the top of the path (i.e. the first free space).
 
 				// Now copy it
@@ -6553,7 +6557,7 @@ void OpBreakShapes::Do(OpDescriptor*)
 					InformError(_R(IDS_OUT_OF_MEMORY), _R(IDS_OK));
 					goto FailAndDeleteListAndPath;
 				}
-				
+
 				// Set the index to the start of the next subpath
 				SubPathIndex = EndOfSubPath;
 
@@ -6573,7 +6577,7 @@ void OpBreakShapes::Do(OpDescriptor*)
 		}
 		CurItem = (NodeListItem*)(NodeList->GetNext(CurItem));
 	}
-	
+
 	End();
 
 	// delete the nodelist (and all the list items)
@@ -6601,17 +6605,17 @@ FailAndDeleteList:
 
 ////////////////////////////////////////////////////////////////////////////////////////////
 // OpDeletePoints
-			
+
 
 /********************************************************************************************
->	OpDeletePoints::OpDeletePoints() 
+>	OpDeletePoints::OpDeletePoints()
 
 	Author:		Jim_Lynn (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	22/7/94
 	Purpose:	OpDeletePoints constructor
 ********************************************************************************************/
-OpDeletePoints::OpDeletePoints(): SelOperation()								
-{                              
+OpDeletePoints::OpDeletePoints(): SelOperation()
+{
 }
 
 
@@ -6622,10 +6626,10 @@ OpDeletePoints::OpDeletePoints(): SelOperation()
 	Created:	26/7/94
 	Inputs:		-
 	Outputs:	-
-	Returns:	TRUE if the operation could be successfully initialised 
-				FALSE if no more memory could be allocated 
+	Returns:	TRUE if the operation could be successfully initialised
+				FALSE if no more memory could be allocated
 	Purpose:	OpDeletePoints initialiser method
-	Errors:		ERROR will be called if there was insufficient memory to allocate the 
+	Errors:		ERROR will be called if there was insufficient memory to allocate the
 				operation.
 	SeeAlso:	-
 ********************************************************************************************/
@@ -6633,10 +6637,10 @@ BOOL OpDeletePoints::Init()
 {
 	BTNOP( DELETEPOINTSOP, OpDeletePoints, EDIT)
 	return TRUE;
-}               
+}
 
 
-    
+
 /********************************************************************************************
 
 >	OpState	OpDeletePoints::GetState(String_256* UIDescription, OpDescriptor* pOpDesc)
@@ -6646,7 +6650,7 @@ BOOL OpDeletePoints::Init()
 	Inputs:		-
 	Outputs:	-
 	Returns:	The state of the OpDeletePoints
-	Purpose:	For finding the OpDeletePoints's state. 
+	Purpose:	For finding the OpDeletePoints's state.
 	Errors:		-
 	SeeAlso:	-
 ********************************************************************************************/
@@ -6678,11 +6682,11 @@ OpState	OpDeletePoints::GetState(String_256* UIDescription, OpDescriptor* pOpDes
 					Result = pNode->AllowOp(&ObjDelete, FALSE);
 				else
 					Result = pNode->AllowOp(&ObjChange, FALSE);
-				
+
 				if (Result)
 				{
 					// We've found at least one node we can act upon
-					FoundSelected = TRUE;	
+					FoundSelected = TRUE;
 					break;
 				}
 			}
@@ -6690,7 +6694,7 @@ OpState	OpDeletePoints::GetState(String_256* UIDescription, OpDescriptor* pOpDes
 		}
 		pNode = Selected->FindNext(pNode);
 	}
-	
+
 	OpState OpSt;
 	// The operation is disabled if there are no complex paths selected
 	if (!FoundSelected)
@@ -6698,8 +6702,8 @@ OpState	OpDeletePoints::GetState(String_256* UIDescription, OpDescriptor* pOpDes
 		OpSt.Greyed = TRUE;
 		*UIDescription = String_256(_R(IDS_NEEDS_SELECTED_POINT));
 	}
-	
-	return(OpSt);   
+
+	return(OpSt);
 }
 
 
@@ -6712,14 +6716,14 @@ OpState	OpDeletePoints::GetState(String_256* UIDescription, OpDescriptor* pOpDes
 	Inputs:		OpDescriptor (unused)
 	Outputs:	-
 	Returns:	-
-	Purpose:	Performs the Delete point(s) operation. 
+	Purpose:	Performs the Delete point(s) operation.
 	Errors:		-
 	SeeAlso:	-
 ********************************************************************************************/
-	
+
 void OpDeletePoints::Do(OpDescriptor*)
-{   
-	// Obtain the current selections 
+{
+	// Obtain the current selections
 	SelRange* Selected = GetApplication()->FindSelection();
 	Node* pNode = Selected->FindFirst();
 
@@ -6777,7 +6781,7 @@ void OpDeletePoints::Do(OpDescriptor*)
 					ok = DoHideNode(pNode, TRUE);
 				PathStillExists = FALSE;
 			}
-					
+
 			// We have to delete every selected endpoint in the path (if it still exists)
 			while (ok && PathStillExists && ThisPath->InkPath.IsSubSelection())
 			{
@@ -6819,7 +6823,7 @@ void OpDeletePoints::Do(OpDescriptor*)
 				}
 			}
 
-			// now that we have deleted every selected point on the path we need to check to see if we are 
+			// now that we have deleted every selected point on the path we need to check to see if we are
 			// left with a closed path consisting of a moveto followed by a single line or a curve.
 			// if we are then we should delete the node.
 			if (ok && PathStillExists && !ThisPath->IsPathAllowable())
@@ -6836,7 +6840,7 @@ void OpDeletePoints::Do(OpDescriptor*)
 			if (PathStillExists && ok)
 			{
 				ThisPath->InvalidateBoundingRect();
-				ok = RecordBoundsAction::DoRecord(this, &UndoActions, ThisPath) != AC_FAIL; 
+				ok = RecordBoundsAction::DoRecord(this, &UndoActions, ThisPath) != AC_FAIL;
 			}
 		}
 		pNode = NextNode;
@@ -6876,7 +6880,7 @@ void OpDeletePoints::Do(OpDescriptor*)
 	Purpose:	This is called by OpDeletePoints::Do in order to delete a PT_LINETO endpoint
 				from a path.
 	SeeAlso:	OpDeletePoints::Do. OpDeletePoints::DeleteMoveTo. OpDeletePoints::DeleteBezierTo
-				
+
 
 ********************************************************************************************/
 BOOL OpDeletePoints::DeleteLineTo(NodePath* pPath, INT32 Index, BOOL* PathExists)
@@ -6919,7 +6923,7 @@ BOOL OpDeletePoints::DeleteLineTo(NodePath* pPath, INT32 Index, BOOL* PathExists
 			{
 				// The subpath is closed, so do something clever (see below)
 				// As a temporary measure to prevent an infinite loop we'll
-				// deselect this point 
+				// deselect this point
 				return DoChangeSelection(pPath, Index, FALSE) ;
 			}
 			else
@@ -6954,7 +6958,7 @@ BOOL OpDeletePoints::DeleteLineTo(NodePath* pPath, INT32 Index, BOOL* PathExists
 			// line element in the path
 			if (Verbs[Index-1] == PT_MOVETO)
 			{
-				// Two possiblilities here, either this is the only path, or 
+				// Two possiblilities here, either this is the only path, or
 				// it's part of a subpath.
 
 				if (NumCoords == 2)
@@ -6994,7 +6998,7 @@ BOOL OpDeletePoints::DeleteLineTo(NodePath* pPath, INT32 Index, BOOL* PathExists
 	Purpose:	This is called by OpDeletePoints::Do in order to delete a PT_MOVETO endpoint
 				from a path.
 	SeeAlso:	OpDeletePoints::Do. OpDeletePoints::DeleteLineTo. OpDeletePoints::DeleteBezierTo
-				
+
 
 ********************************************************************************************/
 BOOL OpDeletePoints::DeleteMoveTo(NodePath* pPath, INT32 Index, BOOL* PathExists)
@@ -7018,7 +7022,7 @@ BOOL OpDeletePoints::DeleteMoveTo(NodePath* pPath, INT32 Index, BOOL* PathExists
 
 		// Right, time to bite the bullet and do this.
 		// This is actually the only occasion when this type of point can be
-		// deleted - when a path is closed, the endpoint cannot be selected 
+		// deleted - when a path is closed, the endpoint cannot be selected
 		// without the start point being selected, so we only have to cope with
 		// this situation and ensure that we clear the selection bits
 		// on the corresponding endpoints
@@ -7049,7 +7053,7 @@ BOOL OpDeletePoints::DeleteMoveTo(NodePath* pPath, INT32 Index, BOOL* PathExists
 		}
 
 		// What we have to do here is find the last element, and the first element,
-		// delete one of them (probably the first one but it might depend on what 
+		// delete one of them (probably the first one but it might depend on what
 		// type of point they are)
 
 		// Now EndIndex tells us where the end element is
@@ -7079,7 +7083,7 @@ BOOL OpDeletePoints::DeleteMoveTo(NodePath* pPath, INT32 Index, BOOL* PathExists
 		else if (StartVerb == PT_LINETO && EndVerb == PT_BEZIERTO)
 		{
 			// When one element is a line, we always keep the line
-			// In this case, we have to change the coords of the 
+			// In this case, we have to change the coords of the
 			// moveto to be the same as the start of the final section,
 			// then delete the final section
 			if ( ! (DoAlterPathElement(pPath, Index, Coords[EndIndex-1], Flags[Index], Verbs[Index]) &&
@@ -7123,8 +7127,8 @@ BOOL OpDeletePoints::DeleteMoveTo(NodePath* pPath, INT32 Index, BOOL* PathExists
 			{
 				return FALSE;
 			}
-		}			
-	
+		}
+
 		// Now recache the pointers
 		Coords = pPath->InkPath.GetCoordArray();
 		Verbs = pPath->InkPath.GetVerbArray();
@@ -7147,7 +7151,7 @@ BOOL OpDeletePoints::DeleteMoveTo(NodePath* pPath, INT32 Index, BOOL* PathExists
 	}
 	else
 	{
-		// The path isn't closed. 
+		// The path isn't closed.
 		// Are we looking at the start of a curve or a line?
 		if ((Verbs[Index+1] & ~ PT_CLOSEFIGURE) == PT_BEZIERTO)
 		{
@@ -7362,7 +7366,7 @@ BOOL OpDeletePoints::DeleteBezierTo(NodePath* pPath, INT32 Index, BOOL* PathExis
 	SeeAlso:	OpDeletePoints::GetState
 ********************************************************************************************/
 BOOL OpDeletePoints::WillDeleteEntirePath(NodePath* pTreePath)
-{   
+{
 	// If the path has no selected endpoints then it won't be deleted
 	if (!pTreePath->InkPath.IsSubSelection())
 		return FALSE;
@@ -7375,7 +7379,7 @@ BOOL OpDeletePoints::WillDeleteEntirePath(NodePath* pTreePath)
 	pTreePath->InkPath.GetPathArrays(&Verbs, &Coords, &Flags);
 	BOOL PathStillExists = TRUE;
 
-	// We need to scan all the endpoints.  If there are ALL selected then we can 
+	// We need to scan all the endpoints.  If there are ALL selected then we can
 	// just delete the whole path.
 	INT32 loop = 0;
 	BOOL Selected = TRUE;
@@ -7426,7 +7430,7 @@ BOOL OpDeletePoints::WillDeleteEntirePath(NodePath* pTreePath)
 		}
 	}
 
-	// now that we have deleted every selected point on the path we need to check 
+	// now that we have deleted every selected point on the path we need to check
 	// the path to see if is still valid
 	if (PathStillExists)
 		PathStillExists = pPath->IsPathAllowable();
@@ -7436,7 +7440,7 @@ BOOL OpDeletePoints::WillDeleteEntirePath(NodePath* pTreePath)
 	return !PathStillExists;
 }
 
-         
+
 
 /********************************************************************************************
 >	static BOOL OpDeletePoints::TryDeleteLineTo(NodePath* pPath, INT32 Index, BOOL* PathExists)
@@ -7461,7 +7465,7 @@ BOOL OpDeletePoints::TryDeleteLineTo(NodePath* pPath, INT32 Index, BOOL* PathExi
 	DocCoord* Coords = NULL;
 	PathFlags* Flags = NULL;
 	pPath->InkPath.GetPathArrays(&Verbs, &Coords, &Flags);
-	
+
 	// work differently depending on if this is the last point in the path
 	if (Index+1 != NumCoords)
 	{
@@ -7616,7 +7620,7 @@ BOOL OpDeletePoints::TryDeleteMoveTo(NodePath* pPath, INT32 Index, BOOL* PathExi
 		else if (StartVerb == PT_LINETO && EndVerb == PT_BEZIERTO)
 		{
 			// When one element is a line, we always keep the line
-			// In this case, we have to change the coords of the 
+			// In this case, we have to change the coords of the
 			// moveto to be the same as the start of the final section,
 			// then delete the final section
 			Coords[Index] = Coords[EndIndex-1];
@@ -7653,8 +7657,8 @@ BOOL OpDeletePoints::TryDeleteMoveTo(NodePath* pPath, INT32 Index, BOOL* PathExi
 			Flags[EndIndex].IsSelected = Flags[Index+1].IsSelected;
 
 			return pPath->InkPath.DeleteSection(Index+1, 1);
-		}			
-	
+		}
+
 		// Recache the pointers
 		pPath->InkPath.GetPathArrays(&Verbs, &Coords, &Flags);
 
@@ -7675,7 +7679,7 @@ BOOL OpDeletePoints::TryDeleteMoveTo(NodePath* pPath, INT32 Index, BOOL* PathExi
 	}
 	else
 	{
-		// The path isn't closed. 
+		// The path isn't closed.
 		// Are we looking at the start of a curve or a line?
 		if ((Verbs[Index+1] & ~ PT_CLOSEFIGURE) == PT_BEZIERTO)
 		{
@@ -7689,13 +7693,13 @@ BOOL OpDeletePoints::TryDeleteMoveTo(NodePath* pPath, INT32 Index, BOOL* PathExi
 					return TRUE;
 				}
 				else
-					return pPath->InkPath.DeleteSection(Index, 4); 
+					return pPath->InkPath.DeleteSection(Index, 4);
 			}
 			else
 			{
 				Coords[Index] = Coords[Index+3];
 				Flags[Index].IsSelected = Flags[Index+3].IsSelected;
-				
+
 				return pPath->InkPath.DeleteSection(Index+1, 3);
 			}
 		}
@@ -7859,10 +7863,10 @@ BOOL OpDeletePoints::TryDeleteBezierTo(NodePath* pPath, INT32 Index, BOOL* PathE
 							   this is the index of the first element of the segment plus 1
 				pdist - parametric distance along the curve we're dragging from (0 to 1)
 	Purpose:	This is called when a Drag operation has been started on the middle of a path.
-				It will try and reshape the curve as it's dragging according to the maths in the 
+				It will try and reshape the curve as it's dragging according to the maths in the
 				function RecalculatePath
 	SeeAlso:	OpReshapeOrAddPoint::RecalculatePath
-				
+
 
 ********************************************************************************************/
 
@@ -7885,7 +7889,7 @@ void OpReshapeOrAddPoint::DoStartDragEdit(NodePath* OrigPath, DocCoord Anchor,
 	{
 		// Failed to get the memory that we needed to copy the path, so moan
 		TRACEUSER( "Jim", _T("Failed to get the mem to copy the path data for editing\n") );
-		
+
 		// Inform the person doing the clicking that life is not looking so good
 		InformError( _R(IDS_OUT_OF_MEMORY), _R(IDS_OK) );
 		End();
@@ -7919,7 +7923,7 @@ void OpReshapeOrAddPoint::DoStartDragEdit(NodePath* OrigPath, DocCoord Anchor,
 
 /********************************************************************************************
 
->	void OpReshapeOrAddPoint::DragPointerMove( DocCoord PointerPos, 
+>	void OpReshapeOrAddPoint::DragPointerMove( DocCoord PointerPos,
 												ClickModifiers ClickMods, Spread *pSpread, BOOL bSolidDrag)
 
 	Author:		Rik_Heywood (Xara Group Ltd) <camelotdev@xara.com>
@@ -7935,7 +7939,7 @@ void OpReshapeOrAddPoint::DoStartDragEdit(NodePath* OrigPath, DocCoord Anchor,
 void OpReshapeOrAddPoint::DragPointerMove( DocCoord PointerPos, ClickModifiers ClickMods, Spread *pSpread, BOOL bSolidDrag)
 {
 	EndSnapped = FALSE;		// Always false in this operation
-	
+
 	// If drag has moved onto a different spread, convert the coord to be relative to the
 	// original spread.
 	if (pSpread != StartSpread)
@@ -7984,14 +7988,14 @@ void OpReshapeOrAddPoint::DragPointerMove( DocCoord PointerPos, ClickModifiers C
 
 ********************************************************************************************/
 
-void OpReshapeOrAddPoint::DragFinished( DocCoord PointerPos, ClickModifiers ClickMods, 
+void OpReshapeOrAddPoint::DragFinished( DocCoord PointerPos, ClickModifiers ClickMods,
 									   Spread* pSpread, BOOL Success, BOOL bSolidDrag)
 {
 	RenderPathEditBlobs( EditPath.GetBoundingRect(), StartSpread );
 	EndDrag();
 	DestroyCursors();
 	BeginSlowJob();
-	
+
 	BOOL Worked = TRUE;
 
 	if ( Success )
@@ -8016,11 +8020,11 @@ void OpReshapeOrAddPoint::DragFinished( DocCoord PointerPos, ClickModifiers Clic
 //				Worked = (StorePathSubSelStateAction::DoRecord(this, &UndoActions, &OriginalPath->InkPath) != AC_FAIL);
 
 			// Due to popular request, I've changed this test so that moving by even a pixel
-			// will reshape the line, so a single click has to be a single click to add a 
+			// will reshape the line, so a single click has to be a single click to add a
 			// point.
 			if (StartMousePos == FurthestPoint)
 			{
-				Worked = DragFinishedAddPoint(); 
+				Worked = DragFinishedAddPoint();
 			}
 			else
 			{
@@ -8056,11 +8060,11 @@ void OpReshapeOrAddPoint::DragFinished( DocCoord PointerPos, ClickModifiers Clic
 						Worked = FALSE;
 					}
 				}
-		
+
 				// Recalculate the path's bounding box
 				OriginalPath->InvalidateBoundingRect();
-		
-				// tell the world that something in the selection has changed 
+
+				// tell the world that something in the selection has changed
 				// so that selection bounds are updated
 				GetApplication()->UpdateSelection();
 
@@ -8154,7 +8158,7 @@ BOOL OpReshapeOrAddPoint::DragFinishedAddPoint( )
 			}
 			for (i = 1; i <=3; i++)
 			{
-	 			NewFlags[i].IsSelected = TRUE;		
+	 			NewFlags[i].IsSelected = TRUE;
 				NewFlags[i].IsSmooth = FALSE;
 				NewFlags[i].IsRotate = TRUE;
 			}
@@ -8207,7 +8211,7 @@ BOOL OpReshapeOrAddPoint::DragFinishedAddPoint( )
 				return FALSE;
 			}
 		}
-		
+
 		// Refresh the path pointers in case things have moved
 		OriginalPath->InkPath.GetPathArrays(&Verbs, &Coords, &Flags);
 
@@ -8218,7 +8222,7 @@ BOOL OpReshapeOrAddPoint::DragFinishedAddPoint( )
 		{
 			return FALSE;
 		}
-		
+
 		if ((Act!=AC_NORECORD) && (ModAction!=NULL))
 		{
 			PathVerb* ChangedVerbs;
@@ -8248,7 +8252,7 @@ BOOL OpReshapeOrAddPoint::DragFinishedAddPoint( )
 				ChangedFlags[i] 	= Flags[SplitElement+i];
 				ChangedCoords[i]	= Coords[SplitElement+i];
 			}
-			
+
 			ModAction->StoreArrays(ChangedVerbs, ChangedFlags, ChangedCoords, ChangedIndices, OriginalPath);
 		}
 
@@ -8347,7 +8351,7 @@ BOOL OpReshapeOrAddPoint::BuildEditPath()
 		EditPath.GetPathArrays(&Verbs, &Coords, &Flags);
 		Flags[Index+2].IsSelected = IsSelected;
 		if (IsClosed)
-			Verbs[Index+2] = Verbs[Index+2] | PT_CLOSEFIGURE; 
+			Verbs[Index+2] = Verbs[Index+2] | PT_CLOSEFIGURE;
 
 		// We need to recalc paramdist now
 		HaveMadeCurve = TRUE;
@@ -8396,10 +8400,10 @@ BOOL OpReshapeOrAddPoint::BuildEditPath()
 	Inputs:		Offset - The Amount the pointer has moved from the *original* position (i.e. not
 						the last position).
 	Scope:		Private
-	Purpose:	Will reshape a curve segment using a bit of voodoo maths  
+	Purpose:	Will reshape a curve segment using a bit of voodoo maths
 
 				Assuming the mouse was originally clicked on the path a certain distance along it
-				(say 1/4 of the whole curve). The parametric distance would thus be 0.25 - this is the 
+				(say 1/4 of the whole curve). The parametric distance would thus be 0.25 - this is the
 				distance that controls the first control point. 1-0.25 controls the second control point.
 
 				Given:	(px,py) = current pointer position
@@ -8414,7 +8418,7 @@ BOOL OpReshapeOrAddPoint::BuildEditPath()
 						newx1 = x1+(px-ox)*3/(1-pdist)
 						newy1 = y1+(py-oy)*3/(1-pdist)
 
-				Disclaimer: This maths was plucked out of the blue, and so might not be the best way 
+				Disclaimer: This maths was plucked out of the blue, and so might not be the best way
 				of doing it.
 
 ********************************************************************************************/
@@ -8435,7 +8439,7 @@ void OpReshapeOrAddPoint::RecalculatePath( DocCoord Offset )
 		// Since the routine CalcRotate will change the *current* coords of the control point,
 		// and we calculate the new coords from the *original* control point (to avoid accumulated
 		// inaccuracies) we have to generate an offset that CalcRotate can use.
-		
+
 		DocCoord ControlOffset;
 		INT32 OppositeIndex = EditPath.FindOppositeControlPoint(Index);
 		ControlOffset.x = (INT32)(OrigControl1.x + (Offset.x) * factor / paramdist);
@@ -8472,13 +8476,13 @@ void OpReshapeOrAddPoint::RecalculatePath( DocCoord Offset )
 		{
 			Flags[Index].IsRotate = FALSE;
 			Flags[Index-1].IsRotate = FALSE;
-		}												  
+		}
 		if (Index == EditPath.GetNumCoords()-3)
 		{
 			Flags[Index+1].IsRotate = FALSE;
 			Flags[Index+2].IsRotate = FALSE;
 		}
-	
+
 		ControlOffset.x = (INT32)(OrigControl2.x + (Offset.x) * factor / (1.0-paramdist));
 		ControlOffset.y = (INT32)(OrigControl2.y + (Offset.y) * factor / (1.0-paramdist));
 
@@ -8513,9 +8517,9 @@ void OpReshapeOrAddPoint::RecalculatePath( DocCoord Offset )
 BOOL OpReshapeOrAddPoint::Init()
 {
 	return (RegisterOpDescriptor(
-									0, 
+									0,
 									_R(IDS_NODEPATH_EDIT),
-									CC_RUNTIME_CLASS(OpReshapeOrAddPoint), 
+									CC_RUNTIME_CLASS(OpReshapeOrAddPoint),
 									OPTOKEN_NODEPATH,
 									OpReshapeOrAddPoint::GetState,
 									0,										// help ID
@@ -8538,9 +8542,9 @@ BOOL OpReshapeOrAddPoint::Init()
 
 OpReshapeOrAddPoint::OpReshapeOrAddPoint() : OpNodePathEditBlob()
 {
-	Index = -1;				
-	paramdist = -1;		
-	HaveMadeCurve = FALSE;		
+	Index = -1;
+	paramdist = -1;
+	HaveMadeCurve = FALSE;
 };
 
 
@@ -8562,7 +8566,7 @@ OpReshapeOrAddPoint::OpReshapeOrAddPoint() : OpNodePathEditBlob()
 OpState OpReshapeOrAddPoint::GetState(String_256* Description, OpDescriptor*)
 {
 	OpState Blobby;
-	
+
 	return Blobby;
 }
 
@@ -8633,11 +8637,11 @@ ModifyPathAction::ModifyPathAction()
 	Outputs:	NewAction is a pointer to a pointer to an action, allowing the function to return
 				a pointer to the created action
 	Returns:	ActionCode, one of AC_OK, AC_NO_RECORD or AC_FAIL
-	Purpose:	This is the function which creates an instance of this action. If there is no room 
+	Purpose:	This is the function which creates an instance of this action. If there is no room
 				in the undo buffer (which is determined by the base class Init function called within)
-				the function will either return AC_NO_RECORD which means the operation can continue, 
+				the function will either return AC_NO_RECORD which means the operation can continue,
 				but no undo information needs to be stored, or AC_OK which means the operation should
-				continue AND record undo information. If the function returns AC_FAIL, there was not 
+				continue AND record undo information. If the function returns AC_FAIL, there was not
 				enough memory to record the undo information, and the user has decided not to continue
 				with the operation.
 	Errors:		-
@@ -8666,7 +8670,7 @@ ActionCode ModifyPathAction::Init(  Operation* pOp,
 
 /********************************************************************************************
 
->	void ModifyPathAction::StoreArrays(PathVerb* Verbs, PathFlags* Flags, DocCoord* Coords, 
+>	void ModifyPathAction::StoreArrays(PathVerb* Verbs, PathFlags* Flags, DocCoord* Coords,
 										INT32* Indices, NodePath* WhichPath)
 
 	Author:		Jim_Lynn (Xara Group Ltd) <camelotdev@xara.com>
@@ -8677,14 +8681,14 @@ ActionCode ModifyPathAction::Init(  Operation* pOp,
 				Indices is a pointer to an array of indices into the path
 	Outputs:	-
 	Returns:	-
-	Purpose:	This function initialises the array pointers in this action. Note that the 
+	Purpose:	This function initialises the array pointers in this action. Note that the
 				variable NumElements is initialised in the Init function
 	Errors:		-
 	SeeAlso:	-
 
 ********************************************************************************************/
 
-void ModifyPathAction::StoreArrays(PathVerb* Verbs, PathFlags* Flags, DocCoord* Coords, 
+void ModifyPathAction::StoreArrays(PathVerb* Verbs, PathFlags* Flags, DocCoord* Coords,
 									INT32* Indices, NodePath* WhichPath)
 {
 	ChangedPath = WhichPath;
@@ -8718,13 +8722,13 @@ ActionCode ModifyPathAction::Execute()
 {
 	// Here we're undoing the modify, so we have to write the list of changed array entries
 	// back into the path. We also have to build undo information for the redo. Usefully,
-	// We can use the existing arrays, swapping the data in the undo action for the data 
-	// in the path, then passing the arrays on to the redo record. We have to make sure 
+	// We can use the existing arrays, swapping the data in the undo action for the data
+	// in the path, then passing the arrays on to the redo record. We have to make sure
 	// we don't try and de-allocate the arrays after we've done this, so we'll put a check in
 	// the destructor for null pointers
-	
+
 	ModifyPathAction* ModAction;
-	
+
 	ActionCode Act;
 	Act = ModifyPathAction::Init(pOperation, pOppositeActLst, NumElements, (Action**)(&ModAction));
 	if (Act == AC_FAIL)
@@ -8748,7 +8752,7 @@ ActionCode ModifyPathAction::Execute()
 	PathVerb TempVerb;
 	DocCoord TempCoord;
 	PathFlags TempFlag;
-	
+
 	for (INT32 i=0;i<NumElements;i++)
 	{
 		TempVerb = Verbs[ChangedIndices[i]];
@@ -8842,12 +8846,12 @@ RemovePathElementAction::RemovePathElementAction()
 	Outputs:	NewAction is a pointer to a pointer to an action, allowing the function to return
 				a pointer to the created action
 	Returns:	ActionCode, one of AC_OK, AC_NO_RECORD or AC_FAIL
-	Purpose:	This is the function which creates an instance of the action to remove elements from a 
-				path. If there is no room in the undo buffer (which is determined by the base class Init 
-				function called within) the function will either return AC_NO_RECORD which means the 
-				operation can continue, but no undo information needs to be stored, or AC_OK which means 
-				the operation should continue AND record undo information. If the function returns AC_FAIL, 
-				there was not enough memory to record the undo information, and the user has decided not 
+	Purpose:	This is the function which creates an instance of the action to remove elements from a
+				path. If there is no room in the undo buffer (which is determined by the base class Init
+				function called within) the function will either return AC_NO_RECORD which means the
+				operation can continue, but no undo information needs to be stored, or AC_OK which means
+				the operation should continue AND record undo information. If the function returns AC_FAIL,
+				there was not enough memory to record the undo information, and the user has decided not
 				to continue with the operation.
 	Errors:		-
 	SeeAlso:	Action::Init()
@@ -8903,9 +8907,9 @@ ActionCode RemovePathElementAction::Execute()
 	// Here we're undoing the insert, so we have to remove the elements that were inserted.
 	// At the same time, we have to create a redo operation which will end up being an
 	// InsertPathElementAction.
-	
+
 	InsertPathElementAction* ModAction;
-	
+
 	ActionCode Act;
 	Act = InsertPathElementAction::Init(pOperation, pOppositeActLst, NumElements, FirstChangedIndex,
 											(Action**)(&ModAction));
@@ -9026,11 +9030,11 @@ InsertPathElementAction::InsertPathElementAction()
 	Outputs:	NewAction is a pointer to a pointer to an action, allowing the function to return
 				a pointer to the created action
 	Returns:	ActionCode, one of AC_OK, AC_NO_RECORD or AC_FAIL
-	Purpose:	This is the function which creates an instance of this action. If there is no room 
+	Purpose:	This is the function which creates an instance of this action. If there is no room
 				in the undo buffer (which is determined by the base class Init function called within)
-				the function will either return AC_NO_RECORD which means the operation can continue, 
+				the function will either return AC_NO_RECORD which means the operation can continue,
 				but no undo information needs to be stored, or AC_OK which means the operation should
-				continue AND record undo information. If the function returns AC_FAIL, there was not 
+				continue AND record undo information. If the function returns AC_FAIL, there was not
 				enough memory to record the undo information, and the user has decided not to continue
 				with the operation.
 	Errors:		-
@@ -9061,7 +9065,7 @@ ActionCode InsertPathElementAction::Init(  Operation* pOp,
 
 /********************************************************************************************
 
->	void InsertPathElementAction::RecordPath(PathVerb* Verbs, PathFlags* Flags, DocCoord* Coords, 
+>	void InsertPathElementAction::RecordPath(PathVerb* Verbs, PathFlags* Flags, DocCoord* Coords,
 										 NodePath* WhichPath)
 
 	Author:		Jim_Lynn (Xara Group Ltd) <camelotdev@xara.com>
@@ -9072,7 +9076,7 @@ ActionCode InsertPathElementAction::Init(  Operation* pOp,
 				WhichPath is the path that's being operated on
 	Outputs:	-
 	Returns:	-
-	Purpose:	This function initialises the array pointers in this action. Note that the 
+	Purpose:	This function initialises the array pointers in this action. Note that the
 				variables NumElements and InsertionPoint are initialised in the Init function
 	Errors:		-
 	SeeAlso:	-
@@ -9081,7 +9085,7 @@ ActionCode InsertPathElementAction::Init(  Operation* pOp,
 
 
 
-void InsertPathElementAction::RecordPath(PathVerb* Verbs, PathFlags* Flags, DocCoord* Coords, 
+void InsertPathElementAction::RecordPath(PathVerb* Verbs, PathFlags* Flags, DocCoord* Coords,
 										NodePath* WhichPath)
 {
 	ChangedPath = WhichPath;
@@ -9094,13 +9098,13 @@ ActionCode InsertPathElementAction::Execute()
 {
 	// Here we're undoing the modify, so we have to write the list of changed array entries
 	// back into the path. We also have to build undo information for the redo. Usefully,
-	// We can use the existing arrays, swapping the data in the undo action for the data 
-	// in the path, then passing the arrays on to the redo record. We have to make sure 
+	// We can use the existing arrays, swapping the data in the undo action for the data
+	// in the path, then passing the arrays on to the redo record. We have to make sure
 	// we don't try and de-allocate the arrays after we've done this, so we'll put a check in
 	// the destructor for null pointers
-	
+
 	RemovePathElementAction* ModAction;
-	
+
 	ActionCode Act;
 	Act = RemovePathElementAction::Init(pOperation, pOppositeActLst, NumElements, InsertionPoint, (Action**)(&ModAction));
 	if (Act == AC_FAIL)
@@ -9185,10 +9189,10 @@ ModifyElementAction::ModifyElementAction()
 
 >	ActionCode ModifyElementAction::Init(  Operation* pOp,
 										ActionList* pActionList,
-										PathVerb Verb, 
-										PathFlags Flags, 
-										DocCoord Coord, 
-										INT32 Index, 
+										PathVerb Verb,
+										PathFlags Flags,
+										DocCoord Coord,
+										INT32 Index,
 										NodePath* WhichPath,
 										Action** NewAction)
 
@@ -9203,11 +9207,11 @@ ModifyElementAction::ModifyElementAction()
 	Outputs:	NewAction is a pointer to a pointer to an action, allowing the function to return
 				a pointer to the created action
 	Returns:	ActionCode, one of AC_OK, AC_NO_RECORD or AC_FAIL
-	Purpose:	This is the function which creates an instance of this action. If there is no room 
+	Purpose:	This is the function which creates an instance of this action. If there is no room
 				in the undo buffer (which is determined by the base class Init function called within)
-				the function will either return AC_NO_RECORD which means the operation can continue, 
+				the function will either return AC_NO_RECORD which means the operation can continue,
 				but no undo information needs to be stored, or AC_OK which means the operation should
-				continue AND record undo information. If the function returns AC_FAIL, there was not 
+				continue AND record undo information. If the function returns AC_FAIL, there was not
 				enough memory to record the undo information, and the user has decided not to continue
 				with the operation.
 	Errors:		-
@@ -9219,10 +9223,10 @@ ModifyElementAction::ModifyElementAction()
 
 ActionCode ModifyElementAction::Init(  Operation* pOp,
 									ActionList* pActionList,
-									PathVerb Verb, 
-									PathFlags Flags, 
-									DocCoord Coord, 
-									INT32 Index, 
+									PathVerb Verb,
+									PathFlags Flags,
+									DocCoord Coord,
+									INT32 Index,
 									NodePath* WhichPath,
 									Action** NewAction)
 {
@@ -9246,9 +9250,9 @@ ActionCode ModifyElementAction::Execute()
 {
 	// Here we're undoing the modify, so we have to change the element in the path,
 	// recording redo information at the same time.
-	
+
 	ModifyElementAction* ModAction;
-	
+
 	// Get pointers to all the arrays of the path
 
 	PathVerb* Verbs = ChangedPath->InkPath.GetVerbArray();
@@ -9258,8 +9262,8 @@ ActionCode ModifyElementAction::Execute()
 	// Create a redo action for this action, which is also a ModifyElementAction
 
 	ActionCode Act;
-	Act = ModifyElementAction::Init(pOperation, 
-									pOppositeActLst, 
+	Act = ModifyElementAction::Init(pOperation,
+									pOppositeActLst,
 									Verbs[ChangedIndex],
 									Flags[ChangedIndex],
 									Coords[ChangedIndex],
@@ -9320,8 +9324,8 @@ ModifyFlagsAction::ModifyFlagsAction()
 
 >	ActionCode ModifyFlagsAction::Init(  Operation* pOp,
 										ActionList* pActionList,
-										PathFlags Flags, 
-										INT32 Index, 
+										PathFlags Flags,
+										INT32 Index,
 										NodePath* WhichPath,
 										Action** NewAction)
 
@@ -9334,11 +9338,11 @@ ModifyFlagsAction::ModifyFlagsAction()
 	Outputs:	NewAction is a pointer to a pointer to an action, allowing the function to return
 				a pointer to the created action
 	Returns:	ActionCode, one of AC_OK, AC_NO_RECORD or AC_FAIL
-	Purpose:	This is the function which creates an instance of this action. If there is no room 
+	Purpose:	This is the function which creates an instance of this action. If there is no room
 				in the undo buffer (which is determined by the base class Init function called within)
-				the function will either return AC_NO_RECORD which means the operation can continue, 
+				the function will either return AC_NO_RECORD which means the operation can continue,
 				but no undo information needs to be stored, or AC_OK which means the operation should
-				continue AND record undo information. If the function returns AC_FAIL, there was not 
+				continue AND record undo information. If the function returns AC_FAIL, there was not
 				enough memory to record the undo information, and the user has decided not to continue
 				with the operation.
 	Errors:		-
@@ -9350,8 +9354,8 @@ ModifyFlagsAction::ModifyFlagsAction()
 
 ActionCode ModifyFlagsAction::Init(  Operation* pOp,
 									ActionList* pActionList,
-									PathFlags Flags, 
-									INT32 Index, 
+									PathFlags Flags,
+									INT32 Index,
 									NodePath* WhichPath,
 									Action** NewAction)
 {
@@ -9373,9 +9377,9 @@ ActionCode ModifyFlagsAction::Execute()
 {
 	// Here we're undoing the modify, so we have to change the element in the path,
 	// recording redo information at the same time.
-	
+
 	ModifyFlagsAction* ModAction;
-	
+
 	// Get pointers to all the arrays of the path
 
 	PathFlags* Flags = ChangedPath->InkPath.GetFlagArray();
@@ -9383,8 +9387,8 @@ ActionCode ModifyFlagsAction::Execute()
 	// Create a redo action for this action, which is also a ModifyElementAction
 
 	ActionCode Act;
-	Act = ModifyFlagsAction::Init(pOperation, 
-									pOppositeActLst, 
+	Act = ModifyFlagsAction::Init(pOperation,
+									pOppositeActLst,
 									Flags[ChangedIndex],
 									ChangedIndex,
 									ChangedPath,
@@ -9456,11 +9460,11 @@ ModifyFilledAction::ModifyFilledAction()
 	Outputs:	NewAction is a pointer to a pointer to an action, allowing the function to return
 				a pointer to the created action
 	Returns:	ActionCode, one of AC_OK, AC_NO_RECORD or AC_FAIL
-	Purpose:	This is the function which creates an instance of this action. If there is no room 
+	Purpose:	This is the function which creates an instance of this action. If there is no room
 				in the undo buffer (which is determined by the base class Init function called within)
-				the function will either return AC_NO_RECORD which means the operation can continue, 
+				the function will either return AC_NO_RECORD which means the operation can continue,
 				but no undo information needs to be stored, or AC_OK which means the operation should
-				continue AND record undo information. If the function returns AC_FAIL, there was not 
+				continue AND record undo information. If the function returns AC_FAIL, there was not
 				enough memory to record the undo information, and the user has decided not to continue
 				with the operation.
 	Errors:		-
@@ -9495,9 +9499,9 @@ ActionCode ModifyFilledAction::Execute()
 {
 	// Here we're undoing the modify, so we have to change the element in the path,
 	// recording redo information at the same time.
-	
+
 	ModifyFilledAction* ModAction;
-	
+
 	// Create a redo action for this action, which is also a ModifyElementAction
 
 	BOOL CurState;
@@ -9505,10 +9509,10 @@ ActionCode ModifyFilledAction::Execute()
 		CurState = ChangedPath->InkPath.IsFilled;
 	else
 		CurState = ChangedPath->InkPath.IsStroked;
-	
+
 	ActionCode Act;
-	Act = ModifyFilledAction::Init(pOperation, 
-									pOppositeActLst, 
+	Act = ModifyFilledAction::Init(pOperation,
+									pOppositeActLst,
 									UndoFilled,
 									CurState,
 									ChangedPath,
@@ -9577,11 +9581,11 @@ RecalcBoundsAction::RecalcBoundsAction()
 	Outputs:	NewAction is a pointer to a pointer to an action, allowing the function to return
 				a pointer to the created action
 	Returns:	ActionCode, one of AC_OK, AC_NO_RECORD or AC_FAIL
-	Purpose:	This is the function which creates an instance of this action. If there is no room 
+	Purpose:	This is the function which creates an instance of this action. If there is no room
 				in the undo buffer (which is determined by the base class Init function called within)
-				the function will either return AC_NO_RECORD which means the operation can continue, 
+				the function will either return AC_NO_RECORD which means the operation can continue,
 				but no undo information needs to be stored, or AC_OK which means the operation should
-				continue AND record undo information. If the function returns AC_FAIL, there was not 
+				continue AND record undo information. If the function returns AC_FAIL, there was not
 				enough memory to record the undo information, and the user has decided not to continue
 				with the operation.
 	Errors:		-
@@ -9628,7 +9632,7 @@ ActionCode RecalcBoundsAction::Init(  Operation* pOp,
 				view according to the blob rectangle of the object.
 				This function should be called before you do anything to change the bounding box of an
 				object. It will invalidate the view (including blobs) allowing you to manipulate the object
-				to your heart's content. In order to keep undo and redo running, make sure that after you 
+				to your heart's content. In order to keep undo and redo running, make sure that after you
 				have finished manipulating the object, you call RecordBoundsAction::DoRecord which will not
 				only invalidate the new bounds rectangle of the object (including blobs) but will also
 				make sure that there are the correct actions in the undo list.
@@ -9654,7 +9658,7 @@ ActionCode RecalcBoundsAction::DoRecalc(Operation* pOp,
 		DocRect Invalid;
 
 		((NodePath*)WhichNode)->ReleaseCached();
-		
+
 		// Do an optimised redraw if possible
 		if (WhichNode->IsNodePath() && OptimiseRedraw)
 			OptimiseRedraw = CauseOptimisedRedraw((NodePath*)WhichNode, pDoc, pSpread);
@@ -9686,14 +9690,14 @@ ActionCode RecalcBoundsAction::DoRecalc(Operation* pOp,
 ActionCode RecalcBoundsAction::Execute()
 {
 	// This is undoing a bounds recalculation
-	
+
 	RecordBoundsAction* ReAction;
-	
+
 	// Create a redo action for this action, which is also a RecalcBoundsAction
 
 	ActionCode Act;
-	Act = RecordBoundsAction::Init(pOperation, 
-									pOppositeActLst, 
+	Act = RecordBoundsAction::Init(pOperation,
+									pOppositeActLst,
 									ChangedNode,
 									(Action**)(&ReAction));
 	if (Act == AC_FAIL)
@@ -9703,7 +9707,7 @@ ActionCode RecalcBoundsAction::Execute()
 	Document* pDoc = GetWorkingDoc();
 	ERROR2IF( pDoc == NULL, AC_FAIL, "There was no current document when undoing RecalcBounds" );
 	Spread* pSpread = ChangedNode->FindParentSpread();
-	
+
 	if (pSpread != NULL)
 	{
 		DocRect Invalid = ChangedNode->GetUnionBlobBoundingRect();
@@ -9712,7 +9716,7 @@ ActionCode RecalcBoundsAction::Execute()
 		// Mark the bounding rect as invalid
 		ChangedNode->InvalidateBoundingRect();
 	}
-	
+
 	return Act;
 }
 
@@ -9734,7 +9738,7 @@ RecalcBoundsAction::~RecalcBoundsAction()
 	Outputs:	-
 	Returns:	TRUE if the optimised redraw succeded,
 				FALSE if the entire shape should be redrawn (an error occured)
-	Purpose:	Called by DoRecord and DoRecalc to only invalidate the areas of the screen 
+	Purpose:	Called by DoRecord and DoRecalc to only invalidate the areas of the screen
 				covered by the parts of the path that have changed.  These will have the
 				NeedToRender flag set.
 	Errors:		-
@@ -9749,7 +9753,7 @@ BOOL RecalcBoundsAction::CauseOptimisedRedraw(NodePath* pChangedPath, Document* 
 
 	// Build an attribute map
 	CCAttrMap AttribMap(30);
-	if (!pChangedPath->FindAppliedAttributes(&AttribMap)) 
+	if (!pChangedPath->FindAppliedAttributes(&AttribMap))
 		return FALSE;
 
 	// Get the current linewidth applied to the NodePath
@@ -9757,7 +9761,7 @@ BOOL RecalcBoundsAction::CauseOptimisedRedraw(NodePath* pChangedPath, Document* 
 	void* pLineWidth = NULL;
 	AttribMap.Lookup( CC_RUNTIME_CLASS(AttrLineWidth), pLineWidth );
 	ERROR3IF(pLineWidth == NULL, "Did not find line width attribute");
-	if (pLineWidth != NULL) 
+	if (pLineWidth != NULL)
 		LineWidth = ((AttrLineWidth*)pLineWidth)->Value.LineWidth;
 	else
 		return FALSE;
@@ -9775,7 +9779,7 @@ BOOL RecalcBoundsAction::CauseOptimisedRedraw(NodePath* pChangedPath, Document* 
 	void* pMitreAttr = NULL;
 	AttribMap.Lookup( CC_RUNTIME_CLASS(AttrMitreLimit),pMitreAttr);
 	ERROR3IF(pMitreAttr == NULL, "Did not find mitre attribute");
-	if (pMitreAttr != NULL) 
+	if (pMitreAttr != NULL)
 		MitreLimit = ((AttrMitreLimit*)pLineWidth)->Value.MitreLimit;
 	else
 		return FALSE;
@@ -9831,7 +9835,7 @@ BOOL RecalcBoundsAction::CauseOptimisedRedraw(NodePath* pChangedPath, Document* 
 					Previous++;
 					Invalid.IncludePoint(Coords[Previous]);
 				}
-	
+
 				// Do the redraw
 				Invalid.Inflate(InflationSize);
 				pDoc->ForceRedraw( pSpread, Invalid, FALSE, pChangedPath );
@@ -9890,11 +9894,11 @@ RecordBoundsAction::RecordBoundsAction()
 	Outputs:	NewAction is a pointer to a pointer to an action, allowing the function to return
 				a pointer to the created action
 	Returns:	ActionCode, one of AC_OK, AC_NO_RECORD or AC_FAIL
-	Purpose:	This is the function which creates an instance of this action. If there is no room 
+	Purpose:	This is the function which creates an instance of this action. If there is no room
 				in the undo buffer (which is determined by the base class Init function called within)
-				the function will either return AC_NO_RECORD which means the operation can continue, 
+				the function will either return AC_NO_RECORD which means the operation can continue,
 				but no undo information needs to be stored, or AC_OK which means the operation should
-				continue AND record undo information. If the function returns AC_FAIL, there was not 
+				continue AND record undo information. If the function returns AC_FAIL, there was not
 				enough memory to record the undo information, and the user has decided not to continue
 				with the operation.
 	Errors:		-
@@ -9989,14 +9993,14 @@ ActionCode RecordBoundsAction::DoRecord(Operation* pOp,
 ActionCode RecordBoundsAction::Execute()
 {
 	// This is undoing a bounds recalculation
-	
+
 	RecalcBoundsAction* ReAction;
-	
+
 	// Create a redo action for this action, which is also a RecalcBoundsAction
 
 	ActionCode Act;
-	Act = RecalcBoundsAction::Init(pOperation, 
-									pOppositeActLst, 
+	Act = RecalcBoundsAction::Init(pOperation,
+									pOppositeActLst,
 									ChangedNode,
 									(Action**)(&ReAction));
 	if (Act == AC_FAIL)
@@ -10006,7 +10010,7 @@ ActionCode RecordBoundsAction::Execute()
 	Document* pDoc = GetWorkingDoc();
 	ERROR2IF( pDoc == NULL, AC_FAIL, "There was no current document when undoing RecalcBounds" );
 	Spread* pSpread = ChangedNode->FindParentSpread();
-	
+
 	if (pSpread != NULL)
 	{
 		DocRect Invalid = ChangedNode->GetUnionBlobBoundingRect();
@@ -10077,7 +10081,7 @@ SavePathArraysAction::~SavePathArraysAction()
 	Inputs:		pOp is the currently running operation
 				pActionList = a pointer ot the action list to which the action should be appended
 				pPath		= a pointer to the path whose data will be saved.
-	Outputs:	NewAction	= a pointer to a pointer to an action, allowing the function 
+	Outputs:	NewAction	= a pointer to a pointer to an action, allowing the function
 							  to return	a pointer to the created action
 	Returns:	ActionCode, one of AC_OK, AC_NO_RECORD or AC_FAIL
 	Purpose:	Use this function to get the SavePathArraysAction going. It is far simpler
@@ -10111,7 +10115,7 @@ ActionCode SavePathArraysAction::DoRecord(Operation* pOp, ActionList* pActionLis
 				pPath		= a pointer to the path whose data will be saved.
 				CreateArrays= a boolean which should always be TRUE except for when this
 							  action is being executed by the undo/redo system.
-	Outputs:	NewAction	= a pointer to a pointer to an action, allowing the function 
+	Outputs:	NewAction	= a pointer to a pointer to an action, allowing the function
 							  to return	a pointer to the created action
 	Returns:	ActionCode, one of AC_OK, AC_NO_RECORD or AC_FAIL
 	Purpose:	The actions static init function.
@@ -10142,7 +10146,7 @@ ActionCode SavePathArraysAction::Init(Operation* pOp,
 	ERROR1IF(pPath==NULL,AC_FAIL,"SavePathArraysAction::Init() passed a NULL path pointer");
 
 	UINT32 NumElements = pPath->GetNumCoords();
-	UINT32 ActSize = sizeof(SavePathArraysAction) + NumElements*(sizeof(PathVerb) + 
+	UINT32 ActSize = sizeof(SavePathArraysAction) + NumElements*(sizeof(PathVerb) +
 								   								sizeof(PathFlags) +
 								   								sizeof(DocCoord) );
 
@@ -10169,7 +10173,7 @@ ActionCode SavePathArraysAction::Init(Operation* pOp,
 	Inputs:		pPath 	= pointer to the path to save
 				pOp		= pointer to the current operation
 	Returns:	one of AC_OK, AC_NORECORD, AC_FAIL
-	Purpose:	
+	Purpose:
 
 ********************************************************************************************/
 
@@ -10208,7 +10212,7 @@ ActionCode SavePathArraysAction::Execute()
 {
 	// first try to create an opposite action
 	SavePathArraysAction* SaveAction;
-	
+
 	ActionCode Act;
 	Act = SavePathArraysAction::Init(pOperation, pOppositeActLst, ChangedPath, (Action**)(&SaveAction), FALSE);
 	if (Act == AC_FAIL)
@@ -10255,15 +10259,15 @@ ActionCode SavePathArraysAction::Execute()
 	Purpose:	Creates three arrays and copies the input paths verbs, coords and flags
 				into these. If successfull it will return pointers to these arrays in
 				pFlags, pVerbs and pCoords.
-														  
+
 ********************************************************************************************/
 
-BOOL SavePathArraysAction::SavePathArrays(	Path* pPath, 
+BOOL SavePathArraysAction::SavePathArrays(	Path* pPath,
 											Operation* pOp,
 											PathFlags** pFlags,
 											PathVerb** pVerbs,
 											DocCoord** pCoords)
-{	
+{
 	UINT32 NumElements = pPath->GetNumCoords();
 	PathFlags* DFlags;
 	PathVerb* DVerbs;
@@ -10326,7 +10330,7 @@ void SavePathArraysAction::SwapPathArrays()
 	PathVerb TempVerb;
 	DocCoord TempCoord;
 	PathFlags TempFlag;
-	
+
 	for (INT32 i=0; i<NumElements; i++)
 	{
 		TempVerb=Verbs[i];	 Verbs[i]=ChangedVerbs[i];	 ChangedVerbs[i]=TempVerb;
@@ -10414,7 +10418,7 @@ void SavePathArraysAction::SwapPathArrays()
 //				The action stores the sub-selection state of the given path.  It either stores
 //				the indexes of the selected endpoints, or the unselected ones, depending on
 //				which will use less memory.
-//				NOTE: Don't call this function directly - call DoRecord() 
+//				NOTE: Don't call this function directly - call DoRecord()
 //	SeeAlso:	StorePathSubSelStateAction::DoRecord()
 //********************************************************************************************/
 //ActionCode StorePathSubSelStateAction::Init(Operation* pOp, ActionList* pActionList, Path* pPath, Action** NewAction)
@@ -10550,7 +10554,7 @@ BOOL OpCloseNodePaths::Init()
 {
 	const INT32 HID_AUTOCLOSEPATHS = 0;
 	BTNOP( AUTOCLOSEPATHS, OpCloseNodePaths, ARRANGE)
-	return TRUE;											 
+	return TRUE;
 }
 
 
@@ -10614,7 +10618,7 @@ void OpCloseNodePaths::DoWithParam(OpDescriptor* pOpDesc, OpParam* pOpParam)
 	AddCurveFlag = pOpParam->Param1;
 	AddSmoothFlag = pOpParam->Param2;
 	IsPathClosing = TRUE;
-	
+
 	// Start the sel operation
 	if (ok)
 		ok = DoStartSelOp(TRUE, TRUE);
@@ -10689,7 +10693,7 @@ BOOL OpCloseNodePaths::CloseThisPath(NodePath* pPath)
 	StartSpread = pPath->FindParentSpread();
 	UpdatePoint = -1;
 	ERROR2IF( StartSpread==NULL, FALSE, "Path was not on a spread");
-	
+
 	// We also need to make a version of the path that we can change
 	BOOL ok = BuildEditPath(LastMousePos);
 
@@ -10697,7 +10701,7 @@ BOOL OpCloseNodePaths::CloseThisPath(NodePath* pPath)
 		ok = CompleteThisPath(StartMousePos);
 
 	EditPath.ClearPath();
-	
+
 	return ok;
 }
 
@@ -10741,5 +10745,3 @@ BOOL OpCloseNodePaths::IsThisPathCloseable(NodePath* pPath)
 
 	return Closeable;
 }
-
-

@@ -2091,3 +2091,8 @@ BOOL Preferences::GetPrefDirect(LPCTCHAR Section, LPCTCHAR Pref, double *pValue)
 	Data.pDouble = pValue;
 	return GetPrefDirect(Section, Pref, PREF_DOUBLE, Data);
 }
+
+bool Preferences::GetIsFirstTimeRun()
+{
+	return OILPrefs->GetIsFirstTimeRun();
+}

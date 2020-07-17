@@ -236,11 +236,11 @@ void OpNewRegShape::DragPointerMove( DocCoord PointerPos, ClickModifiers ClickMo
                                    Spread* pSpread, BOOL bSolidDrag)
 {
     // Rub out the old shape
+    // TODO -- Doesn't work
     DocRect EditPathBBox = NewShape->GetBoundingRect();
     RenderDragBlobs(DocRect(0,0,0,0), StartSpread, bSolidDrag);
 
-
-    // Hack to see if the accomplished our goal of redrawing.
+    // TODO -- Hack, to rub out the old shape, since the above doesn't work.
      DocView::GetCurrent()->ForceRedraw(FALSE);
 
     // make sure the rect does not wrap around the edge of the spread

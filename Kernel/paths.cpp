@@ -1,7 +1,7 @@
 // $Id: paths.cpp 1492 2006-07-20 19:19:48Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
- 
+
                Xara LX, a vector drawing and manipulation program.
                     Copyright (C) 1993-2006 Xara Group Ltd.
        Copyright on certain contributions may be held in joint with their
@@ -32,7 +32,7 @@ ADDITIONAL RIGHTS
 
 Conditional upon your continuing compliance with the GNU General Public
 License described above, Xara Group Ltd grants to you certain additional
-rights. 
+rights.
 
 The additional rights are to use, modify, and distribute the software
 together with the wxWidgets library, the wxXtra library, and the "CDraw"
@@ -240,7 +240,7 @@ Path::~Path()
 	// Free the memory that the path is using to store its data in
 	if (VerbHandle != BAD_MHANDLE)
 		ReleaseBlock(VerbHandle);
-	
+
 	if (CoordHandle != BAD_MHANDLE)
 		ReleaseBlock(CoordHandle);
 
@@ -249,7 +249,7 @@ Path::~Path()
 
 	if (ExtraInfo != NULL)
 		delete ExtraInfo;
-/*	
+/*
 	if(m_pGPC != NULL)
 	{
 		delete m_pGPC;
@@ -291,13 +291,13 @@ BOOL Path::Initialise(INT32 InitialSize, INT32 BlockSize)
 
 	if (VerbHandle != BAD_MHANDLE)
 		ReleaseBlock(VerbHandle);
-	
+
 	if (CoordHandle != BAD_MHANDLE)
 		ReleaseBlock(CoordHandle);
 
 	if (FlagsHandle != BAD_MHANDLE)
 		ReleaseBlock(FlagsHandle);
-	
+
 	// The memory manager will not allocate blocks of less that 12 bytes and have to be multiples of 4!
 	if (InitialSize<12)
 	{
@@ -373,8 +373,8 @@ BOOL Path::Initialise(INT32 InitialSize, INT32 BlockSize)
 	Created:	28/01/94
 	Inputs:		SrcPath - The path that you want to copy data from
 	Returns:	TRUE if it worked, FALSE otherwise. Can fail if there is not enough space
-				in the path to copy SrcPaths data into.				
-	Purpose:	Copy the coords, verbs and flags from the SrcPath to this path. You must 
+				in the path to copy SrcPaths data into.
+	Purpose:	Copy the coords, verbs and flags from the SrcPath to this path. You must
 				already have initialised this path by calling Path::Initialise(). Pass it
 				an Initial size big enough the hold the path you want to copy.
 
@@ -398,17 +398,17 @@ BOOL Path::CopyPathDataFrom( Path* SrcPath )
 	}
 
 	// copy the data across
-	memcpy((void*)DescribeHandle(VerbHandle), (void*)DescribeHandle(SrcPath->VerbHandle), 
+	memcpy((void*)DescribeHandle(VerbHandle), (void*)DescribeHandle(SrcPath->VerbHandle),
 		   (size_t)NumCoords*sizeof(PathVerb));
 
-	memcpy((void*)DescribeHandle(CoordHandle), (void*)DescribeHandle(SrcPath->CoordHandle), 
+	memcpy((void*)DescribeHandle(CoordHandle), (void*)DescribeHandle(SrcPath->CoordHandle),
 		   (size_t)NumCoords*sizeof(DocCoord));
 
-	memcpy((void*)DescribeHandle(FlagsHandle), (void*)DescribeHandle(SrcPath->FlagsHandle), 
+	memcpy((void*)DescribeHandle(FlagsHandle), (void*)DescribeHandle(SrcPath->FlagsHandle),
 		   (size_t)NumCoords*sizeof(PathFlags));
 
 	// If the source path has extra info in it then we need to copy that too
-	if (SrcPath->ExtraInfo != NULL)	
+	if (SrcPath->ExtraInfo != NULL)
 		ExtraInfo->CopyExtraInfo(SrcPath->ExtraInfo);
 
 	// Set the vars that tell us how much mem has been used
@@ -429,7 +429,7 @@ BOOL Path::CopyPathDataFrom( Path* SrcPath )
 
 /********************************************************************************************
 
-	BOOL Path::CopyPathDataFrom( DocCoord* Coords, PathVerb* Verbs, INT32 NumCoords, 
+	BOOL Path::CopyPathDataFrom( DocCoord* Coords, PathVerb* Verbs, INT32 NumCoords,
 							 	 BOOL IsFilled = FALSE, BOOL IsStroked = TRUE)
 
 	Author:		Simon_Maneggio (Xara Group Ltd) <camelotdev@xara.com>
@@ -441,15 +441,15 @@ BOOL Path::CopyPathDataFrom( Path* SrcPath )
 				IsStroked - Is the path stroked ?
 
 	Returns:	TRUE if it worked, FALSE otherwise. Can fail if there is not enough space
-				in the path to copy the data into.			
-	Purpose:	Copy the specified coords and verbs to this path. The path's flags will 
-				be the defaults as specified in the constructors. You must 
+				in the path to copy the data into.
+	Purpose:	Copy the specified coords and verbs to this path. The path's flags will
+				be the defaults as specified in the constructors. You must
 				already have initialised this path by calling Path::Initialise(). Pass it
 				an Initial size big enough to hold the path you want to copy.
 
 ********************************************************************************************/
 
-BOOL Path::CopyPathDataFrom( DocCoord* Coords, PathVerb* Verbs, INT32 NumCoords, 
+BOOL Path::CopyPathDataFrom( DocCoord* Coords, PathVerb* Verbs, INT32 NumCoords,
 							 BOOL Filled, BOOL Stroked)
 {
 
@@ -462,19 +462,19 @@ BOOL Path::CopyPathDataFrom( DocCoord* Coords, PathVerb* Verbs, INT32 NumCoords,
 	}
 
 	// copy the data across
-	memcpy((void*)DescribeHandle(VerbHandle), (void*)Verbs, 
+	memcpy((void*)DescribeHandle(VerbHandle), (void*)Verbs,
 		   (size_t)NumCoords*sizeof(PathVerb));
 
-	memcpy((void*)DescribeHandle(CoordHandle), (void*)Coords, 
+	memcpy((void*)DescribeHandle(CoordHandle), (void*)Coords,
 		   (size_t)NumCoords*sizeof(DocCoord));
 
 	// Every point on the path has the default constructor flags set
 	PathFlags f;
-	PathFlags* pFlags = (PathFlags*) DescribeHandle(FlagsHandle); 
+	PathFlags* pFlags = (PathFlags*) DescribeHandle(FlagsHandle);
 
 	for (INT32 i = 0; i< NumCoords; i++)
 	{
-		pFlags[i] = f; 		
+		pFlags[i] = f;
 	}
 
 	// Set the vars that tell us how much mem has been used
@@ -482,15 +482,15 @@ BOOL Path::CopyPathDataFrom( DocCoord* Coords, PathVerb* Verbs, INT32 NumCoords,
 	UsedSlots = NumCoords;
 
 	// Keep track of the current path position
-	CurrentPos = 0;	
+	CurrentPos = 0;
 
-	IsFilled = Filled; 
+	IsFilled = Filled;
 	IsStroked = Stroked;
 
 	// Well, as far as I can tell its worked
 	return TRUE;
 
-} 
+}
 
 /********************************************************************************************
 
@@ -583,7 +583,7 @@ void Path::FindStartOfSubPath()
 	Created:	7/7/94
 	Inputs:		Index - the index of the current element (pointer!)
 	Outputs:	Index - Holds the position of the start of the sub path
-	Purpose:	Searches backwards from the current position from Index until it find the 
+	Purpose:	Searches backwards from the current position from Index until it find the
 				start of the subpath (always a moveto).
 	Errors:		ENSUREs if the start of the path does not seem to be a MoveTo
 
@@ -683,7 +683,7 @@ void Path::FindEndOfSubPath(INT32* Index) const
 				of the IsFilled flag, because some programs allow open paths to be filled.
 				Basically, if there's no gap in the subpath, it's closed, otherwise it's open.
 				These are the same rules as ArtWorks followed.
-				Initial implementation just scans the subpath and checks the last element 
+				Initial implementation just scans the subpath and checks the last element
 				in the subpath.
 	Errors:		-
 	SeeAlso:	-
@@ -699,7 +699,7 @@ BOOL Path::GetSubPathEnds(DocCoord* start, DocCoord* end)
 	FindEndOfSubPath();
 
 // Find out if this path is really closed. If the PT_CLOSEFIGURE flag is set in the end
-// verb, the path is closed, so return FALSE, otherwise return TRUE, with *start and *end 
+// verb, the path is closed, so return FALSE, otherwise return TRUE, with *start and *end
 // set up accordingly.
 
 	PathVerb* Verbs = (PathVerb*) DescribeHandle(VerbHandle);
@@ -888,7 +888,7 @@ BOOL Path::FindNext(INT32* Index) const
 	Outputs:	-
 	Returns:	TRUE if valid previous element found
 				FALSE if there is no previous element
-	Purpose:	Finds the prev path element in this path starting the search from CurrentPos 
+	Purpose:	Finds the prev path element in this path starting the search from CurrentPos
 	SeeAlso:	Path::FindNext
 
 ********************************************************************************************/
@@ -940,7 +940,7 @@ BOOL Path::FindPrev()
 	Outputs:	Index will point at the previous element in the path
 	Returns:	TRUE if valid previous element found
 				FALSE if there is no previous element
-	Purpose:	Finds the previous path element in this path starting from the value (index) 
+	Purpose:	Finds the previous path element in this path starting from the value (index)
 	SeeAlso:	Path::FindNext
 
 ********************************************************************************************/
@@ -1059,7 +1059,7 @@ BOOL Path::IsInPath()
 				A flag to say wether to return as soon as it finds a difference (Default TRUE)
 	Returns:	The difference in number of coords + or -.
 	Purpose:	Compares athis path to a passed in path. It firswt does a quick check on the
-				number of coords and if they are equal does a more thoughour check on the 
+				number of coords and if they are equal does a more thoughour check on the
 				verb array and coord array.
 
 ********************************************************************************************/
@@ -1084,7 +1084,7 @@ INT32 Path::ComparePathToPath(Path* pComparePath, BOOL QuickCheck)
 
 			// Reset the Difference Value
 			Difference = 0;
-			
+
 			// Now go throught each element of the arrays calculating the differences
 			for( INT32 i = 0; i < ThisPathLength; i++)
 			{
@@ -1172,7 +1172,7 @@ PathFlags Path::GetFlags() const
 	// de-reference the flag array
 	PathFlags* Flags = (PathFlags*) DescribeHandle(FlagsHandle);
 
-	return Flags[CurrentPos];	
+	return Flags[CurrentPos];
 }
 
 
@@ -1189,7 +1189,7 @@ PathFlags Path::GetFlags() const
 	Returns:	Path type
 	Purpose:	This determines whether the path is a line or a shape.
 				It does this by seeing if it has a PT_CLOSEFIGURE bit set in its last verb.
-				
+
 ********************************************************************************************/
 
 PathTypeEnum Path::GetPathType() const
@@ -1225,7 +1225,7 @@ INT32 Path::FindOppositeControlPoint(INT32 ThisIndex)
 	// If this isn't a control point, ensure!
 	ENSURE(!Flags[ThisIndex].IsEndPoint,"Point is not a control point in FindOppositeControlPoint");
 
-	// First see if this is the first or second control point in a curve element. If the 
+	// First see if this is the first or second control point in a curve element. If the
 	// previous point is an endpoint, then this is the first control point
 	if (Flags[ThisIndex-1].IsEndPoint)
 	{
@@ -1254,7 +1254,7 @@ INT32 Path::FindOppositeControlPoint(INT32 ThisIndex)
 	else
 	{
 		// This is the second control point. If the next point has the CloseFigure flag
-		// set we'll have to scan back. Otherwise, return ThisIndex+2 unless the next element 
+		// set we'll have to scan back. Otherwise, return ThisIndex+2 unless the next element
 		// isn't a curve, or there is no next element.
 		if (Verbs[ThisIndex+1] & PT_CLOSEFIGURE)
 		{
@@ -1372,7 +1372,7 @@ INT32 Path::GetNumSubpaths() const
 
 	//And return the number of subpaths we found
 	return lSubpaths;
-	
+
 }
 
 
@@ -1405,7 +1405,7 @@ INT32 Path::GetNumCoords() const
 	Purpose:	determine how many selected endpoints there are within this path. Useful
 				indirectly for finding whether there's a subselection.
 	SeeAlso:	IsSubSelected()
-				
+
 ********************************************************************************************/
 
 INT32 Path::GetNumSelEndPoints() const
@@ -1433,7 +1433,7 @@ INT32 Path::GetNumSelEndPoints() const
 	Created:	12/4/94
 	Returns:	The number of open ends to the path.
 	Purpose:	Goes through the path and counts all open ends in the path. For example,
-				a straight line has 2 open ends, a closed shape has no open ends and a 
+				a straight line has 2 open ends, a closed shape has no open ends and a
 				complex path could have any number of open ends. You should use this function
 				before calling GetAllOpenEnds that will fill an array for their coords
 				for you.
@@ -1497,7 +1497,7 @@ INT32 Path::GetAllOpenEnds(INT32 MaxElements, DocCoord* EndCoords) const
 			// Check to see we have hit the maximum allowed entries
 			if (Count==MaxElements)
 				return Count;
-			
+
 			if ((i>0) && (Verbs[i-1]&PT_CLOSEFIGURE))
 			{
 			 	// The previous element was a close figure, so it corresponding MoveTo
@@ -1559,7 +1559,7 @@ DocRect Path::GetBoundingRect()	const
 	// include each point in the path to the bounding rectangle
 	for (INT32 i=1; i<UsedSlots; i++)
 		BoundingRect.IncludePoint(Coords[i]);
-			
+
 	// return the completed rectangle
 	return BoundingRect;
 }
@@ -1572,8 +1572,8 @@ DocRect Path::GetBoundingRect()	const
 	Author:		Karim_MacDonald (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	19 May 2000
 	Inputs:		pRect		pointer to a container rect for us to put the bounds in.
-				
-				*** Added by Diccon 22/5/2000  
+
+				*** Added by Diccon 22/5/2000
 				LineWidth - the width of the path, note that this defaults to zero
 				so you don't have to supply anything unless you want to.
 
@@ -1762,7 +1762,7 @@ DocCoord Path::GetEndPoint()
 
 	// de-reference the coord array
 	DocCoord* Coords = (DocCoord*) DescribeHandle(CoordHandle);
-	
+
 	if ((Verbs[CurrentPos] & (~PT_CLOSEFIGURE))==PT_BEZIERTO)
 		return Coords[CurrentPos+2];
 	else
@@ -1788,7 +1788,7 @@ DocCoord Path::GetControl1()
 
 	// de-reference the coord array
 	DocCoord* Coords = (DocCoord*) DescribeHandle(CoordHandle);
-	
+
 	ENSURE((((PathVerb*) DescribeHandle(VerbHandle)) [CurrentPos] & (~PT_CLOSEFIGURE))==PT_BEZIERTO, "Not a Bezier in Path::GetControl1()");
 
 	return Coords[CurrentPos];
@@ -1812,7 +1812,7 @@ DocCoord Path::GetControl2()
 
 	// de-reference the arrays
 	DocCoord* Coords = (DocCoord*) DescribeHandle(CoordHandle);
-	
+
 	ENSURE((((PathVerb*) DescribeHandle(VerbHandle))[CurrentPos+1] & (~PT_CLOSEFIGURE))==PT_BEZIERTO, "Not a Bezier in Path::GetControl2()");
 
 	return Coords[CurrentPos+1];
@@ -1847,8 +1847,8 @@ DocCoord* Path::GetCoordArray() const
 
 	Author:		Rik_Heywood (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	31/01/94
-	Returns:	A pointer to the verb array held by the path. 
-	Purpose:	This array holds a list of all the path elements used in the path. 
+	Returns:	A pointer to the verb array held by the path.
+	Purpose:	This array holds a list of all the path elements used in the path.
 				The structure used is the same as the NT structure and can in fact be passed
 				striaght on to the NT PolyDraw function.
 				The verbs must be one of the following PC_MoveTo, PC_LineTo or PC_CurveTo.
@@ -1937,7 +1937,7 @@ BOOL Path::AddMoveTo(DocCoord p1, PathFlags* NewFlags)
 	// usedslots-1, when passed usedslots which means you can never ever call InsertLineTo
 	// and expect a line to be added to the pathend, it will be inserted before the element
 	// which is the last in the path. Ok so this function does the job.
-		
+
 	CurrentPos = UsedSlots;
 	return InsertMoveTo(p1, NewFlags);
 }
@@ -2429,7 +2429,7 @@ BOOL Path::ClearPath()
 				was a memory de-alloc error
 	Purpose:	Empties the path of all its entries.
 				If compress is TRUE the routine will try to free up excessive amounts of
-				unused memory left over at the end. 
+				unused memory left over at the end.
 				It also now resets CurrentPos back to zero.
 	SeeAlso:	Path::Compact();
 
@@ -2446,9 +2446,9 @@ BOOL Path::ClearPath(BOOL compress)
 		// make sure we compress memory if necessary
 		if (compress)
 			Compact();						// ignore any error coming from here
-	}	
+	}
 	return TRUE;
-} 
+}
 
 
 /********************************************************************************************
@@ -2730,7 +2730,7 @@ void Path::SetFlags( const PathFlags &NewFlags )
 	Inputs:		-
 	Outputs:	The path's flags array contains valid flags for each of its verbs
 	Returns:	-
-	Purpose:	This generates a legal path flags array based on the all path verbs. 
+	Purpose:	This generates a legal path flags array based on the all path verbs.
 				It sets all flags to default values and then scans all
 				end points setting their end point flag to TRUE
 	SeeAlso:	-
@@ -2764,7 +2764,7 @@ void Path::InitialiseFlags(const INT32 Startindex,
 						   const INT32 Len)
 {
 	ERROR3IF(Startindex<0,"startindex off start of path in Path::SetPathFlags()");
-	ERROR3IF(Startindex+Len>UsedSlots,"(startindex+len)	of end of path in Path::SetPathFlags()"); 
+	ERROR3IF(Startindex+Len>UsedSlots,"(startindex+len)	of end of path in Path::SetPathFlags()");
 
 	// Get the flags array
 	PathFlags* pFlags = (PathFlags*) DescribeHandle(FlagsHandle);
@@ -2842,7 +2842,7 @@ void Path::DumpPath()
 {
 #ifdef _DEBUG
 	TRACE( _T("\nStarting Path Dump\n") );
-	TRACE( _T("[%d=PT_MOVETO, %d=PT_LINETO, %d=PT_BEZIERTO, %d=PT_CLOSEFIGURE]\n"), 
+	TRACE( _T("[%d=PT_MOVETO, %d=PT_LINETO, %d=PT_BEZIERTO, %d=PT_CLOSEFIGURE]\n"),
 		   PT_MOVETO, PT_LINETO, PT_BEZIERTO, PT_CLOSEFIGURE );
 	TRACE( _T("UsedSlots=%ld, UnUsedSlots=%ld, CurrentPos=%ld\n"), UsedSlots, UnUsedSlots, CurrentPos );
 	TRACE( _T("Path Size in Bytes=%ld\n"), GetPathByteLength() );
@@ -3071,7 +3071,7 @@ void Path::RenderPathSelectedControlBlobs(Spread* pSpread, BOOL Removing)
 	{
 		RenderPathSelectedControlBlobs(pSpread, pRender);
 		pRender = DocView::GetNextOnTop(NULL);
-	}	
+	}
 
 	// If putting back on then render back off in pender render regions
 //	if (!Removing)
@@ -3089,7 +3089,7 @@ void Path::RenderPathSelectedControlBlobs(Spread* pSpread, BOOL Removing)
 	Created:	28/5/95
 	Inputs:		pSpread - pointer to the spread containing the path
 				pRender - pointer to region to render into
-	Purpose:	Draws all the control points selection blobs for an entire path into a 
+	Purpose:	Draws all the control points selection blobs for an entire path into a
 				specified render region.  Called by the above function
 	SeeAlso:	Path::RenderPathSelectedControlBlobs
 
@@ -3125,7 +3125,7 @@ void Path::RenderPathSelectedControlBlobs(Spread* pSpread, RenderRegion* pRender
 	if (endcount == 1)
 	{
 		// Remove the control points and lines
-		RenderPathControlBlobs(pRender, EndPtIndex);		
+		RenderPathControlBlobs(pRender, EndPtIndex);
 	}
 #endif
 }
@@ -3139,7 +3139,7 @@ void Path::RenderPathSelectedControlBlobs(Spread* pSpread, RenderRegion* pRender
 	Author:		Peter_Arnold (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	28/5/95
 	Inputs:		pSpread - pointer to the spread containing the path
-	Purpose:	Draws all the control points selection blobs for an entire path into 
+	Purpose:	Draws all the control points selection blobs for an entire path into
 				all the pending render regions.
 	SeeAlso:	Path::RenderPathSelectedControlBlobs
 
@@ -3150,7 +3150,7 @@ void Path::RenderSelectedControlBlobsToPendingRegions(Spread* pSpread)
 	RenderRegionList* pRegionList = GetApplication()->GetRegionList();
 	if (!pRegionList->IsEmpty())
 	{
-		RenderRegion* pRegion = (RenderRegion*)pRegionList->GetHead();	
+		RenderRegion* pRegion = (RenderRegion*)pRegionList->GetHead();
 
 		while (pRegion != NULL)
 		{
@@ -3191,7 +3191,7 @@ void Path::RenderPathControlBlobs(Spread* pSpread, INT32 EndPtIndex)
 	RenderRegion* pRender = DocView::RenderOnTop(NULL, pSpread, ClippedEOR);
 	while (pRender!=NULL)
 	{
-		RenderPathControlBlobs(pRender,EndPtIndex);		
+		RenderPathControlBlobs(pRender,EndPtIndex);
 		pRender = DocView::GetNextOnTop(NULL);
 	}
 #endif
@@ -3222,9 +3222,9 @@ void Path::RenderPathControlBlobs(RenderRegion* pRender, INT32 EndPtIndex)
 
 	// Render the appropriate control points
 	// We render the two control points adjacent to the only
-	// selected endpoint, but we also render the two control points beyond 
+	// selected endpoint, but we also render the two control points beyond
 	// those, because their positions might affect the curve.
-	// A special case is when we have a closed path containing 
+	// A special case is when we have a closed path containing
 	// only a moveto and a curveto (it could happen) in which case
 	// we'll have to spot that, and only render two controls instead
 	// of four
@@ -3264,7 +3264,7 @@ void Path::RenderPathControlBlobs(RenderRegion* pRender, INT32 EndPtIndex)
 	Author:		Mike_Kenny (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	28/09/94
 	Inputs:		pSpread - The render spread to draw into
-	Purpose:	Draws all the selection blobs and pen blobs for a path. Useful for putting 
+	Purpose:	Draws all the selection blobs and pen blobs for a path. Useful for putting
 				the blobs on or	taking them back off again
 
 ********************************************************************************************/
@@ -3290,7 +3290,7 @@ void Path::RenderPathPenBlobs(Spread* pSpread)
 	Author:		Mike_Kenny (Xara Group Ltd) <camelotdev@xara.com> (via Rik)
 	Created:	28/09/94
 	Inputs:		pRegion - The render region to draw into
-	Purpose:	Draws all the selection blobs and pen blobs for a path. Useful for putting 
+	Purpose:	Draws all the selection blobs and pen blobs for a path. Useful for putting
 				the blobs on or	taking them back off again
 
 ********************************************************************************************/
@@ -3333,7 +3333,7 @@ void Path::RenderPathPenBlobs(RenderRegion* pRegion)
 	if (SelEndPts == 1)
 	{
 		if (Flags[EndPtIndex].IsRotate && IsOpenEnd(EndPtIndex))
-		{ 
+		{
 			if (Verbs[EndPtIndex] == PT_MOVETO)
 				i = FindNextControlPoint(EndPtIndex);
 			else
@@ -3371,7 +3371,7 @@ void Path::RenderPathPenBlobs(RenderRegion* pRegion)
 	Inputs:		Index gives the endpoint whose previous control point I want
 	Outputs:	-
 	Returns:	Index to the control point (or -1 if none)
-	Purpose:	This routine will scan back from an endpoint to find the attached bezier 
+	Purpose:	This routine will scan back from an endpoint to find the attached bezier
 				control point. It takes account of closed and open paths and complex
 				paths, and will wrap around the path if necessary.
 	Errors:		-
@@ -3388,7 +3388,7 @@ INT32 Path::FindPrevControlPoint(INT32 Index)
 	if (Verbs[Index] == PT_MOVETO)
 	{
 		// This is the start of a path - if the path is open, return -1
-		// otherwise return the index of the last control point. If the last 
+		// otherwise return the index of the last control point. If the last
 		// element is a line, return -1
 		i = Index;
 		FindEndOfSubPath(&i);
@@ -3421,8 +3421,8 @@ INT32 Path::FindPrevControlPoint(INT32 Index)
 	Inputs:		Index gives the endpoint whose next control point I want
 	Outputs:	-
 	Returns:	Index to the control point (or -1 if none)
-	Purpose:	This routine will scan forwards from an endpoint to find the attached 
-				bezier control point. It takes account of closed and open paths and 
+	Purpose:	This routine will scan forwards from an endpoint to find the attached
+				bezier control point. It takes account of closed and open paths and
 				complex paths, and will wrap around the path if necessary.
 	Errors:		-
 	SeeAlso:	-
@@ -3434,7 +3434,7 @@ INT32 Path::FindNextControlPoint(INT32 Index)
 //	DocCoord* Coords = (DocCoord*) DescribeHandle(CoordHandle);
 //	PathFlags* Flags = (PathFlags*) DescribeHandle(FlagsHandle);
 	PathVerb* Verbs = (PathVerb*) DescribeHandle(VerbHandle);
-	
+
 	// See if this is the end of a path (no more elements or next point is moveto)
 	if (Index+1 == UsedSlots || Verbs[Index+1] == PT_MOVETO)
 	{
@@ -3444,7 +3444,7 @@ INT32 Path::FindNextControlPoint(INT32 Index)
 			// The path is closed, so we have to scan backwards to find the start
 			INT32 i=Index;
 			FindStartOfSubPath(&i);		// i points at start of subpath
-			
+
 			// return next control point if next element is a bezier, -1 otherwise
 			if (Verbs[i+1] == PT_BEZIERTO)
 				return i+1;
@@ -3548,6 +3548,8 @@ void Path::DrawControlBlob(RenderRegion* pRender, const DocCoord& Coord)
 
 void Path::DrawControlLine(RenderRegion* pRender, const DocCoord& Start, const DocCoord& End)
 {
+	DocView::GetCurrent()->ForceRedraw(FALSE);
+
 #if !defined(EXCLUDE_FROM_RALPH)
 	// Draw a line to the render region
 	pRender->SetLineColour(COLOUR_BEZIERLINE);
@@ -3576,7 +3578,7 @@ void Path::ClearSubSelection()
 
 	for (INT32 i=0; i<UsedSlots; i++)
 		Flags[i].IsSelected = FALSE;
-} 
+}
 
 
 
@@ -3710,11 +3712,11 @@ BOOL Path::IsSubSelection()
 	Outputs:	p		= index of first selected point in region
 				q		= index of last selected point in region
 
-	Returns:	TRUE	if the point set {index,....,UsedSlots-1} contains a set of selected 
-						control handles {p,...,q} where p and q are the limits of the 
+	Returns:	TRUE	if the point set {index,....,UsedSlots-1} contains a set of selected
+						control handles {p,...,q} where p and q are the limits of the
 						selection and all points between are selected.
 				FALSE 	if no points are selected within the region.
-				 
+
 	Purpose:	Finds the next connected region of selected control handles.
 
 ********************************************************************************************/
@@ -3737,7 +3739,7 @@ BOOL Path::FindSelectionLimits(INT32 index, INT32* p, INT32* q)
 
 	INT32 end = start;
 	INT32 search = start;
-		
+
 	PathFlags* Flags = (PathFlags*) DescribeHandle(FlagsHandle);
 	PathVerb* Verbs = (PathVerb*) DescribeHandle(VerbHandle);
 
@@ -3757,7 +3759,7 @@ BOOL Path::FindSelectionLimits(INT32 index, INT32* p, INT32* q)
 	}
 
 	*p = start;
-	*q = end; 
+	*q = end;
 
 	return TRUE;
 }
@@ -3772,18 +3774,18 @@ BOOL Path::FindSelectionLimits(INT32 index, INT32* p, INT32* q)
 	Created:	3/11/94
 	Inputs:		start	= pointer to an index holding the region start
 				end		= pointer to an index holding the region end
-				num		= number of endpoints to expand the region by 
+				num		= number of endpoints to expand the region by
 	Outputs:	start	= will be updated
 				end		= will be updated
 	Purpose:	given the region [*start, *end] expand the region in both directions
 				by num elements. The region will not be expanded beyond its outer limits
 				described by the set {moveto,.....,endofsubpath}.
-	
+
 ********************************************************************************************/
 
 void Path::ExpandRange(INT32* start, INT32* end, INT32 num)
 {
-	
+
 	ENSURE( (*start)<UsedSlots, "start index was not valid in ExpandRange" );
 	ENSURE( (*start)>=0, "start index less than zero in ExpandRange" );
 
@@ -3798,7 +3800,7 @@ void Path::ExpandRange(INT32* start, INT32* end, INT32 num)
 	INT32 starti = *start;
 	INT32 endi = *end;
 
-	if (starti<0) 
+	if (starti<0)
 		starti = 0;
 	if (endi<0)
 		endi = 0;
@@ -3814,7 +3816,7 @@ void Path::ExpandRange(INT32* start, INT32* end, INT32 num)
 	while (num>0)
 	{
 		if (Verbs[starti] != PT_MOVETO)
-		{ 
+		{
 			if (FindPrev(&prev))
 			{
 				if (Flags[prev].IsEndPoint)
@@ -3823,11 +3825,11 @@ void Path::ExpandRange(INT32* start, INT32* end, INT32 num)
 		}
 
 		if (FindNextEndPoint(&next))
-		{	
+		{
 			if ((Flags[next].IsEndPoint) &&
 				(Verbs[next] != PT_MOVETO))
 					endi = next;
-		}					
+		}
 		num-=1;
 	}
 	*start = starti;
@@ -3848,7 +3850,7 @@ void Path::ExpandRange(INT32* start, INT32* end, INT32 num)
 				FALSE	if it failed
 	Purpose:	Checks to see if there is already enough memory available to make the
 				insertion and if not will try to allocate some more memory.
-				If this works it will move the path 
+				If this works it will move the path
 				(after the position indicated by the path class variable CurrentPos)
 				along to make room for the correct number of slots at that point.
 
@@ -3871,7 +3873,7 @@ BOOL Path::MakeSpaceInPath(INT32 NumSlots)
 	Created:	01/02/94
 	Inputs:		NumSlots - The number of slots you need to put your new thing in
 				Position - The position at which to	put the slots
-	Returns:	TRUE	if it was able to find the memory, 
+	Returns:	TRUE	if it was able to find the memory,
 				FALSE	if it failed
 	Purpose:	Checks to see if there is already enough memory available to make the
 				insertion and if not will try to allocate some more memory. If this works
@@ -3895,12 +3897,12 @@ BOOL Path::MakeSpaceInPath(INT32 NumSlots, INT32 Position)
 
 >	BOOL Path::MakeSpaceAtEnd(INT32 NumSlots)
 
-	Author:		Mike_Kenny (Xara Group Ltd) <camelotdev@xara.com> 
+	Author:		Mike_Kenny (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	01/02/94
 	Inputs:		NumSlots - The number of Unused slots you need free at the end of the path
-	Returns:	TRUE 	if it was able to find the memory, 
+	Returns:	TRUE 	if it was able to find the memory,
 				FALSE 	if it failed
-	Purpose:	Will make enough room for NumSlots unused slots at the end of the path. 
+	Purpose:	Will make enough room for NumSlots unused slots at the end of the path.
 
 ********************************************************************************************/
 
@@ -3917,7 +3919,7 @@ BOOL Path::MakeSpaceAtEnd(INT32 NumSlots)
 		// we are out of spare slots, so try to alloc some extra ones
 		if (!IncreaseBlock(VerbHandle, sizeof(PathVerb)*SlotsNeeded))
 			return FALSE;
-				
+
 		if (!IncreaseBlock(CoordHandle, sizeof(DocCoord)*SlotsNeeded))
 			return FALSE;
 
@@ -3938,10 +3940,10 @@ BOOL Path::MakeSpaceAtEnd(INT32 NumSlots)
 
 >	BOOL Path::OpenGap(INT32 NumSlots)
 
-	Author:		Mike_Kenny (Xara Group Ltd) <camelotdev@xara.com> 
+	Author:		Mike_Kenny (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	01/02/94
 	Inputs:		NumSlots - The size of the gap to open
-	Returns:	TRUE 	if it was able to find the memory, 
+	Returns:	TRUE 	if it was able to find the memory,
 				FALSE 	if it failed
 	Purpose:	Will open a gap of NumSlots size in this path. The gap is positioned at
 				CurrentPos (A path class variable)
@@ -3957,14 +3959,14 @@ BOOL Path::OpenGap(INT32 NumSlots)
 
 >	BOOL Path::OpenGap(INT32 NumSlots, INT32 Position)
 
-	Author:		Mike_Kenny (Xara Group Ltd) <camelotdev@xara.com> 
+	Author:		Mike_Kenny (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	01/02/94
 	Inputs:		NumSlots = The size of the gap to open
 				Position = The index at which to open the gap (0...UsedSlots)
 	Returns:	TRUE 	if it was able to open the gap
 				FALSE 	if it failed
 	Purpose:	Will open up a gap of NumSlots at the position Position within the path.
-				If Position is set to the end of the path ie the same value as usedslots, 
+				If Position is set to the end of the path ie the same value as usedslots,
 				no data will be moved.
 				FALSE will ofcourse always be returned if there is not enough free space
 				in the form of unused slots on the end of the path for the gap to open.
@@ -3976,7 +3978,7 @@ BOOL Path::OpenGap(INT32 NumSlots)
 BOOL Path::OpenGap(INT32 NumSlots, INT32 Position)
 {
 	if (UnUsedSlots<NumSlots)
-	{		   
+	{
 		ERROR3("Path::OpenGap() overflow: Gap request is too large");
 		return FALSE;
 	}
@@ -4016,7 +4018,7 @@ BOOL Path::OpenGap(INT32 NumSlots, INT32 Position)
 	Created:	17/11/94
 	Inputs:		-
 	Returns:	FALSE if the path failed to compact
-	Purpose:	Removes any extraneous unused slots in a path. It will a maximum of 
+	Purpose:	Removes any extraneous unused slots in a path. It will a maximum of
 				2n-1 slots free where n is the size of an allocation chunk when increasing
 				the buffer (see Path::Initialise)
 
@@ -4098,7 +4100,7 @@ BOOL Path::InsertSection(INT32 StartSlot, INT32 NumSlots)
 				the arrays, if NumSlots < UsedSlots+UnusedSlots then the volume is
 				automatically ensured. This allows path buffers to be resized ready for
 				cloning.
-				
+
 ********************************************************************************************/
 
 BOOL Path::EnsureVolume(INT32 NumSlots)
@@ -4112,8 +4114,8 @@ BOOL Path::EnsureVolume(INT32 NumSlots)
 
 /********************************************************************************************
 
->	void Path::SmoothCurve(	BOOL SetRenderFlags = FALSE, 
-							BOOL SnapEnds = FALSE, 
+>	void Path::SmoothCurve(	BOOL SetRenderFlags = FALSE,
+							BOOL SnapEnds = FALSE,
 							INT32 SnapIndex = 0)
 
 	Author:		Jim_Lynn (Xara Group Ltd) <camelotdev@xara.com>
@@ -4130,7 +4132,7 @@ BOOL Path::EnsureVolume(INT32 NumSlots)
 void Path::SmoothCurve(BOOL SetRenderFlags, BOOL SnapEnds, INT32 SnapIndex)
 {
 
-	// This is a less efficient (slightly) version of this routine (in that there is a 
+	// This is a less efficient (slightly) version of this routine (in that there is a
 	// certain amount of moving backward and forward in the path, but only for the start
 	// and end points) but it copes with end snapping
 
@@ -4140,7 +4142,7 @@ void Path::SmoothCurve(BOOL SetRenderFlags, BOOL SnapEnds, INT32 SnapIndex)
 	INT32 StartSnapSub = 0;
 	INT32 EndSnapSub = 0;		// Start and end of the subpath we're snapping
 	DocCoord tempcoord(0,0);
-	
+
 	// Find the start and end of the subpath we're snapping
 	if (SnapEnds)
 	{
@@ -4148,7 +4150,7 @@ void Path::SmoothCurve(BOOL SetRenderFlags, BOOL SnapEnds, INT32 SnapIndex)
 		FindStartOfSubPath(&StartSnapSub);
 		FindEndElOfSubPath(&EndSnapSub);
 	}
-	
+
 	if (SetRenderFlags)
 	{
 		// As well as smoothing, we also set the NeedToRender flag on any path that's changed.
@@ -4215,7 +4217,7 @@ void Path::SmoothCurve(BOOL SetRenderFlags, BOOL SnapEnds, INT32 SnapIndex)
 
 					case PT_LINETO :
 						if (ThisVerb == PT_BEZIERTO)
-							CalcPointLine( Coords[i], Coords[LastEndPoint], Coords[LastLastEndPoint], &Coords[i-2] ); 
+							CalcPointLine( Coords[i], Coords[LastEndPoint], Coords[LastLastEndPoint], &Coords[i-2] );
 						break;
 
 					case PT_BEZIERTO :
@@ -4229,7 +4231,7 @@ void Path::SmoothCurve(BOOL SetRenderFlags, BOOL SnapEnds, INT32 SnapIndex)
 							CalcPointEnd( Coords[LastLastEndPoint], Coords[LastEndPoint], &Coords[LastEndPoint-1] );
 
 						break;
-						
+
 					default:
 						break;
 				}
@@ -4273,19 +4275,19 @@ void Path::SmoothCurve(BOOL SetRenderFlags, BOOL SnapEnds, INT32 SnapIndex)
 	Outputs:	-
 	Returns:	-
 	Purpose:	This function will handle the smoothing of a path. It is designed to take
-				account of all the possibilities that might occur (hence the huge list of 
+				account of all the possibilities that might occur (hence the huge list of
 				parameters). The various places where this function might be needed are:
 
-				*	While dragging around points on a single path - this uses a temporary 
-					path and does not need to worry about undo. The only possibility for 
+				*	While dragging around points on a single path - this uses a temporary
+					path and does not need to worry about undo. The only possibility for
 					strangeness here is that the start and end points might snap together.
 
-				*	While dragging around points on more than one path - not only might start 
-					and end snap, but the dragged point might need to snap to other paths 
+				*	While dragging around points on more than one path - not only might start
+					and end snap, but the dragged point might need to snap to other paths
 					being dragged at the same time
 
-				*	When operating directly on a NodePath (for example when toggling the 
-					smoothness of a point). This is when Undo needs to be worried about. 
+				*	When operating directly on a NodePath (for example when toggling the
+					smoothness of a point). This is when Undo needs to be worried about.
 					In this case it is likely that all the other flags will be default values.
 
 	Errors:		-
@@ -4328,12 +4330,12 @@ void Path::SmartSmoothCurve(BOOL StartAndEndSnapped,
 	Outputs:	-
 	Returns:	Coordinates of the smoothed point
 	Purpose:	Calculates the smoothed position of a control point in a path. The smoothing
-				is calculated based on the endpoint to which the control point is attached, 
-				and the endpoints on either side of this point. Since we are guaranteed that 
+				is calculated based on the endpoint to which the control point is attached,
+				and the endpoints on either side of this point. Since we are guaranteed that
 				one of these segments is a curve (that's where the control point comes from)
 				the other possibilities are: The curve just terminates (at the end of a path);
-				The curve is attached to another curve; It is attached to a line; It is at the end, 
-				but the end joins the start of the same path, which could be a line or a curve; 
+				The curve is attached to another curve; It is attached to a line; It is at the end,
+				but the end joins the start of the same path, which could be a line or a curve;
 				and the curve could be at the end, but snapping to a completely separate path segment
 				which might either be a line or curve (this is what the JoinedToAnother, OtherIsCurve and
 				OtherCoord parameters indicate.
@@ -4356,7 +4358,7 @@ DocCoord Path::SmoothControlPoint(	INT32 Index,
 	PathFlags* Flags = GetFlagArray();
 
 	// temp vars for calculating smoothness
-	
+
 	DocCoord p;		// Endpoint opposite the control point
 	DocCoord q;		// Endpoint directly adjacent to control point
 	DocCoord r;		// Endpoint on same side of control point but not adjacent
@@ -4381,7 +4383,7 @@ DocCoord Path::SmoothControlPoint(	INT32 Index,
 	c		q	<- endpoint to which point is attached
 	c		c	<- Control point we're smoothing
 	c		d
-	c		r	
+	c		r
 	...
 
 	2: Line/Curve
@@ -4432,7 +4434,7 @@ DocCoord Path::SmoothControlPoint(	INT32 Index,
 */
 
 		// The position of this point depends on: The previous endpoint (which is the point
-		// to which this control point is 'attached'), the endpoint before that one, and the 
+		// to which this control point is 'attached'), the endpoint before that one, and the
 		// endpoint of the bezier segment containing the control point.
 		// point q is the endpoint of the previous element (which always exists where we want it)
 
@@ -4442,11 +4444,11 @@ DocCoord Path::SmoothControlPoint(	INT32 Index,
 
 		r = Coords[Index+2];
 
-		// point p, on the other hand, is problematical. It might not exist at all (if the 
-		// previous element was a MoveTo and the path is open). It might be a lineto. It 
-		// might be a CurveTo element, which is the simplest case. Or, it might be any of 
-		// those three elements on a completely different path. Or it might be a curve or 
-		// a line at the opposite end of the path (if the CLOSEFIGURE flag is set or the 
+		// point p, on the other hand, is problematical. It might not exist at all (if the
+		// previous element was a MoveTo and the path is open). It might be a lineto. It
+		// might be a CurveTo element, which is the simplest case. Or, it might be any of
+		// those three elements on a completely different path. Or it might be a curve or
+		// a line at the opposite end of the path (if the CLOSEFIGURE flag is set or the
 		// StartAndEndSnapped flag is TRUE).
 
 		if (Verbs[Index-1] == PT_BEZIERTO)
@@ -4481,7 +4483,7 @@ DocCoord Path::SmoothControlPoint(	INT32 Index,
 		}
 		else
 		{
-			
+
 			// Scan along to find the end element. This we find by scanning forward until
 			// we find a MoveTo or we go off the end. Either way, the previous element is
 			// the one we want.
@@ -4489,12 +4491,12 @@ DocCoord Path::SmoothControlPoint(	INT32 Index,
 			INT32 i = Index;
 			while (i<UsedSlots && Verbs[i] != PT_MOVETO)
 				i++;
-			
+
 			// i either points after the end of the path, or at the next MoveTo. Move to the
 			// previous element (could be the endpoint of a curve).
 
 			i--;
-			
+
 			if (StartAndEndSnapped || (Verbs[i] & PT_CLOSEFIGURE) )
 			{
 				// We have to get p from the end of the subpath (cases 4 & 5)
@@ -4634,7 +4636,7 @@ DocCoord Path::SmoothControlPoint(	INT32 Index,
 		// Point p (as before) is difficult. It ight be a curve element. it might be a line
 		// element. It might not exist at all (i.e. this might be the end point of an open subpath).
 		// It also might be the start point of this subpath, either because this path is closed
-		// or because we've been told to snap. Or even, it might be an element at the start or end 
+		// or because we've been told to snap. Or even, it might be an element at the start or end
 		// of another path. My God, what a choice!
 
 		// First check for the simple cases of curve/curve or curve/line (1 & 2)
@@ -4658,7 +4660,7 @@ DocCoord Path::SmoothControlPoint(	INT32 Index,
 		// Now we know there's nothing after this curve, so check snapping and stuff
 		else if (StartAndEndSnapped || (Verbs[Index+1] & PT_CLOSEFIGURE))
 		{
-			// We're snapping to the start of this path (4 & 5) , so we have to find 
+			// We're snapping to the start of this path (4 & 5) , so we have to find
 			// the start of this subpath
 			INT32 i = Index;
 			FindStartOfSubPath(&i);			// i returned pointing at start element
@@ -4723,7 +4725,7 @@ BOOL Path::IsSubPathClosed(INT32 Index)
 {
 	INT32 i = Index;
 	PathVerb* Verbs = GetVerbArray();
-	
+
 	// skip through until we hit the end or a MoveTo
 	do
 	{
@@ -4768,7 +4770,7 @@ BOOL Path::IsClosed()
 
 		if (!IsSubPathClosed(StartIndex))
 			return FALSE;
-		
+
 		StartIndex = EndIndex + 1;
 	}
 
@@ -4779,7 +4781,7 @@ BOOL Path::IsClosed()
 
 /********************************************************************************************
 
->	void Path::CalcDoubleCurve( DocCoord& p1, DocCoord& p2, DocCoord& p3, 
+>	void Path::CalcDoubleCurve( DocCoord& p1, DocCoord& p2, DocCoord& p3,
 								DocCoord* ControlPoint1, DocCoord* ControlPoint2 )
 
 	Author:		Rik_Heywood (Xara Group Ltd) <camelotdev@xara.com>
@@ -4867,7 +4869,7 @@ void Path::CalcDoubleCurve( DocCoord& p1, DocCoord& p2, DocCoord& p3, DocCoord* 
 
 //	ControlPoint2->x = p2.x + (INT32)(DistB*cos(Theta+Alpha));
 //	ControlPoint2->y = p2.y + (INT32)(DistB*sin(Theta+Alpha));
-	
+
 //	}
 //	else
 //	{
@@ -4878,7 +4880,7 @@ void Path::CalcDoubleCurve( DocCoord& p1, DocCoord& p2, DocCoord& p3, DocCoord* 
 
 //	ControlPoint2->x = p2.x - (INT32)(DistB*cos(Theta+Alpha));
 //	ControlPoint2->y = p2.y - (INT32)(DistB*sin(Theta+Alpha));
-	
+
 //
 //	}
 
@@ -4947,7 +4949,7 @@ void Path::CalcPointCurve( DocCoord& p1, DocCoord& p2, DocCoord& p3, DocCoord* C
 		// Set the control point
 		ControlPoint->x = p2.x + (INT32)(Dist*sin(Theta+Beta));
 		ControlPoint->y = p2.y + (INT32)(Dist*cos(Theta+Beta));
-		
+
 	}
 */
 
@@ -5025,7 +5027,7 @@ void Path::CalcPointEnd( DocCoord& p1, DocCoord& p2, DocCoord* ControlPoint )
 	Inputs:		p1, p2, p3 - The End points of the path elements before, after and at the
 				the current position in the path
 	Outputs:	ControlPoint - Pointers to the control point between p2 and p3
-	Purpose:	
+	Purpose:
 	SeeAlso:	Path::CalcPointLine; Path::CalcPointEnd
 
 ********************************************************************************************/
@@ -5204,7 +5206,7 @@ BOOL Path::Join(const Path& Other, BOOL BuildComplexPath )
 	DocCoord*  Coords = (DocCoord*)  DescribeHandle(CoordHandle);
 	PathFlags* Flags  = (PathFlags*) DescribeHandle(FlagsHandle);
 	PathVerb*  Verbs  = (PathVerb*)  DescribeHandle(VerbHandle);
-	
+
 	DocCoord*  OtherCoords = (DocCoord*)  DescribeHandle(Other.CoordHandle);
 	PathFlags* OtherFlags  = (PathFlags*) DescribeHandle(Other.FlagsHandle);
 	PathVerb*  OtherVerbs  = (PathVerb*)  DescribeHandle(Other.VerbHandle);
@@ -5347,7 +5349,7 @@ BOOL Path::MergeTwoPaths(DocCoord* OtherCoords,PathVerb* OtherVerbs,PathFlags* O
 	DocCoord*  Coords = (DocCoord*)  DescribeHandle(CoordHandle);
 	PathFlags* Flags  = (PathFlags*) DescribeHandle(FlagsHandle);
 	PathVerb*  Verbs  = (PathVerb*)  DescribeHandle(VerbHandle);
-	
+
 	// Copy all the data
 	INT32 DestPos = UsedSlots;
 	for (INT32 i=0; i<Length; i++)
@@ -5576,16 +5578,16 @@ INT32 Path::ClipPathToPath(const Path& Src,Path* const pDest,UINT32 Flags,
 		return -1;
 
 	// YES! we have a result
-	return len;	
+	return len;
 }
 
 
 
 /********************************************************************************************
 
-BOOL Path::StrokePathToPath(MILLIPOINT 	LineWidth 	= 250, 
+BOOL Path::StrokePathToPath(MILLIPOINT 	LineWidth 	= 250,
 							LineCapType LineCap	  	= LineCapButt,
-							JointType 	JoinStyle 	= MitreJoin, 
+							JointType 	JoinStyle 	= MitreJoin,
 							DashType 	*pDash	  	= NULL,
 							Path* 		pDest	  	= NULL,
 							DWORD 		Flatness	= 200,
@@ -5607,9 +5609,9 @@ BOOL Path::StrokePathToPath(MILLIPOINT 	LineWidth 	= 250,
 	SeeAlso:	-
 
 ********************************************************************************************/
-BOOL Path::StrokePathToPath(MILLIPOINT 	LineWidth, 
+BOOL Path::StrokePathToPath(MILLIPOINT 	LineWidth,
 							LineCapType LineCap,
-							JointType 	JoinStyle, 
+							JointType 	JoinStyle,
 							DashType 	*pDash,
 							Path* 		pDest,
 							double 		Flatness,
@@ -5720,7 +5722,7 @@ INT32 Path::InitializeContourValues(UINT32 Width, JoinStyles JoinS, BOOL IsAnOut
 //	Return :		New Path Length for the current Step.
 //	Purpose :		This function is used to get the path at the requested StepValue.
 //					This flavour of this function actually takes just the destination
-//					path and fills it in for you automatically 
+//					path and fills it in for you automatically
 //////////////////////////////////////////////////////////////////////////////////////
 INT32 Path::GetContourForStep(Path* pDest, double StepValue)
 {
@@ -5811,7 +5813,7 @@ INT32 Path::GetContourForStep(Path* pDest, double StepValue)
 					// and return!
 					if(NewPathLength == 0)				// !!!
 						pDest->CloneFrom(CopyPath);
-					
+
 					return NewPathLength;
 				}
 
@@ -5829,7 +5831,7 @@ INT32 Path::GetContourForStep(Path* pDest, double StepValue)
 				OTypes[PathLength+1] = PT_LINETO ;
 				OTypes[PathLength+2] = PT_LINETO ;
 				OTypes[PathLength+3] = PT_LINETO|PT_CLOSEFIGURE ;
-				
+
 				while(NewPathLength == -2 && Passes++ < 6)
 				{
 					NewPathLength = ::ClipPathToPath(OPoints, OTypes, PathLength+4, m_ContourFlatness,
@@ -5850,7 +5852,7 @@ INT32 Path::GetContourForStep(Path* pDest, double StepValue)
 					// and return!
 					if(NewPathLength == 0)
 						pDest->CloneFrom(CopyPath);
-					
+
 					return NewPathLength;
 				}
 			}
@@ -5928,7 +5930,7 @@ INT32 Path::GetContourForStep(Path* pDest, double StepValue)
 	{
 		// With the stroke path to path method we need to clean up the resultant path!
 		PathLength = CopyPath.ClipPathToPath(StrokedPath, pDest, 7|(1<<4), 30, m_ContourFlatness, m_ContourFlatness);
-		
+
 		if(PathLength <= 0)
 		{
 			// If the NewPathLength is 0 then there`s no point continueing so
@@ -5973,7 +5975,7 @@ BOOL Path::ExternalArraysAdded(const INT32 Added)
 	UnUsedSlots-=Added;
 
 	return TRUE;
-} 
+}
 
 
 /********************************************************************************************
@@ -6017,7 +6019,7 @@ BOOL Path::ExternalArraysReplaced(const INT32 Size)
 BOOL Path::CopySectionFrom(const Path& Other, INT32 StartIndex, INT32 NumToCopy)
 {
 	return MergeSectionFrom(UsedSlots, Other, StartIndex, NumToCopy);
-} 
+}
 
 
 /********************************************************************************************
@@ -6029,7 +6031,7 @@ BOOL Path::CopySectionFrom(const Path& Other, INT32 StartIndex, INT32 NumToCopy)
 	Inputs:		Dest - A pointer to another path to add the data to
 	Returns:	TRUE if the copy was a success, FALSE if it failed (lack of memory)
 	Purpose:	Copies a specified section from this path to the end of another path
-	
+
 ********************************************************************************************/
 
 BOOL Path::CopySectionTo(Path* Dest, INT32 StartIndex, INT32 NumToCopy)
@@ -6071,7 +6073,7 @@ BOOL Path::MergeSectionFrom(INT32 DestinPos, const Path& Source, INT32 SourcePos
 	DocCoord*  DCoords = (DocCoord*)  DescribeHandle(CoordHandle);
 	PathFlags* DFlags  = (PathFlags*) DescribeHandle(FlagsHandle);
 	PathVerb*  DVerbs  = (PathVerb*)  DescribeHandle(VerbHandle);
-	
+
 	DocCoord*  SCoords = (DocCoord*)  DescribeHandle(Source.CoordHandle);
 	PathFlags* SFlags  = (PathFlags*) DescribeHandle(Source.FlagsHandle);
 	PathVerb*  SVerbs  = (PathVerb*)  DescribeHandle(Source.VerbHandle);
@@ -6120,7 +6122,7 @@ BOOL Path::MergeSectionTo(INT32 SourcePos, INT32 Length, Path* Destin, INT32 Des
 	DocCoord*  SCoords = (DocCoord*)  DescribeHandle(CoordHandle);
 	PathFlags* SFlags  = (PathFlags*) DescribeHandle(FlagsHandle);
 	PathVerb*  SVerbs  = (PathVerb*)  DescribeHandle(VerbHandle);
-	
+
 	DocCoord*  DCoords = (DocCoord*)  DescribeHandle(Destin->CoordHandle);
 	PathFlags* DFlags  = (PathFlags*) DescribeHandle(Destin->FlagsHandle);
 	PathVerb*  DVerbs  = (PathVerb*)  DescribeHandle(Destin->VerbHandle);
@@ -6170,7 +6172,7 @@ BOOL Path::JoinToAnother(Path* OtherPath, INT32 MainIndex, INT32 OtherIndex)
 	INT32 OtherSubEnd;			// End of subpath in other path
 
 	MainSubStart = MainSubEnd = MainIndex;
-	FindStartOfSubPath(&MainSubStart);		
+	FindStartOfSubPath(&MainSubStart);
 	FindEndElOfSubPath(&MainSubEnd);
 
 	OtherSubStart = OtherSubEnd = OtherIndex;
@@ -6252,7 +6254,7 @@ BOOL Path::JoinToAnother(Path* OtherPath, INT32 MainIndex, INT32 OtherIndex)
 
 
 		}
-		
+
 		if (OtherSubStart < MainSubStart)
 		{
 			// Swap Main and Other indices
@@ -6329,7 +6331,7 @@ BOOL Path::SimpleJoin(Path* Other, INT32 *OtherStartSlot, BOOL* IsOtherReversed,
 
 	// Make a note of where the new path will start after the merge
 	INT32 PathStart = UsedSlots;
-	
+
 	if (ThisReversed != NULL)
 		*ThisReversed = FALSE;
 	// Do we need to reverse any elements of this path
@@ -6366,7 +6368,7 @@ BOOL Path::SimpleJoin(Path* Other, INT32 *OtherStartSlot, BOOL* IsOtherReversed,
 				*ThisReversed = TRUE;
 		}
 	}
-	
+
 	// merge the paths
 	if (MergeTwoPaths(*Other)==FALSE)
 		return FALSE;
@@ -6469,7 +6471,7 @@ BOOL Path::ComplexJoin(Path* Other, INT32 *OtherStartSlot, BOOL* IsOtherReversed
 
 		// delete the original version of the sub path
 		DeleteSection(JoinStart, JoinLen);
-		
+
 		// Make sure that there is enough room for the new path
 		CurrentPos = UsedSlots;
 		if (!MakeSpaceInPath(Other->UsedSlots-1))
@@ -6549,7 +6551,7 @@ BOOL Path::ComplexToSameComplexJoin(Path* Other, INT32 *OtherStartSlot, BOOL* Is
 	// Reverse the first subpath if we need to
 	if (FrontJoinedAtStart)
 		ReverseSection(FrontStartSlot, FrontNumSlots);
-	
+
 	// Reverse the Second subpath if we need to
 	if (!BackJoinedAtStart)
 		ReverseSection(BackStartSlot, BackNumSlots);
@@ -6607,7 +6609,7 @@ BOOL Path::ComplexToSameComplexJoin(Path* Other, INT32 *OtherStartSlot, BOOL* Is
 	Inputs:		JoinCoord - The Coord to compare with the start and end points od sub paths
 	Outputs:	Start - Pointer to an INT32 to hold the starting slot number of the sub path
 				Length - The number of slots in the found Sub Path
-				JoinAtStart - TRUE if JoinCoord intersected the start of the Sub Path, 
+				JoinAtStart - TRUE if JoinCoord intersected the start of the Sub Path,
 							FALSE otherwise
 	Returns:	TRUE if an intersection was found, FALSE if not
 	Purpose:	This function searchs the path, compareing JoinCoord with the start and end
@@ -6728,7 +6730,7 @@ BOOL Path::InsertSectionAtEnd(const Path* Other, INT32 StartSlot, INT32 NumSlots
 	Inputs:		pos - mouse position to be tested
 				flags - POINTFLAG_ENDPOINTS = look at endpoints
 						POINTFLAG_CONTROLPOINTS - look at control points
-						
+
 						(the flag POINTFLAG_ENDSFIRST has been removed and has
 						no effect - the endpoints are always scanned first)
 	Outputs:	position - index to the point that was matched
@@ -6744,7 +6746,7 @@ BOOL Path::InsertSectionAtEnd(const Path* Other, INT32 StartSlot, INT32 NumSlots
 					The rules are that control points are only enabled when a single end
 					point is selected and hence a maximum of 2 control points will be
 					checked.
-				If any of these points are close enough	to be clicked on, the function 
+				If any of these points are close enough	to be clicked on, the function
 				returns TRUE, with position holding the index to the point that was clicked
 
 ********************************************************************************************/
@@ -6773,15 +6775,15 @@ BOOL Path::FindNearestPoint(DocCoord pos, UINT32 flags, INT32* position)
 
 	DocRect BlobRect;
 	// INT32 	numloops;
-	
+
 	// Now to calculate a rectangle around the pointer position which is
 	// the same size as the biggest possible blob. We then go through the
 	// path and see if any of the coordinates fall into that rectangle.
 	// This is a very cunning reversal of the normal logic - go through the
-	// path, find a blob rectangle for each point, then see if the pointer 
+	// path, find a blob rectangle for each point, then see if the pointer
 	// coordinate falls inside it. The only problem with this method is that
-	// it assumes that all blobs are the same size, but since this is only 
-	// for click detection, and we need a little bit of leeway, I think 
+	// it assumes that all blobs are the same size, but since this is only
+	// for click detection, and we need a little bit of leeway, I think
 	// it's all right. Anyway, the usual code for this also makes this assumption,
 	// although it doesn't rely on it.
 
@@ -6794,7 +6796,7 @@ BOOL Path::FindNearestPoint(DocCoord pos, UINT32 flags, INT32* position)
 	INT32 EndCount = 0;
 	INT32 EndIndex = 0;
 	INT32 i;
-	
+
 	for (i=0; i<UsedSlots; i++)
 	{
 		// check to see if it's an endpoint, and if we want this kind of point
@@ -6877,11 +6879,11 @@ BOOL Path::FindNearestPoint(DocCoord pos, UINT32 flags, INT32* position)
 		INT32 i;
 		for (i=0;i<UsedSlots ;i++ )
 		{
-			// check to see if it's an endpoint or control point, and if we want 
+			// check to see if it's an endpoint or control point, and if we want
 			// this kind of point
 			if (
-				(PFlags[i].IsEndPoint && (flags & POINTFLAG_ENDPOINTS)) 
-			    || 
+				(PFlags[i].IsEndPoint && (flags & POINTFLAG_ENDPOINTS))
+			    ||
 			    (!(PFlags[i].IsEndPoint) && (flags & POINTFLAG_CONTROLPOINTS) && PFlags[i].IsSelected)
 			   )
 			{
@@ -6919,7 +6921,7 @@ BOOL Path::FindNearestPoint(DocCoord pos, UINT32 flags, INT32* position)
 				with ClosestPoint to find the actual closest point.
 
 ********************************************************************************************/
- 
+
 double Path::SqrDistanceToPoint(const DocCoord pt, INT32* NearEl, double* mu)
 {
 	// Get the coordinate list and verb list for this path instance
@@ -6952,17 +6954,17 @@ double Path::SqrDistanceToPoint(const DocCoord pt, INT32* NearEl, double* mu)
 
 			case PT_LINETO:
 				ldist = PathUtil::SqrDistanceToLine(&Coords[i-1], pt, &tmu);
-				if (ldist<=fdist) 
+				if (ldist<=fdist)
 				{
 					fdist=ldist;
 					el=i;
 					*mu=tmu;
-				} 
+				}
 				break;
 
 			case PT_BEZIERTO:
 			 	ldist = PathUtil::SqrDistanceToCurve(MAXPATHDIFFRATE, &Coords[i-1], pt, &tmu);
-				if (ldist<=fdist) 
+				if (ldist<=fdist)
 				{
 					fdist=ldist;
 					el=i;
@@ -6973,7 +6975,7 @@ double Path::SqrDistanceToPoint(const DocCoord pt, INT32* NearEl, double* mu)
 		}
 	}
 
-	if (el>-1)									// have we an element? 
+	if (el>-1)									// have we an element?
 	{
 		*NearEl = el;
 		return fdist;
@@ -6998,7 +7000,7 @@ double Path::SqrDistanceToPoint(const DocCoord pt, INT32* NearEl, double* mu)
 	Purpose:	This function returns the point at which the closest distance on the path
 				occurs.
 	Errors:		Ensures the indexed path element is either a lineto or bezierto
-	
+
 ********************************************************************************************/
 
 DocCoord Path::ClosestPointTo(const double t, const INT32 index)
@@ -7014,7 +7016,7 @@ DocCoord Path::ClosestPointTo(const double t, const INT32 index)
 
 	ENSURE(UsedSlots>1, "Not enough elements in path");
 	ENSURE(index>=0, "invalid formal parameter: index");
-	ENSURE((Verb == PT_LINETO) || (Verb == PT_BEZIERTO), 
+	ENSURE((Verb == PT_LINETO) || (Verb == PT_BEZIERTO),
 			"Unable to find point on path. Index does not specify line or curve");
 
 	if (index<UsedSlots)
@@ -7042,9 +7044,9 @@ DocCoord Path::ClosestPointTo(const double t, const INT32 index)
 
 /********************************************************************************************
 
->	BOOL Path::IsPointCloseTo(const DocCoord ICoord, 
+>	BOOL Path::IsPointCloseTo(const DocCoord ICoord,
 							  INT32 range,
-							  INT32* CloseElement, 
+							  INT32* CloseElement,
 							  double* mu )
 
 	Author:		Mike_Kenny (Xara Group Ltd) <camelotdev@xara.com>
@@ -7064,7 +7066,7 @@ DocCoord Path::ClosestPointTo(const double t, const INT32 index)
 
 BOOL Path::IsPointCloseTo(const DocCoord ICoord,
 						  INT32 range,
-						  INT32* NearElement, 
+						  INT32* NearElement,
 						  double* mu )
 {
 	double dist = SqrDistanceToPoint(ICoord, NearElement, mu);
@@ -7094,7 +7096,7 @@ BOOL Path::IsPointCloseTo(const DocCoord ICoord,
 				Verbs		 = a list of NumElements path verbs.
 				Coords		 = a list of NumElements doc coords generated by the split
 
-	Returns:	TRUE	= if the path could be split, 
+	Returns:	TRUE	= if the path could be split,
 				FALSE	= if SplitPt was closest to an already existing control vertex
 						  and hence is unable to split the element.
 
@@ -7122,7 +7124,7 @@ BOOL Path::SplitAtPoint(const DocCoord SplitPt,
 	DocCoord* InCoords = GetCoordArray();
 
 	PathVerb vb = InVerbs[*SplitElement] & ~PT_CLOSEFIGURE;
-	ENSURE((vb == PT_LINETO) || (vb == PT_BEZIERTO), 
+	ENSURE((vb == PT_LINETO) || (vb == PT_BEZIERTO),
 			"Unable to find point on path. Index does not specify line or curve");
 
 	switch (vb)
@@ -7182,7 +7184,7 @@ BOOL Path::PointCloseToLine(DocCoord pos, INT32* position)
 	DocRect temp;
 	GetApplication()->GetBlobManager()->GetBlobRect(DocCoord(0,0),&temp);
 	double mu;
-	INT32 width = (temp.Width())/2;	
+	INT32 width = (temp.Width())/2;
 	return (IsPointCloseTo(pos, width*width, position, &mu));
 
 //	return(FALSE);
@@ -7222,7 +7224,7 @@ BOOL Path::ClosestSelectedEndpoint(DocCoord pos, INT32* position, double* distan
 	BOOL foundany = FALSE;
 
 	// Scan from the end of the path to the start. We remember the last point in the subpath
-	// and go back until we hit a MoveTo. then we look at both the elements, and if the 
+	// and go back until we hit a MoveTo. then we look at both the elements, and if the
 	// CloseFigure flag isn't set in the end element, the subpath must be open, in which
 	// case we look at the endpoints and see if they are closer to pos than others.
 
@@ -7256,7 +7258,7 @@ BOOL Path::ClosestSelectedEndpoint(DocCoord pos, INT32* position, double* distan
 		}
 	}
 	return(foundany);
-	
+
 }
 
 
@@ -7418,7 +7420,7 @@ BOOL Path::RetroReplaceSection(INT32 StartSlot, INT32 Len, Path* NewPath, BOOL K
 		Coords[WriteStart] = NewCoords[i];
 
 		// increment the destination slot
-		WriteStart++;		
+		WriteStart++;
 	}
 
 	// See if this is a closed shape
@@ -7438,7 +7440,7 @@ BOOL Path::RetroReplaceSection(INT32 StartSlot, INT32 Len, Path* NewPath, BOOL K
 	Inputs:		error		= a double describing the max error to use when smoothing
 				smoothall	= true then ignore selected points within this path and
 							  smooth the whole path.
-				reselect	= a boolean indicating whether the path sections should be 
+				reselect	= a boolean indicating whether the path sections should be
 							  re selected after smoothing
 
 	Outputs:    Operates on this path. the path will be smoothed meaning that it
@@ -7451,12 +7453,12 @@ BOOL Path::RetroReplaceSection(INT32 StartSlot, INT32 Len, Path* NewPath, BOOL K
 
 	Purpose:	Given a path, search for regions of interest and smooth these regions.
 				Regions are defined by sequences of connected selected points ie
-				
+
 					if P is the set of all control points [p0,....,pn]
 					then a region Q is a connected subset of P , [pi....pj]
 				    where all members of Q are selected.
 
-				If smoothall is true the whole path is smoothed.	
+				If smoothall is true the whole path is smoothed.
 	            You should call this function with a path which you do not mind being
 	            corrupted, ie changed in an unpredictable way. The function may
 	            successfully smooth a number of regions within the path, then fail on
@@ -7478,7 +7480,7 @@ BOOL Path::SmoothRegions(const double error, BOOL smoothall, BOOL reselect)
     	return (Path::SmoothSection(start,&end,error, sel));
 	}
 	else
-	{		
+	{
 		while ((index<UsedSlots) && (FindSelectionLimits(index,&start,&end)))
 		{
 			// increase the region by 1 either way and smooth it.
@@ -7526,7 +7528,7 @@ BOOL Path::SmoothRegions(const double error, BOOL smoothall, BOOL reselect)
 
 	Purpose:	Given a path, search for regions of interest and smooth these regions.
 				Regions are defined by (start/end) selected points with any number of
-				none selected points inbetween.  
+				none selected points inbetween.
 				If smoothall is true or there are no selected regions within the path,
 				the whole path is smoothed.
 	            You should call this function with a path which you do not mind being
@@ -7581,7 +7583,7 @@ BOOL Path::SmoothRegions(const double error, BOOL smoothall)
 					}
 
 					if (ok)
-					{	
+					{
 						ok = Path::SmoothSection(first, &last, error);
 						if (ok)
 						{
@@ -7593,7 +7595,7 @@ BOOL Path::SmoothRegions(const double error, BOOL smoothall)
 			}
 			break;
 	}
-	if (count == 0) 
+	if (count == 0)
 		return TRUE;
 	return FALSE;
 }
@@ -7621,7 +7623,7 @@ BOOL Path::SmoothRegions(const double error, BOOL smoothall)
 
     Outputs:    index2  = the new index of the end of the smoothed section
                 this    = the altered path, smoothed between index1, index2
-				
+
     Returns:    BOOL	= TRUE if the path was smoothed successfully
     					= FALSE then the path remains unchanged
 
@@ -7658,7 +7660,7 @@ BOOL Path::SmoothSection(INT32 index1, INT32* index2, const double error, INT32 
 	if (ok)
 	{
 		ok = MakePathFromSection(index1, numtosmooth, &PathSection);
-		if (ok) 
+		if (ok)
 		{
 			// smooth the section completely
 			ok = PathSection.Smooth(error);
@@ -7706,7 +7708,7 @@ BOOL Path::SmoothSection(INT32 index1, INT32* index2, const double error, INT32 
 	Inputs:		Start	= Position within this path to copy data from
 				Length	= Number of items to copy
 				pDestin	= pointer to path to put copied section in.
-				
+
 	Returns:	TRUE if the copy was a success, FALSE if it failed (lack of memory)
 	Purpose:	Copies a specified section from this path to a specific position within
 				another path. A gap is created if necessary to copy the data into
@@ -7754,7 +7756,7 @@ BOOL Path::MakePathFromSection(const INT32 Start, const INT32 Length, Path* pDes
 
     Returns:    BOOL	= TRUE if the path was smoothed successfully
     					= FALSE then consider 'this' path has been corrupted
-    					
+
     Purpose:    Smooth a path, using the fitcurve function, which may turn out to be NOT
     			the way to do it but I'll give it a try. You should generally call this
 				funcion with a copy of the path you want to smooth. This smooth function
@@ -7792,7 +7794,7 @@ BOOL Path::Smooth(const double error)
 		// leave the original path as it was. If its less then replace
 		if (QuantPath.GetNumCoords()<orignumcoords)
 			ok = CloneFrom(QuantPath);
-		
+
 	}
 	return ok;
 #else
@@ -7809,10 +7811,10 @@ BOOL Path::Smooth(const double error)
 	Author:		Mike_Kenny (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	25/10/94
     Inputs:		threshold	= How quantised the curves should be (around 64 is good)
-    Outputs:    pOutput		= will contain the quantised path   
+    Outputs:    pOutput		= will contain the quantised path
     Returns:    BOOL		= TRUE if the path was flattened successfully
     						= FALSE then output path will be unaffected
-    					
+
     Purpose:    Quantise a path. All curves within the path will be approximated by
 				straight lines. pOutput may point at 'this' path ie a path can be
 				quantised to itself. If the quantising fails for some reason, the
@@ -7821,7 +7823,7 @@ BOOL Path::Smooth(const double error)
 				Note, Quantising differs from flattening in that it will approximate
 				straight lines within a path, generating n colinear points for each
 				line it meets. Whereas flattening does nothing with lines.
-    
+
 ******************************************************************************************/
 
 BOOL Path::Quantise(const double threshold, Path* pOutput)
@@ -7839,16 +7841,16 @@ BOOL Path::Quantise(const double threshold, Path* pOutput)
 	Author:		Mike_Kenny (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	25/10/94
     Inputs:		flatness	= How flat the curves should be (around 64 is good)
-    Outputs:    pOutput		= will contain the flattened path   
+    Outputs:    pOutput		= will contain the flattened path
     Returns:    BOOL		= TRUE if the path was flattened successfully
     						= FALSE then output path will be unaffected
-    					
+
     Purpose:    Flatten a path. All curves within the path will be approximated by
 				straight lines. pOutput may point at 'this' path ie a path can be
 				flattened to itself. If the flattening fails for some reason, the
 				output path will be unaffected even if you are flattening a path to
 				itself.
-    
+
 ******************************************************************************************/
 
 BOOL Path::Flatten(const double flatness, Path* pOutput)
@@ -7868,18 +7870,18 @@ BOOL Path::Flatten(const double flatness, Path* pOutput)
     Inputs:		PFlags		= process flags, to control the path processor function
 							  (see classes ProcessPath and ProcessFlags)
     		  	flatness	= How flat the curves should be (around 64 is good)
-    
-    Outputs:    pOutput		= will contain the flattened path   
-    
+
+    Outputs:    pOutput		= will contain the flattened path
+
     Returns:    BOOL		= TRUE if the path was flattened successfully
     						= FALSE then output path will be unaffected
-    					
+
     Purpose:    Flatten a path. All curves within the path will be approximated by
 				straight lines. pOutput may point at 'this' path ie a path can be
 				flattened to itself. If the flattening fails for some reason, the
 				output path will be unaffected even if you're flattening a path to
 				itself.
-    
+
 ******************************************************************************************/
 
 BOOL Path::CreateFlatPath(const ProcessFlags& PFlags, const double flatness, Path* pOutput)
@@ -7902,9 +7904,9 @@ BOOL Path::CreateFlatPath(const ProcessFlags& PFlags, const double flatness, Pat
 	Author:		Mike_Kenny (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	1/11/94
     Inputs:		-
-    Outputs:	-		
-    Returns:    The squared length of the path defined in the same coordinate system as 
-    			the paths points.		
+    Outputs:	-
+    Returns:    The squared length of the path defined in the same coordinate system as
+    			the paths points.
     Purpose:    Find the length of a path in millipoints. The length is calculated by
 				flattening the path and finding straight line segment lengths and so is
 				a discrete numeric approximation to a line integral.
@@ -7931,7 +7933,7 @@ double Path::SqrLength()
 	Author:		Peter_Arnold (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	19/8/96
     Inputs:		-
-    Outputs:	-		
+    Outputs:	-
     Returns:	The length of the path in millipoints
     Purpose:	Find the length of a path in millipoints.
 ******************************************************************************************/
@@ -7939,7 +7941,7 @@ double Path::GetPathLength(double dFlatness)
 {
 	double TotalLength = 0.0;
 	INT32 LastEndPoint = GetNumCoords()-1;
-	
+
 	if (LastEndPoint==-1)
 		return 0.0;
 
@@ -7961,18 +7963,18 @@ double Path::GetPathLength(double dFlatness)
 	Author:		Mike_Kenny (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	1/11/94
 	Inputs:		sqrdist	= squared distance along the path
-	Outputs:	
+	Outputs:
 	Returns:	a doccoord which is dist units along the path
 	Purpose:	Finds the coordinate which is dist units along 'this' path
 
 
 ********************************************************************************************/
- 
+
 DocCoord Path::ConvSqrDistToCoord(const double sqrdist)
 {
 	INT32 Index;
 	double mu = DistReparameterise(sqrdist, &Index);
-	return ClosestPointTo(mu, Index); 	
+	return ClosestPointTo(mu, Index);
 }
 
 
@@ -7984,10 +7986,10 @@ DocCoord Path::ConvSqrDistToCoord(const double sqrdist)
 	Author:		Mike_Kenny (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	1/11/94
 	Inputs:		sqrdist	= squared distance along the path
-	Outputs:	Element = index of element which bounds dist 
+	Outputs:	Element = index of element which bounds dist
 						  as a half open interval, (El.Plo < dist <= El.Phi)
-	Returns:	a double, being the parameter along the returned element, 
-				which is dist units along the whole path. 
+	Returns:	a double, being the parameter along the returned element,
+				which is dist units along the whole path.
 	Purpose:
 	SeeAlso:	ConvDistToCoord()
 				ClosestPointTo()
@@ -8054,7 +8056,7 @@ INT32 Path::CalcRegionCRC(const INT32 StartIndex, const INT32 EndIndex)
 		// Get the coords relative from the first coord
 		// making this process transparent to translation
 		// Add it in to the CRC total
-		TotalCRC += (Coords[i].x-Coords[StartIndex].x) + 
+		TotalCRC += (Coords[i].x-Coords[StartIndex].x) +
 					(Coords[i].y-Coords[StartIndex].y);
 	}
 	return TotalCRC;
@@ -8098,7 +8100,7 @@ INT32	Path::CalcSelectedCRC()
 				It can be used to determine whether a new path matches that of an old
 				path whose CRC we already know, whether the new path has been translated
 				or not.
-	
+
 ********************************************************************************************/
 
 INT32 Path::CalcSelPointsCRC(const INT32 StartIndex, const INT32 EndIndex)
@@ -8110,7 +8112,7 @@ INT32 Path::CalcSelPointsCRC(const INT32 StartIndex, const INT32 EndIndex)
 	for (INT32 i=StartIndex; i<(EndIndex+1); i++)
 	{
 		if (Flags[i].IsSelected)
-			TotalCRC += (Coords[i].x-Coords[StartIndex].x) + 
+			TotalCRC += (Coords[i].x-Coords[StartIndex].x) +
 						(Coords[i].y-Coords[StartIndex].y);
 	}
 	return TotalCRC;
@@ -8125,7 +8127,7 @@ INT32 Path::CalcSelPointsCRC(const INT32 StartIndex, const INT32 EndIndex)
 	Created:	23/11/94
 	Inputs:		x = x coordinate to translate path by
 				y = y coordinate to translate path by
-	Returns:	
+	Returns:
 	Purpose:	Translate all coordinate within 'this' path.
 
 ********************************************************************************************/
@@ -8146,7 +8148,7 @@ void Path::Translate(const DocCoord& coord)
 	Created:	23/11/94
 	Inputs:		x = x coordinate to translate path by
 				y = y coordinate to translate path by
-	Returns:	
+	Returns:
 	Purpose:	Translate all coordinate within 'this' path.
 
 ********************************************************************************************/
@@ -8185,7 +8187,7 @@ BOOL Path::InitExtraInfo(ChannelIndex Index)
 {
 	TRACEUSER( "Will", _T("InitExtraInfo, Index=%d\n"), Index );
 	ENSURE(Index <= NUMEXTRACHANNELS, "Index out of range in InitExtraInfo");
-						
+
 	// If we haven't any extra info yet then we need to create some
 	if (ExtraInfo == NULL)
 	{
@@ -8257,7 +8259,7 @@ PathWidth Path::GetWidth() const
 	if (ExtraInfo == NULL)
 		return 0;
 
-	return ExtraInfo->GetWidthInfo();	
+	return ExtraInfo->GetWidthInfo();
 }
 
 /********************************************************************************************
@@ -8277,7 +8279,7 @@ PathWidth* Path::GetWidthArray()
 	if (ExtraInfo == NULL)
 		return NULL;
 
-	return ExtraInfo->GetWidthArray();	
+	return ExtraInfo->GetWidthArray();
 }
 
 /********************************************************************************************
@@ -8414,7 +8416,7 @@ BOOL PathExtraInfo::Init(ChannelIndex Index, INT32 SlotInitSize)
 {
 	TRACEUSER( "Will", _T("InitExtraInfo, Index=%d\n"), Index );
 	ENSURE(Index <= NUMEXTRACHANNELS, "Index out of range in InitExtraInfo");
-						
+
 	if (ExtraInfoHandles[Index] != BAD_MHANDLE)
 		return TRUE;								// Already Initialised
 
@@ -8628,7 +8630,7 @@ PathWidth PathExtraInfo::GetWidthInfo()
 	// de-reference the Extra Info array
 	PathExtraElement* WidthInfo = (PathExtraElement*) DescribeHandle(ExtraInfoHandles[WidthChannel]);
 
-	return (PathWidth)WidthInfo[CurrentExtraPos];	
+	return (PathWidth)WidthInfo[CurrentExtraPos];
 }
 
 /********************************************************************************************
@@ -8766,8 +8768,8 @@ BOOL Path::CheckPathValid()
 						pChildPath is unaffected.
 				2		Then the current path now contains the left child data of the
 						split and pChildPath points at a new path object containing
-						the right child data. 
-								
+						the right child data.
+
 	Purpose:	This function will attempt to break the current path at its first
 				selected point.
 				All selected points should still be in place in both parent and child.
@@ -8808,7 +8810,7 @@ INT32 Path::BreakInTwo(Path* pChildPath)
 		{
 			if (!(Verbs[p] & PT_CLOSEFIGURE)) continue;	// ignore selected points at end of open subpaths
 			p=s;
-		}	
+		}
 
 		vp = (Verbs[p] & ~PT_CLOSEFIGURE);
 		vq = (Verbs[q]);
@@ -8840,7 +8842,7 @@ INT32 Path::BreakInTwo(Path* pChildPath)
 
 		// Note these elements should not need to be checked against PT_CLOSEFIGURE as
 		// (p!=q) and q is the following close element.
-		
+
 		if ((vp == PT_LINETO) || (vp == PT_BEZIERTO))
 		{
 
@@ -8865,7 +8867,7 @@ INT32 Path::BreakInTwo(Path* pChildPath)
 				{
 
 					// I'm not totally convinced about this but here goes nothing!
-					// When dealing with a chain of bezier control points, the previous 
+					// When dealing with a chain of bezier control points, the previous
 					// and following points are selected also. What we select and deselect
 					// depends on which point (the start or end) we want selected when the
 					// path is opened. I thought it would be sensible to leave the end point
@@ -8896,7 +8898,7 @@ INT32 Path::BreakInTwo(Path* pChildPath)
 						Flags[p+1].IsSmooth = FALSE;
 
 					Verbs[q] &= ~PT_CLOSEFIGURE;			// open the subpath.
-					RotateElementsLeft(s,q,p-s);			// rotate elements 
+					RotateElementsLeft(s,q,p-s);			// rotate elements
 					return 1;
 				}
 				else
@@ -8907,13 +8909,13 @@ INT32 Path::BreakInTwo(Path* pChildPath)
 					CurrentPos = p+1;
 					if (!InsertMoveTo(Coords[p]))
 						return -1;
-				
+
 					q++;
 
 					Verbs = (PathVerb*) DescribeHandle(VerbHandle);
 					Verbs[q] &= ~PT_CLOSEFIGURE;			// open the subpath.
 					Verbs[s] = PT_LINETO;					// alter move to line
-					RotateElementsLeft(s,q,p-s+1);			// rotate elements 
+					RotateElementsLeft(s,q,p-s+1);			// rotate elements
 					return 1;
 				}
 			}
@@ -8933,10 +8935,10 @@ INT32 Path::BreakInTwo(Path* pChildPath)
 
 				q = UsedSlots-1;
 
-				if (!pChildPath->Initialise(q-p+1,12))	
+				if (!pChildPath->Initialise(q-p+1,12))
 					return -1;
 
-				// Copy the section out of the current path into the child	
+				// Copy the section out of the current path into the child
 				if (!(CopySectionTo(pChildPath, p, q-p+1)))
 					return -1;
 
@@ -8990,8 +8992,8 @@ INT32 Path::BreakInTwo(Path* pChildPath)
 	Returns:	-
 	Purpose:	Rotates the specified elements in a path by	the number of positions
 				indicated. Elements will be rotated from right to left.
-		
-	
+
+
 ********************************************************************************************/
 
 void Path::RotateElementsLeft(const INT32 Start, const INT32 End, INT32 Rotate)
@@ -9135,7 +9137,7 @@ void Path::RotateElementsLeft(const INT32 Start, const INT32 End, INT32 Rotate)
 				index 0.
 				You should only call this for closed paths that don't contain subpaths.
 	Errors:		In debug builds, an error is given if the last coord != first coord
-	
+
 ********************************************************************************************/
 
 BOOL Path::ChangeStartElement(INT32 StartIndex)
@@ -9188,12 +9190,12 @@ BOOL Path::ChangeStartElement(INT32 StartIndex)
 	Author:		Mike_Kenny (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	01/09/94
 	Inputs:		Index - The position in the path to start looking from
-	Outputs:	Index - the position of the next selected element 
+	Outputs:	Index - the position of the next selected element
 	Returns:	TRUE	if there exists a selected point at or beyond index
 				FALSE	if there is no more selected points along the path
 	Purpose:	Searches the point set {*index, usedslots-1} for a selected end point
-				and returns its index if found.  
-	
+				and returns its index if found.
+
 ********************************************************************************************/
 
 BOOL Path::FindNextSelected(INT32* Index)
@@ -9203,18 +9205,18 @@ BOOL Path::FindNextSelected(INT32* Index)
 
 	PathFlags* Flags = (PathFlags*) DescribeHandle(FlagsHandle);
 
-	while (   
-			((*Index)<UsedSlots) && 
-			!(	(Flags[(*Index)].IsSelected) && 
+	while (
+			((*Index)<UsedSlots) &&
+			!(	(Flags[(*Index)].IsSelected) &&
 	        	(Flags[*Index].IsEndPoint)
 	         )
 	      )
 			(*Index)++;
-	
+
 	return ((*Index)<UsedSlots);
-	
+
 }
-	
+
 /********************************************************************************************
 
 >	void Path::FindEndElOfSubPath(INT32* Index) const
@@ -9253,7 +9255,7 @@ void Path::FindEndElOfSubPath(INT32* Index) const
 
 	Author:		Mike_Kenny (Xara Group Ltd) <camelotdev@xara.com> (& Markn)
 	Created:	4/9/94
-	Inputs:		
+	Inputs:
 	Outputs:	-
 	Returns:	-
 	Purpose:	Returns the number of splinters a selected path will be broken into
@@ -9333,7 +9335,7 @@ INT32 Path::NumSplinters()
 		if (p==q)
 		{
 			if (!(Verbs[p] & PT_CLOSEFIGURE)) continue;	// ignore selected points at end of open subpaths
-		}	
+		}
 
 		vp = (Verbs[p] & ~PT_CLOSEFIGURE);
 		vq = (Verbs[q]);
@@ -9349,7 +9351,7 @@ INT32 Path::NumSplinters()
 
 		if ((vp == PT_MOVETO) || (vp == PT_LINETO) || (vp == PT_BEZIERTO))
 			splinters++;
-	}	
+	}
 
 	return splinters;
 */
@@ -9366,7 +9368,7 @@ INT32 Path::NumSplinters()
 	Inputs:		Pointer to a BOOL to return a result in (you can pass in NULL)
 	Outputs:	ChangesMade will be TRUE if changes have been made to the path, FALSE if otherwise
 	Returns:	TRUE for success, FALSE for failure (see below)
-	Purpose:	Will attempt to make a path into a correct state.  Checks are :-  
+	Purpose:	Will attempt to make a path into a correct state.  Checks are :-
 				1. All subpaths must start with a MoveTo
 				2. Consecutive MoveTos are removed
 				3. Zero element paths are unrepairable
@@ -9396,7 +9398,7 @@ BOOL Path::EnsureValid(BOOL* ChangesMade)
 		INT32 NumCoords = GetNumCoords();
 
 		// (3) Check for zero element path
-		if (NumCoords == 0) 
+		if (NumCoords == 0)
 		{
 			TRACEALL( _T("Empty path detected\n") );
 			Error::SetError(_R(IDE_INVALID_PATH));
@@ -9456,7 +9458,7 @@ BOOL Path::EnsureValid(BOOL* ChangesMade)
 
 			switch (Verbs[Counter] & ~PT_CLOSEFIGURE)
 			{
-				case PT_MOVETO:	
+				case PT_MOVETO:
 					// MoveTos shouldn't have CloseFigures
 					if (Verbs[Counter] != PT_MOVETO)
 					{
@@ -9571,10 +9573,10 @@ void Path::ClearNeedToRender()
 				The function calculates the distance along this path to the point described
 				by (i,t).
 				This routine complements SqrDistanceToPoint() which calculates the pair (i,t)
-				for a given coordinate close to the path. 
+				for a given coordinate close to the path.
 
 	SeeAlso:	SqrDistanceToPoint
-	
+
 ********************************************************************************************/
 BOOL Path::DistanceTo(INT32 index, double t, double* distance, double dFlatness)
 {
@@ -9586,7 +9588,7 @@ BOOL Path::DistanceTo(INT32 index, double t, double* distance, double dFlatness)
 
 	if (GetNumCoords()==0)
 		return FALSE;
-	
+
 	// If t is near 1 then we can skip forward to the next segment
 	// this is to avoid math problems with splitting beziers near their ends
 	INT32 IndexEP = index;
@@ -9600,7 +9602,7 @@ BOOL Path::DistanceTo(INT32 index, double t, double* distance, double dFlatness)
 			t = 0.0;
 		}
 	}
-	
+
 	// find the length to the path up to the start of the nearest element
 	// specified by index.
 	ProcessLength LengthObj(dFlatness);
@@ -9672,7 +9674,7 @@ BOOL Path::DistanceTo(INT32 index, double t, double* distance, double dFlatness)
 	Purpose:	This function takes as input a coordinate (usually a mouse click point). It
 				will calculate the closest point on the path to this coordinate and return
 				the distance along the path from its start point to this coordinate
-	
+
 ********************************************************************************************/
 BOOL Path::DistanceTo(DocCoord Coord, double* dist, double dFlatness)
 {
@@ -9709,7 +9711,7 @@ BOOL Path::DistanceTo(DocCoord Coord, double* dist, double dFlatness)
 				NewElements - The number of new elements inserted into the path
 	Returns:	TRUE if it was able to split the path ok,
 				FALSE if it failed
-	Purpose:	This function takes a coordinate (typically not on but) close to this path 
+	Purpose:	This function takes a coordinate (typically not on but) close to this path
 				and splits the path at a calculated point on the path which happens to be
 				closest to the input coord. By Split I mean a new coordinate in will appear
 				in the path, but the path will not have changed its shape in anyway.
@@ -9735,7 +9737,7 @@ BOOL Path::SplitAtPoint(const DocCoord& SplitPoint, INT32* SplitAt, INT32* NewEl
 		PathVerb* Verbs = GetVerbArray();
 		PathFlags* Flags = GetFlagArray();
 //		DocCoord* Coords = GetCoordArray();
-//		UINT32 NumCoords = GetNumCoords();	
+//		UINT32 NumCoords = GetNumCoords();
 		INT32 NumToChange;
 
 		// We're adding something, either a line or curve - check which
@@ -9806,7 +9808,7 @@ BOOL Path::SplitAtPoint(const DocCoord& SplitPoint, INT32* SplitAt, INT32* NewEl
 		// see if the split point is over the last point on the curve
 		if (Coords[NumCoords-1]==SplitPoint)
 			*SplitAt = NumCoords;
-	}	
+	}
 
 	// all worked
 	return TRUE;
@@ -9844,7 +9846,7 @@ BOOL Path::GetPointAtDistance(MILLIPOINT Distance, DocCoord* pPoint, double* pTa
 
 	Author:		Peter_Arnold (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	22/8/96
-	Inputs:		Point - A DocCoord				
+	Inputs:		Point - A DocCoord
 	Outputs:	Distance - a length along the path
 	Returns:	TRUE/FALSE for success/failure
 	Purpose:	Gets the distance along the path for a given point
@@ -9917,7 +9919,7 @@ INT32 FindNonColinear(const DocCoord CoordArray[], const UINT32& ulNumCoords)
 /********************************************************************************************
 
 >	BOOL IsNear(const T& x, const T& value, const T& Tolerance)
-						
+
 	Author:		Colin_Barfoot (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	28/08/96
 	Inputs:		x1:			The first of the two values to compare
@@ -9943,7 +9945,7 @@ inline BOOL IsNear(const T& x1, const T& x2, const T& Tolerance)
 /********************************************************************************************
 
 >	BOOL IsNear(const T& x, const T& value, const T& Tolerance)
-						
+
 	Author:		Colin_Barfoot (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	28/08/96
 	Inputs:		x1:			The first of the two values to compare
@@ -9996,7 +9998,7 @@ BOOL Solve3Simultaneous(const CCVector3& constsX0, const CCVector3& constsX1, co
 
 
 	v1 = ((constsX1.v0 - constsX1.v1) * (constsX0.v0 - constsX0.v2) - (constsX1.v0 - constsX1.v2) * (constsX0.v0 - constsX0.v1)) / DivB;
-	
+
 
 	v2 = constsX1.v0 - v0 * constsX0.v0 - v1 * constsY0.v0;
 
@@ -10005,7 +10007,7 @@ BOOL Solve3Simultaneous(const CCVector3& constsX0, const CCVector3& constsX1, co
 
 /*
 inline void Transform(const DocCoord& xy0,
-						const double& a, const double& b, const double& c, const double& d, 
+						const double& a, const double& b, const double& c, const double& d,
 						const double& e, const double& f,
 					DocCoord& xy1)
 {
@@ -10016,7 +10018,7 @@ inline void Transform(const DocCoord& xy0,
 
 /********************************************************************************************
 
->	BOOL Path::IsIsometric(const Path& otherPath, Matrix* pTransform, 
+>	BOOL Path::IsIsometric(const Path& otherPath, Matrix* pTransform,
 							const double& Tolerance = 1.0)
 
 
@@ -10032,7 +10034,7 @@ inline void Transform(const DocCoord& xy0,
 	Purpose:	Determines whether two paths are isometric.
 				In this context, isometric does not include true isomtric paths with
 				different starting points.
-				This can then be used to provide a transformation of this path, resulting in 
+				This can then be used to provide a transformation of this path, resulting in
 				the given otherPath.
 
 ********************************************************************************************/
@@ -10044,7 +10046,7 @@ BOOL Path::IsIsometric(const Path& OtherPath, Matrix* pTransform, const double& 
 		// If not equal can't possibly be the same
 		return FALSE;
 	}
-	
+
 	// Determine the transformation matrix from the first three coords
 	DocCoord*	ThisCoordArray = GetCoordArray();
 	DocCoord*	OtherCoordArray = OtherPath.GetCoordArray();
@@ -10118,7 +10120,7 @@ BOOL Path::IsIsometric(const Path& OtherPath, Matrix* pTransform, const double& 
 	// Determine the transformation matrix from the first three coords
 	Matrix Solution(a, b, c, d, INT32(e), INT32(f));
 
-	// Check the flags & bits	
+	// Check the flags & bits
 	PathVerb*	ThisVerbArray	= GetVerbArray();
 	PathVerb*	OtherVerbArray	= OtherPath.GetVerbArray();
 
@@ -10135,7 +10137,7 @@ BOOL Path::IsIsometric(const Path& OtherPath, Matrix* pTransform, const double& 
 			return FALSE;
 		}
 		CurrentCoord = ThisCoordArray[i];
-		Solution.transform(&CurrentCoord);		
+		Solution.transform(&CurrentCoord);
 		if (!IsNear(CurrentCoord.x, OtherCoordArray[i].x, lTolerance) ||
 			!IsNear(CurrentCoord.y, OtherCoordArray[i].y, lTolerance))
 		{
@@ -10151,7 +10153,7 @@ BOOL Path::IsIsometric(const Path& OtherPath, Matrix* pTransform, const double& 
 /********************************************************************************************
 
  >	void Path::Scale(const DocCoord dcOrigin, const double dDPI=96.0)
-										   
+
 	Author:		Graham_Walmsley (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	16/4/97
 	Inputs:		dDPI		The DPI by which to scale the path
@@ -10161,7 +10163,7 @@ BOOL Path::IsIsometric(const Path& OtherPath, Matrix* pTransform, const double& 
 							corner of the region that is used to create
 							a bitmap.
 
-  
+
   Purpose:		This function is called on a path specified in DocCoords, to
 				convert it into pixel coordinates.
 
@@ -10177,9 +10179,9 @@ BOOL Path::IsIsometric(const Path& OtherPath, Matrix* pTransform, const double& 
 				c. Multiplies the coordinates to convert them to the number
 				   of DPI specified.
 
-	
+
   SeeAlso:		Imagemap::AddPolygon()
-	
+
 ********************************************************************************************/
 void Path::Scale(const DocCoord dcOrigin, const double dDPI)
 {
@@ -10209,7 +10211,7 @@ void Path::Scale(const DocCoord dcOrigin, const double dDPI)
 /********************************************************************************************
 
  >	BOOL Path::MakePathFromSubPath(const INT32 lSubpathIndex, Path* ppthToFill)
-					
+
 	Author:		Graham_Walmsley (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	1/5/97 - Enough is enough
 	Inputs:		lSubpathIndex	Index of the subpath to copy - that is,
@@ -10217,14 +10219,14 @@ void Path::Scale(const DocCoord dcOrigin, const double dDPI)
 								1 copies the second
 								etc
 				ppthToFill	Path to copy the subpath into
-				
+
 	Outputs:	ppthToFill
 	Returns:	TRUE if there were no problems
-											     
+
   Purpose:		Makes a subpath into a path in its own right.
-	
+
   SeeAlso:		Imagemap::DrawPathToOutputDevice()
-	
+
 ********************************************************************************************/
 
 BOOL Path::MakePathFromSubPath(const INT32 lSubpathIndex, Path* ppthToFill)
@@ -10275,7 +10277,7 @@ BOOL Path::MakePathFromSubPath(const INT32 lSubpathIndex, Path* ppthToFill)
 /********************************************************************************************
 
 >	INT32 Path::CalcArea()
-					
+
 	Author:		Phil_Martin (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	01/03/2005
 	Inputs:		-
@@ -10284,7 +10286,7 @@ BOOL Path::MakePathFromSubPath(const INT32 lSubpathIndex, Path* ppthToFill)
 				Or -1 if no area could be calculated
 	Purpose:	Calculate the area of this path
 	SeeAlso:	-
-	
+
 ********************************************************************************************/
 
 XLONG Path::CalcArea()
@@ -10337,4 +10339,3 @@ XLONG Path::CalcArea()
 	// Counter-clockwise paths will generate -ve areas
 	return ABS(area);
 }
-

@@ -1,3 +1,4 @@
+/* -*- tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4; fill-column: 90 -*- */
 // $Id: prefs.h 930 2006-05-02 12:25:56Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
@@ -113,100 +114,102 @@ class StringBase;
 // used to be in oilprefs.h before 25/3/97
 typedef union
 {
-	INT32		*pInt;
-	UINT32		*pUInt;
-	double		*pDouble;
-	StringBase	*pString;
+    INT32       *pInt;
+    UINT32      *pUInt;
+    double      *pDouble;
+    StringBase  *pString;
 } PrefData;
 
 // This is here because OILPreferences needs it
 typedef enum
 {
-	PREF_INT,
-	PREF_UINT,
-	PREF_DOUBLE,
-	PREF_STRING
+    PREF_INT,
+    PREF_UINT,
+    PREF_DOUBLE,
+    PREF_STRING
 } PreferenceType;
 
 /********************************************************************************************
 
->	class Preferences : public List
+>   class Preferences : public List
 
-	Author:		Tim_Browse (Xara Group Ltd) <camelotdev@xara.com>
-	Created:	17/8/93
-	Purpose:	Maintains a list of PreferenceSection objects, and allows clients to declare
-				new sections, and add new preferences to the sections.
+    Author:     Tim_Browse (Xara Group Ltd) <camelotdev@xara.com>
+    Created:    17/8/93
+    Purpose:    Maintains a list of PreferenceSection objects, and allows clients to declare
+                new sections, and add new preferences to the sections.
 
-				For details of how to declare/use preferences, see the Application class.
+                For details of how to declare/use preferences, see the Application class.
 
 
-				When the application wants to save the preferences, the Write() function
-				of this class should be used.
+                When the application wants to save the preferences, the Write() function
+                of this class should be used.
 
-	SeeAlso:	-
+    SeeAlso:    -
 
 ********************************************************************************************/
 
 
 class CCAPI Preferences : public List
 {
-	CC_DECLARE_MEMDUMP(Preferences)
+    CC_DECLARE_MEMDUMP(Preferences)
 
 public:
-	Preferences();
-	~Preferences();
+    Preferences();
+    ~Preferences();
 
-	BOOL Init();
-	void Deinit();
+    BOOL Init();
+    void Deinit();
 
-	void Write();
+    void Write();
 
-	void WipePreferenceFile();
-	void WipeDangerousPrefs();
+    void WipePreferenceFile();
+    void WipeDangerousPrefs();
 
-	BOOL DeclareSection(LPCTCHAR Section, UINT32 InitialSize);
+    BOOL DeclareSection(LPCTCHAR Section, UINT32 InitialSize);
 
-	BOOL DeclarePref(LPCTCHAR Section, LPCTCHAR Pref,
-					 INT32 *PrefVar, INT32 Min = INT_MIN, INT32 Max = INT_MAX);
+    BOOL DeclarePref(LPCTCHAR Section, LPCTCHAR Pref,
+                     INT32 *PrefVar, INT32 Min = INT_MIN, INT32 Max = INT_MAX);
 
-	BOOL DeclarePref(LPCTCHAR Section, LPCTCHAR Pref,
-					 UINT32 *PrefVar, UINT32 Min = 0, UINT32 Max = UINT_MAX);
+    BOOL DeclarePref(LPCTCHAR Section, LPCTCHAR Pref,
+                     UINT32 *PrefVar, UINT32 Min = 0, UINT32 Max = UINT_MAX);
 
-	BOOL DeclarePref(LPCTCHAR Section, LPCTCHAR Pref,
-					 double *PrefVar, double Min = DBL_MIN, double Max = DBL_MAX);
+    BOOL DeclarePref(LPCTCHAR Section, LPCTCHAR Pref,
+                     double *PrefVar, double Min = DBL_MIN, double Max = DBL_MAX);
 
-	BOOL DeclarePref(LPCTCHAR Section, LPCTCHAR Pref, StringBase *PrefVar);
+    BOOL DeclarePref(LPCTCHAR Section, LPCTCHAR Pref, StringBase *PrefVar);
 
-	// These next functions allow the preferences to be read/written by other
-	// people than the owner e.g. the application options dialog box
+    // These next functions allow the preferences to be read/written by other
+    // people than the owner e.g. the application options dialog box
 
-	BOOL GetPrefValue(LPCTCHAR Section, LPCTCHAR Pref, INT32 *PrefVar);
-	BOOL GetPrefValue(LPCTCHAR Section, LPCTCHAR Pref, UINT32 *PrefVar);
-	BOOL GetPrefValue(LPCTCHAR Section, LPCTCHAR Pref, double *PrefVar);
+    BOOL GetPrefValue(LPCTCHAR Section, LPCTCHAR Pref, INT32 *PrefVar);
+    BOOL GetPrefValue(LPCTCHAR Section, LPCTCHAR Pref, UINT32 *PrefVar);
+    BOOL GetPrefValue(LPCTCHAR Section, LPCTCHAR Pref, double *PrefVar);
 
-	BOOL SetPrefValue(LPCTCHAR Section, LPCTCHAR Pref, INT32 *PrefVar);
-	BOOL SetPrefValue(LPCTCHAR Section, LPCTCHAR Pref, UINT32 *PrefVar);
-	BOOL SetPrefValue(LPCTCHAR Section, LPCTCHAR Pref, double *PrefVar);
+    BOOL SetPrefValue(LPCTCHAR Section, LPCTCHAR Pref, INT32 *PrefVar);
+    BOOL SetPrefValue(LPCTCHAR Section, LPCTCHAR Pref, UINT32 *PrefVar);
+    BOOL SetPrefValue(LPCTCHAR Section, LPCTCHAR Pref, double *PrefVar);
 
-	BOOL SetPrefDirect(LPCTCHAR Section, LPCTCHAR Pref, const TCHAR *pValue, BOOL Force = FALSE);
-	BOOL SetPrefDirect(LPCTCHAR Section, LPCTCHAR Pref, PreferenceType Type, PrefData Data);
-	BOOL SetPrefDirect(LPCTCHAR Section, LPCTCHAR Pref, INT32 *pValue);
-	BOOL SetPrefDirect(LPCTCHAR Section, LPCTCHAR Pref, UINT32 *pValue);
-	BOOL SetPrefDirect(LPCTCHAR Section, LPCTCHAR Pref, double *pValue);
+    BOOL SetPrefDirect(LPCTCHAR Section, LPCTCHAR Pref, const TCHAR *pValue, BOOL Force = FALSE);
+    BOOL SetPrefDirect(LPCTCHAR Section, LPCTCHAR Pref, PreferenceType Type, PrefData Data);
+    BOOL SetPrefDirect(LPCTCHAR Section, LPCTCHAR Pref, INT32 *pValue);
+    BOOL SetPrefDirect(LPCTCHAR Section, LPCTCHAR Pref, UINT32 *pValue);
+    BOOL SetPrefDirect(LPCTCHAR Section, LPCTCHAR Pref, double *pValue);
 
-	BOOL GetPrefDirect(LPCTCHAR Section, LPCTCHAR Pref, StringBase *pValue);
-	BOOL GetPrefDirect(LPCTCHAR Section, LPCTCHAR Pref, PreferenceType Type, PrefData Data);
-	BOOL GetPrefDirect(LPCTCHAR Section, LPCTCHAR Pref, INT32 *pValue);
-	BOOL GetPrefDirect(LPCTCHAR Section, LPCTCHAR Pref, UINT32 *pValue);
-	BOOL GetPrefDirect(LPCTCHAR Section, LPCTCHAR Pref, double *pValue);
+    BOOL GetPrefDirect(LPCTCHAR Section, LPCTCHAR Pref, StringBase *pValue);
+    BOOL GetPrefDirect(LPCTCHAR Section, LPCTCHAR Pref, PreferenceType Type, PrefData Data);
+    BOOL GetPrefDirect(LPCTCHAR Section, LPCTCHAR Pref, INT32 *pValue);
+    BOOL GetPrefDirect(LPCTCHAR Section, LPCTCHAR Pref, UINT32 *pValue);
+    BOOL GetPrefDirect(LPCTCHAR Section, LPCTCHAR Pref, double *pValue);
+
+    bool GetIsFirstTimeRun();
 
 private:
-	// Used to cache the section object when declaring preferences.
-	PreferenceSection *CurrentSection;
-	PreferenceSection *GetSection(LPCTCHAR SectionName);
+    // Used to cache the section object when declaring preferences.
+    PreferenceSection *CurrentSection;
+    PreferenceSection *GetSection(LPCTCHAR SectionName);
 
-	// Link to the OIL layer
-	OILPreferences *OILPrefs;
+    // Link to the OIL layer
+    OILPreferences *OILPrefs;
 
 };
 

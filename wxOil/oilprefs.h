@@ -1,3 +1,4 @@
+/* -*- tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4; fill-column: 90 -*- */
 // $Id: oilprefs.h 1282 2006-06-09 09:46:49Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
@@ -130,7 +131,7 @@ public:
 					const wxString& localFilename = wxEmptyString,
 					const wxString& globalFilename = wxEmptyString,
 					long /*TYPENOTE: Correct*/ style = 0, wxMBConv& conv = wxConvUTF8)
-		: wxConfig(appName, vendorName, localFilename, globalFilename, style, conv) {;}
+		: wxConfig(appName, vendorName, localFilename, globalFilename, style, conv){;}
 
 	// Write a preference
 	void Write(LPCTCHAR Section, LPCTCHAR PrefName, PreferenceType Type, PrefData pData);
@@ -150,6 +151,7 @@ public:
 	void WipePreferenceFile();
 	void WipeDangerousPrefs();
 
+    bool GetIsFirstTimeRun();
 };
 
 #endif
