@@ -1,7 +1,8 @@
+/* -*- tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4; fill-column: 90 -*- */
 // $Id: document.cpp 1668 2006-08-04 11:45:17Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
- 
+
                Xara LX, a vector drawing and manipulation program.
                     Copyright (C) 1993-2006 Xara Group Ltd.
        Copyright on certain contributions may be held in joint with their
@@ -32,7 +33,7 @@ ADDITIONAL RIGHTS
 
 Conditional upon your continuing compliance with the GNU General Public
 License described above, Xara Group Ltd grants to you certain additional
-rights. 
+rights.
 
 The additional rights are to use, modify, and distribute the software
 together with the wxWidgets library, the wxXtra library, and the "CDraw"
@@ -101,7 +102,7 @@ service marks of Xara Group Ltd. All rights in these marks are reserved.
 #include <fstream>
 //#include <strstream> // this seems to be deprecated
 #include <ctype.h>
-#include <string>   
+#include <string>
 #include <stdlib.h>  	// for rand() fn
 
 #include "camdoc.h"
@@ -111,7 +112,7 @@ service marks of Xara Group Ltd. All rights in these marks are reserved.
 #include "dumbnode.h"
 #include "noderect.h"
 //#include "ensure.h"  - in camtypes.h [AUTOMATICALLY REMOVED]
-#include "lineattr.h"        
+#include "lineattr.h"
 #include "colcontx.h"
 //#include "doccolor.h"
 //#include "colourix.h"
@@ -233,7 +234,7 @@ Document::Document(BOOL bIsAHiddenDoc)
 {
 	// NB. Make sure all the Document stuff is set up before calling routines which
 	// might interrogate the Document object.
-	
+
 	// Set the default state of the flags.
 	DocFlags.LayerMultilayer = FALSE;
 	DocFlags.LayerAllVisible = FALSE;
@@ -262,8 +263,8 @@ Document::Document(BOOL bIsAHiddenDoc)
 	// Set this document to be the current one
 	this->SetCurrent();
 
-	NodesInTree = 0;       
-	                             
+	NodesInTree = 0;
+
 	// Initialise pointers to sensible values (they are set up in the Init() function)
 	OpHistory 			= 0;
 	AttributeMgr 		= 0;
@@ -331,7 +332,7 @@ BOOL Document::Init(CCamDoc* pOilDoc)
 
 	// Make this the current document - NOTE! no broadcast as of 22/7/94
 	SetCurrent();
-    
+
     // Set the busy cursor . . .
     BeginSlowJob(-1, FALSE);
 
@@ -341,24 +342,24 @@ BOOL Document::Init(CCamDoc* pOilDoc)
 	if (!BaseDocument::Init()) return InitFailed();
 
 	// Check that the document is OK
-	ERROR3IF(GetFirstNode() == NULL,"StartDoc not found"); 
-	Doc = (NodeDocument*)GetFirstNode()->FindNext(); 
-	ERROR3IF(Doc == NULL, "NodeDocument not found"); 
-	End = (EndDocument*)Doc->FindNext(); 
-	ERROR3IF(End == NULL, "EndDocument not found"); 
+	ERROR3IF(GetFirstNode() == NULL,"StartDoc not found");
+	Doc = (NodeDocument*)GetFirstNode()->FindNext();
+	ERROR3IF(Doc == NULL, "NodeDocument not found");
+	End = (EndDocument*)Doc->FindNext();
+	ERROR3IF(End == NULL, "EndDocument not found");
 
 	// Make the doc unit list
 	pDocUnitList = new DocUnitList;
 	if (pDocUnitList == NULL || !pDocUnitList->MakeDefaultUnits())
 		return(InitFailed());
 
-	// Create the Operation history for the document                              
+	// Create the Operation history for the document
 	OpHistory = new OperationHistory;
 	if (OpHistory == NULL)
 		return(InitFailed());
 
-	// Create the attribute manager for the document 
-	AttributeMgr = new AttributeManager; 
+	// Create the attribute manager for the document
+	AttributeMgr = new AttributeManager;
 	if (AttributeMgr == NULL || !AttributeMgr->InitInstance())
 		return(InitFailed());
 
@@ -371,16 +372,16 @@ BOOL Document::Init(CCamDoc* pOilDoc)
 		// Broadcast a message to all that there's a new document on the block . . .
 		BROADCAST_TO_ALL(DocChangingMsg(this, DocChangingMsg::BORN));
 	}
-    
+
 	// Add the default attributes as Nodes at the start of the tree
 	// The clipboard document does not need default attributes, as things copied into it
 	// are always kept attribute complete. But now that we're importing into the clipboard,
 	// it is a very good idea to have safe defaults lying about.
-   	InitDefaultAttributeNodes(); 
+   	InitDefaultAttributeNodes();
 
 	// Take the hourglass off
     EndSlowJob();
-    
+
     return(TRUE);
 }
 
@@ -400,7 +401,7 @@ BOOL Document::Init(CCamDoc* pOilDoc)
 				call InitFailed() and possibly InformError())
 
 	Purpose:	Called by Document::Init to initialise the document tree structure.
-				
+
 				Mainly intended for use by the internal clipboard in order to delete
 				and recreate the standard tree whenever it is wiped - I've done this
 				here dso that any chnages to the normal document layout will also affect
@@ -420,7 +421,7 @@ BOOL Document::InitTree(NodeDocument* pRootNode)
 		return(FALSE);
 	}
 
-	// Temporary bodge to construct example document tree for Target 1.		
+	// Temporary bodge to construct example document tree for Target 1.
 	Chapter* pChapter = new Chapter(pRootNode, LASTCHILD);
 	if (pChapter == 0) return FALSE;
 
@@ -440,13 +441,13 @@ BOOL Document::InitTree(NodeDocument* pRootNode)
 	// Create the spread
 	Spread *pSpread = new Spread(pChapter, FIRSTCHILD, PasteRect);
 	if (pSpread == NULL) return FALSE;
-	
+
 	// Create the default page and grid (JustinF says: even if we are a hidden document)
 	if (!pSpread->CreateDefaultPageAndGrid(TRUE)) return FALSE;
 
 	// Create the Insertion node which must always live as a last child of the selected
 	// spreads active layer. The Insertion node holds a pointer to this document so that
-	// if for whatever reason the InsertionNode is destroyed (eg. Delete layer) then 
+	// if for whatever reason the InsertionNode is destroyed (eg. Delete layer) then
 	// we can Inform this document and it can NULLIFY the InsertPos pointer.
 	InsertPos = new InsertionNode(this);
 	if (InsertPos == NULL) return FALSE;
@@ -467,7 +468,7 @@ BOOL Document::InitTree(NodeDocument* pRootNode)
 	Outputs:	-
 	Returns:	TRUE if the default attributes have been added to the tree OK
 				FALSE if we run out of memory.
-				
+
 	Purpose:	This function adds the document's default attributes as nodes at the start
 				of the tree (i.e. as first children of the NodeDocument).
 
@@ -478,36 +479,36 @@ BOOL Document::InitTree(NodeDocument* pRootNode)
 				been set up and all default attributes have been registered.
 
 
-	Errors:		The Out Of Memory Error is set if we run out of memory, FALSE is returned 
+	Errors:		The Out Of Memory Error is set if we run out of memory, FALSE is returned
 				in this situation.
-				 
+
 
 ********************************************************************************************/
 
 BOOL Document::InitDefaultAttributeNodes()
 {
-	ENSURE(AttributeMgr != NULL, "Attribute Manager pointer is NULL"); 
+	ENSURE(AttributeMgr != NULL, "Attribute Manager pointer is NULL");
 
 	// Find out the number of default attributes
 	UINT32 NumDefaultAttribs = AttributeMgr->GetNumAttributes();
-	ENSURE(NumDefaultAttribs != 0, "The document has no default attributes"); 
-	
+	ENSURE(NumDefaultAttribs != 0, "The document has no default attributes");
+
 	AttributeEntry* DefaultAttribs = AttributeMgr->GetDefaultAttributes();
-	
+
 	if (DefaultAttribs == NULL)
 		return FALSE;
-	
+
 	// ----------------------------------------------------------------------------------------
 	// Try and find the NodeDocument node - to which the attributes will be added
 
-	Node* TreeRoot; 
+	Node* TreeRoot;
 
-	ENSURE(TreeStart != NULL, "The initial tree structure has not been initialised"); 
+	ENSURE(TreeStart != NULL, "The initial tree structure has not been initialised");
 
-	TreeRoot = TreeStart->FindNext(); 
+	TreeRoot = TreeStart->FindNext();
 
-	ENSURE(TreeRoot != NULL, "Can't find NodeDocument"); 
-	ENSURE(TreeRoot->GetRuntimeClass() == CC_RUNTIME_CLASS(NodeDocument), "Alien tree structure"); 
+	ENSURE(TreeRoot != NULL, "Can't find NodeDocument");
+	ENSURE(TreeRoot->GetRuntimeClass() == CC_RUNTIME_CLASS(NodeDocument), "Alien tree structure");
 
 	// ----------------------------------------------------------------------------------------
 	// Create a NodeAttribute for each of the default attributes and add them into the
@@ -515,8 +516,8 @@ BOOL Document::InitDefaultAttributeNodes()
 
 	for(UINT32 i=0; i<NumDefaultAttribs; i++)
 	{
-		ENSURE(DefaultAttribs[i].pAttr != NULL, "Default attribute is NULL"); 
-		
+		ENSURE(DefaultAttribs[i].pAttr != NULL, "Default attribute is NULL");
+
 		Node* NodeAttr = DefaultAttribs[i].pAttr->MakeNode();
 
 		if (NodeAttr != NULL)
@@ -530,12 +531,12 @@ BOOL Document::InitDefaultAttributeNodes()
 			{
 				pNa->NewlyCreatedDefaultAttr((NodeDocument*)TreeRoot);
 			}
-	    } 
+	    }
 	}
 
 	// ----------------------------------------------------------------------------------------
 
-	// Default attribute array no longer required so we can safely delete it 
+	// Default attribute array no longer required so we can safely delete it
 	CCFree(DefaultAttribs);
 	return TRUE;
 }
@@ -549,10 +550,10 @@ BOOL Document::InitDefaultAttributeNodes()
 	Author:		Chris_Parks (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	16/4/96
 	Returns:	Init ok
-	Purpose:	Calls InitFailed to delete the Tree and various others and follows this with 
+	Purpose:	Calls InitFailed to delete the Tree and various others and follows this with
 				an Init to put the Document back into a virgin state
 				Not used just yet...
-	Errors:		
+	Errors:
 
 ********************************************************************************************/
 
@@ -562,10 +563,10 @@ BOOL Document::ReInit()
 	InitFailed();
 	return Init(OilDoc);
 
-/* 
+/*
 	TreeStart->CascadeDelete();
-	ERROR3IF(GetFirstNode() == NULL,"StartDoc not found"); 
-	NodeDocument *Doc = (NodeDocument*)GetFirstNode()->FindNext(); 
+	ERROR3IF(GetFirstNode() == NULL,"StartDoc not found");
+	NodeDocument *Doc = (NodeDocument*)GetFirstNode()->FindNext();
 	return InitTree(Doc);
 */
 
@@ -582,7 +583,7 @@ BOOL Document::ReInit()
 	Author:		Jason_Williams (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	8/12/94
 	Returns:	FALSE
-	
+
 	Purpose:	Called by Document::Init when it fails; encapsulates all necessary
 				tidying up, and then returns FALSE so that it can be called as part
 				of the final return statement.
@@ -606,7 +607,7 @@ BOOL Document::InitFailed(void)
 		delete OpHistory;
 		OpHistory = 0;
 	}
-	
+
 	if (AttributeMgr != 0)
 	{
 		delete AttributeMgr;
@@ -618,7 +619,7 @@ BOOL Document::InitFailed(void)
 		delete pDocUnitList;
 		pDocUnitList = 0;
 	}
-	
+
 	EndSlowJob();
 	return(FALSE);
 }
@@ -634,7 +635,7 @@ BOOL Document::InitFailed(void)
     Purpose:    Destructor. Deletes the whole document tree of this object, and all memory
                 is returned to the heaps whence it came.  The busy cursor is displayed while
                 this is happening.
-                   			                                     
+
 ***********************************************************************************************/
 
 Document::~Document()
@@ -694,12 +695,12 @@ Document::~Document()
 			// Make sure that Current and Selected do not refer to the dying document
 			if (this == Current)	SetNoCurrent();
 			if (this == Selected)	SetNoSelectedViewAndSpread();
-			
+
 			// This special test added to fix a problem whereby current doc was being set to null
 			// above and hence causing unit display problems (ERROR2s) in the selector tool when
 			// opening a bitmap had been aborted. 18/9/96 Neville
-			if (Selected != NULL && Current == NULL) Current = Selected; 
-		}			
+			if (Selected != NULL && Current == NULL) Current = Selected;
+		}
 	}
 
 	// Delete all DocViews attached to document
@@ -711,21 +712,21 @@ Document::~Document()
 	{
 	 	BROADCAST_TO_ALL(DocChangingMsg(this, DocChangingMsg::KILLED));
 	}
-#endif	
+#endif
 	// Destroy the operation history. This must get destroyed before the tree is destroyed
 	if (OpHistory != NULL)
-    	delete (OpHistory);   
+    	delete (OpHistory);
 
-	// Destroy the attribute manager 
+	// Destroy the attribute manager
 	if (AttributeMgr != NULL)
-		delete (AttributeMgr); 
+		delete (AttributeMgr);
 
 	// Destroy the list of units in this document
 	if (pDocUnitList != NULL)
 		delete (pDocUnitList);
 
 	// All done...
-    EndSlowJob(); 
+    EndSlowJob();
 
 	// Note that the tree is deleted in the base class destructor
 }
@@ -932,7 +933,7 @@ String_256 Document::GetTitle() const
 				which is the text that appears in the document windows (when it is not maximised). For example 'Untitled #1' or
 				'Untitled #1 (Modified)' or even 'Blobby.art (Modified)'.
 	SeeAlso:	Document::GetTitle(); CCamDoc::GetKernelTitle(); CCamDoc::GetKernelDocName();
-	SeeAlso:	Document::GetProducer; Document::GetComment; 
+	SeeAlso:	Document::GetProducer; Document::GetComment;
 
 ********************************************************************************************/
 
@@ -942,7 +943,7 @@ String_256 Document::GetDocName(BOOL IncludeFileType) const
 		return OilDoc->GetKernelDocName(IncludeFileType);
 
 	return(ClipboardNameText);
-}	
+}
 
 
 /********************************************************************************************
@@ -1000,7 +1001,7 @@ String_256 Document::GetLocation(UINT32 MaxSize) const
 	Inputs:		-
 	Outputs:	-
 	Returns:	A reference to the (constant) producer's name of this document.
-	Purpose:	
+	Purpose:
 	Errors:		-
 	SeeAlso:	Document::GetTitle; Document::GetComment
 ********************************************************************************************/
@@ -1060,7 +1061,7 @@ void Document::SetComment(String_256* NewComment)
 	Inputs:		-
 	Outputs:	-
 	Returns:	A reference to the time of the document's creation.
-	Purpose:	
+	Purpose:
 	Errors:		-
 	SeeAlso:	Document::GetLastSaveTime
 ********************************************************************************************/
@@ -1085,7 +1086,7 @@ const time_t& Document::GetCreationTime() const
 	Errors:		-
 	SeeAlso:	Document::GetCreationTime
 ********************************************************************************************/
-				
+
 const time_t& Document::GetLastSaveTime() const
 {
 	return LastSaveTime;
@@ -1180,7 +1181,7 @@ void Document::MakeJustCreated()
 							  on the selected spread.
 
 	Purpose:	Inserts the Node into the Document at the position specified.
-				The node is added to the active layer on this spread 
+				The node is added to the active layer on this spread
 	SeeAlso:	Document::FindEnclosingChapter(); Document::FindEnclosingPage()
 
 ********************************************************************************************/
@@ -1189,21 +1190,21 @@ void Document::InsertNewNode( Node* NewNode, Spread *pDestSpread )
 {
 	SetCurrent();
 
-	Node *pNode; 
+	Node *pNode;
 
 	// Most of the time we will be inserting onto the selected spread
 	// So find out what this is.
-	
+
 	if ((pDestSpread == NULL) || (pDestSpread == Document::GetSelectedSpread()))
 	{
 		// We need to insert the node onto the selected spread. This is very quick because we
 		// keep an Insertion node there.
-		pNode = GetInsertionPosition(); 
+		pNode = GetInsertionPosition();
 	   	ENSURE(pNode != NULL, "Could not find insertion position in Document::InsertNewNode()");
 		// Attach the node to the left of the insertion node
 		NewNode -> AttachNode( pNode, PREV );
 
-	} 
+	}
 	else
 	{
 		// This is assuming that we are inserting into the non-selected spread and so does
@@ -1229,15 +1230,15 @@ void Document::InsertNewNode( Node* NewNode, Spread *pDestSpread )
 
     Author: 	Tim_Browse (Xara Group Ltd) <camelotdev@xara.com>
     Created:	19/5/93
-	
-	Inputs:		- 
+
+	Inputs:		-
     Outputs:    -
     Returns:   	NULL, or a spare DocView
-                 
+
     Purpose:    Looks for a DocView with no attached OilView, so we can recycle it
-               
+
 	Errors:		None.
-                   			                                     
+
 ***********************************************************************************************/
 
 DocView* Document::GetSpareDocView()
@@ -1245,7 +1246,7 @@ DocView* Document::GetSpareDocView()
 	if (IsNotAClipboard())
 	{
 		DocView *View = (DocView *) DocViews.GetHead();
-	
+
 		while (View != NULL)
 		{
 			CCamView *pCamView = View->GetConnectionToOilView();
@@ -1265,26 +1266,26 @@ DocView* Document::GetSpareDocView()
 
     Author: 	Tim_Browse (Xara Group Ltd) <camelotdev@xara.com>
     Created:	19/5/93
-	
-	Inputs:		- 
+
+	Inputs:		-
     Outputs:    -
     Returns:   	-
-                 
+
     Purpose:    Returns a new DocView for the client.  If any unconnected views already exist
     			for this document, the first is returned.  Otherwise a new DocView is created
     			and returned.
 				If a new DocView is obtained, it becomes the 'current' DocView before
 				it is returned to the caller.
-               
+
 	Errors:		None.
-                   			                                     
+
 ***********************************************************************************************/
 
 DocView* Document::GetNewDocView()
 {
 	// Is there a spare view knocking about?
 	DocView *pDocView = GetSpareDocView();
-	
+
 	if (pDocView != NULL)
 		// Yes - so return it.
 		return pDocView;
@@ -1297,7 +1298,7 @@ DocView* Document::GetNewDocView()
 	{
 		// No views spare - create a new one connected to this document...
 		pDocView = new DocView(this);
-	
+
 		if (pDocView != NULL)
 		{
 			if (pDocView->Init())
@@ -1313,7 +1314,7 @@ DocView* Document::GetNewDocView()
 		pDocView->SetCurrent();
 	}
 
-	// ...and return this new view to the caller.		
+	// ...and return this new view to the caller.
 	return pDocView;
 }
 
@@ -1323,8 +1324,8 @@ void Document::OnDocViewDying(DocView *pDocViewToDelete)
 {
 	// Look for this DocView in the list
 	DocView *pDocView = (DocView *) DocViews.GetHead();
-	
-	// Traverse List of DocViews 
+
+	// Traverse List of DocViews
 	while (pDocView != NULL)
 	{
 		// Is this the DocView that is closing down?
@@ -1368,7 +1369,7 @@ void Document::ShowViewScrollers(BOOL fIsVisible)
 
 /***********************************************************************************************
 >	void Document::ShowViewRulers(BOOL fIsVisible)
-	Author:		Chris_Snook (Xara Group Ltd) <camelotdev@xara.com> 
+	Author:		Chris_Snook (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	2/11/94
 	Inputs:		-
 	Outputs:	-
@@ -1398,8 +1399,8 @@ void Document::ShowViewRulers(BOOL fIsVisible)
 
     Author: 	Tim_Browse (Xara Group Ltd) <camelotdev@xara.com>
     Created:	19/5/93
-	
-	Inputs:		- 
+
+	Inputs:		-
     Outputs:    -
     Returns:   	NULL or a pointer to the CCamDoc object associated with this object.
 
@@ -1408,7 +1409,7 @@ void Document::ShowViewRulers(BOOL fIsVisible)
 	Notes:		IMPORTANT: Clipboard Documents may NOT have an attached OilDoc -> will return NULL
 
 	Errors:		None.
-                   			                                     
+
 ***********************************************************************************************/
 
 CCamDoc* Document::GetOilDoc() const
@@ -1424,15 +1425,15 @@ CCamDoc* Document::GetOilDoc() const
 
     Author: 	Tim_Browse (Xara Group Ltd) <camelotdev@xara.com>
     Created:	21/5/93
-	
-	Inputs:		- 
+
+	Inputs:		-
     Outputs:    -
     Returns:   	Pointer to the current Document object.
-                 
+
     Purpose:    Find the current Document object.
-               
+
 	Errors:		None.
-                   			                                     
+
 ***********************************************************************************************/
 
 Document* Document::GetCurrent()
@@ -1457,15 +1458,15 @@ Document* Document::GetCurrent()
 
     Author: 	Tim_Browse (Xara Group Ltd) <camelotdev@xara.com>
     Created:	21/5/93
-	
-	Inputs:		- 
+
+	Inputs:		-
     Outputs:    -
     Returns:   	Pointer to the selected Document object.
-                 
+
     Purpose:    Find the selected Document object.
-               
+
 	Errors:		None.
-                   			                                     
+
 ***********************************************************************************************/
 
 Document* Document::GetSelected()
@@ -1483,26 +1484,26 @@ Document* Document::GetSelected()
 }
 
 
-	
+
 /***********************************************************************************************
 
 > 	void Document::SetCurrent()
     Author: 	Tim_Browse (Xara Group Ltd) <camelotdev@xara.com>
     Created:	21/5/93
-	Inputs:		- 
+	Inputs:		-
     Outputs:    -
     Returns:   	-
-    Purpose:    Make this object be the 'current' document.  
+    Purpose:    Make this object be the 'current' document.
 				**** Changed 22/7/94 by MarkN ****
     			Does NOT broadcasts a message to all that this is happening any more.
 	Errors:		None.
-                   			                                     
+
 ***********************************************************************************************/
 
 void Document::SetCurrent()
 {
 #ifdef RALPH
-	// if we are being called from the load thread just ignore 
+	// if we are being called from the load thread just ignore
 	if(::GetCurrentThreadId() == RalphDocument::GetImportingThreadID())
 		return ;
 #endif
@@ -1517,24 +1518,24 @@ void Document::SetCurrent()
 
     Author: 	Tim_Browse (Xara Group Ltd) <camelotdev@xara.com>
     Created:	21/5/93
-	
-	Inputs:		- 
+
+	Inputs:		-
     Outputs:    -
     Returns:   	-
-                 
+
     Purpose:    Set the current document pointer to be NULL, i.e., there is no current
     			document object.
 				**** Changed 22/7/94 by MarkN ****
     			Does NOT broadcasts a message to all that this is happening any more.
-               
+
 	Errors:		None.
-                   			                                     
+
 ***********************************************************************************************/
 
 void Document::SetNoCurrent()
 {
 #ifdef RALPH
-	// if we are being called from the load thread just ignore 
+	// if we are being called from the load thread just ignore
 	if(::GetCurrentThreadId() == RalphDocument::GetImportingThreadID())
 		return ;
 #endif
@@ -1549,11 +1550,11 @@ void Document::SetNoCurrent()
 
     Author: 	Jason_Williams (Xara Group Ltd) <camelotdev@xara.com>
     Created:	13/2/95
-	
+
 	Inputs:		-
     Outputs:    -
     Returns:   	-
-                 
+
     Purpose:	To set the Selected Document, DocView, and Spread.
 				This sets all three of these entities to NULL - no selected entity.
 
@@ -1563,7 +1564,7 @@ void Document::SetNoCurrent()
 				as a single indivisble operation, which only broadcasts the necessary
 				messages when the entrie state has been changed.
 
-	Notes:		If the Selected docuemnt changes, a DocChangingMsg (SELCHANGED) will be 
+	Notes:		If the Selected docuemnt changes, a DocChangingMsg (SELCHANGED) will be
 				broadcast, with pOldDoc == the last selected Doc, and pNewDoc == the new
 				selected document. Either/both of pOldDoc and pNewDoc may be NULL!
 
@@ -1581,7 +1582,7 @@ void Document::SetNoSelectedViewAndSpread(void)
 {
 	TRACEUSER("Gerry", _T("Document::SetNoSelectedViewAndSpread"));
 #ifdef RALPH
-	// if we are being called from the load thread just ignore 
+	// if we are being called from the load thread just ignore
 	if(::GetCurrentThreadId() == RalphDocument::GetImportingThreadID())
 		return ;
 #endif
@@ -1637,14 +1638,14 @@ void Document::SetNoSelectedViewAndSpread(void)
 
     Author: 	Jason_Williams (Xara Group Ltd) <camelotdev@xara.com>
     Created:	13/2/95
-	
+
 	Inputs:		TheDocument - NULL, or a pointer to the document to make selected
 				TheView - NULL, or the docview for TheDocument which should be made selected
 				TheSpread - NULL or the Spread in TheDocument which should be made selected
 
     Outputs:    -
     Returns:   	-
-                 
+
     Purpose:	To set the Selected Document, DocView, and Spread.
 
 				These 3 items are interlinked - changing the spread may mean changing
@@ -1658,7 +1659,7 @@ void Document::SetNoSelectedViewAndSpread(void)
 				the currently selected or first spread of that document, respectively) will
 				be used.
 
-				If the Selected document changes, a DocChangingMsg (SELCHANGED) will be 
+				If the Selected document changes, a DocChangingMsg (SELCHANGED) will be
 				broadcast, with pOldDoc == the last selected Doc, and pNewDoc == the new
 				selected document. Either/both of pOldDoc and pNewDoc may be NULL.
 
@@ -1667,7 +1668,7 @@ void Document::SetNoSelectedViewAndSpread(void)
 
 				If the Selected spread changes, a SpreadMsg (SELCHANGED) will be broadcast.
 				pOldSpread and pNewSpread will point at the spreads involved.
-               
+
 				This also sets CurrentDoc to equal the Selected Doc. Ths state should
 				remain true during the broadcast of the DocChanging Message.
 
@@ -1682,7 +1683,7 @@ void Document::SetSelectedViewAndSpread(Document *TheDocument,
 {
 //	TRACEUSER("Gerry", _T("Document::SetSelectedViewAndSpread(0x%08x, 0x%08x, 0x%08x)"), TheDocument, TheView, TheSpread);
 #ifdef RALPH
-	// if we are being called from the load thread just ignore 
+	// if we are being called from the load thread just ignore
 	if(::GetCurrentThreadId() == RalphDocument::GetImportingThreadID())
 		return ;
 #endif
@@ -1776,32 +1777,32 @@ void Document::SetSelectedViewAndSpread(Document *TheDocument,
 }
 
 
-	
+
 /***********************************************************************************************
 
 > 	void Document::SetSelected()
 
     Author: 	Tim_Browse (Xara Group Ltd) <camelotdev@xara.com>/ MarkN
     Created:	21/5/93
-	
-	Inputs:		- 
+
+	Inputs:		-
     Outputs:    -
     Returns:   	-
-                 
+
     Purpose:	THIS METHOD IS DEFUNCT! DO NOT CALL IT!
 				Use Document::SetSelectedViewAndSpread() instead
 				(This call is currently indirected to that one, and gives TRACE warnings)
-    
+
     		    Make this object be the 'selected' document object.
 
 				It sets the selected spread to be a relevent spread in this document.
 				If there is a change in selected spread as a result, a SpreadMsg::SELCHANGED
 				message is broadcast.
 
-				A message is broadcast called SELCHANGED. On receipt of this message, pOldDoc is the one 
+				A message is broadcast called SELCHANGED. On receipt of this message, pOldDoc is the one
 				being deselected, and pNewDoc is the one being selected,
 				NOTE!! pOldDoc and/or pNewDoc can be NULL!!!
-               
+
 				This does NOT effect the Current doc.
 
 				If the new selected document is not the document associated with the selected
@@ -1809,7 +1810,7 @@ void Document::SetSelectedViewAndSpread(Document *TheDocument,
 				DocView must be a view onto the selected document.
 
 	Errors:		None.
-                   			                                     
+
 ***********************************************************************************************/
 
 #if 0
@@ -1855,17 +1856,17 @@ void Document::SetSelected()
 
     Author: 	Tim_Browse (Xara Group Ltd) <camelotdev@xara.com>
     Created:	21/5/93
-	
-	Inputs:		- 
+
+	Inputs:		-
     Outputs:    -
     Returns:   	-
-                 
+
     Purpose:	THIS METHOD IS DEFUNCT! DO NOT CALL IT!
 				Use Document::SetNoSelectedViewAndSpread() instead
 				(This call is currently indirected to that one, and gives TRACE warnings)
-    
+
 				Set the selected document pointer to be NULL, i.e., there is no selected
-    			document object. 
+    			document object.
 				This does NOT effect the Current doc.
 
 				**** Changed 22/7/94 by MarkN ****
@@ -1873,9 +1874,9 @@ void Document::SetSelected()
 				in one called SELCHANGED. On receipt of this message, pOldDoc is the one being
 				deselected, and pNewDoc is the one being selected,
 				NOTE!! pOldDoc and/or pNewDoc can be NULL!!!
-               
+
 	Errors:		None.
-                   			                                     
+
 ***********************************************************************************************/
 
 #if 0
@@ -1898,7 +1899,7 @@ void Document::SetNoSelected()
 	Document::SetNoSelectedViewAndSpread();
 
 #endif
-}                    
+}
 
 #endif
 
@@ -1915,8 +1916,8 @@ void Document::SetNoSelected()
     Purpose:	THIS METHOD IS DEFUNCT! DO NOT CALL IT!
 				Use Document::SetSelectedViewAndSpread() instead
 				(This call is currently indirected to that one, and gives TRACE warnings)
-    
-				Sets the global instance of the selected spread. 
+
+				Sets the global instance of the selected spread.
 				pNewSelSpread must be a spread belonging to the selected document.
 	Errors:		-
 	SeeAlso:	-
@@ -1958,7 +1959,7 @@ void Document::SetSelectedSpread(Spread* pNewSelSpread)
 	//NodeRenderableInk::DeselectAll();
 
 	// Inform the SelRange that it has changed, get it to broadcast
-	//GetApplication()->FindSelection()->Update(TRUE); 
+	//GetApplication()->FindSelection()->Update(TRUE);
 
 	BROADCAST_TO_ALL(SpreadMsg(pOldSelSpread,pNewSelSpread,SpreadMsg::SpreadReason::SELCHANGED));
 */
@@ -2128,11 +2129,11 @@ Spread* Document::FindFirstSpread()
 void Document::GetExtents(DocCoord* Lo, DocCoord* Hi, DocRect* Extent, View *pView)
 {
 	NodeDocument* DocNode = (NodeDocument*) TreeStart->FindNext();
-	
+
 	// Just to be on the safe side
 	ENSURE(DocNode->IsKindOf(CC_RUNTIME_CLASS(NodeDocument)),
 					"Document.cpp: This node is not a NodeDocument");
-	
+
 	*Lo = DocNode->LoExtent();
 	*Hi = DocNode->HiExtent();
 	*Extent = DocNode->GetPasteboardRect(TRUE, pView);
@@ -2161,14 +2162,14 @@ void Document::UpdateExtents(const DocCoord& Lo, const DocCoord& Hi)
 {
 	DocView *pView = (DocView*) DocViews.GetHead();
 
-	// Scan list of all DocView of this Document	
+	// Scan list of all DocView of this Document
 	while (pView != NULL)
 	{
 		// Inform DocView of the new document extent.
 		pView->SetExtent(Lo, Hi);
 		pView = (DocView*) DocViews.GetNext(pView);
 	}
-}   
+}
 
 
 
@@ -2223,7 +2224,7 @@ BOOL Document::EmptyOperationHistory()
 
 	// Now try and replace it with a new one
 	OpHistory = new OperationHistory(MaxSize);
-	
+
 	// If we did not get the memory to create a new one, then fail
 	if (OpHistory==NULL)
 		return FALSE;
@@ -2236,7 +2237,7 @@ BOOL Document::EmptyOperationHistory()
 
 /********************************************************************************************
 
->	AttributeManager& GetAttributeMgr() const; 
+>	AttributeManager& GetAttributeMgr() const;
 
 	Author:		Simon_Maneggio (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	1/7/93
@@ -2253,7 +2254,7 @@ AttributeManager& Document::GetAttributeMgr() const
 {
 	ENSURE(AttributeMgr != NULL,
 				"Pointer to Attribute Manager is NULL in Document::GetAttributeMgr()");
-	return (*AttributeMgr); 
+	return (*AttributeMgr);
 }
 
 
@@ -2346,12 +2347,12 @@ void Document::SetAllVisible(BOOL state)
 	Author:		Tim_Browse (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	25/10/93
 	Inputs:		RequiredAttr - the type of attribute to look for.
-	Returns:	Pointer to the default attribute node, or NULL if the attribute was not 
+	Returns:	Pointer to the default attribute node, or NULL if the attribute was not
 				found.
 	Purpose:	Finds the default attribute node for a document, given the attribute class
 				to look for.  For instance, to find out the default line width for a
 				document: MonoOn
-				
+
 				AttrLineWidth *pAttr = pDoc->GetDefaultAttr(CC_RUNTIME_CLASS(AttrLineWidth));
 				MonoOff
 
@@ -2361,19 +2362,19 @@ NodeAttribute* Document::GetDefaultAttr(CCRuntimeClass* RequiredAttr)
 {
 	// Search for line width attribute as a child of the NodeDocument.
 	Node *pNode = TreeStart->FindNext();
-	
+
 	if (pNode == NULL)
 	{
 		// Error in document tree
 		return NULL;
 	}
-	
+
 	if (!pNode->IsKindOf(CC_RUNTIME_CLASS(NodeDocument)))
 	{
 		// Error in document tree
 		return NULL;
 	}
-	
+
 	// Find the attribute in question
 	for (pNode = pNode->FindFirstChild();
 		 pNode != NULL;
@@ -2382,7 +2383,7 @@ NodeAttribute* Document::GetDefaultAttr(CCRuntimeClass* RequiredAttr)
 		if (pNode->IsKindOf(RequiredAttr))
 			return (NodeAttribute *) pNode;
 	}
-	
+
 	// Required attribute was not found - just return NULL
 	return NULL;
 }
@@ -2470,7 +2471,7 @@ void Document::DeleteContents()
 {
 	// This function does nothing because MFC calls it in a completely brain-damaged way.
 	// It calls it when the document is about to be destroyed, and ALSO calls it just
-	// after a new document has just been created. Fabby eh? Those boys from Redmond strike 
+	// after a new document has just been created. Fabby eh? Those boys from Redmond strike
 	// again!  (Tim)
 
 	// DON'T make it do anything!
@@ -2628,11 +2629,11 @@ void Document::HandleNodeDeletion(Node* pNode)
 
 /********************************************************************************************
 
->	InsertionNode* Document::GetInsertionPosition(); 
+>	InsertionNode* Document::GetInsertionPosition();
 
 	Author:		Simon_Maneggio (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	18/7/94
-	Returns:	The Insertion position. This will be the InsertionNode (Insert as a Previous 
+	Returns:	The Insertion position. This will be the InsertionNode (Insert as a Previous
 				child of this)
 	Purpose:	This function should be called to find the position in the document where a
 				new object should be inserted. The object should always be inserted as a previous
@@ -2646,20 +2647,20 @@ InsertionNode* Document::GetInsertionPosition()
 	// Is the Insertion	node in the corrrect spread ?
 	Spread* SelSpread = Document::GetSelectedSpread();
 	ENSURE(SelSpread != NULL, "The selected spread is NULL");
-	
+
 	// I think it's ok to search for the active layer here cos there is not likely
 	// to be zillions of layers.
-	Layer* SelActiveLyr = SelSpread->FindActiveLayer(); 
-	ENSURE(SelActiveLyr != NULL, "Could not find active layer on selected spread"); 
-	
+	Layer* SelActiveLyr = SelSpread->FindActiveLayer();
+	ENSURE(SelActiveLyr != NULL, "Could not find active layer on selected spread");
+
 	Node* InsertLyr = NULL;	 // The layer containing the InsertionNode. If one
 							 // exists. See the InsertionNode's destructor.
 	if (InsertPos)
 	{
-		ERROR3IF(InsertPos->FindNext(), "InsertionNode is not the last node on a layer"); 
+		ERROR3IF(InsertPos->FindNext(), "InsertionNode is not the last node on a layer");
 		InsertLyr = InsertPos->FindParent();
 		// In a retail if the InsertPos' parent is NULL then we will survive this
-		ERROR3IF(!InsertLyr, "The Insertion node's parent has been deleted"); 
+		ERROR3IF(!InsertLyr, "The Insertion node's parent has been deleted");
 		// If the parent of the Insertion node is not a Layer then there is probably
 		// cause for concern. Not very likely this.
 		ENSURE(InsertLyr->GetRuntimeClass() == CC_RUNTIME_CLASS(Layer), "Parent of insertion node is not a layer");
@@ -2677,13 +2678,13 @@ InsertionNode* Document::GetInsertionPosition()
 	if (SelActiveLyr != ((Layer*)InsertLyr))
 	{
 		// The InsertionNode should be moved
-		// this is the slow bit, but it will only happen when the selected spread 
+		// this is the slow bit, but it will only happen when the selected spread
 		// changes.
-		InsertPos->MoveNode(SelActiveLyr, LASTCHILD); 	
+		InsertPos->MoveNode(SelActiveLyr, LASTCHILD);
 	}
 	// otherwise the InsertPos is in the correct position
 	return InsertPos;
-} 
+}
 
 
 
@@ -2694,9 +2695,9 @@ InsertionNode* Document::GetInsertionPosition()
 	Author:		Tim_Browse (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	18/08/94
 	Purpose:	Forces the insertion node to move to the end of the layer that it is
-				currently on.  This is used by the filters so they can insert an 
-				arbitrary number of nodes into the tree without worryng about the insertion 
-				position being updated every time and then it can just update it at the end 
+				currently on.  This is used by the filters so they can insert an
+				arbitrary number of nodes into the tree without worryng about the insertion
+				position being updated every time and then it can just update it at the end
 				using this function.
 	SeeAlso:	Document::GetInsertionPosition
 
@@ -2715,17 +2716,17 @@ void Document::ResetInsertionPosition()
 			return;
 		}
 	}
-	
+
 	// I think it's ok to search for the active layer here cos there is not likely
 	// to be zillions of layers.
 	Layer* pSelActiveLyr = SelSpread->FindActiveLayer();
 	if ( pSelActiveLyr )
 	{
-		ERROR3IF(pSelActiveLyr == NULL, "Could not find active layer on selected spread"); 
+		ERROR3IF(pSelActiveLyr == NULL, "Could not find active layer on selected spread");
 
 		//Node* InsertLyr = InsertPos->FindParent();
 
-		//ENSURE(InsertLyr->GetRuntimeClass() == CC_RUNTIME_CLASS(Layer), 
+		//ENSURE(InsertLyr->GetRuntimeClass() == CC_RUNTIME_CLASS(Layer),
 		//	"Parent of insertion node is not a layer")
 
 		if (InsertPos == NULL)
@@ -2764,10 +2765,12 @@ void Document::ResetInsertionPosition()
 
 BOOL Document::ReadPrefs()
 {
+    INT32 f = FALSE;
+    INT32 t = TRUE;
 	if (Camelot.DeclareSection(TEXT("Preferences"), 1))
 	{
 		Camelot.DeclarePref(TEXT("Preferences"), TEXT("RemoveExistingDocs"),
-							   &CCamDoc::s_RemoveExistingOnNewDoc, FALSE, TRUE);
+							   &CCamDoc::s_RemoveExistingOnNewDoc, f, t);
 	}
 	return TRUE;
 }
@@ -2856,13 +2859,13 @@ void Document::EPSEndExport(EPSFilter *pFilter)
 	Returns:	TRUE if the Prolog for this document was written out successfully;
 				FALSE if not (e.g. out of disk space etc)
 	Purpose:	Write out the EPS prolog for this document, using the EPS
-				filter object supplied. 
+				filter object supplied.
 				(The base class does nothing except return TRUE)
 
-	SeeAlso:	Document::WriteEPSSetup; 
+	SeeAlso:	Document::WriteEPSSetup;
 				Document::WriteEPSComments;
-				Document::ProcessEPSComment; 
-				DocComponent; 
+				Document::ProcessEPSComment;
+				DocComponent;
 				EPSFilter
 
 ********************************************************************************************/
@@ -2889,10 +2892,10 @@ BOOL Document::WriteEPSProlog ( EPSFilter *pFilter )
 				filter object supplied.
 				(The base class does nothing except return TRUE)
 
-	SeeAlso:	Document::WriteEPSProlog; 
+	SeeAlso:	Document::WriteEPSProlog;
 				Document::WriteEPSComments;
-				Document::ProcessEPSComment; 
-				DocComponent; 
+				Document::ProcessEPSComment;
+				DocComponent;
 				EPSFilter
 
 ********************************************************************************************/
@@ -2925,13 +2928,13 @@ BOOL Document::WriteEPSFonts(EPSFilter *pFilter)
 			if (first)
 				pDC->OutputToken(_T("%%DocumentFonts:"));
 			else
-				pDC->OutputToken(_T("%%+"));	
+				pDC->OutputToken(_T("%%+"));
 
 			pDC->OutputToken((TCHAR*)EFont);
 			pDC->OutputNewLine();
-		
+
 			first=FALSE;
-			pItem = CurFontList.GetNextItem(pItem);	
+			pItem = CurFontList.GetNextItem(pItem);
 		}
 	}
 	return TRUE;
@@ -2950,10 +2953,10 @@ BOOL Document::WriteEPSFonts(EPSFilter *pFilter)
 				filter object supplied.
 				(The base class does nothing except return TRUE)
 
-	SeeAlso:	Document::WriteEPSProlog; 
+	SeeAlso:	Document::WriteEPSProlog;
 				Document::WriteEPSComments;
-				Document::ProcessEPSComment; 
-				DocComponent; 
+				Document::ProcessEPSComment;
+				DocComponent;
 				EPSFilter
 
 ********************************************************************************************/
@@ -2985,10 +2988,10 @@ BOOL Document::WriteEPSResources(EPSFilter *pFilter)
 				filter object supplied.
 				(The base class does nothing except return TRUE)
 
-	SeeAlso:	Document::WriteEPSProlog; 
+	SeeAlso:	Document::WriteEPSProlog;
 				Document::WriteEPSComments;
-				Document::ProcessEPSComment; 
-				DocComponent; 
+				Document::ProcessEPSComment;
+				DocComponent;
 				EPSFilter
 
 ********************************************************************************************/
@@ -3025,10 +3028,10 @@ BOOL Document::WriteEPSSetup(EPSFilter *pFilter)
 				Filter object.
 				(The base class does nothing except return TRUE)
 
-	SeeAlso:	Document::WriteEPSSetup; 
+	SeeAlso:	Document::WriteEPSSetup;
 				Document::WriteEPSProlog;
-				Document::ProcessEPSComment; 
-				DocComponent; 
+				Document::ProcessEPSComment;
+				DocComponent;
 				EPSFIlter
 
 ********************************************************************************************/
@@ -3040,7 +3043,7 @@ BOOL Document::WriteEPSComments(EPSFilter *pFilter)
 	{
 		// NOTE: If you add something new then ensure you export it at the end of the list.
 		// This is because older versions of the program (1.0b and before) will stop
-		// processing at unknown comments and can cause immense problems.			
+		// processing at unknown comments and can cause immense problems.
 
 		// Output the colour table in ArtWorks format.
 		EPSExportDC *pDC = pFilter->GetExportDC();
@@ -3080,13 +3083,13 @@ BOOL Document::WriteEPSComments(EPSFilter *pFilter)
 		// Export the undo info (document history)
 		ExportUndoInfo(pDC);
 
-		// These were all exported in version 1.00b of Studio 
+		// These were all exported in version 1.00b of Studio
 		// These are new ones after the this release version.
-		
+
 		// Export the default units. Must be saved after the user units as we
 		// might have defined a user unit as the default.
 		ExportDefaultUnitsInfo(pDC);
-		
+
 		//Export the ruler and scroller visible states
 		// removed by Chris 27/10/95
 		// Ruler/Scroller state now set only from a global preference
@@ -3114,10 +3117,10 @@ BOOL Document::WriteEPSComments(EPSFilter *pFilter)
 				filter object supplied.
 				(The base class does nothing except return TRUE)
 
-	SeeAlso:	Document::WriteEPSProlog; 
+	SeeAlso:	Document::WriteEPSProlog;
 				Document::WriteEPSComments;
-				Document::ProcessEPSComment; 
-				DocComponent; 
+				Document::ProcessEPSComment;
+				DocComponent;
 				EPSFilter
 
 ********************************************************************************************/
@@ -3129,7 +3132,7 @@ BOOL Document::WriteEPSTrailer(EPSFilter *pFilter)
 	{
 		EPSExportDC *pDC = pFilter->GetExportDC();
 		AIExportTrailer(pDC);
-	}	
+	}
 	ExportTextTrailer(pFilter);
 
 	return TRUE;
@@ -3327,14 +3330,14 @@ BOOL ReadNextString(StringBase* pString, INT32 MaxLen, TCHAR* Comment, INT32* Of
 			TempStr[Dst] = Ch;
 			Dst++;
 			i++;
-			
+
 			if (Ch=='\\')
 			{
 				// This is the escape char, so store the char that follows it,
 				// but do not change the value of Ch or it may think that the comment is ending
 				TempStr[Dst-1] = Comment[i];
 				i++;
-			} 
+			}
 		} while (((Ch!=0) && (Ch!=')')) || (Dst==MaxLen-1));
 
 		// Terminate the string
@@ -3354,7 +3357,7 @@ BOOL ReadNextString(StringBase* pString, INT32 MaxLen, TCHAR* Comment, INT32* Of
 
 /********************************************************************************************
 
->	ProcessEPSResult Document::ProcessEPSComment(EPSFilter *pFilter, 
+>	ProcessEPSResult Document::ProcessEPSComment(EPSFilter *pFilter,
 												 const TCHAR *pComment)
 
 	Author:		Tim_Browse (Xara Group Ltd) <camelotdev@xara.com>
@@ -3367,30 +3370,30 @@ BOOL ReadNextString(StringBase* pString, INT32 MaxLen, TCHAR* Comment, INT32* Of
 				EPSCommentSystemError - This EPS comment was recognised by this document
 									    but a system error occured that was not caused
 										directly by the comment, e.g. out of memory.
-				EPSCommentOK		  - This EPS comment was recognised as a legal comment by 
+				EPSCommentOK		  - This EPS comment was recognised as a legal comment by
 									    this document, and was processed successfully.
 	Purpose:	Process an EPS comment found in the file, if it 'belongs' to the
-				document.  If it does not, then the document should return EPSCommentUnknown, 
+				document.  If it does not, then the document should return EPSCommentUnknown,
 				and the comment will be passed on to the document components.
-				If the function returns EPSCommentOK, and the next line in the file starts 
+				If the function returns EPSCommentOK, and the next line in the file starts
 				with "%%+", i.e. an EPS/PostScript continuation comment, then this will be
-				passed to this document immediately, without trying any of the document 
+				passed to this document immediately, without trying any of the document
 				components first.  This allows items such a colour lists
 				to be imported easily, as they are usually specified on multiple lines in
 				the file, using "%%+" comments.
 				(The base class does nothing - it returns EPSCommentUnknown)
 
-	SeeAlso:	Document::EndOfEPSComment; 
-				Document::WriteEPSProlog; 
-				Document::WriteEPSSetup; 
-				Document::WriteEPSComments; 
-				DocComponent; 
+	SeeAlso:	Document::EndOfEPSComment;
+				Document::WriteEPSProlog;
+				Document::WriteEPSSetup;
+				Document::WriteEPSComments;
+				DocComponent;
 				ProcessEPSResult;
 				EPSFIlter
 
 ********************************************************************************************/
 
-ProcessEPSResult Document::ProcessEPSComment(EPSFilter *pFilter, 
+ProcessEPSResult Document::ProcessEPSComment(EPSFilter *pFilter,
 										     const TCHAR *pComment)
 {
 	// OK, to begin with, set the current doc and view to this doc and it's first view.
@@ -3425,7 +3428,7 @@ ProcessEPSResult Document::ProcessEPSComment(EPSFilter *pFilter,
 			//
 			// NOTE: If you add something new then ensure you export it at the end of the list.
 			// This is because older versions of the program (1.0b and before) will stop
-			// processing at unknown comments and can cause immense problems.			
+			// processing at unknown comments and can cause immense problems.
 
 			ProcessEPSResult Result = EPSCommentUnknown;
 			TCHAR InfoType = pComment[3];
@@ -3516,7 +3519,7 @@ ProcessEPSResult Document::ProcessEPSComment(EPSFilter *pFilter,
 					Result = ImportDefaultUnitsInfo(Comment);
 					break;
 				}
-				
+
 				// The Ruler and Scroller visible state
 				case 'r' :
 				{
@@ -3527,7 +3530,7 @@ ProcessEPSResult Document::ProcessEPSComment(EPSFilter *pFilter,
 					Result = EPSCommentOK;
 					break;
 				}
-			
+
 				// The View Setting (Scale Factor, Scroll offsets etc)
 				case 'v' :
 				{
@@ -3612,7 +3615,7 @@ ProcessEPSResult Document::ProcessEPSComment(EPSFilter *pFilter,
 						// Ok, we've got the margin, so tell the EPS filter about it.
 						DocCoord NewOrigin(Margin, Margin);
 						pFilter->ResetImportOrigin(NewOrigin);
-					}                 
+					}
 
 					// Unknown version
 					default:
@@ -3648,9 +3651,9 @@ ProcessEPSResult Document::ProcessEPSComment(EPSFilter *pFilter,
 				non-comment line is encountered that the comment is over and is not
 				multi-line.
 
-	SeeAlso:	Document::ProcessEPSComment; 
-				Document::WriteEPSProlog; 
-				Document::WriteEPSSetup; 
+	SeeAlso:	Document::ProcessEPSComment;
+				Document::WriteEPSProlog;
+				Document::WriteEPSSetup;
 				Document::WriteEPSComments;
 				DocComponent; EPSFilter
 
@@ -3725,7 +3728,7 @@ DocView* Document::GetTopmostView() const
 	Inputs:		-
 	Outputs:	-
 	Returns:	The current size in millipoints of this Document's bleed area.
-	Purpose:	For getting the Document's bleed area size. 
+	Purpose:	For getting the Document's bleed area size.
 	Errors:		-
 	SeeAlso:	SetBleedOffset();
 
@@ -3734,7 +3737,7 @@ DocView* Document::GetTopmostView() const
 MILLIPOINT Document::GetBleedOffset() const
 {
 	return BleedOffset;
-} 
+}
 
 /********************************************************************************************
 
@@ -3745,7 +3748,7 @@ MILLIPOINT Document::GetBleedOffset() const
 	Inputs:		-
 	Outputs:	-
 	Returns:	The current size in millipoints of this document's bleed area.
-	Purpose:	For setting a new value for the Document's bleed area size. 
+	Purpose:	For setting a new value for the Document's bleed area size.
 	Errors:		-
 	SeeAlso:	Document::GetBleedOffset();
 
@@ -3754,9 +3757,9 @@ MILLIPOINT Document::GetBleedOffset() const
 BOOL Document::SetBleedOffset(MILLIPOINT Bleed)
 {
 	BleedOffset = Bleed;	// set up new bleed value
-	
+
 	return TRUE;
-} 
+}
 
 
 
@@ -3785,12 +3788,12 @@ BOOL Document::ExportPageInfo(EPSExportDC *pDC)
 	Node *pANode = GetFirstNode()->FindNext()->FindFirstChild();
 	while ((pANode != NULL) && (!pANode->IsKindOf(CC_RUNTIME_CLASS(Chapter))))
 		pANode = pANode->FindNext();
-		
+
 	ERROR2IF(!pANode->IsKindOf(CC_RUNTIME_CLASS(Chapter)),
 		FALSE, "Document::Export(something)(): Could not find Chapter");
 
 	Chapter *pChapter = (Chapter *) pANode;
-	
+
 	// pSpread is a child of pChapter
 	Spread *pSpread = (Spread *) pChapter->FindFirstChild();
 	ERROR2IF(!pSpread->IsKindOf(CC_RUNTIME_CLASS(Spread)),
@@ -3846,7 +3849,7 @@ BOOL Document::ExportDocumentComment(EPSExportDC *pDC)
 	// Save this out in 200 Char lines, using many continuation comments if needed
 	String_256 Comment = GetComment();
 	INT32 StrLength = Comment.Length();
-	
+
 	// Go though the string splitting it up as needed
 	TCHAR OneLine[256];
 	TCHAR Buffer[256];
@@ -3855,7 +3858,7 @@ BOOL Document::ExportDocumentComment(EPSExportDC *pDC)
 	// vars to keep track of where we are
 	INT32 Src = 0;
 	INT32 Dest = 0;
-	
+
 	// Loop through the string they have entered and split it up into lines of text
 	while (Src<StrLength)
 	{
@@ -3914,7 +3917,7 @@ BOOL Document::ExportDocumentComment(EPSExportDC *pDC)
 	Purpose:	Exports the View Settings continuation comment (part of the Document Info
 				comment). It has the following form
 				%%+r VersionNum(0) ScrollersVisible RulersVisible
-				
+
 
 ********************************************************************************************/
 
@@ -3924,7 +3927,7 @@ BOOL Document::ExportRulerState(EPSExportDC *pDC)
 
 	// Find the view to get the info from
 	// don't do DocView* pView = DocView::GetSelected(); as it breaks save all
-	DocView* pView = GetFirstDocView();	
+	DocView* pView = GetFirstDocView();
 	if (this==Document::GetSelected()) pView = DocView::GetSelected();
 
 	if (pView!=NULL)
@@ -3956,7 +3959,7 @@ BOOL Document::ExportRulerState(EPSExportDC *pDC)
 				comment). It has the following form
 				%%+v VersionNum(1) XScrollOffset YScrollOffset ScaleFactor Active
 				DrawingScale RealScale.
-				ScaleFactor is represented 1000 times the actual scale factor. eg when the 
+				ScaleFactor is represented 1000 times the actual scale factor. eg when the
 				document is viewed at 100% the scale factor is 1.0. This is export as 1000.
 				200% would be 2000 etc. Active is a flag to say if the Document Scale Factor
 				is active or not. It is followed by the Drawing and Real scales in the document
@@ -3970,7 +3973,7 @@ BOOL Document::ExportViewInfo(EPSExportDC *pDC)
 
 	// Find the view to get the info from
 	// don't do DocView* pView = DocView::GetSelected(); as it breaks save all
-	DocView* pView = GetFirstDocView();	
+	DocView* pView = GetFirstDocView();
 	if (this==Document::GetSelected()) pView = DocView::GetSelected();
 
 	if (pView!=NULL)
@@ -3989,12 +3992,12 @@ BOOL Document::ExportViewInfo(EPSExportDC *pDC)
 		Node *pANode = GetFirstNode()->FindNext()->FindFirstChild();
 		while ((pANode != NULL) && (!pANode->IsKindOf(CC_RUNTIME_CLASS(Chapter))))
 			pANode = pANode->FindNext();
-		
+
 		ERROR2IF(!pANode->IsKindOf(CC_RUNTIME_CLASS(Chapter)),
 			FALSE, "Document::Export(something)(): Could not find Chapter");
 
 		Chapter *pChapter = (Chapter *) pANode;
-	
+
 		// pSpread is a child of pChapter
 		Spread *pSpread = (Spread *) pChapter->FindFirstChild();
 		ERROR2IF(!pSpread->IsKindOf(CC_RUNTIME_CLASS(Spread)),
@@ -4037,10 +4040,10 @@ BOOL Document::ExportViewInfo(EPSExportDC *pDC)
 	Created:	21/3/95
 	Inputs:		pDC - The DC to render to
 	Returns:	TRUE
-	Purpose:	Part of the Document Info comment. This is document state information 
+	Purpose:	Part of the Document Info comment. This is document state information
 				It takes the following form :-
-				%%+s VersionNum 
-				Version 0 comment lines follows this with 
+				%%+s VersionNum
+				Version 0 comment lines follows this with
 				ShowGrid SnapToGrid SnapToMagObjects SnapToObjects ForeBackMode (and zero
 				as a dummy value, see comments in the function).
 				Each of the values is a flag and will hold either 0 for FALSE or 1 for TRUE
@@ -4054,7 +4057,7 @@ BOOL Document::ExportStateInfo(EPSExportDC *pDC)
 
 	// Find the view to get the info from
 	// don't do DocView* pView = DocView::GetSelected(); as it breaks save all
-	DocView* pView = GetFirstDocView();	
+	DocView* pView = GetFirstDocView();
 	if (this==Document::GetSelected()) pView = DocView::GetSelected();
 
 	if (pView!=NULL)
@@ -4082,7 +4085,7 @@ BOOL Document::ExportStateInfo(EPSExportDC *pDC)
 		{
 			case 1:
 				// Write verison 1 flags (*Note* the space after the last '%d' - this is important)
-				camSprintf( Buffer + camStrlen( Buffer ), _T("%d %d %d %d "), ShowGuides, SnapToGuides, 
+				camSprintf( Buffer + camStrlen( Buffer ), _T("%d %d %d %d "), ShowGuides, SnapToGuides,
 					Multilayer, AllLayersVisible);
 				// Fall through for version 0 flags
 
@@ -4096,10 +4099,10 @@ BOOL Document::ExportStateInfo(EPSExportDC *pDC)
 				// In order to reduce the possibility of bugs, I'm instituting a dummy
 				// sixth parameter, and altering the code that reads it in.
 
-				camSprintf( Buffer + camStrlen( Buffer ), _T("%d %d %d %d %d %d"), ShowGrid, SnapToGrid, 
+				camSprintf( Buffer + camStrlen( Buffer ), _T("%d %d %d %d %d %d"), ShowGrid, SnapToGrid,
 					SnapToMagObjects, SnapToObjects, ForeBackMode, 0);
 				break;	// Stop here. Version 0 was the first
-		
+
 			default:
 			  ERROR3_PF((_T("Dont know how to write this version for the state flags %d"), Version));
 				break;
@@ -4137,7 +4140,7 @@ BOOL Document::ExportQualityInfo(EPSExportDC *pDC)
 
 	// Find the view to get the info from
 	// don't do DocView* pView = DocView::GetSelected(); as it breaks save all
-	DocView* pView = GetFirstDocView();	
+	DocView* pView = GetFirstDocView();
 	if (this==Document::GetSelected()) pView = DocView::GetSelected();
 
 	if (pView!=NULL)
@@ -4167,7 +4170,7 @@ BOOL Document::ExportQualityInfo(EPSExportDC *pDC)
 	Created:	21/3/95
 	Inputs:		pDC - The DC to render to
 	Returns:	-
-	Purpose:	
+	Purpose:
 
 ********************************************************************************************/
 
@@ -4183,12 +4186,12 @@ BOOL Document::ExportGridInfo(EPSExportDC *pDC)
 	Node *pANode = GetFirstNode()->FindNext()->FindFirstChild();
 	while ((pANode != NULL) && (!pANode->IsKindOf(CC_RUNTIME_CLASS(Chapter))))
 		pANode = pANode->FindNext();
-		
+
 	ERROR2IF(!pANode->IsKindOf(CC_RUNTIME_CLASS(Chapter)),
 		FALSE, "Document::Export(something)(): Could not find Chapter");
 
 	Chapter *pChapter = (Chapter *) pANode;
-	
+
 	// pSpread is a child of pChapter
 	Spread *pSpread = (Spread *) pChapter->FindFirstChild();
 	ERROR2IF(!pSpread->IsKindOf(CC_RUNTIME_CLASS(Spread)),
@@ -4213,7 +4216,7 @@ BOOL Document::ExportGridInfo(EPSExportDC *pDC)
 				{
 					// This version of the grid saving info is zero
 					INT32 Version = 0;
-				
+
 					// Go and get the numbers out of the grid
 					// BODGE - old builds (hence docs) save the grid spacing in divisions and units but don't
 					// account for unit scaling, so as not to change doc format new docs do the same so we must
@@ -4295,7 +4298,7 @@ PORTNOTE("spread", "Multi-spread warning!")
 	Created:	21/3/95
 	Inputs:		pDC - The DC to render to
 	Returns:	-
-	Purpose:	
+	Purpose:
 
 ********************************************************************************************/
 
@@ -4337,7 +4340,7 @@ BOOL Document::ExportUnitInfo(EPSExportDC *pDC)
 
 	while (pUnit!=NULL)
 	{
-		// HACK: Export pixel units for compatibiility with old camelot. 
+		// HACK: Export pixel units for compatibiility with old camelot.
 		// Really need version control
 		// Although somewhat crypticly coded this is handled as PIXELS has a NOTYPE base unit
 		if (pUnit->IsDefault() && (pUnit->GetUnitType() != PIXELS))
@@ -4355,7 +4358,7 @@ BOOL Document::ExportUnitInfo(EPSExportDC *pDC)
 		double Numerator;
 		double Denominator;
 		// default units can have NOTYPE so supply sensible values
-		if (BaseUnit == NOTYPE)		
+		if (BaseUnit == NOTYPE)
 		{
 			BaseUnit = MILLIPOINTS;	// complains in previous camelots if NOTYPE used...
 			Numerator = 0.0;		// set gibberish numerator so can be picked up in import
@@ -4389,7 +4392,7 @@ BOOL Document::ExportUnitInfo(EPSExportDC *pDC)
 		pUnit = (Unit*)pDocUnitList->GetNext(pUnit);
 	}
 
-#endif	
+#endif
 	return TRUE;
 }
 
@@ -4408,7 +4411,7 @@ BOOL Document::ExportUnitInfo(EPSExportDC *pDC)
 				section as the default might be one of these user units.
 				The usert unit definitions are exported in:-
 	SeeAlso:	ExportUnitInfo;
-				
+
 ********************************************************************************************/
 
 BOOL Document::ExportDefaultUnitsInfo(EPSExportDC *pDC)
@@ -4460,7 +4463,7 @@ BOOL Document::ExportDefaultUnitsInfo(EPSExportDC *pDC)
 	Returns:	TRUE
 	Purpose:	exports a continuation comment that holds the Last Saved Date and the
 				Creation Date. It takes the follwoing form :-
-				%%+d Version(0) CreationDate LastSavedDate 
+				%%+d Version(0) CreationDate LastSavedDate
 
 ********************************************************************************************/
 
@@ -4495,7 +4498,7 @@ BOOL Document::ExportDateInfo(EPSExportDC *pDC)
 	Inputs:		pFilter - the EPS filter that is being used to export a file.
 	Returns:	TRUE if the text setup for this document was written out successfully;
 				FALSE if not (e.g. out of disk space etc)
-	Purpose:	
+	Purpose:
 
 ********************************************************************************************/
 
@@ -4528,8 +4531,8 @@ BOOL Document::ExportTextSetup(EPSFilter* pFilter)
 			pDC->OutputToken(_T("%%IncludeFont:"));
 			pDC->OutputToken((TCHAR*)EFont);
 			pDC->OutputNewLine();
-		
-			pItem = CurFontList.GetNextItem(pItem);	
+
+			pItem = CurFontList.GetNextItem(pItem);
 		}
 	}
 
@@ -4547,7 +4550,7 @@ BOOL Document::ExportTextSetup(EPSFilter* pFilter)
 	Inputs:		pFilter - the EPS filter that is being used to export a file.
 	Returns:	TRUE if the text trailer for this document was written out successfully;
 				FALSE if not (e.g. out of disk space etc)
-	Purpose:	
+	Purpose:
 
 ********************************************************************************************/
 
@@ -4564,7 +4567,7 @@ BOOL Document::ExportTextTrailer(EPSFilter* pFilter)
 	Created:	06/07/95
 	Inputs:		pDC - The DC to render to
 	Returns:	TRUE
-	Purpose:	Exports a Document Info continuation comment that describes the document's 
+	Purpose:	Exports a Document Info continuation comment that describes the document's
 				OperationHistory size.
 				It takes the following form :-
 				%%+h VersionNum
@@ -4621,7 +4624,7 @@ BOOL Document::AIExportResources(EPSExportDC *pDC, BOOL first)
 	pDC->OutputToken ( _T("%%+ procset Adobe_customcolor 1.0 0") );		pDC->OutputNewLine ();
 	pDC->OutputToken ( _T("%%+ procset Adobe_typography_AI5 1.0 1") );	pDC->OutputNewLine ();
 	pDC->OutputToken ( _T("%%+ procset Adobe_pattern_AI3 1.0 1") );		pDC->OutputNewLine ();
-	pDC->OutputToken ( _T("%%+ procset Adobe_Illustrator_AI5 1.2 0") );	pDC->OutputNewLine (); 
+	pDC->OutputToken ( _T("%%+ procset Adobe_Illustrator_AI5 1.2 0") );	pDC->OutputNewLine ();
 	return TRUE;
 }
 
@@ -4661,7 +4664,7 @@ BOOL Document::AIExportProlog(EPSExportDC *pDC)
 	Created:	20/4/95
 	Inputs:		pDC - the dc to export to
 	Returns:	TRUE
-	Purpose:	Export an Illustrator compatible character encoding vector but only in 
+	Purpose:	Export an Illustrator compatible character encoding vector but only in
 				EPS format.
 
 ********************************************************************************************/
@@ -4722,8 +4725,8 @@ BOOL Document::AIExportFontEncoding(EPSExportDC *pDC)
 		FName = pItem->GetFontName();
 		Style = pItem->GetFontStyle();
 		AIExportFontEncoding(pDC,FName,Style);
-		
-		pItem = CurFontList.GetNextItem(pItem);	
+
+		pItem = CurFontList.GetNextItem(pItem);
 	}
 #endif
 	return TRUE;
@@ -4740,7 +4743,7 @@ BOOL Document::AIExportFontEncoding(EPSExportDC *pDC)
 				FontName - a reference to a font name
 				Style - a font style
 						b0 = 1 bold
-						b1 = 1 italic 
+						b1 = 1 italic
 	Returns:	TRUE
 	Purpose:	Export an Illustrator compatible font encoding but only in EPS format.
 
@@ -4796,7 +4799,7 @@ BOOL Document::AIExportExtras(EPSExportDC *pDC)
 	pDC->OutputToken(_T("Adobe_cshow /initialize get exec"));			pDC->OutputNewLine();
 	pDC->OutputToken(_T("Adobe_cmykcolor /initialize get exec"));		pDC->OutputNewLine();
 	pDC->OutputToken(_T("Adobe_customcolor /initialize get exec"));		pDC->OutputNewLine();
-	
+
 		// ChrisG (31/10/00) Changed typography line to match Illustrator and CorelDraw.
 		//	This allows photoshop to import the file correctly.
 	pDC->OutputToken(_T("Adobe_Illustrator_AI5_vars Adobe_Illustrator_AI5"));
@@ -4914,7 +4917,7 @@ ProcessEPSResult Document::ImportPageInfo(TCHAR* Comment)
 			{
 				pSpread->SetPageSize(Width, Height, Margin, Bleed, Dps, ShowDropShadow);
 			}
-		}                 
+		}
 
 		// Unknown version
 		default:
@@ -4938,7 +4941,7 @@ ProcessEPSResult Document::ImportPageInfo(TCHAR* Comment)
 	Created:	21/3/95
 	Inputs:		Comment - The EPS comment that we have to process
 	Returns:	ProcessEPSResult - the result of the import - see ProcessEPSComment()
-	Purpose:	
+	Purpose:
 
 ********************************************************************************************/
 
@@ -4946,7 +4949,7 @@ ProcessEPSResult Document::ImportDocumentComment(TCHAR* Comment)
 {
 	// Check that this comment line ended in a CR
 	size_t	StrLength = camStrlen( Comment );
-	
+
 	// If the string was too long, then mark it as an error
 	if (StrLength>=254)
 		return EPSCommentSyntaxError;
@@ -4963,7 +4966,7 @@ ProcessEPSResult Document::ImportDocumentComment(TCHAR* Comment)
 	String_256			DocComment( GetComment() );
 	String_256			NewComment( Comment + 5 );
 	DocComment += NewComment;
-	
+
 	// Set the comment back into the document and say that all went well
 	SetComment(&DocComment);
 
@@ -4979,7 +4982,7 @@ ProcessEPSResult Document::ImportDocumentComment(TCHAR* Comment)
 	Created:	21/3/95
 	Inputs:		Comment - The EPS comment that we have to process
 	Returns:	ProcessEPSResult - the result of the import - see ProcessEPSComment()
-	Purpose:	
+	Purpose:
 
 ********************************************************************************************/
 
@@ -5054,7 +5057,7 @@ ProcessEPSResult Document::ImportViewInfo(TCHAR* Comment)
 				Spread* pSpread = GetSelectedSpread();
 				if (pSpread!=NULL)
 					pDimScale = pSpread->GetPtrDimScale();
-				
+
 				if (pDimScale!=NULL)
 				{
 					// Read in the Version Number
@@ -5070,7 +5073,7 @@ ProcessEPSResult Document::ImportViewInfo(TCHAR* Comment)
 
 					// Set the Drawing Scale
 					BOOL Worked = pDimScale->SetDrawingScaleStr(DrawingScale);
-					
+
 					if (!ReadNextString(&RealScale, 32, Comment, &i))
 						return EPSCommentSyntaxError;
 
@@ -5094,7 +5097,7 @@ ProcessEPSResult Document::ImportViewInfo(TCHAR* Comment)
 			break;
 		}
 	}
-#endif	
+#endif
 	return EPSCommentOK;
 }
 
@@ -5111,7 +5114,7 @@ ProcessEPSResult Document::ImportViewInfo(TCHAR* Comment)
 				Version 0 holds view state information such as:-
 					grid showing and snap to grid
 					magnetic snap to objects
-					foregound background redraw modes. 
+					foregound background redraw modes.
 
 ********************************************************************************************/
 
@@ -5132,7 +5135,7 @@ ProcessEPSResult Document::ImportStateInfo(TCHAR* Comment)
 	// Act on the version number
 	switch (Version)
 	{
-		case 1 : 
+		case 1 :
 		{
 			INT32 ShowGuides			= TRUE;
 			INT32 SnapToGuides		= TRUE;
@@ -5203,11 +5206,11 @@ ProcessEPSResult Document::ImportStateInfo(TCHAR* Comment)
 			// a printf function had too many %ds in it for the output
 			// so the program always outputs a random value after the
 			// rest of them. We have to skip it, just in case.
-			// Notice that we ignore any errors - if the dummy value is not there, 
+			// Notice that we ignore any errors - if the dummy value is not there,
 			// who cares?
 			INT32 dummy = 0;
 			ReadNextNumber(&dummy, Comment, &i);
-			
+
 // In viewer leave these alone
 #ifndef STANDALONE
 			// Now try and set the values in the view
@@ -5246,7 +5249,7 @@ ProcessEPSResult Document::ImportStateInfo(TCHAR* Comment)
 	Created:	21/3/95
 	Inputs:		Comment - The EPS comment that we have to process
 	Returns:	ProcessEPSResult - the result of the import - see ProcessEPSComment()
-	Purpose:	
+	Purpose:
 
 ********************************************************************************************/
 
@@ -5328,7 +5331,7 @@ ProcessEPSResult Document::ImportGridInfo(TCHAR* Comment)
 			UINT32 SubDivisions;
 			UnitType Unit;
 			GridType TypeOfGrid;
-			
+
 			// Read in the Divisions
 			if (!ReadNextNumber(&Divisions, Comment, &i))
 				return EPSCommentSyntaxError;
@@ -5348,7 +5351,7 @@ ProcessEPSResult Document::ImportGridInfo(TCHAR* Comment)
 			// Put everything into the correct types
 			SubDivisions = (UINT32)SubDiv;
 			Unit = (UnitType)Units;
-			TypeOfGrid = (GridType) Type;			
+			TypeOfGrid = (GridType) Type;
 
 			// Get rid of the old grid, if there was one
 			// and find out where the page corner is, so that the origin of the grid can be set
@@ -5369,7 +5372,7 @@ ProcessEPSResult Document::ImportGridInfo(TCHAR* Comment)
 					{
 						// This is a grid all right, so toast it
 						pNode->CascadeDelete();
-						delete pNode;				
+						delete pNode;
 					}
 
 					// see if it is a page
@@ -5425,7 +5428,7 @@ ProcessEPSResult Document::ImportGridInfo(TCHAR* Comment)
 			break;
 		}
 	}
-#endif	
+#endif
 	return EPSCommentOK;
 }
 
@@ -5481,7 +5484,7 @@ ProcessEPSResult Document::ImportOriginInfo(TCHAR* Comment)
 		default: ERROR2(EPSCommentOK,"Document::ImportOriginInfo() - unknown origin version");
 	}
 #endif
-	
+
 	return EPSCommentOK;
 }
 
@@ -5494,7 +5497,7 @@ ProcessEPSResult Document::ImportOriginInfo(TCHAR* Comment)
 	Created:	21/3/95
 	Inputs:		Comment - The EPS comment that we have to process
 	Returns:	ProcessEPSResult - the result of the import - see ProcessEPSComment()
-	Purpose:	
+	Purpose:
 
 ********************************************************************************************/
 
@@ -5511,7 +5514,7 @@ ProcessEPSResult Document::ImportRulerState(TCHAR* Comment)
 	{
 		case 0 :
 		{
-		
+
 			INT32 ScrollerState =1;
 			INT32 RulerState =0;
 			// Read in the Version Number
@@ -5519,11 +5522,11 @@ ProcessEPSResult Document::ImportRulerState(TCHAR* Comment)
 				return EPSCommentSyntaxError;
 			if (!ReadNextNumber(&RulerState, Comment, &i))
 				return EPSCommentSyntaxError;
-			
+
 			// See if we have a View to change
 //			DocView* pView = DocView::GetSelected();
 			DocView* pView = GetFirstDocView();
-			
+
 			// we use default visibility states if this is a new file
 			// (ie. we are not opening an existing file )
 			// this flag is set in CCamDoc::OnNewDocument()
@@ -5533,7 +5536,7 @@ ProcessEPSResult Document::ImportRulerState(TCHAR* Comment)
  	 			ScrollerState = CCamView::GetDefaultScrollersState();
 				RulerState = CCamView::GetDefaultRulersState();
    			}
-		
+
 			if (pView != NULL)
 			{
 			 	pView->ShowViewScrollers((BOOL)ScrollerState);
@@ -5547,7 +5550,7 @@ ProcessEPSResult Document::ImportRulerState(TCHAR* Comment)
 			break;
 		}
 	}
-#endif	
+#endif
 
 	return EPSCommentOK;
 }
@@ -5561,7 +5564,7 @@ ProcessEPSResult Document::ImportRulerState(TCHAR* Comment)
 	Created:	21/3/95
 	Inputs:		Comment - The EPS comment that we have to process
 	Returns:	ProcessEPSResult - the result of the import - see ProcessEPSComment()
-	Purpose:	
+	Purpose:
 
 ********************************************************************************************/
 
@@ -5610,7 +5613,7 @@ ProcessEPSResult Document::ImportUnitInfo(TCHAR* Comment)
 			// We need to make a new unit
 			// Older code had this outside the version loop so you cannot use the 'u'
 			// comment field for other unit field without creating a new unit in older
-			// versions e.g. viewer 1.00 and Studio 1.00b and before. 
+			// versions e.g. viewer 1.00 and Studio 1.00b and before.
 
 			// Read in values & validate them before creating the unit
 
@@ -5621,7 +5624,7 @@ ProcessEPSResult Document::ImportUnitInfo(TCHAR* Comment)
 			INT32 IsPrefix;
 			String_64 TokenStr;
 			String_64 SpecifierStr;
-				
+
 			// Read in the Millipoint size of the unit
 			if (!ReadNextNumber(&Size, Comment, &i))
 				return EPSCommentSyntaxError;
@@ -5735,7 +5738,7 @@ ProcessEPSResult Document::ImportDefaultUnitsInfo(TCHAR* Comment)
 
 			// Find the unit in the list, if present, otherwise will return NOTYPE
 			UnitType PageUnits   = pDocUnitList->FindUnitTypeFromToken(PageUnitsStr);
-			UnitType FontUnits   = pDocUnitList->FindUnitTypeFromToken(FontUnitsStr);	
+			UnitType FontUnits   = pDocUnitList->FindUnitTypeFromToken(FontUnitsStr);
 
 			// Set the new current default settings, if valid units were found
 			if (PageUnits != NOTYPE)
@@ -5918,7 +5921,7 @@ void Document::SetIsImporting(BOOL NewIsImporting)
 				template document.
 				At present, used in Webster to check if we need to use layers or not. Template
 				documents are allowed to have layers. Non-template docs are not.
-	SeeAlso:	
+	SeeAlso:
 
 ********************************************************************************************/
 
@@ -5979,10 +5982,10 @@ void Document::ShouldRestoreViewOnImport(BOOL fNewState)
     Purpose:	return Font Units for this document
 	 			default to COMP_POINTS if no unit list available
 
-*************************************************************************************************/                   			 
+*************************************************************************************************/
 
 UnitType Document::GetDocFontUnits()
-{	
+{
 	if(pDocUnitList)
 		return pDocUnitList->GetFontUnits();
 	else
@@ -5999,12 +6002,12 @@ UnitType Document::GetDocFontUnits()
    	Returns:	Returns this document's bitmap list
     Purpose:	Gets the bitmap list from this documents doc component
 
-*************************************************************************************************/                   			 
+*************************************************************************************************/
 
 BitmapList* Document::GetBitmapList()
 {
 	// Find this documents BitmapListComponent
-	DocComponent* DocBitmapList = 
+	DocComponent* DocBitmapList =
 			GetDocComponent(CC_RUNTIME_CLASS(BitmapListComponent));
 
 	ERROR2IF(DocBitmapList == NULL, FALSE, "Couldn't find document bitmap list");
@@ -6050,10 +6053,10 @@ BOOL Document::SetDocNudge (UINT32 newVal)
    	Returns:	-
     Purpose:	Counts the layers in this document.
 
-				This function assumes there is only one spread in the document, so 
+				This function assumes there is only one spread in the document, so
 				it will fail if we ever implement multiple spread documents (chuckle).
 
-*************************************************************************************************/                   			 
+*************************************************************************************************/
 
 INT32 Document::GetNumLayers()
 {
@@ -6085,12 +6088,12 @@ PORTNOTE("spread", "Multi-spread warning!")
     Author: 	Graham_Walmsley (Xara Group Ltd) <camelotdev@xara.com>
     Created:	27/10/97
    	Returns:	-
-    Purpose:	Finds whether this document is an animation. 
+    Purpose:	Finds whether this document is an animation.
 
 				We assume the document is an animation if it contains one or more
 				frame layers
 
-*************************************************************************************************/                   			 
+*************************************************************************************************/
 
 BOOL Document::IsAnimated()
 {
@@ -6103,8 +6106,8 @@ PORTNOTE("spread", "Multi-spread warning!")
 
 	//If there is one, return TRUE. Otherwise return FALSE
 	return !(pFrame==NULL);
-	
-	
+
+
 }
 
 
@@ -6114,7 +6117,7 @@ PORTNOTE("spread", "Multi-spread warning!")
 
 >	Progressive Rendering
 
-*************************************************************************************************/                   			 
+*************************************************************************************************/
 
 /***********************************************************************************************
 
@@ -6124,7 +6127,7 @@ PORTNOTE("spread", "Multi-spread warning!")
     Created:	6/9/96
     Purpose:	Returns a reference to the document's 'Safe render pointer'
 
-*************************************************************************************************/                   			 
+*************************************************************************************************/
 
 SafeRenderPointer& Document::GetSafeRenderPointer()
 {
@@ -6140,7 +6143,7 @@ SafeRenderPointer& Document::GetSafeRenderPointer()
     Created:	6/9/96
     Purpose:	Constructs a SafeRenderPointer object
 
-*************************************************************************************************/                   			 
+*************************************************************************************************/
 
 SafeRenderPointer::SafeRenderPointer()
 {
@@ -6156,7 +6159,7 @@ SafeRenderPointer::SafeRenderPointer()
     Created:	6/9/96
     Purpose:	Destroys a SafeRenderPointer object
 
-*************************************************************************************************/                   			 
+*************************************************************************************************/
 
 SafeRenderPointer::~SafeRenderPointer()
 {
@@ -6171,7 +6174,7 @@ SafeRenderPointer::~SafeRenderPointer()
     Created:	6/9/96
     Purpose:	Updates the last safe node that can be rendered
 
-*************************************************************************************************/                   			 
+*************************************************************************************************/
 
 BOOL SafeRenderPointer::UpdateLastSafeNode(Node* pNewNode)
 {
@@ -6181,15 +6184,15 @@ BOOL SafeRenderPointer::UpdateLastSafeNode(Node* pNewNode)
 
 	if ((!pLastSafeNodeToRender) && pNewNode)
 	{
-		NodeDocument* pNodeDoc = (NodeDocument*) pNewNode->FindParent(CC_RUNTIME_CLASS(NodeDocument)); 
-		ASSERT (pNodeDoc); 
+		NodeDocument* pNodeDoc = (NodeDocument*) pNewNode->FindParent(CC_RUNTIME_CLASS(NodeDocument));
+		ASSERT (pNodeDoc);
 		if (pNodeDoc)
 		{
 			Document* TheDoc = (Document*)pNodeDoc->GetParentDoc();
-			ASSERT(TheDoc); 
+			ASSERT(TheDoc);
 			if (TheDoc)
 			{
-				RalphDocument* pRalphDoc = TheDoc->GetRalphDoc(); 
+				RalphDocument* pRalphDoc = TheDoc->GetRalphDoc();
 				if (pRalphDoc)
 				{
 					RalphView *	pRalphView = pRalphDoc->GetRalphView();
@@ -6212,7 +6215,7 @@ BOOL SafeRenderPointer::UpdateLastSafeNode(Node* pNewNode)
 	// Make sure this pointer cannot be accessed by other threads
 	// while we update it
 //	CCamApp::EnterSafeRenderCriticalSection();
-	
+
 //	TRACEUSER( "Will", _T("Thread %d is setting safe node to %x\n"), GetCurrentThreadId(), pNewNode);
 	pLastSafeNodeToRender = pNewNode;
 
@@ -6229,7 +6232,7 @@ BOOL SafeRenderPointer::UpdateLastSafeNode(Node* pNewNode)
     Created:	6/9/96
     Purpose:	Returns a pointer to the last safe node that can be rendered
 
-*************************************************************************************************/                   			 
+*************************************************************************************************/
 
 Node* SafeRenderPointer::GetLastSafeNode()
 {
@@ -6258,7 +6261,7 @@ Node* SafeRenderPointer::GetLastSafeNode()
     Created:	6/9/96
     Purpose:	Sets the pointer as being valid
 
-*************************************************************************************************/                   			 
+*************************************************************************************************/
 
 void SafeRenderPointer::SetPointerValid()
 {
@@ -6274,7 +6277,7 @@ void SafeRenderPointer::SetPointerValid()
     Created:	6/9/96
     Purpose:	Sets the pointer as being invalid
 
-*************************************************************************************************/                   			 
+*************************************************************************************************/
 
 void SafeRenderPointer::SetPointerInValid()
 {
@@ -6290,7 +6293,7 @@ void SafeRenderPointer::SetPointerInValid()
     Created:	6/9/96
     Purpose:	Returns whether or not the pointer is valid
 
-*************************************************************************************************/                   			 
+*************************************************************************************************/
 
 BOOL SafeRenderPointer::IsPointerValid()
 {
