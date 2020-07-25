@@ -1048,6 +1048,10 @@ void SGDisplayNode::GridLockRect(SGMiscInfo *MiscInfo, DocRect *Rect)
 
 ***********************************************************************************************/
 
+// Size of a Line of Text in a gallary, this should be computed, not hardcoded, and should
+// be the verticle extent of the font, with some kind of (user specified?) spacing factor.
+INT32 sg_default_line_height = 24000;
+
 void SGDisplayNode::CalculateFormatRect(SGFormatInfo *FormatInfo, SGMiscInfo *MiscInfo,
                                         INT32 ItemWidth, INT32 ItemHeight)
 {
@@ -1068,7 +1072,14 @@ void SGDisplayNode::CalculateFormatRect(SGFormatInfo *FormatInfo, SGMiscInfo *Mi
         ItemWidth += MiscInfo->PixelSize * 2;
 
     ItemWidth  = GridLock(MiscInfo, ItemWidth);
-    ItemHeight = GridLock(MiscInfo, ItemHeight);
+
+    // We must have a LineHeight that is the maximum verticle extent of our font, or the
+    // verticle size of our item, whichever is greatest. SG_DefaultLineHeight is currently
+    // a constant, but it should be computed from whatever the current fixed width font is
+    // that we're using. Our formatting machinery really needs to be more
+    // sophisticated. It should accomidate things like fixed line size, or 'shrinking to
+    // fit' based on a format specification.
+    ItemHeight = max(GridLock(MiscInfo, ItemHeight), sg_default_line_height);
 
     // We must now have enough room for this item across the current line, so plonk it in!
     // Update the height of the current line
