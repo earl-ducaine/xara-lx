@@ -780,7 +780,6 @@ UINT32 Error::GetErrorModule()
 #define ERROR2_PF( retvalue, args )                 do { MARKWHERE; Error::XSetError args ; return (retvalue); } while(0)
 #define ERROR2IF_PF( condition, retvalue, args )    do { if (condition) ERROR2_PF( retvalue, args ); } while (0)
 
-// #define ERROR3(literal) do { MARKWHERE; Error::XComplain((TCHAR*)literal ); } while(0)
 #define ERROR3(literal) \
     do { \
         MARKWHERE; \
