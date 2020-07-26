@@ -2405,6 +2405,74 @@ void OSRenderRegion::GetFixedSystemTextSize(StringBase *TheText, DocRect *Bounds
 
 }
 
+/********************************************************************************************
+
+>   virtual void OSRenderRegion::GetFixedSystemTextLineHeight(double* atDpi)
+
+    Author:     Richard_Millican (Xara Group Ltd) <camelotdev@xara.com>
+    Created:    16/3/95
+
+    Inputs:     at_dpi_ptr - The 'dots per inch' at which the text is to be rendered.
+
+    Outputs:    -
+
+    Returns:    Height in internal points.
+
+    Purpose:    Provides the approximate maximume height of a character in the current font.
+                pango, the underlying font engine of wxWidgets when using the GTK, doesn't
+                provide a function function for 'maximum height', instead it provides
+                a font mentric from which you can get the ascent or descent.
+
+                However, as the Pango documentation notes: "The ascent is the distance
+                from the baseline to the logical top of a line of text. (The logical top
+                may be above or below the top of the actual drawn ink. It is necessary to
+                lay out the text to figure where the ink will be.)"
+
+                This is the crux of the problem with our current layout engine, and is
+                incidentally a long standing complicating factor with computer-based
+                design layout -- namely that layout is an iterative process, i.e you must
+                try a layout with the text (and other elements) that you intend to display
+                to determine if an adjustment is necessary. You then need to try it again
+                to determin if the adjustment was adequate.
+
+                The better way for us to handle this is to use an iterative approach and
+                then use a text-extent-type function.
+
+    Notes:      It is best to use this number with some additional margin to safeguard against
+                the above mentioned inexactness of this method.
+
+
+    SeeAlso:    OSRenderRegion::DrawFixedSystemText
+
+********************************************************************************************/
+
+INT32 OSRenderRegion::GetFixedSystemTextLineHeight(double* at_dpi_ptr)
+{
+    wxFont save_font = RenderDC->GetFont();
+
+    wxFont fixed_font = wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT);
+    fixed_font.SetPointSize(CCamApp::GetDlgManager()->GetEffectiveFontSize());
+    RenderDC->SetFont(fixed_font);
+
+
+    INT32 line_height = RenderDC->GetCharHeight();;
+    wxCoord h;
+
+    RenderDC->SetFont(save_font);
+
+    wxDC* dc_ptr = RenderDC;
+    wxSize dpi = GetFixedDCPPI(*dc_ptr);
+    INT32 ydpi = dpi.GetHeight();
+
+    if(ydpi == 0 || line_height == 0)
+    {
+        ERROR3("Can not calculate text line height");
+        return 0;
+    }
+
+    return round((((double)line_height * IN_MP_VAL) / ydpi));
+}
+
 
 
 #define MAX_POLYGONS    256
@@ -3029,10 +3097,6 @@ void OSRenderRegion::RenderPath( Path *DrawPath )
         }
         else
         {
-            // (TODO -- This surely most be broken) Render the little
-            // sub-paths. Win16 doesn't have Polypolyline
-            wxPoint* PointList = PointArray;
-            INT32 *CountList = DiscoveredPolyCounts;
             RenderDC->DrawLines(Verbs[0], PointArray);
         }
     }

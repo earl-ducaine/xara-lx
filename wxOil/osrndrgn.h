@@ -1,3 +1,4 @@
+/* -*- tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4; fill-column: 90 -*- */
 // $Id: osrndrgn.h 1282 2006-06-09 09:46:49Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
@@ -105,7 +106,7 @@ service marks of Xara Group Ltd. All rights in these marks are reserved.
 #define INC_OSRNDRGN
 
 //#include "rndrgn.h" - in camtypes.h [AUTOMATICALLY REMOVED]
-//#include "paths.h"	// We access path objects directly (we are a friend) - in camtypes.h [AUTOMATICALLY REMOVED]
+//#include "paths.h"    // We access path objects directly (we are a friend) - in camtypes.h [AUTOMATICALLY REMOVED]
 //#include "wincoord.h" - in camtypes.h [AUTOMATICALLY REMOVED]
 //#include "winrect.h" - in camtypes.h [AUTOMATICALLY REMOVED]
 //#include "rendtype.h" - in camtypes.h [AUTOMATICALLY REMOVED]
@@ -145,32 +146,32 @@ class OSRRFontInfo
 class EORCacheClass
 {
 public:
-	EORCacheClass() : Valid(FALSE) {}
-	BOOL Valid;
-	DocColour SourceColour;
-	COLORREF EORColour;
+    EORCacheClass() : Valid(FALSE) {}
+    BOOL Valid;
+    DocColour SourceColour;
+    COLORREF EORColour;
 };
 
 // This is the size of the buffer we use when flattening paths - the
 // maximum sensible size is 16384 points, as this is 64k, and
 // obviosuly the longest polyline Win16 can handle.
-#define	SIZEOF_POLYLINE_BUFFER	8192
+#define SIZEOF_POLYLINE_BUFFER  8192
 
 // this macro for use in RawRenderPath calls
-#define	NORMALPATH(pp)	pp->GetCoordArray(), pp->GetVerbArray(), pp->GetNumCoords()
+#define NORMALPATH(pp)  pp->GetCoordArray(), pp->GetVerbArray(), pp->GetNumCoords()
 
 /***************************************************************************
->	class OSRenderRegion : public RenderRegion
+>   class OSRenderRegion : public RenderRegion
 
-	Author:		Will_Cowling (Xara Group Ltd) <camelotdev@xara.com>
-	Created:	11/5/93
+    Author:     Will_Cowling (Xara Group Ltd) <camelotdev@xara.com>
+    Created:    11/5/93
 
-	Purpose:        Encapsulates rendering using the OS. (GDI, RiscOS,
-			etc).  This object is created when something
-			needs rendering using the OS calls instead of
-			Gavins routines.  This will be ALL THE TIME
-			for the moment.  See RenderRegion notes for
-			more general details of this class.
+    Purpose:        Encapsulates rendering using the OS. (GDI, RiscOS,
+            etc).  This object is created when something
+            needs rendering using the OS calls instead of
+            Gavins routines.  This will be ALL THE TIME
+            for the moment.  See RenderRegion notes for
+            more general details of this class.
 ***************************************************************************/
 class CCAPI OSRenderRegion : public RenderRegion
 {
@@ -179,12 +180,12 @@ class CCAPI OSRenderRegion : public RenderRegion
   // Construction and creation This should always be used to create
   // OSRenderRegions
   static RenderRegion* Create(DocRect ClipRegion,
-			      Matrix ConvertMatrix,
-			      FIXED16 ViewScale,
-			      RenderType rType,
-			      View* pView = NULL,
-			      BOOL UseOSRendering = FALSE,
-			      BOOL bForce32BPP = FALSE);
+                  Matrix ConvertMatrix,
+                  FIXED16 ViewScale,
+                  RenderType rType,
+                  View* pView = NULL,
+                  BOOL UseOSRendering = FALSE,
+                  BOOL bForce32BPP = FALSE);
   ~OSRenderRegion();
   OSRenderRegion(DocRect ClipRect, Matrix ConvertMatrix, FIXED16 ViewScale);
   static BOOL Init();
@@ -218,58 +219,59 @@ class CCAPI OSRenderRegion : public RenderRegion
   // separating it as it goes The Separated version is called by this
   // one if colour seps are enabled
   virtual SlowJobResult DrawMaskedBitmap(const DocRect &Rect,
-					 KernelBitmap* pBitmap,
-					 MaskedRenderRegion* pMask,
-					 ProgressDisplay* Progress);
+                     KernelBitmap* pBitmap,
+                     MaskedRenderRegion* pMask,
+                     ProgressDisplay* Progress);
  protected:
   virtual SlowJobResult DrawSeparatedMaskedBitmap(const DocRect &Rect,
-						  KernelBitmap* pBitmap,
-						  MaskedRenderRegion* pMask,
-						  ProgressDisplay* Progress);
+                          KernelBitmap* pBitmap,
+                          MaskedRenderRegion* pMask,
+                          ProgressDisplay* Progress);
  public:
   void DrawFixedSystemText(StringBase* TheText,
-			   DocRect &BoundsRect,
-			   UINT32 uFormat = DEFAULT_TEXT_FORMATTING);
+               DocRect &BoundsRect,
+               UINT32 uFormat = DEFAULT_TEXT_FORMATTING);
   void SetFixedSystemTextColours(DocColour* TextCol,
-				 DocColour* Background);
+                 DocColour* Background);
   void GetFixedSystemTextSize(StringBase* TheText,
-			      DocRect* BoundsRect,
-			      double* atDpi = NULL);
+                  DocRect* BoundsRect,
+                  double* atDpi = NULL);
+  INT32 GetFixedSystemTextLineHeight(double* at_dpi_ptr);
   static void GetBlobRect(FIXED16,
-			   const DocCoord& BlobPoint,
-			   BlobType bType, DocRect* pResult);
+               const DocCoord& BlobPoint,
+               BlobType bType, DocRect* pResult);
   BOOL RenderGradFillPath(Path* , GradFillAttribute*);
   BOOL RenderBitmapFill  (Path* , BitmapFillAttribute*);
   virtual BOOL RenderChar(WCHAR ch, Matrix* pMatrix);
   // Conversion functions
   static WinRect DocRectToWin(View* pView,
-			       const Matrix& RenderMatrix,
-			       const DocRect& docrect,
-			       INT32 leftshift,
-			       INT32 topshift,
-			       INT32 rightshift,
-			       INT32 bottomshift,
-			       BOOL MightClip = FALSE);
+                   const Matrix& RenderMatrix,
+                   const DocRect& docrect,
+                   INT32 leftshift,
+                   INT32 topshift,
+                   INT32 rightshift,
+                   INT32 bottomshift,
+                   BOOL MightClip = FALSE);
   //static WinRect DocRectToWin(const Matrix& RenderMatrix, const DocRect& docrect,
-  //							 const INT32 dpi);
+  //                             const INT32 dpi);
   static WinRect DocRectToWin(const Matrix& RenderMatrix,
-			      const DocRect& docrect,
-			      const double dpi);
+                  const DocRect& docrect,
+                  const double dpi);
   // Same as above but used for exporting bitmaps to try and fix pixel
   // problems
   static WinRect BitmapDocRectToWin(Matrix& RenderMatrix,
-				    const DocRect& docrect,
-				    const double dpi);
+                    const DocRect& docrect,
+                    const double dpi);
   static BOOL CalculateGavinOffsetsWinRect(const Matrix& RenderMatrix,
-					    const DocRect& DRect,
-					    const double dpi,
-					    GMATRIX* GMat,
-					    BOOL bCentralise,
-					    double* pdXCentralAdjust,
-					    double* pdYCentralAdjust);
+                        const DocRect& DRect,
+                        const double dpi,
+                        GMATRIX* GMat,
+                        BOOL bCentralise,
+                        double* pdXCentralAdjust,
+                        double* pdYCentralAdjust);
   static DocRect WinRectToDoc(const Matrix &RenderMatrix,
-			      const WinRect& WRect,
-			      const double dpi);
+                  const WinRect& WRect,
+                  const double dpi);
   // TRUE for GDraw lnies, FALSE for GDI
   static BOOL DoBetterLines;
   static MILLIPOINT GetHitTestRadius(DocView* pDocView);
@@ -278,11 +280,11 @@ class CCAPI OSRenderRegion : public RenderRegion
   virtual void GetRenderRegionCaps(RRCaps* pCaps);
 
  protected:
-  static INT32 HitTestRadius;				// how close a click must be to hit-detect
+  static INT32 HitTestRadius;               // how close a click must be to hit-detect
   // Constructor (protected as you should use Create())
   // OSRenderRegion(DocRect ClipRegion, Matrix ConvertMatrix,  unsigned scaledFontSize, FIXED16 ViewScale = 1);
   OSRenderRegion(const OSRenderRegion &other,
-		 FIXED16 ViewScale = 1);
+         FIXED16 ViewScale = 1);
 
   // Various startup and shutdown functions
   void InitClipping();
@@ -300,26 +302,26 @@ class CCAPI OSRenderRegion : public RenderRegion
   WinCoord DocCoordToWin(const DocCoord& DocPoint);
 
   WinRect DocRectToWin(const DocRect& docrect,
-			INT32 leftshift,
-			INT32 topshift,
-			INT32 rightshift,
-			INT32 bottomshift,
-			BOOL MightClip = FALSE) {
+            INT32 leftshift,
+            INT32 topshift,
+            INT32 rightshift,
+            INT32 bottomshift,
+            BOOL MightClip = FALSE) {
     return DocRectToWin(RenderView,
-			RenderMatrix,
-			docrect,
-			leftshift,
-			topshift,
-			rightshift,
-			bottomshift,
-			MightClip);
+            RenderMatrix,
+            docrect,
+            leftshift,
+            topshift,
+            rightshift,
+            bottomshift,
+            MightClip);
   }
 
   // Render fills.
-  BOOL RenderRadialFill	(Path* PathToDraw, RadialFillAttribute* Fill);
-  BOOL RenderLinearFill	(Path*PathToDraw, LinearFillAttribute* Fill);
+  BOOL RenderRadialFill (Path* PathToDraw, RadialFillAttribute* Fill);
+  BOOL RenderLinearFill (Path*PathToDraw, LinearFillAttribute* Fill);
   BOOL RenderConicalFill(Path* PathToDraw, ConicalFillAttribute* Fill);
-  BOOL RenderSquareFill	(Path* PathToDraw, SquareFillAttribute* Fill);
+  BOOL RenderSquareFill (Path* PathToDraw, SquareFillAttribute* Fill);
   BOOL RenderThreeColFill (Path* PathToDraw, ThreeColFillAttribute* Fill);
   BOOL RenderFourColFill (Path* PathToDraw, FourColFillAttribute* Fill);
   static MILLIPOINT CalcDistance(DocCoord a, DocCoord b);
@@ -334,11 +336,11 @@ class CCAPI OSRenderRegion : public RenderRegion
   void CreateNewBrush();
   void SelectNewBrush();
   BOOL SelectNewFont(WORD Typeface,
-		     BOOL Bold,
-		     BOOL Italic,
-		     MILLIPOINT Width,
-		     MILLIPOINT Height,
-		     ANGLE Rotation);
+             BOOL Bold,
+             BOOL Italic,
+             MILLIPOINT Width,
+             MILLIPOINT Height,
+             ANGLE Rotation);
   void MakeDashType(DashRec&, DashType*);
   // Functions to render a Path
   void RenderPath32(Path* DrawPath);
@@ -346,12 +348,12 @@ class CCAPI OSRenderRegion : public RenderRegion
   // low-level internal bezier primitives
   BOOL RawRenderPath32(Path* const);
   BOOL RawRenderPath(DocCoord* const,
-		     PathVerb* const,
-		     INT32 NumCoords,
-		     INT32* PolyCount,
-		     INT32* Count,
-		     INT32 Flatness = 0,
-		     INT32* pActualFlatness = NULL);
+             PathVerb* const,
+             INT32 NumCoords,
+             INT32* PolyCount,
+             INT32* Count,
+             INT32 Flatness = 0,
+             INT32* pActualFlatness = NULL);
   BOOL SetClipToPathTemporary(Path* const);
   // Bezier flattening functions
   BOOL Bezier(INT32 Px0,INT32 Py0, INT32 Px1,INT32 Py1, INT32 Px2,INT32 Py2, INT32 Px3,INT32 Py3, INT32 Flatness);
@@ -370,11 +372,11 @@ class CCAPI OSRenderRegion : public RenderRegion
   // The rendering flags
   struct
   {
-    BOOL Metafile   : 1;		// TRUE if metafile
-    //		BOOL GDI32      : 1;		// TRUE if can use GDI32 calls
-    BOOL ValidPen   : 1;		// TRUE if RenderPen is correct
-    BOOL ValidBrush : 1;		// TRUE if RenderBrush is correct
-    BOOL UsePalette : 1;		// TRUE if using special palette
+    BOOL Metafile   : 1;        // TRUE if metafile
+    //      BOOL GDI32      : 1;        // TRUE if can use GDI32 calls
+    BOOL ValidPen   : 1;        // TRUE if RenderPen is correct
+    BOOL ValidBrush : 1;        // TRUE if RenderBrush is correct
+    BOOL UsePalette : 1;        // TRUE if using special palette
   } RFlags;
   // The clip region
   wxRegion* OSClipRegion;
@@ -400,8 +402,8 @@ class CCAPI OSRenderRegion : public RenderRegion
   INT32 CurrentBrush;
   wxPen RenderPen[2];
   wxBrush RenderBrush[2];
-  //	wxPen 	*OldPen;
-  //	wxBrush* OldBrush;
+  //    wxPen   *OldPen;
+  //    wxBrush* OldBrush;
   // Used for supporting "FixedSystem" font rendering
   wxFont* OldFont;
   OSRRFontInfo FontInfo;
@@ -418,15 +420,15 @@ class CCAPI OSRenderRegion : public RenderRegion
 };
 
 /***************************************************************************
->	class PaperRenderRegion : public OSRenderRegion
+>   class PaperRenderRegion : public OSRenderRegion
 
-	Author:		Tim_Browse (Xara Group Ltd) <camelotdev@xara.com>
-	Created:	28/06/94
-	Purpose:        Provide a fast way of rendering paper.  One of these
-			regions is used to render paper on screen, to
-			avoid any lag we might get from using a bitmap
-			type render region (e.g. GRenderRegion).
-	SeeAlso:	OSRenderRegion; GRenderRegion; DocView
+    Author:     Tim_Browse (Xara Group Ltd) <camelotdev@xara.com>
+    Created:    28/06/94
+    Purpose:        Provide a fast way of rendering paper.  One of these
+            regions is used to render paper on screen, to
+            avoid any lag we might get from using a bitmap
+            type render region (e.g. GRenderRegion).
+    SeeAlso:    OSRenderRegion; GRenderRegion; DocView
 ***************************************************************************/
 class PaperRenderRegion : public OSRenderRegion
 {
@@ -437,12 +439,12 @@ class PaperRenderRegion : public OSRenderRegion
   ~PaperRenderRegion();
   // Changing the render destination.
   BOOL AttachDevice(View* pView,
-		    Spread* pSpread,
-		    wxDC* pDC,
-		    Matrix& ViewMatrix,
-		    FIXED16 ViewScale,
-		    DocRect& ClipRect,
-		    bool fOwned = false);
+            Spread* pSpread,
+            wxDC* pDC,
+            Matrix& ViewMatrix,
+            FIXED16 ViewScale,
+            DocRect& ClipRect,
+            bool fOwned = false);
   void DetachDevice();
   virtual BOOL InitDevice();
 };
