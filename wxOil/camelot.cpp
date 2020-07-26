@@ -1414,7 +1414,7 @@ wxDocument* CCamApp::OpenDocumentFile( PCTSTR lpcszFileName )
     {
         // Make sure it really is one of ours.
         ERROR3IF( !pOpenDocument->IsKindOf( CLASSINFO(CCamDoc) ),
-                    _T("Not a CCamDoc in CCamApp::OpenDocumentFile") );
+                    "Not a CCamDoc in CCamApp::OpenDocumentFile");
 
         wxList&         lstViews( pOpenDocument->GetViews() );
         wxNode*         pNode = lstViews.GetFirst();
@@ -1499,7 +1499,7 @@ wxDocument* CCamApp::OpenDocumentFile( PCTSTR lpcszFileName )
                         break;
 
                     default:
-                        ERROR3( _T("Bad return val from message box in CCamApp::OpenDocumentFile") );
+                        ERROR3("Bad return val from message box in CCamApp::OpenDocumentFile");
                         break;
                     }
                 }

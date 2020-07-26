@@ -1,7 +1,8 @@
+// -*- tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4; fill-column: 90 -*-
 // $Id: ops.cpp 1361 2006-06-25 16:43:38Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
- 
+
                Xara LX, a vector drawing and manipulation program.
                     Copyright (C) 1993-2006 Xara Group Ltd.
        Copyright on certain contributions may be held in joint with their
@@ -32,7 +33,7 @@ ADDITIONAL RIGHTS
 
 Conditional upon your continuing compliance with the GNU General Public
 License described above, Xara Group Ltd grants to you certain additional
-rights. 
+rights.
 
 The additional rights are to use, modify, and distribute the software
 together with the wxWidgets library, the wxXtra library, and the "CDraw"
@@ -102,8 +103,8 @@ service marks of Xara Group Ltd. All rights in these marks are reserved.
 	ActionList: Class used by an Operation to store UNDO, REDO, and Smart Duplicate actions
 	Operation:  Class from which all Camelot operations are derived
 	Action:     Class from which all operations actions are derived
-                 
-*/  
+
+*/
 
 
 /*
@@ -126,7 +127,7 @@ DECLARE_SOURCE("$Revision: 1361 $");
 #include "ophist.h"
 //#include "ensure.h" - in camtypes.h [AUTOMATICALLY REMOVED]
 //#include "docview.h"  - in camtypes.h [AUTOMATICALLY REMOVED]
-//#include "resource.h" 
+//#include "resource.h"
 //#include "simon.h"
 //#include "errors.h" - in camtypes.h [AUTOMATICALLY REMOVED]
 //#include "selstate.h" - in camtypes.h [AUTOMATICALLY REMOVED]
@@ -159,7 +160,7 @@ DECLARE_SOURCE("$Revision: 1361 $");
 
 #include "ngcore.h"
 //#include "ngsetop.h"
- 
+
 CC_IMPLEMENT_MEMDUMP(ActionList, List)
 CC_IMPLEMENT_DYNAMIC(OpParam, CCObject)
 CC_IMPLEMENT_DYNCREATE( Operation, MessageHandler )
@@ -181,8 +182,8 @@ CC_IMPLEMENT_DYNCREATE( ApplyAction, Action )
 // Declare smart memory handling in Debug builds
 #define new CAM_DEBUG_NEW
 
-//-------------------------------------------------------------------------------------------  
-// ActionList methods   
+//-------------------------------------------------------------------------------------------
+// ActionList methods
 /********************************************************************************************
 
 >	ActionList::ActionList()
@@ -198,7 +199,7 @@ CC_IMPLEMENT_DYNCREATE( ApplyAction, Action )
 
 ********************************************************************************************/
 
-ActionList::ActionList(): List(){}    
+ActionList::ActionList(): List(){}
 
 /********************************************************************************************
 
@@ -209,7 +210,7 @@ ActionList::ActionList(): List(){}
 	Inputs:		-
 	Outputs:	-
 	Returns:	-
-	Purpose:	ActionList destructor, deletes the action list and all actions it contains. 
+	Purpose:	ActionList destructor, deletes the action list and all actions it contains.
 				NOTE that REDO action lists must be deleted backwrds.
 	Errors:		-
 	SeeAlso:	ActionList::SlaughterBackwards;
@@ -217,26 +218,26 @@ ActionList::ActionList(): List(){}
 ********************************************************************************************/
 
 ActionList::~ActionList()
-{   
+{
 /*
-	ListItem* Current = GetHead();   		// First action     
+	ListItem* Current = GetHead();   		// First action
 	while (Current != NULL)        		    // While there are more actions to delete
 	{
-		((Action*)RemoveHead())->Slaughter();  // Delete the action 
+		((Action*)RemoveHead())->Slaughter();  // Delete the action
 		Current = GetHead();                   // Get next action
-		ContinueSlowJob(); 
+		ContinueSlowJob();
 	}
 */
-	ListItem* Current = GetTail();   		// Last action     
+	ListItem* Current = GetTail();   		// Last action
 	while (Current != NULL)        		    // While there are more actions to delete
 	{
-		((Action*)RemoveTail())->Slaughter();  // Delete the action 
+		((Action*)RemoveTail())->Slaughter();  // Delete the action
 		Current = GetTail();                   // Get next action
-		ContinueSlowJob(); 
+		ContinueSlowJob();
 	}
 
-} 
-                 
+}
+
 
 
 
@@ -247,71 +248,71 @@ ActionList::~ActionList()
 
 	Author:		Simon_Maneggio (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	5/7/93
-	Inputs:		AllButLast: When FALSE execute all actions in the action list. 
+	Inputs:		AllButLast: When FALSE execute all actions in the action list.
 							When TRUE execute all actions except the last
 	Outputs:	-
 	Returns:	TRUE if the action list was successfully executed
-				FALSE if it was not 
-				
-	Purpose:	This method executes all actions in the action list forwards.  
-				If there is no failure then all actions are deleted 
+				FALSE if it was not
+
+	Purpose:	This method executes all actions in the action list forwards.
+				If there is no failure then all actions are deleted
 				If an action fails whilst executing no actions are deleted and
-				FALSE is returned.  
+				FALSE is returned.
 	Errors:		-
 	SeeAlso:	-
 
 ********************************************************************************************/
 
 BOOL ActionList::ExecuteForwards(BOOL AllButLast)
-{                                          
-    ListItem* CurrentAction = GetHead();  
-    ListItem* LastAction = GetTail(); 
-    
+{
+    ListItem* CurrentAction = GetHead();
+    ListItem* LastAction = GetTail();
+
     // If we are to execute all actions but the last then the last action to
     // execute is prev(tail)
     if ((LastAction != NULL) && (AllButLast))
-    	LastAction = LastAction->Previous; 
-       
+    	LastAction = LastAction->Previous;
+
 //TRACE( _T("Before Redo\n"));
 //((Action*)CurrentAction)->GetWorkingDoc()->FindFirstSpread()->DST();
 
-    BOOL Failed = FALSE; 
+    BOOL Failed = FALSE;
 	while ((CurrentAction != LastAction) && (!Failed))  // For each action in the list
-	{    
-		// Execute the action                   
-		Failed = (((Action*)CurrentAction)->Execute() == AC_FAIL); 
+	{
+		// Execute the action
+		Failed = (((Action*)CurrentAction)->Execute() == AC_FAIL);
 
 //((Action*)CurrentAction)->Dump();
 //((Action*)CurrentAction)->GetWorkingDoc()->FindFirstSpread()->DST();
 
-		CurrentAction = CurrentAction->Next;    
-	}                   
-	
+		CurrentAction = CurrentAction->Next;
+	}
+
 	if (!Failed)
 	{
-		// Successfully executed action list so all actions are deleted. 
-		Action* HeadItem = (Action *) GetHead(); 
+		// Successfully executed action list so all actions are deleted.
+		Action* HeadItem = (Action *) GetHead();
 
 		Document *pDoc = HeadItem->GetWorkingDoc();
 		ERROR2IF(pDoc == NULL, FALSE, "No document attached to action in Action::ExecuteForwards");
 		OperationHistory& OpHistory = pDoc->GetOpHistory();
 
 		while (HeadItem != NULL)
-		{         
-			// Reduce the size of the operation history by the size of the action 
-			// being deleted. 
-			OpHistory.DecSize(HeadItem->GetSize()); 
+		{
+			// Reduce the size of the operation history by the size of the action
+			// being deleted.
+			OpHistory.DecSize(HeadItem->GetSize());
 
-			// Remove the action from the action list 
+			// Remove the action from the action list
 			delete (RemoveItem(HeadItem));
 
-			// Get next action 
-			HeadItem = (Action *) GetHead(); 
+			// Get next action
+			HeadItem = (Action *) GetHead();
 		}
 	}
-	
+
 	return (!Failed);
-}    
+}
 
 /********************************************************************************************
 
@@ -320,35 +321,35 @@ BOOL ActionList::ExecuteForwards(BOOL AllButLast)
 
 	Author:		Simon_Maneggio (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	5/7/93
-	Inputs:		AllButLast: When FALSE execute all actions in the action list. 
+	Inputs:		AllButLast: When FALSE execute all actions in the action list.
 							When TRUE execute all actions except the last
 	Outputs:	-
 	Returns:	TRUE if the action list was successfully executed
-				FALSE if it was not 
-				
-	Purpose:	This method executes all actions in the action list backwards.  
-				If there is no failure then all actions are deleted 
+				FALSE if it was not
+
+	Purpose:	This method executes all actions in the action list backwards.
+				If there is no failure then all actions are deleted
 				If an action fails whilst executing no actions are deleted and
-				FALSE is returned.   
+				FALSE is returned.
 	Errors:		-
 	SeeAlso:	ActionList::ExecuteForwards
 
 ********************************************************************************************/
 
-BOOL ActionList::ExecuteBackwards(BOOL AllButLast, BOOL bIgnoreSelectActions) 
-{        
-	ListItem* CurrentAction = GetTail();   
+BOOL ActionList::ExecuteBackwards(BOOL AllButLast, BOOL bIgnoreSelectActions)
+{
+	ListItem* CurrentAction = GetTail();
 
-	if (AllButLast && (CurrentAction != NULL))   
-		CurrentAction = CurrentAction->Previous; // Don't execute the last action 
-       
+	if (AllButLast && (CurrentAction != NULL))
+		CurrentAction = CurrentAction->Previous; // Don't execute the last action
+
 //TRACE( _T("Before Undo\n"));
 //((Action*)CurrentAction)->GetWorkingDoc()->FindFirstSpread()->DST();
 
-	BOOL Failed = FALSE;                                       
+	BOOL Failed = FALSE;
 	while ((CurrentAction != NULL) && (!Failed)) // For each action in the list
 	{
-		// Attempt to execute action 
+		// Attempt to execute action
 		if (!(bIgnoreSelectActions &&
 			CurrentAction->IsKindOf(CC_RUNTIME_CLASS(RestoreSelectionsAction)))
 		   )
@@ -357,14 +358,14 @@ BOOL ActionList::ExecuteBackwards(BOOL AllButLast, BOOL bIgnoreSelectActions)
 //((Action*)CurrentAction)->Dump();
 //((Action*)CurrentAction)->GetWorkingDoc()->FindFirstSpread()->DST();
 
-		// Get next action 
-		CurrentAction = CurrentAction->Previous; 
-	}    
-	
-	if (!Failed)     
-	{ 
-		// Successfully executed action list so all actions are deleted. 
-		Action* HeadItem = (Action *) GetHead(); 
+		// Get next action
+		CurrentAction = CurrentAction->Previous;
+	}
+
+	if (!Failed)
+	{
+		// Successfully executed action list so all actions are deleted.
+		Action* HeadItem = (Action *) GetHead();
 
 		Document *pDoc = HeadItem->GetWorkingDoc();
 		ERROR2IF(pDoc == NULL, FALSE, "No document attached to action in Action::ExecuteBackwards");
@@ -372,26 +373,26 @@ BOOL ActionList::ExecuteBackwards(BOOL AllButLast, BOOL bIgnoreSelectActions)
 
 		// Loop while there are still actions to delete
 		while (HeadItem != NULL)
-		{                      
+		{
 			// Reduce the size of the operation history by the size of the action being deleted
-			OpHistory.DecSize(((Action*)HeadItem)->GetSize()); 
+			OpHistory.DecSize(((Action*)HeadItem)->GetSize());
 
-			// Delete the action 
+			// Delete the action
 			delete (RemoveItem(HeadItem));
 
-			// Get next action  
-			HeadItem = (Action *) GetHead(); 
+			// Get next action
+			HeadItem = (Action *) GetHead();
 		}
-		
+
 	}
-	
-	return (!Failed); 
+
+	return (!Failed);
 }
 
 /********************************************************************************************
 
-	Action* ActionList::FindActionOfClass(CCRuntimeClass* ClassOfActionToFind, 
-										  Action* LastAction = NULL); 
+	Action* ActionList::FindActionOfClass(CCRuntimeClass* ClassOfActionToFind,
+										  Action* LastAction = NULL);
 
 
 
@@ -406,15 +407,15 @@ BOOL ActionList::ExecuteBackwards(BOOL AllButLast, BOOL bIgnoreSelectActions)
 	Outputs:	-
 	Returns:	A pointer to the first action with runtime class ClassOfActionToFind, or NULL
 				if no such action was found.
-				
-	Purpose:	To search the action list for the first action with runtime class 
+
+	Purpose:	To search the action list for the first action with runtime class
 				ClassOfActionToFind
 	Errors:		-
-	SeeAlso:	
+	SeeAlso:
 
 ********************************************************************************************/
 
- 
+
 Action* ActionList::FindActionOfClass(CCRuntimeClass* ClassOfActionToFind,
 									  Action* LastAction)
 {
@@ -423,7 +424,7 @@ Action* ActionList::FindActionOfClass(CCRuntimeClass* ClassOfActionToFind,
 	{
 		if (Current == NULL)
 		{
-			Current = (Action*)GetHead(); 
+			Current = (Action*)GetHead();
 		}
 		else
 		{
@@ -433,17 +434,17 @@ Action* ActionList::FindActionOfClass(CCRuntimeClass* ClassOfActionToFind,
 		{
 			return Current;
 		}
-	} while (Current != NULL); 
-	return NULL; 	
-} 
+	} while (Current != NULL);
+	return NULL;
+}
 
 
-// ---------------------------------------------------------------------------------------- 
-// Operation methods                              
+// ----------------------------------------------------------------------------------------
+// Operation methods
 
-       
-        
-Operation* Operation::CurrentDragOp = NULL; 
+
+
+Operation* Operation::CurrentDragOp = NULL;
 
 static DocView* pDraggingDocView = 0;
 
@@ -466,10 +467,10 @@ BOOL Operation::s_bQuickRender = FALSE;
      Returns:   -
      Purpose: 	Does any Operation initialisation necessary.
 	 			Declares an Operation INI setting
-     Errors:    
+     Errors:
 
 **********************************************************************************************/
- 
+
 BOOL Operation::Initialise()
 {
 	BOOL ok = TRUE;
@@ -494,36 +495,36 @@ BOOL Operation::Initialise()
 	Inputs:		-
 	Outputs:	-
 	Returns:	-
-	Purpose:	Constructs a new operation object: setting default operation flags, and 
-				adding it to the Operation message list. Note that the routines which create 
-				operations must create an instance for every seperate input that they receive. 
-				They must not re-use an existing instance because operation objects have to be 
-				submitted to the undo system to represent user operations on a 1 to 1 basis.   
+	Purpose:	Constructs a new operation object: setting default operation flags, and
+				adding it to the Operation message list. Note that the routines which create
+				operations must create an instance for every seperate input that they receive.
+				They must not re-use an existing instance because operation objects have to be
+				submitted to the undo system to represent user operations on a 1 to 1 basis.
 	Errors:		-
 	SeeAlso:	-
 
 ********************************************************************************************/
 
-// All operations are added to the Operation Class list by default, and will receive system 
-// messages      
-Operation::Operation(CCRuntimeClass* MessageHandlerClass) : 
+// All operations are added to the Operation Class list by default, and will receive system
+// messages
+Operation::Operation(CCRuntimeClass* MessageHandlerClass) :
 	MessageHandler(MessageHandlerClass, TRUE)
-{                 
+{
 	//Set default operation flag states. The defaults are for a clean non undoable operation
 
-	OpFlags.Failed = FALSE;                                                                  
-	OpFlags.ExecuteOnEnd = FALSE;		
-	OpFlags.AllButLast = FALSE; 
-	OpFlags.KeepOnEnd = FALSE;	
+	OpFlags.Failed = FALSE;
+	OpFlags.ExecuteOnEnd = FALSE;
+	OpFlags.AllButLast = FALSE;
+	OpFlags.KeepOnEnd = FALSE;
 	OpFlags.UnwindingActions = FALSE;
-	OpFlags.HasOwnTimeIndicator = FALSE;  
-	OpFlags.SucceedAndDiscard = FALSE;   
+	OpFlags.HasOwnTimeIndicator = FALSE;
+	OpFlags.SucceedAndDiscard = FALSE;
  	OpFlags.DeleteOnEnd = FALSE;
 	OpFlags.IgnoreSelectActions = FALSE;
 
-	DeleteUndoOpsToMakeSpace = FALSE;  
-	pDocToInformOfOpStatus = NULL; 
-	
+	DeleteUndoOpsToMakeSpace = FALSE;
+	pDocToInformOfOpStatus = NULL;
+
 	// Let the system know that we are currently doing the operation for the first time
 	OpStatus = DO;
 
@@ -537,7 +538,7 @@ Operation::Operation(CCRuntimeClass* MessageHandlerClass) :
 
 /********************************************************************************************
 
->	Operation::~Operation()                                                      
+>	Operation::~Operation()
 
 
 	Author:		Simon_Maneggio (Xara Group Ltd) <camelotdev@xara.com>
@@ -552,7 +553,7 @@ Operation::Operation(CCRuntimeClass* MessageHandlerClass) :
 ********************************************************************************************/
 
 Operation::~Operation()
-{                                     
+{
 	// The destructors of the Operations action lists will automatically be called
 
 	// However, we must ensure the REDO action list is slaughtered in the correct
@@ -572,47 +573,47 @@ Operation::~Operation()
 	Inputs:		-
 	Outputs:	-
 	Returns:	-
-	Purpose:	This function is called by End(), to end an operation. It removes the 
-				operation from the live list and then does various things depending on the 
-				state of the operation's flags. It is normally called by the operation's Do 
-				function. The way the operation flags are interpreted by EndOp are described 
-				by the following algorithm.      
-	
-	MonoOn  
-				       
+	Purpose:	This function is called by End(), to end an operation. It removes the
+				operation from the live list and then does various things depending on the
+				state of the operation's flags. It is normally called by the operation's Do
+				function. The way the operation flags are interpreted by EndOp are described
+				by the following algorithm.
+
+	MonoOn
+
 				IF the Failed flag is TRUE
-					IF the ExecuteOnEndFlag is TRUE      
+					IF the ExecuteOnEndFlag is TRUE
 						IF the AllButLast flag is TRUE
-							Execute all but the last action in the operations UNDO/REDO 
-							action list.   	
+							Execute all but the last action in the operations UNDO/REDO
+							action list.
 						ELSE
-							Execute all actions in the operation's UNDO/REDO action list   
+							Execute all actions in the operation's UNDO/REDO action list
 					ELSE
-						IF we are undoing 
+						IF we are undoing
 							Delete the operation and all redo operations
 						ELSE IF we are doing or redoing
 							Delete the operation and all undo operations
-						
+
 					IF the OperationStatus is DO
 						Delete the operation
-				ELSE 
+				ELSE
 					IF the SystemUndo flag is TRUE and we are doing the operation
 						Add operation to the operation history
-					ELSE 
+					ELSE
 						IF the keepOnEnd flag is FALSE
 							delete the operation
 					IF the Clean flag is FALSE
 						Inform the document that it has been modified
-		
-	MonoOff				
-	Scope:		private			
+
+	MonoOff
+	Scope:		private
 	Errors:		-
 	SeeAlso:	Operation::End
 
 ********************************************************************************************/
 
 void Operation::EndOp()
-{   
+{
 	OpFlags.DeleteOnEnd = FALSE; // Set to TRUE if the operation should be deleted
 
 	// Some static attribute apply flags, added by Will
@@ -635,16 +636,16 @@ void Operation::EndOp()
 		pDoc = (Document *) Camelot.Documents.GetNext(pDoc);
 	}
 
-	// Remember that it is valid now for pOpDesc to be NULL (eg. for InformationBarOps 
+	// Remember that it is valid now for pOpDesc to be NULL (eg. for InformationBarOps
 	// which don't have OpDescriptors)
-	/*OpDescriptor* pOpDesc =*/ OpDescriptor::FindOpDescriptor(this->GetRuntimeClass()); 
-	
-	OperationHistory*  OpHist;      
+	/*OpDescriptor* pOpDesc =*/ OpDescriptor::FindOpDescriptor(this->GetRuntimeClass());
+
+	OperationHistory*  OpHist;
 
 	// if there is not a current document and the operation in progress is undoable
 	// then ensure
 PORTNOTE("other","Removed OpAsynchClipartImport usage")
-	if( IsKindOf( CC_RUNTIME_CLASS(UndoableOperation) ) 
+	if( IsKindOf( CC_RUNTIME_CLASS(UndoableOperation) )
 #ifndef EXCLUDE_FROM_XARALX
 		 && !IsKindOf(CC_RUNTIME_CLASS(OpAsynchClipartImport)))
 #endif
@@ -654,18 +655,18 @@ PORTNOTE("other","Removed OpAsynchClipartImport usage")
 	// The operation is ending so don't send any more messages to it
 	if (OpStatus == DO)
 	{
-		SendNoMoreMessages(this); 
+		SendNoMoreMessages(this);
 	}
 
-	// Has the operation copied any component data between documents 
+	// Has the operation copied any component data between documents
 	if (pDocToInformOfOpStatus != NULL)
 	{
 		if (OpFlags.Failed)
 		{
 			// We may have copied data accross but because the operation has failed
 			// we must discard this.
-			pDocToInformOfOpStatus->AbortComponentCopy(); 
-		} 
+			pDocToInformOfOpStatus->AbortComponentCopy();
+		}
 		else
 		{
 			// Call EndComponentCopy to commit the new data
@@ -673,8 +674,8 @@ PORTNOTE("other","Removed OpAsynchClipartImport usage")
 			{
 				// Note that AbortComponentCopy has been called
 				// Unable to complete the op so it must fail I'm afraid
-				OpFlags.Failed = TRUE; 
-			} 
+				OpFlags.Failed = TRUE;
+			}
 
 		}
 	}
@@ -682,10 +683,10 @@ PORTNOTE("other","Removed OpAsynchClipartImport usage")
 	// if the operation is not undoable then dispose of it and exit.
 	if (!IsKindOf(CC_RUNTIME_CLASS(UndoableOperation)))
 	{
-				
+
 		if (!OpFlags.KeepOnEnd)
-		{   
-			OpFlags.DeleteOnEnd = TRUE;      
+		{
+			OpFlags.DeleteOnEnd = TRUE;
 		}
 		goto End;
 	}
@@ -694,31 +695,31 @@ PORTNOTE("other","Removed OpAsynchClipartImport usage")
 		// If the operation has been done but does not have any Undo actions then
 		// dispose of the operation and then exit.
 	   	if  ((UndoActions.GetHead() == NULL)  && (OpStatus == DO))
-		{   
+		{
 			if (!OpFlags.KeepOnEnd)
-			{   
-				OpFlags.DeleteOnEnd = TRUE; 
+			{
+				OpFlags.DeleteOnEnd = TRUE;
 			}
 			goto End;
-		}    
+		}
 	}
 
-	OpHist = &(pDocument->GetOpHistory());   
-	
+	OpHist = &(pDocument->GetOpHistory());
+
 	// Check if the operation failed
 	if (OpFlags.Failed || OpFlags.SucceedAndDiscard)
-	{            
+	{
 		if (OpFlags.ExecuteOnEnd)
-		{                            
-		    // Set the unwindingActions flag so that no actions are created in further 
-		    // calls to the Action::Init function.  
-			OpFlags.UnwindingActions = TRUE;      
-			 
-			// Determine which action list to execute  
+		{
+		    // Set the unwindingActions flag so that no actions are created in further
+		    // calls to the Action::Init function.
+			OpFlags.UnwindingActions = TRUE;
 
-			// If we are UNDOING then the failure must have occured when trying to create 
-			// REDO actions for the operation, so execute the RedoActions list (which will 
-			// restore the UNDO actions list). 
+			// Determine which action list to execute
+
+			// If we are UNDOING then the failure must have occured when trying to create
+			// REDO actions for the operation, so execute the RedoActions list (which will
+			// restore the UNDO actions list).
 
 
 			BOOL bOK = FALSE;
@@ -727,98 +728,98 @@ PORTNOTE("other","Removed OpAsynchClipartImport usage")
 			    bOK = RedoActions.ExecuteBackwards(OpFlags.AllButLast, OpFlags.IgnoreSelectActions);
 				ERROR3IF(!bOK, "An operation failed whilst unwinding");
 			}
-			// If we are DOING or REDOING then the failure must have occured when trying to 
-			// create UNDO actions, so execute the UndoActions list. 
-			
+			// If we are DOING or REDOING then the failure must have occured when trying to
+			// create UNDO actions, so execute the UndoActions list.
+
 			else
 			{
 				bOK = UndoActions.ExecuteBackwards(OpFlags.AllButLast, OpFlags.IgnoreSelectActions);
 				ERROR3IF(!bOK, "An operation failed whilst unwinding");
 			}
-		}   
+		}
 		else if (OpFlags.Failed) // Discard
-		{   
+		{
 			if (OpStatus == UNDO)
-			{     
-				// Delete the operation and all redo operations
-			
-				// One step back in time  
-				OpHist->NowPtr = OpHist->OpHistoryList.GetPrev(OpHist->NowPtr);  
-				// Delete all Redo operations including the current operation                 
-				OpHist->DeleteRedoableOps();   
-				goto End; 
-			}   
-			else // REDO and DO       
 			{
-				 // Delete all Undo records including the current operation 
-				OpHist->NowPtr = OpHist->OpHistoryList.GetNext(OpHist->NowPtr); 
-				OpHist->DeleteUndoableOps();                                   
-				
-				// In the case of a REDO we can return because the operation has been deleted. 
+				// Delete the operation and all redo operations
+
+				// One step back in time
+				OpHist->NowPtr = OpHist->OpHistoryList.GetPrev(OpHist->NowPtr);
+				// Delete all Redo operations including the current operation
+				OpHist->DeleteRedoableOps();
+				goto End;
+			}
+			else // REDO and DO
+			{
+				 // Delete all Undo records including the current operation
+				OpHist->NowPtr = OpHist->OpHistoryList.GetNext(OpHist->NowPtr);
+				OpHist->DeleteUndoableOps();
+
+				// In the case of a REDO we can return because the operation has been deleted.
 				if (OpStatus == REDO)
-					goto End; 
+					goto End;
             }
-            
-		}            
+
+		}
         // If we are DOING the operation for the first time delete the operation
-		if (OpStatus == DO)          
+		if (OpStatus == DO)
 		{
 			if (!OpFlags.KeepOnEnd)
 			{
-				OpHist->DecSize(this->GetSize()); // The size total in the operation history 
-												 // will include the current size of the 
-												 // operation.  
-				OpFlags.DeleteOnEnd = TRUE; 
+				OpHist->DecSize(this->GetSize()); // The size total in the operation history
+												 // will include the current size of the
+												 // operation.
+				OpFlags.DeleteOnEnd = TRUE;
 			}
-			goto End;   
+			goto End;
 		}
 	}
-	
+
 	if (!OpFlags.Failed)   // Operation has not failed
-	{  
+	{
 		// Decide if the operation should be added to the documents operation history
 		if  (OpStatus == DO && !OpFlags.SucceedAndDiscard)
-		{    
+		{
 			// The undo action list should contain actions, the redo action list should not
-			ENSURE(UndoActions.GetHead() != NULL, "The undo action list is empty"); 
-			ENSURE(RedoActions.GetHead() == NULL, "The redo action list is not empty"); 
+			ENSURE(UndoActions.GetHead() != NULL, "The undo action list is empty");
+			ENSURE(RedoActions.GetHead() == NULL, "The redo action list is not empty");
 
 			// Add operation to document's operation history
-			pOurDoc->GetOpHistory().Add(this); 
-		} 
-		
+			pOurDoc->GetOpHistory().Add(this);
+		}
+
 		// If the Operation has no OpDescriptor then we assume that the operation is clean
 		//if (pOpDesc != NULL)
-		//{   
-			//if (!(pOpDesc->GetOpFlags().Clean)) 
-			//{ 
+		//{
+			//if (!(pOpDesc->GetOpFlags().Clean))
+			//{
 				// BODGE We do not inspect the Clean flag, cos not everyone has set it correctly.
 				// We know this is an undoable operation so it must have affected the document.
 				// Therefore we set the documents modified flag.
-				
-				// Any operation with a FALSE clean flag has indicated that it 
+
+				// Any operation with a FALSE clean flag has indicated that it
 				// will or may have modified the document in some way. Therefore
-				// inform the document that it has been modified. 
+				// inform the document that it has been modified.
 
 #if !defined(EXCLUDE_FROM_RALPH)
 				// The only exception to this is OpCopy			IS_A
 				if (!(GetRuntimeClass() == CC_RUNTIME_CLASS(OpCopy)))
 					pOurDoc->SetModified(TRUE);
 #endif
-			//} 
+			//}
 		//}
-	} 
+	}
 
 	End:
 
-	EndSlowJob();   
+	EndSlowJob();
 
 #if !defined(EXCLUDE_FROM_RALPH)
 	// Inform the world that the operation has ended
 	// We don't want to do it at the end of an OpExit though
 	if (GetRuntimeClass() != CC_RUNTIME_CLASS(OpExit))
 	{
-		BROADCAST_TO_ALL(OpMsg(this, OpMsg::END)); 
+		BROADCAST_TO_ALL(OpMsg(this, OpMsg::END));
 	}
 #endif
 
@@ -828,50 +829,50 @@ PORTNOTE("other","Removed OpAsynchClipartImport usage")
 	// A. When an operation has failed the state of the system should be restored
 	// 	  to the state it was in prior to the operation being performed. So it
 	//	  will not be necessary.
-	// B. The fact that the operation has failed implies that we are probably low on 
+	// B. The fact that the operation has failed implies that we are probably low on
 	// 	  memory so it's probably safer not to update it anyway. Note that if the
 	//	  bar state is ever incorrect this should not be disastrous because the
 	// 	  GetState fn of the operation is always called prior to Invoking an operation
-	//	  anyway. 
+	//	  anyway.
 
 	if (!OpFlags.Failed && !OpFlags.SucceedAndDiscard)
-	{ 
+	{
 
 		// Call the virtual PerformMergeProcessing function. This gives the operation a chance
 		// to merge itself with the previous operation if appropriate.
 		if(IS_KIND_OF(UndoableOperation) && !(OpFlags.DeleteOnEnd))
-		{ 
+		{
 			if  (OpStatus == DO)  // We only want to merge ops when Doing the operation
-			{    
+			{
 				// Note that the PerformMergeProcessing fn could delete this op (so be careful !)
-				((UndoableOperation*)this)->PerformMergeProcessing(); 
+				((UndoableOperation*)this)->PerformMergeProcessing();
  			}
  		}
 	}
 
-	 
+
 	// If there was any sort of error during that Op which hasn't been reported to the user yet
 	// then we'd better report it now!
 	InformLastError();
 
-	// If the operation has survived all that then reset all failure and control 
-	// flags. 	
-	OpFlags.Failed = FALSE;                                                                  
-	OpFlags.ExecuteOnEnd = FALSE;		
-	OpFlags.AllButLast = FALSE;  
-	OpFlags.UnwindingActions = FALSE; 
-	OpFlags.SucceedAndDiscard = FALSE; 
+	// If the operation has survived all that then reset all failure and control
+	// flags.
+	OpFlags.Failed = FALSE;
+	OpFlags.ExecuteOnEnd = FALSE;
+	OpFlags.AllButLast = FALSE;
+	OpFlags.UnwindingActions = FALSE;
+	OpFlags.SucceedAndDiscard = FALSE;
 	OpFlags.IgnoreSelectActions = FALSE;
-	DeleteUndoOpsToMakeSpace = FALSE;  
+	DeleteUndoOpsToMakeSpace = FALSE;
 
 
 	// Be careful what is after this
 	if (OpFlags.DeleteOnEnd)
-		delete (this); 
+		delete (this);
 	// The bar state will be refreshed  during idle time
-	DialogBarOp::SetSystemStateChanged(); 
-}    
- 
+	DialogBarOp::SetSystemStateChanged();
+}
+
 
 
 /********************************************************************************************
@@ -885,7 +886,7 @@ PORTNOTE("other","Removed OpAsynchClipartImport usage")
 	Returns:	-
 	Purpose:	This function calls EndOp which performs the main end of operation processing.
 				see Operation::EndOp
-				
+
 	Errors:		-
 	SeeAlso:	Operation::EndOp
 
@@ -893,21 +894,21 @@ PORTNOTE("other","Removed OpAsynchClipartImport usage")
 
 void Operation::End()
 {
-	// When an operation is ending all sorts of scary stuff is going on with nodes, so we 
+	// When an operation is ending all sorts of scary stuff is going on with nodes, so we
 	// do not want to be rendering at the time !..
 PORTNOTE("other","Removed RalphCriticalSection usage")
 #ifndef EXCLUDE_FROM_XARALX
-//	RalphCriticalSection rcs;  
+//	RalphCriticalSection rcs;
 	if ( (OpFlags.SystemUndo) && (OpStatus == DO) && (!(OpFlags.ExecuteOnEnd)) )
-	{ 
-		// A call to StartUndoOperation is made which creates a RestoreSelections action 
-		// which when executed 	will restore the selection state to the state which existed 
-		// just after performing the operation. 
-		StartUndoOperation(); 
+	{
+		// A call to StartUndoOperation is made which creates a RestoreSelections action
+		// which when executed 	will restore the selection state to the state which existed
+		// just after performing the operation.
+		StartUndoOperation();
 	}
 #endif
 
-	// Slight bodge to ensure that all op permission flags of all nodes are set to 
+	// Slight bodge to ensure that all op permission flags of all nodes are set to
 	// PERMISSION_UNDEFINED regardless whether the op succeeded or failed.
 	if (this->IS_KIND_OF(UndoableOperation))
 	{
@@ -919,7 +920,7 @@ PORTNOTE("other","Removed RalphCriticalSection usage")
 
 	EndOp();
 
-}	
+}
 
 /********************************************************************************************
 
@@ -944,10 +945,10 @@ PORTNOTE("other","Removed RalphCriticalSection usage")
 	Author:		Tim_Browse (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	02/13/95
 	Returns:	The View this operation is attached to.
-	Purpose:	Returns the View that is associated with this operation. 
+	Purpose:	Returns the View that is associated with this operation.
 				Note that the majority of operations don't care what view they work on - most
 				of them are document-based, and cause all views attached to a document to be
-				updated.  However, some operations such as zooming, changing the quality 
+				updated.  However, some operations such as zooming, changing the quality
 				etc. only work on a particular view.
 	SeeAlso:	Operation::GetWorkingDocView; Operation::GetWorkingDoc
 
@@ -990,54 +991,54 @@ DocView *Operation::GetWorkingDocView()
 	Inputs:		-
 	Outputs:	-
 	Returns:	The size of the current operation
-	Purpose:	To calculate the size of the operation, i.e the sum of the sizes of the 
-				operation's actions. 
-	Errors:		An assertion failure will occur if the operation's UNDO and REDO action 
-				lists both contain actions. 
+	Purpose:	To calculate the size of the operation, i.e the sum of the sizes of the
+				operation's actions.
+	Errors:		An assertion failure will occur if the operation's UNDO and REDO action
+				lists both contain actions.
 	SeeAlso:	-
 
 ********************************************************************************************/
 
 UINT32 Operation::GetSize()
 {
-	UINT32 TotalOfActionSizes = 0;   
+	UINT32 TotalOfActionSizes = 0;
 
 //	Do we really need this ensure? It appears to run fine without it (sjk 29/3/00)
-//	ENSURE((RedoActions.IsEmpty() || UndoActions.IsEmpty()), 
-//		"An operation's UNDO and REDO action lists both contained actions");                                                        
-                     
-    // Calculate size of all Undo actions  
-    
-    // Get first action of operation                          
-	ListItem* pAc = (UndoActions.GetHead());  
-		
-	while (pAc != NULL) // For each action
-	{  
-		TotalOfActionSizes += ((Action*)pAc)->GetSize(); 
-		pAc = UndoActions.GetNext(pAc);   
-	}  
-                    
-    // Calculate size of all Redo actions     
-    
-    pAc = (RedoActions.GetHead());  
-		
-	while (pAc != NULL) // For each action
-	{  
-		TotalOfActionSizes += ((Action*)pAc)->GetSize(); 
-		pAc = RedoActions.GetNext(pAc);   
-	}  
+//	ENSURE((RedoActions.IsEmpty() || UndoActions.IsEmpty()),
+//		"An operation's UNDO and REDO action lists both contained actions");
 
-    // Calculate size of all Smart actions                  
-    
-    pAc = (SmartActions.GetHead());  
-		
+    // Calculate size of all Undo actions
+
+    // Get first action of operation
+	ListItem* pAc = (UndoActions.GetHead());
+
 	while (pAc != NULL) // For each action
-	{  
-		TotalOfActionSizes += ((Action*)pAc)->GetSize(); 
-		pAc = SmartActions.GetNext(pAc);   
-	} 
-	
-	return (TotalOfActionSizes);  
+	{
+		TotalOfActionSizes += ((Action*)pAc)->GetSize();
+		pAc = UndoActions.GetNext(pAc);
+	}
+
+    // Calculate size of all Redo actions
+
+    pAc = (RedoActions.GetHead());
+
+	while (pAc != NULL) // For each action
+	{
+		TotalOfActionSizes += ((Action*)pAc)->GetSize();
+		pAc = RedoActions.GetNext(pAc);
+	}
+
+    // Calculate size of all Smart actions
+
+    pAc = (SmartActions.GetHead());
+
+	while (pAc != NULL) // For each action
+	{
+		TotalOfActionSizes += ((Action*)pAc)->GetSize();
+		pAc = SmartActions.GetNext(pAc);
+	}
+
+	return (TotalOfActionSizes);
 }
 
 
@@ -1052,19 +1053,19 @@ UINT32 Operation::GetSize()
 	Returns:	IF there is  a drag going on THEN
 					a pointer to the operation involved in the drag is returned
 				ELSE
-					NULL is returned 
-	
-	Purpose:	To check if there is a drag currently going on, and if there is to return 
-				the operation involved in the drag. 
+					NULL is returned
+
+	Purpose:	To check if there is a drag currently going on, and if there is to return
+				the operation involved in the drag.
 	Errors:		-
 	SeeAlso:	-
 
 ********************************************************************************************/
 
 Operation* Operation::GetCurrentDragOp()
-{   
-	return (CurrentDragOp); 
-}                                                      
+{
+	return (CurrentDragOp);
+}
 
 
 
@@ -1091,7 +1092,7 @@ BOOL Operation::GetQuickRender(Node* pNode)
 		return (CurrentDragOp!=NULL || s_bQuickRender);
 	else
 		return ((CurrentDragOp!=NULL && pNode->IsDragged()) || s_bQuickRender);
-}                                                      
+}
 
 
 
@@ -1112,7 +1113,7 @@ BOOL Operation::GetQuickRender(Node* pNode)
 ********************************************************************************************/
 
 void Operation::SetQuickRender(BOOL bNewState, Operation* pQROp)
-{   
+{
 	if (s_bQuickRender && !bNewState)
 	{
 		// Flush any pending renders now, before we reset the quickrender flag
@@ -1130,7 +1131,7 @@ void Operation::SetQuickRender(BOOL bNewState, Operation* pQROp)
 		CurrentDragOp = pQROp;
 	if (!bNewState && CurrentDragOp==pQROp)
 		CurrentDragOp = NULL;
-}                                                      
+}
 
 
 
@@ -1149,7 +1150,7 @@ void Operation::SetQuickRender(BOOL bNewState, Operation* pQROp)
 				ClickMods:  Click modifiers
 	Outputs:	-
 	Returns:	-
-	Purpose:	Pure virtual function which tells the operation that the mouse has moved. 
+	Purpose:	Pure virtual function which tells the operation that the mouse has moved.
 	Errors:		-
 	SeeAlso:	ClickModifiers
 
@@ -1158,7 +1159,7 @@ void Operation::SetQuickRender(BOOL bNewState, Operation* pQROp)
 void Operation::DragPointerMove( DocCoord PointerPos,
 						ClickModifiers ClickMods, Spread *pSpread, BOOL bSolidDrag)
 {
-}  
+}
 
 /********************************************************************************************
 
@@ -1172,7 +1173,7 @@ void Operation::DragPointerMove( DocCoord PointerPos,
 	Outputs:	-
 	Returns:	-
 	Purpose:	Pure virtual function which tells the operation that nothing is going on
-				so that it has time to do background jobs. 
+				so that it has time to do background jobs.
 	Errors:		-
 	SeeAlso:	ClickModifiers
 
@@ -1182,12 +1183,12 @@ void Operation::DragPointerMove( DocCoord PointerPos,
 void Operation::DragPointerIdle( DocCoord PointerPos,
 						ClickModifiers ClickMods, Spread *pSpread, BOOL bSolidDrag)
 {
-}       
+}
 
 /********************************************************************************************
 
 	virtual void Operation::DragFinished( DocCoord PointerPos,
-						    		      ClickModifiers ClickMods, 
+						    		      ClickModifiers ClickMods,
 						    		      Spread *pSpread,
 						     			  BOOL Success,
 										  BOOL bSolidDrag)
@@ -1195,15 +1196,15 @@ void Operation::DragPointerIdle( DocCoord PointerPos,
 	Author:		Simon_Maneggio (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	5/7/93
 	Inputs:		PointerPos: Position of the mouse pointer
-				ClickMods:  Click modifiers      
+				ClickMods:  Click modifiers
 				Success:    Indicates if the drag was terminated by the user pressing escape
-							(FALSE) or by the user releasing the mouse buttons (TRUE). 
+							(FALSE) or by the user releasing the mouse buttons (TRUE).
 	Outputs:	-
 	Returns:	-
-	Purpose:	Pure virtual function which tells the operation that a drag has finished. 
-				Once the operation knows the drag has finished it should call EndDrag() 
-				to terminate the drag. 
-				 
+	Purpose:	Pure virtual function which tells the operation that a drag has finished.
+				Once the operation knows the drag has finished it should call EndDrag()
+				to terminate the drag.
+
 	Errors:		-
 	SeeAlso:	ClickModifiers
 
@@ -1215,7 +1216,7 @@ void Operation::DragFinished( DocCoord PointerPos,
 				   			  BOOL Success,
 							  BOOL bSolidDrag)
 {
-}    
+}
 
 
 
@@ -1336,15 +1337,15 @@ void Operation::RenderDragBlobs(DocRect, Spread*, BOOL bSolidDrag)
 	Outputs:	-
 	Returns:	-
 	Purpose:	This fail function will cause the following to occur when the operation ends
-	
-				The operation will be removed from the live list. 
-				All actions in the operations action list will be executed (latest first)  
-				The operation will be deleted without being added to the document's operation 
-				history. 
 
-				
-				
-	Errors:		-  
+				The operation will be removed from the live list.
+				All actions in the operations action list will be executed (latest first)
+				The operation will be deleted without being added to the document's operation
+				history.
+
+
+
+	Errors:		-
 	SeeAlso:	Operation::FailAndExecuteAllButLast
 	SeeAlso:    Operation::FailAndDiscard
 
@@ -1352,13 +1353,13 @@ void Operation::RenderDragBlobs(DocRect, Spread*, BOOL bSolidDrag)
 ********************************************************************************************/
 
 void Operation::FailAndExecute()
-{           
-	OpFlags.Failed = TRUE;     
-	OpFlags.ExecuteOnEnd = TRUE;      
+{
+	OpFlags.Failed = TRUE;
+	OpFlags.ExecuteOnEnd = TRUE;
 }
 
 void Operation::FailAndExecuteIgnoreSelActions()
-{           
+{
 	OpFlags.Failed = TRUE;
 	OpFlags.ExecuteOnEnd = TRUE;
 	OpFlags.IgnoreSelectActions = TRUE;
@@ -1374,26 +1375,26 @@ void Operation::FailAndExecuteIgnoreSelActions()
 	Outputs:	-
 	Returns:	-
 	Purpose:	This fail function will cause the following to occur when the operation ends
-	
+
 				The operation will be removed from the live list
-				All but the last action in the operation's action list will be executed 
-					(latest first) 
-				The operation will be deleted without being added to the document's 
-				operation history.   
-				
+				All but the last action in the operation's action list will be executed
+					(latest first)
+				The operation will be deleted without being added to the document's
+				operation history.
+
     Errors:
-    
+
 	SeeAlso:	Operation::FailAndExecute
 	SeeAlso:    OPeration::FailAndDiscard
 
 ********************************************************************************************/
 
 void Operation::FailAndExecuteAllButLast()
-{                    
-	OpFlags.Failed = TRUE;           
-	OpFlags.ExecuteOnEnd = TRUE; 
-	OpFlags.AllButLast = TRUE; 
-}                                           
+{
+	OpFlags.Failed = TRUE;
+	OpFlags.ExecuteOnEnd = TRUE;
+	OpFlags.AllButLast = TRUE;
+}
 
 /********************************************************************************************
 
@@ -1403,18 +1404,18 @@ void Operation::FailAndExecuteAllButLast()
 	Created:	30/6/93
 	Inputs:		-
 	Outputs:	-
-	Returns:	-   
+	Returns:	-
 	Purpose:	This fail function will cause the following to occur when the operation ends
-	
+
 				The operation will be removed from the live list
-				The operation will be deleted without being added to the document's 
-				operation history.     
-				
+				The operation will be deleted without being added to the document's
+				operation history.
+
 				Note: This  fail function can be called several times on the same operation,
 					  however only the first call will have any effect on the operation's
-					  flags.   
+					  flags.
     Errors:
-    
+
 	SeeAlso:	Operation::FailAndExecute
 	SeeAlso:    OPeration::FailAndExecuteAllButLast
 
@@ -1422,15 +1423,15 @@ void Operation::FailAndExecuteAllButLast()
 
 
 void Operation::FailAndDiscard()
-{   
-	// Because the fail functions can be called several times on the same operation their 
+{
+	// Because the fail functions can be called several times on the same operation their
 	// implementation has to ensure that only the flags set by the FIRST call are used
-	
+
 	if (!OpFlags.Failed)
 	{
-		OpFlags.Failed = TRUE;   
-	}                            
-}                                                            
+		OpFlags.Failed = TRUE;
+	}
+}
 
 /********************************************************************************************
 
@@ -1440,12 +1441,12 @@ void Operation::FailAndDiscard()
 	Created:	03/05/95
 	Inputs:		-
 	Outputs:	-
-	Returns:	-   
-	Purpose:	This function can be called to discard the operation when it ends. 
+	Returns:	-
+	Purpose:	This function can be called to discard the operation when it ends.
 				Any hidden nodes which have been generated will remain
-				in the tree.			
+				in the tree.
     Errors:
-    
+
 	SeeAlso:	Operation::FailAndExecute
 	SeeAlso:    OPeration::FailAndExecuteAllButLast
 
@@ -1453,20 +1454,20 @@ void Operation::FailAndDiscard()
 
 void Operation::SucceedAndDiscard()
 {
-	OpFlags.SucceedAndDiscard = TRUE; 
+	OpFlags.SucceedAndDiscard = TRUE;
 }
 
 
 //------------------------------------------------------------------------------------------
 
-// All subclasses should provide a function named "Do" which executes 
-// their primary function. It is not supplied in the base class at 
+// All subclasses should provide a function named "Do" which executes
+// their primary function. It is not supplied in the base class at
 // the moment but might be one day!
 //	void Do()
 
 // These two functions execute the appropriate action list.
-// They should NOT be overridden by the subclasses of Operation.   
-                                        
+// They should NOT be overridden by the subclasses of Operation.
+
 /********************************************************************************************
 
 >	BOOL Operation::Undo()
@@ -1476,20 +1477,20 @@ void Operation::SucceedAndDiscard()
 	Inputs:		-
 	Outputs:	-
 	Returns:	TRUE if the operation was undone without failing
-				false otherwise 
-	
+				false otherwise
+
 	Purpose:	To execute the operation's undo action list
-	Errors:		An assertion failure will occur if the UNDO action list is empty 
+	Errors:		An assertion failure will occur if the UNDO action list is empty
 	SeeAlso:	Operation::Redo
 
 ********************************************************************************************/
 
 BOOL Operation::Undo()
-{           
+{
 	ERROR2IF(UndoActions.IsEmpty(), FALSE, "Trying to execute an empty UNDO action list");
 
 	OpStatus = UNDO;
-	UndoActions.ExecuteBackwards(FALSE);  
+	UndoActions.ExecuteBackwards(FALSE);
 	BOOL fSuccess = !OpFlags.Failed;
 PORTNOTE("other","Removed OpChangeBarProperty usage")
 #ifndef EXCLUDE_FROM_XARALX
@@ -1505,9 +1506,9 @@ PORTNOTE("other","Removed OpChangeBarProperty usage")
 	}
 #endif
 
-	End(); // End the operation properly, remember that this may delete the operation 
-	return fSuccess; 
-}               
+	End(); // End the operation properly, remember that this may delete the operation
+	return fSuccess;
+}
 
 
 
@@ -1520,21 +1521,21 @@ PORTNOTE("other","Removed OpChangeBarProperty usage")
 	Inputs:		-
 	Outputs:	-
 	Returns:	TRUE if the operation was redone without failing
-				FALSE otherwise 
-				
+				FALSE otherwise
+
 	Purpose:	To execute the operation's redo action list
-	Errors:		An assertion failure will occur if the redo action list is empty 
+	Errors:		An assertion failure will occur if the redo action list is empty
 	SeeAlso:	Operation::Undo
 
 ********************************************************************************************/
 
 BOOL Operation::Redo()
-{                         
+{
 	ERROR2IF(RedoActions.IsEmpty(), FALSE, "Trying to execute an empty REDO action list");
 
 	OpStatus = REDO;
-	RedoActions.ExecuteBackwards(FALSE);  
-	BOOL fSuccess = !OpFlags.Failed; 
+	RedoActions.ExecuteBackwards(FALSE);
+	BOOL fSuccess = !OpFlags.Failed;
 	if (fSuccess)
 	{
 PORTNOTE("other","Removed OpChangeBarProperty usage")
@@ -1549,35 +1550,35 @@ PORTNOTE("other","Removed OpChangeBarProperty usage")
 #endif
 	}
 
-	End();  
+	End();
 	return fSuccess;
 }
 
 
 
-// This function asks the operation to Do itself again. Notice that DoSmart 
-// can be polymorphic because no smart functions can take params - they 
+// This function asks the operation to Do itself again. Notice that DoSmart
+// can be polymorphic because no smart functions can take params - they
 // all work on the selection.
 void Operation::DoSmart()
 {
 	// Empty.
-}  
+}
 
 
 
-// Every operation must provide a virtual Do function which gets called to initiate an 
-// an operation. 
+// Every operation must provide a virtual Do function which gets called to initiate an
+// an operation.
 
 /********************************************************************************************
 
->	virtual void Operation::Do(OpDescriptor* OpDesc)  
+>	virtual void Operation::Do(OpDescriptor* OpDesc)
 
 	Author:		Simon_Maneggio (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	9/6/94
 	Inputs:		OpDesc: A pointer to the OpDescriptor which invoked the operation
 	Outputs:	-
 	Returns:	-
-	Purpose:	This function should be over-ridden to perform an operation without 
+	Purpose:	This function should be over-ridden to perform an operation without
 				passing a parameter
 	Errors:		-
 	SeeAlso:	Operation::DoWithParam
@@ -1587,7 +1588,7 @@ void Operation::DoSmart()
 void Operation::Do(OpDescriptor*)
 {
 	// Empty.
-}   
+}
 
 /********************************************************************************************
 
@@ -1596,9 +1597,9 @@ void Operation::Do(OpDescriptor*)
 	Author:		Simon_Maneggio (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	9/6/94
 	Inputs:		OpDesc:     A pointer to the OpDescriptor which invoked the operation
-				pOpParam:	Optional operator parameters, these are similar to a 
+				pOpParam:	Optional operator parameters, these are similar to a
 							window procedures (lParam, wParam). Each operation requiring
-							parameters will describe what these should be. 
+							parameters will describe what these should be.
 	Outputs:	-
 	Returns:	-
 
@@ -1612,9 +1613,9 @@ void Operation::Do(OpDescriptor*)
 
 void Operation::DoWithParam(OpDescriptor*, OpParam* pOpParam)
 {
-	// empty		
-}   
-                    
+	// empty
+}
+
 /********************************************************************************************
 
 >	OpFlgsStr Operation::GetOpFlgs()
@@ -1632,9 +1633,9 @@ void Operation::DoWithParam(OpDescriptor*, OpParam* pOpParam)
 
 OpFlgsStr Operation::GetOpFlgs()
 {
-	return (OpFlags); 
-}   
-     
+	return (OpFlags);
+}
+
 
 
 
@@ -1660,8 +1661,8 @@ void Operation::DeleteOnEnd()
 	ERROR3IF(this==NULL, "DeleteOnEnd passed NULL this");
 
 	OpFlags.DeleteOnEnd = TRUE;
-}   
-     
+}
+
 
 
 
@@ -1682,8 +1683,8 @@ void Operation::DeleteOnEnd()
 
 ActionList* Operation::GetUndoActionList()
 {
-	return (&UndoActions); 
-}    
+	return (&UndoActions);
+}
 
 /********************************************************************************************
 
@@ -1699,19 +1700,19 @@ ActionList* Operation::GetUndoActionList()
 	SeeAlso:	-
 
 ********************************************************************************************/
-                 
-                     
-ActionList* Operation::GetRedoActionList() 
-{                       
-	return (&RedoActions); 
-}	
 
 
-// Functions called by subclasses of Operation...  
+ActionList* Operation::GetRedoActionList()
+{
+	return (&RedoActions);
+}
+
+
+// Functions called by subclasses of Operation...
 
 /********************************************************************************************
 
->	BOOL Operation::StartDrag(DragType type, 
+>	BOOL Operation::StartDrag(DragType type,
 							  DocRect* MoveBBox, DocCoord* StartPos,
 							  BOOL KeepAccuracy = TRUE)
 
@@ -1727,10 +1728,10 @@ ActionList* Operation::GetRedoActionList()
 				bSolidDragSupported
 							- FALSE (default) Do EORed outline dragging
 							  TRUE	Update the tree during dragging
-	Outputs:	- 
-	Returns:	TRUE if the drag was started successfully otherwise FALSE. 
-	Purpose:	To start a drag 
-	Errors:		-    
+	Outputs:	-
+	Returns:	TRUE if the drag was started successfully otherwise FALSE.
+	Purpose:	To start a drag
+	Errors:		-
 	Scope:		protected
 	SeeAlso:	-
 
@@ -1741,12 +1742,12 @@ BOOL Operation::StartDrag(DragType type,
 						  DocCoord* StartPos,
 						  BOOL KeepAccuracy,
 						  BOOL bSolidDragSupported /* = FALSE*/)
-{                         
-	if (CurrentDragOp == NULL)  // Check if any other operations are currently performing a 
+{
+	if (CurrentDragOp == NULL)  // Check if any other operations are currently performing a
 								// drag
-	{                           
-		// No other operations are performing a drag 
-		
+	{
+		// No other operations are performing a drag
+
 		// Tell the OS to start dragging
 		pDraggingDocView = DocView::GetCurrent();
 		if (pDraggingDocView->StartDrag(this,
@@ -1756,7 +1757,7 @@ BOOL Operation::StartDrag(DragType type,
 										KeepAccuracy,
 										bSolidDragSupported))
 		{
-			CurrentDragOp = this; 	// Record the operation    
+			CurrentDragOp = this; 	// Record the operation
 
 			// I've taken out the ability to switch auto-repeats off during drags (Markn - 19/10/95)
 			/*
@@ -1770,12 +1771,12 @@ BOOL Operation::StartDrag(DragType type,
 			}
 			*/
 
-			return (TRUE);    
-		} 
+			return (TRUE);
+		}
 		else
 			pDraggingDocView = 0;
 	}
-	return (FALSE); 
+	return (FALSE);
 }
 
 /********************************************************************************************
@@ -1789,14 +1790,14 @@ BOOL Operation::StartDrag(DragType type,
 	Returns:	TRUE if a drag was successfully ended, otherwise FALSE
 	Purpose:	To end a drag
 	Errors:		An assertion failure will occur if EndDrag is called and there is no current
-				drag taking place. 
+				drag taking place.
 	SeeAlso:	-
 
 ********************************************************************************************/
 
 BOOL Operation::EndDrag()
-{                         
-	ERROR3IF(CurrentDragOp == NULL, "Trying to end a drag which is not taking place !");    
+{
+	ERROR3IF(CurrentDragOp == NULL, "Trying to end a drag which is not taking place !");
 
 	// I've taken out the ability to switch auto-repeats off during drags (Markn - 19/10/95)
 	/*
@@ -1833,14 +1834,14 @@ BOOL Operation::EndDrag()
 
 	if ((pDocView != NULL) && (pDocView->EndDrag(this))) // Tell OS to end drag
 	{
-		CurrentDragOp = NULL;  
+		CurrentDragOp = NULL;
 
-		return (TRUE);  // Ended drag successfully  
+		return (TRUE);  // Ended drag successfully
 	}
 	else
 		return (FALSE); // Failed to end the drag (and don't bother resetting CurrentDragOp!?!?)
 */
-}  
+}
 
 /********************************************************************************************
 
@@ -1854,31 +1855,31 @@ BOOL Operation::EndDrag()
 ********************************************************************************************/
 
 void Operation::GetOpName(String_256* OpName)
-{                         
+{
 	OpDescriptor *Operation = OpDescriptor::FindOpDescriptor(this->GetRuntimeClass());
-	
-	if (Operation)             
+
+	if (Operation)
 		Operation->GetText(OpName, OP_UNDO_TEXT);
-	
-}  
+
+}
 
 BOOL Operation::UserWantsToDeleteUndoOps(void)
 {
-	if (!DeleteUndoOpsToMakeSpace)    
-	{                                     
-		// Inform the user that there is not enough system memory. Give them the option of 
-		// trying to make room for the action object by deleting undo records.            
-		if (InformWarning(_R(IDS_DELETE_UNDO), 
-						  _R(IDS_OK),          
-						  _R(IDS_CANCEL)) == 2)  
-		{   
-			FailAndExecute(); 
+	if (!DeleteUndoOpsToMakeSpace)
+	{
+		// Inform the user that there is not enough system memory. Give them the option of
+		// trying to make room for the action object by deleting undo records.
+		if (InformWarning(_R(IDS_DELETE_UNDO),
+						  _R(IDS_OK),
+						  _R(IDS_CANCEL)) == 2)
+		{
+			FailAndExecute();
 			return (FALSE);
-		}                   
-	}                                      
-	DeleteUndoOpsToMakeSpace = TRUE;      
-	return (TRUE); 
-}  
+		}
+	}
+	DeleteUndoOpsToMakeSpace = TRUE;
+	return (TRUE);
+}
 
 // Call this function from the Operation's Init method to register the operations OpDescriptor
 
@@ -1886,7 +1887,7 @@ BOOL Operation::UserWantsToDeleteUndoOps(void)
 
 >	static BOOL Operation::RegisterOpDescriptor(
 							 					  UINT32 toolID,
-							 					  UINT32 txID, 
+							 					  UINT32 txID,
 							 					  CCRuntimeClass* RuntimeClass,
 							 					  TCHAR* tok,
 							 					  pfnGetState gs,
@@ -1895,11 +1896,11 @@ BOOL Operation::UserWantsToDeleteUndoOps(void)
 							 					  UINT32 resourceID = 0,
 												  UINT32 controlID = 0,
 												  SystemBarType GroupBarID = SYSTEMBAR_ILLEGAL,
-							 					  BOOL ReceiveMessages = FALSE, 
-							 					  BOOL Smart = FALSE, 
+							 					  BOOL ReceiveMessages = FALSE,
+							 					  BOOL Smart = FALSE,
 							 					  BOOL Clean = TRUE,
 					 							  OpDescriptor* pVertOpDesc = NULL,
-					 							  UINT32 OneOpenInstID = 0,		
+					 							  UINT32 OneOpenInstID = 0,
 												  UINT32 AutoStateFlags = 0)
 
 	Author:		Simon_Maneggio (Xara Group Ltd) <camelotdev@xara.com>
@@ -1910,7 +1911,7 @@ BOOL Operation::UserWantsToDeleteUndoOps(void)
 				RuntimeClass	: The operation's runtime class
 			    tok,			: pointer to the token string
 			    gs,	 			: pointer to the GetState function
-			    helpId 			: help identifier 
+			    helpId 			: help identifier
 			    bubbleID   		: string resource for bubble help
 			    resourceID,		: resource ID
 				controlID,		: control ID within that resource within that tool
@@ -1928,16 +1929,16 @@ BOOL Operation::UserWantsToDeleteUndoOps(void)
 				 				  for 1 open instance dialogs.
 				AutoStateFlags  : Flags which indicate conditions when
 				 				  the operation should automatically be
-								  greyed/ticked etc..(This cuts down the 
-								  number of tests that need to be made in the 
+								  greyed/ticked etc..(This cuts down the
+								  number of tests that need to be made in the
 								  GetState function). See Opdesc.h for a description
 
-								  
-			      
-	Outputs:	-
-	Returns:	TRUE if successful, else ERROR is called and FALSE returned. 
 
-	Purpose:	This function should be called from the operations Init method. It 
+
+	Outputs:	-
+	Returns:	TRUE if successful, else ERROR is called and FALSE returned.
+
+	Purpose:	This function should be called from the operations Init method. It
 				creates an OpDescriptor for the operation
 
 	SeeAlso:	Opdescriptor::OpDescriptor
@@ -1945,7 +1946,7 @@ BOOL Operation::UserWantsToDeleteUndoOps(void)
 ********************************************************************************************/
 
 
-BOOL Operation::RegisterOpDescriptor( 
+BOOL Operation::RegisterOpDescriptor(
 			 					     UINT32 toolID,
 			 					  	 UINT32 txID,
 			 					  	 CCRuntimeClass* RuntimeClass,
@@ -1960,7 +1961,7 @@ BOOL Operation::RegisterOpDescriptor(
 				 					 BOOL Smart,
 				 					 BOOL Clean,
 									 OpDescriptor* pVertOpDesc,
-    	 							 UINT32 OneOpenInstID,		
+    	 							 UINT32 OneOpenInstID,
 									 UINT32 AutoStateFlags,
 									 BOOL fCheckable /*= FALSE*/ )
 {
@@ -1976,14 +1977,14 @@ BOOL Operation::RegisterOpDescriptor(
 	OpDescriptor* pHorzOpDesc = new OpDescriptor(
 				 							toolID,
 				 							txID,
-											RuntimeClass, 
+											RuntimeClass,
 											tok,
 				 							gs,
 				 							helpId,
 				 							bubbleID,
 											resourceID,
 											controlID,
-				 							ReceiveMessages, 
+				 							ReceiveMessages,
 											Smart,
 				 							Clean,
 				 							OneOpenInstID,
@@ -1992,7 +1993,7 @@ BOOL Operation::RegisterOpDescriptor(
 				 						   );
 #if !defined(EXCLUDE_FROM_RALPH) && !defined(EXCLUDE_FROM_XARALX)
 	ok = (pHorzOpDesc != NULL);
-#endif	
+#endif
 
 #if !defined(EXCLUDE_FROM_RALPH) && !defined(EXCLUDE_FROM_XARALX)
 	// If a hidden group bar has been specified try to connect the new OpDescriptor to
@@ -2004,19 +2005,19 @@ BOOL Operation::RegisterOpDescriptor(
 #endif
 
 	ERRORIF(!pHorzOpDesc, _R(IDE_NOMORE_MEMORY), FALSE);
-	return TRUE; 
-}  
+	return TRUE;
+}
 
 
 void Operation::OperationMemoryFailure()
 {
-	
-	// Inform the user that the operation has failed                        
-	InformWarning(_R(IDS_UNDO_MEMORY_FAILURE),                                  
-				  _R(IDS_OK));                                              
-	FailAndExecute();                                                       
-}        
- 
+
+	// Inform the user that the operation has failed
+	InformWarning(_R(IDS_UNDO_MEMORY_FAILURE),
+				  _R(IDS_OK));
+	FailAndExecute();
+}
+
 
 
 /********************************************************************************************
@@ -2077,10 +2078,10 @@ BOOL Operation::GetStatusLineText(String_256* ptext, Spread* pSpread, DocCoord D
 						that said no (ie. op permission == PERMISSION_DENIED) plus their parents.
 
 						It is specified that even if this func returns FALSE, all nodes that were asked
-						(i.e. all nodes that have an op permission state of either PERMISSION_ALLOWED or 
+						(i.e. all nodes that have an op permission state of either PERMISSION_ALLOWED or
 						PERMISSION_DENIED) will have their permission state reset to PERMISSION_UNDEFINED.
 
-				This function updates all nodes on the spread's layers.  Only effected nodes up to the layer level have 
+				This function updates all nodes on the spread's layers.  Only effected nodes up to the layer level have
 				their OnChildChange() function called.
 
 				EXCEPTION:  If pParam's ObjChangeType is OBJCHANGE_IGNORE, the effected nodes do NOT have their
@@ -2176,10 +2177,10 @@ BOOL Operation::UpdateChangedNode(ObjChangeParam* pParam,Node* pNode)
 	Author:		Mark_Neves (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	20/02/95
 	Inputs:		pParam	= describes the way an op has changes the node(s)
-				pDoc	= ptr to doc 
+				pDoc	= ptr to doc
 	Outputs:	-
 	Returns:	TRUE if all effected nodes were able to cope with the op, FALSE otherwise
-	Purpose:	This calls the Spread version of this func for all spreads in the given doc 
+	Purpose:	This calls the Spread version of this func for all spreads in the given doc
 
 	SeeAlso:	UpdateChangedNodes(...,Spread* pSpread)
 
@@ -2206,7 +2207,7 @@ BOOL Operation::UpdateChangedNodes(ObjChangeParam* pParam,Document* pDoc)
 			pNode = pNode->FindNext();
 		}
 
-		pChapter = pChapter->FindNextChapter(); 
+		pChapter = pChapter->FindNextChapter();
 	}
 
 	return ok;
@@ -2265,7 +2266,7 @@ void Operation::Dump()
 	// Display ops name
 	TRACEALL( _T("\nOperation : %s\n"), GetRuntimeClass()->GetClassName() );
 
-	// Display undo actions 
+	// Display undo actions
 	if (UndoActions.IsEmpty())
 	{
 		TRACEALL( _T("    No Undo actions\n") );
@@ -2282,7 +2283,7 @@ void Operation::Dump()
 		}
 	}
 
-	// Display redo actions 
+	// Display redo actions
 	if (RedoActions.IsEmpty())
 	{
 		TRACEALL( _T("    No Redo actions\n") );
@@ -2303,10 +2304,10 @@ void Operation::Dump()
 
 
 //------------------------------------------------------------------------------------------
-//Action methods  
+//Action methods
 
-//Action* Action::LastDiscardableAction = NULL;    
-                
+//Action* Action::LastDiscardableAction = NULL;
+
 /********************************************************************************************
 
 >	Action::Action()
@@ -2324,7 +2325,7 @@ void Operation::Dump()
 
 Action::Action():ListItem()
 {
-} 
+}
 
 /********************************************************************************************
 
@@ -2342,11 +2343,11 @@ Action::Action():ListItem()
 ********************************************************************************************/
 
 Action::~Action()
-{                                  
+{
 	//if (IsUserName("Simon"))
-	//	TRACE( _T("Action being deleted\n"));   
-}  
-             
+	//	TRACE( _T("Action being deleted\n"));
+}
+
 /********************************************************************************************
 
 >	virtual Action::Slaughter()
@@ -2356,20 +2357,20 @@ Action::~Action()
 	Inputs:		-
 	Outputs:	-
 	Returns:	-
-	Purpose:	destructor which gets called when an operation is deleted  
+	Purpose:	destructor which gets called when an operation is deleted
 	Errors:		-
 	SeeAlso:	Action::Slaughter
 
 ********************************************************************************************/
 
-void Action::Slaughter() 
-{               
-	delete (this); // Call the destructor 
-}   
-    
+void Action::Slaughter()
+{
+	delete (this); // Call the destructor
+}
+
 /********************************************************************************************
 
->	ActionCode Action::Execute()         
+>	ActionCode Action::Execute()
 
 	Author:		Simon_Maneggio (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	5/8/93
@@ -2377,118 +2378,118 @@ void Action::Slaughter()
 	Outputs:	-
 	Returns:	-
 	Purpose:	This is a pure virtual method which should be redefined for all derived
-				classes of Action.                                               
-				
-	Errors:		If this method is ever called then an ENSURE failure will occur. 
+				classes of Action.
+
+	Errors:		If this method is ever called then an ENSURE failure will occur.
 	SeeAlso:	-
 
 ********************************************************************************************/
-      
-ActionCode Action::Execute()         
+
+ActionCode Action::Execute()
 {
-	ENSURE(FALSE, "Calling pure virtual method of abstract class Action");    
-	return (AC_FAIL); // The function needs to return a value, even though it never will !. 
-} 
+	ENSURE(FALSE, "Calling pure virtual method of abstract class Action");
+	return (AC_FAIL); // The function needs to return a value, even though it never will !.
+}
 
 /********************************************************************************************
 
-	
->	ActionCode Action::Init(Operation* pOp, 
-						ActionList* pActionList, 
-						UINT32 ActionSize, 
-						CCRuntimeClass* ActionClass, 
-						Action** NewAction) 
-							
+
+>	ActionCode Action::Init(Operation* pOp,
+						ActionList* pActionList,
+						UINT32 ActionSize,
+						CCRuntimeClass* ActionClass,
+						Action** NewAction)
+
 	Author:		Simon_Maneggio (Xara Group Ltd) <camelotdev@xara.com>
-	Created:	6/7/93                      
-	
+	Created:	6/7/93
+
 	Inputs:		pOp: The operation to which the action should be added
-				
+
 				pActionList: The action list in the operation object
-				
-				Size:  		 The size of the action in bytes. This should be the total  
+
+				Size:  		 The size of the action in bytes. This should be the total
 							 size of the action (including any objects pointed to by the
-							 action). 
+							 action).
 
  	Outputs:    NewAction:   A pointer to the action if it could be allocated. This
 							 will be NULL if we are unwinding (AC_OK gets returned)
 
-	Returns:	AC_FAIL:     There was not enough room in the operation history for the 
-							 action and the user did not wish to continue. Usually 
-							 End() should be called in this situation. 
-				         
-				AC_NORECORD: There was not enough room in the operation history for
-							 the action, but the user requested that he wished to 
-							 continue without undo. 
+	Returns:	AC_FAIL:     There was not enough room in the operation history for the
+							 action and the user did not wish to continue. Usually
+							 End() should be called in this situation.
 
-							 Currently AC_RECORD is never returned, as we never 
+				AC_NORECORD: There was not enough room in the operation history for
+							 the action, but the user requested that he wished to
+							 continue without undo.
+
+							 Currently AC_RECORD is never returned, as we never
 							 fail an operation just because we exceed the max size
 							 of the operation history !. See code for a reason why
-				
-				AC_OK      : The action was successfully initialised and added to the 
-							 operation. OR we are unwinding. In this situation 
+
+				AC_OK      : The action was successfully initialised and added to the
+							 operation. OR we are unwinding. In this situation
 							 NewAction will be NULL.
-				         
-				           
+
+
 	Purpose:	To check that there is sufficient room for the action in the operation
-				history, and if there is, then to add the action to the operations 
-				action list. 
-				
+				history, and if there is, then to add the action to the operations
+				action list.
+
 	Errors:		-
 	SeeAlso:	-
 
 ********************************************************************************************/
 
-ActionCode Action::Init(Operation* pOp, 
-						ActionList* pActionList, 
-						UINT32 ActionSize, 
-						CCRuntimeClass* ActionClass, 
-						Action** NewAction) 
-						  
-{  
-	
-	ERROR3IF(!(pOp->IsKindOf(CC_RUNTIME_CLASS(UndoableOperation))), 
-		"Trying to create an action for a non-undoable operation"); 
+ActionCode Action::Init(Operation* pOp,
+						ActionList* pActionList,
+						UINT32 ActionSize,
+						CCRuntimeClass* ActionClass,
+						Action** NewAction)
+
+{
+
+	ERROR3IF(!(pOp->IsKindOf(CC_RUNTIME_CLASS(UndoableOperation))),
+		"Trying to create an action for a non-undoable operation");
 
 	// Update the hour glass
-	ContinueSlowJob(); 
+	ContinueSlowJob();
 
-//	OpDescriptor* pOpDesc = OpDescriptor::FindOpDescriptor(pOp->GetRuntimeClass()); 
-	                                        
-	OperationHistory& OpHist = pOp->GetWorkingDoc()->GetOpHistory(); 
-            
-	//if (Action::LastDiscardableAction != NULL) 
-    //{                                          
+//	OpDescriptor* pOpDesc = OpDescriptor::FindOpDescriptor(pOp->GetRuntimeClass());
+
+	OperationHistory& OpHist = pOp->GetWorkingDoc()->GetOpHistory();
+
+	//if (Action::LastDiscardableAction != NULL)
+    //{
 	//	delete (LastDiscardableAction);  			// LastDescardable action
-	//	Action::LastDiscardableAction = NULL; 
-	//}  
- 
+	//	Action::LastDiscardableAction = NULL;
+	//}
 
- 	// If we are unwinding an operation during Undo or Redo	then 
+
+ 	// If we are unwinding an operation during Undo or Redo	then
  	// we don't want to create an action as it will already exist on the oposite action
-	// list. 
-	
+	// list.
+
 	// When unwinding a Do however things are a little different. Whilst we don't need
-	// need to generatate Redo actions for redoing purposes, we do need them to tidy up 
+	// need to generatate Redo actions for redoing purposes, we do need them to tidy up
 	// the dying Operation. eg. A ShowNodeAction may need to delete its hidden node, and its
-	// Slaughter method must be called to acheive this. However if we fail to allocate an 
-	// action in this circumstance we don't want to return an AC_FAIL. Leaking memory is 
-	// preferable to having nowhere to go. 
+	// Slaughter method must be called to acheive this. However if we fail to allocate an
+	// action in this circumstance we don't want to return an AC_FAIL. Leaking memory is
+	// preferable to having nowhere to go.
 
 	if (pOp->GetOpFlgs().UnwindingActions && (pOp->OpStatus!=DO || pOp->GetOpFlgs().KeepOnEnd))
     {
-    	(*NewAction) = NULL; 
-    	return (AC_OK); 
-    
+    	(*NewAction) = NULL;
+    	return (AC_OK);
+
     }
-    
-    
-    //	TRACE( _T("Size of operation history = %ld\n"), OpHist.GetSize()); 
+
+
+    //	TRACE( _T("Size of operation history = %ld\n"), OpHist.GetSize());
 
 
 	// Try to allocate memory for the action, deleting undo if we get desperate
-	ALLOC_WITH_FAIL((*NewAction),(Action*)(ActionClass->CreateObject()),pOp); 	      
-	
+	ALLOC_WITH_FAIL((*NewAction),(Action*)(ActionClass->CreateObject()),pOp);
+
 	// oh no it's all gone horribly wrong, I wouldn't like to be in your shoes
 	if ((*NewAction) == NULL)
 	{
@@ -2496,29 +2497,29 @@ ActionCode Action::Init(Operation* pOp,
 		if ((pOp->GetOpFlgs().UnwindingActions))
 		{
 			ERROR3IF(!(pOp->OpStatus == DO), "OpStatus should be Do");
-			return (AC_OK);	 
+			return (AC_OK);
 		}
 		else
-		{      
+		{
 			return (AC_FAIL);
 		}
 	}
 	//if (IsUserName("Simon"))
 	//{
-	//	TRACE( _T("Adding action %s, NumBytes = %lu\n"),(*NewAction)->GetRuntimeClass()->m_lpszClassName, ActionSize);  
-	//} 
+	//	TRACE( _T("Adding action %s, NumBytes = %lu\n"),(*NewAction)->GetRuntimeClass()->m_lpszClassName, ActionSize);
+	//}
 
 
 	// If fail and discard then there is no need to prompt the user more than once
 	if (!(pOp->GetOpFlgs().Failed))
-	{                                                
+	{
 		// Check that there is enough room in the operation history for the action
-		if ((OpHist.GetSize() + ActionSize) > OpHist.GetMaxSize())    
-		{                      
-			//BOOL NoRoom = FALSE; 
-			// There is not enough room so first of all check if we can make room 
-			if (OpHist.GetMaxSize() > ActionSize) 
-			{                          
+		if ((OpHist.GetSize() + ActionSize) > OpHist.GetMaxSize())
+		{
+			//BOOL NoRoom = FALSE;
+			// There is not enough room so first of all check if we can make room
+			if (OpHist.GetMaxSize() > ActionSize)
+			{
 				// See if we can make room by deleting UNDO records
 				//if (OpHist.ReduceSize((OpHist.GetMaxSize() - ActionSize),TRUE) == FALSE)
 				//	NoRoom = TRUE;
@@ -2529,74 +2530,74 @@ ActionCode Action::Init(Operation* pOp,
 			{
 				// Very big action
 				OpHist.ReduceSize(0,TRUE, TRUE);
-			}                    
+			}
 			// We used to give the user the option of either continuing and loosing all undo/redo
 			// or have them abort their current operation. I didn't think this was a very good idea
 			// so I have removed the code. Now we let the operation history grow to what
 			// ever size it wants to, but keep the Maximum size the same. The operation history
 			// will shrink towards the maximum size whenever there are undo operations which can be deleted.
-			
+
 			// I found that in practice we were reaching this NoRoom situation when the user was undoing
-			// almost back to the start. If the user redoes then this shrinks the OpHist 
+			// almost back to the start. If the user redoes then this shrinks the OpHist
 			// because there are undo ops to discard, if the user does then this also shrinks the OpHist because
-			// all redo ops are discarded. 
-			
+			// all redo ops are discarded.
+
 			/*
 			else
-				NoRoom = TRUE; 
+				NoRoom = TRUE;
 	 		if (NoRoom)
-			{   
-			        
+			{
+
 				// We cannot make enough room in the operation history for the action
-				UINT32 _R(IDS_MSG) = (pOp->OpStatus == UNDO) ? 
-					(UINT32)_R(IDS_CANNOT_REDO_WARNING): (UINT32)_R(IDS_CANNOT_UNDO_WARNING);    
-									
+				UINT32 _R(IDS_MSG) = (pOp->OpStatus == UNDO) ?
+					(UINT32)_R(IDS_CANNOT_REDO_WARNING): (UINT32)_R(IDS_CANNOT_UNDO_WARNING);
+
 				if (InformWarning(_R(IDS_MSG),
-								  _R(IDS_CONTINUE),   
-								  _R(IDS_CANCEL)) == 2) 
-				{      
-					// The user does not want to continue, so inform the action's operation that 
-					// when the operation ends the actions previously added to its action list 
+								  _R(IDS_CONTINUE),
+								  _R(IDS_CANCEL)) == 2)
+				{
+					// The user does not want to continue, so inform the action's operation that
+					// when the operation ends the actions previously added to its action list
 					// will be executed to bring the document back to the state it was in before the
 					// operation was* started.
-					pOp->FailAndExecute();   
-					LastDiscardableAction = *NewAction; 
-					return (AC_FAIL);  
+					pOp->FailAndExecute();
+					LastDiscardableAction = *NewAction;
+					return (AC_FAIL);
 				}
 				else
-					// The user does want to continue, so inform the operation that when it ends 
-					// it should be deleted. 
-					pOp->FailAndDiscard();     
-				
+					// The user does want to continue, so inform the operation that when it ends
+					// it should be deleted.
+					pOp->FailAndDiscard();
+
 			}
 			*/
 		}
     }
-	// Add the action to the operation's action list.        
-	
-	// Note that actions are added to the operation's action list even after a fail and discard 
+	// Add the action to the operation's action list.
+
+	// Note that actions are added to the operation's action list even after a fail and discard
 	// error.  The reason for this is that if memory runs out whilst trying to execute an operation
-	// after such an error, we need to be able to unwind all actions which have been performed. If 
-	// we do not do this then all sorts of chaos will occur. 
-	
-	pActionList->AddTail(*NewAction);    
-	(*NewAction)->pOperation = pOp;            // Record the operation to which the action is attached. 
-	
-	// Store a pointer to the opposite ActionList to that which the Action is atatched 
-	(*NewAction)->pOppositeActLst = (pOp->GetUndoActionList() == pActionList) ? 
+	// after such an error, we need to be able to unwind all actions which have been performed. If
+	// we do not do this then all sorts of chaos will occur.
+
+	pActionList->AddTail(*NewAction);
+	(*NewAction)->pOperation = pOp;            // Record the operation to which the action is attached.
+
+	// Store a pointer to the opposite ActionList to that which the Action is atatched
+	(*NewAction)->pOppositeActLst = (pOp->GetUndoActionList() == pActionList) ?
 		(pOp->GetRedoActionList()) : (pOp->GetUndoActionList());
-		  
-	(*NewAction)->Size = ActionSize;           // Record the size of the action           
-	                                         
+
+	(*NewAction)->Size = ActionSize;           // Record the size of the action
+
 	// Even though the operation has not yet been added to the operation history and maybe
-	// never will, we increase the current size of the operation history to accomodate the 
-	// action. If the operation fails then the Size of the operation history will be reduced 
-	// by the same ammount in the action list's execute methods. 
-		 
-	OpHist.IncSize(ActionSize);                                                                     
-	
-	return (AC_OK); // success				  
-}                                     
+	// never will, we increase the current size of the operation history to accomodate the
+	// action. If the operation fails then the Size of the operation history will be reduced
+	// by the same ammount in the action list's execute methods.
+
+	OpHist.IncSize(ActionSize);
+
+	return (AC_OK); // success
+}
 
 /********************************************************************************************
 
@@ -2618,7 +2619,7 @@ ActionCode Action::Init(Operation* pOp,
 	Author:		Tim_Browse (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	02/13/95
 	Returns:	The View this operation is attached to.
-	Purpose:	Returns the View that is associated with this action. 
+	Purpose:	Returns the View that is associated with this action.
 				Note that the majority of actions don't care what view they work on - most
 				of them are document-based, and cause all views attached to a document to be
 				updated.
@@ -2643,7 +2644,7 @@ ActionCode Action::Init(Operation* pOp,
 	SeeAlso:	Action::GetWorkingView; Action::GetWorkingDoc
 
 ********************************************************************************************/
-                  
+
 /********************************************************************************************
 
 >	UINT32 Action::GetSize()
@@ -2661,8 +2662,8 @@ ActionCode Action::Init(Operation* pOp,
 
 UINT32 Action::GetSize()
 {
-	return (Size); 
-}          
+	return (Size);
+}
 
 
 
@@ -2709,22 +2710,22 @@ BOOL Action::TransferToOtherOp(Operation* pOtherOp, ActionList* pAddActions, Act
 
 	pOperation = pOtherOp;
 	pOppositeActLst = pOtherActions;
-	
+
 	pAddActions->AddTail(this);
 
 	return TRUE;
 }
 
 
- 
+
 // -----------------------------------------------------------------------------------------
 // -----------------------------------------------------------------------------------------
-// All general purpose actions here   
-   
- 
+// All general purpose actions here
+
+
 //------------------------------------------------------------------------------------------
 // InvalidateRegionAction methods
- 
+
 
 /********************************************************************************************
 
@@ -2740,73 +2741,73 @@ BOOL Action::TransferToOtherOp(Operation* pOtherOp, ActionList* pAddActions, Act
 	SeeAlso:	-
 
 ********************************************************************************************/
- 
- 
+
+
 InvalidateRegionAction::InvalidateRegionAction()
 {
-} 
+}
 
 
 /********************************************************************************************
 
->	ActionCode InvalidateRegionAction::Execute()   
+>	ActionCode InvalidateRegionAction::Execute()
 
 	Author:		Simon_Maneggio (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	16/8/93
 	Inputs:		-
 	Outputs:	ActionCode indicating if the action was successfully executed or not
 	Returns:	-
-	Purpose:	Executes the InvalidateRegionAction which invalidates a region which is the 
-				union of the bounding rectangles of each node in the range. When the 
-				includeBlobs flag is TRUE the region which gets invalidated includes the 
-				objects blobs.   
+	Purpose:	Executes the InvalidateRegionAction which invalidates a region which is the
+				union of the bounding rectangles of each node in the range. When the
+				includeBlobs flag is TRUE the region which gets invalidated includes the
+				objects blobs.
 	Errors:		-
 	SeeAlso:	-
-    
-    
+
+
 ********************************************************************************************/
 
 ActionCode InvalidateRegionAction::Execute()
 {
-	InvalidateRegionAction* InvRgnAct;  
-    ActionCode ActCode;  
-    // Attempt to initialise the action    
-    if ((ActCode = InvalidateRegionAction::Init(pOperation,                    
-								     			pOppositeActLst,  
+	InvalidateRegionAction* InvRgnAct;
+    ActionCode ActCode;
+    // Attempt to initialise the action
+    if ((ActCode = InvalidateRegionAction::Init(pOperation,
+								     			pOppositeActLst,
 								     			NodeRange,
-												pSpread, 
-												IncludeBlobs, 
-						 			 			(Action**)(&InvRgnAct))) != AC_FAIL) 
-		
-				
-	{   
-		// The action was successfully initialised   
+												pSpread,
+												IncludeBlobs,
+						 			 			(Action**)(&InvRgnAct))) != AC_FAIL)
 
-		// Invalidate each nodes bounds 
-	
+
+	{
+		// The action was successfully initialised
+
+		// Invalidate each nodes bounds
+
 		Document* pDocument = pOperation->GetWorkingDoc();
 		ENSURE(pDocument != 0, "There was no current document in InvalidateRegionAction" );
-		
+
 		if (pDocument != NULL)
 		{
 			BOOL bOldPTP = NodeRange.SetPromoteToParent(TRUE);
 			NodeRenderableInk* CurrentNode = (NodeRenderableInk*)NodeRange.FindFirst();
 
-			DocRect InvalidRgn; 
-		
+			DocRect InvalidRgn;
+
 			while (CurrentNode != NULL)
 			{
 				if (CurrentNode->IsAnObject() || CurrentNode->IsPaper())
 				{
 					// Find the region to invalidate
-					InvalidRgn = (IncludeBlobs ? 
+					InvalidRgn = (IncludeBlobs ?
 									(((NodeRenderableInk*)CurrentNode)->GetUnionBlobBoundingRect()):
 									(((NodeRenderableInk*)CurrentNode)->GetBoundingRect())
-								 ); 
+								 );
 
 					pDocument->ForceRedraw(pSpread, InvalidRgn, TRUE, CurrentNode);
 				}
-				CurrentNode = (NodeRenderableInk*)NodeRange.FindNext(CurrentNode); 
+				CurrentNode = (NodeRenderableInk*)NodeRange.FindNext(CurrentNode);
 			}
 
 			NodeRange.SetPromoteToParent(bOldPTP);
@@ -2814,77 +2815,77 @@ ActionCode InvalidateRegionAction::Execute()
 
 	}
 	return ActCode;
-}   
+}
 
 
 /********************************************************************************************
 
->	ActionCode InvalidateRegionAction::Init(Operation* const pOp, 
-						   					ActionList* pActionList, 	
-						                    Range NodeRange,  
-											Spread* pSpread, 
-						                    BOOL IncludeBlobs,   
-						                    Action** NewAction)	
+>	ActionCode InvalidateRegionAction::Init(Operation* const pOp,
+						   					ActionList* pActionList,
+						                    Range NodeRange,
+											Spread* pSpread,
+						                    BOOL IncludeBlobs,
+						                    Action** NewAction)
 
 	Author:		Simon_Maneggio (Xara Group Ltd) <camelotdev@xara.com>
-	Created:	14/9/93  
-	
+	Created:	14/9/93
+
 	Inputs:		pOp: The operation to which the action should be added
-				
+
 				pActionList: The action list in the operation object
-				
+
 				NodeRange:	 The range of nodes to be invalidated
 
-				pSpread:	 The ranges spread 
-				
+				pSpread:	 The ranges spread
+
 				IncludeBlobs: When TRUE invalidate the blob bounding rectangles of the
-							  nodes in the range. 				 
+							  nodes in the range.
 
- 	Outputs:    NewAction:   A pointer to the action if it could be allocated. 
+ 	Outputs:    NewAction:   A pointer to the action if it could be allocated.
 
-	Returns:	AC_FAIL:     There was not enough room in the operation history for the 
-							 action and the user did not wish to continue. Usually 
-							 End() should be called in this situation. 
-				         
+	Returns:	AC_FAIL:     There was not enough room in the operation history for the
+							 action and the user did not wish to continue. Usually
+							 End() should be called in this situation.
+
 				AC_NORECORD: There was not enough room in the operation history for
-							 the action, but the user requested that he wished to 
-							 continue without undo. 
-				
-				AC_OK      : The action was successfully initialised and added to the 
-							 operation. 
-				         
-				           
+							 the action, but the user requested that he wished to
+							 continue without undo.
+
+				AC_OK      : The action was successfully initialised and added to the
+							 operation.
+
+
 	Purpose:	To check that there is sufficient room for the action in the operation
-				history, and if there is, then to add the action to the operations 
-				action list. 
-				
-				The function calls the Action::Init function passing the runtime class 
-				of an InvalidateRegionAction. If successful it records the NodeTag.  
+				history, and if there is, then to add the action to the operations
+				action list.
+
+				The function calls the Action::Init function passing the runtime class
+				of an InvalidateRegionAction. If successful it records the NodeTag.
 	Errors:		-
 	SeeAlso:	Action::Init
 
 ********************************************************************************************/
- 
-ActionCode InvalidateRegionAction::Init(Operation* const pOp, 
-					   					ActionList* pActionList, 	
-					                    Range nodeRange, 
-					                    Spread* pSpread,  
-					                    BOOL includeBlobs,   
-					                    Action** NewAction)	
-{		
+
+ActionCode InvalidateRegionAction::Init(Operation* const pOp,
+					   					ActionList* pActionList,
+					                    Range nodeRange,
+					                    Spread* pSpread,
+					                    BOOL includeBlobs,
+					                    Action** NewAction)
+{
 	ActionCode Ac = (Action::Init(pOp,
 					 			  pActionList,
-					 			  sizeof(InvalidateRegionAction), 
-					 			  CC_RUNTIME_CLASS(InvalidateRegionAction), 
+					 			  sizeof(InvalidateRegionAction),
+					 			  CC_RUNTIME_CLASS(InvalidateRegionAction),
 					 			  NewAction));
 	if (*NewAction != NULL)
 	{
 		((InvalidateRegionAction*)(*NewAction))->NodeRange = nodeRange;
 		((InvalidateRegionAction*)(*NewAction))->IncludeBlobs = includeBlobs;
-		((InvalidateRegionAction*)(*NewAction))->pSpread = pSpread; 
+		((InvalidateRegionAction*)(*NewAction))->pSpread = pSpread;
 	}
-	return (Ac); 
-} 
+	return (Ac);
+}
 
 /********************************************************************************************
 
@@ -2900,47 +2901,47 @@ ActionCode InvalidateRegionAction::Init(Operation* const pOp,
 	SeeAlso:	-
 
 ********************************************************************************************/
- 
- 
+
+
 InvalidateRegionIfBgRedrawAction::InvalidateRegionIfBgRedrawAction()
 {
-} 
+}
 
 
 /********************************************************************************************
 
->	ActionCode InvalidateRegionIfBgRedrawAction::Execute()   
+>	ActionCode InvalidateRegionIfBgRedrawAction::Execute()
 
 	Author:		Will_Cowling (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	10/5/95
 	Inputs:		-
 	Outputs:	ActionCode indicating if the action was successfully executed or not
 	Returns:	-
-	Purpose:	Executes the InvalidateRegionAction which invalidates a region which is the 
-				union of the bounding rectangles of each node in the range. When the 
-				includeBlobs flag is TRUE the region which gets invalidated includes the 
-				objects blobs.   
+	Purpose:	Executes the InvalidateRegionAction which invalidates a region which is the
+				union of the bounding rectangles of each node in the range. When the
+				includeBlobs flag is TRUE the region which gets invalidated includes the
+				objects blobs.
 	Errors:		-
 	SeeAlso:	-
-    
-    
+
+
 ********************************************************************************************/
 
 ActionCode InvalidateRegionIfBgRedrawAction::Execute()
 {
-	InvalidateRegionIfBgRedrawAction* InvRgnAct;  
-    ActionCode ActCode;  
-    // Attempt to initialise the action    
-    if ((ActCode = InvalidateRegionIfBgRedrawAction::Init(pOperation,                    
-								     					  pOppositeActLst,  
+	InvalidateRegionIfBgRedrawAction* InvRgnAct;
+    ActionCode ActCode;
+    // Attempt to initialise the action
+    if ((ActCode = InvalidateRegionIfBgRedrawAction::Init(pOperation,
+								     					  pOppositeActLst,
 								     					  NodeRange,
-														  pSpread, 
-														  IncludeBlobs, 
-						 			 					  (Action**)(&InvRgnAct))) != AC_FAIL) 
-		
-				
-	{   
-		// The action was successfully initialised   
+														  pSpread,
+														  IncludeBlobs,
+						 			 					  (Action**)(&InvRgnAct))) != AC_FAIL)
+
+
+	{
+		// The action was successfully initialised
 
 		if (!GetApplication()->IsBgRendering())
 			return AC_OK;
@@ -2948,109 +2949,109 @@ ActionCode InvalidateRegionIfBgRedrawAction::Execute()
 //		GetApplication()->DeleteRenderRegions(DocView::GetSelected());
 //		GetApplication()->BgRendering = FALSE;
 
-		// Invalidate each nodes bounds 
-	
+		// Invalidate each nodes bounds
+
 		Document* pDocument = pOperation->GetWorkingDoc();
 		ENSURE(pDocument != 0, "There was no current document in InvalidateRegionAction" );
-		
+
 		if (pDocument != NULL)
 		{
 			NodeRenderableInk* CurrentNode = (NodeRenderableInk*)NodeRange.FindFirst();
 
-			DocRect InvalidRgn; 
-		
+			DocRect InvalidRgn;
+
 			while (CurrentNode != NULL)
 			{
 				if (CurrentNode->IsAnObject() || CurrentNode->IsPaper())
 				{
 					// Find the region to invalidate
-					InvalidRgn = (IncludeBlobs ? 
+					InvalidRgn = (IncludeBlobs ?
 									(((NodeRenderableInk*)CurrentNode)->GetUnionBlobBoundingRect()):
 									(((NodeRenderableInk*)CurrentNode)->GetBoundingRect())
-								 ); 
+								 );
 
 					pDocument->ForceRedraw(pSpread, InvalidRgn, TRUE, CurrentNode);
 				}
-				CurrentNode = (NodeRenderableInk*)NodeRange.FindNext(CurrentNode); 
+				CurrentNode = (NodeRenderableInk*)NodeRange.FindNext(CurrentNode);
 			}
 		}
 
 	}
 	return ActCode;
-}   
+}
 
 /********************************************************************************************
 
->	ActionCode InvalidateRegionIfBgRedrawAction::Init(Operation* const pOp, 
-						   							  ActionList* pActionList, 	
-						                   	 		  Range nodeRange, 
-						                    		  Spread* pSpread,  
-						                    		  BOOL includeBlobs,   
-						                    		  Action** NewAction)	
+>	ActionCode InvalidateRegionIfBgRedrawAction::Init(Operation* const pOp,
+						   							  ActionList* pActionList,
+						                   	 		  Range nodeRange,
+						                    		  Spread* pSpread,
+						                    		  BOOL includeBlobs,
+						                    		  Action** NewAction)
 
 	Author:		Will_Cowling (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	10/5/95
-	
+
 	Inputs:		pOp: The operation to which the action should be added
-				
+
 				pActionList: The action list in the operation object
-				
+
 				NodeRange:	 The range of nodes to be invalidated
 
-				pSpread:	 The ranges spread 
-				
+				pSpread:	 The ranges spread
+
 				IncludeBlobs: When TRUE invalidate the blob bounding rectangles of the
-							  nodes in the range. 				 
+							  nodes in the range.
 
- 	Outputs:    NewAction:   A pointer to the action if it could be allocated. 
+ 	Outputs:    NewAction:   A pointer to the action if it could be allocated.
 
-	Returns:	AC_FAIL:     There was not enough room in the operation history for the 
-							 action and the user did not wish to continue. Usually 
-							 End() should be called in this situation. 
-				         
+	Returns:	AC_FAIL:     There was not enough room in the operation history for the
+							 action and the user did not wish to continue. Usually
+							 End() should be called in this situation.
+
 				AC_NORECORD: There was not enough room in the operation history for
-							 the action, but the user requested that he wished to 
-							 continue without undo. 
-				
-				AC_OK      : The action was successfully initialised and added to the 
-							 operation. 
-				         
-				           
+							 the action, but the user requested that he wished to
+							 continue without undo.
+
+				AC_OK      : The action was successfully initialised and added to the
+							 operation.
+
+
 	Purpose:	To check that there is sufficient room for the action in the operation
-				history, and if there is, then to add the action to the operations 
-				action list. 
-				
-				The function calls the Action::Init function passing the runtime class 
-				of an InvalidateRegionAction. If successful it records the NodeTag.  
+				history, and if there is, then to add the action to the operations
+				action list.
+
+				The function calls the Action::Init function passing the runtime class
+				of an InvalidateRegionAction. If successful it records the NodeTag.
 	Errors:		-
 	SeeAlso:	Action::Init
 
 ********************************************************************************************/
- 
-ActionCode InvalidateRegionIfBgRedrawAction::Init(Operation* const pOp, 
-					   							  ActionList* pActionList, 	
-					                   	 		  Range nodeRange, 
-					                    		  Spread* pSpread,  
-					                    		  BOOL includeBlobs,   
-					                    		  Action** NewAction)	
-{		
+
+ActionCode InvalidateRegionIfBgRedrawAction::Init(Operation* const pOp,
+					   							  ActionList* pActionList,
+					                   	 		  Range nodeRange,
+					                    		  Spread* pSpread,
+					                    		  BOOL includeBlobs,
+					                    		  Action** NewAction)
+{
 	ActionCode Ac = (Action::Init(pOp,
 					 			  pActionList,
-					 			  sizeof(InvalidateRegionIfBgRedrawAction), 
-					 			  CC_RUNTIME_CLASS(InvalidateRegionIfBgRedrawAction), 
+					 			  sizeof(InvalidateRegionIfBgRedrawAction),
+					 			  CC_RUNTIME_CLASS(InvalidateRegionIfBgRedrawAction),
 					 			  NewAction));
 	if (*NewAction != NULL)
 	{
 		((InvalidateRegionIfBgRedrawAction*)(*NewAction))->NodeRange = nodeRange;
 		((InvalidateRegionIfBgRedrawAction*)(*NewAction))->IncludeBlobs = includeBlobs;
-		((InvalidateRegionIfBgRedrawAction*)(*NewAction))->pSpread = pSpread; 
+		((InvalidateRegionIfBgRedrawAction*)(*NewAction))->pSpread = pSpread;
 	}
-	return (Ac); 
-} 
+	return (Ac);
+}
 
 //------------------------------------------------------------------------------------------
 // HideNodeAction methods
-    
+
 /********************************************************************************************
 
 >	HideNodeAction::HideNodeAction()
@@ -3065,8 +3066,8 @@ ActionCode InvalidateRegionIfBgRedrawAction::Init(Operation* const pOp,
 	SeeAlso:	-
 
 ********************************************************************************************/
-    
-    
+
+
 HideNodeAction::HideNodeAction()
   :	node(0),
 	ClassOfAttributeToHide(0),
@@ -3076,20 +3077,20 @@ HideNodeAction::HideNodeAction()
 	m_bEffect(FALSE)
 {
 	// Empty.
-}   
+}
 
 
 // BODGE, to fix problems with common attrs becoming uncommon. (i.e. The node to hide is no longer there)
 // (Scaling line widths)
-ActionCode ExtremeTerror(CCRuntimeClass* AttrToHide, 
-						 Node* pNode, 
+ActionCode ExtremeTerror(CCRuntimeClass* AttrToHide,
+						 Node* pNode,
 						 Operation* pOp,
-						 ActionList* pOppositeActLst,  
-						 BOOL TellSubtree, 
+						 ActionList* pOppositeActLst,
+						 BOOL TellSubtree,
 						 BOOL IncludeSubtreeSize)
 {
-	ShowNodeAction* ShwNodeAct;  
-    ActionCode ActCode = AC_OK;  
+	ShowNodeAction* ShwNodeAct;
+    ActionCode ActCode = AC_OK;
 
 	// Search pNode's subtree, to hide all attributes of AttrToHide type
 	Node* pSearchNode = pNode->FindFirstDepthFirst();
@@ -3126,40 +3127,40 @@ ActionCode ExtremeTerror(CCRuntimeClass* AttrToHide,
 						{
 							// If the node being hidden is an attribute which will effect the bounds of it's parent
 							// bounded object then we must invalidatate the parents bounds
-							Node* Parent = pSearchNode->FindParent(); 
+							Node* Parent = pSearchNode->FindParent();
 							if (Parent != NULL)
 							{
 								if(Parent->IsKindOf(CC_RUNTIME_CLASS(NodeRenderableBounded)))
-								{ 
-									((NodeRenderableBounded*)Parent)->InvalidateBoundingRect(); 	
+								{
+									((NodeRenderableBounded*)Parent)->InvalidateBoundingRect();
 								}
 							}
-						}                 
-			
-						// Attempt to hide the node 
+						}
 
-						NodeHidden* HideNode; 
-						ALLOC_WITH_FAIL(HideNode, new NodeHidden(pSearchNode),pOp); 
+						// Attempt to hide the node
+
+						NodeHidden* HideNode;
+						ALLOC_WITH_FAIL(HideNode, new NodeHidden(pSearchNode),pOp);
 
 						if (HideNode == NULL)
 						{
-							// We were unable to hide the node so fail 
-							return AC_FAIL; 		
+							// We were unable to hide the node so fail
+							return AC_FAIL;
 						}
 
-						// Attempt to initialise the show node action which will show the node that 
-						// we have just hidden. 
-						if ((ActCode = ShowNodeAction::Init(pOp,                    
-												     		pOppositeActLst,  
-															HideNode, 
-															IncludeSubtreeSize, 
+						// Attempt to initialise the show node action which will show the node that
+						// we have just hidden.
+						if ((ActCode = ShowNodeAction::Init(pOp,
+												     		pOppositeActLst,
+															HideNode,
+															IncludeSubtreeSize,
 										 			 		( Action**)(&ShwNodeAct),
-										 			 		TellSubtree)) == AC_FAIL) 
-						{ 
-							// Show the node 
-							HideNode->ShowNode(); 	                
-				 		}   
-			 		
+										 			 		TellSubtree)) == AC_FAIL)
+						{
+							// Show the node
+							HideNode->ShowNode();
+				 		}
+
 				 		if (ActCode == AC_FAIL)
 							return AC_FAIL;
 					}
@@ -3169,8 +3170,8 @@ ActionCode ExtremeTerror(CCRuntimeClass* AttrToHide,
 		}
 		pSearchNode = pNext;
 	}
-          
-	return (ActCode);                   	 
+
+	return (ActCode);
 }
 
 /********************************************************************************************
@@ -3182,20 +3183,20 @@ ActionCode ExtremeTerror(CCRuntimeClass* AttrToHide,
 	Inputs:		-
 	Outputs:	ActionCode indicating if the action was successfully executed or not
 	Returns:	-
-	Purpose:	Executes the HideNodeAction which hides the node. It 
-				also creates a ShowNodeAction and adds it to the opposite ActionList. 
+	Purpose:	Executes the HideNodeAction which hides the node. It
+				also creates a ShowNodeAction and adds it to the opposite ActionList.
 	Errors:		-
 	SeeAlso:	-
-                                                        
-    
+
+
 ********************************************************************************************/
 
 ActionCode HideNodeAction::Execute()
 {
-	ShowNodeAction* ShwNodeAct;  
-    ActionCode ActCode;  
+	ShowNodeAction* ShwNodeAct;
+    ActionCode ActCode;
 
-	NodeHidden* HideNode; 
+	NodeHidden* HideNode;
 
 	// Tell our parent that we have changed so any cached info he has must be removed
 	// (Deals with cases where DoInvalidateRegion has been used and so no other
@@ -3232,17 +3233,17 @@ ERROR3IF(node->DiscardsAttributeChildren(), "HideNodeAction Execute under Caret\
 		// This bit is v. scary
 		if (NodeToHide == NULL)
 		{
-			// The attribute isnot where we left it last time. This could be due to a 
+			// The attribute isnot where we left it last time. This could be due to a
 			// bitmap being deleted.
 			ERROR3("Could not find attribute node to hide (Press continue for a fix :-)");
-			return (ExtremeTerror(ClassOfAttributeToHide, node, 
-								  pOperation, pOppositeActLst, 
-								  TellSubtree, IncludeSubtreeSize)); 
-		} 
+			return (ExtremeTerror(ClassOfAttributeToHide, node,
+								  pOperation, pOppositeActLst,
+								  TellSubtree, IncludeSubtreeSize));
+		}
 	}
 	else
 	{
-		NodeToHide = node; 
+		NodeToHide = node;
 	}
 
 	// Tell the node it's subtree, we are about to hide it
@@ -3268,28 +3269,28 @@ ERROR3IF(node->DiscardsAttributeChildren(), "HideNodeAction Execute under Caret\
 	{
 		// If the node being hidden is an attribute which will effect the bounds of it's parent
 		// bounded object then we must invalidatate the parents bounds
-		Node* Parent = NodeToHide->FindParent(); 
+		Node* Parent = NodeToHide->FindParent();
 		if (Parent != NULL)
 		{
 			if(Parent->IsKindOf(CC_RUNTIME_CLASS(NodeRenderableBounded)))
-			{ 
-				((NodeRenderableBounded*)Parent)->InvalidateBoundingRect(); 	
+			{
+				((NodeRenderableBounded*)Parent)->InvalidateBoundingRect();
 			}
 		}
-	}                 
-		
-	// Attempt to hide the node 
-	ALLOC_WITH_FAIL(HideNode, new NodeHidden(NodeToHide),pOperation); 
+	}
+
+	// Attempt to hide the node
+	ALLOC_WITH_FAIL(HideNode, new NodeHidden(NodeToHide),pOperation);
 
 	if (HideNode == NULL)
 	{
-		// We were unable to hide the node so fail 
-		return AC_FAIL; 		
+		// We were unable to hide the node so fail
+		return AC_FAIL;
 	}
 
 	if (NodeToHide->IsSelected())
 	{
-		// Update the selection range 
+		// Update the selection range
 		Camelot.UpdateSelection();
 	}
 
@@ -3317,90 +3318,90 @@ ERROR3IF(node->DiscardsAttributeChildren(), "HideNodeAction Execute under Caret\
 #endif
 	}
 
-    // Attempt to initialise the show node action which will show the node that 
-    // we have just hidden. 
-    if ((ActCode = ShowNodeAction::Init(pOperation,                    
-								     	pOppositeActLst,  
-										HideNode, 
-										IncludeSubtreeSize, 
+    // Attempt to initialise the show node action which will show the node that
+    // we have just hidden.
+    if ((ActCode = ShowNodeAction::Init(pOperation,
+								     	pOppositeActLst,
+										HideNode,
+										IncludeSubtreeSize,
 						 			 	( Action**)(&ShwNodeAct),
-						 			 	TellSubtree)) == AC_FAIL) 
-	{ 
-		// Show the node 
-		HideNode->ShowNode(); 	                
- 	}   
- 	
+						 			 	TellSubtree)) == AC_FAIL)
+	{
+		// Show the node
+		HideNode->ShowNode();
+ 	}
+
  	// If the node being hidden is a layer then people need to know about it
 	if (ParentOfNode)
   	{
    		BROADCAST_TO_ALL(SpreadMsg(ParentOfNode,SpreadMsg::LAYERCHANGES));
   	}
-          
-	return (ActCode);                   	 
-}    
+
+	return (ActCode);
+}
 
 /********************************************************************************************
 
->	static ActionCode HideNodeAction::Init(Operation* const pOp, 
+>	static ActionCode HideNodeAction::Init(Operation* const pOp,
 										   ActionList* pActionList,
-										   Node* NodeToHide,  
-										   BOOL IncludeSubtreeSize, 	
+										   Node* NodeToHide,
+										   BOOL IncludeSubtreeSize,
 										   Action** NewAction,
-										   BOOL TellSubtree); 
+										   BOOL TellSubtree);
 
 	Author:		Simon_Maneggio (Xara Group Ltd) <camelotdev@xara.com>
-	Created:	14/9/93  
-	
+	Created:	14/9/93
+
 	Inputs:		pOp: The operation to which the action should be added
-				
+
 				pActionList: The action list in the operation object
 
-				NodeToHide:	 The node to hide 
+				NodeToHide:	 The node to hide
 
-				IncludeSubtreeSize:  The size of a HideNodeAction is always 
-									 sizeof(HideNodeAction), however the 
+				IncludeSubtreeSize:  The size of a HideNodeAction is always
+									 sizeof(HideNodeAction), however the
 									 IncludeSubtreeSize flag is required by the
-									 twin ShowNodeAction. 
+									 twin ShowNodeAction.
 
- 	Outputs:    NewAction:   A pointer to the action if it could be allocated. 
+ 	Outputs:    NewAction:   A pointer to the action if it could be allocated.
 
-	Returns:	AC_FAIL:     There was not enough room in the operation history for the 
-							 action and the user did not wish to continue. Usually 
-							 End() should be called in this situation. 
-				         
+	Returns:	AC_FAIL:     There was not enough room in the operation history for the
+							 action and the user did not wish to continue. Usually
+							 End() should be called in this situation.
+
 				AC_NORECORD: There was not enough room in the operation history for
-							 the action, but the user requested that he wished to 
-							 continue without undo. 
-				
-				AC_OK      : The action was successfully initialised and added to the 
-							 operation. 
-				         
-				           
+							 the action, but the user requested that he wished to
+							 continue without undo.
+
+				AC_OK      : The action was successfully initialised and added to the
+							 operation.
+
+
 	Purpose:	To check that there is sufficient room for the action in the operation
-				history, and if there is, then to add the action to the operations 
-				action list. 
-				
-				The function calls the Action::Init function passing the runtime class 
+				history, and if there is, then to add the action to the operations
+				action list.
+
+				The function calls the Action::Init function passing the runtime class
 				of a HideNodeAction.
 	Errors:		-
 	SeeAlso:	Action::Init
 
 ********************************************************************************************/
-ActionCode HideNodeAction::Init(Operation* const pOp, 
+ActionCode HideNodeAction::Init(Operation* const pOp,
 						   ActionList* pActionList,
 						   Node* NodeToHide,
-						   BOOL IncludeSubtreeSize,   	
+						   BOOL IncludeSubtreeSize,
 						   Action** NewAction,
-						   BOOL TellSubtree) 
+						   BOOL TellSubtree)
 
-{  
+{
 	ActionCode Ac = (Action::Init(pOp,
 					 pActionList,
-					 sizeof(HideNodeAction), 
-					 CC_RUNTIME_CLASS(HideNodeAction), 
-					 NewAction)); 
+					 sizeof(HideNodeAction),
+					 CC_RUNTIME_CLASS(HideNodeAction),
+					 NewAction));
 
-	if (*NewAction != NULL) 
+	if (*NewAction != NULL)
 	{
 		// Only used for attributes
 		((HideNodeAction*) (*NewAction))->ClassOfAttributeToHide = 0;
@@ -3412,15 +3413,15 @@ ActionCode HideNodeAction::Init(Operation* const pOp,
 			Node* AttributeParent = NodeToHide->FindParent();
 
 			// We store the attribute's parent
-			((HideNodeAction*)(*NewAction))->node = AttributeParent; 
-			ERROR2IF(AttributeParent == NULL, AC_FAIL, "Attribute has no parent"); 
+			((HideNodeAction*)(*NewAction))->node = AttributeParent;
+			ERROR2IF(AttributeParent == NULL, AC_FAIL, "Attribute has no parent");
 
 			// It is bad if the attributes parent is an attribute, attributes are not safe anchors
-			// they can be deleted.	
-			ERROR2IF(AttributeParent->IsAnAttribute(), AC_FAIL, "Attribute's parent is an attribute"); 	
+			// they can be deleted.
+			ERROR2IF(AttributeParent->IsAnAttribute(), AC_FAIL, "Attribute's parent is an attribute");
 
 			// Store the runtime class of the attribute so that we can find it
-			((HideNodeAction*)(*NewAction))->ClassOfAttributeToHide = NodeToHide->GetRuntimeClass(); 
+			((HideNodeAction*)(*NewAction))->ClassOfAttributeToHide = NodeToHide->GetRuntimeClass();
 
 			// If it's also a Wix attribute then store its tag so it can be uniquely identified
 			// when the attribute must be hidden again.
@@ -3440,11 +3441,11 @@ ActionCode HideNodeAction::Init(Operation* const pOp,
 			((HideNodeAction*)(*NewAction))->node = NodeToHide;
 		}
 
-		((HideNodeAction*)(*NewAction))->IncludeSubtreeSize = IncludeSubtreeSize; 
-		((HideNodeAction*)(*NewAction))->TellSubtree = TellSubtree; 
+		((HideNodeAction*)(*NewAction))->IncludeSubtreeSize = IncludeSubtreeSize;
+		((HideNodeAction*)(*NewAction))->TellSubtree = TellSubtree;
 	}
-				  
-	return (Ac); 
+
+	return (Ac);
 }
 
 void HideNodeAction::RecordTag(Node* NodeToHide)
@@ -3469,9 +3470,9 @@ void HideNodeAction::RecordTag(Node* NodeToHide)
 	}
 }
 
-//------------------------------------------------------------------------------------------						   
+//------------------------------------------------------------------------------------------
 // ShowNodeAction methods
-    
+
 /********************************************************************************************
 
 >	ShowNodeAction::ShowNodeAction()
@@ -3486,14 +3487,14 @@ void HideNodeAction::RecordTag(Node* NodeToHide)
 	SeeAlso:	-
 
 ********************************************************************************************/
-    
+
 ShowNodeAction::ShowNodeAction()
 {
 }
-             
-ShowNodeAction::~ShowNodeAction() 
+
+ShowNodeAction::~ShowNodeAction()
 {
-}   
+}
 
 /********************************************************************************************
 
@@ -3504,44 +3505,44 @@ ShowNodeAction::~ShowNodeAction()
 	Inputs:		-
 	Outputs:	-
 	Returns:	-
-	Purpose:	destructor which gets called when an operation is deleted  
+	Purpose:	destructor which gets called when an operation is deleted
 	Errors:		-
 	SeeAlso:	Action::Slaughter
 
 ********************************************************************************************/
 
-void ShowNodeAction::Slaughter() 
-{               
-	// If the node which the NodeHidden hides has no parent and the node is not refferenced 
-	// by any other NodeHidden nodes, then the node can safely be deleted.  
+void ShowNodeAction::Slaughter()
+{
+	// If the node which the NodeHidden hides has no parent and the node is not refferenced
+	// by any other NodeHidden nodes, then the node can safely be deleted.
 
 	// On the other-hand if the node which the NodeHidden hides has a parent, then it must not
 	// be deleted. This situation arises when we have moved a node and the NodeHidden is simply
-	// used as a place holder for when we undo/redo.  
-	                  
-	// First delete the NodeHidden                                              
+	// used as a place holder for when we undo/redo.
+
+	// First delete the NodeHidden
 	Node* Hidden = node->HiddenNd; // Remember the node which it hides !
-	node->CascadeDelete(); // Simply unlinks the node from the tree, node should 
-						   // never have any children because it's a NodeHidden.  
-	delete (node);  
-	
-	Hidden->DecHiddenCnt(); // Decrement the number of refferences to the hidden node.            
-	                  
+	node->CascadeDelete(); // Simply unlinks the node from the tree, node should
+						   // never have any children because it's a NodeHidden.
+	delete (node);
+
+	Hidden->DecHiddenCnt(); // Decrement the number of refferences to the hidden node.
+
 	if (Hidden->FindParent() == NULL)
 	{
-		// The node which is hidden has no parent but it could be reffered to by other 
-		// hidden nodes which as yet have not been deleted.                              
-		
-		if (Hidden->GetHiddenCnt() == 0) // The node is not hidden by any NodeHidden nodes.    
+		// The node which is hidden has no parent but it could be reffered to by other
+		// hidden nodes which as yet have not been deleted.
+
+		if (Hidden->GetHiddenCnt() == 0) // The node is not hidden by any NodeHidden nodes.
 		{
 			Hidden->CascadeDelete(); // Delete the children of the hidden node.
-			delete (Hidden); 		 // Delete the hidden node itself 
+			delete (Hidden); 		 // Delete the hidden node itself
 		}
-		
-	} 
-	Action::Slaughter(); // Call base class to destroy this 
-}   
- 
+
+	}
+	Action::Slaughter(); // Call base class to destroy this
+}
+
 /********************************************************************************************
 
 >	virtual ActionCode ShowNodeAction::Execute()
@@ -3551,37 +3552,37 @@ void ShowNodeAction::Slaughter()
 	Inputs:		-
 	Outputs:	ActionCode indicating if the action was successfully executed or not
 	Returns:	-
-	Purpose:	Executes the ShowNodeAction which un-hides the node. It 
-				also creates a HideNodeAction and adds it to the opposite ActionList. 
+	Purpose:	Executes the ShowNodeAction which un-hides the node. It
+				also creates a HideNodeAction and adds it to the opposite ActionList.
 	Errors:		-
 	SeeAlso:	-
-    
-    
+
+
 ********************************************************************************************/
- 
+
 ActionCode ShowNodeAction::Execute()
-{  
-	HideNodeAction* HideNodeAct;  
-    ActionCode ActCode;  
+{
+	HideNodeAction* HideNodeAct;
+    ActionCode ActCode;
 
 	// If the HideNodeAction is for a NodeAttribute then this node must have a parent before
 	// we call the HideNodeAction's Init method. However because it is hidden it does not have one at
 	// the moment. So we use the SetParentDangerous function to give it the parent of the NodeHidden.
 	// This is horrible but it is the safest thing to do. If we call node->ShowNode before calling
 	// HideNodeAction::Init then we are shafted if this function fails. (The action will not be atomic)
-  
-  	node->HiddenNd->SetParentDangerous(node->FindParent()); 
 
-     // Attempt to initialise the hide node action  
-    if ((ActCode = HideNodeAction::Init(pOperation,                    
-								     	pOppositeActLst, 
-								     	node->HiddenNd, 
-								     	IncludeSubtreeSize,  
+  	node->HiddenNd->SetParentDangerous(node->FindParent());
+
+     // Attempt to initialise the hide node action
+    if ((ActCode = HideNodeAction::Init(pOperation,
+								     	pOppositeActLst,
+								     	node->HiddenNd,
+								     	IncludeSubtreeSize,
 						 			 	( Action**)(&HideNodeAct),
-						 			 	TellSubtree)) != AC_FAIL) 
-	{                 
+						 			 	TellSubtree)) != AC_FAIL)
+	{
 		Node* BackFromTheDead = node->ShowNode();
-		Node* Parent = BackFromTheDead->FindParent(); 
+		Node* Parent = BackFromTheDead->FindParent();
 ERROR3IF(Parent->DiscardsAttributeChildren(), "ShowNodeAction Execute under Caret\n");
 
 		// Urgh - we can only tell whether an attribute is an effect attr when it's in the tree
@@ -3606,7 +3607,7 @@ ERROR3IF(Parent->DiscardsAttributeChildren(), "ShowNodeAction Execute under Care
 
 		if (BackFromTheDead->IsSelected())
 		{
-			// Update the selection range 
+			// Update the selection range
 			Camelot.UpdateSelection();
 		}
 
@@ -3614,7 +3615,7 @@ ERROR3IF(Parent->DiscardsAttributeChildren(), "ShowNodeAction Execute under Care
 		Layer * pLayer = NULL;
 		if (BackFromTheDead->GetRuntimeClass() == CC_RUNTIME_CLASS(Layer))
   		{
-    		Spread* pSpread = (Spread*) BackFromTheDead->FindParent(CC_RUNTIME_CLASS(Spread)); 
+    		Spread* pSpread = (Spread*) BackFromTheDead->FindParent(CC_RUNTIME_CLASS(Spread));
    			BROADCAST_TO_ALL(SpreadMsg(pSpread,SpreadMsg::LAYERCHANGES));
 			pLayer = (Layer*)BackFromTheDead;
 	  	}
@@ -3634,8 +3635,8 @@ ERROR3IF(Parent->DiscardsAttributeChildren(), "ShowNodeAction Execute under Care
 			if (Parent != NULL)
 			{
 				if(Parent->IsKindOf(CC_RUNTIME_CLASS(NodeRenderableBounded)))
-				{ 
-					((NodeRenderableBounded*)Parent)->InvalidateBoundingRect(); 	
+				{
+					((NodeRenderableBounded*)Parent)->InvalidateBoundingRect();
 				}
 			}
 		}
@@ -3668,101 +3669,101 @@ ERROR3IF(Parent->DiscardsAttributeChildren(), "ShowNodeAction Execute under Care
 	{
 	  	node->HiddenNd->SetParentDangerous(NULL); // The node was never un-hidden so we must give it a NULL parent
 
-	}                 
-	return (ActCode);                   
-}     
+	}
+	return (ActCode);
+}
 
 
 /********************************************************************************************
->	static ActionCode ShowNodeAction::Init(Operation* const pOp, 
-						   				   ActionList* pActionList, 
-						   				   NodeHidden* HiddenToShow, 
-						  				   BOOL IncludeSubtreeSize, 	
+>	static ActionCode ShowNodeAction::Init(Operation* const pOp,
+						   				   ActionList* pActionList,
+						   				   NodeHidden* HiddenToShow,
+						  				   BOOL IncludeSubtreeSize,
 						   				   Action** NewAction,
-						   				   BOOL TellSubtree) 
+						   				   BOOL TellSubtree)
 
 	Author:		Simon_Maneggio (Xara Group Ltd) <camelotdev@xara.com>
-	Created:	14/9/93  
-	
+	Created:	14/9/93
+
 	Inputs:		pOp: 				The operation to which the action should be added
-				
+
 				pActionList: 		The action list in the operation object
-				
+
 				HiddenToShow: 		The hidden node to show when the action is executed
 
-				IncludeSubtreeSize: This flag should be set if the action size 
-									should include the size of the subtree which is 
-									hidden. 
-							 
- 	Outputs:    NewAction:   A pointer to the action if it could be allocated. 
+				IncludeSubtreeSize: This flag should be set if the action size
+									should include the size of the subtree which is
+									hidden.
 
-	Returns:	AC_FAIL:     There was not enough room in the operation history for the 
-							 action and the user did not wish to continue. Usually 
-							 End() should be called in this situation. 
-				         
+ 	Outputs:    NewAction:   A pointer to the action if it could be allocated.
+
+	Returns:	AC_FAIL:     There was not enough room in the operation history for the
+							 action and the user did not wish to continue. Usually
+							 End() should be called in this situation.
+
 				AC_NORECORD: There was not enough room in the operation history for
-							 the action, but the user requested that he wished to 
-							 continue without undo. 
-				
-				AC_OK      : The action was successfully initialised and added to the 
-							 operation. 
-				         
-				           
+							 the action, but the user requested that he wished to
+							 continue without undo.
+
+				AC_OK      : The action was successfully initialised and added to the
+							 operation.
+
+
 	Purpose:	To check that there is sufficient room for the action in the operation
-				history, and if there is, then to add the action to the operations 
-				action list. 
-				
-				The function calls the Action::Init function passing the runtime class 
+				history, and if there is, then to add the action to the operations
+				action list.
+
+				The function calls the Action::Init function passing the runtime class
 				of a ShowNodeAction.
 	Errors:		-
 	SeeAlso:	Action::Init
 
 ********************************************************************************************/
 
-ActionCode ShowNodeAction::Init(Operation* const pOp, 
-						   		ActionList* pActionList, 
-						   		NodeHidden* HiddenToShow, 
-						   		BOOL IncludeSubtreeSize, 	
-						   		Action** NewAction, 
+ActionCode ShowNodeAction::Init(Operation* const pOp,
+						   		ActionList* pActionList,
+						   		NodeHidden* HiddenToShow,
+						   		BOOL IncludeSubtreeSize,
+						   		Action** NewAction,
 								BOOL TellSubtree)
-{ 
-	// Determine the size of the action 
-	UINT32 ActionSize; 
+{
+	// Determine the size of the action
+	UINT32 ActionSize;
 
-	ActionSize = sizeof(ShowNodeAction); 
-	
-	// If the subtree being hidden is to be considered to belong to the operation history 
-	// then the ActionSize must include the size of the hidden subtree. 
+	ActionSize = sizeof(ShowNodeAction);
+
+	// If the subtree being hidden is to be considered to belong to the operation history
+	// then the ActionSize must include the size of the hidden subtree.
 
 	if (IncludeSubtreeSize)
 	{
 		ActionSize += ( HiddenToShow->HiddenNd->GetSubtreeSize());
 		//if (IsUserName("Simon"))
-		//	TRACE( _T("ShowNodeActionSize = %lu"), ActionSize);  
-		
+		//	TRACE( _T("ShowNodeActionSize = %lu"), ActionSize);
+
 	}
 
 	ActionCode Ac = (Action::Init(pOp,
 					 pActionList,
 					 ActionSize,
-					 CC_RUNTIME_CLASS(ShowNodeAction), 
+					 CC_RUNTIME_CLASS(ShowNodeAction),
 					 NewAction));
-	if (*NewAction != NULL) 
+	if (*NewAction != NULL)
 	{
 		((ShowNodeAction*)(*NewAction))->node = HiddenToShow;
-		((ShowNodeAction*)(*NewAction))->IncludeSubtreeSize = IncludeSubtreeSize; 
-		((ShowNodeAction*)(*NewAction))->TellSubtree = TellSubtree; 
+		((ShowNodeAction*)(*NewAction))->IncludeSubtreeSize = IncludeSubtreeSize;
+		((ShowNodeAction*)(*NewAction))->TellSubtree = TellSubtree;
 	}
 
-	return (Ac); 
-} 
- 
+	return (Ac);
+}
+
 
 
 
 //------------------------------------------------------------------------------------------
 // UnApplyAction methods
-    
+
 /********************************************************************************************
 
 >	UnApplyAction::UnApplyAction()
@@ -3777,8 +3778,8 @@ ActionCode ShowNodeAction::Init(Operation* const pOp,
 	SeeAlso:	-
 
 ********************************************************************************************/
-    
-    
+
+
 UnApplyAction::UnApplyAction()
 {
 	m_pApplyNode = NULL;
@@ -3807,22 +3808,22 @@ UnApplyAction::~UnApplyAction()
 	Inputs:		-
 	Outputs:	ActionCode indicating if the action was successfully executed or not
 	Returns:	-
-	Purpose:	Executes the UnApplyAction which hides the node. It 
-				also creates a ShowNodeAction and adds it to the opposite ActionList. 
+	Purpose:	Executes the UnApplyAction which hides the node. It
+				also creates a ShowNodeAction and adds it to the opposite ActionList.
 	Errors:		-
 	SeeAlso:	-
-                                                        
-    
+
+
 ********************************************************************************************/
 
 ActionCode UnApplyAction::Execute()
 {
-	ApplyAction* pApplyAct;  
-    ActionCode ActCode;  
+	ApplyAction* pApplyAct;
+    ActionCode ActCode;
 
 //	NodeHidden* HideNode = NULL;
 
-    // Attempt to initialise the apply action which will re-apply the node that 
+    // Attempt to initialise the apply action which will re-apply the node that
     // we are about to unapply.
     if ((ActCode = ApplyAction::Init(pOperation,
 								     	pOppositeActLst,
@@ -3832,7 +3833,7 @@ ActionCode UnApplyAction::Execute()
 						 			 	( Action**)(&pApplyAct),
 						 			 	TellSubtree)) == AC_FAIL)
 		return ActCode;
- 	
+
 	// Tell our parent that we have changed so any cached info he has must be removed
 	// (Deals with cases where DoInvalidateRegion has been used and so no other
 	//  cache release calls have been made)
@@ -3865,8 +3866,8 @@ ActionCode UnApplyAction::Execute()
 		// If the node being hidden is an attribute which will effect the bounds of it's parent
 		// bounded object then we must invalidate the parents bounds
 		if (m_pApplyNode->IsKindOf(CC_RUNTIME_CLASS(NodeRenderableBounded)))
-			((NodeRenderableBounded*)m_pApplyNode)->InvalidateBoundingRect(); 	
-			
+			((NodeRenderableBounded*)m_pApplyNode)->InvalidateBoundingRect();
+
 		NodeToHide->CascadeDelete();
 		delete NodeToHide;
 		NodeToHide = NULL;
@@ -3877,86 +3878,86 @@ ActionCode UnApplyAction::Execute()
 		if (pLayer)
 			pLayer->SetEdited(TRUE);
 
-	} 
+	}
 
 	return ActCode;
-}    
+}
 
 /********************************************************************************************
 
->	static ActionCode UnApplyAction::Init(Operation* const pOp, 
+>	static ActionCode UnApplyAction::Init(Operation* const pOp,
 										   ActionList* pActionList,
 										   Node* pActionApplyNode,
 										   NodeAttribute* pActionAttribute,
-										   BOOL IncludeSubtreeSize, 	
+										   BOOL IncludeSubtreeSize,
 										   Action** NewAction,
-										   BOOL TellSubtree); 
+										   BOOL TellSubtree);
 
 	Author:		Phil_Martin (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	26/07/2005
 	Inputs:		pOp: The operation to which the action should be added
-				
+
 				pActionList: The action list in the operation object
 
-				NodeToHide:	 The node to hide 
+				NodeToHide:	 The node to hide
 
-				IncludeSubtreeSize:  The size of a UnApplyAction is always 
-									 sizeof(UnApplyAction), however the 
+				IncludeSubtreeSize:  The size of a UnApplyAction is always
+									 sizeof(UnApplyAction), however the
 									 IncludeSubtreeSize flag is required by the
-									 twin ShowNodeAction. 
+									 twin ShowNodeAction.
 
- 	Outputs:    NewAction:   A pointer to the action if it could be allocated. 
+ 	Outputs:    NewAction:   A pointer to the action if it could be allocated.
 
-	Returns:	AC_FAIL:     There was not enough room in the operation history for the 
-							 action and the user did not wish to continue. Usually 
-							 End() should be called in this situation. 
-				         
+	Returns:	AC_FAIL:     There was not enough room in the operation history for the
+							 action and the user did not wish to continue. Usually
+							 End() should be called in this situation.
+
 				AC_NORECORD: There was not enough room in the operation history for
-							 the action, but the user requested that he wished to 
-							 continue without undo. 
-				
-				AC_OK      : The action was successfully initialised and added to the 
-							 operation. 
-				         
-				           
+							 the action, but the user requested that he wished to
+							 continue without undo.
+
+				AC_OK      : The action was successfully initialised and added to the
+							 operation.
+
+
 	Purpose:	To check that there is sufficient room for the action in the operation
-				history, and if there is, then to add the action to the operations 
-				action list. 
-				
-				The function calls the Action::Init function passing the runtime class 
+				history, and if there is, then to add the action to the operations
+				action list.
+
+				The function calls the Action::Init function passing the runtime class
 				of a UnApplyAction.
 	Errors:		-
 	SeeAlso:	Action::Init
 
 ********************************************************************************************/
-ActionCode UnApplyAction::Init(Operation* const pOp, 
+ActionCode UnApplyAction::Init(Operation* const pOp,
 						   ActionList* pActionList,
 						   Node* pActionApplyNode,
 						   NodeAttribute* pActionAttribute,
-						   BOOL IncludeSubtreeSize,   	
+						   BOOL IncludeSubtreeSize,
 						   Action** NewAction,
-						   BOOL TellSubtree) 
+						   BOOL TellSubtree)
 
-{  
+{
 	ActionCode Ac = (Action::Init(pOp,
 					 pActionList,
 					 sizeof(UnApplyAction) + sizeof(pActionAttribute),
-					 CC_RUNTIME_CLASS(UnApplyAction), 
-					 NewAction)); 
+					 CC_RUNTIME_CLASS(UnApplyAction),
+					 NewAction));
 
-	if (*NewAction != NULL) 
+	if (*NewAction != NULL)
 	{
 		UnApplyAction* pAction = (UnApplyAction*)(*NewAction);
 
 		// Store the runtime class of the attribute so that we can find it
 		pAction->m_pApplyNode = pActionApplyNode;
 		pAction->m_pAttribute = (NodeAttribute*)pActionAttribute->SimpleCopy();
-		pAction->IncludeSubtreeSize = IncludeSubtreeSize; 
-		pAction->TellSubtree = TellSubtree; 
+		pAction->IncludeSubtreeSize = IncludeSubtreeSize;
+		pAction->TellSubtree = TellSubtree;
 		pAction->RecordTag(pActionAttribute);
 	}
-				  
-	return (Ac); 
+
+	return (Ac);
 }
 
 void UnApplyAction::RecordTag(NodeAttribute* pAttr)
@@ -3970,9 +3971,9 @@ void UnApplyAction::RecordTag(NodeAttribute* pAttr)
 		m_nAttrTag = 0;
 }
 
-//------------------------------------------------------------------------------------------						   
+//------------------------------------------------------------------------------------------
 // ApplyAction methods
-    
+
 /********************************************************************************************
 
 >	ApplyAction::ApplyAction()
@@ -4000,21 +4001,21 @@ void UnApplyAction::RecordTag(NodeAttribute* pAttr)
 				  then remove them and do a one-shot undoable apply when the drag ends.
 
 ********************************************************************************************/
-    
+
 ApplyAction::ApplyAction()
 {
 	m_pApplyNode = NULL;
 	m_pAttribute = NULL;
 }
 
-ApplyAction::~ApplyAction() 
+ApplyAction::~ApplyAction()
 {
 	if (m_pAttribute)
 	{
 		delete m_pAttribute;
 		m_pAttribute = NULL;
 	}
-}   
+}
 
 /********************************************************************************************
 
@@ -4025,27 +4026,27 @@ ApplyAction::~ApplyAction()
 	Inputs:		-
 	Outputs:	ActionCode indicating if the action was successfully executed or not
 	Returns:	-
-	Purpose:	Executes the ApplyAction which un-hides the node. It 
-				also creates a UnApplyAction and adds it to the opposite ActionList. 
+	Purpose:	Executes the ApplyAction which un-hides the node. It
+				also creates a UnApplyAction and adds it to the opposite ActionList.
 	Errors:		-
 	SeeAlso:	-
-    
-    
-********************************************************************************************/
- 
-ActionCode ApplyAction::Execute()
-{  
-	UnApplyAction* pUnApplyAction;  
-    ActionCode ActCode;  
 
-     // Attempt to initialise the hide node action  
-    if ((ActCode = UnApplyAction::Init(pOperation,                    
+
+********************************************************************************************/
+
+ActionCode ApplyAction::Execute()
+{
+	UnApplyAction* pUnApplyAction;
+    ActionCode ActCode;
+
+     // Attempt to initialise the hide node action
+    if ((ActCode = UnApplyAction::Init(pOperation,
 								     	pOppositeActLst,
 										m_pApplyNode,
 								     	m_pAttribute,
-								     	IncludeSubtreeSize,  
+								     	IncludeSubtreeSize,
 						 			 	( Action**)(&pUnApplyAction),
-						 			 	TellSubtree)) != AC_FAIL) 
+						 			 	TellSubtree)) != AC_FAIL)
 	{
 		ERROR3IF(m_pAttribute==NULL, "ApplyAction::Execute has no attribute!\n");
 		if (m_pAttribute)
@@ -4080,89 +4081,89 @@ ActionCode ApplyAction::Execute()
 			((NodeRenderableBounded*)m_pApplyNode)->ReleaseCached(TRUE, FALSE, TRUE, TRUE);
 	}
 
-	return (ActCode);                   
-}     
+	return (ActCode);
+}
 
 
 /********************************************************************************************
->	static ActionCode ApplyAction::Init(Operation* const pOp, 
-						   				   ActionList* pActionList, 
-						   				   Node* pActionApplyNode, 
+>	static ActionCode ApplyAction::Init(Operation* const pOp,
+						   				   ActionList* pActionList,
+						   				   Node* pActionApplyNode,
 										   NodeAttribute* pActionAttribute,
-						  				   BOOL IncludeSubtreeSize, 	
+						  				   BOOL IncludeSubtreeSize,
 						   				   Action** NewAction,
-						   				   BOOL TellSubtree) 
+						   				   BOOL TellSubtree)
 
 	Author:		Phil_Martin (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	26/07/2005
 	Inputs:		pOp: 				The operation to which the action should be added
-				
+
 				pActionList: 		The action list in the operation object
-				
+
 				HiddenToShow: 		The hidden node to show when the action is executed
 
-				IncludeSubtreeSize: This flag should be set if the action size 
-									should include the size of the subtree which is 
-									hidden. 
-							 
- 	Outputs:    NewAction:   A pointer to the action if it could be allocated. 
+				IncludeSubtreeSize: This flag should be set if the action size
+									should include the size of the subtree which is
+									hidden.
 
-	Returns:	AC_FAIL:     There was not enough room in the operation history for the 
-							 action and the user did not wish to continue. Usually 
-							 End() should be called in this situation. 
-				         
+ 	Outputs:    NewAction:   A pointer to the action if it could be allocated.
+
+	Returns:	AC_FAIL:     There was not enough room in the operation history for the
+							 action and the user did not wish to continue. Usually
+							 End() should be called in this situation.
+
 				AC_NORECORD: There was not enough room in the operation history for
-							 the action, but the user requested that he wished to 
-							 continue without undo. 
-				
-				AC_OK      : The action was successfully initialised and added to the 
-							 operation. 
-				         
-				           
+							 the action, but the user requested that he wished to
+							 continue without undo.
+
+				AC_OK      : The action was successfully initialised and added to the
+							 operation.
+
+
 	Purpose:	To check that there is sufficient room for the action in the operation
-				history, and if there is, then to add the action to the operations 
-				action list. 
-				
-				The function calls the Action::Init function passing the runtime class 
+				history, and if there is, then to add the action to the operations
+				action list.
+
+				The function calls the Action::Init function passing the runtime class
 				of a ShowNodeAction.
 	Errors:		-
 	SeeAlso:	Action::Init
 
 ********************************************************************************************/
 
-ActionCode ApplyAction::Init(Operation* const pOp, 
-						   		ActionList* pActionList, 
-						   	    Node* pActionApplyNode, 
+ActionCode ApplyAction::Init(Operation* const pOp,
+						   		ActionList* pActionList,
+						   	    Node* pActionApplyNode,
 							    NodeAttribute* pActionAttribute,
-						   		BOOL IncludeSubtreeSize, 	
-						   		Action** NewAction, 
+						   		BOOL IncludeSubtreeSize,
+						   		Action** NewAction,
 								BOOL TellSubtree)
-{ 
-	// Determine the size of the action 
+{
+	// Determine the size of the action
 	ActionCode Ac = (Action::Init(pOp,
 					 pActionList,
 					 sizeof(ApplyAction) + sizeof(pActionAttribute),
-					 CC_RUNTIME_CLASS(ApplyAction), 
+					 CC_RUNTIME_CLASS(ApplyAction),
 					 NewAction));
-	if (*NewAction != NULL) 
+	if (*NewAction != NULL)
 	{
 		ApplyAction* pAction = (ApplyAction*)(*NewAction);
 
 		pAction->m_pApplyNode		= pActionApplyNode;
 		pAction->m_pAttribute		= (NodeAttribute*)pActionAttribute->SimpleCopy();
-		pAction->IncludeSubtreeSize = IncludeSubtreeSize; 
-		pAction->TellSubtree		= TellSubtree; 
+		pAction->IncludeSubtreeSize = IncludeSubtreeSize;
+		pAction->TellSubtree		= TellSubtree;
 	}
 
-	return (Ac); 
-} 
- 
+	return (Ac);
+}
 
 
 
-//------------------------------------------------------------------------------------------						   
+
+//------------------------------------------------------------------------------------------
 // RestoreSelectionsAction methods
-    
+
 /********************************************************************************************
 
 >	RestoreSelectionsAction::RestoreSelectionsAction()
@@ -4177,16 +4178,16 @@ ActionCode ApplyAction::Init(Operation* const pOp,
 	SeeAlso:	-
 
 ********************************************************************************************/
-    
+
 RestoreSelectionsAction::RestoreSelectionsAction()
 {
 }
 
-RestoreSelectionsAction::~RestoreSelectionsAction() 
-{ 
-	// Note that the SelectionState object is not deleted in the destructor. This is because 
+RestoreSelectionsAction::~RestoreSelectionsAction()
+{
+	// Note that the SelectionState object is not deleted in the destructor. This is because
 	// it will be used by the spawned RestoreSelectionAction generated in the Execute method.
-}   
+}
 
 /********************************************************************************************
 
@@ -4200,36 +4201,36 @@ RestoreSelectionsAction::~RestoreSelectionsAction()
 	Purpose:	All RestoreSelections actions have a pointer to a selection state. This
 				selection state is passed on to the actions twin, and therefore should
 				not be deleted in the actions destructor. The slaughter method is responsible
-				for deleting the SelState. 
+				for deleting the SelState.
 
-				If this is a togling action, and ToggleStatus = FALSE then the SelState 
+				If this is a togling action, and ToggleStatus = FALSE then the SelState
 				is not deleted, it will be deleted by the other RestoreSelectionsAction
-				with ToggleStatus = TRUE. 
+				with ToggleStatus = TRUE.
 
 	Errors:		-
 	SeeAlso:	Action::Slaughter
 
 ********************************************************************************************/
-                      
-void RestoreSelectionsAction::Slaughter() 
-{   
+
+void RestoreSelectionsAction::Slaughter()
+{
 	// Determine if the SelState should be deleted here or in another RestoreSelectionsAction
 	if (SelStateShared)
 	{
-		ENSURE(toggle, "If the SelState is shared then the toggle flag should be set"); 
+		ENSURE(toggle, "If the SelState is shared then the toggle flag should be set");
 		if (toggleStatus)
 		{
-			ENSURE (SelState != NULL, "Trying to delete a NULL SelectionState"); 
-			delete SelState; 
+			ENSURE (SelState != NULL, "Trying to delete a NULL SelectionState");
+			delete SelState;
 		}
-	} 
+	}
 	else // The SelState is not shared so we can safely delete the selection state
 	{
-		delete SelState; 
+		delete SelState;
 	}
-	Action::Slaughter(); 
-}   
- 
+	Action::Slaughter();
+}
+
 /********************************************************************************************
 
 >	virtual ActionCode RestoreSelectionsAction::Execute()
@@ -4240,41 +4241,41 @@ void RestoreSelectionsAction::Slaughter()
 	Outputs:	ActionCode indicating if the action was successfully executed or not
 	Returns:	-
 	Purpose:	Executes the RestoreSelectionsAction which restores the selection state. It also
-				creates another identical RestoreSelectionsAction and adds this to the  
-		 		opposite ActionList.      
+				creates another identical RestoreSelectionsAction and adds this to the
+		 		opposite ActionList.
 	Errors:		-
 	SeeAlso:	-
-    
-    
+
+
 ********************************************************************************************/
- 
+
 ActionCode RestoreSelectionsAction::Execute()
-{  
-	RestoreSelectionsAction* RestoreAct;  
-    ActionCode ActCode;  
-    // Attempt to initialise the action    
-    if ((ActCode = RestoreSelectionsAction::Init(pOperation,                    
-								     			 pOppositeActLst,  
-								     			 SelState, 
-												 toggle, 
+{
+	RestoreSelectionsAction* RestoreAct;
+    ActionCode ActCode;
+    // Attempt to initialise the action
+    if ((ActCode = RestoreSelectionsAction::Init(pOperation,
+								     			 pOppositeActLst,
+								     			 SelState,
+												 toggle,
 												 !toggleStatus,   // Toggle it
-												 SelStateShared, 
+												 SelStateShared,
 												 RenderStartBlobs,
 												 RenderEndBlobs,
 												 !StartRestore,   // Will become the last restore !
-						 			 			 ( Action**)(&RestoreAct))) != AC_FAIL) 
-	{   
-		// The action was successfully initialised. If this is a toggle 
+						 			 			 ( Action**)(&RestoreAct))) != AC_FAIL)
+	{
+		// The action was successfully initialised. If this is a toggle
 		// action then only restore the selection state when the toggleStatus is
-		// true. 
-		if ((!toggle) || (toggleStatus))  // Determine if we have to do anything 
-		{   
+		// true.
+		if ((!toggle) || (toggleStatus))  // Determine if we have to do anything
+		{
 			// Only render the blobs if StartRestore is FALSE and either
-			// a. RenderStartBlobs is TRUE and this action is an undo action 
+			// a. RenderStartBlobs is TRUE and this action is an undo action
 			// b. RenderEndBlobs is TRUE and this is a redo action
 
 			BOOL RenderBlobs = FALSE;
-							 
+
 			if (!StartRestore)
 			{
 				if  (pOppositeActLst == pOperation->GetUndoActionList())
@@ -4293,146 +4294,146 @@ ActionCode RestoreSelectionsAction::Execute()
 			// Turn blob rendering on if this is the last restore
 			//if (!StartRestore)
 			//{
-			//	Camelot.GetBlobManager()->BlobRenderingOn(FALSE); 
+			//	Camelot.GetBlobManager()->BlobRenderingOn(FALSE);
 			//}
 
-			// Always remove the selection blobs when StartRestore is TRUE           
-			SelState->Restore(RenderBlobs, StartRestore); // Restore selections   
-			
+			// Always remove the selection blobs when StartRestore is TRUE
+			SelState->Restore(RenderBlobs, StartRestore); // Restore selections
+
 			// Turn blob rendering off if this is the first restore
 			//if (StartRestore)
 			//{
-			//	Camelot.GetBlobManager()->BlobRenderingOff(FALSE); 
+			//	Camelot.GetBlobManager()->BlobRenderingOff(FALSE);
 			//}
- 
+
 		}
-	}             
-	return (ActCode);                
-}     
+	}
+	return (ActCode);
+}
 
 
 /********************************************************************************************
 
->	static ActionCode RestoreSelectionsAction::Init(Operation* const pOp, 
-									   				ActionList* pActionList, 	
+>	static ActionCode RestoreSelectionsAction::Init(Operation* const pOp,
+									   				ActionList* pActionList,
 						  			   				SelectionState* SelState,
-						  			   				BOOL Toggle, 
-						  			   				BOOL ToggleStatus, 
-						  			   				BOOL SelStateShared,  
+						  			   				BOOL Toggle,
+						  			   				BOOL ToggleStatus,
+						  			   				BOOL SelStateShared,
 													BOOL RenderStartBlobs,
 													BOOL RenderEndBlobs,
-													BOOL StartRestore, 
-						   			   				Action** NewAction)	
+													BOOL StartRestore,
+						   			   				Action** NewAction)
 
 	Author:		Simon_Maneggio (Xara Group Ltd) <camelotdev@xara.com>
-	Created:	14/9/93  
-	
-	Inputs:		pOp: The operation to which the action should be added
-				
-				pActionList: The action list in the operation object
-				
-				SelState:	 Pointer to a selection State - this gets destroyed 
-							 in the actions slaughter method. 
+	Created:	14/9/93
 
-				Toggle:		 When TRUE this flag indicates that the selection 
+	Inputs:		pOp: The operation to which the action should be added
+
+				pActionList: The action list in the operation object
+
+				SelState:	 Pointer to a selection State - this gets destroyed
+							 in the actions slaughter method.
+
+				Toggle:		 When TRUE this flag indicates that the selection
 							 state should only be restored when the ToggleStatus
-							 is TRUE. The ToggleStatus of the actions twin = 
+							 is TRUE. The ToggleStatus of the actions twin =
 							 !ToggleStatus. This mechanism allows two RestoreSelectionActions
-							 to be created for an operation, only one of which does anything. 
-							 Usually an operation creates two RestoreSelectionsActions one 
+							 to be created for an operation, only one of which does anything.
+							 Usually an operation creates two RestoreSelectionsActions one
 							 at the head and one at the tail of the operations action list.
-							 When undoing it is desirable that the tail 
+							 When undoing it is desirable that the tail
 							 RestoreSelectionsAction restores the selection state and that
-							 the head RestoreSelectionsAction does nothing (except create 
+							 the head RestoreSelectionsAction does nothing (except create
 							 a twin). when redoing the RestoreSelectionsAction which
-							 was originally at the head of the undo action list is now at 
-							 the tail of the redo list and so it needs to restore the 
-							 selections.Likewise the RestoreSelectionsAction which was at 
+							 was originally at the head of the undo action list is now at
+							 the tail of the redo list and so it needs to restore the
+							 selections.Likewise the RestoreSelectionsAction which was at
 							 the tail of the undo action list will be at the head of the redo
 							 action list and so it is this actions turn to do nothing.
 
 
-							    
+
 				ToggleStatus:  The initial toggle status
 
-				SelStateShared:	This flag indicates that the SelState is shared by a pair of 
+				SelStateShared:	This flag indicates that the SelState is shared by a pair of
 								RestoreSelActions. If this flag is set then the Toggle
-								flag must also be set.  
+								flag must also be set.
 
 				RenderStartBlobs: Should the selection blobs be rendered for the start selection
 								  state ?
 
-				RenderEndBlobs:	  Should the selection blobs be rendered for the end selection 
+				RenderEndBlobs:	  Should the selection blobs be rendered for the end selection
 								  state ?
 
-				StartRestore:  TRUE indicates that this is the first restore action executed when 
-							   the operation is undone. 
+				StartRestore:  TRUE indicates that this is the first restore action executed when
+							   the operation is undone.
 
-							 
- 	Outputs:    NewAction:   A pointer to the action if it could be allocated. 
 
-	Returns:	AC_FAIL:     There was not enough room in the operation history for the 
-							 action and the user did not wish to continue. Usually 
-							 End() should be called in this situation. 
-				         
+ 	Outputs:    NewAction:   A pointer to the action if it could be allocated.
+
+	Returns:	AC_FAIL:     There was not enough room in the operation history for the
+							 action and the user did not wish to continue. Usually
+							 End() should be called in this situation.
+
 				AC_NORECORD: There was not enough room in the operation history for
-							 the action, but the user requested that he wished to 
-							 continue without undo. 
-				
-				AC_OK      : The action was successfully initialised and added to the 
-							 operation. 
-				         
-				           
+							 the action, but the user requested that he wished to
+							 continue without undo.
+
+				AC_OK      : The action was successfully initialised and added to the
+							 operation.
+
+
 	Purpose:	To check that there is sufficient room for the action in the operation
-				history, and if there is, then to add the action to the operations 
-				action list. 
-				
-				The function calls the Action::Init function passing the runtime class 
+				history, and if there is, then to add the action to the operations
+				action list.
+
+				The function calls the Action::Init function passing the runtime class
 				of a RestoreSelectionsAction.
 	Errors:		-
 	SeeAlso:	Action::Init
 
 ********************************************************************************************/
 
-ActionCode RestoreSelectionsAction::Init(Operation* const pOp, 
-						   				 ActionList* pActionList, 	
+ActionCode RestoreSelectionsAction::Init(Operation* const pOp,
+						   				 ActionList* pActionList,
 						   				 SelectionState* SelState,
-						   				 BOOL Toggle, 
+						   				 BOOL Toggle,
 						   				 BOOL ToggleStatus,
 						   				 BOOL SelStateShared,
-						   				 BOOL RenderStartBlobs, 
-										 BOOL RenderEndBlobs, 
- 						   				 BOOL StartRestore,  
-						   				 Action** NewAction)       
-{    
+						   				 BOOL RenderStartBlobs,
+										 BOOL RenderEndBlobs,
+ 						   				 BOOL StartRestore,
+						   				 Action** NewAction)
+{
 	// If the SelState is shared then Toggle must be TRUE. This is so that we know when
-	// to delete the SelState. 
-	ENSURE( (!SelStateShared || Toggle), "Invalid flags passed to RestoreSelectionsAction"); 
-    
-	// Try to allocate memory for the action 
+	// to delete the SelState.
+	ENSURE( (!SelStateShared || Toggle), "Invalid flags passed to RestoreSelectionsAction");
+
+	// Try to allocate memory for the action
 	ActionCode Ac = (Action::Init(pOp,
 					 pActionList,
 					 sizeof(RestoreSelectionsAction) + SelState->GetSize(),
-					 CC_RUNTIME_CLASS(RestoreSelectionsAction), 
-					 NewAction));    
-	if (*NewAction != NULL) 
+					 CC_RUNTIME_CLASS(RestoreSelectionsAction),
+					 NewAction));
+	if (*NewAction != NULL)
 	{
 		((RestoreSelectionsAction*)(*NewAction))->SelState = SelState;
-		((RestoreSelectionsAction*)(*NewAction))->toggle = Toggle; 
-		((RestoreSelectionsAction*)(*NewAction))->toggleStatus = ToggleStatus; 
-		((RestoreSelectionsAction*)(*NewAction))->SelStateShared = SelStateShared; 
-		((RestoreSelectionsAction*)(*NewAction))->RenderStartBlobs = RenderStartBlobs; 
-		((RestoreSelectionsAction*)(*NewAction))->RenderEndBlobs = RenderEndBlobs; 
-		((RestoreSelectionsAction*)(*NewAction))->StartRestore = StartRestore; 
+		((RestoreSelectionsAction*)(*NewAction))->toggle = Toggle;
+		((RestoreSelectionsAction*)(*NewAction))->toggleStatus = ToggleStatus;
+		((RestoreSelectionsAction*)(*NewAction))->SelStateShared = SelStateShared;
+		((RestoreSelectionsAction*)(*NewAction))->RenderStartBlobs = RenderStartBlobs;
+		((RestoreSelectionsAction*)(*NewAction))->RenderEndBlobs = RenderEndBlobs;
+		((RestoreSelectionsAction*)(*NewAction))->StartRestore = StartRestore;
 
 	}
-	return (Ac); 
+	return (Ac);
 }
 
 
-//------------------------------------------------------------------------------------------						   
+//------------------------------------------------------------------------------------------
 // SelectDeselectAction methods
-    
+
 /********************************************************************************************
 
 >	SelectDeselectAction::SelectDeselectAction()
@@ -4447,15 +4448,15 @@ ActionCode RestoreSelectionsAction::Init(Operation* const pOp,
 	SeeAlso:	-
 
 ********************************************************************************************/
-    
+
 SelectDeselectAction::SelectDeselectAction()
 {
 }
-             
-SelectDeselectAction::~SelectDeselectAction() 
+
+SelectDeselectAction::~SelectDeselectAction()
 {
 }
- 
+
 /********************************************************************************************
 
 >	virtual ActionCode SelectDeselectAction::Execute()
@@ -4465,110 +4466,110 @@ SelectDeselectAction::~SelectDeselectAction()
 	Inputs:		-
 	Outputs:	ActionCode indicating if the action was successfully executed or not
 	Returns:	-
-	Purpose:	Executes the SelectDeselectAction which will render node's selection blobs 
-				(which could remove them), and set it's selection state. If node is 
-				currently selected then the node is deselected. If node is currently 
-				deselected it is selected. It creates a second SelectDeselectAction for the 
-				node and adds it to the opposite action list.  
+	Purpose:	Executes the SelectDeselectAction which will render node's selection blobs
+				(which could remove them), and set it's selection state. If node is
+				currently selected then the node is deselected. If node is currently
+				deselected it is selected. It creates a second SelectDeselectAction for the
+				node and adds it to the opposite action list.
 	Errors:		-
 	SeeAlso:	-
-    
-    
+
+
 ********************************************************************************************/
- 
+
 ActionCode SelectDeselectAction::Execute()
-{  
-	SelectDeselectAction* SelDeAct;  
-    ActionCode ActCode;  
-    // Attempt to initialise the action    
-    if ((ActCode = SelectDeselectAction::Init(pOperation,                    
-								     		  pOppositeActLst,  
+{
+	SelectDeselectAction* SelDeAct;
+    ActionCode ActCode;
+    // Attempt to initialise the action
+    if ((ActCode = SelectDeselectAction::Init(pOperation,
+								     		  pOppositeActLst,
 								     		  node,
 											  Parent,
-						 			 		  ( Action**)(&SelDeAct))) != AC_FAIL) 
-	{   
-		// The action was successfully initialised   
-		ENSURE((node->IsKindOf(CC_RUNTIME_CLASS(NodeRenderableInk))), 
-			"Cannot select/deselect a non NodeRenderableInk node"); 
-			
-		if (node->IsSelected())  
-			((NodeRenderableInk*)node)->DeSelect(FALSE); // DeSelect   
-		else 
-			((NodeRenderableInk*)node)->Select(FALSE); 	// Select 
-	}             
-	return (ActCode);               	                    
-}     
+						 			 		  ( Action**)(&SelDeAct))) != AC_FAIL)
+	{
+		// The action was successfully initialised
+		ENSURE((node->IsKindOf(CC_RUNTIME_CLASS(NodeRenderableInk))),
+			"Cannot select/deselect a non NodeRenderableInk node");
+
+		if (node->IsSelected())
+			((NodeRenderableInk*)node)->DeSelect(FALSE); // DeSelect
+		else
+			((NodeRenderableInk*)node)->Select(FALSE); 	// Select
+	}
+	return (ActCode);
+}
 
 
 /********************************************************************************************
 
->	static ActionCode SelectDeselectAction::::Init(Operation* const pOp, 
-												   ActionList* pActionList, 	
-						 				  	 	   UINT32 ActionSize, 
-						  						   Node* SelDeNode, 
+>	static ActionCode SelectDeselectAction::::Init(Operation* const pOp,
+												   ActionList* pActionList,
+						 				  	 	   UINT32 ActionSize,
+						  						   Node* SelDeNode,
 						   						   Action** NewAction)
 
 	Author:		Simon_Maneggio (Xara Group Ltd) <camelotdev@xara.com>
-	Created:	14/9/93  
-	
-	Inputs:		pOp: The operation to which the action should be added
-				
-				pActionList: The action list in the operation object
-				
-				Size:  		 The size of the action in bytes. This should be the total  
-							 size of the action (including any objects pointed to by the
-							 action).      
-							 
- 	Outputs:    NewAction:   A pointer to the action if it could be allocated. 
+	Created:	14/9/93
 
-	Returns:	AC_FAIL:     There was not enough room in the operation history for the 
-							 action and the user did not wish to continue. Usually 
-							 End() should be called in this situation. 
-				         
+	Inputs:		pOp: The operation to which the action should be added
+
+				pActionList: The action list in the operation object
+
+				Size:  		 The size of the action in bytes. This should be the total
+							 size of the action (including any objects pointed to by the
+							 action).
+
+ 	Outputs:    NewAction:   A pointer to the action if it could be allocated.
+
+	Returns:	AC_FAIL:     There was not enough room in the operation history for the
+							 action and the user did not wish to continue. Usually
+							 End() should be called in this situation.
+
 				AC_NORECORD: There was not enough room in the operation history for
-							 the action, but the user requested that he wished to 
-							 continue without undo. 
-				
-				AC_OK      : The action was successfully initialised and added to the 
-							 operation. 
-				         
-				           
+							 the action, but the user requested that he wished to
+							 continue without undo.
+
+				AC_OK      : The action was successfully initialised and added to the
+							 operation.
+
+
 	Purpose:	To check that there is sufficient room for the action in the operation
-				history, and if there is, then to add the action to the operations 
-				action list. 
-				
-				The function calls the Action::Init function passing the runtime class 
+				history, and if there is, then to add the action to the operations
+				action list.
+
+				The function calls the Action::Init function passing the runtime class
 				of a ShowNodeAction.
 	Errors:		-
 	SeeAlso:	Action::Init
 
 ********************************************************************************************/
-		
-ActionCode SelectDeselectAction::Init(Operation* const pOp, 
-								ActionList* pActionList, 	
+
+ActionCode SelectDeselectAction::Init(Operation* const pOp,
+								ActionList* pActionList,
 						  		Node* SelDeNode,
 								Spread* pSpread,
 						   		Action** NewAction)
-{ 
+{
 	ActionCode Ac = (Action::Init(pOp,
 					 pActionList,
-					 sizeof(SelectDeselectAction), 
-					 CC_RUNTIME_CLASS(SelectDeselectAction), 
-					 NewAction)); 
-					   
+					 sizeof(SelectDeselectAction),
+					 CC_RUNTIME_CLASS(SelectDeselectAction),
+					 NewAction));
+
 	if (Ac != AC_FAIL)
 		if (*NewAction != NULL)
 		{
 			((SelectDeselectAction*)(*NewAction))->node = SelDeNode;
 			((SelectDeselectAction*)(*NewAction))->Parent = pSpread;
 		}
-			             
-	return (Ac); 
-} 
- 
-//------------------------------------------------------------------------------------------						   
+
+	return (Ac);
+}
+
+//------------------------------------------------------------------------------------------
 // TransformNodeAction methods
-    
+
 /********************************************************************************************
 
 >	TransformNodeAction::TransformNodeAction()
@@ -4583,14 +4584,14 @@ ActionCode SelectDeselectAction::Init(Operation* const pOp,
 	SeeAlso:	-
 
 ********************************************************************************************/
-    
+
 TransformNodeAction::TransformNodeAction()
 {
 	m_pNodeList = NULL;
 	pTrans = NULL;
 }
-             
-TransformNodeAction::~TransformNodeAction() 
+
+TransformNodeAction::~TransformNodeAction()
 {
 	if (m_pNodeList)
 	{
@@ -4604,7 +4605,7 @@ TransformNodeAction::~TransformNodeAction()
 		delete pTrans;
 		pTrans = NULL;
 	}
-}   
+}
 
 
 /********************************************************************************************
@@ -4616,16 +4617,16 @@ TransformNodeAction::~TransformNodeAction()
 	Inputs:		-
 	Outputs:	ActionCode indicating if the action was successfully executed or not
 	Returns:	-
-	Purpose:	Executes the TransformNodeAction which transforms the range of nodes. It also 
-				creates another TransformNodeAction passing it the inverse of the 
-				transform 
+	Purpose:	Executes the TransformNodeAction which transforms the range of nodes. It also
+				creates another TransformNodeAction passing it the inverse of the
+				transform
 	Errors:		-
 	SeeAlso:	-
-    
-    
+
+
 ********************************************************************************************/
 ActionCode TransformNodeAction::Execute()
-{  
+{
 	// DMc - changed 17/8/99
 	// It didn't work in its old state with compound nodes as the node range seemed to
 	// be corrupted in the transformations
@@ -4634,104 +4635,104 @@ ActionCode TransformNodeAction::Execute()
 	// Further comment. Looks like things have been fiddled with too much to rely on the
 	// range to be correct when redoing the op (check beveled shapes with text stories)
 	// So I tidied up Daves node lists and corrected his transform matrix (sjk 9/8/00)
-	TransformNodeAction* TransformNodeAct;  
-    ActionCode ActCode;  
+	TransformNodeAction* TransformNodeAct;
+    ActionCode ActCode;
 
 	Trans2DMatrix * pTransform = new Trans2DMatrix((const Trans2DMatrix&) *pTrans);
 	pTransform->Invert();
-    
+
     // Create an action to transform the node back to its initial position
-	if ( (ActCode = TransformNodeAction::Init(pOperation, 
-			 			    			  	  pOppositeActLst, 
-								   			  NodeRange, 
+	if ( (ActCode = TransformNodeAction::Init(pOperation,
+			 			    			  	  pOppositeActLst,
+								   			  NodeRange,
 								   			  pTransform,
 											  m_pNodeList,
 							  	   			  (Action**)(&TransformNodeAct)))
-		!= AC_FAIL)  
-	{   
+		!= AC_FAIL)
+	{
 		NodeListItem * pItem = (NodeListItem *)m_pNodeList->GetHead();
 		Node * pNode = NULL;
 
 		while (pItem)
 		{
 			pNode = pItem->pNode;
-			
+
 			if (((NodeRenderable *)pNode)->IsNodeRenderableClass())
-			{		
-				((NodeRenderable *)pNode)->Transform(*pTrans);				
+			{
+				((NodeRenderable *)pNode)->Transform(*pTrans);
 				// set the parent layer as having being edited
 				pNode->SetParentLayerAsEdited();
 			}
 
 			pItem = (NodeListItem *)m_pNodeList->GetNext(pItem);
-		}		
-	};  
-			        
-	return (ActCode);                   
-}     
+		}
+	};
+
+	return (ActCode);
+}
 
 
 /********************************************************************************************
 
->	static ActionCode TransformNodeAction::Init(Operation* const pOp, 
-						   						ActionList* pActionList, 
-						   						Range NodeRangeIn, 
-						   						TransformBase* Trans	
-						  						Action** NewAction) 
+>	static ActionCode TransformNodeAction::Init(Operation* const pOp,
+						   						ActionList* pActionList,
+						   						Range NodeRangeIn,
+						   						TransformBase* Trans
+						  						Action** NewAction)
 	Author:		Simon_Maneggio (Xara Group Ltd) <camelotdev@xara.com>
-	Created:	14/9/93  
-	
+	Created:	14/9/93
+
 	Inputs:		pOp: The operation to which the action should be added
-				
+
 				pActionList: The action list in the operation object
-				
-							 
-				NodeRange: 	 The range of nodes to transform 
 
-				Trans:		 The Transform to apply to the nodes in the range 
 
- 	Outputs:    NewAction:   A pointer to the action if it could be allocated. 
+				NodeRange: 	 The range of nodes to transform
 
-	Returns:	AC_FAIL:     There was not enough room in the operation history for the 
-							 action and the user did not wish to continue. Usually 
-							 End() should be called in this situation. 
-				         
+				Trans:		 The Transform to apply to the nodes in the range
+
+ 	Outputs:    NewAction:   A pointer to the action if it could be allocated.
+
+	Returns:	AC_FAIL:     There was not enough room in the operation history for the
+							 action and the user did not wish to continue. Usually
+							 End() should be called in this situation.
+
 				AC_NORECORD: There was not enough room in the operation history for
-							 the action, but the user requested that he wished to 
-							 continue without undo. 
-				
-				AC_OK      : The action was successfully initialised and added to the 
-							 operation. 
-				         
-				           
+							 the action, but the user requested that he wished to
+							 continue without undo.
+
+				AC_OK      : The action was successfully initialised and added to the
+							 operation.
+
+
 	Purpose:	To check that there is sufficient room for the action in the operation
-				history, and if there is, then to add the action to the operations 
-				action list. 
-				
-				The function calls the Action::Init function passing the runtime class 
+				history, and if there is, then to add the action to the operations
+				action list.
+
+				The function calls the Action::Init function passing the runtime class
 				of a TransformNodeAction.
 	Errors:		-
 	SeeAlso:	Action::Init
 
 ********************************************************************************************/
-ActionCode TransformNodeAction::Init(Operation* const pOp, 
-						   			 ActionList* pActionList, 
-						   			 Range NodeRangeIn, 
+ActionCode TransformNodeAction::Init(Operation* const pOp,
+						   			 ActionList* pActionList,
+						   			 Range NodeRangeIn,
 						   			 TransformBase* Trans,
 									 List * pNodeList,
 						  			 Action** NewAction)
-{ 
+{
 	ActionCode Ac = (Action::Init(pOp,
 					 			  pActionList,
 					 			  sizeof(TransformNodeAction),
-					 			  CC_RUNTIME_CLASS(TransformNodeAction), 
-					 			  NewAction));   
-						   
+					 			  CC_RUNTIME_CLASS(TransformNodeAction),
+					 			  NewAction));
+
 	if (Ac != AC_FAIL)
 	{
-		if (*NewAction != NULL)  
+		if (*NewAction != NULL)
 		{
-			// Store the range and transform in the action 
+			// Store the range and transform in the action
 			((TransformNodeAction*)(*NewAction))->NodeRange = NodeRangeIn;
 			((TransformNodeAction*)(*NewAction))->pTrans = Trans;
 			if (((TransformNodeAction*)(*NewAction))->m_pNodeList)
@@ -4742,13 +4743,13 @@ ActionCode TransformNodeAction::Init(Operation* const pOp,
 			}
 
 			// run through the original node range, collecting all the selected nodes
-		
+
 			((TransformNodeAction*)(*NewAction))->m_pNodeList = new List;
 			if (pNodeList == NULL)
 			{
-				Node *pNode = ((TransformNodeAction*)(*NewAction))->NodeRange.FindFirst();						
-				while (pNode)											
-				{														
+				Node *pNode = ((TransformNodeAction*)(*NewAction))->NodeRange.FindFirst();
+				while (pNode)
+				{
 					if (((NodeRenderable *)pNode)->IsNodeRenderableClass())
 					{
 						TRACEUSER( "SimonK", _T("trans node : %s\n"), (LPCTSTR) pNode->GetRuntimeClass()->GetClassName() );
@@ -4757,7 +4758,7 @@ ActionCode TransformNodeAction::Init(Operation* const pOp,
 						if (pItem)
 							((TransformNodeAction*)(*NewAction))->m_pNodeList->AddTail(pItem);
 					}
-					pNode = ((TransformNodeAction*)(*NewAction))->NodeRange.FindNext(pNode, FALSE);						
+					pNode = ((TransformNodeAction*)(*NewAction))->NodeRange.FindNext(pNode, FALSE);
 				}
 			}
 			else
@@ -4768,22 +4769,22 @@ ActionCode TransformNodeAction::Init(Operation* const pOp,
 				while (pItem)
 				{
 					pNode = pItem->pNode;
-					
+
 					if (((NodeRenderable *)pNode)->IsNodeRenderableClass())
-					{						
+					{
 						NodeListItem * pItem = new NodeListItem(pNode);
 						if (pItem)
 							((TransformNodeAction*)(*NewAction))->m_pNodeList->AddTail(pItem);
 					}
 
 					pItem = (NodeListItem *)pNodeList->GetNext(pItem);
-				}		
+				}
 			}
 		}
 
-	}            
-	return (Ac); 
-} 
+	}
+	return (Ac);
+}
 
 
 /********************************************************************************************
@@ -4795,19 +4796,19 @@ ActionCode TransformNodeAction::Init(Operation* const pOp,
 	Inputs:		-
 	Outputs:	-
 	Returns:	-
-	Purpose:	destructor which gets called when an operation is deleted  
+	Purpose:	destructor which gets called when an operation is deleted
 	Errors:		-
 	SeeAlso:	Action::Slaughter
 
 ********************************************************************************************/
 
-void TransformNodeAction::Slaughter() 
-{         
-	// Destroy the Trans object      
+void TransformNodeAction::Slaughter()
+{
+	// Destroy the Trans object
 	delete pTrans;
 	pTrans = NULL;
-	Action::Slaughter(); // Call base class to destroy this 
-}   
+	Action::Slaughter(); // Call base class to destroy this
+}
 
 /********************************************************************************************
 
@@ -4826,8 +4827,8 @@ void TransformNodeAction::Slaughter()
 
 TransformBase* TransformNodeAction::GetTransform()
 {
-	return (pTrans); 	
-} 
+	return (pTrans);
+}
 
 
 /********************************************************************************************
@@ -4836,30 +4837,30 @@ TransformBase* TransformNodeAction::GetTransform()
 
 	Author:		Simon_Maneggio (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	7/11/94
-	Inputs:		pMatrixTransformAction: A pointer to a TransformNodeAction containing a 
+	Inputs:		pMatrixTransformAction: A pointer to a TransformNodeAction containing a
 				Trans2DMatrix Transform
 	Outputs:	-
 	Returns:	-
 	Purpose:	This function can only be called on a TransformNodeAction with a Trans2DMatrix
-				Transform. The transform's matrix is multiplied by the matrix in the 
+				Transform. The transform's matrix is multiplied by the matrix in the
 				pTransformAction therby combining the transforms.
 	Errors:		An Error3 will occur if either this Transform or the pMatrixTransformAction
-				do not contain Trans2DMatrix transforms. 
+				do not contain Trans2DMatrix transforms.
 	SeeAlso:	-
 
 ********************************************************************************************/
 
-void TransformNodeAction::CombineWith(TransformNodeAction* pMatrixTransformAction) 
+void TransformNodeAction::CombineWith(TransformNodeAction* pMatrixTransformAction)
 {
 	// First lets make sure that we can combine the transforms
-	ERROR3IF(!(pMatrixTransformAction->GetTransform()->IS_KIND_OF(Trans2DMatrix)), 
+	ERROR3IF(!(pMatrixTransformAction->GetTransform()->IS_KIND_OF(Trans2DMatrix)),
 			 "Cannot combine Transform actions");
-	ERROR3IF(!(GetTransform()->IS_KIND_OF(Trans2DMatrix)), 
+	ERROR3IF(!(GetTransform()->IS_KIND_OF(Trans2DMatrix)),
 			 "Cannot combine transform actions");
-	
-	Trans2DMatrix* Trans1 = ((Trans2DMatrix*)GetTransform()); 
+
+	Trans2DMatrix* Trans1 = ((Trans2DMatrix*)GetTransform());
 	Trans2DMatrix* Trans2 = ((Trans2DMatrix*)(pMatrixTransformAction->GetTransform()));
-	(*Trans1)*=(*Trans2); 		 
+	(*Trans1)*=(*Trans2);
 }
 
 
@@ -4885,7 +4886,7 @@ void TransformNodeAction::CombineWith(TransformNodeAction* pMatrixTransformActio
 				Feel free to add other overriding function to handle clicks-while-
 				dragging for other operations.
 
-	Errors:		None. 
+	Errors:		None.
 	SeeAlso:	ClickModifiers::ClickWhileDrag (member variable); DocView::OnClick;
 				ScreenView::HandleDragEvent; ScreenView::HandleButtonUp;
 				TransOperation::OnClickWhileDragging

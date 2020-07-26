@@ -1,3 +1,4 @@
+// -*- tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4; fill-column: 90 -*-
 // $Id: dlgmgr.cpp 1770 2007-06-17 19:42:21Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
@@ -6389,7 +6390,7 @@ void DialogManager::DeInit()
 	if (!fCalledOnceBodge) fCalledOnceBodge = TRUE;
 	else
 	{
-		ERROR3( wxT("DialogManager::DeInit called twice - please fix me properly sometime\n") );
+		ERROR3("DialogManager::DeInit called twice - please fix me properly sometime\n");
 		return;
 	}
 

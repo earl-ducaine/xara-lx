@@ -1,3 +1,4 @@
+// -*- tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4; fill-column: 90 -*-
 // $Id: ccolbar.cpp 1528 2006-07-25 13:43:14Z gerry $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
@@ -618,7 +619,7 @@ BOOL ColourLineDragTarget::ProcessEvent(DragEventType Event,
 					{
 						// The colour was dropped onto a legal colour cell - move it
 						ColourList *TheList = pColourLine->m_pCurrentColourList;
-						ERROR3IF(TheList == NULL, _T("No current colour list!"));
+						ERROR3IF(TheList == NULL, "No current colour list!");
 
 						IndexedColour *Target = (IndexedColour *) TheList->GetUndeletedHead();
 						while (CellIndex > 0 && Target)
@@ -717,7 +718,7 @@ UINT32 ColourLineDragTarget::GetCursorID()
 					{
 						// The pointer is over a legal colour cell
 						ColourList *TheList = CColourBar::TheColourBar->m_pCurrentColourList;
-						ERROR3IF(TheList == NULL, _T("No current colour list!"));
+						ERROR3IF(TheList == NULL, "No current colour list!");
 
 						IndexedColour *Target = (IndexedColour *) TheList->GetUndeletedHead();
 						while (CellIndex > 0 && Target != NULL)
@@ -1498,7 +1499,7 @@ void CColourBar::CalculateRectsInternal(wxRect *pWindowRect,
 {
 	ERROR3IF(pWindowRect == NULL || pStripRect == NULL || pIndicatorRect == NULL ||
 			 pScrollBarRect == NULL || pEditButtonRect == NULL || pNewButtonRect == NULL,
-				_T("NULL parameter passed to CColourBar::CalculateRectsInternal"));
+				"NULL parameter passed to CColourBar::CalculateRectsInternal");
 
 	wxRect TempRect(*pWindowRect);
 
@@ -1762,7 +1763,7 @@ void CColourBar::PaintEditOrNewButton(wxDC *pDC, BOOL Normal, BOOL IsEditButton)
 		TheRect = NewButtonRect;
 #else
 	{
-		ERROR3(_T("Attempt to paint 'new colour' button, which no longer exists!"));
+		ERROR3("Attempt to paint 'new colour' button, which no longer exists!");
 		return;
 	}
 #endif
@@ -1921,7 +1922,7 @@ void CColourBar::PaintScrollButton(wxDC *pDC, INT32 ButtonID, BOOL Normal)
 void CColourBar::PaintScrollBar(wxDC *pDC)
 {
 	ERROR3IF(m_pCurrentColourList == NULL,
-			_T("CColourBar::PaintScrollBar entered with NULL Current Colour List"));
+			"CColourBar::PaintScrollBar entered with NULL Current Colour List");
 
 	wxRect SausageRect;
 	BOOL HasSausage = CalculateSausageRect(&SausageRect);
@@ -2089,7 +2090,7 @@ void CColourBar::PaintColourCell(wxDC *pDC, wxRect *Rect, DocColour *RectCol)
 	ColourContextRGBT *CCrgbt = (ColourContextRGBT *)
 	   			ColourManager::GetColourContext(COLOURMODEL_RGBT, DocView::GetSelected());
 
-	ERROR3IF(CCrgbt == NULL, _T("Can't find an RGB colour context to render with!"));
+	ERROR3IF(CCrgbt == NULL, "Can't find an RGB colour context to render with!");
 
 	DWORD ScreenWord = ConvertColourToTransScreenWord(CCrgbt, RectCol);
 
@@ -2247,7 +2248,7 @@ void CColourBar::PaintLibColourCell(wxDC *pDC, wxRect *Rect, DocColour *RectCol,
 	ColourContextRGBT *CCrgbt = (ColourContextRGBT *)
 	   			ColourManager::GetColourContext(COLOURMODEL_RGBT, DocView::GetSelected());
 
-	ERROR3IF(CCrgbt == NULL, _T("Can't find an RGB colour context to render with!"));
+	ERROR3IF(CCrgbt == NULL, "Can't find an RGB colour context to render with!");
 
 	DWORD ScreenWord = ConvertColourToTransScreenWord(CCrgbt, RectCol);
 
@@ -2493,7 +2494,7 @@ void CColourBar::PaintIndicatorDiamond(wxDC *pDC, const wxRect &CellRect,
 			break;
 
 		default:
-			ERROR3(_T("Unknown colour type"));
+			ERROR3("Unknown colour type");
 			break;
 	}
 
@@ -3959,7 +3960,7 @@ IndexedColour *CColourBar::FindColourByIndex(UINT32 Index)
 
 	if (m_pCurrentColourList == NULL)
 	{
-		ERROR3(_T("CColourBar::FindColourByIndex can't handle NULL Colour Lists"));
+		ERROR3("CColourBar::FindColourByIndex can't handle NULL Colour Lists");
 		return(NULL);
 	}
 
@@ -5239,7 +5240,7 @@ BOOL CColourBar::GetStatusLineText(String_256 *Result)
 		return(FALSE);
 
 //	ASSERT_VALID(TheColourBar);
-	ERROR3IF(Result == NULL, _T("CColourBar::GetStatusLineText - NULL Result parameter is bad"));
+	ERROR3IF(Result == NULL, "CColourBar::GetStatusLineText - NULL Result parameter is bad");
 
 	wxPoint ScreenPos = ::wxGetMousePosition();
 
