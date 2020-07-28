@@ -1,7 +1,7 @@
 // $Id: camelot.h 1714 2006-08-23 14:52:52Z luke $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
- 
+
                Xara LX, a vector drawing and manipulation program.
                     Copyright (C) 1993-2006 Xara Group Ltd.
        Copyright on certain contributions may be held in joint with their
@@ -32,7 +32,7 @@ ADDITIONAL RIGHTS
 
 Conditional upon your continuing compliance with the GNU General Public
 License described above, Xara Group Ltd grants to you certain additional
-rights. 
+rights.
 
 The additional rights are to use, modify, and distribute the software
 together with the wxWidgets library, the wxXtra library, and the "CDraw"
@@ -100,7 +100,7 @@ service marks of Xara Group Ltd. All rights in these marks are reserved.
 
 #if !defined(EXCLUDE_FROM_XARLIB)
 
-#include "dlgmgr.h"     
+#include "dlgmgr.h"
 
 class CCamFrame;
 
@@ -115,15 +115,15 @@ public:
 
     wxMDIChildFrame *CreateChildFrame( wxDocument *doc, wxView *view );
 
-	// Functions required to enable/disable the systems functionality.   
-	static void DisableSystem(CWindowID WindowID=NULL); 
+	// Functions required to enable/disable the systems functionality.
+	static void DisableSystem(CWindowID WindowID=NULL);
     static void EnableSystem();
 	static inline bool IsDisabled() {return s_bIsDisabled;}
 
-    // Display our about box             
+    // Display our about box
 	static void DoAboutBox();
-	
-    // Used to access the dialog manager             
+
+    // Used to access the dialog manager
     static DialogManager *GetDlgManager();
 
 	// Access the DocManager for templates
@@ -131,7 +131,7 @@ public:
 	{
 		return m_docManager.get();
 	}
-	
+
 	bool OnRecentFile( INT32 RecentFileNumber );
 	bool GetRecentFileText( INT32 Index, String_256* pszText );
 
@@ -143,7 +143,7 @@ public:
 	void OnHelpIndex();
 
 	void GiveActiveCanvasFocus();
-	
+
 	int /*TYPENOTE: Correct*/ FilterEvent( wxEvent& event );
 
 	void OnFatalException();
@@ -156,7 +156,7 @@ public:
 
 	static bool LaunchMediaApp( const wxString& strUrl );
 	static bool SelectMediaApp();
-	
+
 	// Get the path to the root of the resource directory structure
 	static StringBase& GetResourceDirectory();
 
@@ -168,7 +168,7 @@ private:
 	BOOL MakeDocumentNative(wxDocument* pDoc, PathName* Path);
 
 protected:
-	std::auto_ptr<wxDocManager> m_docManager;
+	std::unique_ptr<wxDocManager> m_docManager;
 	CCamFrame			   *m_pMainFrame;
 
 	static bool			s_bIsDisabled;
@@ -245,7 +245,7 @@ inline BOOL IsWindows2000()
 	Created:	02/07/2006
 	Purpose:	A derived event to watch for the deletion of windows
 	Notes:		In the OIL
-	See Also:	
+	See Also:
 
 ********************************************************************************************/
 
@@ -339,7 +339,7 @@ public:
 				wxWindowDeletionWatcher * next = pWDW->m_pNext; // as removing from the list erases the next pointer
 				pWDW->m_HasBeenDeleted = TRUE;
 				pWDW->RemoveFromList(); // note we don't delete the WDW object
-				pWDW = next;			
+				pWDW = next;
 			}
 		}
 	}

@@ -783,10 +783,15 @@ UINT32 Error::GetErrorModule()
 #define ERROR3(literal) \
     do { \
         MARKWHERE; \
-        Error::XComplain(_T(literal));         \
+        Error::XComplain(_T(literal)); \
     } while(0)
 
-#define ERROR3IF(condition, literal) do { if (condition) ERROR3(literal); } while(0)
+#define ERROR3IF(condition, literal) \
+    do { \
+        if (condition) { \
+            ERROR3(literal); \
+        } \
+    } while(0)
 
 #define ERROR3_PF(args)                             do { MARKWHERE; Error::XComplain args; } while(0)
 

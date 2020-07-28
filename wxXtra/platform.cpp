@@ -1,3 +1,4 @@
+// -*- tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4; fill-column: 90 -*-
 // $Id: platform.cpp 1344 2006-06-20 19:52:02Z alex $
 /* @@tag:xara-cn-tp@@ THIRD PARTY COPYRIGHT */
 // The following line makes normalize.pl skip type fixing
@@ -89,7 +90,11 @@ void wxPlatformDependent::RealYield()
     int i=0;
     do
     {
-        gdk_flush();
+        GdkDisplay* display = gdk_display_get_default();
+        if (display)
+        {
+            gdk_display_flush(display);
+        }
         ::wxYield();
     } while (gtk_events_pending() && (i++<10));
 #else

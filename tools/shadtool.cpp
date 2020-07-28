@@ -1,7 +1,7 @@
-// $Id: shadtool.cpp 1386 2006-06-28 17:49:55Z alex $
+	// $Id: shadtool.cpp 1386 2006-06-28 17:49:55Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
- 
+
                Xara LX, a vector drawing and manipulation program.
                     Copyright (C) 1993-2006 Xara Group Ltd.
        Copyright on certain contributions may be held in joint with their
@@ -32,7 +32,7 @@ ADDITIONAL RIGHTS
 
 Conditional upon your continuing compliance with the GNU General Public
 License described above, Xara Group Ltd grants to you certain additional
-rights. 
+rights.
 
 The additional rights are to use, modify, and distribute the software
 together with the wxWidgets library, the wxXtra library, and the "CDraw"
@@ -148,7 +148,7 @@ CC_IMPLEMENT_DYNCREATE(OpDragCreateShadow2, SelOperation)
 CC_IMPLEMENT_DYNCREATE(SaveShadowSettingsAction, Action)
 
 // Must come after the last CC_IMPLEMENT.. macro
-#define new CAM_DEBUG_NEW     
+#define new CAM_DEBUG_NEW
 
 // default shadow colour is black.
 #define DEFAULT_SHADOW_COLOUR	COLOUR_BLACK
@@ -223,11 +223,11 @@ BOOL SoftShadowTool::Init()
 {
 	// Declare all your ops here and only succeed if all declarations succeed
 	BOOL ok = TRUE;
-	if (ok) 
-		ok = (	OpApplyShadow::Declare() && 
-				OpChangeShadowType::Declare() && 
-				OpRemoveShadow::Declare() && 
-				OpShadowPosition::Declare() && 
+	if (ok)
+		ok = (	OpApplyShadow::Declare() &&
+				OpChangeShadowType::Declare() &&
+				OpRemoveShadow::Declare() &&
+				OpShadowPosition::Declare() &&
 				OpShadowPenumbra::Declare() &&
 				OpShadowAngle::Declare() &&
 				OpShadowHeight::Declare() &&
@@ -257,7 +257,7 @@ BOOL SoftShadowTool::Init()
 		if (ok) ok = DialogBarOp::ReadBarsFromFile(file,BarCreate);	// Read and create info bar
 		if (ok) file.close();									 	// Close resource
 
-		ERROR3IF(!ok,"Unable to load shadbar.ini from resource\n"); 
+		ERROR3IF(!ok,"Unable to load shadbar.ini from resource\n");
 
 		if (ok)
 		{
@@ -275,7 +275,7 @@ BOOL SoftShadowTool::Init()
 				pSoftShadowInfoBarOp->pSoftShadowTool = this;
 			}
 		}
-		
+
 		ERROR3IF(!ok,"Error finding the shadow tool info bar");
 */	}
 
@@ -291,8 +291,8 @@ BOOL SoftShadowTool::Init()
 	Author:		Olivier_Gascoin (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	29/10/96
 	Inputs:		InfoPtr - 	A pointer to a tool info block. It is passed cast to void* as
-							the version of the tool is unknown at this point. Later versions 
-							of the Tool class may have more items in this block, that this 
+							the version of the tool is unknown at this point. Later versions
+							of the Tool class may have more items in this block, that this
 							tool will not use
 	Outputs:	InfoPtr - 	The structure pointed to by InfoPtr will have had all the info
 							that this version of the Tool knows about
@@ -305,9 +305,9 @@ void SoftShadowTool::Describe(void *InfoPtr)
 	ToolInfo_v1 *Info = (ToolInfo_v1 *) InfoPtr;
 
 	Info->InfoVersion = 1;
-	
+
 	Info->InterfaceVersion = GetToolInterfaceVersion();  // You should always have this line.
-		
+
 	// These are all arbitrary at present.
 	Info->Version = 1;
 	Info->ID      = GetID();
@@ -355,7 +355,7 @@ void SoftShadowTool::SelectChange(BOOL isSelected)
 
 		if (pSoftShadowInfoBarOp->pSoftShadowInfoBar)
 		{
-			// Update the InfoBar 
+			// Update the InfoBar
 			pSoftShadowInfoBarOp->UpdateInfoBar();
 		}
 
@@ -424,7 +424,7 @@ BOOL SoftShadowTool::CreateCursors()
 	pcNormalSoftShadowCursor = new Cursor(this, _R(IDC_SOFTSHADOWTOOLCURSOR));
 	pcBlobSoftShadowCursor = new Cursor(this, _R(IDC_SOFTSHADOWBLOBCURSOR));
 
-	if ( pcNormalSoftShadowCursor==NULL || !pcNormalSoftShadowCursor->IsValid() || 
+	if ( pcNormalSoftShadowCursor==NULL || !pcNormalSoftShadowCursor->IsValid() ||
 		pcBlobSoftShadowCursor==NULL || !pcBlobSoftShadowCursor->IsValid())
 	{
 		DestroyCursors();
@@ -468,7 +468,7 @@ void SoftShadowTool::DestroyCursors()
 				Click			The type of click that was detected.
 				ClickMods		Any modifiers on the click, eg CTRL/SHIFT held down.
 				pSpread			Spread in which the click happened.
-	Returns:	
+	Returns:
 	Purpose:	The Shadow tool's mouse-click handler.
 	SeeAlso:	Tool::MouseClick;	ClickType;	ClickModifiers
 
@@ -1092,7 +1092,7 @@ BOOL SoftShadowTool::OnKeyPress(KeyPress* pKey)
 			return TRUE;
 		}
 		break;
-	}	
+	}
 
 	return FALSE;
 }
@@ -1172,7 +1172,7 @@ OpDragCreateShadow2::~OpDragCreateShadow2()
 							Yes			Shape		Select shape, then drag shadow.
 										Shadow		Select shadow, then drag it.
 				Yes			No			Shape		Apply and	} drag shadow, and copy its
-							Yes			Shape					} settings to all similar 
+							Yes			Shape					} settings to all similar
 										Shadow					} shadows in the selection.
 
 	Notes:		Apart from initially biding by the selection rules for groups, it doesn't
@@ -1452,8 +1452,8 @@ NodeRenderableInk* OpDragCreateShadow2::GetSelectedShadowFromNode(NodeRenderable
 				being dragged. Updates the master shadow according to the position of the
 				mouse pointer, and mirrors the master shadow's settings in all other shadows
 				of the same type, which were selected when the drag was started.
-	Errors:		
-	See also:	
+	Errors:
+	See also:
 
 ********************************************************************************************/
 void OpDragCreateShadow2::DragPointerMove(	DocCoord PointerPos,
@@ -1583,8 +1583,8 @@ void OpDragCreateShadow2::DragPointerMove(	DocCoord PointerPos,
 	Purpose:	Lets us tidy ourselves up, refresh the view etc. after the drag has finished.
 				Used by the shadowing code to save or restore the old shadow settings from
 				before the drag.
-	Errors:		
-	See also:	
+	Errors:
+	See also:
 
 ********************************************************************************************/
 void OpDragCreateShadow2::DragFinished(	DocCoord PointerPos, ClickModifiers ClickMods,
@@ -1689,9 +1689,9 @@ void OpDragCreateShadow2::DragFinished(	DocCoord PointerPos, ClickModifiers Clic
 BOOL OpDragCreateShadow2::Declare()
 {
 	return (RegisterOpDescriptor(
-								0, 
+								0,
 								_R(IDS_DRAGCREATESHADOWOP),
-								CC_RUNTIME_CLASS(OpDragCreateShadow2), 
+								CC_RUNTIME_CLASS(OpDragCreateShadow2),
 								OPTOKEN_DRAGCREATESHADOW,
 								OpDragCreateShadow2::GetState));
 }
@@ -1730,7 +1730,7 @@ OpState OpDragCreateShadow2::GetState(String_256* pstrDescription, OpDescriptor*
 	Inputs:		pdcWallOffset	the offset to reset wall shadows with.
 				pdcFloorVector	the vector to reset floor shadows with.
 				GlowWidth		the width to reset glow shadows with.
-				ChangeType		which 
+				ChangeType		which
 
 	Outputs:	Shadows of type ChangeType in m_ShadowList have their parameters reset
 				accordingly.
@@ -2019,8 +2019,8 @@ BOOL OpDragCreateShadow2::SaveSettings(NodeShadowController* pShadow)
 
 				Note that this routine also causes the shadows to regenerate, and causes
 				redraws for the invalidated areas of the screen.
-	Errors:		
-	See also:	
+	Errors:
+	See also:
 
 ********************************************************************************************/
 void OpDragCreateShadow2::RestoreSavedSettings()
@@ -2146,7 +2146,7 @@ SaveShadowSettingsAction::~SaveShadowSettingsAction()
 				plShadowSettings	ptr to a list of saved shadows & their settings.
 
 	Returns:	AC_OK		if we're successful.
-				AC_NORECORD	if things went wrong but we can continue, just without undo.	
+				AC_NORECORD	if things went wrong but we can continue, just without undo.
 				AC_FAIL		if things went so wrong that the op will have to rewind itself.
 
 	Purpose:	Doh! Just realised that this action's name is a complete misnomer!
@@ -2187,12 +2187,12 @@ ActionCode SaveShadowSettingsAction::Init(	UndoableOperation* pUndoOp,
 
 	Author:		Karim_MacDonald (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	23/06/2000
-	Inputs:		
-	Outputs:	
-	Returns:	
+	Inputs:
+	Outputs:
+	Returns:
 	Purpose:	The nitty gritty bit, which is called on undo/redo.
-	Errors:		
-	See also:	
+	Errors:
+	See also:
 
 ********************************************************************************************/
 ActionCode SaveShadowSettingsAction::Execute()

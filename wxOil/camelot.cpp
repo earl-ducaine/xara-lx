@@ -847,17 +847,14 @@ bool CCamApp::OnInit()
     }
 	TRACET(_T("CCamApp::Making Doc Manager"));
 	// Create the document manager and register our doc template
-	m_docManager = std::auto_ptr<wxDocManager>( new wxDocManager() );
-	// #define TODO(x) __pragma(message("TODO: "_STR(x) " :: " __FILE__ "@" STR(__LINE__)))
-	//in code somewhere
-#define DO_PRAGMA(x) _Pragma (#x)
-#define TODO(x) DO_PRAGMA(message ("TODO - " #x))
-	TODO("Creating a new CCamDocTemplate seems to do nothing.")
-		new CCamDocTemplate(
-            m_docManager.get(), wxT("Xara"), wxT("*.xar;*.web"), wxT(""), wxT("xar"), wxT("Xara document"),
-            wxT("Text View"),
-            CLASSINFO(CCamDoc),
-            CLASSINFO(CCamView) );
+	m_docManager = std::unique_ptr<wxDocManager>( new wxDocManager() );
+
+	new CCamDocTemplate(
+		m_docManager.get(), wxT("Xara"), wxT("*.xar;*.web"), wxT(""), wxT("xar"), wxT("Xara document"),
+		wxT("Text View"),
+		CLASSINFO(CCamDoc),
+		CLASSINFO(CCamView) );
+
 	//    pDocTemplate = new CCamDocTemplate(
 	//        m_docManager.get(), wxT("Xara"), wxT("*.web"), wxT(""), wxT("web"), wxT("Xara document"),
 	//        wxT("Text View"),
@@ -1099,7 +1096,8 @@ INT32 CCamApp::OnExit( void ) {
     m_docManager->FileHistorySave(Preferences::GetOilPrefs());
   }
 #endif
-  m_docManager = std::auto_ptr<wxDocManager>( NULL );
+  // m_docManager = std::unique_ptr<wxDocManager>( NULL );
+  m_docManager = NULL;
 
   bFirstRun = FALSE;
 
