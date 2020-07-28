@@ -449,7 +449,7 @@ private:
     // Temporary
     StatusLine* m_pStatusLine;
 
-    std::auto_ptr<CTemplateManager> m_pTemplateManager;
+    std::unique_ptr<CTemplateManager> m_pTemplateManager;
 
 public:
     // Public access to the template manager
