@@ -1,4 +1,4 @@
-/* -*- tab-width: 4; c-basic-offset: 4 -*- */
+/* -*- tab-width: 4; mode: gtags-mode; c-basic-offset: 4 -*- */
 // $Id: rgnlist.cpp 1328 2006-06-15 19:23:45Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
