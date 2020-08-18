@@ -1142,9 +1142,6 @@ INT32 GetTabbedDialogPage(wxWindow* pGadget) {
 ***************************************************************************/
 void DialogManager::Event (DialogEventHandler *pEvtHandler, wxEvent &event) {
   WXTYPE EventType = event.GetEventType();
-  wxCommandEvent commandEvent = (event.IsCommandEvent()) ?
-    static_cast<wxCommandEvent&>(event):
-    NULL;
   int id = event.GetId();
   UINT_PTR DlgMsgParam = 0;
   INT32 PageID = 0;
@@ -5302,7 +5299,7 @@ void DialogManager::Layout(CWindowID WindowID, BOOL CanYield /*=FALSE*/)
 	if (CanYield)
 	{
 		// wxWidgets needs a yield to process these, but we can't always yield
-		wxWindowDisabler(WindowID);
+		wxWindowDisabler WindowID;
 		wxYieldIfNeeded();
 	}
 }
