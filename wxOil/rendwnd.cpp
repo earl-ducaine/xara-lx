@@ -1,7 +1,8 @@
+/* -*- tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4; fill-column: 90 -*- */
 // $Id: rendwnd.cpp 1593 2006-07-29 11:22:30Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
- 
+
                Xara LX, a vector drawing and manipulation program.
                     Copyright (C) 1993-2006 Xara Group Ltd.
        Copyright on certain contributions may be held in joint with their
@@ -32,7 +33,7 @@ ADDITIONAL RIGHTS
 
 Conditional upon your continuing compliance with the GNU General Public
 License described above, Xara Group Ltd grants to you certain additional
-rights. 
+rights.
 
 The additional rights are to use, modify, and distribute the software
 together with the wxWidgets library, the wxXtra library, and the "CDraw"
@@ -102,7 +103,7 @@ service marks of Xara Group Ltd. All rights in these marks are reserved.
 
 #include "camtypes.h"
 #include "rendwnd.h"
-#include "camelot.h"							// for IsWin32s()
+#include "camelot.h"                            // for IsWin32s()
 //#include "ensure.h" - in camtypes.h [AUTOMATICALLY REMOVED]
 //#include "palman.h"
 #include "ccdc.h"
@@ -121,6 +122,10 @@ static char BASED_CODE THIS_FILE[] = __FILE__;
 #endif
 #endif
 
+bool is_within_on_paint_evt = false;
+CCPaintDC* g_dc_ptr;
+
+
 CC_IMPLEMENT_DYNCREATE(OpToggleDoubleBuffer, Operation)
 
 IMPLEMENT_DYNAMIC_CLASS( CRenderWnd, wxWindow )
@@ -129,670 +134,690 @@ IMPLEMENT_DYNAMIC_CLASS( CRenderWnd, wxWindow )
 #define new CAM_DEBUG_NEW
 
 BEGIN_EVENT_TABLE( CRenderWnd, wxWindow )
-	EVT_PAINT(				CRenderWnd::OnPaint )			
-	EVT_ERASE_BACKGROUND(	CRenderWnd::OnErase )
-	EVT_LEFT_DOWN(			CRenderWnd::OnLButtonDown )
-	EVT_LEFT_DCLICK(		CRenderWnd::OnLButtonDblClk )
-	EVT_LEFT_UP(			CRenderWnd::OnLButtonUp )
-	EVT_MIDDLE_DOWN(		CRenderWnd::OnMButtonDown )
-	EVT_MIDDLE_DCLICK(		CRenderWnd::OnMButtonDblClk )
-	EVT_MIDDLE_UP(			CRenderWnd::OnMButtonUp )
-	EVT_RIGHT_DOWN(			CRenderWnd::OnRButtonDown )
-	EVT_RIGHT_DCLICK(		CRenderWnd::OnRButtonDblClk )
-	EVT_RIGHT_UP(			CRenderWnd::OnRButtonUp )
-	EVT_MOTION(				CRenderWnd::OnMouseMove )
-	EVT_MOUSEWHEEL(			CRenderWnd::OnMouseWheel )
-	EVT_SIZE(				CRenderWnd::OnSize)
-	EVT_SET_CURSOR(			CRenderWnd::OnSetCursor )
-	EVT_KEY_DOWN(			CRenderWnd::OnKey)
-	EVT_KEY_UP(				CRenderWnd::OnKey)
-	EVT_CHAR(				CRenderWnd::OnChar)
-	EVT_IDLE(				CRenderWnd::OnIdle)
-	
+    EVT_PAINT(              CRenderWnd::OnPaint )
+    EVT_ERASE_BACKGROUND(   CRenderWnd::OnErase )
+    EVT_LEFT_DOWN(          CRenderWnd::OnLButtonDown )
+    EVT_LEFT_DCLICK(        CRenderWnd::OnLButtonDblClk )
+    EVT_LEFT_UP(            CRenderWnd::OnLButtonUp )
+    EVT_MIDDLE_DOWN(        CRenderWnd::OnMButtonDown )
+    EVT_MIDDLE_DCLICK(      CRenderWnd::OnMButtonDblClk )
+    EVT_MIDDLE_UP(          CRenderWnd::OnMButtonUp )
+    EVT_RIGHT_DOWN(         CRenderWnd::OnRButtonDown )
+    EVT_RIGHT_DCLICK(       CRenderWnd::OnRButtonDblClk )
+    EVT_RIGHT_UP(           CRenderWnd::OnRButtonUp )
+    EVT_MOTION(             CRenderWnd::OnMouseMove )
+    EVT_MOUSEWHEEL(         CRenderWnd::OnMouseWheel )
+    EVT_SIZE(               CRenderWnd::OnSize)
+    EVT_SET_CURSOR(         CRenderWnd::OnSetCursor )
+    EVT_KEY_DOWN(           CRenderWnd::OnKey)
+    EVT_KEY_UP(             CRenderWnd::OnKey)
+    EVT_CHAR(               CRenderWnd::OnChar)
+    EVT_IDLE(               CRenderWnd::OnIdle)
+
 #if defined(__WXGTK__)
-	EVT_ENTER_WINDOW(		CRenderWnd::OnEnter )
-	EVT_LEAVE_WINDOW(		CRenderWnd::OnLeave )
+    EVT_ENTER_WINDOW(       CRenderWnd::OnEnter )
+    EVT_LEAVE_WINDOW(       CRenderWnd::OnLeave )
 #endif
 END_EVENT_TABLE()
 
 BOOL CRenderWnd::m_DoubleBuffer = FALSE;
 
-CRenderWnd::CRenderWnd(CCamView* pView) :
-	m_pView(pView), m_pCCClientDC(NULL)
+CRenderWnd::CRenderWnd(CCamView* pView)
+    : wxWindow(), m_pView(pView), m_pCCClientDC(NULL)
 {
-	m_DCUsers=0;
-	// Nothing else to do for now...
+    SetBackgroundStyle(wxBG_STYLE_PAINT);
+
+    m_DCUsers = 0;
+    // Nothing else to do for now...
 }
 
 CRenderWnd::~CRenderWnd()
 {
-	TRACEUSER("Gerry", _T("Deleting CRenderWnd at 0x%08x\n"), this);
-	if (m_DCUsers)
-	{
-		ERROR3("CRenderWnd::~CRenderWnd non-zero DC user count - leaking a DC");
-	}
-	else
-	{
-		if (m_pCCClientDC)
-		{
-			delete(m_pCCClientDC);
-			m_pCCClientDC = NULL;
-		}
-	}
+    TRACEUSER("Gerry", _T("Deleting CRenderWnd at 0x%08x\n"), this);
+    if (m_DCUsers)
+    {
+        ERROR3("CRenderWnd::~CRenderWnd non-zero DC user count - leaking a DC");
+    }
+    else
+    {
+        if (m_pCCClientDC)
+        {
+            delete(m_pCCClientDC);
+            m_pCCClientDC = NULL;
+        }
+    }
 }
 
 /*********************************************************************************************
->	virtual void CRenderWnd::AllocateDC(BOOL KeepIt=TRUE)
+>   virtual void CRenderWnd::AllocateDC(BOOL KeepIt=TRUE)
 
-	Author:		Alex Bligh <alex@alex.org.uk>
-	Created:	12/06/2006
-	Inputs:		None
-	Outputs:	None
-	Returns:	Pointer to the CCClientDC
-	Purpose:	Returns a pointer to the appropriate client DC, allocating it if necessary
-	Errors:		-
-	Scope:	    Public
-	SeeAlso:    CCamView::OnCreate()
+    Author:     Alex Bligh <alex@alex.org.uk>
+    Created:    12/06/2006
+    Inputs:     None
+    Outputs:    None
+    Returns:    Pointer to the CCClientDC
+    Purpose:    Returns a pointer to the appropriate client DC, allocating it if necessary
+    Errors:     -
+    Scope:      Public
+    SeeAlso:    CCamView::OnCreate()
 
-**********************************************************************************************/ 
+**********************************************************************************************/
 
 void CRenderWnd::AllocateDC(BOOL KeepIt/*=TRUE*/)
 {
-	ERROR3IF((m_DCUsers && !m_pCCClientDC), "We have users, but no client DC");
-	if (!m_pCCClientDC)
-		m_pCCClientDC = new CCClientDC(this); // OK if it fails
-	
-	if (KeepIt)
-		m_DCUsers++;
-	return;
+    ERROR3IF((m_DCUsers && !m_pCCClientDC), "We have users, but no client DC");
+    if (!m_pCCClientDC)
+        m_pCCClientDC = new CCClientDC(this); // OK if it fails
+
+    if (KeepIt)
+        m_DCUsers++;
+    return;
 }
 
 /*********************************************************************************************
->	virtual wxClientDC * CRenderWnd::GetClientDC()
+>   virtual wxClientDC * CRenderWnd::GetClientDC()
 
-	Author:		Alex Bligh <alex@alex.org.uk>
-	Created:	12/06/2006
-	Inputs:		None
-	Outputs:	None
-	Returns:	Pointer to the CCClientDC
-	Purpose:	Returns a pointer to the appropriate client DC, allocating it if necessary
-	Errors:		-
-	Scope:	    Public
-	SeeAlso:    CCamView::OnCreate()
+    Author:     Alex Bligh <alex@alex.org.uk>
+    Created:    12/06/2006
+    Inputs:     None
+    Outputs:    None
+    Returns:    Pointer to the CCClientDC
+    Purpose:    Returns a pointer to the appropriate client DC, allocating it if necessary
+    Errors:     -
+    Scope:      Public
+    SeeAlso:    CCamView::OnCreate()
 
-**********************************************************************************************/ 
+**********************************************************************************************/
 
-wxClientDC * CRenderWnd::GetClientDC()
+wxDC * CRenderWnd::GetClientDC()
 {
-	if (!m_pCCClientDC)
-		AllocateDC(FALSE);
-	return (wxClientDC*)(m_pCCClientDC?m_pCCClientDC->GetDC():NULL);
+    // If we are (dynamically) within a paint event use the paint DC.
+    if (is_within_on_paint_evt) {
+        return g_dc_ptr->GetDC();
+    } else {
+        if (!m_pCCClientDC) {
+            AllocateDC(FALSE);
+        }
+        return (wxClientDC*)(m_pCCClientDC ? m_pCCClientDC->GetDC() :
+                             NULL);
+    }
 }
 
 /*********************************************************************************************
->	void CRenderWnd::DoneWithDC()
+>   void CRenderWnd::DoneWithDC()
 
-	Author:		Alex Bligh <alex@alex.org.uk>
-	Created:	12/06/2006
-	Purpose:	Hints that we've done with our DC
-	SeeAlso:	View; PaperRenderRegion.
+    Author:     Alex Bligh <alex@alex.org.uk>
+    Created:    12/06/2006
+    Purpose:    Hints that we've done with our DC
+    SeeAlso:    View; PaperRenderRegion.
 
 Note this is merely a hint. This routine is not guaranteed to eb called
 
-**********************************************************************************************/ 
+**********************************************************************************************/
 
 void CRenderWnd::DoneWithDC()
 {
-	ERROR3IF((m_DCUsers<=0), "We have no users, but I'm being told I'm done with");
+    ERROR3IF((m_DCUsers<=0), "We have no users, but I'm being told I'm done with");
 
-	if (m_DCUsers>0)
-		m_DCUsers--;
+    if (m_DCUsers>0)
+        m_DCUsers--;
 
-	// Note we use a lazy-destroy from our idle handler
+    // Note we use a lazy-destroy from our idle handler
 }
 
 /*********************************************************************************************
->	void CRenderWnd::OnIdle()
+>   void CRenderWnd::OnIdle()
 
-	Author:		Alex Bligh <alex@alex.org.uk>
-	Created:	12/06/2006
-	Purpose:	Laze deletion of our client DC on idle
-	SeeAlso:	View; PaperRenderRegion.
+    Author:     Alex Bligh <alex@alex.org.uk>
+    Created:    12/06/2006
+    Purpose:    Laze deletion of our client DC on idle
+    SeeAlso:    View; PaperRenderRegion.
 
 We appear to need to create and delete DCs or rendering into the first RenderWindow doesn't
 work. Who knows why.
 
-**********************************************************************************************/ 
+**********************************************************************************************/
 
 void CRenderWnd::OnIdle(wxIdleEvent &event)
 {
-	if (PrintMonitor::IsPrintingNow())
-		return;
+    if (PrintMonitor::IsPrintingNow())
+        return;
 
-	if ((m_DCUsers<=0) && m_pCCClientDC)
-	{
-		delete m_pCCClientDC;
-		m_pCCClientDC=NULL;
-	}
+    if ((m_DCUsers<=0) && m_pCCClientDC)
+    {
+        delete m_pCCClientDC;
+        m_pCCClientDC=NULL;
+    }
 }
 
 /*********************************************************************************************
->	virtual BOOL CRenderWnd::Create(const wxRect& rect,
-									wxWindow* parent, UINT32 id)
-	Author:		Justin_Flude (Xara Group Ltd) <camelotdev@xara.com>
-	Created:	ages ago
-	Inputs:		Windows instance-style flags; a
-				rectangle describing the position of the scroller; a pointer to its
-				parent window; a child window numeric identifier
-	Outputs:	-
-	Returns:	TRUE if the window is successfully created.
-	Purpose:	Registers a new window class with the operating system, which accepts
-				double clicks, is byte-aligned in video RAM and is responsible for
-				drawing is own backgrounds.
-	Errors:		-
-	Scope:	    Public
-	SeeAlso:    CCamView::OnCreate()
+>   virtual BOOL CRenderWnd::Create(const wxRect& rect,
+                                    wxWindow* parent, UINT32 id)
+    Author:     Justin_Flude (Xara Group Ltd) <camelotdev@xara.com>
+    Created:    ages ago
+    Inputs:     Windows instance-style flags; a
+                rectangle describing the position of the scroller; a pointer to its
+                parent window; a child window numeric identifier
+    Outputs:    -
+    Returns:    TRUE if the window is successfully created.
+    Purpose:    Registers a new window class with the operating system, which accepts
+                double clicks, is byte-aligned in video RAM and is responsible for
+                drawing is own backgrounds.
+    Errors:     -
+    Scope:      Public
+    SeeAlso:    CCamView::OnCreate()
 
-**********************************************************************************************/ 
+**********************************************************************************************/
 BOOL CRenderWnd::Create(const wxRect& rect,
-						wxWindow *pParent, UINT32 id)
+                        wxWindow *pParent, UINT32 id)
 {
-	BOOL ok=wxWindow::Create(pParent, id, rect.GetTopLeft(), rect.GetSize(), wxNO_FULL_REPAINT_ON_RESIZE);
-	SetExtraStyle(wxWS_EX_PROCESS_IDLE);
-#if defined(__WXGTK__)
-	::SetDoubleBuffer(this, m_DoubleBuffer);
-#endif
-	return ok;
-}
+    BOOL ok = wxWindow::Create(pParent, id, rect.GetTopLeft(), rect.GetSize(),
+                               wxNO_FULL_REPAINT_ON_RESIZE);
 
+    SetExtraStyle(wxWS_EX_PROCESS_IDLE);
+
+#if defined(__WXGTK__)
+    ::SetDoubleBuffer(this, m_DoubleBuffer);
+#endif
+
+    return ok;
+}
 
 
 /////////////////////////////////////////////////////////////////////////////
 // CRenderWnd message handlers.
 
 /*********************************************************************************************
->	afx_msg void CRenderWnd::OnPaint()
+>   afx_msg void CRenderWnd::OnPaint()
 
-	Author:		Justin_Flude (Xara Group Ltd) <camelotdev@xara.com>
-	Created:	ages ago
-	Inputs:		-
-	Outputs:	-
-	Returns:	-
-	Purpose:	Creates a CPaintDC and sends a private WM_RENDERVIEW message, together with
-				a pointer to the CPaintDC in the LPARAM, to the parent CCamView. Uses a
-				CCPaintDC so we can get to the rectangle list subsequently.
-	Errors:		-
-	Scope:	    Protected
-	SeeAlso:    CCamView::OnRenderView()
+    Author:     Justin_Flude (Xara Group Ltd) <camelotdev@xara.com>
+    Created:    ages ago
+    Inputs:     -
+    Outputs:    -
+    Returns:    -
+    Purpose:    Creates a CPaintDC and sends a private WM_RENDERVIEW message, together with
+                a pointer to the CPaintDC in the LPARAM, to the parent CCamView. Uses a
+                CCPaintDC so we can get to the rectangle list subsequently.
+    Errors:     -
+    Scope:      Protected
+    SeeAlso:    CCamView::OnRenderView()
 
-**********************************************************************************************/ 
+**********************************************************************************************/
 void CRenderWnd::OnPaint( wxPaintEvent &evnt )
 {
-	if ((!CCamApp::IsDisabled()) && (!PrintMonitor::IsPrintingNow()))
-	{
-		CCPaintDC dc(this);
-//		wxPalette* OldPal = PaletteManager::StartPaintPalette(&dc);
+    CCPaintDC dc(this);
+    is_within_on_paint_evt = true;
+    g_dc_ptr = &dc;
 
-		if (m_pView)
-			m_pView->OnDraw(dc.GetDC());
+    if ((!CCamApp::IsDisabled()) && (!PrintMonitor::IsPrintingNow()))
+    {
+        // CCPaintDC dc(this);
 
-//		PaletteManager::StopPaintPalette(&dc, OldPal);
-	}
-	else
-	{
-		// if we were printing, we have to draw something - white will do
-		if (PrintMonitor::IsPrintingNow())
-		{
-			// Draw a white rectangle here
-			wxPaintDC MyPaint(this);
+        // wxPalette* OldPal = PaletteManager::StartPaintPalette(&dc);
 
-			// Lets have a white brush...
-			MyPaint.SetBrush(wxBrush(wxColour(*wxWHITE)));
-			MyPaint.SetPen(*wxTRANSPARENT_PEN);
+        if (m_pView)
+            m_pView->OnDraw(dc.GetDC());
 
-			wxRegionIterator upd(GetUpdateRegion()); // get the update rect list
+        GetApplication()->ServiceRendering(true, false);
 
-			while (upd)
-			{
-				wxRect rect(upd.GetRect());
-				MyPaint.DrawRectangle(rect);
-				upd++;
-			}
+        // PaletteManager::StopPaintPalette(&dc, OldPal);
+    }
+    else
+    {
+        // if we were printing, we have to draw something - white will do
+        if (PrintMonitor::IsPrintingNow())
+        {
+            // Draw a white rectangle here
+            wxPaintDC MyPaint(this);
 
-  			// ask for a full redraw at the end
-			PrintMonitor::WantFullRedraw(TRUE);
-		}
-		else
-		{
-			wxPaintDC dc( this );								// Clear paint condition 
-		}
-	}
+            // Lets have a white brush...
+            MyPaint.SetBrush(wxBrush(wxColour(*wxWHITE)));
+            MyPaint.SetPen(*wxTRANSPARENT_PEN);
+
+            wxRegionIterator upd(GetUpdateRegion()); // get the update rect list
+
+            while (upd)
+            {
+                wxRect rect(upd.GetRect());
+                MyPaint.DrawRectangle(rect);
+                upd++;
+            }
+
+            // ask for a full redraw at the end
+            PrintMonitor::WantFullRedraw(TRUE);
+        }
+        else
+        {
+            // wxPaintDC dc( this );                               // Clear paint condition
+        }
+    }
+    is_within_on_paint_evt = false;
 }
 
 
 
 /*********************************************************************************************
->	afx_msg void CRenderWnd::OnLButtonDown(UINT32, CPoint)
+>   afx_msg void CRenderWnd::OnLButtonDown(UINT32, CPoint)
 
-	Author:		Justin_Flude (Xara Group Ltd) <camelotdev@xara.com>
-	Created:	ages ago
-	Inputs:		Not used.
-	Outputs:	-
-	Returns:	-
-	Purpose:	Passes the mouse message on to the parent CCamView via a call to
-				CRenderWnd::PassMsgToParent().
-	Errors:		-
-	Scope:	    Protected
-	SeeAlso:    CRenderWnd::PassMsgToParent(); CCamView::OnLButtonDown()
+    Author:     Justin_Flude (Xara Group Ltd) <camelotdev@xara.com>
+    Created:    ages ago
+    Inputs:     Not used.
+    Outputs:    -
+    Returns:    -
+    Purpose:    Passes the mouse message on to the parent CCamView via a call to
+                CRenderWnd::PassMsgToParent().
+    Errors:     -
+    Scope:      Protected
+    SeeAlso:    CRenderWnd::PassMsgToParent(); CCamView::OnLButtonDown()
 
-**********************************************************************************************/ 
+**********************************************************************************************/
 void CRenderWnd::OnLButtonDown( wxMouseEvent &evnt )
 {
-	if (m_pView)
-		m_pView->OnLButtonDown(evnt);
+    if (m_pView)
+        m_pView->OnLButtonDown(evnt);
 }
 
 
 
 /*********************************************************************************************
->	afx_msg void CRenderWnd::OnLButtonDblClk(UINT32, CPoint)
+>   afx_msg void CRenderWnd::OnLButtonDblClk(UINT32, CPoint)
 
-	Author:		Justin_Flude (Xara Group Ltd) <camelotdev@xara.com>
-	Created:	ages ago
-	Inputs:		Not used.
-	Outputs:	-
-	Returns:	-
-	Purpose:	Passes the mouse message on to the parent CCamView via a call to
-				CRenderWnd::PassMsgToParent().
-	Errors:		-
-	Scope:	    Protected
-	SeeAlso:    CRenderWnd::PassMsgToParent(); CCamView::OnLButtonDblClk()
+    Author:     Justin_Flude (Xara Group Ltd) <camelotdev@xara.com>
+    Created:    ages ago
+    Inputs:     Not used.
+    Outputs:    -
+    Returns:    -
+    Purpose:    Passes the mouse message on to the parent CCamView via a call to
+                CRenderWnd::PassMsgToParent().
+    Errors:     -
+    Scope:      Protected
+    SeeAlso:    CRenderWnd::PassMsgToParent(); CCamView::OnLButtonDblClk()
 
-**********************************************************************************************/ 
+**********************************************************************************************/
 void CRenderWnd::OnLButtonDblClk( wxMouseEvent &evnt )
 {
-	if (m_pView)
-		m_pView->OnLButtonDblClk(evnt);
+    if (m_pView)
+        m_pView->OnLButtonDblClk(evnt);
 }
 
 
 
 /*********************************************************************************************
->	afx_msg void CRenderWnd::OnLButtonUp(UINT32, CPoint)
+>   afx_msg void CRenderWnd::OnLButtonUp(UINT32, CPoint)
 
-	Author:		Justin_Flude (Xara Group Ltd) <camelotdev@xara.com>
-	Created:	ages ago
-	Inputs:		Not used.
-	Outputs:	-
-	Returns:	-
-	Purpose:	Passes the mouse message on to the parent CCamView via a call to
-				CRenderWnd::PassMsgToParent().
-	Errors:		-
-	Scope:	    Protected
-	SeeAlso:    CRenderWnd::PassMsgToParent(); CCamView::OnLButtonUp()
+    Author:     Justin_Flude (Xara Group Ltd) <camelotdev@xara.com>
+    Created:    ages ago
+    Inputs:     Not used.
+    Outputs:    -
+    Returns:    -
+    Purpose:    Passes the mouse message on to the parent CCamView via a call to
+                CRenderWnd::PassMsgToParent().
+    Errors:     -
+    Scope:      Protected
+    SeeAlso:    CRenderWnd::PassMsgToParent(); CCamView::OnLButtonUp()
 
-**********************************************************************************************/ 
+**********************************************************************************************/
 void CRenderWnd::OnLButtonUp( wxMouseEvent &evnt )
 {
-	if (m_pView)
-		m_pView->OnLButtonUp(evnt);
+    if (m_pView)
+        m_pView->OnLButtonUp(evnt);
 }
 
 
 
 /*********************************************************************************************
->	afx_msg void CRenderWnd::OnMouseMove(UINT32, CPoint)
+>   afx_msg void CRenderWnd::OnMouseMove(UINT32, CPoint)
 
-	Author:		Justin_Flude (Xara Group Ltd) <camelotdev@xara.com>
-	Created:	ages ago
-	Inputs:		Not used.
-	Outputs:	-
-	Returns:	-
-	Purpose:	Passes the mouse message on to the parent CCamView via a call to
-				CRenderWnd::PassMsgToParent().
-	Errors:		-
-	Scope:	    Protected
-	SeeAlso:    CRenderWnd::PassMsgToParent(); CCamView::OnMouseMove()
+    Author:     Justin_Flude (Xara Group Ltd) <camelotdev@xara.com>
+    Created:    ages ago
+    Inputs:     Not used.
+    Outputs:    -
+    Returns:    -
+    Purpose:    Passes the mouse message on to the parent CCamView via a call to
+                CRenderWnd::PassMsgToParent().
+    Errors:     -
+    Scope:      Protected
+    SeeAlso:    CRenderWnd::PassMsgToParent(); CCamView::OnMouseMove()
 
-**********************************************************************************************/ 
+**********************************************************************************************/
 void CRenderWnd::OnMouseMove( wxMouseEvent &event )
 {
-	if (m_pView)
-		m_pView->OnMouseMove( event );
-	
+    if (m_pView)
+        m_pView->OnMouseMove( event );
+
 #if defined(__WXGTK__)
-	wxSetCursorEvent	CursorEvent( event.m_x, event.m_y );
-	OnSetCursor( CursorEvent );
-	if( CursorEvent.HasCursor() )
-	{
-		// The window cursor seems to be ignored, but is needed for
-		// CaptureMouse to work
-		wxSetCursor( CursorEvent.GetCursor() );
-		SetCursor( CursorEvent.GetCursor() );
-	}
+    wxSetCursorEvent    CursorEvent( event.m_x, event.m_y );
+    OnSetCursor( CursorEvent );
+    if( CursorEvent.HasCursor() )
+    {
+        // The window cursor seems to be ignored, but is needed for
+        // CaptureMouse to work
+        wxSetCursor( CursorEvent.GetCursor() );
+        SetCursor( CursorEvent.GetCursor() );
+    }
 #endif
 }
 
 /*********************************************************************************************
->	void CRenderWnd::OnKey( wxKeyEvent & event )
+>   void CRenderWnd::OnKey( wxKeyEvent & event )
 
-	Author:		Alex Bligh (alex@alex.org.uk)
-	Created:	2 May 2006
-	Inputs:		reference to the event
-	Outputs:	-
-	Returns:	-
-	Purpose:	This DOES NOT ACTUALLY HANDLE EVENTS, it only notes a key has been 
-				pressed and stops the mouse motion mangler eating the next mouse move.
-	Errors:		-
-	Scope:	    Protected
-	SeeAlso:    -
+    Author:     Alex Bligh (alex@alex.org.uk)
+    Created:    2 May 2006
+    Inputs:     reference to the event
+    Outputs:    -
+    Returns:    -
+    Purpose:    This DOES NOT ACTUALLY HANDLE EVENTS, it only notes a key has been
+                pressed and stops the mouse motion mangler eating the next mouse move.
+    Errors:     -
+    Scope:      Protected
+    SeeAlso:    -
 
-**********************************************************************************************/ 
+**********************************************************************************************/
 
 void CRenderWnd::OnKey( wxKeyEvent & event )
 {
-	if (m_pView)
-		m_pView->DontSkipNextMouse();
-	
-	event.Skip(); // Pass the key event on to someone who really wants it.
+    if (m_pView)
+        m_pView->DontSkipNextMouse();
+
+    event.Skip(); // Pass the key event on to someone who really wants it.
 }
 
 void CRenderWnd::OnChar( wxKeyEvent & event )
 {
-	TRACEUSER( "jlh92", _T("CRenderWnd::OnChar \"%c\" \n"), event.GetUnicodeKey() );
+    TRACEUSER( "jlh92", _T("CRenderWnd::OnChar \"%c\" \n"), event.GetUnicodeKey() );
 
-	if( !AfxGetApp().HandleKeyPress( event ) )
-		event.Skip(); // Pass the key event on to someone who really wants it.
+    if( !AfxGetApp().HandleKeyPress( event ) )
+        event.Skip(); // Pass the key event on to someone who really wants it.
 }
 
 /*********************************************************************************************
->	afx_msg void CRenderWnd::OnRButtonDown(UINT32, CPoint)
+>   afx_msg void CRenderWnd::OnRButtonDown(UINT32, CPoint)
 
-	Author:		Justin_Flude (Xara Group Ltd) <camelotdev@xara.com>
-	Created:	ages ago
-	Inputs:		Not used.
-	Outputs:	-
-	Returns:	-
-	Purpose:	Passes the mouse message on to the parent CCamView via a call to
-				CRenderWnd::PassMsgToParent().
-	Errors:		-
-	Scope:	    Protected
-	SeeAlso:    CRenderWnd::PassMsgToParent(); CCamView::OnRButtonDown()
+    Author:     Justin_Flude (Xara Group Ltd) <camelotdev@xara.com>
+    Created:    ages ago
+    Inputs:     Not used.
+    Outputs:    -
+    Returns:    -
+    Purpose:    Passes the mouse message on to the parent CCamView via a call to
+                CRenderWnd::PassMsgToParent().
+    Errors:     -
+    Scope:      Protected
+    SeeAlso:    CRenderWnd::PassMsgToParent(); CCamView::OnRButtonDown()
 
-**********************************************************************************************/ 
+**********************************************************************************************/
 void CRenderWnd::OnRButtonDown( wxMouseEvent &evnt )
 {
-	if (m_pView)
-		m_pView->OnRButtonDown(evnt);
+    if (m_pView)
+        m_pView->OnRButtonDown(evnt);
 }
 
 
 
 /*********************************************************************************************
->	afx_msg void CRenderWnd::OnRButtonDblClk(UINT32, CPoint)
+>   afx_msg void CRenderWnd::OnRButtonDblClk(UINT32, CPoint)
 
-	Author:		Justin_Flude (Xara Group Ltd) <camelotdev@xara.com>
-	Created:	ages ago
-	Inputs:		Not used.
-	Outputs:	-
-	Returns:	-
-	Purpose:	Passes the mouse message on to the parent CCamView via a call to
-				CRenderWnd::PassMsgToParent().
-	Errors:		-
-	Scope:	    Protected
-	SeeAlso:    CRenderWnd::PassMsgToParent(); CCamView::OnRButtonDblClk()
+    Author:     Justin_Flude (Xara Group Ltd) <camelotdev@xara.com>
+    Created:    ages ago
+    Inputs:     Not used.
+    Outputs:    -
+    Returns:    -
+    Purpose:    Passes the mouse message on to the parent CCamView via a call to
+                CRenderWnd::PassMsgToParent().
+    Errors:     -
+    Scope:      Protected
+    SeeAlso:    CRenderWnd::PassMsgToParent(); CCamView::OnRButtonDblClk()
 
-**********************************************************************************************/ 
+**********************************************************************************************/
 void CRenderWnd::OnRButtonDblClk( wxMouseEvent &evnt )
 {
-	if (m_pView)
-		m_pView->OnRButtonDblClk(evnt);
+    if (m_pView)
+        m_pView->OnRButtonDblClk(evnt);
 }
 
 
 
 /*********************************************************************************************
->	afx_msg void CRenderWnd::OnRButtonUp(UINT32, CPoint)
+>   afx_msg void CRenderWnd::OnRButtonUp(UINT32, CPoint)
 
-	Author:		Justin_Flude (Xara Group Ltd) <camelotdev@xara.com>
-	Created:	ages ago
-	Inputs:		Not used.
-	Outputs:	-
-	Returns:	-
-	Purpose:	Passes the mouse message on to the parent CCamView via a call to
-				CRenderWnd::PassMsgToParent().
-	Errors:		-
-	Scope:	    Protected
-	SeeAlso:    CRenderWnd::PassMsgToParent(); CCamView::OnRButtonUp()
+    Author:     Justin_Flude (Xara Group Ltd) <camelotdev@xara.com>
+    Created:    ages ago
+    Inputs:     Not used.
+    Outputs:    -
+    Returns:    -
+    Purpose:    Passes the mouse message on to the parent CCamView via a call to
+                CRenderWnd::PassMsgToParent().
+    Errors:     -
+    Scope:      Protected
+    SeeAlso:    CRenderWnd::PassMsgToParent(); CCamView::OnRButtonUp()
 
-**********************************************************************************************/ 
+**********************************************************************************************/
 void CRenderWnd::OnRButtonUp( wxMouseEvent &evnt )
 {
-	if (m_pView)
-		m_pView->OnRButtonUp(evnt);
+    if (m_pView)
+        m_pView->OnRButtonUp(evnt);
 }
 
 
 /*********************************************************************************************
->	afx_msg void CRenderWnd::OnMButtonDown(UINT32, CPoint)
+>   afx_msg void CRenderWnd::OnMButtonDown(UINT32, CPoint)
 
-	Author:		Justin_Flude (Xara Group Ltd) <camelotdev@xara.com>
-	Created:	ages ago
-	Inputs:		Not used.
-	Outputs:	-
-	Returns:	-
-	Purpose:	Passes the mouse message on to the parent CCamView via a call to
-				CRenderWnd::PassMsgToParent().
-	Errors:		-
-	Scope:	    Protected
-	SeeAlso:    CRenderWnd::PassMsgToParent(); CCamView::OnLButtonDown()
+    Author:     Justin_Flude (Xara Group Ltd) <camelotdev@xara.com>
+    Created:    ages ago
+    Inputs:     Not used.
+    Outputs:    -
+    Returns:    -
+    Purpose:    Passes the mouse message on to the parent CCamView via a call to
+                CRenderWnd::PassMsgToParent().
+    Errors:     -
+    Scope:      Protected
+    SeeAlso:    CRenderWnd::PassMsgToParent(); CCamView::OnLButtonDown()
 
-**********************************************************************************************/ 
+**********************************************************************************************/
 void CRenderWnd::OnMButtonDown( wxMouseEvent &evnt )
 {
-	if (m_pView)
-		m_pView->OnMButtonDown(evnt);
+    if (m_pView)
+        m_pView->OnMButtonDown(evnt);
 }
 
 
 
 /*********************************************************************************************
->	afx_msg void CRenderWnd::OnMButtonDblClk(UINT32, CPoint)
+>   afx_msg void CRenderWnd::OnMButtonDblClk(UINT32, CPoint)
 
-	Author:		Justin_Flude (Xara Group Ltd) <camelotdev@xara.com>
-	Created:	ages ago
-	Inputs:		Not used.
-	Outputs:	-
-	Returns:	-
-	Purpose:	Passes the mouse message on to the parent CCamView via a call to
-				CRenderWnd::PassMsgToParent().
-	Errors:		-
-	Scope:	    Protected
-	SeeAlso:    CRenderWnd::PassMsgToParent(); CCamView::OnLButtonDblClk()
+    Author:     Justin_Flude (Xara Group Ltd) <camelotdev@xara.com>
+    Created:    ages ago
+    Inputs:     Not used.
+    Outputs:    -
+    Returns:    -
+    Purpose:    Passes the mouse message on to the parent CCamView via a call to
+                CRenderWnd::PassMsgToParent().
+    Errors:     -
+    Scope:      Protected
+    SeeAlso:    CRenderWnd::PassMsgToParent(); CCamView::OnLButtonDblClk()
 
-**********************************************************************************************/ 
+**********************************************************************************************/
 void CRenderWnd::OnMButtonDblClk( wxMouseEvent &evnt )
 {
-	if (m_pView)
-		m_pView->OnMButtonDblClk(evnt);
+    if (m_pView)
+        m_pView->OnMButtonDblClk(evnt);
 }
 
 
 
 /*********************************************************************************************
->	afx_msg void CRenderWnd::OnMButtonUp(UINT32, CPoint)
+>   afx_msg void CRenderWnd::OnMButtonUp(UINT32, CPoint)
 
-	Author:		Justin_Flude (Xara Group Ltd) <camelotdev@xara.com>
-	Created:	ages ago
-	Inputs:		Not used.
-	Outputs:	-
-	Returns:	-
-	Purpose:	Passes the mouse message on to the parent CCamView via a call to
-				CRenderWnd::PassMsgToParent().
-	Errors:		-
-	Scope:	    Protected
-	SeeAlso:    CRenderWnd::PassMsgToParent(); CCamView::OnLButtonUp()
+    Author:     Justin_Flude (Xara Group Ltd) <camelotdev@xara.com>
+    Created:    ages ago
+    Inputs:     Not used.
+    Outputs:    -
+    Returns:    -
+    Purpose:    Passes the mouse message on to the parent CCamView via a call to
+                CRenderWnd::PassMsgToParent().
+    Errors:     -
+    Scope:      Protected
+    SeeAlso:    CRenderWnd::PassMsgToParent(); CCamView::OnLButtonUp()
 
-**********************************************************************************************/ 
+**********************************************************************************************/
 void CRenderWnd::OnMButtonUp( wxMouseEvent &evnt )
 {
-	if (m_pView)
-		m_pView->OnMButtonUp(evnt);
+    if (m_pView)
+        m_pView->OnMButtonUp(evnt);
 }
 
 
 /*********************************************************************************************
->	void CRenderWnd::OnMouseWheel(wxMouseEvent &event)
+>   void CRenderWnd::OnMouseWheel(wxMouseEvent &event)
 
-	Author:		Gerry_Iles (Xara Group Ltd) <camelotdev@xara.com>
-	Created:	03/02/2006
-	Inputs:		Not used.
-	Outputs:	-
-	Returns:	-
-	Purpose:	Passes the mouse message on to the parent CCamView
-	Errors:		-
-	Scope:	    Protected
-	SeeAlso:    -
+    Author:     Gerry_Iles (Xara Group Ltd) <camelotdev@xara.com>
+    Created:    03/02/2006
+    Inputs:     Not used.
+    Outputs:    -
+    Returns:    -
+    Purpose:    Passes the mouse message on to the parent CCamView
+    Errors:     -
+    Scope:      Protected
+    SeeAlso:    -
 
-**********************************************************************************************/ 
+**********************************************************************************************/
 
 void CRenderWnd::OnMouseWheel( wxMouseEvent &evnt )
 {
-	if (m_pView)
-		m_pView->OnMouseWheel(evnt);
+    if (m_pView)
+        m_pView->OnMouseWheel(evnt);
 }
 
 
 /*********************************************************************************************
->	void CRenderWnd::OnSize( wxSizeEvent &evnt )
+>   void CRenderWnd::OnSize( wxSizeEvent &evnt )
 
-	Author:		Gerry_Iles (Xara Group Ltd) <camelotdev@xara.com>
-	Created:	03/02/2006
-	Inputs:		Not used.
-	Outputs:	-
-	Returns:	-
-	Purpose:	Does nothing, skipping the event
-	Errors:		-
-	Scope:	    Protected
-	SeeAlso:    -
+    Author:     Gerry_Iles (Xara Group Ltd) <camelotdev@xara.com>
+    Created:    03/02/2006
+    Inputs:     Not used.
+    Outputs:    -
+    Returns:    -
+    Purpose:    Does nothing, skipping the event
+    Errors:     -
+    Scope:      Protected
+    SeeAlso:    -
 
-**********************************************************************************************/ 
+**********************************************************************************************/
 
 void CRenderWnd::OnSize( wxSizeEvent &evnt )
 {
-	TRACEUSER("Gerry", _T("CRenderWnd::OnSize(%d, %d)\n"), evnt.m_size.x, evnt.m_size.y);
-	evnt.Skip();
+    TRACEUSER("Gerry", _T("CRenderWnd::OnSize(%d, %d)\n"), evnt.m_size.x, evnt.m_size.y);
+    evnt.Skip();
 }
 
 
 
 /*********************************************************************************************
->	void CRenderWnd::OnErase( wxEraseEvent &evnt )
+>   void CRenderWnd::OnErase( wxEraseEvent &evnt )
 
-	Author:		Gerry_Iles (Xara Group Ltd) <camelotdev@xara.com>
-	Created:	03/02/2006
-	Inputs:		Not used.
-	Outputs:	-
-	Returns:	-
-	Purpose:	Does nothing
-	Errors:		-
-	Scope:	    Protected
-	SeeAlso:    -
+    Author:     Gerry_Iles (Xara Group Ltd) <camelotdev@xara.com>
+    Created:    03/02/2006
+    Inputs:     Not used.
+    Outputs:    -
+    Returns:    -
+    Purpose:    Does nothing
+    Errors:     -
+    Scope:      Protected
+    SeeAlso:    -
 
-**********************************************************************************************/ 
+**********************************************************************************************/
 void CRenderWnd::OnErase( wxEraseEvent &evnt )
 {
-	// Do nothing
+    // Do nothing
 }
 
 /*********************************************************************************************
->	void CCamView::OnSetCursor(wxSetCursorEvent& event)
+>   void CCamView::OnSetCursor(wxSetCursorEvent& event)
 
-	Author:		Luke_Hart (Xara Group Ltd) <camelotdev@xara.com>
-	Created:	08/02/06
-	Inputs:	    The event.
-	Outputs:	-
-	Returns:	-
-	Purpose:	Eat the cursor update requests to stop anyone else playing with them, this is 
-				needed on MSW or the cursor reverts to the normal arrow.
-	Errors:		-
-	Scope:		Protected
-	SeeAlso:	
+    Author:     Luke_Hart (Xara Group Ltd) <camelotdev@xara.com>
+    Created:    08/02/06
+    Inputs:     The event.
+    Outputs:    -
+    Returns:    -
+    Purpose:    Eat the cursor update requests to stop anyone else playing with them, this is
+                needed on MSW or the cursor reverts to the normal arrow.
+    Errors:     -
+    Scope:      Protected
+    SeeAlso:
 
-**********************************************************************************************/ 
+**********************************************************************************************/
 
 void CRenderWnd::OnSetCursor( wxSetCursorEvent& event )
 {
-	if( NULL != m_pView )
-		m_pView->OnSetCursor( event );
+    if( NULL != m_pView )
+        m_pView->OnSetCursor( event );
 }
 
 #if defined(__WXGTK__)
 void CRenderWnd::OnEnter( wxMouseEvent &event )
 {
-	TRACEUSER( "Luke", _T("OnEnter %p\n"), event.GetEventObject() );
-	
-//	if( event.GetEventObject() != m_pFrame )
-//		return;
-	
-	wxPoint				pt( event.GetPosition() );
-	wxSetCursorEvent	CursorEvent( pt.x, pt.y );
-	m_pView->OnSetCursor( CursorEvent );
-	if( CursorEvent.HasCursor() )
-	{
-		wxSetCursor( CursorEvent.GetCursor() );
-	}
+    TRACEUSER( "Luke", _T("OnEnter %p\n"), event.GetEventObject() );
+
+//  if( event.GetEventObject() != m_pFrame )
+//      return;
+
+    wxPoint             pt( event.GetPosition() );
+    wxSetCursorEvent    CursorEvent( pt.x, pt.y );
+    m_pView->OnSetCursor( CursorEvent );
+    if( CursorEvent.HasCursor() )
+    {
+        wxSetCursor( CursorEvent.GetCursor() );
+    }
 }
 
 void CRenderWnd::OnLeave( wxMouseEvent &event )
 {
-	TRACEUSER( "Luke", _T("OnLeave %p\n"), event.GetEventObject() );
+    TRACEUSER( "Luke", _T("OnLeave %p\n"), event.GetEventObject() );
 
-//	if( event.GetEventObject() != m_pFrame )
-//		return;
-	
-	::wxSetCursor( *wxSTANDARD_CURSOR );
+//  if( event.GetEventObject() != m_pFrame )
+//      return;
+
+    ::wxSetCursor( *wxSTANDARD_CURSOR );
 }
 #endif
 
 void CRenderWnd::SetDoubleBuffer(BOOL DoubleBuffer)
 {
-	m_DoubleBuffer = DoubleBuffer;
-	// Now go through and set or clear double buffering on each window
-	wxWindow * pWindow = CCamFrame::GetMainFrame();
-	if (pWindow) ReflectDoubleBufferingInChildren(pWindow);
+    m_DoubleBuffer = DoubleBuffer;
+    // Now go through and set or clear double buffering on each window
+    wxWindow * pWindow = CCamFrame::GetMainFrame();
+    if (pWindow) ReflectDoubleBufferingInChildren(pWindow);
 }
 
 void CRenderWnd::ReflectDoubleBufferingInChildren(wxWindow * pWindow)
 {
 #if defined(__WXGTK__)
-	// Process this one
-	if (pWindow->IsKindOf(CLASSINFO(CRenderWnd)))
-		::SetDoubleBuffer(pWindow, m_DoubleBuffer);
+    // Process this one
+    if (pWindow->IsKindOf(CLASSINFO(CRenderWnd)))
+        ::SetDoubleBuffer(pWindow, m_DoubleBuffer);
 #endif
 
-	// Now process children if any
-	wxWindowList::Node * pNode = pWindow->GetChildren().GetFirst();
-	while (pNode)
-	{
-		ReflectDoubleBufferingInChildren(pNode->GetData());
-		pNode = pNode->GetNext();
-	}
-	return;
+    // Now process children if any
+    wxWindowList::Node * pNode = pWindow->GetChildren().GetFirst();
+    while (pNode)
+    {
+        ReflectDoubleBufferingInChildren(pNode->GetData());
+        pNode = pNode->GetNext();
+    }
+    return;
 }
 
 /********************************************************************************************
 
->	OpToggleDoubleBuffer::OpToggleDoubleBuffer() : Operation()
+>   OpToggleDoubleBuffer::OpToggleDoubleBuffer() : Operation()
 
-	Author:		Alex Bligh <alex@alex.org.uk>
-	Created:	14 Mar 2006
-	Inputs:		-
-	Outputs:	-
-	Returns:	-
-	Purpose:	Constructs an OpToggleDoubleBuffer object.
-	Errors:		-
-	SeeAlso:	-
+    Author:     Alex Bligh <alex@alex.org.uk>
+    Created:    14 Mar 2006
+    Inputs:     -
+    Outputs:    -
+    Returns:    -
+    Purpose:    Constructs an OpToggleDoubleBuffer object.
+    Errors:     -
+    SeeAlso:    -
 
 ********************************************************************************************/
 
@@ -805,111 +830,110 @@ OpToggleDoubleBuffer::OpToggleDoubleBuffer() : Operation()
 
 /********************************************************************************************
 
->	OpToggleDoubleBuffer::~OpToggleDoubleBuffer()
+>   OpToggleDoubleBuffer::~OpToggleDoubleBuffer()
 
-	Author:		Alex Bligh <alex@alex.org.uk>
-	Created:	14 Mar 2006
-	Inputs:		-
-	Outputs:	-
-	Returns:	-
-	Purpose:	Destructs an OpToggleDoubleBuffer object.
-	Errors:		-
-	SeeAlso:	-
+    Author:     Alex Bligh <alex@alex.org.uk>
+    Created:    14 Mar 2006
+    Inputs:     -
+    Outputs:    -
+    Returns:    -
+    Purpose:    Destructs an OpToggleDoubleBuffer object.
+    Errors:     -
+    SeeAlso:    -
 
 ********************************************************************************************/
 
 OpToggleDoubleBuffer::~OpToggleDoubleBuffer()
 {
-	// Empty
+    // Empty
 }
 
 
 
 /********************************************************************************************
 
->	void OpToggleDoubleBuffer::Do(OpDescriptor*)
+>   void OpToggleDoubleBuffer::Do(OpDescriptor*)
 
-	Author:		Alex Bligh <alex@alex.org.uk>
-	Created:	14 Mar 2006
-	Inputs:		Pointer to Operation Descriptor
-	Outputs:	-
-	Returns:	-
-	Purpose:	Actually "DO" a ToggleFore operation.
-	Errors:		-
-	SeeAlso:	-
+    Author:     Alex Bligh <alex@alex.org.uk>
+    Created:    14 Mar 2006
+    Inputs:     Pointer to Operation Descriptor
+    Outputs:    -
+    Returns:    -
+    Purpose:    Actually "DO" a ToggleFore operation.
+    Errors:     -
+    SeeAlso:    -
 
 ********************************************************************************************/
 
 void OpToggleDoubleBuffer::Do(OpDescriptor*)
 {
-	CRenderWnd::SetDoubleBuffer(!CRenderWnd::GetDoubleBuffer());
-	End();
+    CRenderWnd::SetDoubleBuffer(!CRenderWnd::GetDoubleBuffer());
+    End();
 }
 
 
 
 /********************************************************************************************
 
->	OpState OpToggleDoubleBuffer::GetState(String_256* UIDescription, OpDescriptor*)
+>   OpState OpToggleDoubleBuffer::GetState(String_256* UIDescription, OpDescriptor*)
 
-	Author:		Alex Bligh <alex@alex.org.uk>
-	Created:	14 Mar 2006
-	Inputs:		Pointer to Operation Descriptor
-				Text Description
-	Outputs:	-
-	Returns:	-
-	Purpose:	Find the state of the OpToggleDoubleBuffer operation.
-	Errors:		-
-	SeeAlso:	-
+    Author:     Alex Bligh <alex@alex.org.uk>
+    Created:    14 Mar 2006
+    Inputs:     Pointer to Operation Descriptor
+                Text Description
+    Outputs:    -
+    Returns:    -
+    Purpose:    Find the state of the OpToggleDoubleBuffer operation.
+    Errors:     -
+    SeeAlso:    -
 
 ********************************************************************************************/
 
 OpState OpToggleDoubleBuffer::GetState(String_256* UIDescription, OpDescriptor*)
 {
-	// Default to !ticked and greyed
-	OpState blobby(FALSE, TRUE);
-	blobby.Ticked = CRenderWnd::GetDoubleBuffer();
-	blobby.Greyed = FALSE;
-	return(blobby);
+    // Default to !ticked and greyed
+    OpState blobby(FALSE, TRUE);
+    blobby.Ticked = CRenderWnd::GetDoubleBuffer();
+    blobby.Greyed = FALSE;
+    return(blobby);
 }
 
 
 
 /********************************************************************************************
 
->	BOOL OpToggleDoubleBuffer::Init()
+>   BOOL OpToggleDoubleBuffer::Init()
 
-	Author:		Alex Bligh <alex@alex.org.uk>
-	Created:	14 Mar 2006
-	Inputs:		-
-	Outputs:	-
-	Returns:	-
-	Purpose:	Create an OpDescriptor for the OpToggleDoubleBuffer operation
-	Errors:		-
-	SeeAlso:	-
+    Author:     Alex Bligh <alex@alex.org.uk>
+    Created:    14 Mar 2006
+    Inputs:     -
+    Outputs:    -
+    Returns:    -
+    Purpose:    Create an OpDescriptor for the OpToggleDoubleBuffer operation
+    Errors:     -
+    SeeAlso:    -
 
 ********************************************************************************************/
 
-BOOL OpToggleDoubleBuffer::Init()	
+BOOL OpToggleDoubleBuffer::Init()
 {
-	return Operation::RegisterOpDescriptor( 
-											0, 
-											_R(IDS_TOGGLE_DOUBLEBUFFER),
-											CC_RUNTIME_CLASS(OpToggleDoubleBuffer), 
-											OPTOKEN_TOGGLEDOUBLEBUFFER,
-											OpToggleDoubleBuffer::GetState,
-											0,						// help ID
-											0,// _R(IDBBL_FOREBACKGRNDOP),
-											0,						// bitmap ID
-											0,						// control ID
-											SYSTEMBAR_ILLEGAL,		// group bar ID
-											TRUE,
-											FALSE,
-											TRUE,
-											NULL,
-											0,
-											0,
-											TRUE
-										   );
+    return Operation::RegisterOpDescriptor(
+                                            0,
+                                            _R(IDS_TOGGLE_DOUBLEBUFFER),
+                                            CC_RUNTIME_CLASS(OpToggleDoubleBuffer),
+                                            OPTOKEN_TOGGLEDOUBLEBUFFER,
+                                            OpToggleDoubleBuffer::GetState,
+                                            0,                      // help ID
+                                            0,// _R(IDBBL_FOREBACKGRNDOP),
+                                            0,                      // bitmap ID
+                                            0,                      // control ID
+                                            SYSTEMBAR_ILLEGAL,      // group bar ID
+                                            TRUE,
+                                            FALSE,
+                                            TRUE,
+                                            NULL,
+                                            0,
+                                            0,
+                                            TRUE
+                                           );
 }
-

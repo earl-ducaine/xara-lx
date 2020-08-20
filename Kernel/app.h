@@ -254,7 +254,7 @@ public:
     // CGS:  used by the brush system.
     // allows an extra check prior to doing the screen capture inside freehand.cpp (OnIdle ())
     BOOL IsRenderingComplete () { return (RenderList.IsEmpty ()); }
-    BOOL ServiceRendering(BOOL bImmediate = FALSE);
+    bool ServiceRendering(bool on_paint_rendering =false, bool background_rendering = true);
 
     BOOL IsBgRendering();
     BOOL BgRendering;

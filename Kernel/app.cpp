@@ -1,3 +1,4 @@
+/* -*- tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4; fill-column: 90 -*- */
 // $Id: app.cpp 1531 2006-07-25 16:05:48Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
@@ -134,30 +135,30 @@ service marks of Xara Group Ltd. All rights in these marks are reserved.
 #include "ralphdoc.h"
 //#include "registry.h"
 
-//#include "resimmap.h"	//For _R(IDS_NEWTEMPLATES_RELATIVEPATH)
+//#include "resimmap.h" //For _R(IDS_NEWTEMPLATES_RELATIVEPATH)
 
 #ifdef FREEHANDPLUGINS
 // Only add in if required - general plug-in removal at present
-#include "apiobj.h"		// APIObject
-#include "handman.h"	//	HandleManager
+#include "apiobj.h"     // APIObject
+#include "handman.h"    //  HandleManager
 #endif
-//#include "plugmngr.h"	// Plug-in Manager
-#include "filtrmgr.h"	// Filter Manager
-#include "tmpltarg.h"	// WizOp(s)
+//#include "plugmngr.h" // Plug-in Manager
+#include "filtrmgr.h"   // Filter Manager
+#include "tmpltarg.h"   // WizOp(s)
 #include "tmplmngr.h"
 
 #include "noisebas.h"
 #ifdef AUTOMATION
-#include "ccc.h"		// ConcurrencyController
+#include "ccc.h"        // ConcurrencyController
 #endif
 
-#include "objcache.h"	// the objectcache header
-#include "cachrand.h"	// ObjectCache (random)
-#include "cachfifo.h"	// ObjectCache (fifo)
-#include "cachweak.h"	//
+#include "objcache.h"   // the objectcache header
+#include "cachrand.h"   // ObjectCache (random)
+#include "cachfifo.h"   // ObjectCache (fifo)
+#include "cachweak.h"   //
 //#include "bitmapcache.h"
 
-#include "sgliboil.h"	// AppendSlashIfNotPresent
+#include "sgliboil.h"   // AppendSlashIfNotPresent
 
 DECLARE_SOURCE("$Revision: 1531 $");
 
@@ -172,18 +173,18 @@ Application Camelot;
 
 /***********************************************************************************************
 
-> 	Application::Application()
+>   Application::Application()
 
-    Author: 	Tim_Browse (Xara Group Ltd) <camelotdev@xara.com>
-    Created:	20/5/93
+    Author:     Tim_Browse (Xara Group Ltd) <camelotdev@xara.com>
+    Created:    20/5/93
 
-	Inputs:		-
+    Inputs:     -
     Outputs:    -
-    Returns:   	-
+    Returns:    -
 
     Purpose:    Initialise the application.
 
-	Errors:		None.
+    Errors:     None.
 
 ***********************************************************************************************/
 
@@ -193,77 +194,77 @@ Application::Application() : m_pTemplateManager( new CTemplateManager )
 // No pen stuff required in Webster
 // Now taken out via vector stroking code Neville 2/10/97
 #ifdef VECTOR_STROKING
-	PressurePen = NULL;
-	PenInitialised = FALSE;
+    PressurePen = NULL;
+    PenInitialised = FALSE;
 #endif // VECTOR_STROKING
 
-	CamelotPrefs = NULL;
-	Selection = NULL;
-	TheColourManager = NULL;
-	BlobMgr = NULL;
-	DocComponentClasses = NULL;
-	pATMIniCache = NULL;
+    CamelotPrefs = NULL;
+    Selection = NULL;
+    TheColourManager = NULL;
+    BlobMgr = NULL;
+    DocComponentClasses = NULL;
+    pATMIniCache = NULL;
 
-	FontMgr						= NULL;
-	CMSManager					= NULL;
-	TheMarksManager				= NULL;
-	ThePlugInManager			= NULL;
-	TheFilterManager			= NULL;
-	TheAPIObject				= NULL;
-	TheHandleManager			= NULL;
-	TheNoiseManager				= NULL;
-	TheWizardOfOps				= NULL;
-	DisabledRealDownload		= FALSE;
+    FontMgr                     = NULL;
+    CMSManager                  = NULL;
+    TheMarksManager             = NULL;
+    ThePlugInManager            = NULL;
+    TheFilterManager            = NULL;
+    TheAPIObject                = NULL;
+    TheHandleManager            = NULL;
+    TheNoiseManager             = NULL;
+    TheWizardOfOps              = NULL;
+    DisabledRealDownload        = FALSE;
 PORTNOTE("other","Removed HKEY usage")
 #ifndef EXCLUDE_FROM_XARALX
-	key							= NULL;
-	key2						= NULL;
+    key                         = NULL;
+    key2                        = NULL;
 #endif
 #ifdef AUTOMATION
-	TheConcurrencyController	= NULL;
+    TheConcurrencyController    = NULL;
 #endif
 
-	// This variable will get set to TRUE when Camelot starts to shut down
-	CamelotShuttingDown = FALSE;
-	BgRendering = FALSE;
+    // This variable will get set to TRUE when Camelot starts to shut down
+    CamelotShuttingDown = FALSE;
+    BgRendering = FALSE;
 
-	// Temporary: Remove when Kernel StatusLine is actually created by Oil statusline
-	m_pStatusLine = NULL;
+    // Temporary: Remove when Kernel StatusLine is actually created by Oil statusline
+    m_pStatusLine = NULL;
 }
 
 /***********************************************************************************************
 
-> 	Application::~Application()
+>   Application::~Application()
 
-    Author: 	Tim_Browse (Xara Group Ltd) <camelotdev@xara.com>
-    Created:	20/5/93
+    Author:     Tim_Browse (Xara Group Ltd) <camelotdev@xara.com>
+    Created:    20/5/93
 
-	Inputs:		-
+    Inputs:     -
     Outputs:    -
-    Returns:   	-
+    Returns:    -
 
     Purpose:    Destroys any documents associated with this object.
 
-	Errors:		None.
+    Errors:     None.
 
 ***********************************************************************************************/
 
 Application::~Application()
 {
-	// Delete any documents still associated with this application
-	Document *pDocument = (Document *) Documents.GetHead();
+    // Delete any documents still associated with this application
+    Document *pDocument = (Document *) Documents.GetHead();
 
-	while (pDocument != NULL)
-	{
-		delete Documents.RemoveItem(pDocument);
-		pDocument = (Document *) Documents.GetHead();
-	}
+    while (pDocument != NULL)
+    {
+        delete Documents.RemoveItem(pDocument);
+        pDocument = (Document *) Documents.GetHead();
+    }
 
-//	ERROR3IF(DocComponentClasses != NULL,
-//				"Application was not properly de-initialised");
-	if (DocComponentClasses != 0) TRACE( wxT("WARNING: Application was not properly de-initialised\n") );
+//  ERROR3IF(DocComponentClasses != NULL,
+//              "Application was not properly de-initialised");
+    if (DocComponentClasses != 0) TRACE( wxT("WARNING: Application was not properly de-initialised\n") );
 
-	RegenList.DeleteAll();
+    RegenList.DeleteAll();
 }
 
 #if _AFXDLL
@@ -272,128 +273,128 @@ Application::~Application()
 
 Application *GetApplication()
 {
-	return &Camelot;
+    return &Camelot;
 }
 
 #endif
 
 /***********************************************************************************************
 
-> 	BOOL Application::Init()
+>   BOOL Application::Init()
 
-    Author: 	Tim_Browse (Xara Group Ltd) <camelotdev@xara.com>
-    Created:	26/8/93
+    Author:     Tim_Browse (Xara Group Ltd) <camelotdev@xara.com>
+    Created:    26/8/93
 
-	Inputs:		-
+    Inputs:     -
     Outputs:    -
-    Returns:   	TRUE if the object initialised ok.
+    Returns:    TRUE if the object initialised ok.
 
     Purpose:    Initialise the application, including the user preferences system. This is
-				the earliest kernel-level code to be called - do NOT ADD THINGS HERE. Almost
-				everything that needs to be initialised should go in InitKernel, which gets
-				called after this and some OIL initialisation. If you think you qualify to
-				add something here, speak to Andy first.
+                the earliest kernel-level code to be called - do NOT ADD THINGS HERE. Almost
+                everything that needs to be initialised should go in InitKernel, which gets
+                called after this and some OIL initialisation. If you think you qualify to
+                add something here, speak to Andy first.
 
-	Errors:		None.
+    Errors:     None.
 
 ***********************************************************************************************/
 
 BOOL Application::Init()
 {
 
-	// Initialise the message handler class groups
-	if(!(
-		MessageHandler::RegisterClassGroup(CC_RUNTIME_CLASS(MessageHandler)) &&
-		MessageHandler::RegisterClassGroup(CC_RUNTIME_CLASS(Operation))		&&
-		MessageHandler::RegisterClassGroup(CC_RUNTIME_CLASS(DialogOp))		&&
-		MessageHandler::RegisterClassGroup(CC_RUNTIME_CLASS(OpDescriptor))	&&
-		MessageHandler::RegisterClassGroup(CC_RUNTIME_CLASS(DialogBarOp))	&&
-		MessageHandler::RegisterClassGroup(CC_RUNTIME_CLASS(SelRangeMessageHandler))
-	  ))
-	{
-		return FALSE; // Failed
-	}
+    // Initialise the message handler class groups
+    if(!(
+        MessageHandler::RegisterClassGroup(CC_RUNTIME_CLASS(MessageHandler)) &&
+        MessageHandler::RegisterClassGroup(CC_RUNTIME_CLASS(Operation))     &&
+        MessageHandler::RegisterClassGroup(CC_RUNTIME_CLASS(DialogOp))      &&
+        MessageHandler::RegisterClassGroup(CC_RUNTIME_CLASS(OpDescriptor))  &&
+        MessageHandler::RegisterClassGroup(CC_RUNTIME_CLASS(DialogBarOp))   &&
+        MessageHandler::RegisterClassGroup(CC_RUNTIME_CLASS(SelRangeMessageHandler))
+      ))
+    {
+        return FALSE; // Failed
+    }
 
 #if !defined(EXCLUDE_FROM_RALPH) && !defined(EXCLUDE_FROM_XARALX)
 PORTNOTE("colourmanager","Removed XaraCMS usage")
-	// Create the Xara CMS manager - we have to get this in there
-	// before a colour manager initialise otherwise there'll be trouble.
-	// Note that if this fails in any way, we continue happily, simply disabling
-	// the advanced colour management functions.
-	CMSManager = new XaraCMS;
-	if (CMSManager != NULL)
-	{
-		// We got one. Let's initialise it
-		if (!CMSManager->Initialise(1))
-		{
-			delete CMSManager;
-			CMSManager = NULL;
-		}
-	}
-	CMSManager = NULL;
+    // Create the Xara CMS manager - we have to get this in there
+    // before a colour manager initialise otherwise there'll be trouble.
+    // Note that if this fails in any way, we continue happily, simply disabling
+    // the advanced colour management functions.
+    CMSManager = new XaraCMS;
+    if (CMSManager != NULL)
+    {
+        // We got one. Let's initialise it
+        if (!CMSManager->Initialise(1))
+        {
+            delete CMSManager;
+            CMSManager = NULL;
+        }
+    }
+    CMSManager = NULL;
 #else
-	CMSManager = NULL;
+    CMSManager = NULL;
 #endif
 
-	// startup the noise system
-	TheNoiseManager = new NoiseMan;
-	if (TheNoiseManager == NULL)
-		return FALSE;
+    // startup the noise system
+    TheNoiseManager = new NoiseMan;
+    if (TheNoiseManager == NULL)
+        return FALSE;
 
-	if (!TheNoiseManager->Initialise())
-		return FALSE;
+    if (!TheNoiseManager->Initialise())
+        return FALSE;
 
-	// Initialise the colour system
-	if (!ColourManager::Init())
-		return FALSE;
+    // Initialise the colour system
+    if (!ColourManager::Init())
+        return FALSE;
 
-	// Create and initialise the Camelot Selection object
-	// This must be done AFTER registering the SelRangeMessageHandler class above,
-	// as the Selection tries to register a message handler when it is constructed.
-	// Thus it is necessary to defer creation of the object until the msg system
-	// has been appropriately set up.
-	Selection = new SelRange;
-	if (Selection == NULL)
-		return(FALSE);
+    // Create and initialise the Camelot Selection object
+    // This must be done AFTER registering the SelRangeMessageHandler class above,
+    // as the Selection tries to register a message handler when it is constructed.
+    // Thus it is necessary to defer creation of the object until the msg system
+    // has been appropriately set up.
+    Selection = new SelRange;
+    if (Selection == NULL)
+        return(FALSE);
 
-	// startup the noise system
-	// Create and initialise the colour manager
-	// THis is done here for the same reasons as described for the SelRange, above.
-	TheColourManager = new ColourManager;
-	if (TheColourManager == NULL)
-		return(FALSE);
+    // startup the noise system
+    // Create and initialise the colour manager
+    // THis is done here for the same reasons as described for the SelRange, above.
+    TheColourManager = new ColourManager;
+    if (TheColourManager == NULL)
+        return(FALSE);
 
-	// create and initialise a new Blob Manager
-	BlobMgr = new BlobManager;
-	if (BlobMgr == NULL)
-		return FALSE;
+    // create and initialise a new Blob Manager
+    BlobMgr = new BlobManager;
+    if (BlobMgr == NULL)
+        return FALSE;
 
 PORTNOTE("other","Removed init of stuff that is not supported")
 #if !defined(EXCLUDE_FROM_RALPH) && !defined(EXCLUDE_FROM_XARALX)
-	// create the ATM ini cache.
-	pATMIniCache = new ATMIniCache;
-	if (pATMIniCache == NULL)
-		return FALSE;
+    // create the ATM ini cache.
+    pATMIniCache = new ATMIniCache;
+    if (pATMIniCache == NULL)
+        return FALSE;
 #endif
 
-	// Create the font mangler
-	FontMgr = new FontManager;
-	if (FontMgr == NULL)
-		return FALSE;
+    // Create the font mangler
+    FontMgr = new FontManager;
+    if (FontMgr == NULL)
+        return FALSE;
 
-	// And make sure its initialised;
-	if (!FontMgr->Init())
-		return FALSE;
+    // And make sure its initialised;
+    if (!FontMgr->Init())
+        return FALSE;
 
 #if !defined(EXCLUDE_FROM_RALPH)
 #ifndef STANDALONE
 #ifndef WEBSTER
 // Do not do do on Webster as this conflicts with the CleanUpAfterExport code in BaseCamelotFilter
 
-	// Create a print marks manager please
-	TheMarksManager = new PrintMarksMan;
-	if (TheMarksManager == NULL)
-		return FALSE;
+    // Create a print marks manager please
+    TheMarksManager = new PrintMarksMan;
+    if (TheMarksManager == NULL)
+        return FALSE;
 #endif // WEBSTER
 #endif
 #endif
@@ -402,190 +403,190 @@ PORTNOTE("other","Removed init of stuff that is not supported")
 #ifndef STANDALONE
 #ifdef FREEHANDPLUGINS
 // Only add in if required - general plug-in removal at present
-	// Create the external (Freehand Xtra) API object
-	TheAPIObject = new APIObject;
-	if (TheAPIObject == NULL)
-		return FALSE; // Actually we can probably run without this...
+    // Create the external (Freehand Xtra) API object
+    TheAPIObject = new APIObject;
+    if (TheAPIObject == NULL)
+        return FALSE; // Actually we can probably run without this...
 #endif // FREEHANDPLUGINS
 
 #ifdef PLUGINSUPPORT
-	// Create a plug-in manager please
-	ThePlugInManager = new PlugInManager;
-	if (ThePlugInManager == NULL)
-		return FALSE;
+    // Create a plug-in manager please
+    ThePlugInManager = new PlugInManager;
+    if (ThePlugInManager == NULL)
+        return FALSE;
 #endif // PLUGINSUPPORT
 
 #ifdef FREEHANDPLUGINS
-	TRACEUSER( "claude", _T("new handlemanager\n"));
-	TheHandleManager = new HandleManager;
-	if (TheHandleManager == NULL)
-		return FALSE;
+    TRACEUSER( "claude", _T("new handlemanager\n"));
+    TheHandleManager = new HandleManager;
+    if (TheHandleManager == NULL)
+        return FALSE;
 #endif // FREEHANDPLUGINS
 
-	if (!InitFilterManager())
-	{
-		return FALSE;
-	}
+    if (!InitFilterManager())
+    {
+        return FALSE;
+    }
 
 #endif // STANDALONE
 #endif // EXCLUDE_FROM_RALPH, EXCLUDE_FROM_XARALX
 
 #ifndef EXCLUDE_FROM_XARALX
 #ifdef AUTOMATION
-	if (!InitCCC())
-	{
-		return FALSE;
-	}
+    if (!InitCCC())
+    {
+        return FALSE;
+    }
 #endif
 #endif
 
-	// Initialise the object registry.
-	if (!ObjectRegistry::Init())
-	{
-		// Error has been set
-		return (FALSE);
-	}
+    // Initialise the object registry.
+    if (!ObjectRegistry::Init())
+    {
+        // Error has been set
+        return (FALSE);
+    }
 
-	if (!InitWizOps())
-	{
-		return FALSE;
-	}
+    if (!InitWizOps())
+    {
+        return FALSE;
+    }
 
 #if !defined(EXCLUDE_FROM_RALPH)
-	// Create and initialise the CamelotPrefs object.
-	// This object is dynamically created rather than being embedded in the Appliation object
-	// because the Application destructor is called after the SimpleCCObject::MemoryDump()
-	// function is called.  Hence if the CamelotPrefs object were embedded, the MemoryDump
-	// would list all the preference-related objects on application termination.
-	CamelotPrefs = new Preferences;
+    // Create and initialise the CamelotPrefs object.
+    // This object is dynamically created rather than being embedded in the Appliation object
+    // because the Application destructor is called after the SimpleCCObject::MemoryDump()
+    // function is called.  Hence if the CamelotPrefs object were embedded, the MemoryDump
+    // would list all the preference-related objects on application termination.
+    CamelotPrefs = new Preferences;
 
-	if (!((CamelotPrefs != NULL) && CamelotPrefs->Init()))
-		return FALSE;
+    if (!((CamelotPrefs != NULL) && CamelotPrefs->Init()))
+        return FALSE;
 #endif
 
 #ifdef VECTOR_STROKING // Neville 6/8/97
-	m_pObjCache = new ObjectCacheFIFO(50);		// set a cache of 50 bytes
+    m_pObjCache = new ObjectCacheFIFO(50);      // set a cache of 50 bytes
 
-	if (m_pObjCache == NULL)
-		return FALSE;
-	// Set the cache size with an arbitrary value (in bytes)
-	//m_ObjCache->SetMaxCacheSize(50);
+    if (m_pObjCache == NULL)
+        return FALSE;
+    // Set the cache size with an arbitrary value (in bytes)
+    //m_ObjCache->SetMaxCacheSize(50);
 #endif // VECTOR_STROKING
 
-	// Set up the Bitmap Cache...
-	TheBitmapCache = new CBitmapCache();
-	TheBitmapCache->Initialise();					// Initialise with default settings
+    // Set up the Bitmap Cache...
+    TheBitmapCache = new CBitmapCache();
+    TheBitmapCache->Initialise();                   // Initialise with default settings
 
-	// Get an empty list object to hold all the registered doc components
-	DocComponentClasses = new List;
-	if (DocComponentClasses == NULL)
-		return FALSE;
+    // Get an empty list object to hold all the registered doc components
+    DocComponentClasses = new List;
+    if (DocComponentClasses == NULL)
+        return FALSE;
 
-	// Eveything worked (gasp!)
-	return TRUE;
+    // Eveything worked (gasp!)
+    return TRUE;
 }
 
 
 /***********************************************************************************************
 
->	BOOL Application::InitFilterManager()
+>   BOOL Application::InitFilterManager()
 
-    Author: 	Colin_Barfoot (Xara Group Ltd) <camelotdev@xara.com>
-    Created:	26/12/96
-    Returns:   	TRUE if OK, FALSE if failed
+    Author:     Colin_Barfoot (Xara Group Ltd) <camelotdev@xara.com>
+    Created:    26/12/96
+    Returns:    TRUE if OK, FALSE if failed
     Purpose:    Support function to initialize this Application's FilterManager
 
 ***********************************************************************************************/
 BOOL Application::InitFilterManager()
 {
-	BOOL Success = FALSE;
+    BOOL Success = FALSE;
 
-	TheFilterManager = new FilterManager;
-	if (TheFilterManager != NULL)
-	{
-		Success = TheFilterManager->Init();
-	}
-	else
-	{
-		Success = FALSE;
-	}
+    TheFilterManager = new FilterManager;
+    if (TheFilterManager != NULL)
+    {
+        Success = TheFilterManager->Init();
+    }
+    else
+    {
+        Success = FALSE;
+    }
 
-	return Success;
+    return Success;
 }
 
 
 /***********************************************************************************************
 
->	BOOL Application::InitWizOps()
+>   BOOL Application::InitWizOps()
 
-    Author: 	Colin_Barfoot (Xara Group Ltd) <camelotdev@xara.com>
-    Created:	26/12/96
+    Author:     Colin_Barfoot (Xara Group Ltd) <camelotdev@xara.com>
+    Created:    26/12/96
 
     Purpose:    Support function to initialize this Application's WizardOfOps from the local
-				registry.
+                registry.
 
-    Returns:   	TRUE if OK, FALSE if failed
+    Returns:    TRUE if OK, FALSE if failed
 
 ***********************************************************************************************/
 BOOL Application::InitWizOps()
 {
-	BOOL Ok = TRUE;
+    BOOL Ok = TRUE;
 
-	TheWizardOfOps = new WizOps;
-	if (TheWizardOfOps != NULL)
-	{
-		Ok = TheWizardOfOps->InitializeFromRegistry();
-	}
-	else
-	{
-		Ok = FALSE;
-	}
+    TheWizardOfOps = new WizOps;
+    if (TheWizardOfOps != NULL)
+    {
+        Ok = TheWizardOfOps->InitializeFromRegistry();
+    }
+    else
+    {
+        Ok = FALSE;
+    }
 
-	return Ok;
+    return Ok;
 }
 
 
 #ifdef AUTOMATION
 /***********************************************************************************************
 
->	BOOL Application::InitCCC()
+>   BOOL Application::InitCCC()
 
-    Author: 	Colin_Barfoot (Xara Group Ltd) <camelotdev@xara.com>
-    Created:	26/03/97
+    Author:     Colin_Barfoot (Xara Group Ltd) <camelotdev@xara.com>
+    Created:    26/03/97
 
-    Returns:   	TRUE if OK, FALSE if failed
+    Returns:    TRUE if OK, FALSE if failed
     Purpose:    Support function to initialize this Application's ConcurrencyController
 
 ***********************************************************************************************/
 BOOL Application::InitCCC()
 {
-	BOOL Success = FALSE;
+    BOOL Success = FALSE;
 
-	TheConcurrencyController = new ConcurrencyController;
-	if (TheConcurrencyController != NULL)
-	{
-		Success = TheConcurrencyController->Init();
-	}
-	else
-	{
-		Success = FALSE;
-	}
+    TheConcurrencyController = new ConcurrencyController;
+    if (TheConcurrencyController != NULL)
+    {
+        Success = TheConcurrencyController->Init();
+    }
+    else
+    {
+        Success = FALSE;
+    }
 
-	return Success;
+    return Success;
 }
-#endif	// AUTOMATION
+#endif  // AUTOMATION
 
 
 /***********************************************************************************************
 
->	BOOL Application:LateInit()
+>   BOOL Application:LateInit()
 
-    Author: 	Andy_Pennell (Xara Group Ltd) <camelotdev@xara.com>
-    Created:	26/9/94
-    Returns:   	TRUE if OK, FALSE if failed->SetError.
+    Author:     Andy_Pennell (Xara Group Ltd) <camelotdev@xara.com>
+    Created:    26/9/94
+    Returns:    TRUE if OK, FALSE if failed->SetError.
     Purpose:    Initialise the application object bits that require the preferences system
-				to be fully up & running. Currently that means the pen only.
-	Errors:		None.
+                to be fully up & running. Currently that means the pen only.
+    Errors:     None.
 
 ***********************************************************************************************/
 
@@ -593,26 +594,26 @@ BOOL Application::LateInit()
 {
 #ifdef PLUGINSUPPORT
 // Only add in if required - general plug-in removal at present
-	// We need the preferences system present so we must wait until here
-	// before we ask the PlugInManager to initialise iteself;
-	if (ThePlugInManager == NULL || !ThePlugInManager->Init())
-		return FALSE;
+    // We need the preferences system present so we must wait until here
+    // before we ask the PlugInManager to initialise iteself;
+    if (ThePlugInManager == NULL || !ThePlugInManager->Init())
+        return FALSE;
 #endif // PLUGINSUPPORT
 
-	m_pTemplateManager->Init();
+    m_pTemplateManager->Init();
 
-	// Everything went ok
-	return TRUE;
+    // Everything went ok
+    return TRUE;
 }
 
 /********************************************************************************************
 
-> 	void Application::Deinit()
+>   void Application::Deinit()
 
-    Author: 	Tim_Browse (Xara Group Ltd) <camelotdev@xara.com>
-    Created:	26/8/93
+    Author:     Tim_Browse (Xara Group Ltd) <camelotdev@xara.com>
+    Created:    26/8/93
     Purpose:    Close down the kernel application object, including the user preferences
-    			system.
+                system.
 
 ********************************************************************************************/
 
@@ -620,1039 +621,1078 @@ void Application::Deinit()
 {
 #ifdef PLUGINSUPPORT
 // Only add in if required - general plug-in removal at present
-	// We need to ask the plug-in manager to save out its list of pathnames.
-	// So before the prefs system is vaped.
-	PlugInManager * pPlugMan = GetApplication()->GetPlugInManager();
-	if (pPlugMan)
-		pPlugMan->WritePathNameList();
+    // We need to ask the plug-in manager to save out its list of pathnames.
+    // So before the prefs system is vaped.
+    PlugInManager * pPlugMan = GetApplication()->GetPlugInManager();
+    if (pPlugMan)
+        pPlugMan->WritePathNameList();
 #endif // PLUGINSUPPORT
 
 #ifdef FREEHANDPLUGINS
-	//	clean up the memory used by MOA
-	TRACEUSER( "claude", wxT("Free up frmo the handle manager\n") );
-	HandleManager* pHandleCleaning = GetApplication()->GetHandleManager();
-	if(pHandleCleaning)
-		pHandleCleaning->FreeAll();
+    //  clean up the memory used by MOA
+    TRACEUSER( "claude", wxT("Free up frmo the handle manager\n") );
+    HandleManager* pHandleCleaning = GetApplication()->GetHandleManager();
+    if(pHandleCleaning)
+        pHandleCleaning->FreeAll();
 #endif // FREEHANDPLUGINS
 
-	if (CamelotPrefs!=NULL)
-	{
-		CamelotPrefs->Deinit();
-		delete CamelotPrefs;
-		CamelotPrefs = NULL;
-	}
+    if (CamelotPrefs!=NULL)
+    {
+        CamelotPrefs->Deinit();
+        delete CamelotPrefs;
+        CamelotPrefs = NULL;
+    }
 
-	if (Selection!=NULL)
-	{
-		delete Selection;
-		Selection = NULL;
-	}
+    if (Selection!=NULL)
+    {
+        delete Selection;
+        Selection = NULL;
+    }
 
-	if (DocComponentClasses != NULL)
-	{
-		DocComponentClasses->DeleteAll();
-		delete DocComponentClasses;
-		DocComponentClasses = NULL;
-	}
+    if (DocComponentClasses != NULL)
+    {
+        DocComponentClasses->DeleteAll();
+        delete DocComponentClasses;
+        DocComponentClasses = NULL;
+    }
 
-	if (TheColourManager!=NULL)
-	{
-		ColourManager::Deinit();
-		delete TheColourManager;
-		TheColourManager = NULL;
-	}
+    if (TheColourManager!=NULL)
+    {
+        ColourManager::Deinit();
+        delete TheColourManager;
+        TheColourManager = NULL;
+    }
 
-	if (TheNoiseManager!=NULL)
-	{
-		TheNoiseManager->Destroy();
-		delete TheNoiseManager;
-		TheNoiseManager=NULL;
-	}
+    if (TheNoiseManager!=NULL)
+    {
+        TheNoiseManager->Destroy();
+        delete TheNoiseManager;
+        TheNoiseManager=NULL;
+    }
 
 #if !defined(EXCLUDE_FROM_RALPH)
 #if !defined(EXCLUDE_FROM_XARALX)
 PORTNOTE("colourmanager","Removed XaraCMS usage")
-	if (CMSManager!=NULL)
-	{
-		CMSManager->Finalise();
-		delete CMSManager;
-		CMSManager = NULL;
-	}
+    if (CMSManager!=NULL)
+    {
+        CMSManager->Finalise();
+        delete CMSManager;
+        CMSManager = NULL;
+    }
 
 // VECTOR_STROKING - markn 25/4/97
 // No pen stuff required in Webster
 // Taken out by vector stroking code Neville 2/10/97
 #ifdef VECTOR_STROKING
-	if (PressurePen != NULL)
-	{
-		delete PressurePen;
-		PressurePen = NULL;
-	}
+    if (PressurePen != NULL)
+    {
+        delete PressurePen;
+        PressurePen = NULL;
+    }
 #endif // VECTOR_STROKING
 
-#endif	// EXCLUDE_FROM_XARALX
-	// Get rid of the blob manager
-	if (BlobMgr!=NULL)
-	{
-		delete BlobMgr;
-		BlobMgr = NULL;
-	}
+#endif  // EXCLUDE_FROM_XARALX
+    // Get rid of the blob manager
+    if (BlobMgr!=NULL)
+    {
+        delete BlobMgr;
+        BlobMgr = NULL;
+    }
 #endif // EXCLUDE_FROM_RALPH
 
 PORTNOTE("other","Removed un-=impl. stuff")
 #ifndef EXCLUDE_FROM_XARALX
-	// Get rid of the ATM Ini cache object
-	if (pATMIniCache!=NULL)
-	{
-		delete pATMIniCache;
-		pATMIniCache = NULL;
-	} */
+    // Get rid of the ATM Ini cache object
+    if (pATMIniCache!=NULL)
+    {
+        delete pATMIniCache;
+        pATMIniCache = NULL;
+    } */
 #endif
 
-	// Get rid of the font manager
-	if (FontMgr!=NULL)
-	{
-		delete FontMgr;
-		FontMgr = NULL;
-	}
+    // Get rid of the font manager
+    if (FontMgr!=NULL)
+    {
+        delete FontMgr;
+        FontMgr = NULL;
+    }
 
 #if !defined(EXCLUDE_FROM_RALPH)
 #ifndef STANDALONE
 #ifndef WEBSTER
 // Do not do do on Webster as this conflicts with the CleanUpAfterExport code in BaseCamelotFilter
 
-	// Toast the marks manager
-	if (TheMarksManager!=NULL)
-	{
-		delete TheMarksManager;
-		TheMarksManager = NULL;
-	}
+    // Toast the marks manager
+    if (TheMarksManager!=NULL)
+    {
+        delete TheMarksManager;
+        TheMarksManager = NULL;
+    }
 #endif // WEBSTER
 #endif
 #endif
 
 #ifdef PLUGINSUPPORT
 // Only add in if required - general plug-in removal at present
-	// Toast the plug-in manager
-	if (ThePlugInManager != NULL)
-	{
-		delete ThePlugInManager;
-		ThePlugInManager = NULL;
-	}
+    // Toast the plug-in manager
+    if (ThePlugInManager != NULL)
+    {
+        delete ThePlugInManager;
+        ThePlugInManager = NULL;
+    }
 #endif // PLUGINSUPPORT
 
 #ifdef FREEHANDPLUGINS
-	// Nuke the API interfaces (must be done after killing the plugin manager). Don't delete
-	// it afterwards, it's all handled by the reference count...
-	if(TheAPIObject != NULL)
-		TheAPIObject->ShutDown();
+    // Nuke the API interfaces (must be done after killing the plugin manager). Don't delete
+    // it afterwards, it's all handled by the reference count...
+    if(TheAPIObject != NULL)
+        TheAPIObject->ShutDown();
 
-	//	Delete the Moa handle manager
-	if(TheHandleManager != NULL)
-	{
-		TRACEUSER( "claude", wxT("deleting the moa handle manager\n") );
-		delete TheHandleManager;
-		TheHandleManager = NULL;
-	}
+    //  Delete the Moa handle manager
+    if(TheHandleManager != NULL)
+    {
+        TRACEUSER( "claude", wxT("deleting the moa handle manager\n") );
+        delete TheHandleManager;
+        TheHandleManager = NULL;
+    }
 #endif // FREEHANDPLUGINS
 
-	DeinitFilterManager();
+    DeinitFilterManager();
 
-	if (m_pObjCache != NULL)
-	{
-		delete m_pObjCache;
-		m_pObjCache = NULL;
-	}
+    if (m_pObjCache != NULL)
+    {
+        delete m_pObjCache;
+        m_pObjCache = NULL;
+    }
 
-	if (TheBitmapCache)
-	{
-		TheBitmapCache->DeInitialise();
-		delete TheBitmapCache;
-		TheBitmapCache = NULL;
-	}
+    if (TheBitmapCache)
+    {
+        TheBitmapCache->DeInitialise();
+        delete TheBitmapCache;
+        TheBitmapCache = NULL;
+    }
 
-	DeinitWizOps();
+    DeinitWizOps();
 
 #ifdef AUTOMATION
-	DestroyCCC();
+    DestroyCCC();
 #endif
 
-	// DialogManager was deinitialized a while ago, but this bit needs to be done after
-	// the pref system has gone. It merely frees some memory
-	DialogManager::FreePaneInfoHash();
+    // DialogManager was deinitialized a while ago, but this bit needs to be done after
+    // the pref system has gone. It merely frees some memory
+    DialogManager::FreePaneInfoHash();
 
-	ObjectRegistry::Delete();
+    ObjectRegistry::Delete();
 }
 
 
 /***********************************************************************************************
 
->	BOOL Application::DeinitFilterManager()
+>   BOOL Application::DeinitFilterManager()
 
-    Author: 	Colin_Barfoot (Xara Group Ltd) <camelotdev@xara.com>
-    Created:	26/12/96
-    Returns:   	TRUE if OK, FALSE if failed
+    Author:     Colin_Barfoot (Xara Group Ltd) <camelotdev@xara.com>
+    Created:    26/12/96
+    Returns:    TRUE if OK, FALSE if failed
     Purpose:    Support function to deinitialize & destruct this Application's FilterManager
 
 ***********************************************************************************************/
 BOOL Application::DeinitFilterManager()
 {
-	BOOL Success = FALSE;
+    BOOL Success = FALSE;
 
-	FilterManager* pFilterManager = GetFilterManager();
-	if (pFilterManager != NULL)
-	{
-		Success = TheFilterManager->DeInit();
-		// ...ignore any errors
-		if (!Success)
-		{
-			TRACE( wxT("Deinit of FilterManager not successful") );
-		}
-		delete TheFilterManager;
-		TheFilterManager = NULL;
-		Success = TRUE;
-	}
-	else
-	{
-		TRACE( wxT("No Filter Manager") );
-		Success = FALSE;
-	}
+    FilterManager* pFilterManager = GetFilterManager();
+    if (pFilterManager != NULL)
+    {
+        Success = TheFilterManager->DeInit();
+        // ...ignore any errors
+        if (!Success)
+        {
+            TRACE( wxT("Deinit of FilterManager not successful") );
+        }
+        delete TheFilterManager;
+        TheFilterManager = NULL;
+        Success = TRUE;
+    }
+    else
+    {
+        TRACE( wxT("No Filter Manager") );
+        Success = FALSE;
+    }
 
-	return Success;
+    return Success;
 }
 
 
 /***********************************************************************************************
 
->	BOOL Application::DeinitWizOps()
+>   BOOL Application::DeinitWizOps()
 
-    Author: 	Colin_Barfoot (Xara Group Ltd) <camelotdev@xara.com>
-    Created:	26/12/96
+    Author:     Colin_Barfoot (Xara Group Ltd) <camelotdev@xara.com>
+    Created:    26/12/96
 
     Purpose:    Support function to deinitialize & destruct this Application's WizOps
 
-    Returns:   	TRUE if OK, FALSE if failed
+    Returns:    TRUE if OK, FALSE if failed
 
 ***********************************************************************************************/
 BOOL Application::DeinitWizOps()
 {
-	BOOL Ok = TRUE;
+    BOOL Ok = TRUE;
 
-	if (TheWizardOfOps != NULL)
-	{
-		delete TheWizardOfOps;
-		TheWizardOfOps = NULL;
-	}
-	else
-	{
-		TRACE( wxT("No WizOps") );
-		Ok = FALSE;
-	}
+    if (TheWizardOfOps != NULL)
+    {
+        delete TheWizardOfOps;
+        TheWizardOfOps = NULL;
+    }
+    else
+    {
+        TRACE( wxT("No WizOps") );
+        Ok = FALSE;
+    }
 
-	return Ok;
+    return Ok;
 }
 
 
 #ifdef AUTOMATION
 /***********************************************************************************************
 
->	BOOL Application::DestroyCCC()
+>   BOOL Application::DestroyCCC()
 
-    Author: 	Colin_Barfoot (Xara Group Ltd) <camelotdev@xara.com>
-    Created:	26/12/96
-    Returns:   	TRUE if OK, FALSE if failed
+    Author:     Colin_Barfoot (Xara Group Ltd) <camelotdev@xara.com>
+    Created:    26/12/96
+    Returns:    TRUE if OK, FALSE if failed
     Purpose:    Support function to deinitialize & destruct this Application's
-				ConcurrencyController.
+                ConcurrencyController.
 
 ***********************************************************************************************/
 BOOL Application::DestroyCCC()
 {
-	BOOL Success = FALSE;
+    BOOL Success = FALSE;
 
-	if (TheConcurrencyController != NULL)
-	{
-		delete TheConcurrencyController;
-		TheConcurrencyController = NULL;
-		Success = TRUE;
-	}
-	else
-	{
-		TRACE( wxT("No ConcurrencyController") );
-		Success = FALSE;
-	}
+    if (TheConcurrencyController != NULL)
+    {
+        delete TheConcurrencyController;
+        TheConcurrencyController = NULL;
+        Success = TRUE;
+    }
+    else
+    {
+        TRACE( wxT("No ConcurrencyController") );
+        Success = FALSE;
+    }
 
-	return Success;
+    return Success;
 }
 #endif
 
 
 /***********************************************************************************************
 
->	RenderRegionList* Application::GetRegionList()
+>   RenderRegionList* Application::GetRegionList()
 
-	Author:		Will_Cowling (Xara Group Ltd) <camelotdev@xara.com>
-	Created:	9/6/95
-	Purpose:	Gets a pointer to the Applications RenderRegion list.
+    Author:     Will_Cowling (Xara Group Ltd) <camelotdev@xara.com>
+    Created:    9/6/95
+    Purpose:    Gets a pointer to the Applications RenderRegion list.
 
 ***********************************************************************************************/
 
 RenderRegionList* Application::GetRegionList()
 {
- 	return &RenderList;
+    return &RenderList;
 }
 
 /***********************************************************************************************
 
->	void Application::AddRenderRegion(RenderRegion *pRegion)
+>   void Application::AddRenderRegion(RenderRegion *pRegion)
 
-	Author:		Tim_Browse (Xara Group Ltd) <camelotdev@xara.com>
-	Created:	27/5/93
-	Inputs:		pRegion - pointer to the RenderRegion to add to the list.
-	Returns:	Region - the render region to add.
-	Purpose:	To add a RenderRegion object to the RenderList. Automatically sets a flag
-				to do immediate rendering if the render region is an immediate one.
-	SeeAlso:	RenderRegion; List
+    Author:     Tim_Browse (Xara Group Ltd) <camelotdev@xara.com>
+    Created:    27/5/93
+    Inputs:     pRegion - pointer to the RenderRegion to add to the list.
+    Returns:    Region - the render region to add.
+    Purpose:    To add a RenderRegion object to the RenderList. Automatically sets a flag
+                to do immediate rendering if the render region is an immediate one.
+    SeeAlso:    RenderRegion; List
 
 ***********************************************************************************************/
 
 void Application::AddRenderRegion(RenderRegion *pRegion)
 {
-	// Is this render region an immediate one?
+    // Is this render region an immediate one?
 
-	View *pView = pRegion->GetRenderView();
-	ENSURE(pView != NULL, "No View in AddRenderRegion!");
+    View *pView = pRegion->GetRenderView();
+    ENSURE(pView != NULL, "No View in AddRenderRegion!");
 
-	if (!pView->GetForeBackMode())
-	{
-//		TRACE(_T("ImmediateRender\n"));
-		// Yes - set the flag to indicate we should do some immediate rendering on the
-		// next redraw event.
-		ImmediateRenderPending = TRUE;
-	}
+    if (!pView->GetForeBackMode())
+    {
+//      TRACE(_T("ImmediateRender\n"));
+        // Yes - set the flag to indicate we should do some immediate rendering on the
+        // next redraw event.
+        ImmediateRenderPending = TRUE;
+    }
 
-	// Add this render region to the list.
-	RenderList.Merge(pRegion);
+    // Add this render region to the list.
+    RenderList.Merge(pRegion);
 }
 
 /***********************************************************************************************
 
->	BOOL Application::DeleteRenderRegion(RenderRegion *Region)
+>   BOOL Application::DeleteRenderRegion(RenderRegion *Region)
 
-	Author:		Tim_Browse (Xara Group Ltd) <camelotdev@xara.com>
-	Created:	27/5/93
-	Inputs:		Region - pointer to the RenderRegion to remove from the list.
-	Returns:	TRUE if the region was in the list, FALSE otherwise.
-	Purpose:	To remove a RenderRegion object from the RenderList.  If the
-				region in not in the list, no errors occur.  The RenderRegion object will
-				be destroyed (i.e. delete will be called on it).
-	Errors:		-
-	SeeAlso:	RenderRegion; List
+    Author:     Tim_Browse (Xara Group Ltd) <camelotdev@xara.com>
+    Created:    27/5/93
+    Inputs:     Region - pointer to the RenderRegion to remove from the list.
+    Returns:    TRUE if the region was in the list, FALSE otherwise.
+    Purpose:    To remove a RenderRegion object from the RenderList.  If the
+                region in not in the list, no errors occur.  The RenderRegion object will
+                be destroyed (i.e. delete will be called on it).
+    Errors:     -
+    SeeAlso:    RenderRegion; List
 
 ***********************************************************************************************/
 
 BOOL Application::DeleteRenderRegion(RenderRegion *Region)
 {
 #ifdef RALPH
-		// Wait until it's safe to enter
-		CCamApp::EnterGDrawCriticalSection();
+        // Wait until it's safe to enter
+        CCamApp::EnterGDrawCriticalSection();
 #endif
-	if (RenderList.FindPosition(Region) == NOT_IN_LIST)
-	{
-	#ifdef RALPH
-		// Let another process have a go
-		CCamApp::ExitGDrawCriticalSection();
-	#endif
-		ENSURE( FALSE, "Couldn't find Region in List" );
-		return FALSE;
-	}
+    if (RenderList.FindPosition(Region) == NOT_IN_LIST)
+    {
+    #ifdef RALPH
+        // Let another process have a go
+        CCamApp::ExitGDrawCriticalSection();
+    #endif
+        ENSURE( FALSE, "Couldn't find Region in List" );
+        return FALSE;
+    }
 
-	RenderList.Remove(Region);
-	#ifdef RALPH
-		// Let another process have a go
-		CCamApp::ExitGDrawCriticalSection();
-	#endif
-	return TRUE;
+    RenderList.Remove(Region);
+    #ifdef RALPH
+        // Let another process have a go
+        CCamApp::ExitGDrawCriticalSection();
+    #endif
+    return TRUE;
 }
 
 
 /********************************************************************************************
 
->	BOOL Application::ServiceRendering(BOOL bImmediate = FALSE)
+>   BOOL Application::ServiceRendering(bool immediate_rendering = false,
+                                       bool background_rendering = true)
 
-	Author:		Tim_Browse (Xara Group Ltd) <camelotdev@xara.com>
-	Created:	27/06/94
-	Returns:	TRUE if more rendering needs to be done, FALSE if there are no more
-				regions left to render.
-	Purpose:	Render some objects!  This function will either render any outstanding
-				'immediate' render regions to completion, or render a background render
-				regions for one time-slice.
-	SeeAlso:	RenderRegionList::ImmediateRender; RenderRegionList::BackgroundRender
+    Author:     Tim_Browse (Xara Group Ltd) <camelotdev@xara.com>
+
+    Created:    27/06/94
+
+    Inputs:     on_paint_rendering -- We are doing on demand rendering within the context of
+                an an EVT_PAINT() event. background_rendering must be false.
+
+                background_rendering -- process the background rendering queue.
+                Typically, all rendering that takes place outside an OnPaint event is done
+                through background rendering. But it is also allowed to also render those
+                regions through immediate rendering. Note, however the converse is
+                not true, rendering done within an OnPaint must only be done through the
+                immediate queue.
+
+    Returns:    true if more rendering needs to be done, false if there are no more
+                regions left to render.
+
+    Purpose:    Render some objects! There are three basic contexts in which this method
+                might be called:
+
+                1) Within the context of an EVT_PAINT() event, e.g. CRendWnd::OnPaint()
+                   This can only be a non-background rendering type and must be performed
+                   using a wxPaintDC that's been created after recieving the paint event.
+
+                2) Outside of an EVT_PAINT() event, i.e. some user type event like a mouse
+                   move or button click, but to be done IMMEDIATELY. For example, if the
+                   user is preforming a drag event to resize an object. The object will be
+                   in a special outline form which is 'rubber banded' and updated
+                   immediately as the object is dragged. This must be done with a
+                   wxClientDC, not the wxPaintDC.
+
+                3) Outside of an EVT_PAINT(), but to be done in the BACKGROUND. In general
+                   this is the case if the application is not in the middle of an
+                   interactive event, and is not in the context of an EVT_PAINT()
+                   event. Like #2, this must be done with a wxClientDC.
+
+                Immediate rendering of both types (1 and 2) is syncronous with the event
+                that triggered the render. Background rendering is done for one
+                time-slice.
+
+    SeeAlso:    RenderRegionList::ImmediateRender; RenderRegionList::BackgroundRender
 
 ********************************************************************************************/
 
-BOOL Application::ServiceRendering(BOOL bImmediate)
+bool Application::ServiceRendering(bool on_paint_rendering, bool background_rendering)
 {
+    // incompatable request
+    if (on_paint_rendering && background_rendering)
+    {
+        TRACE(_T("on_paint_rendering is not compatable with background_rendering\n"));
+        ERROR2IF((on_paint_rendering && background_rendering),
+                 NULL,
+                 "on_paint_rendering is not compatable with background_rendering\n");
+    }
+
 #ifdef RALPH
 #ifdef _DEBUG
-	if(::GetCurrentThreadId() == RalphDocument::GetImportingThreadID())
-	{
-		// If we get in here, it's extremely BAD !
-		AfxDebugBreak();
-	}
+    if(::GetCurrentThreadId() == RalphDocument::GetImportingThreadID())
+    {
+        // If we get in here, it's extremely BAD !
+        AfxDebugBreak();
+    }
 #endif
 
-	// Fixes splodgy text problems...
-	RalphCriticalSection RCS;
+    // Fixes splodgy text problems...
+    RalphCriticalSection RCS;
 #endif
 
 #ifdef RALPH
-		// Wait until it's safe to enter
-		CCamApp::EnterGDrawCriticalSection();
+        // Wait until it's safe to enter
+        CCamApp::EnterGDrawCriticalSection();
 #endif
 
-	// DMc - render the list of nodes to regenerate
-	RegenerateNodesInList();
+    // DMc - render the list of nodes to regenerate
+    RegenerateNodesInList();
 
-//	TRACEUSER( "Gerry", _T("Service Rendering - Enter\n"));
-	if (ImmediateRenderPending || bImmediate)
-	{
-		// Render all immediate render regions to completion, and then clear the
-		// flag so we do some background rendering the next time around.
-		RenderList.ImmediateRender(bImmediate);
-		ImmediateRenderPending = FALSE;
+    if (ImmediateRenderPending || on_paint_rendering)
+    {
+        // Render all immediate render regions to completion, and then clear the
+        // flag so we do some background rendering the next time around.
+        RenderList.ImmediateRender(true);
+        ImmediateRenderPending = false;
 
-	#ifdef RALPH
-		// Let another process have a go
-		CCamApp::ExitGDrawCriticalSection();
-	#endif
+    #ifdef RALPH
+        // Let another process have a go
+        CCamApp::ExitGDrawCriticalSection();
+    #endif
+    }
 
-		// Try background rendering next
-//		TRACEUSER( "Gerry", _T("Service Rendering - Exit - More\n"));
-		return TRUE;
-	}
-	else
-	{
-		BOOL ok = RenderList.BackgroundRender();
-	#ifdef RALPH
-		// Let another process have a go
-		CCamApp::ExitGDrawCriticalSection();
-	#endif
+    if (background_rendering && (!on_paint_rendering))
+    {
+        bool ok = RenderList.BackgroundRender();
 
-//		TRACEUSER( "Gerry", _T("Service Rendering - Exit - %s\n"), ok ? _T("More") : _T("Finished"));
-		return ok;
-	}
+    #ifdef RALPH
+        // Let another process have a go
+        CCamApp::ExitGDrawCriticalSection();
+    #endif
 
-//	TRACEUSER( "Gerry", _T("Service Rendering - Exit - More\n"));
-	return TRUE;
+        return ok;
+    }
+
+    // TRACEUSER( "Gerry", _T("Service Rendering - Exit - More\n"));
+    return true;
 }
 
 
 /********************************************************************************************
 
->	BOOL Application::IsBgRendering()
+>   BOOL Application::IsBgRendering()
 
-	Author:		Will_Cowling (Xara Group Ltd) <camelotdev@xara.com>
-	Created:	10/5/95
-	Returns:	TRUE if Background rendering is in progress.
-	Purpose:	Find out if there is Background rendering in progress or not.
+    Author:     Will_Cowling (Xara Group Ltd) <camelotdev@xara.com>
+    Created:    10/5/95
+    Returns:    TRUE if Background rendering is in progress.
+    Purpose:    Find out if there is Background rendering in progress or not.
 
 ********************************************************************************************/
 
 BOOL Application::IsBgRendering()
 {
-	return BgRendering;
+    return BgRendering;
 }
 
 
 
 /********************************************************************************************
 
->	void Application::RegisterDocComponent(DocComponentClass *pClass)
+>   void Application::RegisterDocComponent(DocComponentClass *pClass)
 
-	Author:		Tim_Browse (Xara Group Ltd) <camelotdev@xara.com>
-	Created:	02/08/94
-	Inputs:		pClass - pointer to the Document component class thatis to be added.
-	Purpose:	Register a new Document Component class with the application.  This class
-				will be asked to add an instance to a document every time a new document
-				is created.
-	SeeAlso:	DocComponentClass; DocComponent
+    Author:     Tim_Browse (Xara Group Ltd) <camelotdev@xara.com>
+    Created:    02/08/94
+    Inputs:     pClass - pointer to the Document component class thatis to be added.
+    Purpose:    Register a new Document Component class with the application.  This class
+                will be asked to add an instance to a document every time a new document
+                is created.
+    SeeAlso:    DocComponentClass; DocComponent
 
 ********************************************************************************************/
 
 void Application::RegisterDocComponent(DocComponentClass *pClass)
 {
-	// Check for multiple registrations in debug build...
-	#if _DEBUG
-	DocComponentClass *pItem = (DocComponentClass *) DocComponentClasses->GetHead();
+    // Check for multiple registrations in debug build...
+    #if _DEBUG
+    DocComponentClass *pItem = (DocComponentClass *) DocComponentClasses->GetHead();
 
-	while (pItem != NULL)
-	{
-		// Already registered?
-		if (pItem->GetRuntimeClass() == pClass->GetRuntimeClass())
-		{
-			ENSURE(FALSE, "Document component registered more than once!");
-			return;
-		}
-		// Try the next one
-		pItem = (DocComponentClass *) DocComponentClasses->GetNext(pItem);
-	}
-	#endif
+    while (pItem != NULL)
+    {
+        // Already registered?
+        if (pItem->GetRuntimeClass() == pClass->GetRuntimeClass())
+        {
+            ENSURE(FALSE, "Document component registered more than once!");
+            return;
+        }
+        // Try the next one
+        pItem = (DocComponentClass *) DocComponentClasses->GetNext(pItem);
+    }
+    #endif
 
-	// Simple - just add it to the list
-	DocComponentClasses->AddTail(pClass);
+    // Simple - just add it to the list
+    DocComponentClasses->AddTail(pClass);
 }
 
 
 /********************************************************************************************
 
->	DocComponentClass *Application::EnumerateDocComponents(DocComponentClass *pContext)
+>   DocComponentClass *Application::EnumerateDocComponents(DocComponentClass *pContext)
 
-	Author:		Tim_Browse (Xara Group Ltd) <camelotdev@xara.com>
-	Created:	02/08/94
-	Inputs:		pContext: NULL => Get the first document component
-					  non-NULL => Get the next document component after the one pointed to
-								  by pContext.
-	Returns:	Pointer to the required document component.
-	Purpose:	Allow the caller to examine/use all the registered document components.
-				pContext should be NULL for the first call, which will return the first
-				registered document component.  After that, the returned pointer should
-				be passed back in to this function, which will return the next one, and
-				so on.
-				For example:
-				MonoOn
-					DocComponentClass *pDocComp = NULL;
-					do
-					{
-						pDocComp = Camelot.EnumerateDocComponents(pDocComp);
+    Author:     Tim_Browse (Xara Group Ltd) <camelotdev@xara.com>
+    Created:    02/08/94
+    Inputs:     pContext: NULL => Get the first document component
+                      non-NULL => Get the next document component after the one pointed to
+                                  by pContext.
+    Returns:    Pointer to the required document component.
+    Purpose:    Allow the caller to examine/use all the registered document components.
+                pContext should be NULL for the first call, which will return the first
+                registered document component.  After that, the returned pointer should
+                be passed back in to this function, which will return the next one, and
+                so on.
+                For example:
+                MonoOn
+                    DocComponentClass *pDocComp = NULL;
+                    do
+                    {
+                        pDocComp = Camelot.EnumerateDocComponents(pDocComp);
 
-						// Do something groovy with pDocComp...
-					}
-					while (pDocComp != NULL);
-				MonoOff
+                        // Do something groovy with pDocComp...
+                    }
+                    while (pDocComp != NULL);
+                MonoOff
 
-	SeeAlso:	Application::RegisterDocComponent;
-				DocComponent;
-				DocComponentClass
+    SeeAlso:    Application::RegisterDocComponent;
+                DocComponent;
+                DocComponentClass
 
 ********************************************************************************************/
 
 DocComponentClass *Application::EnumerateDocComponents(DocComponentClass *pContext)
 {
-	if (pContext == NULL)
-	{
-		// Return the first item in the list...
-		return (DocComponentClass *) (DocComponentClasses->GetHead());
-	}
-	else
-	{
-		// Return the next document component...
-		return (DocComponentClass *) (DocComponentClasses->GetNext(pContext));
-	}
+    if (pContext == NULL)
+    {
+        // Return the first item in the list...
+        return (DocComponentClass *) (DocComponentClasses->GetHead());
+    }
+    else
+    {
+        // Return the next document component...
+        return (DocComponentClass *) (DocComponentClasses->GetNext(pContext));
+    }
 }
 
 
 /********************************************************************************************
 
->	BOOL Application::ApplyDocComponents(Document *pDocument)
+>   BOOL Application::ApplyDocComponents(Document *pDocument)
 
-	Author:		Tim_Browse (Xara Group Ltd) <camelotdev@xara.com>
-	Created:	02/08/94
-	Inputs:		pDocument - the document to add the components to.
-	Returns:	TRUE if all the components were added successfully;
-				FALSE if not.
-	Purpose:	Given a document, apply all the currently registered document components
-				to it.  i.e., add a colour table, units information, etc.
-	Errors:		Out of memory, or other errors depending on implementations of each
-				document component.
-	SeeAlso:	DocComponent;
-				DocComponentClass
+    Author:     Tim_Browse (Xara Group Ltd) <camelotdev@xara.com>
+    Created:    02/08/94
+    Inputs:     pDocument - the document to add the components to.
+    Returns:    TRUE if all the components were added successfully;
+                FALSE if not.
+    Purpose:    Given a document, apply all the currently registered document components
+                to it.  i.e., add a colour table, units information, etc.
+    Errors:     Out of memory, or other errors depending on implementations of each
+                document component.
+    SeeAlso:    DocComponent;
+                DocComponentClass
 
 ********************************************************************************************/
 
 BOOL Application::ApplyDocComponents(BaseDocument *pDocument)
 {
-	// Go through the registered components and add their virtual function to add an
-	// instance of the class to the Document object...
-	DocComponentClass *pItem = (DocComponentClass *) DocComponentClasses->GetHead();
+    // Go through the registered components and add their virtual function to add an
+    // instance of the class to the Document object...
+    DocComponentClass *pItem = (DocComponentClass *) DocComponentClasses->GetHead();
 
-	while (pItem != NULL)
-	{
-		if (!pItem->AddComponent(pDocument))
-		{
-			// Component could not be added - probably out of memory.
-			return FALSE;
-		}
-		// Try the next one
-		pItem = (DocComponentClass *) DocComponentClasses->GetNext(pItem);
-	}
+    while (pItem != NULL)
+    {
+        if (!pItem->AddComponent(pDocument))
+        {
+            // Component could not be added - probably out of memory.
+            return FALSE;
+        }
+        // Try the next one
+        pItem = (DocComponentClass *) DocComponentClasses->GetNext(pItem);
+    }
 
-	// All the components were successfully added
-	return TRUE;
+    // All the components were successfully added
+    return TRUE;
 }
 
 /********************************************************************************************
->	BOOL Application::OnKeyPress(KeyPress* pKeyPress)
+>   BOOL Application::OnKeyPress(KeyPress* pKeyPress)
 
-	Author:		Mark_Neves (Xara Group Ltd) <camelotdev@xara.com> (simplified by JustinF)
-	Created:	26/8/94
-	Inputs:		pKeyPress =Ptr to platform-indy key press object
-	Returns:	TRUE  if the key press was processed, so do not pass on.
-				FALSE if not processed, so pass on to other interested parties
-	Purpose:	This is where key presses are handled in Camelot. It does the following in this order -
+    Author:     Mark_Neves (Xara Group Ltd) <camelotdev@xara.com> (simplified by JustinF)
+    Created:    26/8/94
+    Inputs:     pKeyPress =Ptr to platform-indy key press object
+    Returns:    TRUE  if the key press was processed, so do not pass on.
+                FALSE if not processed, so pass on to other interested parties
+    Purpose:    This is where key presses are handled in Camelot. It does the following in this order -
 
-					1) Lets the current tool have a go
-					2) See if a temporary tool switch has occurred
-					3) Check for a hot-key combination
-					[ 4) Broadcast key press to all live ops - removed as it slows text typing by 20% ]
+                    1) Lets the current tool have a go
+                    2) See if a temporary tool switch has occurred
+                    3) Check for a hot-key combination
+                    [ 4) Broadcast key press to all live ops - removed as it slows text typing by 20% ]
 
-				If at any of the stages the key is processed, this function exits immediately with TRUE,
-				i.e. it doesn't let the next stage try and deal with a key press that's been processed
+                If at any of the stages the key is processed, this function exits immediately with TRUE,
+                i.e. it doesn't let the next stage try and deal with a key press that's been processed
 
-	Errors:		-
-	SeeAlso:	KeyPress::TranslateMessage
+    Errors:     -
+    SeeAlso:    KeyPress::TranslateMessage
 ********************************************************************************************/
 
 BOOL Application::OnKeyPress(KeyPress* pKeyPress)
 {
 #if !defined(EXCLUDE_FROM_RALPH)
 PORTNOTE("other","Removed XaraCMS usage")
-	// First, pass the keypress to the Colour Editor.
-	// This is used to stop keypresses while dragging in the editor, so must be done first
-	if (ColourEditDlg::OnKeyPress(pKeyPress))
-		return(TRUE);
+    // First, pass the keypress to the Colour Editor.
+    // This is used to stop keypresses while dragging in the editor, so must be done first
+    if (ColourEditDlg::OnKeyPress(pKeyPress))
+        return(TRUE);
 #endif
 
-	// Pass this keypress on to selected DocView, if we have one, otherwise
-	// pass on to tools, hotkeys etc.
-	DocView* pDocView = DocView::GetSelected();
-	return ( (pDocView != NULL && pDocView->HandleKeyPress(pKeyPress))
-			|| Tool::SwitchTool(pKeyPress)
-			|| HotKey::OnKeyPress(pKeyPress)
+    // Pass this keypress on to selected DocView, if we have one, otherwise
+    // pass on to tools, hotkeys etc.
+    DocView* pDocView = DocView::GetSelected();
+    return ( (pDocView != NULL && pDocView->HandleKeyPress(pKeyPress))
+            || Tool::SwitchTool(pKeyPress)
+            || HotKey::OnKeyPress(pKeyPress)
 // removed by Ed 27/4/95 - no-one uses this and it slows text typing by 20%!
-//			|| (BROADCAST_TO_ALL(KeyMsg(KeyMsg::KEYPRESS, pKeyPress)) == EAT_MSG )
-			);
+//          || (BROADCAST_TO_ALL(KeyMsg(KeyMsg::KEYPRESS, pKeyPress)) == EAT_MSG )
+            );
 }
 
 
 
 /********************************************************************************************
 
->	void Application::RegisterIdleProcessor(INT32 Priority, Operation* pOp)
+>   void Application::RegisterIdleProcessor(INT32 Priority, Operation* pOp)
 
-	Author:		Peter_Arnold (Xara Group Ltd) <camelotdev@xara.com>
-	Created:	12/9/94
-	Inputs:		Priority - either IDLEPRIORITY_HIGH or IDLEPRIORITY_LOW.
-				pOp - Pointer to an operation.
-	Returns:	-
-	Purpose:	If an operation wants to do processing on idle events then it must register
-				to receive them.  It registers by calling this function with a pointer to
-				itself.  On idle events the operations OnIdle function is called.
+    Author:     Peter_Arnold (Xara Group Ltd) <camelotdev@xara.com>
+    Created:    12/9/94
+    Inputs:     Priority - either IDLEPRIORITY_HIGH or IDLEPRIORITY_LOW.
+                pOp - Pointer to an operation.
+    Returns:    -
+    Purpose:    If an operation wants to do processing on idle events then it must register
+                to receive them.  It registers by calling this function with a pointer to
+                itself.  On idle events the operations OnIdle function is called.
 
-	Notes:		If the operator is already registered for idles of the given priority,
-				this call does nothing (i.e. registering twice will give you only one
-				entry in the list)
+    Notes:      If the operator is already registered for idles of the given priority,
+                this call does nothing (i.e. registering twice will give you only one
+                entry in the list)
 
-				HIGH priority handlers are called on every Idle event. LOW priority
-				handlers will only be called on idle events if there were no high
-				priority handlers which returned TRUE from their OnIdle method.
-				i.e. If any high priority handler is active, all low-priority idles
-				cease to occur.
+                HIGH priority handlers are called on every Idle event. LOW priority
+                handlers will only be called on idle events if there were no high
+                priority handlers which returned TRUE from their OnIdle method.
+                i.e. If any high priority handler is active, all low-priority idles
+                cease to occur.
 
-	Errors:		-
-	SeeAlso:	Operation::OnIdleEvent, Application::CallIdleProcessors,
-				Application::RemoveIdleProcessor
+    Errors:     -
+    SeeAlso:    Operation::OnIdleEvent, Application::CallIdleProcessors,
+                Application::RemoveIdleProcessor
 
 ********************************************************************************************/
 
 void Application::RegisterIdleProcessor(INT32 Priority, Operation* pOp)
 {
-	List* Current = (Priority==IDLEPRIORITY_HIGH) ? &IdleHighPriorityOps : &IdleLowPriorityOps;
+    List* Current = (Priority==IDLEPRIORITY_HIGH) ? &IdleHighPriorityOps : &IdleLowPriorityOps;
 
-	// Ensure the given Op is only registered once on the list
-	ListItemOpPtr* Entry = (ListItemOpPtr *)Current->GetHead();
-	while (Entry != NULL)
-	{
-		if (Entry->pOp == pOp)		// Hey, you're already registered!
-			return;
+    // Ensure the given Op is only registered once on the list
+    ListItemOpPtr* Entry = (ListItemOpPtr *)Current->GetHead();
+    while (Entry != NULL)
+    {
+        if (Entry->pOp == pOp)      // Hey, you're already registered!
+            return;
 
-		Entry = (ListItemOpPtr *) Current->GetNext(Entry);
-	}
+        Entry = (ListItemOpPtr *) Current->GetNext(Entry);
+    }
 
-	// Have not found an entry in this list for this Op, so add one
-	Entry = new ListItemOpPtr;
-	Entry->pOp = pOp;
-	Current->AddTail(Entry);
+    // Have not found an entry in this list for this Op, so add one
+    Entry = new ListItemOpPtr;
+    Entry->pOp = pOp;
+    Current->AddTail(Entry);
 
-	NeedMoreIdles(); // ensure it gets at least a first idle event
+    NeedMoreIdles(); // ensure it gets at least a first idle event
 }
 
 
 
 /********************************************************************************************
 
->	void Application::RemoveIdleProcessor(INT32 Priority, Operation* pOp)
+>   void Application::RemoveIdleProcessor(INT32 Priority, Operation* pOp)
 
-	Author:		Peter_Arnold (Xara Group Ltd) <camelotdev@xara.com>
-	Created:	12/9/94
-	Inputs:		Priority - either IDLEPRIORITY_HIGH or IDLEPRIORITY_LOW.
-				pOp - Pointer to an operation.
-	Returns:	-
-	Purpose:	Stops an operation from receiving idle events.
+    Author:     Peter_Arnold (Xara Group Ltd) <camelotdev@xara.com>
+    Created:    12/9/94
+    Inputs:     Priority - either IDLEPRIORITY_HIGH or IDLEPRIORITY_LOW.
+                pOp - Pointer to an operation.
+    Returns:    -
+    Purpose:    Stops an operation from receiving idle events.
 
-	Notes:		If the Operation was not registered for idles, this call returns
-				quietly. This allows you to ensure you are deregistered without
-				having to remember if you did/didn't register for idles.
+    Notes:      If the Operation was not registered for idles, this call returns
+                quietly. This allows you to ensure you are deregistered without
+                having to remember if you did/didn't register for idles.
 
-				It is safe to call this method when processing an idle event - the event
-				processing code ensures that if you remove yourself from the list, it does
-				not give a toss (or an access violation!).
+                It is safe to call this method when processing an idle event - the event
+                processing code ensures that if you remove yourself from the list, it does
+                not give a toss (or an access violation!).
 
-	Errors:		-
-	SeeAlso:	Application::CallIdleProcessors
+    Errors:     -
+    SeeAlso:    Application::CallIdleProcessors
 
 ********************************************************************************************/
 
 void Application::RemoveIdleProcessor(INT32 Priority, Operation* pOp)
 {
-	List* Current = (Priority==IDLEPRIORITY_HIGH) ? &IdleHighPriorityOps : &IdleLowPriorityOps;
-	ListItemOpPtr* Entry = (ListItemOpPtr *)Current->GetHead();
+    List* Current = (Priority==IDLEPRIORITY_HIGH) ? &IdleHighPriorityOps : &IdleLowPriorityOps;
+    ListItemOpPtr* Entry = (ListItemOpPtr *)Current->GetHead();
 
-	while (Entry != NULL)
-	{
-		if (Entry->pOp == pOp)
-		{
-			Current->RemoveItem(Entry);
-			delete Entry;
-			return;
-		}
+    while (Entry != NULL)
+    {
+        if (Entry->pOp == pOp)
+        {
+            Current->RemoveItem(Entry);
+            delete Entry;
+            return;
+        }
 
-		Entry = (ListItemOpPtr *) Current->GetNext(Entry);
-	}
+        Entry = (ListItemOpPtr *) Current->GetNext(Entry);
+    }
 }
 
 /********************************************************************************************
 
->	void Application::NeedMoreIdles()
+>   void Application::NeedMoreIdles()
 
-	Author:		Alex Bligh <alex@alex.org.uk>
-	Created:	17/5/2006
-	Inputs:		-
-	Returns:	-
-	Purpose:	Tells the application we need more idles
+    Author:     Alex Bligh <alex@alex.org.uk>
+    Created:    17/5/2006
+    Inputs:     -
+    Returns:    -
+    Purpose:    Tells the application we need more idles
 
-	Notes:		This tells the application that we need further idle events, e.g. in the
-				scenario of a newly added idle handler, or an idle handler that previously
-				returned FALSE now returning true. This avoids waiting for the next event.
+    Notes:      This tells the application that we need further idle events, e.g. in the
+                scenario of a newly added idle handler, or an idle handler that previously
+                returned FALSE now returning true. This avoids waiting for the next event.
 
-	Errors:		-
-	SeeAlso:	Application::CallIdleProcessors
+    Errors:     -
+    SeeAlso:    Application::CallIdleProcessors
 
 ********************************************************************************************/
 
 void Application::NeedMoreIdles()
 {
-	CCamApp::NeedMoreIdles();
+    CCamApp::NeedMoreIdles();
 }
 
 /********************************************************************************************
 
->	BOOL Application::CallIdleProcessors()
+>   BOOL Application::CallIdleProcessors()
 
-	Author:		Peter_Arnold (Xara Group Ltd) <camelotdev@xara.com>
-	Created:	12/9/94
-	Inputs:		-
-	Returns:	TRUE if the registered operations require more idle events.
-				FALSE if no operations need further idle events.
+    Author:     Peter_Arnold (Xara Group Ltd) <camelotdev@xara.com>
+    Created:    12/9/94
+    Inputs:     -
+    Returns:    TRUE if the registered operations require more idle events.
+                FALSE if no operations need further idle events.
 
-	Purpose:	To call registered operations OnIdle functions.
+    Purpose:    To call registered operations OnIdle functions.
 
-	Notes:		It is assumed that if there are any processes registered, we still
-				require idle events.
+    Notes:      It is assumed that if there are any processes registered, we still
+                require idle events.
 
-				When idle processsor methods are called, they return the following values:
-				HIGH PRIORITY:	TRUE  = (claim) DO NOT call low-priority processors
-								FALSE = (don't claim) DO call low-priority processors
+                When idle processsor methods are called, they return the following values:
+                HIGH PRIORITY:  TRUE  = (claim) DO NOT call low-priority processors
+                                FALSE = (don't claim) DO call low-priority processors
 
-				LOW PRIORITY:	The return code is ignored.
+                LOW PRIORITY:   The return code is ignored.
 
-				This allows us to drag in the DragManager, updating fequently on high-priority
-				idles, but when the mouse is not moving, allow low-priority idles to be
-				called (which allows scrolling in galleries to be highly responsive, but
-				background redraws will kick into action very fast while the mouse stays still)
+                This allows us to drag in the DragManager, updating fequently on high-priority
+                idles, but when the mouse is not moving, allow low-priority idles to be
+                called (which allows scrolling in galleries to be highly responsive, but
+                background redraws will kick into action very fast while the mouse stays still)
 
-				Most high-priority handlers will just override all events while they're running,
-				though there should never be very many high-priority handlers around.
+                Most high-priority handlers will just override all events while they're running,
+                though there should never be very many high-priority handlers around.
 
-				[TODO: Perhaps low priority handlers should always be called once in a while (e.g.
-				always call them if they have not been called for a second or so), so that
-				we can never get inot a complete-lock-out situation.]
+                [TODO: Perhaps low priority handlers should always be called once in a while (e.g.
+                always call them if they have not been called for a second or so), so that
+                we can never get inot a complete-lock-out situation.]
 
-	Errors:		-
-	SeeAlso:	Application::RegisterIdleProcessor
+    Errors:     -
+    SeeAlso:    Application::RegisterIdleProcessor
 
 ********************************************************************************************/
 
 BOOL Application::CallIdleProcessors()
 {
-	// If the system is disabled (due to an error box being up) we must not do anything,
-	// as we definitely do not want to cause a re-entrant error situation!
-	if( CCamApp::IsDisabled() )
-		return(TRUE);
+    // If the system is disabled (due to an error box being up) we must not do anything,
+    // as we definitely do not want to cause a re-entrant error situation!
+    if( CCamApp::IsDisabled() )
+        return(TRUE);
 
-	BOOL CallLowPriorityHandlers = TRUE;
+    BOOL CallLowPriorityHandlers = TRUE;
 
-	ListItemOpPtr *CurrentOp = (ListItemOpPtr*)IdleHighPriorityOps.GetHead();
-	ListItemOpPtr *NextOp;
+    ListItemOpPtr *CurrentOp = (ListItemOpPtr*)IdleHighPriorityOps.GetHead();
+    ListItemOpPtr *NextOp;
 
-	// If there are no registered processors, we'll return FALSE as idles aren't needed
-	BOOL MoreIdlesNeeded = FALSE;
+    // If there are no registered processors, we'll return FALSE as idles aren't needed
+    BOOL MoreIdlesNeeded = FALSE;
 
-	while (CurrentOp != NULL)
-	{
-		// Remember the next item in the list now, in case this one deregisters itself
-		NextOp = (ListItemOpPtr *) IdleHighPriorityOps.GetNext(CurrentOp);
+    while (CurrentOp != NULL)
+    {
+        // Remember the next item in the list now, in case this one deregisters itself
+        NextOp = (ListItemOpPtr *) IdleHighPriorityOps.GetNext(CurrentOp);
 
-		// Call the handler, and if it claims idles, disable calling of low-priority handlers
-		if (CurrentOp->pOp->OnIdleEvent())
-		{
-			MoreIdlesNeeded = TRUE; // we need more idles
-			CallLowPriorityHandlers = FALSE;
-		}
+        // Call the handler, and if it claims idles, disable calling of low-priority handlers
+        if (CurrentOp->pOp->OnIdleEvent())
+        {
+            MoreIdlesNeeded = TRUE; // we need more idles
+            CallLowPriorityHandlers = FALSE;
+        }
 
-		CurrentOp = NextOp;
-	}
+        CurrentOp = NextOp;
+    }
 
-	// If nobody objects to a low-priority pass, do one
-	if (CallLowPriorityHandlers)
-	{
-		CurrentOp = (ListItemOpPtr*)IdleLowPriorityOps.GetHead();
+    // If nobody objects to a low-priority pass, do one
+    if (CallLowPriorityHandlers)
+    {
+        CurrentOp = (ListItemOpPtr*)IdleLowPriorityOps.GetHead();
 
-		while (CurrentOp != NULL)
-		{
-			// Remember the next item in the list now, in case this one deregisters itself
-			NextOp = (ListItemOpPtr *) IdleLowPriorityOps.GetNext(CurrentOp);
-			MoreIdlesNeeded = MoreIdlesNeeded || CurrentOp->pOp->OnIdleEvent();
-			CurrentOp = NextOp;
-		}
-	}
+        while (CurrentOp != NULL)
+        {
+            // Remember the next item in the list now, in case this one deregisters itself
+            NextOp = (ListItemOpPtr *) IdleLowPriorityOps.GetNext(CurrentOp);
+            MoreIdlesNeeded = MoreIdlesNeeded || CurrentOp->pOp->OnIdleEvent();
+            CurrentOp = NextOp;
+        }
+    }
 
-	return MoreIdlesNeeded;
+    return MoreIdlesNeeded;
 }
 
 
 
 /********************************************************************************************
 
->	BOOL Application::OnIdle(BOOL IdleRedraw)
+>   BOOL Application::OnIdle(BOOL IdleRedraw)
 
-	Author:		Peter_Arnold (Xara Group Ltd) <camelotdev@xara.com>
-	Created:	12/9/94
-	Inputs:		IdleRedraw - TRUE if background redrawing should be performed.
-	Returns:	TRUE if more idle messages are needed.
-				FALSE if no more idle processing is needed
-	Purpose:	This is where idle events are recived by the kernel.
-	Errors:		-
-	SeeAlso:	CCamApp::OnIdle
+    Author:     Peter_Arnold (Xara Group Ltd) <camelotdev@xara.com>
+    Created:    12/9/94
+    Inputs:     IdleRedraw - TRUE if background redrawing should be performed.
+    Returns:    TRUE if more idle messages are needed.
+                FALSE if no more idle processing is needed
+    Purpose:    This is where idle events are recived by the kernel.
+    Errors:     -
+    SeeAlso:    CCamApp::OnIdle
 
 ********************************************************************************************/
 
 BOOL Application::OnIdle(BOOL IdleRedraw)
 {
-	// If the system is disabled (due to an error box being up) we must not do anything,
-	// as we definitely do not want to cause a re-entrant error situation!
-	if( CCamApp::IsDisabled() )
-		return(TRUE);
+    // If the system is disabled (due to an error box being up) we must not do anything,
+    // as we definitely do not want to cause a re-entrant error situation!
+    if( CCamApp::IsDisabled() )
+        return(TRUE);
 
-	Tool* CurTool=Tool::GetCurrent();
-	BOOL  Idles  =FALSE;
+    Tool* CurTool=Tool::GetCurrent();
+    BOOL  Idles  =FALSE;
 
-	if (IdleRedraw)
-		if (ServiceRendering())
-			Idles=TRUE;
+    if (IdleRedraw)
+        if (ServiceRendering())
+            Idles=TRUE;
 
-	if (CurTool!=NULL)
-		if (CurTool->OnIdle())
-			Idles=TRUE;
+    if (CurTool!=NULL)
+        if (CurTool->OnIdle())
+            Idles=TRUE;
 
-	if (CallIdleProcessors())
-		Idles=TRUE;
+    if (CallIdleProcessors())
+        Idles=TRUE;
 
-//	ControlList::Idle();
+//  ControlList::Idle();
 
-//	Idles=TRUE;
+//  Idles=TRUE;
 
-	return Idles;
+    return Idles;
 }
 
 /***********************************************************************************************
 
->	BOOL Application::CreateDragTargets()
-	Author:		Chris_Snook (Xara Group Ltd) <camelotdev@xara.com>
-	Created:	2/11/94
-	Inputs:		-
-	Outputs:	-
-	Returns:	-
-	Purpose:	tell all documents to create a drag target for each of their views
-	SeeAlso:	-
+>   BOOL Application::CreateDragTargets()
+    Author:     Chris_Snook (Xara Group Ltd) <camelotdev@xara.com>
+    Created:    2/11/94
+    Inputs:     -
+    Outputs:    -
+    Returns:    -
+    Purpose:    tell all documents to create a drag target for each of their views
+    SeeAlso:    -
 *********************************************************************************************/
 
 
 BOOL Application::CreateDragTargets(DragInformation * DragInfo)
 {
-	Document* pDocument = (Document*) Documents.GetHead();
-	while (pDocument != NULL)
-	{
-		pDocument->CreateDragTargets(DragInfo);
+    Document* pDocument = (Document*) Documents.GetHead();
+    while (pDocument != NULL)
+    {
+        pDocument->CreateDragTargets(DragInfo);
 
-		pDocument = (Document*) Documents.GetNext(pDocument);
-	}
-	return TRUE;
+        pDocument = (Document*) Documents.GetNext(pDocument);
+    }
+    return TRUE;
 }
 
 /***********************************************************************************************
 
->	void Application::ShowViewScrollers(BOOL fIsVisible)
-	Author:		Justin_Flude (Xara Group Ltd) <camelotdev@xara.com>
-	Created:	2/11/94
-	Inputs:		-
-	Outputs:	-
-	Returns:	-
-	Purpose:	Show or Hide all Scrollers on all Views on all Documents
-	SeeAlso:	-
+>   void Application::ShowViewScrollers(BOOL fIsVisible)
+    Author:     Justin_Flude (Xara Group Ltd) <camelotdev@xara.com>
+    Created:    2/11/94
+    Inputs:     -
+    Outputs:    -
+    Returns:    -
+    Purpose:    Show or Hide all Scrollers on all Views on all Documents
+    SeeAlso:    -
 *********************************************************************************************/
 
 
 void Application::ShowViewScrollers(BOOL fIsVisible)
 {
-	Document* pDocument = (Document*) Documents.GetHead();
-	while (pDocument != NULL)
-	{
-		pDocument->ShowViewScrollers(fIsVisible);
-		pDocument = (Document*) Documents.GetNext(pDocument);
-	}
+    Document* pDocument = (Document*) Documents.GetHead();
+    while (pDocument != NULL)
+    {
+        pDocument->ShowViewScrollers(fIsVisible);
+        pDocument = (Document*) Documents.GetNext(pDocument);
+    }
 
 }
 
 
 /********************************************************************************************
->	BOOL Application::UpdateStatusBarText(String_256* text, BOOL PrefixSelDesc=TRUE)
+>   BOOL Application::UpdateStatusBarText(String_256* text, BOOL PrefixSelDesc=TRUE)
 
-	Author:		Ed_Cornes (Xara Group Ltd) <camelotdev@xara.com>
-	Created:	16/11/94
-	Inputs:		ptext         - text to go in the specified status bar pane
-				PrefixSelDesc - TRUE to prefix the displayed text with a selection description
-	Returns:	FALSE if falied
-	Purpose:	Just interfaces to similar StatusLine funtion
-	Notes:		This has been bodged by Jason to return without an error if the status line has
-				not yet been initialised as the progress system is tries to use it in this state!
+    Author:     Ed_Cornes (Xara Group Ltd) <camelotdev@xara.com>
+    Created:    16/11/94
+    Inputs:     ptext         - text to go in the specified status bar pane
+                PrefixSelDesc - TRUE to prefix the displayed text with a selection description
+    Returns:    FALSE if falied
+    Purpose:    Just interfaces to similar StatusLine funtion
+    Notes:      This has been bodged by Jason to return without an error if the status line has
+                not yet been initialised as the progress system is tries to use it in this state!
 ********************************************************************************************/
 
 BOOL Application::UpdateStatusBarText(String_256* ptext, BOOL PrefixSelDesc)
 {
-	StatusLine* pStatusLine = GetpStatusLine();
+    StatusLine* pStatusLine = GetpStatusLine();
 
-//	ERROR2IF(pStatusLine==NULL,FALSE,"Application::UpdateStatusBarText() - pStatusLine==NULL");
-	if (pStatusLine==NULL)
-		return FALSE;
+//  ERROR2IF(pStatusLine==NULL,FALSE,"Application::UpdateStatusBarText() - pStatusLine==NULL");
+    if (pStatusLine==NULL)
+        return FALSE;
 
-	return pStatusLine->UpdateText(ptext,PrefixSelDesc);
+    return pStatusLine->UpdateText(ptext,PrefixSelDesc);
 }
 
 
 
 /********************************************************************************************
->	BOOL Application::LockOutControlHelp ()
+>   BOOL Application::LockOutControlHelp ()
 
-	Author:		Chris_Snook (Xara Group Ltd) <camelotdev@xara.com>
-	Created:	19/4/2000
-	Inputs:		N/A
-	Returns:	Whatever our helper function feels like.
-	Purpose:	Just interfaces to similar StatusLine funtion
-	Notes:		This is really a bodge to fix the annoying features of camelot that persist
-				in infinitely updating the status bar with different text.  At present, this
-				occurs in two places (known to me):  the transparency slider and when typing
-				text within the text tool.  This function locks the status bar to prevent
-				these guys such annoying things.  NOTE:  if one calls this - then you MUST
-				also have a matching Application::UnlockControlHelp () somewhere; cause
-				otherwise camelots status bar will never again update itself ....
+    Author:     Chris_Snook (Xara Group Ltd) <camelotdev@xara.com>
+    Created:    19/4/2000
+    Inputs:     N/A
+    Returns:    Whatever our helper function feels like.
+    Purpose:    Just interfaces to similar StatusLine funtion
+    Notes:      This is really a bodge to fix the annoying features of camelot that persist
+                in infinitely updating the status bar with different text.  At present, this
+                occurs in two places (known to me):  the transparency slider and when typing
+                text within the text tool.  This function locks the status bar to prevent
+                these guys such annoying things.  NOTE:  if one calls this - then you MUST
+                also have a matching Application::UnlockControlHelp () somewhere; cause
+                otherwise camelots status bar will never again update itself ....
 
-				NOTE:  this function can also be used to prevent the status bar from updating
-					   at all (as in the solution to the text tool probs) ....
-	See Also:	Application::UnlockControlHelp ()
+                NOTE:  this function can also be used to prevent the status bar from updating
+                       at all (as in the solution to the text tool probs) ....
+    See Also:   Application::UnlockControlHelp ()
 ********************************************************************************************/
 
 BOOL Application::LockOutControlHelp ()
 {
-	StatusLine* pStatusLine = GetpStatusLine ();
+    StatusLine* pStatusLine = GetpStatusLine ();
 
-	if (pStatusLine==NULL)
-		return FALSE;
+    if (pStatusLine==NULL)
+        return FALSE;
 
-	return (pStatusLine->LockOutControlHelp ());
+    return (pStatusLine->LockOutControlHelp ());
 }
 
 
 
 /********************************************************************************************
->	BOOL Application::UnlockControlHelp ()
+>   BOOL Application::UnlockControlHelp ()
 
-	Author:		Chris_Snook (Xara Group Ltd) <camelotdev@xara.com>
-	Created:	19/4/2000
-	Inputs:		N/A
-	Returns:	Whatever our helper function feels like.
-	Purpose:	Just interfaces to similar StatusLine funtion
-	Notes:		See Application::LockOutControlHelp ()
-	See Also:	Application::LockOutControlHelp ()
+    Author:     Chris_Snook (Xara Group Ltd) <camelotdev@xara.com>
+    Created:    19/4/2000
+    Inputs:     N/A
+    Returns:    Whatever our helper function feels like.
+    Purpose:    Just interfaces to similar StatusLine funtion
+    Notes:      See Application::LockOutControlHelp ()
+    See Also:   Application::LockOutControlHelp ()
 ********************************************************************************************/
 
 BOOL Application::UnlockControlHelp ()
 {
-	StatusLine* pStatusLine = GetpStatusLine ();
+    StatusLine* pStatusLine = GetpStatusLine ();
 
-	if (pStatusLine==NULL)
-		return FALSE;
+    if (pStatusLine==NULL)
+        return FALSE;
 
-	return (pStatusLine->UnlockControlHelp ());
+    return (pStatusLine->UnlockControlHelp ());
 }
 
 
 
 /********************************************************************************************
->	CCStatusBar* Application::GetpCCStatusBar()
+>   CCStatusBar* Application::GetpCCStatusBar()
 
-	Author:		Ed_Cornes (Xara Group Ltd) <camelotdev@xara.com>
-	Created:	22/11/94
-	Purpose:	return pointer to CMainFrame::CCStatusBar
-	Returns:	pointer to CMainFrame::CCStatusBar else NULL if error (see Errors)
+    Author:     Ed_Cornes (Xara Group Ltd) <camelotdev@xara.com>
+    Created:    22/11/94
+    Purpose:    return pointer to CMainFrame::CCStatusBar
+    Returns:    pointer to CMainFrame::CCStatusBar else NULL if error (see Errors)
 ********************************************************************************************/
 
 CCStatusBar* Application::GetpCCStatusBar()
 {
-	PORTNOTETRACE("other","Application::GetpCCStatusBar - do nothing");
+    PORTNOTETRACE("other","Application::GetpCCStatusBar - do nothing");
 #ifndef EXCLUDE_FROM_XARALX
-	CMainFrame* mfwindow = (CMainFrame*)(AfxGetApp()->m_pMainWnd);
-	ERROR2IF(mfwindow==NULL,NULL,"Application::GetpCCStatusBar() - mfwindow==NULL");
+    CMainFrame* mfwindow = (CMainFrame*)(AfxGetApp()->m_pMainWnd);
+    ERROR2IF(mfwindow==NULL,NULL,"Application::GetpCCStatusBar() - mfwindow==NULL");
 
-	return mfwindow->GetpCCStatusBar();
+    return mfwindow->GetpCCStatusBar();
 #else
-	return NULL;
+    return NULL;
 #endif
 }
 
 
 /********************************************************************************************
->	StatusLine* Application::GetpStatusLine()
+>   StatusLine* Application::GetpStatusLine()
 
-	Author:		Ed_Cornes (Xara Group Ltd) <camelotdev@xara.com>
-	Created:	22/11/94
-	Returns:	Pointer to CMainFrame::StatusLine else NULL if error (or not initialised)
-	Notes:		This has been bodged by Jason to return without an error if the mainframe has
-				not yet been initialised as the progress system is tries to use it in this state!
+    Author:     Ed_Cornes (Xara Group Ltd) <camelotdev@xara.com>
+    Created:    22/11/94
+    Returns:    Pointer to CMainFrame::StatusLine else NULL if error (or not initialised)
+    Notes:      This has been bodged by Jason to return without an error if the mainframe has
+                not yet been initialised as the progress system is tries to use it in this state!
 ********************************************************************************************/
 
 StatusLine* Application::GetpStatusLine()
 {
-	return StatusLine::Get();
+    return StatusLine::Get();
 }
 
 
@@ -1661,15 +1701,15 @@ StatusLine* Application::GetpStatusLine()
 
 /***********************************************************************************************
 
->	inline ColourManager *Application::FindTheColourManager(void)
+>   inline ColourManager *Application::FindTheColourManager(void)
 
-	Author:		Jason_Williams (Xara Group Ltd) <camelotdev@xara.com>
-	Created:	11/5/94
-	Inputs:		-
-	Outputs:	-
-	Returns:	A pointer to the system Colour manager object
-	Purpose:	To find the single 'global' ColourManager instance in Camelot
-	SeeAlso:	ColourManager
+    Author:     Jason_Williams (Xara Group Ltd) <camelotdev@xara.com>
+    Created:    11/5/94
+    Inputs:     -
+    Outputs:    -
+    Returns:    A pointer to the system Colour manager object
+    Purpose:    To find the single 'global' ColourManager instance in Camelot
+    SeeAlso:    ColourManager
 
 ***********************************************************************************************/
 
@@ -1677,27 +1717,27 @@ StatusLine* Application::GetpStatusLine()
 
 /***********************************************************************************************
 
->	void Application::DumpAllOps(Document* pDoc = NULL)
+>   void Application::DumpAllOps(Document* pDoc = NULL)
 
-	Author:		Peter_Arnold (Xara Group Ltd) <camelotdev@xara.com>
-	Created:	15/8/95
-	Inputs:		pDoc points to the document containing the operation histor to dump, NULL for
-				selected doc.
-	Outputs:	Displays debug info
-	Returns:	-
-	Purpose:	Dumps information about all the operations in the history list to the debugger
-	SeeAlso:	Application::DumpLastOp
+    Author:     Peter_Arnold (Xara Group Ltd) <camelotdev@xara.com>
+    Created:    15/8/95
+    Inputs:     pDoc points to the document containing the operation histor to dump, NULL for
+                selected doc.
+    Outputs:    Displays debug info
+    Returns:    -
+    Purpose:    Dumps information about all the operations in the history list to the debugger
+    SeeAlso:    Application::DumpLastOp
 
 ***********************************************************************************************/
 void Application::DumpAllOps(Document* pDoc)
 {
-	PORTNOTETRACE("other","Application::DumpAllOps - do nothing");
+    PORTNOTETRACE("other","Application::DumpAllOps - do nothing");
 #ifndef EXCLUDE_FROM_XARALX
 #if DEBUG_TREE
-	if (pDoc == NULL)
-		pDoc = Document::GetSelected();
+    if (pDoc == NULL)
+        pDoc = Document::GetSelected();
 
-	pDoc->GetOpHistory().DumpAll();
+    pDoc->GetOpHistory().DumpAll();
 #endif
 #endif
 }
@@ -1706,27 +1746,27 @@ void Application::DumpAllOps(Document* pDoc)
 
 /***********************************************************************************************
 
->	void Application::DumpLastOp(Document* pDoc = NULL)
+>   void Application::DumpLastOp(Document* pDoc = NULL)
 
-	Author:		Peter_Arnold (Xara Group Ltd) <camelotdev@xara.com>
-	Created:	15/8/95
-	Inputs:		pDoc points to the document containing the operation histor to dump, NULL for
-				selected doc.
-	Outputs:	Displays debug info
-	Returns:	-
-	Purpose:	Dumps information about the last operation in the history list to the debugger
-	SeeAlso:	Application::DumpAllOps
+    Author:     Peter_Arnold (Xara Group Ltd) <camelotdev@xara.com>
+    Created:    15/8/95
+    Inputs:     pDoc points to the document containing the operation histor to dump, NULL for
+                selected doc.
+    Outputs:    Displays debug info
+    Returns:    -
+    Purpose:    Dumps information about the last operation in the history list to the debugger
+    SeeAlso:    Application::DumpAllOps
 
 ***********************************************************************************************/
 void Application::DumpLastOp(Document* pDoc)
 {
-	PORTNOTE("other","Application::DumpLastOp - do nothing")
+    PORTNOTE("other","Application::DumpLastOp - do nothing")
 #ifndef EXCLUDE_FROM_XARALX
 #if DEBUG_TREE
-	if (pDoc == NULL)
-		pDoc = Document::GetSelected();
+    if (pDoc == NULL)
+        pDoc = Document::GetSelected();
 
-	pDoc->GetOpHistory().DumpLast();
+    pDoc->GetOpHistory().DumpLast();
 #endif
 #endif
 }
@@ -1735,16 +1775,16 @@ void Application::DumpLastOp(Document* pDoc)
 
 /***********************************************************************************************
 
->	void Application::DumpTree(BaseDocument* pDoc = NULL)
+>   void Application::DumpTree(BaseDocument* pDoc = NULL)
 
-	Author:		Peter_Arnold (Xara Group Ltd) <camelotdev@xara.com>
-	Created:	15/8/95
-	Inputs:		pDoc points to the document containing the operation histor to dump, NULL for
-				selected doc.
-	Outputs:	Displays debug info
-	Returns:	-
-	Purpose:	Dumps information about the document tree to the debugger
-	SeeAlso:	Application::DumpAllOps
+    Author:     Peter_Arnold (Xara Group Ltd) <camelotdev@xara.com>
+    Created:    15/8/95
+    Inputs:     pDoc points to the document containing the operation histor to dump, NULL for
+                selected doc.
+    Outputs:    Displays debug info
+    Returns:    -
+    Purpose:    Dumps information about the document tree to the debugger
+    SeeAlso:    Application::DumpAllOps
 
 ***********************************************************************************************/
 void Application::DumpTree(BaseDocument* pDoc)
@@ -1752,7 +1792,7 @@ void Application::DumpTree(BaseDocument* pDoc)
 PORTNOTE("other","Removed DebugTreeDlg usage")
 #ifndef EXCLUDE_FROM_XARALX
 #if DEBUG_TREE
-	DebugTreeDlg::TweeDump(pDoc);
+    DebugTreeDlg::TweeDump(pDoc);
 #endif
 #endif
 }
@@ -1761,14 +1801,14 @@ PORTNOTE("other","Removed DebugTreeDlg usage")
 
 /***********************************************************************************************
 
->	CCPen* Application::GetPressurePen()
+>   CCPen* Application::GetPressurePen()
 
-	Author:		Jason_Williams (Xara Group Ltd) <camelotdev@xara.com>
-	Created:	24/1/97
+    Author:     Jason_Williams (Xara Group Ltd) <camelotdev@xara.com>
+    Created:    24/1/97
 
-	Returns:	NULL, or a pointer to the application wide instance of the pressure pen
-	Purpose:	Dumps information about the document tree to the debugger
-	SeeAlso:	Application::DumpAllOps
+    Returns:    NULL, or a pointer to the application wide instance of the pressure pen
+    Purpose:    Dumps information about the document tree to the debugger
+    SeeAlso:    Application::DumpAllOps
 
 ***********************************************************************************************/
 
@@ -1779,15 +1819,15 @@ PORTNOTE("other","Removed DebugTreeDlg usage")
 
 CCPen* Application::GetPressurePen()
 {
-	// If we haven't tried initialising the pen, then do so now.
-	// (i.e. this is demand-initialised)
-	if (!PenInitialised)
-	{
-		PenInitialised = TRUE;
-		PressurePen = CCPen::Init();	// This will return NULL if it fails, but that's OK
-	}
+    // If we haven't tried initialising the pen, then do so now.
+    // (i.e. this is demand-initialised)
+    if (!PenInitialised)
+    {
+        PenInitialised = TRUE;
+        PressurePen = CCPen::Init();    // This will return NULL if it fails, but that's OK
+    }
 
-	return(PressurePen);
+    return(PressurePen);
 }
 
 #endif // VECTOR_STROKING
@@ -1795,133 +1835,133 @@ CCPen* Application::GetPressurePen()
 
 /***********************************************************************************************
 
->	ObjectCache* Application::GetObjectCache()
+>   ObjectCache* Application::GetObjectCache()
 
-	Author:		Olivier_Gascoin (Xara Group Ltd) <camelotdev@xara.com>
-	Created:	28/01/97
-	Inputs:		-
-	Outputs:	-
-	Returns:	a pointer to the cache object
-	Purpose:	return a pointer to the cache object so that external objects can add object in
-				the cache.
-	SeeAlso:	Application::Init(), Application::DeInit()
+    Author:     Olivier_Gascoin (Xara Group Ltd) <camelotdev@xara.com>
+    Created:    28/01/97
+    Inputs:     -
+    Outputs:    -
+    Returns:    a pointer to the cache object
+    Purpose:    return a pointer to the cache object so that external objects can add object in
+                the cache.
+    SeeAlso:    Application::Init(), Application::DeInit()
 
 ***********************************************************************************************/
 
 ObjectCache* Application::GetObjectCache()
 {
-	return m_pObjCache;
+    return m_pObjCache;
 }
 
 
 /********************************************************************************************
 
->	void DocView::RegenerateNodesInList()
+>   void DocView::RegenerateNodesInList()
 
-	Author:		David_McClarnon (Xara Group Ltd) <camelotdev@xara.com>
-	Created:	1/6/99
-	Inputs:		The node to add to the list
-	Outputs:	-
-	Returns:	-
-	Purpose:	Calls all of the regeneration functions of the nodes in the list
-	Errors:		-
-	SeeAlso:	-
+    Author:     David_McClarnon (Xara Group Ltd) <camelotdev@xara.com>
+    Created:    1/6/99
+    Inputs:     The node to add to the list
+    Outputs:    -
+    Returns:    -
+    Purpose:    Calls all of the regeneration functions of the nodes in the list
+    Errors:     -
+    SeeAlso:    -
 
 ********************************************************************************************/
 
 void Application::RegenerateNodesInList()
 {
-	if (RegenList.IsEmpty())
-		return;
+    if (RegenList.IsEmpty())
+        return;
 
-	NodeListItem *pItem = (NodeListItem *)RegenList.GetHead();
+    NodeListItem *pItem = (NodeListItem *)RegenList.GetHead();
 
-	while (pItem)
-	{
-		if (pItem->pNode)
-		{
-			if (pItem->pNode->GetHiddenCnt()==0)
-			{
-				if (pItem->pNode->IsBounded())
-				{
-					((NodeRenderableBounded *)pItem->pNode)->InvalidateBoundingRect();
-				}
+    while (pItem)
+    {
+        if (pItem->pNode)
+        {
+            if (pItem->pNode->GetHiddenCnt()==0)
+            {
+                if (pItem->pNode->IsBounded())
+                {
+                    ((NodeRenderableBounded *)pItem->pNode)->InvalidateBoundingRect();
+                }
 
-				pItem->pNode->RegenerateNode(NULL, FALSE, FALSE);
+                pItem->pNode->RegenerateNode(NULL, FALSE, FALSE);
 
-				if (pItem->pNode->IsBounded())
-				{
-					((NodeRenderableBounded *)pItem->pNode)->InvalidateBoundingRect();
-				}
-			}
-		}
+                if (pItem->pNode->IsBounded())
+                {
+                    ((NodeRenderableBounded *)pItem->pNode)->InvalidateBoundingRect();
+                }
+            }
+        }
 
-		pItem = (NodeListItem *)RegenList.GetNext(pItem);
-	}
+        pItem = (NodeListItem *)RegenList.GetNext(pItem);
+    }
 
-	RegenList.DeleteAll();
+    RegenList.DeleteAll();
 }
 
 /********************************************************************************************
 
->	BOOL Application::AddNodeToRegenList(Node * pNode)
+>   BOOL Application::AddNodeToRegenList(Node * pNode)
 
-	Author:		David_McClarnon (Xara Group Ltd) <camelotdev@xara.com>
-	Created:	1/6/99
-	Inputs:		The node to add to the list
-	Outputs:	-
-	Returns:	-
-	Purpose:	Adds a node to the regeneration list
-	Errors:		-
-	SeeAlso:	-
+    Author:     David_McClarnon (Xara Group Ltd) <camelotdev@xara.com>
+    Created:    1/6/99
+    Inputs:     The node to add to the list
+    Outputs:    -
+    Returns:    -
+    Purpose:    Adds a node to the regeneration list
+    Errors:     -
+    SeeAlso:    -
 
 ********************************************************************************************/
 
 BOOL Application::AddNodeToRegenList(Node * pNode)
 {
-	// check to see if the node is already in the list
-	NodeListItem * pItem = (NodeListItem *)RegenList.GetHead();
+    // check to see if the node is already in the list
+    NodeListItem * pItem = (NodeListItem *)RegenList.GetHead();
 
-	BOOL bAdd = TRUE;
+    BOOL bAdd = TRUE;
 
-	while (pItem)
-	{
-		if (pItem->pNode == pNode)
-		{
-			bAdd = FALSE;
-			break;
-		}
+    while (pItem)
+    {
+        if (pItem->pNode == pNode)
+        {
+            bAdd = FALSE;
+            break;
+        }
 
-		pItem = (NodeListItem *)RegenList.GetNext(pItem);
-	}
+        pItem = (NodeListItem *)RegenList.GetNext(pItem);
+    }
 
-	if (!bAdd)
-		return TRUE;
+    if (!bAdd)
+        return TRUE;
 
-	pItem = new NodeListItem(pNode);
+    pItem = new NodeListItem(pNode);
 
-	ERROR2IF(!pItem, FALSE, "Memory Error !");
+    ERROR2IF(!pItem, FALSE, "Memory Error !");
 
-	RegenList.AddTail(pItem);
+    RegenList.AddTail(pItem);
 
-	return TRUE;
+    return TRUE;
 }
 
 
 /********************************************************************************************
 
->	BOOL Application::ChangeRealDownloadBrowserOtion (HKEY rootKey, HKEY key, BOOL changeVal)
+>   BOOL Application::ChangeRealDownloadBrowserOtion (HKEY rootKey, HKEY key, BOOL changeVal)
 
-	Author:		Chris_Snook (Xara Group Ltd) <camelotdev@xara.com>
-	Created:	15/9/2000
-	Inputs:		rootKey - HKEY_LOCAL_MACHINE or HKEY_CURRENT_USER (not checked)
-				key		- already opened subpath key (to realdownload directory)
-				changeVal - value to change the realdownload "EnableBrowserWatch" key to
-	Outputs:	-
-	Returns:	TRUE if changed value, FALSE otherwise
-	Purpose:	Change the RealDownload "EnableBrowserWatch" key value
-	Errors:		-
-	SeeAlso:	-
+    Author:     Chris_Snook (Xara Group Ltd) <camelotdev@xara.com>
+    Created:    15/9/2000
+    Inputs:     rootKey - HKEY_LOCAL_MACHINE or HKEY_CURRENT_USER (not checked)
+                key     - already opened subpath key (to realdownload directory)
+                changeVal - value to change the realdownload "EnableBrowserWatch" key to
+    Outputs:    -
+    Returns:    TRUE if changed value, FALSE otherwise
+    Purpose:    Change the RealDownload "EnableBrowserWatch" key value
+    Errors:     -
+    SeeAlso:    -
 
 ********************************************************************************************/
 
@@ -1929,202 +1969,202 @@ PORTNOTE("other","Removed HKEY usage")
 #ifndef EXCLUDE_FROM_XARALX
 BOOL Application::ChangeRealDownloadBrowserOtion (HKEY rootKey, HKEY key, BOOL changeVal)
 {
-	LPCTSTR path = "software\\realnetworks\\realdownload\\";
+    LPCTSTR path = "software\\realnetworks\\realdownload\\";
 
-	const INT32 buf_size = 256;
-	DWORD dwIndex	= 0;				// index of subkey to enumerate
-	TCHAR Name[buf_size];				// buffer for subkey name
-	DWORD cbName	= buf_size;			// size of subkey buffer
-	TCHAR Class[buf_size];				// buffer for class string
-	DWORD cbClass	= buf_size;			// size of class buffer
-	FILETIME ftLastWriteTime;			// time key last written to
+    const INT32 buf_size = 256;
+    DWORD dwIndex   = 0;                // index of subkey to enumerate
+    TCHAR Name[buf_size];               // buffer for subkey name
+    DWORD cbName    = buf_size;         // size of subkey buffer
+    TCHAR Class[buf_size];              // buffer for class string
+    DWORD cbClass   = buf_size;         // size of class buffer
+    FILETIME ftLastWriteTime;           // time key last written to
 
-	BOOL returnVal = FALSE;
+    BOOL returnVal = FALSE;
 
-	INT32 nResult = ERROR_SUCCESS;
-//	String_256 KeyName;
+    INT32 nResult = ERROR_SUCCESS;
+//  String_256 KeyName;
 
-	do
-	{
-		// reset the string sizes to their maximum for receiving data
-		cbName	= buf_size;
-		cbClass	= buf_size;
+    do
+    {
+        // reset the string sizes to their maximum for receiving data
+        cbName  = buf_size;
+        cbClass = buf_size;
 
-		// Does another sub-key exist?
-		nResult = ::RegEnumKeyEx(key, dwIndex, Name, &cbName, NULL, Class, &cbClass, &ftLastWriteTime);
+        // Does another sub-key exist?
+        nResult = ::RegEnumKeyEx(key, dwIndex, Name, &cbName, NULL, Class, &cbClass, &ftLastWriteTime);
 
-		if (nResult == ERROR_SUCCESS)
-		{
-			// weve hit a real download version number - scan it ....
+        if (nResult == ERROR_SUCCESS)
+        {
+            // weve hit a real download version number - scan it ....
 
-			char subpath [100];
-			char newpath [200];
+            char subpath [100];
+            char newpath [200];
 
-			sprintf (subpath, "%s", Name);
-			sprintf (newpath, "%s%s", path, subpath);
+            sprintf (subpath, "%s", Name);
+            sprintf (newpath, "%s%s", path, subpath);
 
-			HKEY subkey = OpenRegKey (rootKey, newpath);
+            HKEY subkey = OpenRegKey (rootKey, newpath);
 
-			DWORD newval = (DWORD) changeVal;
+            DWORD newval = (DWORD) changeVal;
 
-			if (subkey)
-			{
-				DWORD type, dataVal, dataSize;
+            if (subkey)
+            {
+                DWORD type, dataVal, dataSize;
 
-				if (RegQueryValueEx (subkey, "EnableBrowserWatch", NULL, &type, (unsigned char*) &dataVal, &dataSize) == ERROR_SUCCESS)
-				{
-					BOOL currentVal = (BOOL) dataVal;
+                if (RegQueryValueEx (subkey, "EnableBrowserWatch", NULL, &type, (unsigned char*) &dataVal, &dataSize) == ERROR_SUCCESS)
+                {
+                    BOOL currentVal = (BOOL) dataVal;
 
-					if (currentVal == TRUE)
-					{
-						if (RegSetValueEx (subkey, "EnableBrowserWatch", NULL, REG_DWORD, (unsigned char*) &newval, sizeof (newval)) == ERROR_SUCCESS)
-						{
-							RegCloseKey (subkey);
-							return (TRUE);
-						}
-						else
-						{
-							RegCloseKey (subkey);
-							return (FALSE);
-						}
-					}
-					else if ((currentVal == FALSE) && (changeVal == TRUE))		// were resetting to TRUE
-					{
-						if (RegSetValueEx (subkey, "EnableBrowserWatch", NULL, REG_DWORD, (unsigned char*) &newval, sizeof (newval)) == ERROR_SUCCESS)
-						{
-							RegCloseKey (subkey);
-							return (TRUE);
-						}
-						else
-						{
-							RegCloseKey (subkey);
-							return (FALSE);
-						}
-					}
-				}
+                    if (currentVal == TRUE)
+                    {
+                        if (RegSetValueEx (subkey, "EnableBrowserWatch", NULL, REG_DWORD, (unsigned char*) &newval, sizeof (newval)) == ERROR_SUCCESS)
+                        {
+                            RegCloseKey (subkey);
+                            return (TRUE);
+                        }
+                        else
+                        {
+                            RegCloseKey (subkey);
+                            return (FALSE);
+                        }
+                    }
+                    else if ((currentVal == FALSE) && (changeVal == TRUE))      // were resetting to TRUE
+                    {
+                        if (RegSetValueEx (subkey, "EnableBrowserWatch", NULL, REG_DWORD, (unsigned char*) &newval, sizeof (newval)) == ERROR_SUCCESS)
+                        {
+                            RegCloseKey (subkey);
+                            return (TRUE);
+                        }
+                        else
+                        {
+                            RegCloseKey (subkey);
+                            return (FALSE);
+                        }
+                    }
+                }
 
-				RegCloseKey (subkey);
-			}
+                RegCloseKey (subkey);
+            }
 
-			//			KeyName = Name;
-		}
+            //          KeyName = Name;
+        }
 
-		// increment our indexing item and try again
-		dwIndex ++;
+        // increment our indexing item and try again
+        dwIndex ++;
 
-	} while (nResult == ERROR_SUCCESS);
+    } while (nResult == ERROR_SUCCESS);
 
-	if (DisabledRealDownload)
-	{
-		return (TRUE);
-	}
-	else
-	{
-		return (FALSE);
-	}
+    if (DisabledRealDownload)
+    {
+        return (TRUE);
+    }
+    else
+    {
+        return (FALSE);
+    }
 
-	return false;
+    return false;
 }
 #endif
 
 /********************************************************************************************
 
->	void Application::CheckRealDownload ()
+>   void Application::CheckRealDownload ()
 
-	Author:		Chris_Snook (Xara Group Ltd) <camelotdev@xara.com>
-	Created:	15/9/2000
-	Inputs:		-
-	Outputs:	-
-	Returns:	-
-	Purpose:	Disables RealDownload browser integration if necessary - to prevent camelot
-				from dying when downloading files that are registered with RealDownload.
-	Errors:		-
-	SeeAlso:	-
+    Author:     Chris_Snook (Xara Group Ltd) <camelotdev@xara.com>
+    Created:    15/9/2000
+    Inputs:     -
+    Outputs:    -
+    Returns:    -
+    Purpose:    Disables RealDownload browser integration if necessary - to prevent camelot
+                from dying when downloading files that are registered with RealDownload.
+    Errors:     -
+    SeeAlso:    -
 
 ********************************************************************************************/
 
 void Application::CheckRealDownload ()
 {
-	PORTNOTE("other","Application::CheckRealDownload - do nothing")
+    PORTNOTE("other","Application::CheckRealDownload - do nothing")
 #ifndef EXCLUDE_FROM_XARALX
-	key = OpenRegKey (HKEY_CURRENT_USER, "software\\realnetworks\\realdownload\\");
+    key = OpenRegKey (HKEY_CURRENT_USER, "software\\realnetworks\\realdownload\\");
 
-	if (key)
-	{
-		// disable it ....
-		DisabledRealDownload = ChangeRealDownloadBrowserOtion (HKEY_CURRENT_USER, key, FALSE);
+    if (key)
+    {
+        // disable it ....
+        DisabledRealDownload = ChangeRealDownloadBrowserOtion (HKEY_CURRENT_USER, key, FALSE);
 
-		if (DisabledRealDownload)
-		{
-			key2 = OpenRegKey (HKEY_LOCAL_MACHINE, "software\\realnetworks\\realdownload\\");
+        if (DisabledRealDownload)
+        {
+            key2 = OpenRegKey (HKEY_LOCAL_MACHINE, "software\\realnetworks\\realdownload\\");
 
-			if (key2)
-			{
-				// disable it ....
-				ChangeRealDownloadBrowserOtion (HKEY_LOCAL_MACHINE, key2, FALSE);
-			}
-		}
-	}
-	else
-	{
-		key2 = OpenRegKey (HKEY_LOCAL_MACHINE, "software\\realnetworks\\realdownload\\");
+            if (key2)
+            {
+                // disable it ....
+                ChangeRealDownloadBrowserOtion (HKEY_LOCAL_MACHINE, key2, FALSE);
+            }
+        }
+    }
+    else
+    {
+        key2 = OpenRegKey (HKEY_LOCAL_MACHINE, "software\\realnetworks\\realdownload\\");
 
-		if (key2)
-		{
-			// disable it ....
-			DisabledRealDownload = ChangeRealDownloadBrowserOtion (HKEY_LOCAL_MACHINE, key2, FALSE);
-		}
-	}
+        if (key2)
+        {
+            // disable it ....
+            DisabledRealDownload = ChangeRealDownloadBrowserOtion (HKEY_LOCAL_MACHINE, key2, FALSE);
+        }
+    }
 #endif
 }
 
 
 /********************************************************************************************
 
->	void Application::ResetRealDownload ()
+>   void Application::ResetRealDownload ()
 
-	Author:		Chris_Snook (Xara Group Ltd) <camelotdev@xara.com>
-	Created:	15/9/2000
-	Inputs:		-
-	Outputs:	-
-	Returns:	-
-	Purpose:	Re-enables RealDownload browser integration if we disabled it.
-	Errors:		-
-	SeeAlso:	-
+    Author:     Chris_Snook (Xara Group Ltd) <camelotdev@xara.com>
+    Created:    15/9/2000
+    Inputs:     -
+    Outputs:    -
+    Returns:    -
+    Purpose:    Re-enables RealDownload browser integration if we disabled it.
+    Errors:     -
+    SeeAlso:    -
 
 ********************************************************************************************/
 
 void Application::ResetRealDownload ()
 {
-	PORTNOTE("other","Application::ResetRealDownload - do nothing")
+    PORTNOTE("other","Application::ResetRealDownload - do nothing")
 #ifndef EXCLUDE_FROM_XARALX
-	if (DisabledRealDownload)
-	{
-		if (key)
-		{
-			// both HKEY_CURRENT_USER and HKEY_LOCAL_MACHINE could have been used, reset both ....
+    if (DisabledRealDownload)
+    {
+        if (key)
+        {
+            // both HKEY_CURRENT_USER and HKEY_LOCAL_MACHINE could have been used, reset both ....
 
-			ChangeRealDownloadBrowserOtion (HKEY_CURRENT_USER, key, TRUE);
-			RegCloseKey (key);
+            ChangeRealDownloadBrowserOtion (HKEY_CURRENT_USER, key, TRUE);
+            RegCloseKey (key);
 
-			if (key2)
-			{
-				ChangeRealDownloadBrowserOtion (HKEY_LOCAL_MACHINE, key2, TRUE);
-				RegCloseKey (key2);
-			}
+            if (key2)
+            {
+                ChangeRealDownloadBrowserOtion (HKEY_LOCAL_MACHINE, key2, TRUE);
+                RegCloseKey (key2);
+            }
 
-			DisabledRealDownload = FALSE;
-		}
-		else if (key2)
-		{
-			// only HKEY_LOCAL_MACHINE will have been used, reset it ....
+            DisabledRealDownload = FALSE;
+        }
+        else if (key2)
+        {
+            // only HKEY_LOCAL_MACHINE will have been used, reset it ....
 
-			ChangeRealDownloadBrowserOtion (HKEY_LOCAL_MACHINE, key2, TRUE);
-			RegCloseKey (key2);
+            ChangeRealDownloadBrowserOtion (HKEY_LOCAL_MACHINE, key2, TRUE);
+            RegCloseKey (key2);
 
-			DisabledRealDownload = FALSE;
-		}
-	}
+            DisabledRealDownload = FALSE;
+        }
+    }
 #endif
 }
 
@@ -2133,21 +2173,21 @@ void Application::ResetRealDownload ()
 
 /********************************************************************************************
 
->	BOOL Application::GetConvertToEditableShapesDPI (INT32* pValue)
+>   BOOL Application::GetConvertToEditableShapesDPI (INT32* pValue)
 
-	Author:		Chris_Snook (Xara Group Ltd) <camelotdev@xara.com>
-	Created:	13/11/2000
-	Inputs:		-
-	Outputs:	-
-	Returns:	-
-	Purpose:	Wrapper function for gaining access to convert to editable shapes DPI
-				(as requested by karim).
-	Errors:		-
-	SeeAlso:	-
+    Author:     Chris_Snook (Xara Group Ltd) <camelotdev@xara.com>
+    Created:    13/11/2000
+    Inputs:     -
+    Outputs:    -
+    Returns:    -
+    Purpose:    Wrapper function for gaining access to convert to editable shapes DPI
+                (as requested by karim).
+    Errors:     -
+    SeeAlso:    -
 
 ********************************************************************************************/
 
 BOOL Application::GetConvertToEditableShapesDPI (INT32* pValue)
 {
-	return (Camelot.GetPrefValue(TEXT("Displays"),TEXT("CompCToEDPI"),pValue));
+    return (Camelot.GetPrefValue(TEXT("Displays"),TEXT("CompCToEDPI"),pValue));
 }
