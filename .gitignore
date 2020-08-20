@@ -32,3 +32,17 @@ xarlib/*.o
 freetype-*
 wxWidgets-*
 
+
+libs/x86_64/libCDraw_la*.o
+libs/x86_64/libCDraw.a
+
+libs/x86_64/cdraw-alt/libCDraw-alt.a
+libs/x86_64/cdraw-alt/libCDraw_alt_a-bshadow2.o
+doc/en/*.gif
+doc/en/*.jpg
+doc/en/*.htm
+doc/en/*.js
+doc/en/*.xml
+doc/en/*.css
+doc/en/*.ico
+doc/en/*.png
