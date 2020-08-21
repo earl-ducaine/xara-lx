@@ -3938,11 +3938,19 @@ void CCamView::OnDragIdle(wxTimerEvent& event)
                 move to.
     Outputs:    -
     Returns:    -
+
     Purpose:    Scroll the client area of the window to the specified position.  The offset
                 must be converted to OS coordinates before being passed to Windows.  If the
                 new position of the view does not overlap the old position then the client
                 area is completely redrawn.  Otherwise, the Windows USER module is called
                 to scroll the window.
+
+                Note that we no longer perform an update on the scrolled window. The
+                reason for this is that wxWidgets will generate an on paint event for any
+                damaged regions. It is faster to handle the event in the paint event,
+                though at the moment it's not exactly clear why this is the case.
+
+
     Errors:     -
     Scope:      Private
     SeeAlso:    CCamView::SetScrollPos()
@@ -3951,29 +3959,25 @@ void CCamView::OnDragIdle(wxTimerEvent& event)
 
 void CCamView::ScrollTo(const WorkCoord& offset)
 {
-//  TRACEUSER("Gerry", _T("CCamView::ScrollTo(%d, %d)\n"), (INT32)offset.x, (INT32)offset.y);
-    // Calculate the difference between where we are and where we want to be.  Notice
-    // the asymmetry in the calculations, to account for the Windows coordinate origin
-    // being in the top-left, not the bottom-left.
+    // Calculate the difference between where we are and where we want to be.  Notice the
+    // asymmetry in the calculations, to account for the Windows coordinate origin being
+    // in the top-left, not the bottom-left.
     FIXED16 PixelWidth, PixelHeight;
     pDocView->GetPixelSize(&PixelWidth, &PixelHeight);
     INT32 dx = ((offset.x - OldOffset.x) / PixelWidth.MakeLong() );
     INT32 dy = ((OldOffset.y - offset.y) / PixelHeight.MakeLong() );
     if (dx == 0 && dy == 0)
     {
-//      TRACEUSER("Gerry", _T("No change\n"));
         return;
     }
 
     // Scroll part of, or redraw the whole of, the client area.
     if (Abs(dx) >= CurrentSize.GetRight() || Abs(dy) >= CurrentSize.GetBottom() )
     {
-//      TRACEUSER("Gerry", _T("Full refresh\n"));
         GetRenderWindow()->Refresh(true);
     }
     else
     {
-//      TRACEUSER("Gerry", _T("ScrollWindow(%d, %d)\n"), -dx, -dy);
         GetRenderWindow()->ScrollWindow(-dx, -dy);
     }
 
@@ -3988,11 +3992,9 @@ void CCamView::ScrollTo(const WorkCoord& offset)
     }
 #endif
 
-    // Remember this scroll offset, which corresponds to what will be drawn on the screen,
-    // and force an immediate repaint of the invalid area.
+    // Remember this scroll offset, which corresponds to what will be drawn on the screen.
     OldOffset = offset;
-    GetRenderWindow()->Update();
-//  TRACEUSER("Gerry", _T("Done update\n"));
+
 
 #if !defined(EXCLUDE_FROM_RALPH)    // && !defined(EXCLUDE_FROM_XARALX)
     // Make sure that the system will update the state of gadgets after this, some of
