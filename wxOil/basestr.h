@@ -159,6 +159,11 @@ service marks of Xara Group Ltd. All rights in these marks are reserved.
 const size_t MAX_STRING_RES_LENGTH = 255;
 const INT32 str_MAXEXCEPTIONS = 30;
 
+// Helper patterned on clib strcpy and strncpy
+TCHAR* camStrcpy(TCHAR* dest, const TCHAR* src);
+TCHAR* camStrncpy(TCHAR* dest, const TCHAR* src, INT32 buffer_size);
+TCHAR* camStrncpy_alt(TCHAR* dest, const TCHAR* src, INT32 string_length);
+
 class CCAPI StringBase : public CCObject
 {
     // Error class needs direct access
@@ -1127,7 +1132,9 @@ inline TCHAR* cc_camStrncpy(TCHAR* dest, const TCHAR* src, INT32 n)
 {
     ERROR3IF(src == 0 || dest == 0 || n <= 0,
                 "0 (zero) parameters passed to cc_camStrncpy!");
-    return camStrncpy(dest, src, n + 1);        // +1 as camStrncpy includes the terminator.
+
+    // +1 as camStrncpy includes the terminator.
+    return camStrncpy(dest, src, n + 1);
 }
 
 

@@ -1,3 +1,4 @@
+/* -*- tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4; fill-column: 90 -*- */
 // $Id: compatdef.h 1668 2006-08-04 11:45:17Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
@@ -113,83 +114,81 @@ service marks of Xara Group Ltd. All rights in these marks are reserved.
 // All ASCII string (plain char) manipulation should be done using the standard
 // strcpy type functions.
 
-#define camIsalnum		wxIsalnum
-#define camIsalpha		wxIsalpha
-#define camIscntrl		wxIscntrl
-#define camIsdigit		wxIsdigit
-#define camIsgraph		wxIsgraph
-#define camIslower		wxIslower
-#define camIsprint		wxIsprint
-#define camIspunct		wxIspunct
-#define camIsspace		wxIsspace
-#define camIsupper		wxIsupper
-#define camIsxdigit		wxIsxdigit
-#define camTolower		wxTolower
-#define camToupper		wxToupper
-#define camSetlocale	wxSetlocale
-#define camStrcat		wxStrcat
-#define camStrchr		wxStrchr
-#define camStrcmp		wxStrcmp
-#define camStrcoll		wxStrcoll
-#define camStrcpy		wxStrcpy
-#define camStrcspn		wxStrcspn
-#define camStrdup		wxStrdup
-#define camStrdupW		wxStrdupW
-#define camStrftime		wxStrftime
-#define camStricmp		wxStricmp
-#define camStrnicmp		wxStrnicmp
-#define camStrlen		wxStrlen
-#define camStrclen		wxStrlen
-#define camStrncat		wxStrncat
-#define camStrncmp		wxStrncmp
-#define camStrncpy		wxStrncpy
-#define camStrpbrk		wxStrpbrk
-#define camStrrchr		wxStrrchr
-#define camStrspn		wxStrspn
-#define camStrstr		wxStrstr
-#define camStrtod		wxStrtod
-#define camStrtol		wxStrtol
-#define camStrtoul		wxStrtoul
-#define camStrxfrm		wxStrxfrm
-#define camFgetc		wxFgetc
-#define camFgetchar		wxFgetchar
-#define camFgets		wxFgets
-#define camFopen		wxFopen
-#define camFputc		wxFputc
-#define camFputchar		wxFputchar
-#define camFprintf		wxFprintf
-#define camFputs		wxFputs
-#define camFreopen		wxFreopen
-#define camFscanf		wxFscanf
-#define camGetc			wxGetc
-#define camGetchar		wxGetchar
-#define camGets			wxGets
-#define camPerror		wxPerror
-#define camPrintf		wxPrintf
-#define camPutc			wxPutc
-#define camPutchar		wxPutchar
-#define camPuts			wxPuts
-#define camScanf		wxScanf
-#define camSprintf		wxSprintf
-#define camSscanf		wxSscanf
-#define camTmpnam		wxTmpnam
-#define camUngetc		wxUngetc
-#define camVfprintf		wxVfprintf
-#define camVprintf		wxVprintf
-#define camVsscanf		wxVsscanf
-#define camVsprintf		wxVsprintf
-#define camVsnprintf	wxVsnprintf
-#define camSnprintf		wxSnprintf
-#define camRemove		wxRemove
-#define camRename		wxRename
-#define camAtoi			wxAtoi
-#define camAtol			wxAtol
-#define camGetenv		wxGetenv
-#define camSystem		wxSystem
-#define camAsctime		wxAsctime
-#define camCtime		wxCtime
-#define camMbstowcs		wxMbstowcs
-#define camWcstombs		wxWcstombs
+#define camIsalnum      wxIsalnum
+#define camIsalpha      wxIsalpha
+#define camIscntrl      wxIscntrl
+#define camIsdigit      wxIsdigit
+#define camIsgraph      wxIsgraph
+#define camIslower      wxIslower
+#define camIsprint      wxIsprint
+#define camIspunct      wxIspunct
+#define camIsspace      wxIsspace
+#define camIsupper      wxIsupper
+#define camIsxdigit     wxIsxdigit
+#define camTolower      wxTolower
+#define camToupper      wxToupper
+#define camSetlocale    wxSetlocale
+#define camStrcat       wxStrcat
+#define camStrchr       wxStrchr
+#define camStrcmp       wxStrcmp
+#define camStrcoll      wxStrcoll
+#define camStrcspn      wxStrcspn
+#define camStrdup       wxStrdup
+#define camStrdupW      wxStrdupW
+#define camStrftime     wxStrftime
+#define camStricmp      wxStricmp
+#define camStrnicmp     wxStrnicmp
+#define camStrlen       wxStrlen
+#define camStrclen      wxStrlen
+#define camStrncat      wxStrncat
+#define camStrncmp      wxStrncmp
+#define camStrpbrk      wxStrpbrk
+#define camStrrchr      wxStrrchr
+#define camStrspn       wxStrspn
+#define camStrstr       wxStrstr
+#define camStrtod       wxStrtod
+#define camStrtol       wxStrtol
+#define camStrtoul      wxStrtoul
+#define camStrxfrm      wxStrxfrm
+#define camFgetc        wxFgetc
+#define camFgetchar     wxFgetchar
+#define camFgets        wxFgets
+#define camFopen        wxFopen
+#define camFputc        wxFputc
+#define camFputchar     wxFputchar
+#define camFprintf      wxFprintf
+#define camFputs        wxFputs
+#define camFreopen      wxFreopen
+#define camFscanf       wxFscanf
+#define camGetc         wxGetc
+#define camGetchar      wxGetchar
+#define camGets         wxGets
+#define camPerror       wxPerror
+#define camPrintf       wxPrintf
+#define camPutc         wxPutc
+#define camPutchar      wxPutchar
+#define camPuts         wxPuts
+#define camScanf        wxScanf
+#define camSprintf      wxSprintf
+#define camSscanf       wxSscanf
+#define camTmpnam       wxTmpnam
+#define camUngetc       wxUngetc
+#define camVfprintf     wxVfprintf
+#define camVprintf      wxVprintf
+#define camVsscanf      wxVsscanf
+#define camVsprintf     wxVsprintf
+#define camVsnprintf    wxVsnprintf
+#define camSnprintf     wxSnprintf
+#define camRemove       wxRemove
+#define camRename       wxRename
+#define camAtoi         wxAtoi
+#define camAtol         wxAtol
+#define camGetenv       wxGetenv
+#define camSystem       wxSystem
+#define camAsctime      wxAsctime
+#define camCtime        wxCtime
+#define camMbstowcs     wxMbstowcs
+#define camWcstombs     wxWcstombs
 
 // The following also need to be defined but do not have wx equivalents
 // camStrtok
@@ -200,67 +199,67 @@ service marks of Xara Group Ltd. All rights in these marks are reserved.
 
 // Define types that *nix doesn't have
 #if !defined(__WXMSW__)
-typedef char			CHAR;
-typedef wchar_t			WCHAR;
+typedef char            CHAR;
+typedef wchar_t         WCHAR;
 
 #if !defined(__64BIT__)
-typedef unsigned long		UINT_PTR;
-typedef unsigned long		DWORD_PTR;
+typedef unsigned long       UINT_PTR;
+typedef unsigned long       DWORD_PTR;
 #else
-typedef unsigned long long	UINT_PTR;
-typedef unsigned long long	DWORD_PTR;
+typedef unsigned long long  UINT_PTR;
+typedef unsigned long long  DWORD_PTR;
 #endif
 
-#define camStrinc(v)		( (v)+1 )
-#define camStrninc(s, n)	( (s)+(n) )
-#define camStrdec(s, v)		( (v)-1 )
+#define camStrinc(v)        ( (v)+1 )
+#define camStrninc(s, n)    ( (s)+(n) )
+#define camStrdec(s, v)     ( (v)-1 )
 
 #if 0 != wxUSE_UNICODE
-typedef wchar_t			TCHAR;
+typedef wchar_t         TCHAR;
 
-#define camStrtok		wcstok
-#define camStrtof( str, pszMark )	wcstof( str, pszMark )
+#define camStrtok       wcstok
+#define camStrtof( str, pszMark )   wcstof( str, pszMark )
 
 // These two have been left in for now as they are currently needed by CCLexFile
-#define _strnicmp		strncasecmp
-#define _snprintf		snprintf
+#define _strnicmp       strncasecmp
+#define _snprintf       snprintf
 
 #else // !wxUSE_UNICODE
 
-typedef char			TCHAR;
+typedef char            TCHAR;
 
-#define camStrtok		strtok_r
-#define camStrtof( str, pszMark )	strtof( str, pszMark )
+#define camStrtok       strtok_r
+#define camStrtof( str, pszMark )   strtof( str, pszMark )
 
 // These two have been left in for now as they are currently needed by CCLexFile
-#define _strnicmp		strncasecmp
-#define _snprintf		snprintf
+#define _strnicmp       strncasecmp
+#define _snprintf       snprintf
 
 #endif
 
 static void CharUpper( TCHAR *psz )
 {
-	for( ; *psz != '\0'; ++psz )
-		*psz = camToupper( *psz );
+    for( ; *psz != '\0'; ++psz )
+        *psz = camToupper( *psz );
 }
 static void CharLower( TCHAR *psz )
 {
-	for( ; *psz != '\0'; ++psz )
-		*psz = camTolower( *psz );
+    for( ; *psz != '\0'; ++psz )
+        *psz = camTolower( *psz );
 }
 #define SIZEOF_CHAR 1
 #if SIZEOF_CHAR == 1
-typedef unsigned char		BYTE;
-typedef signed char			INT8;
-typedef unsigned char		UINT8;
+typedef unsigned char       BYTE;
+typedef signed char         INT8;
+typedef unsigned char       UINT8;
 #else
 #error "Can't define BYTE, no built-in type with 1 byte length"
 #endif
 
 #if SIZEOF_SHORT == 2
-typedef unsigned short		WORD;
-typedef signed short		INT16;
-typedef unsigned short		UINT16;
+typedef unsigned short      WORD;
+typedef signed short        INT16;
+typedef unsigned short      UINT16;
 #else
 #error "Can't define WORD, no built-in type with 2 byte length"
 #endif
@@ -278,7 +277,7 @@ typedef unsigned int UINT32;
 #elif SIZEOF_LONG == 4
 typedef unsigned long DWORD;
 typedef signed long INT32;
-typedef unsigned long		UINT32;
+typedef unsigned long       UINT32;
 #define INT32_MAX LONG_MAX
 #define INT32_MIN LONG_MIN
 #define UINT32_MAX ULONG_MAX
@@ -289,245 +288,245 @@ typedef unsigned long		UINT32;
 
 #if SIZEOF_LONG_LONG == 8
 #if SIZEOF___INT64 == 0
-typedef signed long long	__int64;
+typedef signed long long    __int64;
 #endif
-typedef unsigned long long	__uint64;
-typedef unsigned long long	QWORD;
-typedef signed long long	INT64, 	LONGLONG;
-typedef unsigned long long	UINT64,	ULONGLONG;
+typedef unsigned long long  __uint64;
+typedef unsigned long long  QWORD;
+typedef signed long long    INT64,  LONGLONG;
+typedef unsigned long long  UINT64, ULONGLONG;
 #else
 #error "Can't define QWORD, no built-in type with 8 byte length"
 #endif
 
 // These types are deprecated
-//typedef UINT32		ULONG;
-//typedef INT32		LONG;
+//typedef UINT32        ULONG;
+//typedef INT32     LONG;
 //
 // So we will define them as something nasty
-wxDEPRECATED(typedef UINT32		ULONG);
-wxDEPRECATED(typedef INT32		LONG);
+wxDEPRECATED(typedef UINT32     ULONG);
+wxDEPRECATED(typedef INT32      LONG);
 
 
-typedef INT8	*PINT8;
-typedef INT16	*PINT16;
-typedef INT32	*PINT32;
-typedef INT64	*PINT64;
-typedef UINT8	*PUINT8;
-typedef UINT16	*PUINT16;
-typedef UINT32	*PUINT32;
-typedef UINT64	*PUINT64;
+typedef INT8    *PINT8;
+typedef INT16   *PINT16;
+typedef INT32   *PINT32;
+typedef INT64   *PINT64;
+typedef UINT8   *PUINT8;
+typedef UINT16  *PUINT16;
+typedef UINT32  *PUINT32;
+typedef UINT64  *PUINT64;
 
-typedef INT32	BOOL;
+typedef INT32   BOOL;
 typedef INT32   *INT_PTR;
 
 
-typedef BYTE			   *PBYTE, *LPBYTE;
-typedef WORD			   *PWORD, *LPWORD;
-typedef DWORD			   *PDWORD, *LPDWORD;
+typedef BYTE               *PBYTE, *LPBYTE;
+typedef WORD               *PWORD, *LPWORD;
+typedef DWORD              *PDWORD, *LPDWORD;
 
-typedef float				FLOAT;
+typedef float               FLOAT;
 
-typedef DWORD				HRESULT;
-const HRESULT				S_OK = 0;
-const HRESULT				E_FAIL = 0x80004005;
+typedef DWORD               HRESULT;
+const HRESULT               S_OK = 0;
+const HRESULT               E_FAIL = 0x80004005;
 
-typedef char			   *LPSTR;
-typedef const char		   *LPCSTR;
+typedef char               *LPSTR;
+typedef const char         *LPCSTR;
 
-typedef char			   *PSTR;
-typedef const char		   *PCSTR;
+typedef char               *PSTR;
+typedef const char         *PCSTR;
 
-typedef wchar_t			   *LPWSTR;
-typedef const wchar_t	   *LPCWSTR;
+typedef wchar_t            *LPWSTR;
+typedef const wchar_t      *LPCWSTR;
 
-typedef TCHAR			   *LPTSTR;
-typedef const TCHAR		   *LPCTSTR;
+typedef TCHAR              *LPTSTR;
+typedef const TCHAR        *LPCTSTR;
 
-typedef TCHAR			   *PTSTR;
-typedef const TCHAR		   *PCTSTR;
+typedef TCHAR              *PTSTR;
+typedef const TCHAR        *PCTSTR;
 
-typedef void			   *PVOID, *LPVOID;
-typedef const void		   *PCVOID;
+typedef void               *PVOID, *LPVOID;
+typedef const void         *PCVOID;
 
-typedef INT32				WPARAM, LPARAM, LRESULT;
+typedef INT32               WPARAM, LPARAM, LRESULT;
 
-#define Int32x32To64( a, b )	(INT64)( (INT64)((INT32)(a)) * (INT32)(b) )
-#define UInt32x32To64( a, b )	(UINT64)( (UINT64)((INT32)(a)) * (INT32)(b) )
+#define Int32x32To64( a, b )    (INT64)( (INT64)((INT32)(a)) * (INT32)(b) )
+#define UInt32x32To64( a, b )   (UINT64)( (UINT64)((INT32)(a)) * (INT32)(b) )
 
 
 inline UINT32 _lrotr( UINT32 lVal, UINT32 nShift )
 {
-	return ( lVal >> nShift ) | ( lVal << ( 32 - nShift ) );
+    return ( lVal >> nShift ) | ( lVal << ( 32 - nShift ) );
 }
 
 inline UINT32 _lrotl( UINT32 lVal, UINT32 nShift )
 {
-	return ( lVal << nShift ) | ( lVal >> ( 32 - nShift ) );
+    return ( lVal << nShift ) | ( lVal >> ( 32 - nShift ) );
 }
 
 inline INT32 MulDiv( INT32 X, INT32 N, INT32 D )
 {
-//	return X*N/D ;
+//  return X*N/D ;
 #if defined(__WXMSW__)
-	UINT32 temp ;
-	__asm {
-		mov		eax,X
-		imul	N
-		idiv	D
-		mov		temp,eax
-	}
-	return temp ;
+    UINT32 temp ;
+    __asm {
+        mov     eax,X
+        imul    N
+        idiv    D
+        mov     temp,eax
+    }
+    return temp ;
 #else
-	return INT32( __int64(X) * N / D );
+    return INT32( __int64(X) * N / D );
 #endif
 }
 
 inline WORD HIWORD( DWORD dw )
 {
-	return WORD( dw >> 16 );
+    return WORD( dw >> 16 );
 }
 
 inline WORD LOWORD( DWORD dw )
 {
-	return WORD(dw);
+    return WORD(dw);
 }
 
 struct RECT
 {
-    INT32				left;
-    INT32				top;
-    INT32				right;
-    INT32				bottom;
+    INT32               left;
+    INT32               top;
+    INT32               right;
+    INT32               bottom;
 };
-typedef RECT		   *PRECT, *LPRECT;
+typedef RECT           *PRECT, *LPRECT;
 
 struct POINT
 {
-	INT32					x;
-	INT32					y;
+    INT32                   x;
+    INT32                   y;
 };
-typedef POINT		   *PPOINT, *LPPOINT;
+typedef POINT          *PPOINT, *LPPOINT;
 
-typedef DWORD			COLORREF;
+typedef DWORD           COLORREF;
 inline COLORREF RGB( BYTE r, BYTE g, BYTE b )
 {
-	return COLORREF(r) | ( WORD(g) << 8 ) | ( DWORD(b) << 16 );
+    return COLORREF(r) | ( WORD(g) << 8 ) | ( DWORD(b) << 16 );
 }
 
 inline BYTE GetBValue( COLORREF cr )
 {
-	return( BYTE(cr >> 16) );
+    return( BYTE(cr >> 16) );
 }
 
 inline BYTE GetGValue( COLORREF cr )
 {
-	return( BYTE(cr >> 8) );
+    return( BYTE(cr >> 8) );
 }
 
 inline BYTE GetRValue( COLORREF cr )
 {
-	return( BYTE(cr) );
+    return( BYTE(cr) );
 }
 
 struct RGBQUAD
 {
-	BYTE				rgbBlue;
-	BYTE				rgbGreen;
-	BYTE				rgbRed;
-	BYTE				rgbReserved;
+    BYTE                rgbBlue;
+    BYTE                rgbGreen;
+    BYTE                rgbRed;
+    BYTE                rgbReserved;
 };
 typedef RGBQUAD *PRGBQUAD, *LPRGBQUAD;
 
 struct RGBTRIPLE
 {
-	BYTE				rgbtBlue;
-	BYTE				rgbtGreen;
-	BYTE				rgbtRed;
+    BYTE                rgbtBlue;
+    BYTE                rgbtGreen;
+    BYTE                rgbtRed;
 };
 typedef RGBTRIPLE *PRGBTRIPLE, *LPRGBTRIPLE;
 
 struct PALETTEENTRY
 {
-	BYTE				peRed;
-	BYTE				peGreen;
-	BYTE				peBlue;
-	BYTE				peFlags;
+    BYTE                peRed;
+    BYTE                peGreen;
+    BYTE                peBlue;
+    BYTE                peFlags;
 };
 typedef PALETTEENTRY *PPALETTEENTRY, *LPPALETTEENTRY;
 
 struct LOGPALETTE
 {
-	WORD				palVersion;
-	WORD				palNumEntries;
-	PALETTEENTRY		palPalEntry[1];
+    WORD                palVersion;
+    WORD                palNumEntries;
+    PALETTEENTRY        palPalEntry[1];
 };
 typedef LOGPALETTE *PLOGPALETTE, *LPLOGPALETTE;
 
 struct BITMAPINFOHEADER
 {
-	WORD				biSize;
-	INT32				biWidth;
-	INT32				biHeight;
-	WORD				biPlanes;
-	WORD				biBitCount;
-	DWORD				biCompression;
-	DWORD				biSizeImage;
-	INT32				biXPelsPerMeter;
-	INT32				biYPelsPerMeter;
-	DWORD				biClrUsed;
-	DWORD				biClrImportant;
+    WORD                biSize;
+    INT32               biWidth;
+    INT32               biHeight;
+    WORD                biPlanes;
+    WORD                biBitCount;
+    DWORD               biCompression;
+    DWORD               biSizeImage;
+    INT32               biXPelsPerMeter;
+    INT32               biYPelsPerMeter;
+    DWORD               biClrUsed;
+    DWORD               biClrImportant;
 };
 typedef BITMAPINFOHEADER *PBITMAPINFOHEADER, *LPBITMAPINFOHEADER;
 
-const DWORD				BI_RGB			= 0;
-const DWORD				BI_RLE8			= 1;
-const DWORD				BI_RLE4			= 2;
-const DWORD				BI_BITFIELDS	= 3;
+const DWORD             BI_RGB          = 0;
+const DWORD             BI_RLE8         = 1;
+const DWORD             BI_RLE4         = 2;
+const DWORD             BI_BITFIELDS    = 3;
 
 // DIB color table identifiers
-const DWORD				DIB_RGB_COLORS	= 0;
-const DWORD				DIB_PAL_COLORS	= 1;
+const DWORD             DIB_RGB_COLORS  = 0;
+const DWORD             DIB_PAL_COLORS  = 1;
 
 struct BITMAPCOREHEADER
 {
-	DWORD				bcSize;
-	WORD				bcWidth;
-	WORD				bcHeight;
-	WORD				bcPlanes;
-	WORD				bcBitCount;
+    DWORD               bcSize;
+    WORD                bcWidth;
+    WORD                bcHeight;
+    WORD                bcPlanes;
+    WORD                bcBitCount;
 };
 typedef BITMAPCOREHEADER *PBITMAPCOREHEADER, *LPBITMAPCOREHEADER;
 
 struct BITMAPINFO
 {
-	BITMAPINFOHEADER	bmiHeader;
-	RGBQUAD				bmiColors[1];
+    BITMAPINFOHEADER    bmiHeader;
+    RGBQUAD             bmiColors[1];
 };
 typedef BITMAPINFO *PBITMAPINFO, *LPBITMAPINFO;
 
 #pragma pack(push, 2)
 struct BITMAPFILEHEADER
 {
-	WORD				bfType;
-	DWORD				bfSize;
-	WORD				bfReserved1;
-	WORD				bfReserved2;
-	DWORD				bfOffBits;
+    WORD                bfType;
+    DWORD               bfSize;
+    WORD                bfReserved1;
+    WORD                bfReserved2;
+    DWORD               bfOffBits;
 };
 #pragma pack(pop)
 typedef BITMAPFILEHEADER *LPBITMAPFILEHEADER, *PBITMAPFILEHEADER;
 
-#define MAKEFOURCC( ch0, ch1, ch2, ch3 )							\
-	( DWORD(BYTE(ch0))			 | ( DWORD(BYTE(ch1)) << 8 ) |		\
-	  ( DWORD(BYTE(ch2)) << 16 ) | ( DWORD(BYTE(ch1)) << 24 ) )
+#define MAKEFOURCC( ch0, ch1, ch2, ch3 )                            \
+    ( DWORD(BYTE(ch0))           | ( DWORD(BYTE(ch1)) << 8 ) |      \
+      ( DWORD(BYTE(ch2)) << 16 ) | ( DWORD(BYTE(ch1)) << 24 ) )
 
-#define mmioFOURCC( ch0, ch1, ch2, ch3 )	MAKEFOURCC( ch0, ch1, ch2, ch3 )
+#define mmioFOURCC( ch0, ch1, ch2, ch3 )    MAKEFOURCC( ch0, ch1, ch2, ch3 )
 
 struct LOGBRUSH
 {
-	UINT32				lbStyle;
-	COLORREF			lbColor;
-	PUINT32				lbHatch;
+    UINT32              lbStyle;
+    COLORREF            lbColor;
+    PUINT32             lbHatch;
 };
 typedef LOGBRUSH *PLOGBRUSH, *LPLOGBRUSH;
 
@@ -554,7 +553,7 @@ struct ABC
 struct RGNDATA
 {
 };
-typedef RGNDATA		   *LPRGNDATA;
+typedef RGNDATA        *LPRGNDATA;
 
 struct NEWTEXTMETRIC
 {
@@ -564,7 +563,7 @@ struct PAINTSTRUCT
 {
 };
 
-#define TEXT				wxT
+#define TEXT                wxT
 
 #define FAR
 #define CDECL
@@ -574,32 +573,32 @@ struct PAINTSTRUCT
 typedef INT32 (*FARPROC)();
 
 // Define some unwanted types
-typedef INT32 			CRITICAL_SECTION;
-typedef void 		   *HANDLE;
-typedef void 		   *HGLOBAL;
-typedef void 		   *HKEY;
-typedef void 		   *HPALETTE;
-typedef INT32			CLSID;
-typedef void		   *HINSTANCE;
+typedef INT32           CRITICAL_SECTION;
+typedef void           *HANDLE;
+typedef void           *HGLOBAL;
+typedef void           *HKEY;
+typedef void           *HPALETTE;
+typedef INT32           CLSID;
+typedef void           *HINSTANCE;
 
-const HINSTANCE			HINSTANCE_ERROR = HINSTANCE(-1);
+const HINSTANCE         HINSTANCE_ERROR = HINSTANCE(-1);
 
 class IUnknown
 {
 public:
-	virtual UINT32 AddRef()	= 0;
-	virtual UINT32 Release() = 0;
-	virtual ~IUnknown() { }; // avoid gcc warning
+    virtual UINT32 AddRef() = 0;
+    virtual UINT32 Release() = 0;
+    virtual ~IUnknown() { }; // avoid gcc warning
 };
 
-#define STDMETHOD(fn)		virtual HRESULT fn
+#define STDMETHOD(fn)       virtual HRESULT fn
 
-const size_t			MAX_PATH = 256;
+const size_t            MAX_PATH = 256;
 
 #if !defined(__WXMAC__)
 inline size_t _msize( PVOID ptr )
 {
-	return malloc_usable_size( ptr );
+    return malloc_usable_size( ptr );
 }
 #endif
 
@@ -607,41 +606,41 @@ inline size_t _msize( PVOID ptr )
 
 #include <tchar.h>
 
-typedef unsigned long long	__uint64;
+typedef unsigned long long  __uint64;
 
 #define INT32_MAX INT_MAX
 #define INT32_MIN INT_MIN
 #define UINT32_MAX UINT_MAX
 #define UINT32_MIN UINT_MIN
 
-#define SIZEOF_VOIDP	sizeof(void *)
+#define SIZEOF_VOIDP    sizeof(void *)
 
-#define camStrinc				_tcsinc
-#define camStrninc				_tcsninc
-#define camStrdec				_tcsdec
-#define camStrtok( t, d, x )	_tcstok( (t), (d) )
-#define camStrtof				_tcstod
+#define camStrinc               _tcsinc
+#define camStrninc              _tcsninc
+#define camStrdec               _tcsdec
+#define camStrtok( t, d, x )    _tcstok( (t), (d) )
+#define camStrtof               _tcstod
 
 #endif
 
 // Replacements for some MFC classes
-typedef TCHAR				TBYTE;
-typedef TCHAR			   *PTBYTE;
-typedef TCHAR			   *LPTBYTE;
-typedef TCHAR			   *PTCHAR;
+typedef TCHAR               TBYTE;
+typedef TCHAR              *PTBYTE;
+typedef TCHAR              *LPTBYTE;
+typedef TCHAR              *PTCHAR;
 typedef TCHAR* LPTCHAR;
 typedef TCHAR const * LPCTCHAR;
-typedef std::map<void *, WORD>		CMapPtrToWord;
-typedef std::map<void *, void *>	CMapPtrToPtr;
-typedef std::map<INT32, void *>		CMapLongToPtr;
-typedef std::map<void *, INT32>		CMapPtrToLong;
+typedef std::map<void *, WORD>      CMapPtrToWord;
+typedef std::map<void *, void *>    CMapPtrToPtr;
+typedef std::map<INT32, void *>     CMapLongToPtr;
+typedef std::map<void *, INT32>     CMapPtrToLong;
 
-typedef wxPoint				CNativePoint;
-typedef wxSize				CNativeSize;
-typedef wxRect				CNativeRect;
-typedef wxDC				CNativeDC;
-typedef wxWindow			CNativeWnd;
-typedef wxMenu				CNativeMenu;
+typedef wxPoint             CNativePoint;
+typedef wxSize              CNativeSize;
+typedef wxRect              CNativeRect;
+typedef wxDC                CNativeDC;
+typedef wxWindow            CNativeWnd;
+typedef wxMenu              CNativeMenu;
 
 #if defined(CALLBACK)
 #undef CALLBACK
@@ -654,11 +653,11 @@ typedef wxMenu				CNativeMenu;
 #define EXPORT
 #define AFXAPI
 #define APIENTRY
-#define CONST				const
+#define CONST               const
 
-#define	AfxGetApp			::wxGetApp
+#define AfxGetApp           ::wxGetApp
 
-#define AfxAbort			abort
+#define AfxAbort            abort
 
 // From WinUser.h - juat to allow helpuser to compile...
 /*

@@ -125,6 +125,43 @@ DECLARE_SOURCE("$Revision: 1282 $");
 BOOL StringBase::ThrowExceptionStack[str_MAXEXCEPTIONS];
 INT32 StringBase::CurrEx = -1;
 
+// Patterned on clib version of strcpy, but importantly, allows for src and dest to
+// overlap.
+TCHAR* camStrcpy(TCHAR* dest, const TCHAR* src)
+{
+    // Add space for NULL.
+    int buffer_size = wxStrlen(src) + 1;
+    TCHAR buf[buffer_size];
+    wxStrncpy(buf, src, buffer_size - 1);
+    buf[buffer_size - 1] = '\0';
+    wxStrncpy(dest, buf, buffer_size - 1);
+    dest[buffer_size - 1] = '\0';
+    return dest;
+}
+
+
+// Patterned on clib version of strncpy, but importantly, 1) Allows for src and dest to
+// overlap, 2) third argument is the size of the buffer, not the size of the string,
+// i.e. size of string + 1, 3) null terminates all copied strings.
+TCHAR* camStrncpy(TCHAR* dest, const TCHAR* src, INT32 buffer_size)
+{
+    // Add space for NULL.
+    TCHAR buf[buffer_size];
+
+    // Make sure there's space for the '\0' character.
+    wxStrncpy(buf, src, buffer_size - 1);
+    buf[buffer_size] = '\0';
+    wxStrncpy(dest, buf, buffer_size - 1);
+    dest[buffer_size - 1] = '\0';
+    return dest;
+}
+
+// Patterned on clib version of strncpy, pure wxWidgets
+TCHAR* camStrncpy_alt(TCHAR* dest, const TCHAR* src, INT32 string_length)
+{
+    return wxStrncpy(dest, src, string_length);
+}
+
 
 /**************************************************************************************
 >   virtual BOOL StringBase::Alloc(INT32 size)
@@ -143,12 +180,12 @@ INT32 StringBase::CurrEx = -1;
 BOOL StringBase::Alloc(INT32 size)
 {
     ERROR3IF(size < 0, "Attempt to ALLOCate a String of negative length");
-    if (text) delete[] text;
-#ifdef _UNICODE
-    text = new TCHAR[length = size + 1];
-#else
-    text = new TCHAR[length = (size + 1) * 2];      // MBCS
-#endif
+    if (text)
+        delete[] text;
+
+    length = (size + 1) * sizeof(TCHAR);
+    text = new TCHAR[length];
+
     ERRORIF(text == 0, _R(IDE_NOMORE_MEMORY), FALSE);
     *text = 0;
     return TRUE;
@@ -376,7 +413,7 @@ StringBase& StringBase::operator=(const StringBase& other)
     if (text && other.text)
     {
         if(camStrlen(other.text) >= length)
-            camStrncpy(text, other.text, (INT32)length - 1);
+            camStrncpy(text, other.text, (INT32)length);
         else
             camStrcpy(text, other.text);
     }
@@ -404,7 +441,7 @@ StringBase& StringBase::operator=(const TCHAR* s)
     if (text && s)
     {
         if(camStrlen(s) >= length)
-            camStrncpy(text, s, (INT32)length-1);
+            camStrncpy(text, s, (INT32)length);
         else
             camStrcpy(text, s);
     }
@@ -502,7 +539,7 @@ TCHAR *StringBase::SafeCat(TCHAR *string1, const TCHAR *string2, UINT32 Max )
             INT32 Required = Max - len1;
             if (Required > 0)
             {
-                camStrncpy( &(string1[len1]), string2, Required);
+                camStrncpy_alt(&(string1[len1]), string2, Required);
                 string1[Max] = 0;
             }
         }
@@ -552,14 +589,15 @@ const StringBase& StringBase::Left(StringBase* out, size_t count) const
         }
         else
         {
-            // Just copy the string
-            StringBase temp_string;
+            // StringBase temp_string;
             // Use temp_string because out and text could be the same string, and its
             // forbiden for the underlying string routine for source and destination to
             // overlap.
-            temp_string.Alloc(text_string_length);
-            camStrncpy(out->text, temp_string.text, text_string_length);
-            camStrncpy(temp_string.text, text, text_string_length);
+            // temp_string.Alloc(text_string_length);
+            // text_string_length doesn't include null character.
+            // camStrncpy(temp_string.text, text, text_string_length + 1);
+            // camStrncpy(out->text, temp_string.text, text_string_length + 1);
+            camStrncpy(out->text, text, text_string_length + 1);
         }
     }
 
@@ -598,7 +636,7 @@ const StringBase& StringBase::Mid(StringBase* out, size_t first, size_t count) c
             *(out->text) = 0;
         else
         {
-            camStrncpy(out->text, text + first, (INT32)count);
+            camStrncpy_alt(out->text, text + first, (INT32)count);
             out->text[count] = 0;
         }
     }
@@ -638,7 +676,7 @@ const StringBase& StringBase::Right(StringBase* out, size_t count) const
             camStrcpy(out->text, text);
         else
         {
-            camStrncpy(out->text, text + L - count, (INT32)count);
+            camStrncpy_alt(out->text, text + L - count, (INT32)count);
             out->text[count] = 0;
         }
     }
@@ -1103,12 +1141,19 @@ INT32 SmartLoadString(UINT32 modID, UINT32 resID, LPTCHAR buf, INT32 size)
     PORTNOTE("other","SmartLoadString - needs to be converted to GetText")
     ERROR3IF(resID == 0, "Zero string resource ID in SmartLoadString");
     ERROR3IF(buf == 0, "No output buffer in SmartLoadString");
-    INT32 numchars = size/sizeof(TCHAR);
-    ERROR3IF(numchars < 2, "Buffer too small in SmartLoadString");
 
-    camStrncpy( buf, CamResource::GetText(resID), numchars ); // NB GetText cannot fail
-    buf[numchars-1]=0; // ensure zero terminated
-    return (camStrlen(buf)+1)*sizeof(TCHAR); // return number of bytes copied
+    // Change size from bytes to TCHARs
+    INT32 buffer_size_tchars = size / sizeof(TCHAR);
+    ERROR3IF(buffer_size_tchars < 2, "Buffer too small in SmartLoadString");
+
+    // NB GetText cannot fail
+    camStrncpy(buf, CamResource::GetText(resID), buffer_size_tchars);
+
+    // ensure zero terminated
+    buf[buffer_size_tchars - 1] = 0;
+
+    // return number of bytes copied
+    return (camStrlen(buf) + 1) * sizeof(TCHAR);
 }
 
 #if 0

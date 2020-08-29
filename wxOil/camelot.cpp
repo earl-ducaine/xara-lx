@@ -1370,7 +1370,7 @@ void CCamApp::AddToRecentFileList(LPCTSTR pPathName)
     SeeAlso:    -
 ********************************************************************************************/
 
-wxDocument* CCamApp::OpenDocumentFile( PCTSTR lpcszFileName )
+wxDocument* CCamApp::OpenDocumentFile(PCTSTR lpcszFileName)
 {
     // find the highest confidence
 
@@ -1384,14 +1384,14 @@ wxDocument* CCamApp::OpenDocumentFile( PCTSTR lpcszFileName )
 
     TCHAR               szPath[_MAX_PATH + 1];
     {
-        wxFileName      FileName( lpcszFileName );
-        camStrncpy( szPath, FileName.GetFullPath(), _MAX_PATH );
+        wxFileName      FileName(lpcszFileName);
+        camStrncpy(szPath, FileName.GetFullPath(), _MAX_PATH + 1);
     }
 
     while (pNode != NULL)
     {
         CCamDocTemplate* pTemplate = (CCamDocTemplate*)pNode->GetData();
-        ASSERT( pTemplate->IsKindOf( CLASSINFO(CCamDocTemplate) ) );
+        ASSERT( pTemplate->IsKindOf(CLASSINFO(CCamDocTemplate)));
 
         CCamDocTemplate::Confidence match;
         ASSERT(pOpenDocument == NULL);
@@ -1411,12 +1411,12 @@ wxDocument* CCamApp::OpenDocumentFile( PCTSTR lpcszFileName )
     if (pOpenDocument != NULL)
     {
         // Make sure it really is one of ours.
-        ERROR3IF( !pOpenDocument->IsKindOf( CLASSINFO(CCamDoc) ),
-                    "Not a CCamDoc in CCamApp::OpenDocumentFile");
+        ERROR3IF( !pOpenDocument->IsKindOf(CLASSINFO(CCamDoc)),
+				  "Not a CCamDoc in CCamApp::OpenDocumentFile");
 
-        wxList&         lstViews( pOpenDocument->GetViews() );
+        wxList&         lstViews(pOpenDocument->GetViews());
         wxNode*         pNode = lstViews.GetFirst();
-        if( NULL != pNode )
+        if(NULL != pNode)
         {
             // Get the first view.
             wxView*     pView = (wxView*)pNode->GetData();
@@ -1441,7 +1441,7 @@ wxDocument* CCamApp::OpenDocumentFile( PCTSTR lpcszFileName )
                     {
                         // OK, we have a modified document.  Run the message box to find out what
                         // the user wants to do.
-                        nResult = InformWarning( _R(IDE_DOC_ALREADY_OPEN),
+                        nResult = InformWarning(_R(IDE_DOC_ALREADY_OPEN),
                                                 _R(IDS_REVERT_BTN), _R(IDS_DETACH_BTN), _R(IDS_CANCEL), 0,
                                                 2, 3);
                     }
@@ -1467,7 +1467,7 @@ wxDocument* CCamApp::OpenDocumentFile( PCTSTR lpcszFileName )
                     {
                         // DETACH.  Load the doc as an "untitled" one, making sure it won't
                         // save over the already-open doc.
-                        wxDocument* pCopyDoc = pBestTemplate->CreateDocument( szPath );
+                        wxDocument* pCopyDoc = pBestTemplate->CreateDocument(szPath);
                         if (pCopyDoc != NULL)
                         {
                             // We managed to load the doc to detach, so now we detach it.
@@ -1479,15 +1479,15 @@ wxDocument* CCamApp::OpenDocumentFile( PCTSTR lpcszFileName )
 
                             goto PerformLoad;
                         }
-                    #ifdef _DEBUG
+#ifdef _DEBUG
                         else
                         {
                             // Oh no, we failed to load the detached doc, so we have to
                             // fail this one.
-                            TRACEUSER("JustinF", _T("Couldn't load doc to detach!\n") );
+                            TRACEUSER("JustinF", _T("Couldn't load doc to detach!\n"));
                             pFrame->Activate();
                         }
-                    #endif
+#endif
                         return NULL;
                     }
 
@@ -1503,11 +1503,11 @@ wxDocument* CCamApp::OpenDocumentFile( PCTSTR lpcszFileName )
                 }
             }
             else
-                TRACE0( _T("Error: Can not find a frame for document to activate.\n") );
+                TRACE0(_T("Error: Can not find a frame for document to activate.\n"));
         }
         else
         {
-            TRACE0( _T("Error: Can not find a view for document to activate.\n") );
+            TRACE0(_T("Error: Can not find a view for document to activate.\n"));
         }
 
         return pOpenDocument;
@@ -1515,20 +1515,20 @@ wxDocument* CCamApp::OpenDocumentFile( PCTSTR lpcszFileName )
 
     if (pBestTemplate == NULL)
     {
-        String_256      strReport( _R(AFX_IDP_FAILED_TO_OPEN_DOC) );
-        wxMessageBox( (PCTSTR)strReport );
+        String_256      strReport(_R(AFX_IDP_FAILED_TO_OPEN_DOC));
+        wxMessageBox((PCTSTR)strReport);
         return NULL;
     }
 
-    pNewDoc =  pBestTemplate->CreateDocument( szPath );
+    pNewDoc = pBestTemplate->CreateDocument(szPath);
 
 PerformLoad:
-    if( NULL == pNewDoc )
+    if(NULL == pNewDoc)
         return NULL;
 
-    pNewDoc->SetDocumentName( pBestTemplate->GetDocumentName() );
-    pNewDoc->SetDocumentTemplate( pBestTemplate );
-    if( !pNewDoc->OnOpenDocument( szPath ) )
+    pNewDoc->SetDocumentName(pBestTemplate->GetDocumentName());
+    pNewDoc->SetDocumentTemplate(pBestTemplate);
+    if(!pNewDoc->OnOpenDocument(szPath))
     {
         pNewDoc->DeleteAllViews();
         pNewDoc = NULL;

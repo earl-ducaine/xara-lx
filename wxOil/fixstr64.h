@@ -1,7 +1,8 @@
+// -*- tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4; fill-column: 90 -*-
 // $Id: fixstr64.h 1283 2006-06-09 10:45:34Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
- 
+
                Xara LX, a vector drawing and manipulation program.
                     Copyright (C) 1993-2006 Xara Group Ltd.
        Copyright on certain contributions may be held in joint with their
@@ -32,7 +33,7 @@ ADDITIONAL RIGHTS
 
 Conditional upon your continuing compliance with the GNU General Public
 License described above, Xara Group Ltd grants to you certain additional
-rights. 
+rights.
 
 The additional rights are to use, modify, and distribute the software
 together with the wxWidgets library, the wxXtra library, and the "CDraw"
@@ -104,56 +105,53 @@ service marks of Xara Group Ltd. All rights in these marks are reserved.
 
 
 /*************************************************************************************
-	class String_64 : public StringBase
-	
-	Author:		Justin_Flude (Xara Group Ltd) <camelotdev@xara.com>
-	Created:	12th August 1993	
-	Purpose:	Extends its String base class to become fixed-length and atomically
-				allocatable, ie. a failed constructor call for this class will never
-				leave the object in an illegal state.
+    class String_64 : public StringBase
+
+    Author:     Justin_Flude (Xara Group Ltd) <camelotdev@xara.com>
+    Created:    12th August 1993
+    Purpose:    Extends its String base class to become fixed-length and atomically
+                allocatable, ie. a failed constructor call for this class will never
+                leave the object in an illegal state.
 *************************************************************************************/
 
 class CCAPI String_64 : public StringBase
 {
-	static const INT32 FIX_LEN_BUFSIZE;
+    static const INT32 FIX_LEN_BUFSIZE;
 
 private:
-	void CopyConstruct( const StringBase &other );
-	
+    void CopyConstruct( const StringBase &other );
+
 public:
-	String_64(const TCHAR* psz = TEXT(""));
-	String_64( const StringBase &other )	{ CopyConstruct( other ); }
-	String_64( const String_64 &other )		{ CopyConstruct( other ); }
-	String_64(UINT32 resID, UINT32 hinst = 0);
-	String_64(const wxString& wxs);
-	virtual ~String_64();
+    String_64(const TCHAR* psz = TEXT(""));
+    String_64( const StringBase &other )    { CopyConstruct( other ); }
+    String_64( const String_64 &other )     { CopyConstruct( other ); }
+    String_64(UINT32 resID, UINT32 hinst = 0);
+    String_64(const wxString& wxs);
+    virtual ~String_64();
 
-	virtual BOOL Alloc(INT32 nSize);
+    virtual BOOL Alloc(INT32 nSize);
 
 private:
-	TCHAR fixedbuf[FIX_LEN_BUFM(64)];
+    TCHAR fixedbuf[FIX_LEN_BUFM(64)];
 };
 
 
 
 
 /**************************************************************************************
->	virtual String_64::~String_64()
+>   virtual String_64::~String_64()
 
-	Author:		Justin_Flude (Xara Group Ltd) <camelotdev@xara.com>
-	Created:	12th August 1993
-	Purpose:	Destroys this fixed-length string.
+    Author:     Justin_Flude (Xara Group Ltd) <camelotdev@xara.com>
+    Created:    12th August 1993
+    Purpose:    Destroys this fixed-length string.
 ***************************************************************************************/
 
 inline String_64::~String_64()
 {
-	// If the string is using the fixed-length buffer then make sure the
-	// base class doesn't try to delete[] it.
-	if (text == fixedbuf) text = 0;
+    // If the string is using the fixed-length buffer then make sure the
+    // base class doesn't try to delete[] it.
+    if (text == fixedbuf)
+        text = NULL;
 }
 
-#endif	// INC__FIXSTRING64
-
-
-
-////////////////////////////////////////////////////////////////////////////////////////
+#endif  // INC__FIXSTRING64

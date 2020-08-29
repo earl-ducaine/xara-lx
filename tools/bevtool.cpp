@@ -1,7 +1,7 @@
 // $Id: bevtool.cpp 1282 2006-06-09 09:46:49Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
- 
+
                Xara LX, a vector drawing and manipulation program.
                     Copyright (C) 1993-2006 Xara Group Ltd.
        Copyright on certain contributions may be held in joint with their
@@ -32,7 +32,7 @@ ADDITIONAL RIGHTS
 
 Conditional upon your continuing compliance with the GNU General Public
 License described above, Xara Group Ltd grants to you certain additional
-rights. 
+rights.
 
 The additional rights are to use, modify, and distribute the software
 together with the wxWidgets library, the wxXtra library, and the "CDraw"
@@ -226,7 +226,7 @@ BevelTool::~BevelTool()
 {
 	// delete the attribute list
 	m_BevelBlobList.DeleteAll();
-	
+
 	RemoveCursors();
 
 	if (m_pDragBevelOp)
@@ -270,7 +270,7 @@ BOOL BevelTool::Init()
 		if (ok) ok = DialogBarOp::ReadBarsFromFile(file,BarCreate);	// Read and create info bar
 		if (ok) file.close();									 	// Close resource
 
-		ERROR3IF(!ok,"Unable to load bevbar.ini from resource\n"); 
+		ERROR3IF(!ok,"Unable to load bevbar.ini from resource\n");
 
 		if (ok)
 		{
@@ -292,7 +292,7 @@ BOOL BevelTool::Init()
 		pBevelInfoBarOp = new BevelInfoBarOp();
 		ok = (pBevelInfoBarOp != NULL);
 		if (ok) pBevelInfoBarOp->pTool = this;
-		
+
 		ERROR3IF(!ok,"Error finding the bevel tool info bar");
 	}
 
@@ -321,7 +321,7 @@ void BevelTool::Describe(void *InfoPtr)
 
 	Info->InfoVersion = 1;
 	Info->InterfaceVersion = GetToolInterfaceVersion();  // You should always have this line.
-		
+
 	// These are all arbitrary at present.
 	Info->Version = 1;
 	Info->ID      = GetID();
@@ -378,7 +378,7 @@ void BevelTool::SelectChange(BOOL isSelected)
 
 		// register the tool interest
 		BevelBlobs.Tiny = TRUE;
-		BlobMgr->ToolInterest(BevelBlobs);		
+		BlobMgr->ToolInterest(BevelBlobs);
 
 		m_bActive = TRUE;
 
@@ -389,7 +389,7 @@ void BevelTool::SelectChange(BOOL isSelected)
 
 		// create & show the dialog
 		pBevelInfoBarOp->Create();
-		
+
 		if (pBevelInfoBarOp->pCurrentBar)
 		{
 			pBevelInfoBarOp->Open();
@@ -422,20 +422,20 @@ void BevelTool::SelectChange(BOOL isSelected)
 		}
 
 		m_bDisableBlobRendering = TRUE;
-		
+
 		RemoveCursors();
 
 		BevelBlobs.Tiny = FALSE;
-		BlobMgr->ToolInterest(BevelBlobs);		
+		BlobMgr->ToolInterest(BevelBlobs);
 
 		m_bActive = FALSE;
-		
+
 		if (pBevelInfoBarOp)
 		{
 			pBevelInfoBarOp->SetToolActiveState(FALSE);
 			pBevelInfoBarOp->Delete();
 		}
-		
+
 		// ensure any tool object blobs are removed.
 		BlobStyle bsRemoves;
 		bsRemoves.ToolObject = TRUE;
@@ -456,18 +456,18 @@ void BevelTool::SelectChange(BOOL isSelected)
 	Author:		David_McClarnon (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	15/3/99
 	Inputs:		Whether the invalidate the document region
-	Returns:	
+	Returns:
 	Purpose:	Forces the bounding rects of all bevel nodes (with blobs) to
 				be recalculated, and if InvalidateDoc is TRUE then it invalidates the
 				document's rect
-	Errors:		
+	Errors:
 
 ********************************************************************************************/
 
 void BevelTool::RecalculateSelectionBoundingBoxes(BOOL InvalidateDoc)
 {
 	Spread * pSpread = Document::GetSelectedSpread();
-	
+
 	// can't do anything
 	if (!pSpread)
 		return;
@@ -476,7 +476,7 @@ void BevelTool::RecalculateSelectionBoundingBoxes(BOOL InvalidateDoc)
 
 	if (!pDoc)
 		return;
-	
+
 	DocRect ClipRect;
 	Node * pNode = NULL;
 
@@ -497,7 +497,7 @@ void BevelTool::RecalculateSelectionBoundingBoxes(BOOL InvalidateDoc)
 
 		pNode = Sel.FindNext(pNode, TRUE);
 	}
-	
+
 	if (InvalidateDoc)
 	{
 		pDoc->ForceRedraw(pSpread, ClipRect, TRUE);
@@ -526,7 +526,7 @@ BOOL BevelTool::LoadCursors()
 		pNormalCursor = new Cursor(this, _R(IDC_POINTER_BEVEL));
 	pMouseOverCursor = new Cursor(this, _R(IDC_ELIPTOOLOVERBLOB));
 	pSizeCursor = new Cursor(this, _R(IDC_SIZE_BEVEL));
-	
+
 	// did we get all the cursors ok
 	if (pNormalCursor==NULL || pMouseOverCursor==NULL || pSizeCursor==NULL)
 	{
@@ -636,7 +636,7 @@ void BevelTool::OnMouseMove(DocCoord Pos, Spread* pSpread, ClickModifiers ClickM
 			DisplayStatusBarHelp(_R(IDS_BEVELDRAGSTATUSHELP));
 		}
 		else
-		{		
+		{
 			ChangeCursor(pNormalCursor);
 			DisplayStatusBarHelp(_R(IDS_BEVELSTATUSHELP));
 		}
@@ -667,7 +667,7 @@ void BevelTool::DisplayStatusBarHelp(UINT32 StatusIDX)
 
 /********************************************************************************************
 
->	BOOL BevelTool::GetStatusLineText(String_256* ptext, Spread* pSpread, DocCoord DocPos, 
+>	BOOL BevelTool::GetStatusLineText(String_256* ptext, Spread* pSpread, DocCoord DocPos,
 					ClickModifiers ClickMods);
 
 	Author:		David_McClarnon (Xara Group Ltd) <camelotdev@xara.com> Mc
@@ -720,20 +720,20 @@ void BevelTool::ChangeCursor(Cursor* pCursor)
 
 /********************************************************************************************
 
->	void BevelTool::OnClick( DocCoord PointerPos, ClickType Click, 
+>	void BevelTool::OnClick( DocCoord PointerPos, ClickType Click,
 								ClickModifiers ClickMods, Spread *pSpread )
 
 	Author:		David_McClarnon (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	16/2/99
-	Inputs:		PointerPos - The Coords (in spread coords) of the point where the mouse 
+	Inputs:		PointerPos - The Coords (in spread coords) of the point where the mouse
 				button was clicked
-				Click -	Describes the type of click that was detected. 
+				Click -	Describes the type of click that was detected.
 				ClickMods -	Indicates which buttons caused the click and which modifers were
 				pressed at the same time
 				pSpread - the spread in which the click happened
 	Returns:	TRUE if it handled the Click, FALSE otherwise
 	Purpose:	Handle selection messages by the bevelling tool
-	SeeAlso:	
+	SeeAlso:
 
 ********************************************************************************************/
 
@@ -752,7 +752,7 @@ void BevelTool::OnClick( DocCoord PointerPos, ClickType Click, ClickModifiers Cl
 	{
 		// if a drag was started, we alter or create a contour.
 		case CLICKTYPE_DRAG:
-		{	
+		{
 			// run through my blob list testing the pointer position
 			BOOL bDoingDrag = FALSE;
 			BevelBlob* pBlob = (BevelBlob *) m_BevelBlobList.GetHead();
@@ -775,7 +775,7 @@ void BevelTool::OnClick( DocCoord PointerPos, ClickType Click, ClickModifiers Cl
 				{
 					DocRect BlobRect;
 
-					m_pDragBevelOp->DoDrag(pBevelInfoBarOp, PointerPos, 
+					m_pDragBevelOp->DoDrag(pBevelInfoBarOp, PointerPos,
 						IsPointOverSelectionBlob(PointerPos, &BlobRect), &BlobRect);
 				}
 			}
@@ -800,21 +800,21 @@ void BevelTool::OnClick( DocCoord PointerPos, ClickType Click, ClickModifiers Cl
 					DocView * pView = DocView::GetCurrent();
 
 					if (pView)
-						pView->EndDrag(NULL);				
-					
-					InformWarningContourExistsInSelection();			
+						pView->EndDrag(NULL);
+
+					InformWarningContourExistsInSelection();
 				}
 			}
 
 			// call the base class ....
-			
+
 			DragTool::OnClick (PointerPos, Click, ClickMods, pSpread);
 		}
 		break;
-		
+
 		default:
 			// call the base class ....
-			
+
 			DragTool::OnClick (PointerPos, Click, ClickMods, pSpread);
 		break;
 	}
@@ -834,11 +834,11 @@ void BevelTool::InformWarningContourExistsInSelection()
 {
 	String_256 QueryString(_R(IDS_CANTBEVELCONTOUR));
 
-	Error::SetError(0, QueryString, 0);				
+	Error::SetError(0, QueryString, 0);
 	// The only way of bringing up a box with a string in it
 	INT32 DlgResult = InformError(_R(IDS_CANTBEVELCONTOUR),
 		_R(IDS_OK), _R(IDS_HELP));
-				
+
 	if (DlgResult == 2)
 	{
 		HelpUserTopic(_R(IDS_HELPPATH_Message__Contour_already_applied));
@@ -933,7 +933,7 @@ void BevelTool::RenderToolBlobs(Spread* pSpread, DocRect* pClipRect)
 			pBlob->RenderBlob(pRegion);
 
 			pBlob = (BevelBlob *)m_BevelBlobList.GetNext(pBlob);
-		}		
+		}
 
 		// now do the selection blobs as well
 		pRegion->SaveContext();
@@ -963,8 +963,8 @@ void BevelTool::RenderToolBlobs(Spread* pSpread, DocRect* pClipRect)
 		pRegion->DrawBitmapBlob(m_BlobPoints[2], _R(IDBMP_CONTOUR_GRAVE));
 		pRegion->DrawBitmapBlob(m_BlobPoints[1], _R(IDBMP_CONTOUR_GRAVE));
 
-		pRegion->RestoreContext();		
-		
+		pRegion->RestoreContext();
+
 		pRegion = DocView::GetNextOnTop(NULL);
 	}
 }
@@ -1018,7 +1018,7 @@ BOOL BevelTool::IsPointOverSelectionBlob(DocCoord &Point, DocRect * pRect)
 
 	Author:		David_McClarnon (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	12/3/99
-	Inputs:		
+	Inputs:
 	Purpose:	Sets up the blob list depending on the selection
 	Returns:	FALSE for no selection, or no bevel attributes detected
 
@@ -1027,7 +1027,7 @@ BOOL BevelTool::SetupBlobList()
 {
 	// do the selection blobs first
 	SetupSelectionBlobs();
-	
+
 	// clear our blob list
 	m_BevelBlobList.DeleteAll();
 
@@ -1038,13 +1038,13 @@ BOOL BevelTool::SetupBlobList()
 
 	// kick the sel range
 	// GetApplication()->UpdateSelection();
-	
+
 	BOOL bHandled = FALSE;
 
 	BevelBlob * pBlob;
 
 	List BevelNodeList;
-	
+
 	// make a list of all bevel ink nodes
 	if (!BevelTools::BuildListOfSelectedNodes(&BevelNodeList, CC_RUNTIME_CLASS(NodeBevel)))
 	{
@@ -1060,10 +1060,10 @@ BOOL BevelTool::SetupBlobList()
 	while (pItem)
 	{
 		pNode = pItem->pNode->FindParent();
-		
-		if (pNode->IsKindOf(CC_RUNTIME_CLASS(NodeBevelController)) 
-			&& !pNode->IsNodeHidden() 
-			&& !pNode->IsLocked() 
+
+		if (pNode->IsKindOf(CC_RUNTIME_CLASS(NodeBevelController))
+			&& !pNode->IsNodeHidden()
+			&& !pNode->IsLocked()
 			&& pNode->IsRenderable())
 		{
 			// ok ! Now, run through our list determining if this light angle
@@ -1090,7 +1090,7 @@ BOOL BevelTool::SetupBlobList()
 						m_BlobListBounds = m_BlobListBounds.Union(pBlob->GetRect());
 					}
 				}
-				
+
 				pBlob = (BevelBlob *)m_BevelBlobList.GetNext(pBlob);
 			}
 
@@ -1131,7 +1131,7 @@ BOOL BevelTool::SetupBlobList()
 			}
 		}
 
-		pItem = (NodeListItem *)BevelNodeList.GetNext(pItem);		
+		pItem = (NodeListItem *)BevelNodeList.GetNext(pItem);
 	}
 
 	BevelNodeList.DeleteAll();
@@ -1145,7 +1145,7 @@ BOOL BevelTool::SetupBlobList()
 
 	Author:		David_McClarnon (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	5/12/99
-	Inputs:		
+	Inputs:
 	Purpose:	Sets up the bevel tool blobs for the selection.
 
 				Karim 28/07/2000
@@ -1249,7 +1249,7 @@ void BevelTool::SetupSelectionBlobs()
 
 	Author:		David_McClarnon (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	11/3/99
-	Inputs:		
+	Inputs:
 	Purpose:	Selects all bevel controller nodes from the child nodes in the selection
 
 ********************************************************************************************/
@@ -1258,12 +1258,12 @@ void BevelTool::DoSelectBevelNodesFromChildren()
 	// run through the selection selecting all nodes' parents which
 	// are bevel controller nodes
 	// do we have a bevel controller node in the selection ?
-	// Obtain the current selections 
+	// Obtain the current selections
 	Range Sel(*(GetApplication()->FindSelection()));
 	RangeControl rg = Sel.GetRangeControlFlags();
 	rg.PromoteToParent = TRUE;
 	Sel.Range::SetRangeControl(rg);
-	
+
 
 	// flag to say whether we've changed the selection or not
 	BOOL bSelChanged = FALSE;
@@ -1292,7 +1292,7 @@ void BevelTool::DoSelectBevelNodesFromChildren()
 	// this is the list of nodes to select
 	List SelList;
 	NodeListItem * pListItem = NULL;
-	
+
 	// run through all the nodes in the list finding out if any children of
 	// bevel controller nodes are selected when the controller node itself isn't
 	while (pNode)
@@ -1355,7 +1355,7 @@ void BevelTool::DoSelectBevelNodesFromChildren()
 
 			pListItem = (NodeListItem *)SelList.GetNext(pListItem);
 		}
-		
+
 		// update the selection
 		GetApplication()->UpdateSelection();
 
@@ -1367,7 +1367,7 @@ void BevelTool::DoSelectBevelNodesFromChildren()
 		RangeControl rg = Sel.GetRangeControlFlags();
 		rg.PromoteToParent = TRUE;
 		Sel.Range::SetRangeControl(rg);
-	
+
 		dr = NewSel.GetBoundingRect();
 		BlobMgr->RenderOn(&dr, pSpread);
 	}
@@ -1381,7 +1381,7 @@ void BevelTool::DoSelectBevelNodesFromChildren()
 
 	Author:		David_McClarnon (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	11/3/99
-	Inputs:		
+	Inputs:
 	Purpose:	Unrenders all blobs, sets up the blob list again and re-renders
 
 ********************************************************************************************/
@@ -1453,8 +1453,8 @@ void BevelTool::ChangeBlobAngles(INT32 Angle)
 		pBlob->RenderNodes();
 
 		if (pDoc)
-			pDoc->ForceRedraw(pSpread, m_BlobListBounds);		
-		
+			pDoc->ForceRedraw(pSpread, m_BlobListBounds);
+
 		pBlob = (BevelBlob *)m_BevelBlobList.GetNext(pBlob);
 	}
 
@@ -1501,8 +1501,8 @@ void BevelTool::ChangeBlobTilts(INT32 Tilt)
 		pBlob->RenderNodes();
 
 		if (pDoc)
-			pDoc->ForceRedraw(pSpread, m_BlobListBounds);		
-		
+			pDoc->ForceRedraw(pSpread, m_BlobListBounds);
+
 		pBlob = (BevelBlob *)m_BevelBlobList.GetNext(pBlob);
 	}
 
@@ -1549,7 +1549,7 @@ void BevelTool::ChangeContrastAndReRender(INT32 NewContrast)
 		{
 			pDoc->ForceRedraw(pSpread, pBlob->GetRect());
 		}
-		
+
 		pBlob = (BevelBlob *)m_BevelBlobList.GetNext(pBlob);
 	}
 
@@ -1566,7 +1566,7 @@ void BevelTool::ChangeContrastAndReRender(INT32 NewContrast)
 	Returns:	TRUE if there are many different types of bevel in the selection,
 				FALSE if there is only one
 	Purpose:	Queries the blob list to see if there are many different types of bevel
-	SeeAlso:	
+	SeeAlso:
 
 ********************************************************************************************/
 
@@ -1612,22 +1612,22 @@ BOOL BevelTool::AreManyBevelTypes()
 	Rng.SetRangeControl(rg);
 
 	List BevelList;
-	
+
 	Node * pNode = Rng.FindFirst(FALSE);
 
-	// scan the selection range trying to find any nodes which aren't bevelled	
+	// scan the selection range trying to find any nodes which aren't bevelled
 	while (pNode)
 	{
 		BevelList.DeleteAll();
-		
+
 		BevelTools::GetAllNodesUnderNode(pNode, &BevelList, CC_RUNTIME_CLASS(NodeBevel));
-		
+
 		if (BevelList.IsEmpty())
 		{
 			BevelList.DeleteAll();
 			return TRUE;
 		}
-		
+
 		pNode = Rng.FindNext(pNode, FALSE);
 	}
 
@@ -1644,7 +1644,7 @@ BOOL BevelTool::AreManyBevelTypes()
 	Returns:	TRUE if there are many different directions of bevel in the selection,
 				FALSE if there is only one
 	Purpose:	Queries the blob list to see if there are many different directions of bevel
-	SeeAlso:	
+	SeeAlso:
 
 ********************************************************************************************/
 
@@ -1696,7 +1696,7 @@ BOOL BevelTool::AreManyBevelDirections()
 	Returns:	TRUE if there are many different directions of bevel in the selection,
 				FALSE if there is only one
 	Purpose:	Queries the blob list to see if there are many different directions of bevel
-	SeeAlso:	
+	SeeAlso:
 
 ********************************************************************************************/
 
@@ -1709,7 +1709,7 @@ BOOL BevelTool::AreManyBevelIndents()
 
 	MILLIPOINT Indent = 0;
 	BOOL bFirst = TRUE;
-	
+
 	while (pItem)
 	{
 		NodeListItem * pNodeItem = (NodeListItem *)pItem->GetList()->GetHead();
@@ -1748,7 +1748,7 @@ BOOL BevelTool::AreManyBevelIndents()
 	Returns:	TRUE if there are many different c of bevel in the selection,
 				FALSE if there is only one
 	Purpose:	Queries the blob list to see if there are many different contrasts of bevel
-	SeeAlso:	
+	SeeAlso:
 
 ********************************************************************************************/
 
@@ -1761,7 +1761,7 @@ BOOL BevelTool::AreManyBevelContrasts()
 
 	INT32 Contrast = 0;
 	BOOL bFirst = TRUE;
-	
+
 	while (pItem)
 	{
 		NodeListItem * pNodeItem = (NodeListItem *)pItem->GetList()->GetHead();
@@ -1799,7 +1799,7 @@ BOOL BevelTool::AreManyBevelContrasts()
 	Returns:	TRUE if there are many different c of bevel in the selection,
 				FALSE if there is only one
 	Purpose:	Queries the blob list to see if there are many different contrasts of bevel
-	SeeAlso:	
+	SeeAlso:
 
 ********************************************************************************************/
 
@@ -1812,7 +1812,7 @@ BOOL BevelTool::AreManyBevelLightAngles()
 
 	double LightAngle = 0;
 	BOOL bFirst = TRUE;
-	
+
 	while (pItem)
 	{
 		NodeListItem * pNodeItem = (NodeListItem *)pItem->GetList()->GetHead();
@@ -1850,7 +1850,7 @@ BOOL BevelTool::AreManyBevelLightAngles()
 	Returns:	TRUE if there are many different c of bevel in the selection,
 				FALSE if there is only one
 	Purpose:	Queries the blob list to see if there are many different contrasts of bevel
-	SeeAlso:	
+	SeeAlso:
 
 ********************************************************************************************/
 
@@ -1863,7 +1863,7 @@ BOOL BevelTool::AreManyBevelLightTilts()
 
 	double LightTilt = 0;
 	BOOL bFirst = TRUE;
-	
+
 	while (pItem)
 	{
 		NodeListItem * pNodeItem = (NodeListItem *)pItem->GetList()->GetHead();
@@ -1898,7 +1898,7 @@ BOOL BevelTool::AreManyBevelLightTilts()
 
 	Author:		David_McClarnon (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	11/3/99
-	Inputs:		
+	Inputs:
 	Purpose:	Starts a drag operation
 
 ********************************************************************************************/
@@ -1966,7 +1966,7 @@ INT32 BevelTool::CalculateBevelWidth(DocRect &br, DocCoord &PointerPos)
 		{
 			OffsetX = br.lo.x - PointerPos.x;
 			OffsetY = br.lo.y - PointerPos.y;
-			
+
 			if (OffsetX > OffsetY)
 			{
 				Width = OffsetX;
@@ -1980,7 +1980,7 @@ INT32 BevelTool::CalculateBevelWidth(DocRect &br, DocCoord &PointerPos)
 		{
 			OffsetX = PointerPos.x - br.hi.x ;
 			OffsetY = br.lo.y - PointerPos.y;
-			
+
 			if (OffsetX > OffsetY)
 			{
 				Width = OffsetX;
@@ -1994,7 +1994,7 @@ INT32 BevelTool::CalculateBevelWidth(DocRect &br, DocCoord &PointerPos)
 		{
 			OffsetX = PointerPos.x - br.hi.x ;
 			OffsetY = PointerPos.y - br.hi.y;
-			
+
 			if (OffsetX > OffsetY)
 			{
 				Width = OffsetX;
@@ -2008,7 +2008,7 @@ INT32 BevelTool::CalculateBevelWidth(DocRect &br, DocCoord &PointerPos)
 		{
 			OffsetX = br.lo.x - PointerPos.x ;
 			OffsetY = PointerPos.y - br.hi.y;
-			
+
 			if (OffsetX > OffsetY)
 			{
 				Width = OffsetX;
@@ -2018,7 +2018,7 @@ INT32 BevelTool::CalculateBevelWidth(DocRect &br, DocCoord &PointerPos)
 				Width = OffsetY;
 			}
 		}
-		
+
 		Width = -Width;
 	}
 	else
@@ -2177,7 +2177,7 @@ INT32 BevelTool::CalculateBevelWidth(DocRect &br, DocCoord &PointerPos)
 			}
 		}
 	}
-	
+
 	return Width;
 }
 
@@ -2188,7 +2188,7 @@ INT32 BevelTool::CalculateBevelWidth(DocRect &br, DocCoord &PointerPos)
 
 	Author:		David_McClarnon (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	11/3/99
-	Inputs:		
+	Inputs:
 	Purpose:	Handles the pointer moving inside of a drag
 
 ********************************************************************************************/
@@ -2207,7 +2207,7 @@ void BevelTool::DragPointerMove(DocCoord PointerPos, ClickModifiers ClickMods,
 
 	Author:		David_McClarnon (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	11/3/99
-	Inputs:		
+	Inputs:
 	Purpose:	Ends the drag
 
 ********************************************************************************************/
@@ -2227,7 +2227,7 @@ void BevelTool::DragFinished(DocCoord PointerPos, ClickModifers ClickMods,
 
 
 /*
-IMPLEMENT_SIMPLE_MODULE( BevelModule, MODULEID_BEVEL, BevelTool, 
+IMPLEMENT_SIMPLE_MODULE( BevelModule, MODULEID_BEVEL, BevelTool,
 							"Bevel Tool", "To bevel things", "DavidM" );
 */
 
@@ -2241,7 +2241,7 @@ IMPLEMENT_SIMPLE_MODULE( BevelModule, MODULEID_BEVEL, BevelTool,
 
 	Author:		David_McClarnon (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	11/3/99
-	Inputs:		
+	Inputs:
 	Purpose:	Bevel blob rendering class constructor
 
 ********************************************************************************************/
@@ -2258,7 +2258,7 @@ BevelBlob::BevelBlob()
 
 	Author:		David_McClarnon (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	11/3/99
-	Inputs:		
+	Inputs:
 	Purpose:	Bevel blob destructor
 
 ********************************************************************************************/
@@ -2289,13 +2289,13 @@ BOOL BevelBlob::AddNode(NodeBevelController * pNode)
 
 	if (!pNode->IsKindOf(CC_RUNTIME_CLASS(NodeBevelController)))
 		return FALSE;
-	
+
 	NodeListItem * pListItem = NULL;
 //	Node * pParent = NULL;
 
 	AttrBevelLightAngle * pAttr = NULL;
 
-	pNode->FindAppliedAttribute(CC_RUNTIME_CLASS(AttrBevelLightAngle), 
+	pNode->FindAppliedAttribute(CC_RUNTIME_CLASS(AttrBevelLightAngle),
 		(NodeAttribute **)(&pAttr));
 
 	INT32 LightAngle = 0;
@@ -2308,7 +2308,7 @@ BOOL BevelBlob::AddNode(NodeBevelController * pNode)
 	{
 		LightAngle = (INT32)((NodeBevelController *)pNode)->m_LightAngle;
 	}
-	
+
 	// is our list empty ?
 	if (m_BevelNodeList.IsEmpty())
 	{
@@ -2340,7 +2340,7 @@ BOOL BevelBlob::AddNode(NodeBevelController * pNode)
 		// we're not dealing with it
 		return FALSE;
 	}
-	
+
 	// then add the attribute to our list
 	pListItem = new NodeListItem;
 	if (!pListItem)
@@ -2364,7 +2364,7 @@ BOOL BevelBlob::AddNode(NodeBevelController * pNode)
 
 	Author:		David_McClarnon (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	11/3/99
-	Inputs:		
+	Inputs:
 	Purpose:	Renders the blobs
 
 ********************************************************************************************/
@@ -2404,10 +2404,10 @@ void BevelBlob::RenderBlob(RenderRegion * pRegion)
 
 	double dx = len * cos(angle);
 	double dy = len * sin(angle);
-	
+
 	blob2.x = blob1.x - ((INT32)dx);
 	blob2.y = blob1.y - ((INT32)dy);
-	
+
 	// render a blob in the centre
 	// pRegion->DrawBlob(blob1, BT_SELECTED);
 
@@ -2417,7 +2417,7 @@ void BevelBlob::RenderBlob(RenderRegion * pRegion)
 	pRegion->SetLineColour(COLOUR_BLACK);
 
 	pRegion->SetLineWidth((INT32)((pRegion->GetScaledPixelWidth()) * 2));
-	
+
 	// turn the capping to butt
 	StartCapAttribute SCA;
 	SCA.StartCap = LineCapButt;
@@ -2442,16 +2442,16 @@ void BevelBlob::RenderBlob(RenderRegion * pRegion)
 
 
 	len += (pView->GetScaledPixelWidth().MakeDouble()) * 15.0;
-	
+
 	dx = len * cos(angle);
 	dy = len * sin(angle);
-	
+
 	blob3.x = blob1.x - ((INT32)dx);
 	blob3.y = blob1.y - ((INT32)dy);
 
 	pRegion->SetFillColour(COLOUR_RED);
 	pRegion->SetLineColour(COLOUR_NONE);
-	pRegion->DrawBlob(blob3, BT_SELECTED);	
+	pRegion->DrawBlob(blob3, BT_SELECTED);
 
 	// get the blob's bounding rect and put it into our member variable
 	if (GetApplication()->GetBlobManager())
@@ -2503,7 +2503,7 @@ BOOL BevelBlob::IsBlobValid()
 	Inputs:		The doccoord to test (usually the pointer position)
 	Returns:	TRUE for click on blob, FALSE otherwise
 	Purpose:	Checks if the doccoord passed in was inside my blob
-	
+
 ********************************************************************************************/
 BOOL BevelBlob::HitTest(const DocCoord &dc)
 {
@@ -2521,7 +2521,7 @@ BOOL BevelBlob::HitTest(const DocCoord &dc)
 	Returns:	=
 	Purpose:	Calculates my angle so that the blob's direction arrow will be pointing
 				at the given point
-	
+
 ********************************************************************************************/
 void BevelBlob::CalculateAngle(const DocCoord &dc, BOOL bConstrain)
 {
@@ -2564,11 +2564,11 @@ void BevelBlob::CalculateAngle(const DocCoord &dc, BOOL bConstrain)
 		if (ReadOk)
 		{
 			ConstrainAngleInDegrees = (INT32)((ConstrainAngle * 180.0/PI) + 0.5);	// Convert angle to degrees
-			
+
 			INT32 NewAngle = ((INT32)angle) / ConstrainAngleInDegrees;
 			angle = NewAngle * ConstrainAngleInDegrees;
 		}
-	}		
+	}
 
 	// ok, set my angle
 	SetAngle((INT32)angle);
@@ -2585,7 +2585,7 @@ void BevelBlob::CalculateAngle(const DocCoord &dc, BOOL bConstrain)
 
 	Returns:	=
 	Purpose:	Sets the blob's angle
-	
+
 ********************************************************************************************/
 void BevelBlob::SetAngle(INT32 Angle, BOOL bSetList/* = FALSE*/)
 {
@@ -2627,7 +2627,7 @@ void BevelBlob::SetAngle(INT32 Angle, BOOL bSetList/* = FALSE*/)
 
 	Returns:	=
 	Purpose:	Sets the blob's angle
-	
+
 ********************************************************************************************/
 void BevelBlob::SetTilt(INT32 Angle, BOOL bSetList/* = FALSE*/)
 {
@@ -2649,7 +2649,7 @@ void BevelBlob::SetTilt(INT32 Angle, BOOL bSetList/* = FALSE*/)
 				{
 					pControl = ((NodeBevelController *)pItem->pNode);
 					pControl->m_Tilt = Angle;
-					
+
 					pBevel = pControl->GetBevelNode();
 
 					if (pBevel)
@@ -2672,16 +2672,16 @@ void BevelBlob::SetTilt(INT32 Angle, BOOL bSetList/* = FALSE*/)
 
 	Author:		David_McClarnon (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	2/11/99
-	Inputs:		
+	Inputs:
 
 	Returns:	=
 	Purpose:	Renders the bevel nodes with my light angle
-	
+
 ********************************************************************************************/
 void BevelBlob::RenderNodes()
 {
 	TRACEUSER( "DavidM", _T("BevelBlob - render nodes\n"));
-	
+
 	NodeListItem * pItem = (NodeListItem *)m_BevelNodeList.GetHead();
 
 	while (pItem)
@@ -2698,11 +2698,11 @@ void BevelBlob::RenderNodes()
 
 	Author:		David_McClarnon (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	2/11/99
-	Inputs:		
+	Inputs:
 
 	Returns:	=
 	Purpose:	Changes the contrast of all bevel nodes' attributes
-	
+
 ********************************************************************************************/
 void BevelBlob::ChangeContrast(INT32 NewContrast)
 {
@@ -2713,7 +2713,7 @@ void BevelBlob::ChangeContrast(INT32 NewContrast)
 //	INT32 Count = 0;
 
 //	Document * pDoc = Document::GetCurrent();
-	
+
 	while (pItem)
 	{
 		pControl = (NodeBevelController *)pItem->pNode;
@@ -2744,7 +2744,7 @@ BOOL BevelTool::AreToolBlobsRenderedOnSelection()
 
 	Author:		Mark_Neves (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	11/10/94
-	Purpose:	Constructor. 
+	Purpose:	Constructor.
 
 ********************************************************************************************/
 
@@ -2778,7 +2778,7 @@ OpDragBevel::~OpDragBevel()
 	if (m_pPathList)
 	{
 		delete [] m_pPathList;
-	}	
+	}
 
 	if (m_pSetList)
 	{
@@ -2799,10 +2799,10 @@ OpDragBevel::~OpDragBevel()
 /********************************************************************************************
 
 >	BOOL OpDragBevel::SetupDragInfo()
-    
+
 	Author:		David_McClarnon (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	2/12/99
-	Inputs:		
+	Inputs:
 	Outputs:	TRUE for success
 	Returns:	-
 	Purpose:	Sets up the drag information necessary to render the drag blobs
@@ -2818,7 +2818,7 @@ BOOL OpDragBevel::SetupDragInfo()
 	RangeControl rg = Sel.GetRangeControlFlags();
 	rg.PromoteToParent = TRUE;
 	Sel.SetRangeControl(rg);
-	
+
 	// go through all nodes getting their inside bounding rects, and
 	// building up the summed path
 	CProfileBiasGain Profile;
@@ -2907,14 +2907,14 @@ BOOL OpDragBevel::SetupDragInfo()
 				}
 			}
 		}
-	
+
 		while (pSubNode)
 		{
 			if(pSubNode->IsABevel())
 			{
 				((NodeRenderableInk *)pSubNode)->FindAppliedAttribute(CC_RUNTIME_CLASS(AttrJoinType),
 					(NodeAttribute **)(&pJoinType));
-				
+
 				if (pJoinType)
 				{
 					bFoundJoinType = TRUE;
@@ -2927,7 +2927,7 @@ BOOL OpDragBevel::SetupDragInfo()
 				pSubNode->CanBecomeA(&MyTestBecomeA))
 			{
 				// test for whether we're just doing bevel nodes or all nodes
-				if (!bBevelNodesExist || 
+				if (!bBevelNodesExist ||
 						pSubNode->FindParent(CC_RUNTIME_CLASS(NodeBevelController)) != NULL)
 					m_NumPaths += MyTestBecomeA.GetCount();
 
@@ -2935,14 +2935,14 @@ BOOL OpDragBevel::SetupDragInfo()
 				{
 					((NodeRenderableInk *)pSubNode)->FindAppliedAttribute(CC_RUNTIME_CLASS(AttrJoinType),
 						(NodeAttribute **)(&pJoinType));
-					
+
 					if (pJoinType)
 					{
 						bFoundJoinType = TRUE;
 						m_JoinType = pJoinType->Value.JoinType;
 					}
 				}
-				
+
 				// check for the number of sets needing to be increased - i.e. if
 				// the controller node of the new node is different to the last controller
 				if (bBevelNodesExist)
@@ -3035,7 +3035,7 @@ BOOL OpDragBevel::SetupDragInfo()
 		// start a new set
 		m_pSetList[SetCount++] = MyBecomeA.GetCount();
 
-		ERROR3IF(SetCount >= m_NumSets, "Number of sets doesn't match");		
+		ERROR3IF(SetCount >= m_NumSets, "Number of sets doesn't match");
 
 		while (pSubNode)
 		{
@@ -3064,7 +3064,7 @@ BOOL OpDragBevel::SetupDragInfo()
 				{
 					// get the start path count
 					StartCount = MyBecomeA.GetCount();
-					
+
 					// find out if we have a parent bevel controller node or not
 					pControl = (NodeBevelController *)pSubNode->FindParent(CC_RUNTIME_CLASS(NodeBevelController));
 
@@ -3085,7 +3085,7 @@ BOOL OpDragBevel::SetupDragInfo()
 							delete pNodePath;
 						}
 					}
-										
+
 					if(((NodePath*)pSubNode)->FindAppliedAttribute(CC_RUNTIME_CLASS(AttrVariableWidth),&pAttr))
 						IsVariableWidth = (pAttr && ((VariableWidthAttrValue*)pAttr->GetAttributeValue())->GetWidthFunction() != NULL);
 
@@ -3219,12 +3219,12 @@ BOOL OpDragBevel::NodeCanBeDragBevelled(Node* pSubNode,
  *	This comment holds the unexpanded version of the above tests,
  *	apart from the ClipView test for when bevels do exist.
  *
-	return !pSubNode->NeedsParent(NULL) && 
-			(!pSubNode->IsCompound() || pSubNode->IsABaseTextClass() || 
-			pSubNode->IS_KIND_OF(NodeMould) || pSubNode->IsANodeClipViewController()) && 
+	return !pSubNode->NeedsParent(NULL) &&
+			(!pSubNode->IsCompound() || pSubNode->IsABaseTextClass() ||
+			pSubNode->IS_KIND_OF(NodeMould) || pSubNode->IsANodeClipViewController()) &&
 			pSubNode->IsAnObject() &&
 			pSubNode->FindParent(CC_RUNTIME_CLASS(NodeMould)) == NULL &&
-			(bBevelNodesExist || 
+			(bBevelNodesExist ||
 			!pSubNode->IsFamily(CC_RUNTIME_CLASS(NodeClipViewController), pNode))
 			;
 */
@@ -3259,14 +3259,14 @@ void OpDragBevel::AlterPointerPosToAccountForBlob(DocCoord * pPoint)
 		BlobSize = pBlobMgr->GetBlobSize()/2;
 	else
 		return;
-	
+
 	if (m_BlobRect.IsValid())
 	{
 		DocCoord Centre = m_BlobRect.Centre();
-			
+
 		if (m_BlobRect.ContainsCoord(*pPoint))
 		{
-			
+
 			pPoint->x = Centre.x;
 			pPoint->y = Centre.y;
 		}
@@ -3274,7 +3274,7 @@ void OpDragBevel::AlterPointerPosToAccountForBlob(DocCoord * pPoint)
 		{
 			// move the pointer appropriately so that the blob is always
 			// the same value
-			
+
 			// first find the point which is the intersection between the line from
 			// the centre of the blob to the point on the outside of the blob
 			PPos.x = pPoint->x - Centre.x;
@@ -3337,10 +3337,10 @@ void OpDragBevel::AlterPointerPosToAccountForBlob(DocCoord * pPoint)
 
 >	BOOL OpDragBevel::DoDrag(BevelInfoBarOp * pBar, DocCoord &PointerPos,
 								BOOL bDragOnBlob, DocRect *pBlobRect)
-    
+
 	Author:		David_McClarnon (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	2/12/99
-	Inputs:		The info bar starting the drag, and the pointer position when the drag is 
+	Inputs:		The info bar starting the drag, and the pointer position when the drag is
 				started.
 				bDragOnBlob = TRUE if the drag started on a tool blob
 	Outputs:	-
@@ -3352,7 +3352,7 @@ void OpDragBevel::AlterPointerPosToAccountForBlob(DocCoord * pPoint)
 
 BOOL OpDragBevel::DoDrag(BevelInfoBarOp * pBar, DocCoord &PointerPos, BOOL bDragOnBlob,
 						 DocRect *pBlobRect)
-{	
+{
 	// snap the pointer position
 	DocView *pView = DocView::GetCurrent();
 	Spread * pSpread = Document::GetSelectedSpread();
@@ -3361,7 +3361,7 @@ BOOL OpDragBevel::DoDrag(BevelInfoBarOp * pBar, DocCoord &PointerPos, BOOL bDrag
 	{
 		pView->Snap(pSpread, &PointerPos, FALSE, TRUE);
 	}
-	
+
 	/////////////////////////////////////////////////////////////////////////////////////////
 	//
 	// This added by Karim MacDonald 17/12/1999, to fix a bug, whereby starting a bevel
@@ -3393,15 +3393,15 @@ BOOL OpDragBevel::DoDrag(BevelInfoBarOp * pBar, DocCoord &PointerPos, BOOL bDrag
 	{
 		delete pCreateOp;
 		return TRUE;
-	}			
+	}
 
 	delete pCreateOp;
 	*/
-	
+
 	m_pBarOp = pBar;
 	m_bHasDragged = FALSE;
 	m_LastPointerPos = PointerPos;
-	m_ThisPointerPos = PointerPos;	
+	m_ThisPointerPos = PointerPos;
 
 	if (pBlobRect)
 		m_BlobRect = *pBlobRect;
@@ -3444,19 +3444,19 @@ BOOL OpDragBevel::DoDrag(BevelInfoBarOp * pBar, DocCoord &PointerPos, BOOL bDrag
 			EndDrag();
 			return FALSE;
 		}
-		
+
 		DocCoord BlobCentre(pBlobRect->Centre());
 
 		m_LastPointerPos = BlobCentre;
 		m_ThisPointerPos = BlobCentre;
 
 		// calculate the width
-		INT32 Width = ContourTool::CalculateContourWidth(m_SelRect, 
+		INT32 Width = ContourTool::CalculateContourWidth(m_SelRect,
 			BlobCentre);
 
 		m_StartDragWidth = Width;
 	}
-	
+
 	return TRUE;
 }
 
@@ -3465,7 +3465,7 @@ BOOL OpDragBevel::DoDrag(BevelInfoBarOp * pBar, DocCoord &PointerPos, BOOL bDrag
 
 /********************************************************************************************
 
->	void OpDragBevel::DragPointerMove( DocCoord PointerPos, ClickModifiers ClickMods, 
+>	void OpDragBevel::DragPointerMove( DocCoord PointerPos, ClickModifiers ClickMods,
 								   Spread* pSpread, BOOL bSolidDrag)
 	Author:		David_McClarnon (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	25/11/99
@@ -3478,7 +3478,7 @@ BOOL OpDragBevel::DoDrag(BevelInfoBarOp * pBar, DocCoord &PointerPos, BOOL bDrag
 
 ********************************************************************************************/
 
-void OpDragBevel::DragPointerMove( DocCoord PointerPos, ClickModifiers ClickMods, 
+void OpDragBevel::DragPointerMove( DocCoord PointerPos, ClickModifiers ClickMods,
 								   Spread* pSpread, BOOL bSolidDrag)
 {
 	ERROR3IF(!m_pBarOp, "No info bar op");
@@ -3506,12 +3506,12 @@ void OpDragBevel::DragPointerMove( DocCoord PointerPos, ClickModifiers ClickMods
 
 	m_bHasDragged = TRUE;
 	m_LastPointerPos = PointerPos;
-	m_ThisPointerPos = PointerPos;	
+	m_ThisPointerPos = PointerPos;
 
 	BevelTool::DisplayStatusBarHelp(_R(IDS_BEVELDRAGSTATUSHELP));
-	
+
 	// calculate the contour width & set the infobar
-	INT32 Width = (ContourTool::CalculateContourWidth(m_SelRect, PointerPos) - m_StartDragWidth) 
+	INT32 Width = (ContourTool::CalculateContourWidth(m_SelRect, PointerPos) - m_StartDragWidth)
 		+ m_OriginalWidth;
 
 	RenderDragBlobs(m_SelRect, pSpread, bSolidDrag);
@@ -3540,10 +3540,10 @@ void OpDragBevel::DragPointerMove( DocCoord PointerPos, ClickModifiers ClickMods
 
 /********************************************************************************************
 
->	void OpDragBevel::DragFinished( DocCoord PointerPos, ClickModifiers ClickMods, 
+>	void OpDragBevel::DragFinished( DocCoord PointerPos, ClickModifiers ClickMods,
 								Spread* pSpread, BOOL Success, BOOL bSolidDrag)
 
-    
+
 	Author:		David_McClarnon (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	11/10/94
 	Inputs:		PointerPos - The position of the mouse at the end of the drag
@@ -3558,7 +3558,7 @@ void OpDragBevel::DragPointerMove( DocCoord PointerPos, ClickModifiers ClickMods
 
 ********************************************************************************************/
 
-void OpDragBevel::DragFinished( DocCoord PointerPos, ClickModifiers ClickMods, 
+void OpDragBevel::DragFinished( DocCoord PointerPos, ClickModifiers ClickMods,
 								Spread* pSpread, BOOL Success, BOOL bSolidDrag)
 {
 	// snap the pointer position
@@ -3577,9 +3577,9 @@ void OpDragBevel::DragFinished( DocCoord PointerPos, ClickModifiers ClickMods,
 	//	from BevelTool, testing the tool's ID as above should always give the same result.
 //	if (!Tool::GetCurrent()->IS_KIND_OF(BevelTool))
 //		return;
-	
+
 	BevelTool * pTool = (BevelTool *)Tool::GetCurrent();
-	
+
 	// End the drag and the op
 //	BlobManager * pBlobMgr = GetApplication()->GetBlobManager();
 
@@ -3591,7 +3591,7 @@ void OpDragBevel::DragFinished( DocCoord PointerPos, ClickModifiers ClickMods,
 		return;
 
 	// calculate the contour width & set the infobar
-	INT32 Width = (ContourTool::CalculateContourWidth(m_SelRect, PointerPos) - m_StartDragWidth) 
+	INT32 Width = (ContourTool::CalculateContourWidth(m_SelRect, PointerPos) - m_StartDragWidth)
 		+ m_OriginalWidth;
 
 	// if we've not dragged, then do nothing
@@ -3607,7 +3607,7 @@ void OpDragBevel::DragFinished( DocCoord PointerPos, ClickModifiers ClickMods,
 		pSpread = Document::GetSelectedSpread();
 
 	// render the drag blobs off
-	RenderDragBlobs(m_SelRect, pSpread, bSolidDrag);	
+	RenderDragBlobs(m_SelRect, pSpread, bSolidDrag);
 
 	// create the bevel, or change its width
 	if (Success)
@@ -3617,7 +3617,7 @@ void OpDragBevel::DragFinished( DocCoord PointerPos, ClickModifiers ClickMods,
 			pTool->RenderToolBlobs(pSpread, NULL);
 			pTool->SetBlobRendering(FALSE);
 		}
-		
+
 		// set up the bevel creation param
 		BevelInfo Info;
 
@@ -3625,7 +3625,7 @@ void OpDragBevel::DragFinished( DocCoord PointerPos, ClickModifiers ClickMods,
 
 		Info.m_Indent = abs(Width);
 		Info.m_bBevelIndentChanged = TRUE;
-		
+
 		if (Width < 0)
 		{
 			Info.m_bOuter = TRUE;
@@ -3643,12 +3643,12 @@ void OpDragBevel::DragFinished( DocCoord PointerPos, ClickModifiers ClickMods,
 		Info.m_LightAngle = 300;
 
 		OpDescriptor * pOpDesc = OpDescriptor::FindOpDescriptor(CC_RUNTIME_CLASS(OpCreateBevel));
-		
+
 		if (pOpDesc)
 		{
 			pOpDesc->Invoke(&Info);
 		}
-		
+
 		// put the tool blobs back on
 		if (pTool)
 		{
@@ -3749,7 +3749,7 @@ void OpDragBevel::RenderDragBlobs(MILLIPOINT Width,Spread* pSpread, BOOL bKeepDi
 	{
 		pSetPathList[i].Initialise();
 		pSetPathList[i].GetTrueBoundingRect(&dri);
-		
+
 		for (j = m_pSetList[i]; j < m_pSetList[i+1]; j++)
 		{
 			pDrawPathList[j].GetTrueBoundingRect(&drj);
@@ -3782,9 +3782,9 @@ void OpDragBevel::RenderDragBlobs(MILLIPOINT Width,Spread* pSpread, BOOL bKeepDi
 		pRegion->SaveContext();
 
 		pRegion->SetLineWidth(0);
-		
+
 		pRegion->SetWindingRule(PositiveWinding);
-		
+
 		pRegion->SetLineColour(COLOUR_RED);
 		pRegion->SetFillColour(COLOUR_NONE);
 
@@ -3793,7 +3793,7 @@ void OpDragBevel::RenderDragBlobs(MILLIPOINT Width,Spread* pSpread, BOOL bKeepDi
 		{
 			pRegion->DrawPath(&(pSetPathList[i]));
 		}
-		
+
 		// Get the Next render region
 		pRegion->RestoreContext();
 		pRegion = DocView::GetNextOnTop( NULL );
@@ -3824,12 +3824,12 @@ void OpDragBevel::RenderDragBlobs(DocRect Rect,Spread* pSpread, BOOL bSolidDrag)
 		ERROR3("Render drag blobs - no path list");
 		return;
 	}
-	
+
 	// set up the bounds
-	INT32 Width = (ContourTool::CalculateContourWidth(m_SelRect, m_ThisPointerPos) - m_StartDragWidth) 
+	INT32 Width = (ContourTool::CalculateContourWidth(m_SelRect, m_ThisPointerPos) - m_StartDragWidth)
 		+ m_OriginalWidth;
 
-	RenderDragBlobs(Width, pSpread);	
+	RenderDragBlobs(Width, pSpread);
 }
 
 /********************************************************************************************
@@ -3846,9 +3846,9 @@ void OpDragBevel::RenderDragBlobs(DocRect Rect,Spread* pSpread, BOOL bSolidDrag)
 BOOL OpDragBevel::Declare()
 {
 	return (RegisterOpDescriptor(
-								0, 
+								0,
 								_R(IDS_BEVEL_TOOL),
-								CC_RUNTIME_CLASS(OpDragBevel), 
+								CC_RUNTIME_CLASS(OpDragBevel),
 								OPTOKEN_DRAGBEVEL,
 								OpDragBevel::GetState,
 								0,      	/* help ID */
@@ -3875,33 +3875,31 @@ BOOL OpDragBevel::Declare()
 OpState OpDragBevel::GetState(String_256* Description, OpDescriptor*)
 {
 	OpState State;
-	
+
 	return State;
 }
 
 /********************************************************************************************
 
->	virtual void OpDragBevel::GetOpName(String_256* OpName) 
+>	virtual void OpDragBevel::GetOpName(String_256* OpName)
 
 	Author:		Mark_Neves (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	11/10/94
 	Inputs:		OpName = ptr to str to place op name in
 	Outputs:	The undo string for the operation
-	Returns:	
-	Purpose:	The GetOpName fn is overridden so that we return back a description 
-				appropriate to the type of attribute that the operation applies. 
+	Returns:
+	Purpose:	The GetOpName fn is overridden so that we return back a description
+				appropriate to the type of attribute that the operation applies.
 	Errors:		-
 	SeeAlso:	-
 
 ********************************************************************************************/
 
-void OpDragBevel::GetOpName(String_256* OpName) 
-{ 
+void OpDragBevel::GetOpName(String_256* OpName)
+{
 	*OpName = String_256(_R(IDS_BEVELDRAGCREATEOP));
-}  
+}
 
 
 
 #endif
-
-

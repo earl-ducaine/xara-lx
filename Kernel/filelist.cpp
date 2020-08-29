@@ -1,7 +1,7 @@
 // $Id: filelist.cpp 1282 2006-06-09 09:46:49Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
- 
+
                Xara LX, a vector drawing and manipulation program.
                     Copyright (C) 1993-2006 Xara Group Ltd.
        Copyright on certain contributions may be held in joint with their
@@ -32,7 +32,7 @@ ADDITIONAL RIGHTS
 
 Conditional upon your continuing compliance with the GNU General Public
 License described above, Xara Group Ltd grants to you certain additional
-rights. 
+rights.
 
 The additional rights are to use, modify, and distribute the software
 together with the wxWidgets library, the wxXtra library, and the "CDraw"
@@ -133,7 +133,7 @@ CC_IMPLEMENT_DYNCREATE(FileListOp, Operation)
 	Range:		1-9
 	Purpose:	Describes how many files will be displayed in the Recent file list.
 
-**********************************************************************************************/ 
+**********************************************************************************************/
 
 INT32 FileListOp::MaxFileListSize = 4;
 
@@ -240,7 +240,7 @@ OpState FileListOp::GetState(String_256* Title, OpDescriptor* pOp)
 	// Get the first 2 chars of the opdescriptors description as this holds the
 	// file number of the recent file.
 	TCHAR FileNum[3];
-	camStrncpy(FileNum, (TCHAR*)pOp->Token, 2);
+	camStrncpy_alt(FileNum, (TCHAR*)pOp->Token, 2);
 	FileNum[2] = 0;
 
 	// make sure that it contains digits.
@@ -249,7 +249,7 @@ OpState FileListOp::GetState(String_256* Title, OpDescriptor* pOp)
 		// Find out which number was chosen
 		TCHAR *pszMark;
 		INT32 Index = camStrtol( FileNum, &pszMark, 10 );
-		
+
 		// Only the first 'MaxFileListSize' items will appear
 		if (Index > MaxFileListSize)
 			State.RemoveFromMenu = TRUE;
@@ -290,7 +290,7 @@ void FileListOp::Do(OpDescriptor* pOpDesc)
 	// file number of the recent file.
 	TCHAR FileNum[3];
 	BOOL WorkedOK = FALSE;
-	camStrncpy(FileNum, (TCHAR*)pOpDesc->Token, 2);
+	camStrncpy_alt(FileNum, (TCHAR*)pOpDesc->Token, 2);
 	FileNum[2] = 0;
 
 	TRACEUSER( "jlh92", _T("Op = %s\n"), FileNum );
@@ -334,5 +334,3 @@ void FileListOp::Do(OpDescriptor* pOpDesc)
 	// End the operations.
 	End();
 }
-
-

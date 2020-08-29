@@ -1,7 +1,7 @@
 // $Id: colourix.cpp 1333 2006-06-16 20:34:16Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
- 
+
                Xara LX, a vector drawing and manipulation program.
                     Copyright (C) 1993-2006 Xara Group Ltd.
        Copyright on certain contributions may be held in joint with their
@@ -32,7 +32,7 @@ ADDITIONAL RIGHTS
 
 Conditional upon your continuing compliance with the GNU General Public
 License described above, Xara Group Ltd grants to you certain additional
-rights. 
+rights.
 
 The additional rights are to use, modify, and distribute the software
 together with the wxWidgets library, the wxXtra library, and the "CDraw"
@@ -287,10 +287,10 @@ IndexedColour::IndexedColour(const IndexedColour& Col)
 
 	UsageCount = 0;
 	ChildUsage = 0;
-	
+
 	Info.IsNamed = FALSE;
 	Name = NULL;
-	
+
 	// Nasty casting to get around this messy const problem.
 	if (((IndexedColour *)&Col)->IsNamed())
 		SetName(*(Col.Name));	// Copy the string, not the string-pointer
@@ -308,13 +308,13 @@ IndexedColour::IndexedColour(const IndexedColour& Col)
 	Outputs:	-
 	Returns:	-
 	Purpose:	Copy constructor for an IndexedColour object.
-	
+
 	Notes:		If the DocColour is immediate (does not reference an IndexedColour) then
 				the indexedcolour uses its colour definition - NOTE that this creates an
-				UNNAMED colour by default (SetName it afterwards). 
+				UNNAMED colour by default (SetName it afterwards).
 
 				If the DocColour references an IndexedColour, the referenced colour is copied
-				
+
 				Tints and Linked colours are copied and remain tints/linked (Gosh!)
 
 				Named/Unnamed colours will be copied as Named/Unnamed colours (Gosh!)
@@ -345,7 +345,7 @@ IndexedColour::IndexedColour(const DocColour& Col)
 
 		UsageCount = 0;
 		ChildUsage = 0;
-	
+
 		Info.IsNamed = FALSE;
 		Name = NULL;
 		if (Def->IsNamed())
@@ -436,7 +436,7 @@ IndexedColour::IndexedColour(ColourModel ColModel, ColourGeneric *Col)
 	Created:	12/10/94
 	Inputs:		Other - colour to copy
 	Outputs:	-
-	Returns:	
+	Returns:
 	Purpose:	IndexedColour assignment operator
 				Copies the definition of one IndexedColour into another
 	Notes:		The name field is copied verbatim - if you want it to say 'Copy of ...'
@@ -482,7 +482,7 @@ IndexedColour& IndexedColour::operator=(const IndexedColour& Other)
 				MonoOn
 				COLOURTYPE_NORMAL, COLOURTYPE_SPOT, COLOURTYPE_TINT, COLOURTYPE_LINKED
 				MonoOff
-	
+
 	Purpose:	Determines the type of this colour
 
 	Notes:		If this colour is linked to a deleted colour, then for sneaky undo reasons
@@ -568,7 +568,7 @@ BOOL IndexedColour::IsSpotOrTintOfSpot(void) const
 	Inputs:		-
 	Outputs:	-
 	Returns:	The colour model in which the IndexedColour was defined
-	
+
 	Purpose:	To determine the colour model in which an IndexedColour is defined
 
 	Notes:		If this colour is a TINT, the parent colour's colour model is returned,
@@ -760,7 +760,7 @@ BOOL IndexedColour::IsDifferent(const IndexedColour &Other)
 			return(TRUE);
 	}
 	else
-	{	
+	{
 		if (SourceColour.Component1 != Other.SourceColour.Component1 ||
 			SourceColour.Component2 != Other.SourceColour.Component2 ||
 			SourceColour.Component3 != Other.SourceColour.Component3 ||
@@ -791,7 +791,7 @@ BOOL IndexedColour::IsDifferent(const IndexedColour &Other)
 				match within the limits specified by ErrorLimit.
 
 				This version of the function takes an accuracy parameter, to allow
-				'rough' comparisons to be made.  This is used when importing colours so 
+				'rough' comparisons to be made.  This is used when importing colours so
 				that we don't have to store 32bit colour values in EPS files and so on
 				in order for them to be recognised as an existing colour when re-importing.
 
@@ -857,7 +857,7 @@ BOOL IndexedColour::IsDifferent(const IndexedColour &Other, FIXED24 ErrorLimit)
 			OUTSIDE_LIMIT(SourceColour.Component4, Other.SourceColour.Component4))
 			return(TRUE);
 	}
-	
+
 	return(FALSE);
 }
 
@@ -952,7 +952,7 @@ String_64 *IndexedColour::GetName(BOOL ReturnTrueID)
 
 				Setting the name of an IndexedColour makes it a Named IndexedColour
 				(Trust me, that is less silly than it sounds! ;-)
-	
+
 	SeeAlso:	IndexedColour::SetUnnamed; IndexedColour::IsNamed
 
 ********************************************************************************************/
@@ -973,8 +973,8 @@ void IndexedColour::SetName(const StringBase &NewName, BOOL ForceNamed)
 			TCHAR *Dest = (TCHAR *)(*Name);
 
 			// Copy up to 63 chars across
-			camStrncpy(Dest, Src, 63);
-			
+			camStrncpy_alt(Dest, Src, 63);
+
 			// convert underscores into spaces
 			Name->SwapChar(TCHAR('_'), TCHAR(' '));
 		}
@@ -1018,7 +1018,7 @@ void IndexedColour::SetUnnamed(void)
 	Created:	17/11/94
 	Inputs:		TestParent - the parent/ancestor colour we wish to test for
 	Returns:	TRUE if this is indeed a descendant of the given colour
-	
+
 	Purpose:	Recursively backtracks through the chain of LinkedParent links to determine
 				if this colour is in any way (directly or indirectly) linked to the given
 				Parent colour, and might therefore be affected by any change to said colour.
@@ -1065,7 +1065,7 @@ BOOL IndexedColour::IsADescendantOf(IndexedColour *TestParent)
 	Returns:	The colour upon which this Tint or Linked colour is based.
 				(If this colour is not a Tint or Linked colour, or if it is a
 				deleted (hidden for undo) colour, the return value is NULL)
-				
+
 	Notes:		If you need to know what colour this colour *was* linked to, as the
 				colour editor does when the user is randomly plonking about with the
 				colour type, then call FindLastLinkedParent instead.
@@ -1142,17 +1142,17 @@ IndexedColour *IndexedColour::FindOldestAncestor(void)
 
 	Purpose:	To make a colour linked to or a tint of another colour.
 				This links the colour to the parent.
-				
+
 	Notes:		Generally, the colour's colour model and definition will be unaffected.
 				However, if the colour was previously linked/tint, and it is being made
 				into a standalone colour, the existing linked colour definition will be
 				read, and then placed into SourceColour as a standalone version of the
 				previous linked definition. (i.e. the colour's appearance will not change
 				but the link will be broken)
-				
+
 				If the colour was not already a COLOURTYPE_LINKED when it is being made
 				LINKED, all components will be set to override the parent.
-				
+
 				If the colour was not already a COLOURTYPE_TINT when it is being made
 				a TINT, it will be set to be a 100% tint (no tinting at all)
 
@@ -1171,7 +1171,7 @@ IndexedColour *IndexedColour::FindOldestAncestor(void)
 				a potentially dangerous practice so be very careful. (It is allowed so that
 				the colour editor can cunningly remember what a colour was last linked
 				to, in order to be far more helpful to the user).
-				
+
 	Scope:		private? Generally speaking, you should not be calling this method, unless
 				you are the colour editor, or a load/import filter.
 
@@ -1196,7 +1196,7 @@ void IndexedColour::SetLinkedParent(IndexedColour *Parent, IndexedColourType New
 	if (Parent != NULL && Parent->IsADescendantOf(this))
 	{
 		// Our new parent-to-be is already a linked child of us!
-		ERROR3("Illegal attempt to generate circular reference in Colour linking"); 
+		ERROR3("Illegal attempt to generate circular reference in Colour linking");
 		return;
 	}
 
@@ -1276,7 +1276,7 @@ void IndexedColour::SetLinkedParent(IndexedColour *Parent, IndexedColourType New
 	Created:	1/11/94
 	Returns:	TRUE if this caused the type of this colour to be changed
 				FALSE if the new type is the same as the old type
-	
+
 	Purpose:	Sets the type of this colour:
 				MonoOn
 				COLOURTYPE_NORMAL, COLOURTYPE_SPOT, COLOURTYPE_TINT, COLOURTYPE_LINKED
@@ -1402,7 +1402,7 @@ BOOL IndexedColour::InheritsComponent(UINT32 ComponentID)
 BOOL IndexedColour::SetInheritsComponent(UINT32 ComponentID, BOOL Inherits)
 {
 	BOOL Result = FALSE;
-	
+
 	ERROR3IF(ComponentID < 1 || ComponentID > 4,
 				"Bad colour component index passed to IndexedColour::InheritsComponent");
 
@@ -1787,7 +1787,7 @@ BOOL IndexedColour::TintIsShade(void) const
 				in colormgr.cpp/.h, as when we undo a change to an IndexedColour,
 				the definition must remain at the same memory address so that all
 				references to it in the document do not need to be fixed.
-				
+
 				The implementation swaps the Info, SourceColour, & Name fields
 				(i.e. the colour definition) ONLY. That is, the usage count for
 				each object and the caches are not swapped. The caches for both
@@ -1862,7 +1862,7 @@ void IndexedColour::GetDebugDetails(StringBase* Str)
 		UnnamedString = TEXT("U");
 
 	GetSourceColour(&col);
-	
+
 	String_32 ModelName;
 	cc->GetModelName(&ModelName);
 
@@ -1936,4 +1936,3 @@ void IndexedColour::ForceSpotsToBeProcess(BOOL ForceOn)
 	SpotsAreProcess = ForceOn;
 	ColourManager::SelViewContextHasChanged();
 }
-

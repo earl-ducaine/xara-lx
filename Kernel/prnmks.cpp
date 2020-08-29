@@ -1,7 +1,7 @@
 // $Id: prnmks.cpp 1320 2006-06-14 14:39:32Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
- 
+
                Xara LX, a vector drawing and manipulation program.
                     Copyright (C) 1993-2006 Xara Group Ltd.
        Copyright on certain contributions may be held in joint with their
@@ -32,7 +32,7 @@ ADDITIONAL RIGHTS
 
 Conditional upon your continuing compliance with the GNU General Public
 License described above, Xara Group Ltd grants to you certain additional
-rights. 
+rights.
 
 The additional rights are to use, modify, and distribute the software
 together with the wxWidgets library, the wxXtra library, and the "CDraw"
@@ -352,7 +352,7 @@ PrintMark::~PrintMark()
 
 	Author:		Mike_Kenny (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	23/07/96
-	Inputs:		pMenuText = a pointer to a string containing the textual description of 
+	Inputs:		pMenuText = a pointer to a string containing the textual description of
 							the print mark, (may be used in menus).
 	Purpose:	Set this print mars menu text
 
@@ -418,7 +418,7 @@ void PrintMark::AddNewPosition(MarkPosition* pNewMarkPos)
 
 	Outputs:	pFoundMark set to a pointer to the print mark in the cache if we find it
 				pFoundMark set to NULL if no match found
-							 		
+
 	Returns:	TRUE if there is a mark in the cache identical to this search mark
 				FALSE if there isn't
 	Purpose:	Check the cache to see if there's a mark already in it which matches
@@ -522,11 +522,11 @@ PrintMarkItem::~PrintMarkItem()
 
 	Author:		Mike_Kenny (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	23/07/96
-	Inputs:		pNewMark = A pointer to a group node containing the mark. 
+	Inputs:		pNewMark = A pointer to a group node containing the mark.
 						   The node should still be in the tree.
 				MakeCopy = TRUE, the mark will be left where it is and an
 							     attribute complete copy will be made.
-						   FALSE, the mark will be extracted from the document as is. 
+						   FALSE, the mark will be extracted from the document as is.
 	Purpose:	Cache a print mark in this print mark item. The mark pointer should be
 				a group held in the document tree. As we attempt to make attributes
 				complete on this group, it has to be in the tree. MakeCopy which defaults
@@ -553,7 +553,7 @@ BOOL PrintMarkItem::SetMarkGlyph(NodeGroup* pNewMark, BOOL MakeCopy)
 			delete pNewGroup;
 			return FALSE;
 		}
-		
+
 		// attach this new group to the tree
 		pNewGroup->AttachNode(pNewMark,NEXT);
 		pNewGroup1->AttachNode(pNewGroup,FIRSTCHILD);
@@ -578,10 +578,10 @@ BOOL PrintMarkItem::SetMarkGlyph(NodeGroup* pNewMark, BOOL MakeCopy)
 		// dump the tree out
 		//TRACEUSER( "Mike", _T("Dumping subtree contents\n\n"));
 		//DebugTreeDlg::DumpSubTree(pNewGroup);
-		
+
 		// rip the node out of the tree and stick it in our cache.
 		pNewGroup->UnlinkNodeFromTree();
-				
+
 		// Make sure we get rid of any previously cached mark
 		if (pMarkGlyph!=NULL)
 			RemoveMark();
@@ -594,7 +594,7 @@ BOOL PrintMarkItem::SetMarkGlyph(NodeGroup* pNewMark, BOOL MakeCopy)
 			return FALSE;
 
 		pNewMark->UnlinkNodeFromTree();
-				
+
 		// Make sure we get rid of any previously cached mark
 		if (pMarkGlyph!=NULL)
 			RemoveMark();
@@ -796,7 +796,7 @@ UINT32 PrintMarksCache::GetUniqueHandle()
 
 PrintMarkItem* PrintMarksCache::GetFirstMark() const
 {
-	return ((PrintMarkItem*)PrintMarkCache.GetHead()); 
+	return ((PrintMarkItem*)PrintMarkCache.GetHead());
 }
 
 
@@ -880,20 +880,20 @@ PrintMarkItem* PrintMarksCache::FindMark(UINT32 SearchHandle)
 	Created:	23/07/96
 	Inputs:		pDocument = a pointer to a document
 	Returns:	TRUE if the document has been processed
-				
+
 	Purpose:	Given a document, we scan each layer in the document. For each layer
 				we check the loaded layer name. If the layer name contains a % at the
 				begining (meaning its a format string) and the format is PRINTMARK, we
 				take the first group in the layer (+ all its contents) and assign a
 				new print mark item to this group. This group object will (if successfully)
 				loaded, become a new print mark.
-	
+
 *****************************************************************************************/
 
 BOOL PrintMarksCache::DecodeCachedLayers(Document* pDocument)
 {
 	ERROR2IF(pDocument==NULL,FALSE,"NULL Layer passed to DecodeCachedLayer");
-	
+
 	Spread* pSpread = pDocument->FindFirstSpread();
 	Layer* pLayer;
 	while (pSpread!=NULL)
@@ -920,7 +920,7 @@ BOOL PrintMarksCache::DecodeCachedLayers(Document* pDocument)
 	Returns:	TRUE if the layer has been processed
 	Purpose:	Given a layer, if the layer contains a print mark, strip the print mark
 				out and try to add it to the PrintMarksMan cache.
-	
+
 *****************************************************************************************/
 
 BOOL PrintMarksCache::DecodeCachedLayer(Layer* pLayer)
@@ -966,7 +966,7 @@ BOOL PrintMarksCache::DecodeCachedLayer(Layer* pLayer)
 		return FALSE;
 	}
 
-	// Right we have a new print mark descriptor, 
+	// Right we have a new print mark descriptor,
 	// we simply merge the mark into the
 	// cache. It would be faster, before copying the subtree, to check whether we
 	// dont already have this mark cached in the print mark manager.
@@ -1001,12 +1001,12 @@ BOOL PrintMarksCache::DecodeCachedLayer(Layer* pLayer)
 	Author:		Mike_Kenny (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	23/07/96
 	Inputs:		pNewMark = a pointer to the new mark to add
-				pGroup = a pointer to the glyph to use. 
+				pGroup = a pointer to the glyph to use.
 	Returns:	The handle of the newly added mark
 	Purpose:	A simple way of adding a prebuilt mark to the list. The mark must be in
 				a renderable format, in that it should be a group with all needed attrs
 				as children, followed by a child group containing all the ink objects
-	
+
 *****************************************************************************************/
 
 UINT32 PrintMarksCache::AddNewMark(PrintMarkItem* pNewMark, NodeGroup* pGroup)
@@ -1091,7 +1091,7 @@ BOOL PrintMarksCache::DecodeMarkFormat(const String_256 *pFormatString, PrintMar
 	// Turn on the exceptions function in the string reading class
 	StringBase::EnableExceptionHandler();
 
-	//try 
+	//try
 	{
 		// toast everything up to the first quote
 		pos = Name.FindNextChar(QUOTES);
@@ -1174,12 +1174,12 @@ BOOL PrintMarksCache::DecodeMarkFormat(const String_256 *pFormatString, PrintMar
 					// store this type of region
 					NewRegion = (MarkRegion)(region-1);
 					pNewMark->SetRegion(NewRegion);
-								
+
 					// if we haven't run off the end of the string
 					while ( Name.IsLegal(pos) && (Name[pos]!=PLUS) )
 					{
 						TCHAR c = Name[pos];
-						
+
 						switch (c)
 						{
 							case TEXT('T'): NewFormat.Top=TRUE;		break;
@@ -1194,14 +1194,14 @@ BOOL PrintMarksCache::DecodeMarkFormat(const String_256 *pFormatString, PrintMar
 									TRACEUSER( "Mike", _T("Unknown format character during PrintMarksMan::DecodeMarkFormat"));
 								break;
 						}
-						
+
 						pos = Name.FindNextChar(pos+1);
 					}
 
 					// make sure the format is ok
 					if (!NewFormat.IsValid())
 						NewFormat.MakeValid();
-					
+
 					// and set it in the structure.
 					pNewMark->SetFormat(NewFormat);
 
@@ -1249,20 +1249,20 @@ PORTNOTE("other", "Disabled random use of MFC CUserException in Kernel code")
 	Purpose:	Have a look at the string passed in and check to see it matches any of
 				the known mark type names. If so return the proper mark type enum, otherwise
 				'Unkown' is returned.
-	
+
 *****************************************************************************************/
 
 UINT32 PrintMarksCache::DecodeToMarkType(const String_256* Name) const
 {
 	ERROR2IF(Name == NULL, MarkType_Unknown, "NULL pointer passed to DecodeToMarkType");
-	
+
 	if ((*Name)==String_16(_T("ID_NONE"))) 	return MarkType_Unknown; /*NORESOURCEFIX*/
-	if ((*Name)==String_16(_T("ID_STAR"))) 	return MarkType_Star; /*NORESOURCEFIX*/ 
+	if ((*Name)==String_16(_T("ID_STAR"))) 	return MarkType_Star; /*NORESOURCEFIX*/
 	if ((*Name)==String_16(_T("ID_REGM"))) 	return MarkType_Registration; /*NORESOURCEFIX*/
 	if ((*Name)==String_16(_T("ID_CBAR"))) 	return MarkType_ColourBar; /*NORESOURCEFIX*/
 	if ((*Name)==String_16(_T("ID_GBAR"))) 	return MarkType_GreyBar; /*NORESOURCEFIX*/
 	if ((*Name)==String_16(_T("ID_INFO"))) 	return MarkType_Information; /*NORESOURCEFIX*/
-	
+
 	return MarkType_Unknown;
 }
 
@@ -1275,8 +1275,8 @@ UINT32 PrintMarksCache::DecodeToMarkType(const String_256* Name) const
 	Created:	10/08/96
 	Inputs:
 	Returns:	-
-	Purpose:	
-	
+	Purpose:
+
 *****************************************************************************************/
 
 BOOL PrintMarksCache::CreateCropMark()
@@ -1316,7 +1316,7 @@ BOOL PrintMarksCache::CreateCropMark()
 	pMarkItem->SetRenderable(FALSE);
 	// finally stick the thing in our cache!
 	CropMarkHandle = AddNewMark(pMarkItem, NULL);
-	
+
 	return TRUE;
 }
 
@@ -1341,7 +1341,7 @@ BOOL PrintMarksCache::CreateCropMark()
 					Time
 					Page number?
 					Plate name
-	
+
 *****************************************************************************************/
 
 BOOL PrintMarksCache::CreateTextInfoMark()
@@ -1382,7 +1382,7 @@ BOOL PrintMarksCache::CreateTextInfoMark()
 	pMarkItem->SetSaveable(FALSE);
 	// finally stick the thing in our cache!
 	TextInfoHandle = AddNewMark(pMarkItem, NULL);
-	
+
 	return TRUE;
 }
 
@@ -1407,7 +1407,7 @@ BOOL PrintMarksCache::CreateTextInfoMark()
 					Time
 					Page number?
 					Plate name
-	
+
 *****************************************************************************************/
 
 BOOL PrintMarksCache::UpdateTextInfoMark(Document* pDocument, RenderRegion* pRRegion)
@@ -1452,7 +1452,7 @@ BOOL PrintMarksCache::UpdateTextInfoMark(Document* pDocument, RenderRegion* pRRe
 	Style.lfClipPrecision	=0x02;
 	Style.lfQuality			=0x01;
 	Style.lfPitchAndFamily	=0x12;
-	camStrncpy(Style.lfFaceName, TEXT("Times New Roman\0"), 16);
+	camStrncpy_alt(Style.lfFaceName, TEXT("Times New Roman\0"), 16);
 */
 	String_64 FontName(_T("Courier New"));
 	MILLIPOINT FontSize = 9*1000;
@@ -1568,7 +1568,7 @@ BOOL PrintMarksCache::UpdateTextInfoMark(Document* pDocument, RenderRegion* pRRe
 					Time
 					Page number?
 					Plate name
-	
+
 *****************************************************************************************/
 
 BOOL PrintMarksCache::SetInfoMarkAttributes(TextStory *pStory, String_64 *pFontName, MILLIPOINT FontSize)
@@ -1592,7 +1592,7 @@ BOOL PrintMarksCache::SetInfoMarkAttributes(TextStory *pStory, String_64 *pFontN
 
 	ok = DeleteChildAttribute(pTextLine, CC_RUNTIME_CLASS(AttrTxtFontSize));
 	if (!ok) ok = DeleteChildAttribute(pStory, CC_RUNTIME_CLASS(AttrTxtFontSize));
-	
+
 	// now create new ones
 	TxtFontTypefaceAttribute FontAttr(Handle);
 	TxtFontSizeAttribute     SizeAttr(FontSize);
@@ -1665,7 +1665,7 @@ void PrintMarksCache::DestroyTextInfoMark()
 	Created:	10/08/96
 	Inputs:		pMark = a print mark item pointer
 				pForm = a mark format object pointer
-	Purpose:	
+	Purpose:
 
 ***********************************************************************************************/
 
@@ -1683,7 +1683,7 @@ void PrintMarksCache::BuildTextInfoString(Document *pDocument, RenderRegion* pRR
 	if (pColPlate!=NULL)
 	{
 		String_64 PlateName;
-		
+
 		pColPlate->GetDescription(&PlateName);
 		(*pString) += TEXT("  (");
 		(*pString) += PlateName;
@@ -1731,7 +1731,7 @@ inline PageRect* PageRectList::GetFirstPageRect() const
 {
 	return ((PageRect*)GetHead());
 }
-		
+
 inline PageRect* PageRectList::GetNextPageRect(PageRect* pItem) const
 {
 	return ((PageRect*)GetNext(pItem));
@@ -1829,9 +1829,9 @@ BOOL PrintMarksMan::IsTemplateCached() const
 
 	Author:		Mike_Kenny (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	23/07/96
-	Purpose:	Here we construct the cache afresh. Well almost afresh, we need to 
+	Purpose:	Here we construct the cache afresh. Well almost afresh, we need to
 				do the following
-				
+
 				(1) find the disc file containing our marks
 				(2) load the file as a document
 				(3) convert all index colours used in objects to lookalike doc colours
@@ -1900,14 +1900,14 @@ BOOL LoadPrintMarks::OnLoadDocument(Document* pKernelDoc)
 	PrintMarksMan* pPrintMarksMan = GetApplication()->GetMarksManager();
 	if (pPrintMarksMan==NULL)
 		return FALSE;
-	
+
 	// ok do the conversion of all colours.
 	pPrintMarksMan->ConvertAllDocColours(pKernelDoc);
-	
+
 	// ok we now have a loaded document, lets scan of the all the layers we need.
 	// should we respond to an error from here?
 	pPrintMarksMan->PMMCache.DecodeCachedLayers(pKernelDoc);
-	
+
 	// All is well we hope.
 	return TRUE;
 }
@@ -1994,7 +1994,7 @@ void PrintMarksMan::ConvertAllDocColours(Document* pDoc)
 	Purpose:	Throws away the cache entirely. We unset the 'Template has been cached'
 				variable which will result in a proper refiltering of the mark template
 				file the next time we initialise.
-	
+
 *****************************************************************************************/
 
 void PrintMarksMan::InvalidateCache()
@@ -2018,7 +2018,7 @@ void PrintMarksMan::InvalidateCache()
 	Returns:	TRUE if the mark has been added,
 				FALSE if not.
 	Purpose:	Add a mark reference to the documents displayable printer marks
-	
+
 *****************************************************************************************/
 
 BOOL PrintMarksMan::AddMarkToDoc(UINT32 MarkHandle, Document* pDocument)
@@ -2032,7 +2032,7 @@ BOOL PrintMarksMan::AddMarkToDoc(UINT32 MarkHandle, Document* pDocument)
 	}
 
 	// ok, try to find the print marks component in this document.
-	PrintMarksComponent* pComponent = 
+	PrintMarksComponent* pComponent =
 	(PrintMarksComponent*)pDocument->GetDocComponent(CC_RUNTIME_CLASS(PrintMarksComponent));
 	if (!pComponent)
 	{
@@ -2062,14 +2062,14 @@ BOOL PrintMarksMan::AddMarkToDoc(UINT32 MarkHandle, Document* pDocument)
 				If the mark exists it will never fail to be removed.
 	Purpose:	Removes the mark reference held in the print marks doc component inside
 				this document.
-	
+
 *****************************************************************************************/
 
 BOOL PrintMarksMan::RemoveMarkFromDoc(UINT32 MarkHandle, Document* pDocument)
 {
 	ERROR2IF(pDocument==NULL,FALSE,"NULL document pointer passed to AddMarkToDoc!");
 	// ok, try to find the print marks component in this document.
-	PrintMarksComponent* pComponent = 
+	PrintMarksComponent* pComponent =
 	(PrintMarksComponent*)pDocument->GetDocComponent(CC_RUNTIME_CLASS(PrintMarksComponent));
 	if (!pComponent)
 	{
@@ -2095,9 +2095,9 @@ BOOL PrintMarksMan::RemoveMarkFromDoc(UINT32 MarkHandle, Document* pDocument)
 	Inputs:		pDocument = a pointer to a document to add the default set to
 	Returns:	TRUE if all 'defaults to on' marks have been added,
 				FALSE if none have.
-	Purpose:	Add all 'defaults to on' mark references to the documents displayable 
+	Purpose:	Add all 'defaults to on' mark references to the documents displayable
 				printer marks.
-	
+
 *****************************************************************************************/
 
 BOOL PrintMarksMan::AddDefaultMarksToDoc(Document* pDocument)
@@ -2107,7 +2107,7 @@ BOOL PrintMarksMan::AddDefaultMarksToDoc(Document* pDocument)
 	if (pDocument!=NULL)
 	{
 		// Get that print marks doc component
-		PrintMarksComponent* pMarksComp = 
+		PrintMarksComponent* pMarksComp =
 		(PrintMarksComponent*)pDocument->GetDocComponent(CC_RUNTIME_CLASS(PrintMarksComponent));
 		if (pMarksComp && pMarksComp->IsVirgin())
 		{
@@ -2155,7 +2155,7 @@ BOOL PrintMarksMan::AddDefaultMarksToDoc(Document* pDocument)
 	Notes:		The union of the PageRects, added while printing the current paper will
 				give the imagesetting rectangle. Each one of these PageRects needs a
 				set of crop marks.
-	
+
 *****************************************************************************************/
 
 void PrintMarksMan::SetImagesettingRect()
@@ -2183,7 +2183,7 @@ void PrintMarksMan::SetImagesettingRect()
 	Purpose:	Called from the print control system to tell the print mark manager that
 				printing has started. Here we make sure all our print time local variables
 				are set to default values.
-	
+
 *****************************************************************************************/
 
 void PrintMarksMan::StartPrinting()
@@ -2212,7 +2212,7 @@ void PrintMarksMan::StartPrinting()
 	Purpose:	Called from the print control system to tell the print mark manager that
 				printing has ended. Here we delete all the page rectangle positions added
 				to our cached list.
-	
+
 *****************************************************************************************/
 
 void PrintMarksMan::EndPrinting()
@@ -2234,7 +2234,7 @@ void PrintMarksMan::EndPrinting()
 	Purpose:	Tells the print marks manager what bleed to use during this print pass.
 				This is usually a globally set value and is unlikely to change across
 				plates or pages. We use the value to inflate the typesetting rect by.
-	
+
 *****************************************************************************************/
 
 void PrintMarksMan::SetBleed(MILLIPOINT bleed)
@@ -2259,7 +2259,7 @@ void PrintMarksMan::SetBleed(MILLIPOINT bleed)
 				a print. We make sure we then create and render the right number of crop
 				marks to fit this rectangle list.
 	SeeAlso:	ScreenView::EnumeratePagePatches().
-	
+
 *****************************************************************************************/
 
 BOOL PrintMarksMan::AddPageRect(const DocRect& rect)
@@ -2281,13 +2281,13 @@ BOOL PrintMarksMan::AddPageRect(const DocRect& rect)
 	Returns:	-
 	Purpose:	Tells the print marks manager which way up the emulsion is. This determins
 				whether the marks manager will flip its marks during rendering or not.
-	
+
 *****************************************************************************************/
 
 void PrintMarksMan::SetEmulsionDown(BOOL state)
 {
 	EmulsionDown=state;
-}	
+}
 
 
 /*****************************************************************************************
@@ -2299,7 +2299,7 @@ void PrintMarksMan::SetEmulsionDown(BOOL state)
 	Inputs:		-
 	Returns:	-
 	Purpose:	Destroys the list of page rectangles the print marks manager caches.
-	
+
 *****************************************************************************************/
 
 void PrintMarksMan::ResetPageRects()
@@ -2318,7 +2318,7 @@ void PrintMarksMan::ResetPageRects()
 	Inputs:		-
 	Returns:	the size of the bleed as we know it
 	Purpose:	Internal function to get the adjusted bleed value
-	
+
 *****************************************************************************************/
 
 MILLIPOINT PrintMarksMan::AdjustedBleed() const
@@ -2401,8 +2401,8 @@ MILLIPOINT PrintMarksMan::GetCropMarkWidth(Document *ScopeDoc) const
 
 /*****************************************************************************************
 
->	void PrintMarksMan::RenderPrintMarks(PrintMarksComponent *pComp, 
-										 RenderRegion* pRRegion, 
+>	void PrintMarksMan::RenderPrintMarks(PrintMarksComponent *pComp,
+										 RenderRegion* pRRegion,
 										 const Matrix &ViewTrans,
 										 const DocRect &ClipRect,
 										 Spread* pSpread)
@@ -2414,10 +2414,10 @@ MILLIPOINT PrintMarksMan::GetCropMarkWidth(Document *ScopeDoc) const
 	Returns:
 	Purpose:	Render all print marks contained in this doc component and the crop
 				marks if they are enabled.
-	
+
 *****************************************************************************************/
 
-void PrintMarksMan::RenderPrintMarks(PrintMarksComponent *pComp, 
+void PrintMarksMan::RenderPrintMarks(PrintMarksComponent *pComp,
 									 RenderRegion* pRRegion,
 									 const Matrix &ViewTrans,
 									 const DocRect &ClipRect,
@@ -2456,7 +2456,7 @@ PORTNOTE("printing", "disabled print mark generation use of PrintPSRenderRegion"
 		// Disable the print clipping for the moment
 		OldClipState = pPrintDC->SetClipping(FALSE);
 	}
-#endif		
+#endif
 
 	// check for any user doc marks
 	DocPrintMark* pDocMark = pComp->GetFirstMark();
@@ -2554,7 +2554,7 @@ PORTNOTE("printing", "disabled print mark generation use of PrintPSRenderRegion"
 
 >	void PrintMarksMan::RenderCropMarksAroundRect( RenderRegion* pRRegion,
 												   const Matrix &trans
-												   const DocRect& Rect, 
+												   const DocRect& Rect,
 												   MILLIPOINT bleed)
 
 	Author:		Mike_Kenny (Xara Group Ltd) <camelotdev@xara.com>
@@ -2564,7 +2564,7 @@ PORTNOTE("printing", "disabled print mark generation use of PrintPSRenderRegion"
 	Returns:
 	Purpose:	Render all print marks contained in this doc component and the crop
 				marks if they are enabled around the given rectangle.
-	
+
 *****************************************************************************************/
 
 void PrintMarksMan::RenderCropMarksAroundRect(RenderRegion* pRRegion,
@@ -2577,7 +2577,7 @@ void PrintMarksMan::RenderCropMarksAroundRect(RenderRegion* pRRegion,
 	if (!CropLine.Initialise())
 		return;
 
-	// an extra bit we pust the marks out by if the bleed is zero		
+	// an extra bit we pust the marks out by if the bleed is zero
 	INT32 ExtraBit = 0;
 	if (bleed==0)
 		ExtraBit = 2384;
@@ -2662,21 +2662,21 @@ void PrintMarksMan::RenderCropMarksAroundRect(RenderRegion* pRRegion,
 		Coords[0]=p;  \
 		Coords[1]=q;  \
 		pRRegion->DrawPath(&CropLine);
-	
+
 	while (pRect)
 	{
 		rLo = pRect->Rect.lo;
 		rHi = pRect->Rect.hi;
 
-		p0.x = iLo.x; 
+		p0.x = iLo.x;
 		p1.x = iLo.x - Length;
 		p0.y = p1.y = rLo.y;
 		LINEDRAW(p0,p1);
-		p0.x = iLo.x; 
+		p0.x = iLo.x;
 		p1.x = iLo.x - Length;
 		p0.y = p1.y = rHi.y;
 		LINEDRAW(p0,p1);
-		
+
 		p0.y = iHi.y;
 		p1.y = iHi.y + Length;
 		p0.x = p1.x = rLo.x;
@@ -2685,7 +2685,7 @@ void PrintMarksMan::RenderCropMarksAroundRect(RenderRegion* pRRegion,
 		p1.y = iHi.y + Length;
 		p0.x = p1.x = rHi.x;
 		LINEDRAW(p0,p1);
-	
+
 		p0.x = iHi.x;
 		p1.x = iHi.x + Length;
 		p0.y = p1.y = rHi.y;
@@ -2722,7 +2722,7 @@ void PrintMarksMan::RenderCropMarksAroundRect(RenderRegion* pRRegion,
 >	void PrintMarksMan::RenderPrintMarksAroundRect(PrintMarksComponent *pComp,
 												   RenderRegion* pRRegion,
 												   const Matrix &trans
-												   const DocRect& Rect, 
+												   const DocRect& Rect,
 												   MILLIPOINT bleed)
 
 	Author:		Mike_Kenny (Xara Group Ltd) <camelotdev@xara.com>
@@ -2731,8 +2731,8 @@ void PrintMarksMan::RenderCropMarksAroundRect(RenderRegion* pRRegion,
 				pRRegion= the render region to draw in
 				pSpread = the spread to draw
 	Returns:
-	Purpose:	Render all user print marks contained in this doc component 
-	
+	Purpose:	Render all user print marks contained in this doc component
+
 *****************************************************************************************/
 
 void PrintMarksMan::RenderPrintMarksAroundRect(PrintMarksComponent *pComp,
@@ -2777,7 +2777,7 @@ void PrintMarksMan::RenderPrintMarksAroundRect(PrintMarksComponent *pComp,
 			CompileMarkRegion(pComp, (MarkRegion)i );
 			MFRegion.Render(pRRegion,OuterTransform);
 		}
-	}	
+	}
 	// pop the attribute context again
 	pRRegion->RestoreContext();
 }
@@ -2842,7 +2842,7 @@ void PrintMarksMan::RenderPrintMarksAroundRect(PrintMarksComponent *pComp,
 				st=st || (NextPageRect.lo.y==CurrPageRect.hi.y);
 			}
 
-			
+
 			// construct all 16 regions around this page rect, we will itterate
 			// through these later
 
@@ -2855,7 +2855,7 @@ void PrintMarksMan::RenderPrintMarksAroundRect(PrintMarksComponent *pComp,
 				MyPageRegions.HideBottom();
 			if (st)
 				MyPageRegions.HideTop();
-			
+
 
 			RenderPrintMarksAroundRect(CurrPageRect, bleed, ViewTrans);
 
@@ -2887,7 +2887,7 @@ void PrintMarksMan::RenderPrintMarksAroundRect(PrintMarksComponent *pComp,
 				into. We add the mark if it happens to be the right region on entry.
 				Adding the mark to the formatting region adds a position record which
 				is used to render the mark when the region is rendered.
-	
+
 *****************************************************************************************/
 
 void PrintMarksMan::CompileMarkRegion(PrintMarksComponent *pComp, MarkRegion CurrRegion)
@@ -2943,7 +2943,7 @@ void PrintMarksMan::CompileMarkRegion(PrintMarksComponent *pComp, MarkRegion Cur
 	Returns:	-
 	Purpose:	Creates 16 mark formatting regions around a given page, with a
 				specified bleed
-	
+
 *****************************************************************************************/
 
 PageMarkRegion::PageMarkRegion()
@@ -2962,7 +2962,7 @@ void PageMarkRegions::Initialise(const DocRect& page, INT32 bleed)
 {
 	// ok, we've been given a page rectangle, lets build our regions
 	INT32 blox,bloy,bhix,bhiy;
-	
+
 	// calculate the bleed bbox
 	blox = page.lo.x-bleed;
 	bloy = page.lo.y-bleed;
@@ -2977,11 +2977,11 @@ void PageMarkRegions::Initialise(const DocRect& page, INT32 bleed)
 	INT32 wleny = 8*sleny;
 	INT32 cx=(page.lo.x+page.hi.x)>>1;
 	INT32 cy=(page.lo.y+page.hi.y)>>1;
-	
+
 	// top left corner
 	Region[0].Pos = DocRect(blox-hi, bhiy, blox, bhiy+hi);
 
-	// 3 along top edge	
+	// 3 along top edge
 	Region[1].Pos = DocRect(page.lo.x+spc, bhiy, page.lo.x+spc+slenx, bhiy+hi);
 	Region[2].Pos = DocRect(cx-(wlenx>>1), bhiy, cx+(wlenx>>1), bhiy+hi);
 	Region[3].Pos = DocRect(page.hi.x-spc-slenx, bhiy, page.hi.x-spc, bhiy+hi);
@@ -3199,7 +3199,7 @@ void MarkFormatRegion::SetFlipRender(BOOL flip)
 	Created:	10/08/96
 	Inputs:		pMark = a print mark item pointer
 				pForm = a mark format object pointer
-	Purpose:	
+	Purpose:
 
 ***********************************************************************************************/
 
@@ -3207,7 +3207,7 @@ BOOL MarkFormatRegion::AddMark(PrintMarkItem *pMark, MarkFormat *pForm)
 {
 	if (!pMark || !pForm)
 		return FALSE;
-	
+
 	BOOL ok=TRUE;
 
 	INT32 w = pMark->GetWidth();
@@ -3226,16 +3226,16 @@ BOOL MarkFormatRegion::AddMark(PrintMarkItem *pMark, MarkFormat *pForm)
 	{
 		if (pForm->Top)
 		{
-			DocCoord anchor = DocCoord(TheBounds.lo.x,TheBounds.hi.y); 
+			DocCoord anchor = DocCoord(TheBounds.lo.x,TheBounds.hi.y);
 			ok = MakeMark(pMark, anchor, FALSE, FALSE, TRUE, FALSE, 0, h, rt, &TLeft);
 		}
-		
+
 		if (pForm->Middle)
 		{
 			DocCoord anchor = DocCoord(TheBounds.lo.x,MkCy);
-			ok = MakeMark(pMark, anchor, FALSE, TRUE, TRUE, TRUE, 0, h>>1, rt, &MLeft);		
+			ok = MakeMark(pMark, anchor, FALSE, TRUE, TRUE, TRUE, 0, h>>1, rt, &MLeft);
 		}
-		
+
 		if (pForm->Bottom)
 		{
 			DocCoord anchor = DocCoord(TheBounds.lo.x,TheBounds.lo.y);
@@ -3247,16 +3247,16 @@ BOOL MarkFormatRegion::AddMark(PrintMarkItem *pMark, MarkFormat *pForm)
 	{
 		if (pForm->Top)
 		{
-			DocCoord anchor = DocCoord(MkCx,TheBounds.hi.y); 
+			DocCoord anchor = DocCoord(MkCx,TheBounds.hi.y);
 			ok = MakeMark(pMark, anchor, TRUE, FALSE, TRUE, FALSE, w>>1, h, rt, &TCentre);
 		}
-		
+
 		if (pForm->Middle)
 		{
 			DocCoord anchor = DocCoord(MkCx,MkCy);
-			ok = MakeMark(pMark, anchor, TRUE, TRUE, TRUE, TRUE, w>>1, h>>1, rt, &MCentre);		
+			ok = MakeMark(pMark, anchor, TRUE, TRUE, TRUE, TRUE, w>>1, h>>1, rt, &MCentre);
 		}
-		
+
 		if (pForm->Bottom)
 		{
 			DocCoord anchor = DocCoord(MkCx,TheBounds.lo.y);
@@ -3268,16 +3268,16 @@ BOOL MarkFormatRegion::AddMark(PrintMarkItem *pMark, MarkFormat *pForm)
 	{
 		if (pForm->Top)
 		{
-			DocCoord anchor = DocCoord(TheBounds.hi.x,TheBounds.hi.y); 
+			DocCoord anchor = DocCoord(TheBounds.hi.x,TheBounds.hi.y);
 			ok = MakeMark(pMark, anchor, FALSE, FALSE, FALSE, FALSE, w, h, rt, &TRight);
 		}
-		
+
 		if (pForm->Middle)
 		{
 			DocCoord anchor = DocCoord(TheBounds.hi.x,MkCy);
-			ok = MakeMark(pMark, anchor, FALSE, TRUE, FALSE, TRUE, w, h>>1, rt, &MRight);		
+			ok = MakeMark(pMark, anchor, FALSE, TRUE, FALSE, TRUE, w, h>>1, rt, &MRight);
 		}
-		
+
 		if (pForm->Bottom)
 		{
 			DocCoord anchor = DocCoord(TheBounds.hi.x,TheBounds.lo.y);
@@ -3291,7 +3291,7 @@ BOOL MarkFormatRegion::AddMark(PrintMarkItem *pMark, MarkFormat *pForm)
 
 /*******************************************************************************
 
->	virtual BOOL MarkFormatRegion::MakeMark(PseudoMark *pMark, 
+>	virtual BOOL MarkFormatRegion::MakeMark(PseudoMark *pMark,
 											DocCoord Anchor,
 											BOOL cx,
 											BOOL cy,
@@ -3345,7 +3345,7 @@ BOOL MarkFormatRegion::AddMark(PrintMarkItem *pMark, MarkFormat *pForm)
 
 *******************************************************************************/
 
-BOOL MarkFormatRegion::MakeMark(PrintMarkItem *pMark, 
+BOOL MarkFormatRegion::MakeMark(PrintMarkItem *pMark,
 								DocCoord Anchor,
 								BOOL cx,
 								BOOL cy,
@@ -3363,7 +3363,7 @@ BOOL MarkFormatRegion::MakeMark(PrintMarkItem *pMark,
 		pItem = new MarkList;
 		if (pItem==NULL)
 			return FALSE;
-		
+
 		pItem->curpos = Anchor;
 	}
 
@@ -3380,7 +3380,7 @@ BOOL MarkFormatRegion::MakeMark(PrintMarkItem *pMark,
 		pItem->MarkPos[pItem->count].dim = DocCoord(width,height);
 		pItem->MarkPos[pItem->count].rotate = rotate;
 		pItem->count++;
-		
+
 		if (OrientX)
 		{
 			pItem->MarkPos[pItem->count-1].pos.y = pItem->curpos.y - shifty;
@@ -3398,7 +3398,7 @@ BOOL MarkFormatRegion::MakeMark(PrintMarkItem *pMark,
 			{
 				pItem->MarkPos[pItem->count-1].pos.x = pItem->curpos.x - shiftx;
 				pItem->curpos.x += ((posx) ? (+width) : (-width));
-			}	
+			}
 		}
 		else
 		{
@@ -3417,7 +3417,7 @@ BOOL MarkFormatRegion::MakeMark(PrintMarkItem *pMark,
 			{
 				pItem->MarkPos[pItem->count-1].pos.y = pItem->curpos.y - shifty;
 				pItem->curpos.y += ((posy) ? (+height) : (-height));
-			}	
+			}
 		}
 	}
 
@@ -3493,7 +3493,7 @@ void MarkFormatRegion::Render(RenderRegion *pRRegion, MarkList *pMarkLst, const 
 			else
 				Transform *= Matrix(FIXED16(-1), FIXED16(0), FIXED16(0), FIXED16(1), w, 0);
 		}
-		
+
 		// Now translate into the final position
 		Transform = Transform * Matrix(pMarkLst->MarkPos[i].pos);
 		// Finally apply the outer transform before rendering
@@ -3538,5 +3538,5 @@ void MarkFormatRegion::RenderMark(RenderRegion* pRRegion, PrintMarkItem *pMark)
 	// Get the root node and render the entire subtree
 	Node* pFirstNode = pMark->GetMarkGlyph();
 	if (pFirstNode!=NULL)
-		pRRegion->RenderTree(pFirstNode, FALSE, TRUE);		
+		pRRegion->RenderTree(pFirstNode, FALSE, TRUE);
 }
