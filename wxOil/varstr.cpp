@@ -261,8 +261,8 @@ StringVar::StringVar(const wxString& wxs)
 ***************************************************************************************/
 inline StringVar& StringVar::operator+=(const StringBase& rhs)
 {
-    ERROR3IF(this==NULL, "StringVar this pointer is NULL!");
-    ERROR3IF(text==NULL || (const TCHAR*)rhs==NULL, "Call to StringVar::operator+= for an unALLOCated String");
+    ERROR3IF(text == NULL || (const TCHAR*)rhs == NULL,
+             "Call to StringVar::operator+= for an unALLOCated String");
 
     if (text && (const TCHAR*)rhs)
         SafeCat((const TCHAR*)rhs);
@@ -285,8 +285,7 @@ inline StringVar& StringVar::operator+=(const StringBase& rhs)
 ***************************************************************************************/
 inline StringVar& StringVar::operator+=(const TCHAR* s)
 {
-    ERROR3IF(this==NULL, "StringVar this pointer is NULL!");
-    ERROR3IF(text==NULL || s==NULL, "Call to String::operator+= for an unALLOCated String");
+    ERROR3IF(text == NULL || s == NULL, "Call to String::operator+= for an unALLOCated String");
 
     if (text && s)
         SafeCat(s);
@@ -307,7 +306,7 @@ inline StringVar& StringVar::operator+=(const TCHAR* s)
 ***************************************************************************************/
 StringVar& StringVar::operator+=(const TCHAR ch)
 {
-    ERROR3IF(text==NULL, "Call to String::operator+= for an unALLOCated String");
+    ERROR3IF(text == NULL, "Call to String::operator+= for an unALLOCated String");
 
     if (text && ch!=0)
     {
@@ -386,7 +385,6 @@ StringVar& StringVar::operator=(const TCHAR* s)
 ***************************************************************************************/
 inline StringVar& StringVar::operator=(const TCHAR ch)
 {
-    ERROR3IF(this==NULL, "StringVar this pointer is NULL!");
     ERROR3IF(text==NULL, "Call to String::operator= for an unALLOCated String");
 
     EnsureAlloc(1);
@@ -452,14 +450,14 @@ void StringVar::SafeCopy(const TCHAR* string, UINT32 maxlen)
 {
     ERROR3IF(string == NULL, "StringBase::SafeCopy given NULL params");
 
-    if (text!=NULL && length>0 && string!=NULL)
+    if (text != NULL && length > 0 && string != NULL)
     {
         if (maxlen==0)
             maxlen = camStrlen(string);
 
-        maxlen = ((length-1)<maxlen) ? length-1 : maxlen;       // length includes term
+        maxlen = ((length - 1) < maxlen) ? length - 1 : maxlen;       // length includes term
 
-        camStrncpy(text, string, maxlen+1);     // Copy the string AND the terminating 0 character
+        camStrncpy(text, string, maxlen + 1);     // Copy the string AND the terminating 0 character
     }
 }
 
