@@ -4713,7 +4713,7 @@ void CColourBar::OnAnyButtonDown(const wxPoint &point, INT32 Modifier) {
 	// Create a new colour, in the current colour list, copied from the
 	// current attribute/selection if possible.
 	ColourList *CurrentDocColours = ColourManager::GetColourList();
-	ERROR3IF(CurrentDocColours == NULL, _T("No colour list present?!"));
+	ERROR3IF(CurrentDocColours == NULL, "No colour list present?!");
 
 	if (CurrentDocColours != NULL)
 	{
