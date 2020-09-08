@@ -83,7 +83,7 @@ WARN_LOGFILE           =
 #---------------------------------------------------------------------------
 # configuration options related to the input files
 #---------------------------------------------------------------------------
-INPUT                  = GDraw Kernel PreComp tools wxOil wxXtra
+INPUT                  = doc/doxygen GDraw Kernel PreComp tools wxOil wxXtra
 FILE_PATTERNS          = *.c \
                          *.cc \
                          *.cxx \
