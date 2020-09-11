@@ -160,7 +160,7 @@ BEGIN_EVENT_TABLE( CRenderWnd, wxWindow )
 #endif
 END_EVENT_TABLE()
 
-BOOL CRenderWnd::m_DoubleBuffer = FALSE;
+bool CRenderWnd::m_DoubleBuffer = true;
 
 CRenderWnd::CRenderWnd(CCamView* pView)
     : wxWindow(), m_pView(pView), m_pCCClientDC(NULL)
@@ -496,6 +496,8 @@ void CRenderWnd::OnMouseMove( wxMouseEvent &event )
         SetCursor( CursorEvent.GetCursor() );
     }
 #endif
+
+    DocView::ForceRefresh();
 }
 
 /*********************************************************************************************

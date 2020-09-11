@@ -183,7 +183,7 @@ protected:
 protected:
     CCamView* m_pView;
 
-    static BOOL m_DoubleBuffer;
+    static bool m_DoubleBuffer;
     static void ReflectDoubleBufferingInChildren(wxWindow * pWindow);
 
     INT32 m_DCUsers;

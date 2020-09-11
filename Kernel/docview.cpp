@@ -830,6 +830,24 @@ DocView::~DocView()
 
 
 /********************************************************************************************
+>   static void DocView::ForceRefresh()
+
+    Author:     Ed_Cornes (Xara Group Ltd) <camelotdev@xara.com>
+    Created:    1/9/95
+    Returns:    -
+
+    Purpose:    Calles Refresh on the top level window of the current active document,
+                resulting in a OnPaint event being generated.
+********************************************************************************************/
+
+void DocView::ForceRefresh()
+{
+    DocView::GetSelected()->GetConnectionToOilView()->GetRenderWindow()->Refresh();
+}
+
+
+
+/********************************************************************************************
 >   BOOL DocView::Init()
 
     Author:     Ed_Cornes (Xara Group Ltd) <camelotdev@xara.com>
@@ -1369,8 +1387,8 @@ BOOL DocView::ViewStateChanged()
     DialogBarOp::SetSystemStateChanged();
 
     // Implementation...
-    ERROR2IF(this==NULL,FALSE,"DocView member func called on NULL pointer");
-    ERROR2IF(pDoc==NULL,FALSE,"ViewStateChanged: There MUST be an   owner doc for this view!");
+    ERROR2IF(pDoc == NULL, FALSE,
+             "ViewStateChanged: There MUST be an   owner doc for this view!");
 
     // Read DocCoords extent of document & set extent in platform-indy ViewState struct.
     pDoc->GetExtents(&ExtentLo, &ExtentHi, &PhysExtent, this);
@@ -4158,9 +4176,6 @@ RenderRegion* DocView::GetNextOnTop( DocRect* Rect )
 
 Spread* DocView::OilToSpreadCoord(OilCoord oilpos, DocCoord* pdocpos)
 {
-    // Preconditions
-    ERROR2IF(this==NULL,NULL,"DocView::OilToDoc called on NULL pointer");
-
     // Clear the destination DocCoord in case it all goes horribly wrong...
     *pdocpos = DocCoord(0,0);
 
