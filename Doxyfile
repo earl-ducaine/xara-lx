@@ -4,7 +4,7 @@
 # Project related configuration options
 #---------------------------------------------------------------------------
 PROJECT_NAME           = Camelot
-PROJECT_NUMBER         = XaraLX
+PROJECT_NUMBER         = Xoanon Graphics
 OUTPUT_DIRECTORY       = ./docs/
 CREATE_SUBDIRS         = NO
 OUTPUT_LANGUAGE        = English
@@ -67,7 +67,9 @@ ENABLED_SECTIONS       =
 MAX_INITIALIZER_LINES  = 30
 SHOW_USED_FILES        = YES
 SHOW_DIRECTORIES       = YES
-FILE_VERSION_FILTER    = Scripts/doxyver.sh 
+
+# For now no file version.
+# FILE_VERSION_FILTER    = Scripts/doxyver.sh 
 # svn stat -v $1 | sed -n 's/^[ A-Z?\*|!]\{1,15\}/r/;s/ \{1,15\}/\/r/;s/ .*//p'
 
 #---------------------------------------------------------------------------
