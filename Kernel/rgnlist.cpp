@@ -1138,8 +1138,7 @@ BOOL RenderRegionList::BackgroundRender()
 
 void RenderRegionList::ImmediateRender(BOOL bForceImmediate)
 {
-    TRACE( wxT("Warning - RenderRegionList::ImmediateRender - removed code\n") );
-//  TRACE( _T("Look, I'm in RenderRegionList::ImmediateRender()\n"));
+    // TRACE( wxT("Warning - RenderRegionList::ImmediateRender - removed code\n") );
 
     if ( CCamApp::IsDisabled() )
         return;                         // If he has got the system disabled, ignore
@@ -1172,10 +1171,10 @@ void RenderRegionList::ImmediateRender(BOOL bForceImmediate)
     if (GetCount() == 0)
         return;
 
-PORTNOTE("other", "Disabled ControlHelper")
+	PORTNOTE("other", "Disabled ControlHelper")
 #ifndef EXCLUDE_FROM_XARALX
-    if (ControlHelper::IsUserInterfaceCaptured())
-        return;     // No bg rendering if UI is captured (e.g. menu is up)
+		if (ControlHelper::IsUserInterfaceCaptured())
+			return;     // No bg rendering if UI is captured (e.g. menu is up)
 #endif
     if (DragManagerOp::IsDragActive())
         return;     // No bg rendering if a DragManager op is active (NB this is for
@@ -1207,9 +1206,8 @@ PORTNOTE("other", "Disabled ControlHelper")
             if ( !pView->GetForeBackMode() || bForceImmediate )
             {
                 // Keep user up to date
-            if (GetApplication()->GetpStatusLine())
-                GetApplication()->GetpStatusLine()->SetRenderIndicator(Animate);
-                //TRACE( _T("Immediate Render now\n"));
+				if (GetApplication()->GetpStatusLine())
+					GetApplication()->GetpStatusLine()->SetRenderIndicator(Animate);
 
                 // Render it.
                 Error::RenderThreadIn();        // Make errors close window

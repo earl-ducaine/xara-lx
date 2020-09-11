@@ -1,7 +1,8 @@
+/* -*- tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4; fill-column: 90 -*- */
 // $Id: main2.cpp 1739 2006-09-05 11:07:16Z luke $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
- 
+
                Xara LX, a vector drawing and manipulation program.
                     Copyright (C) 1993-2006 Xara Group Ltd.
        Copyright on certain contributions may be held in joint with their
@@ -32,7 +33,7 @@ ADDITIONAL RIGHTS
 
 Conditional upon your continuing compliance with the GNU General Public
 License described above, Xara Group Ltd grants to you certain additional
-rights. 
+rights.
 
 The additional rights are to use, modify, and distribute the software
 together with the wxWidgets library, the wxXtra library, and the "CDraw"
@@ -168,11 +169,11 @@ service marks of Xara Group Ltd. All rights in these marks are reserved.
 #include "barcreationdlg.h"
 #include "opbarcreation.h"
 #include "opdupbar.h"
-//#include "extendsetsdlg.h"	// for ExtendSetsDlg
+//#include "extendsetsdlg.h"    // for ExtendSetsDlg
 #include "opdrbrsh.h"
 #include "opfeathr.h"
-#include "opclip.h"			// for ClipView operations
-#include "brushdlg.h"		// for CBrushEditDlg
+#include "opclip.h"         // for ClipView operations
+#include "brushdlg.h"       // for CBrushEditDlg
 #include "brushop.h"
 #include "brshname.h"
 #include "zoomops.h"
@@ -198,19 +199,19 @@ service marks of Xara Group Ltd. All rights in these marks are reserved.
 // Ralph only
 BOOL InitPostTools1()
 {
-	return (
-			OILBitmap::Init() &&				// read default fill bitmap
-			GlobalBitmapList::Init() &&			// Setup the global bitmap list
-			GlobalFractalList::Init() &&		// Setup the fractal list
-			OpToggleScroll::Init() &&			// Register Toggle proport scrolbar Operation
-			OpMenuLoad::Init() &&				// Register Load operation
-			OpException::Init() &&
-			NodeRenderableInk::Init() &&
-			NodeRenderableBounded::Init() &&	// Declare the magnetic radii options
-			Filter::InitFilters() &&			// Init filters (must be after ExternalClipboard)
-			OpDragBox::Init() &&				// drag operation base-class
-			OpQuality::Init() 					// init the OpQuality operations
-			);
+    return (
+            OILBitmap::Init() &&                // read default fill bitmap
+            GlobalBitmapList::Init() &&         // Setup the global bitmap list
+            GlobalFractalList::Init() &&        // Setup the fractal list
+            OpToggleScroll::Init() &&           // Register Toggle proport scrolbar Operation
+            OpMenuLoad::Init() &&               // Register Load operation
+            OpException::Init() &&
+            NodeRenderableInk::Init() &&
+            NodeRenderableBounded::Init() &&    // Declare the magnetic radii options
+            Filter::InitFilters() &&            // Init filters (must be after ExternalClipboard)
+            OpDragBox::Init() &&                // drag operation base-class
+            OpQuality::Init()                   // init the OpQuality operations
+            );
 }
 
 #else
@@ -218,302 +219,301 @@ BOOL InitPostTools1()
 // Normal exe's and standalones
 BOOL InitPostTools1()
 {
-	return
+    return
 PORTNOTE("other","Removed DialogBarOp usage")
 #ifndef EXCLUDE_FROM_XARALX
-			DialogBarOp::Init() &&
+            DialogBarOp::Init() &&
 #endif
 PORTNOTE("other","Removed SystemBarOp usage")
 #ifndef EXCLUDE_FROM_XARALX
-			SystemBarOp::Init() &&				// Register system bars
+            SystemBarOp::Init() &&              // Register system bars
 #endif
-			OILBitmap::Init() &&				// read default fill bitmap
+            OILBitmap::Init() &&                // read default fill bitmap
 PORTNOTE("other","Removed Lots of init functions")
 #ifndef EXCLUDE_FROM_XARALX
-			GlobalBitmapList::Init() &&			// Setup the global bitmap list
-			GlobalFractalList::Init() &&		// Setup the fractal list
+            GlobalBitmapList::Init() &&         // Setup the global bitmap list
+            GlobalFractalList::Init() &&        // Setup the fractal list
 #endif
-	 		OpUndo::Init() &&					// Register Undo Operation
-			OpRedo::Init() &&					// Register Redo Operation
-			OpToggleFore::Init() &&				// Register Toggle fore/back render Operation
-			OpToggleDoubleBuffer::Init() &&		// Register Toggle double buffer operation
-			OpToggleSolidDrag::Init() &&		// Register Toggle solid drag operation
-			OpCut::Init() &&					// Register Cut operation
-			OpCopy::Init() &&					// Register Copy operation
-			OpPaste::Init() &&					// Register Paste operation
-			OpPasteAttributes::Init() &&		// Register Paste Attributes operation
-			OpDelete::Init() &&					// Register Delete operation
-			OpDuplicate::Init() &&				// Register Duplicate operation
-			OpClone::Init() &&					// Register Clone operation
-			OpCopyAndTransform::Init() &&		// Register the operation for dropping copies
-			OpExit::Init() &&					// Register Exit Operation
-	        BlobbyOp::Init() &&					// Temp ******
-			OpGroup::Init() &&                 	// Register group operation  
-	        OpUngroup::Init() &&               	// Register Ungroup operation  
-	        OpUngroupSpecial::Init() &&        	// Register Ungroup Special operation  
-	        OpBringToFront::Init() &&          	// Register BringToFront operation
-	        OpPutToBack::Init() &&             	// Register PutToBack operation 
-	        OpMoveForwards::Init() && 			// Register MoveForwards operation
-	        OpMoveBackwards::Init() &&         	// Register MoveBackwards operation
-			OpMoveToLyrInFront::Init() &&		// Register Move to layer in front operation
-			OpMoveToLyrBehind::Init() &&		// Register Move to layer behind operation
-			OpApplyAttribToSelected::Init() && 	// Register OpApplyAttribToSelected	Operation
-			OpApplyAttribsToSelected::Init() && // Register OpApplyAttribsToSelected Operation
-			OpApplyAttribToNode::Init() && 		// Register OpApplyAttribToNode	Operation
+            OpUndo::Init() &&                   // Register Undo Operation
+            OpRedo::Init() &&                   // Register Redo Operation
+            OpToggleFore::Init() &&             // Register Toggle fore/back render Operation
+            OpToggleDoubleBuffer::Init() &&     // Register Toggle double buffer operation
+            OpToggleSolidDrag::Init() &&        // Register Toggle solid drag operation
+            OpCut::Init() &&                    // Register Cut operation
+            OpCopy::Init() &&                   // Register Copy operation
+            OpPaste::Init() &&                  // Register Paste operation
+            OpPasteAttributes::Init() &&        // Register Paste Attributes operation
+            OpDelete::Init() &&                 // Register Delete operation
+            OpDuplicate::Init() &&              // Register Duplicate operation
+            OpClone::Init() &&                  // Register Clone operation
+            OpCopyAndTransform::Init() &&       // Register the operation for dropping copies
+            OpExit::Init() &&                   // Register Exit Operation
+            BlobbyOp::Init() &&                 // Temp ******
+            OpGroup::Init() &&                  // Register group operation
+            OpUngroup::Init() &&                // Register Ungroup operation
+            OpUngroupSpecial::Init() &&         // Register Ungroup Special operation
+            OpBringToFront::Init() &&           // Register BringToFront operation
+            OpPutToBack::Init() &&              // Register PutToBack operation
+            OpMoveForwards::Init() &&           // Register MoveForwards operation
+            OpMoveBackwards::Init() &&          // Register MoveBackwards operation
+            OpMoveToLyrInFront::Init() &&       // Register Move to layer in front operation
+            OpMoveToLyrBehind::Init() &&        // Register Move to layer behind operation
+            OpApplyAttribToSelected::Init() &&  // Register OpApplyAttribToSelected Operation
+            OpApplyAttribsToSelected::Init() && // Register OpApplyAttribsToSelected Operation
+            OpApplyAttribToNode::Init() &&      // Register OpApplyAttribToNode Operation
 
-			OpReplaceAttributes::Init() && 		// Register OpReplaceAttributes	Operation
-	        DocOps::Init() &&					// Register Doc Operations
-	        MenuPopupOps::Init() &&				// Register Menu Popup Operations
-			OpChangeBlendDistance::Declare() && // Register the change blend steps distance op
+            OpReplaceAttributes::Init() &&      // Register OpReplaceAttributes Operation
+            DocOps::Init() &&                   // Register Doc Operations
+            MenuPopupOps::Init() &&             // Register Menu Popup Operations
+            OpChangeBlendDistance::Declare() && // Register the change blend steps distance op
 
 #ifndef EXCLUDE_FROM_XARALX
-			OpToggleScroll::Init() &&			// Register Toggle proport scrolbar Operation
+            OpToggleScroll::Init() &&           // Register Toggle proport scrolbar Operation
 #endif
-			OpChangeFeatherSize::Init() &&		// Register feather size change operation
-			OpChangeFeatherProfile::Init() &&	// Register feather profile change operation
-			OpMakeShapes::Init() &&				// Register MakeShapes operation
+            OpChangeFeatherSize::Init() &&      // Register feather size change operation
+            OpChangeFeatherProfile::Init() &&   // Register feather profile change operation
+            OpMakeShapes::Init() &&             // Register MakeShapes operation
 // Neville 5/8/97 remove Stroking code
 #ifdef VECTOR_STROKING
-			OpMakeStroke::Init() &&				// Register MakeStroke operation
+            OpMakeStroke::Init() &&             // Register MakeStroke operation
 #endif // VECTOR_STROKING
-			AboutDlg::Init() &&					// Register "About Camelot" Dialog
+            AboutDlg::Init() &&                 // Register "About Camelot" Dialog
 #ifndef EXCLUDE_FROM_XARALX
-			OpUpdate::Init() &&					// Register Update Operation
-			OpRegister::Init() &&				// Register Register Operation
-			TipsDlg::Init() &&					// Register "Tip of the Day" Dialog
-			OpSlice::Init() &&					// Register Image Slicing
-			BarStatesDlg::Init() &&				// Register the Bar States Creation Dlg
-			BarRedefineStateDlg::Init() &&		// Register the Redefine Bar State Dlg
-			BarCreationDlg::Init() &&			// Register the Bar Creation Dlg
-			OpBarCreation::Init() &&			// Register the Bar Creation Op
-			OpDuplicateBar::Init() &&			// Register the Bar Duplication Op
-			OpShortenBar::Init() &&				// Register the Bar Reducing Op
-			OpDelBar::Init() &&					// Register the Bar State Deleting Op
-			OpShowState::Init() &&				// Register the Show State-Layer Op
-			OpMoveToLayer::Init() &&			// Register the op that moves the selection between layers
-			ExtendSetsDlg::Init() &&			// Register the Extend Sets Dialog
+            OpUpdate::Init() &&                 // Register Update Operation
+            OpRegister::Init() &&               // Register Register Operation
+            TipsDlg::Init() &&                  // Register "Tip of the Day" Dialog
+            OpSlice::Init() &&                  // Register Image Slicing
+            BarStatesDlg::Init() &&             // Register the Bar States Creation Dlg
+            BarRedefineStateDlg::Init() &&      // Register the Redefine Bar State Dlg
+            BarCreationDlg::Init() &&           // Register the Bar Creation Dlg
+            OpBarCreation::Init() &&            // Register the Bar Creation Op
+            OpDuplicateBar::Init() &&           // Register the Bar Duplication Op
+            OpShortenBar::Init() &&             // Register the Bar Reducing Op
+            OpDelBar::Init() &&                 // Register the Bar State Deleting Op
+            OpShowState::Init() &&              // Register the Show State-Layer Op
+            OpMoveToLayer::Init() &&            // Register the op that moves the selection between layers
+            ExtendSetsDlg::Init() &&            // Register the Extend Sets Dialog
 #endif
-			OpMakeNodesShapes::Init() &&		// Register the OpMakeNodesShapes operation
-			OpChangeBrush::Declare() &&         // Register the change brush operation
+            OpMakeNodesShapes::Init() &&        // Register the OpMakeNodesShapes operation
+            OpChangeBrush::Declare() &&         // Register the change brush operation
 
-			OpApplyClipView::Init() &&			// Register the Apply ClipView operation
-			OpRemoveClipView::Init() &&			// Register the Remove ClipView operation
+            OpApplyClipView::Init() &&          // Register the Apply ClipView operation
+            OpRemoveClipView::Init() &&         // Register the Remove ClipView operation
 // Neville 5/8/97 remove Stroking code
 #ifdef VECTOR_STROKING
-			ValueFunction::Init() &&			// Init all value function classes
+            ValueFunction::Init() &&            // Init all value function classes
 #endif // VECTOR_STROKING
-//			LayerDlg::Init() &&					// Register Layer dialog (No longer used)
+//          LayerDlg::Init() &&                 // Register Layer dialog (No longer used)
 #ifndef EXCLUDE_FROM_XARALX
 #ifndef STANDALONE
-			ToolbarDlg::Init() &&				// Register "Toolbar..." dialogs
+            ToolbarDlg::Init() &&               // Register "Toolbar..." dialogs
 #endif // STANDALONE
 #endif //EXCLUDE_FROM_XARALX
 
 // WEBSTER - markn 15/1/97
 // Removed these ops as they are not used
 #ifndef WEBSTER
-			OpLayerChange::Init() &&			// Register layer change Op
+            OpLayerChange::Init() &&            // Register layer change Op
 #endif //WEBSTER
 
 #ifndef EXCLUDE_GALS
-			SGInit::Init() &&					// Init/Register all the supergallery related Ops
+            SGInit::Init() &&                   // Init/Register all the supergallery related Ops
 #endif //EXCLUDE_GALS
-			BmapPrevDlg::Init() &&				// Bitmap Preview Dialog Box - Dbug Builds for the moment [MartinD]
+            BmapPrevDlg::Init() &&              // Bitmap Preview Dialog Box - Dbug Builds for the moment [MartinD]
 
 // Moved this here from inside ColourSGallery::Init
-			OpBackground::Init() &&
+            OpBackground::Init() &&
 
 // WEBSTER - markn 15/1/97
 // Removed these ops as they are not used
 #ifndef WEBSTER
-			OpGuideline::Init() &&				// Register the guideline op
-			OpSnapToGuides::Init() &&			// Register the snap-to-guides menu op
-			OpShowGuides::Init() &&				// Register the show-guides menu op
+            OpGuideline::Init() &&              // Register the guideline op
+            OpSnapToGuides::Init() &&           // Register the snap-to-guides menu op
+            OpShowGuides::Init() &&             // Register the show-guides menu op
 #endif //WEBSTER
 
-	        BlobbyDlg::Init() &&				// Temp ******
-	        BlobbyBar::Init() &&				// Temp ******
-			StandardBar::Init() &&
+            BlobbyDlg::Init() &&                // Temp ******
+            BlobbyBar::Init() &&                // Temp ******
+            StandardBar::Init() &&
 
 #if DEBUG_TREE
-			DebugTreeDlg::Init() &&				// Temp ******
+            DebugTreeDlg::Init() &&             // Temp ******
 #endif //DEBUG_TREE
 
 #if _DEBUG
-			DebugDlg::Init() &&					// Debug command dialogue - in debug builds only
+            DebugDlg::Init() &&                 // Debug command dialogue - in debug builds only
 #endif //_DEBUG
 
-			BlobbyTabDlg::Init() &&				// Temp ******
+            BlobbyTabDlg::Init() &&             // Temp ******
 #ifndef EXCLUDE_FROM_XARALX
 #if _DEBUG
-			OpCreateFontThumbnails::Init() &&	// Debug only
-			OpConvertFileFormats::Init() &&		// Debug only
+            OpCreateFontThumbnails::Init() &&   // Debug only
+            OpConvertFileFormats::Init() &&     // Debug only
 #endif //_DEBUG
 
 //#ifndef EXCLUDE_BFX
 //#ifndef STANDALONE
 //#ifndef WEBSTER
-//			BfxDlg::Init() &&					// Register bitmap effects dialog
+//          BfxDlg::Init() &&                   // Register bitmap effects dialog
 //#endif //WEBSTER
 //#endif
 //#endif
 
 #if DEBUG_TREE
 PORTNOTE("other","Removed CMXTreeDlg usage")
-//			CMXTreeDlg::Init() &&				// Temp ******
+//          CMXTreeDlg::Init() &&               // Temp ******
 #endif //DEBUG_TREE
 #endif //EXCLUDE_FROM_XARALX
 
 #ifdef XAR_TREE_DIALOG
-			CXFTreeDlg::Init() &&				// The Xar format debug tree dialog
+            CXFTreeDlg::Init() &&               // The Xar format debug tree dialog
 #endif //XAR_TREE_DIALOG
 
 #ifndef EXCLUDE_FROM_XARALX
-			OpWhatsThis::Init() &&				// Register the "What's This?" help mode Operation
+            OpWhatsThis::Init() &&              // Register the "What's This?" help mode Operation
 #endif //EXCLUDE_FROM_XARALX
-			ViewOps::Init() &&					// Register View Operations
-			WindowOps::Init() &&				// Register Window Operations
+            ViewOps::Init() &&                  // Register View Operations
+            WindowOps::Init() &&                // Register Window Operations
 //WEBSTER-ranbirr-12/11/96
 #ifndef WEBSTER
 #ifndef STANDALONE
-// no printing on Viewer version 
-			OpPrint::Init() &&					// Register Print operations
+// no printing on Viewer version
+            OpPrint::Init() &&                  // Register Print operations
 #endif //STANDALONE
 #endif //webster
 
-			HelpOps::Init() &&					// Register Help Operations
+            HelpOps::Init() &&                  // Register Help Operations
 
-			OpMenuImport::Init() &&				// Register import operations
-			OpMenuExport::Init() &&				// Register export operations
+            OpMenuImport::Init() &&             // Register import operations
+            OpMenuExport::Init() &&             // Register export operations
 
 #ifndef EXCLUDE_FROM_XARALX
-			OpURLImport::Init() &&				// Register internet import operations
-			URLImportDlg::Init() &&				// Register internet import operations
-			HelpDownloadOp::Init() &&			// Register help and support download operations
+            OpURLImport::Init() &&              // Register internet import operations
+            URLImportDlg::Init() &&             // Register internet import operations
+            HelpDownloadOp::Init() &&           // Register help and support download operations
 #ifndef STANDALONE
 #endif // STANDALONE
 #endif //EXCLUDE_FROM_XARALX
-			OpDroppedFile::Init() &&			// Register drag'n'drop import operations
-			BaseFileDialog::Init() &&			// Declare the open and save default paths
-			DummyOp::Init() &&					// Register dummy ops for unimplemented menu items
-			OpMenuLoad::Init() &&				// Register Load operation
+            OpDroppedFile::Init() &&            // Register drag'n'drop import operations
+            BaseFileDialog::Init() &&           // Declare the open and save default paths
+            DummyOp::Init() &&                  // Register dummy ops for unimplemented menu items
+            OpMenuLoad::Init() &&               // Register Load operation
 #ifndef STANDALONE
-			OpMenuSave::Init() &&				// Register Save operation
+            OpMenuSave::Init() &&               // Register Save operation
 #endif
-			OpException::Init() &&
+            OpException::Init() &&
 #ifndef EXCLUDE_FROM_XARALX
-			InfoBarOp::Init() &&
-			InfoBarViewOp::Init() &&
-			ExternalClipboard::Init() &&		// Create the application's external clipboard manager
+            InfoBarOp::Init() &&
+            InfoBarViewOp::Init() &&
+            ExternalClipboard::Init() &&        // Create the application's external clipboard manager
 #endif
-			FileListOp::Init() &&				// Init the Recent File List Operation
-			NodeRenderableInk::Init() &&
-			NodeRenderableBounded::Init() &&	// Declare the magnetic radii options
-			Filter::InitFilters() &&			// Init filters (must be after ExternalClipboard)
-			OpTimeDraw::Init() &&
-			OpShowGrid::Init() &&				// op for toggling "show grid" in a view
-			OpSnapToGrid::Init() &&				// op for toggling "snap to grid" in a view
+            FileListOp::Init() &&               // Init the Recent File List Operation
+            NodeRenderableInk::Init() &&
+            NodeRenderableBounded::Init() &&    // Declare the magnetic radii options
+            Filter::InitFilters() &&            // Init filters (must be after ExternalClipboard)
+            OpTimeDraw::Init() &&
+            OpShowGrid::Init() &&               // op for toggling "show grid" in a view
+            OpSnapToGrid::Init() &&             // op for toggling "snap to grid" in a view
 // WEBSTER - markn 15/1/97
 // Removed these ops as they are not used
 #ifndef WEBSTER
-			OpSnapToObjects::Init() &&			// op for toggling "snap to objects" in a view
+            OpSnapToObjects::Init() &&          // op for toggling "snap to objects" in a view
 #endif
-			OpPullOntoGrid::Init() &&			// Op for pulling selection onto the grid
+            OpPullOntoGrid::Init() &&           // Op for pulling selection onto the grid
 
 PORTNOTE("other","Removed OLEPrefs usage")
 #ifndef EXCLUDE_FROM_XARALX
-			OLEPrefs::Init() &&					// Initialise any OLE related prefs
+            OLEPrefs::Init() &&                 // Initialise any OLE related prefs
 #endif
 
 PORTNOTE("other","Removed various bevel usage")
 #ifdef BUILDSHADOWS
 #ifndef EXCLUDE_FROM_XARALX
-			OpBevel::Init()	&&					// bevelling operator
+            OpBevel::Init() &&                  // bevelling operator
 #endif
-			OpCreateBevel::Declare() && 
-			OpRemoveBevel::Declare() &&
-			OpChangeBevelLightAngle::Declare() &&
-			OpSelectBevel::Declare() &&
-			OpApplyAttribForShadows::Init() &&
-#endif 
-			// Contouring ops
-			OpCreateContour::Declare() &&
-			OpRemoveContour::Declare() &&
-			OpChangeContourWidth::Declare() &&
+            OpCreateBevel::Declare() &&
+            OpRemoveBevel::Declare() &&
+            OpChangeBevelLightAngle::Declare() &&
+            OpSelectBevel::Declare() &&
+            OpApplyAttribForShadows::Init() &&
+#endif
+            // Contouring ops
+            OpCreateContour::Declare() &&
+            OpRemoveContour::Declare() &&
+            OpChangeContourWidth::Declare() &&
 
 #ifdef ARROWHEADS
-			OpChangeStartArrowExtendsDesc::Declare()) && // makes arrows sit on the line instead
-												   // of extending the line
-			OpChangeEndArrowExtendsDesc::Declare()) &&
+            OpChangeStartArrowExtendsDesc::Declare()) && // makes arrows sit on the line instead
+                                                   // of extending the line
+            OpChangeEndArrowExtendsDesc::Declare()) &&
 #endif
 
 #ifndef STANDALONE
-			OpNodePathEditBlob::Init() &&		// Node path editing itself operation
-			OpNodePathEditControlBlob::Init() &&	// Node path editing its control points operation
-			OpFitTextToCurve::Init() &&			// Fit text line to path
-			OpTextKern::Init() &&				// Apply kern op
-			OpTextAutoKern::Init() &&			// Apply kern op
-			OpJoinShapes::Init() &&				// Join shapes operation
-			OpBreakShapes::Init() &&			// Break shapes operation
-			OpNodePathAddEndpoint::Init() &&	// op to add a curve or line at the end of a path
-			OpCloseNodePaths::Init() &&			// op to auto-close paths
-			OpReshapeOrAddPoint::Init() &&		// op to reform or add a point to a path
-			OpNewPath::Init() &&				// Adds a new path and starts editing it
-			OpEditRegularShape::Init() &&		// Changing a regular shape
-			OpDragRegularShape::Init() &&		// Changing a regular shape	via dragging
-			OpReformShapeEdge::Init() &&		// Reforming the edges of a regular shape
-			OpToggleSmooth::Init() &&			// Toggles between smooth and cusp point
-			OpMakeSegmentsCurves::Init() &&		// Make path segments curved
-			OpMakeSegmentsLines::Init() &&		// Make path segments lines
-			OpReversePath::Init() &&			// Reverse the path(s)
-			OpMovePathPoint::Init() &&			// Move a path point operation
-//			OpEditEllipse::Init() &&			// Editing of a (old style) node ellipse
-			OpEditRectangle::Init() &&			// Editing of a (old style) node rectangle
-//			DialogBarOp::Init() &&				// init the DialogBarOp descriptors
+            OpNodePathEditBlob::Init() &&       // Node path editing itself operation
+            OpNodePathEditControlBlob::Init() &&    // Node path editing its control points operation
+            OpFitTextToCurve::Init() &&         // Fit text line to path
+            OpTextKern::Init() &&               // Apply kern op
+            OpTextAutoKern::Init() &&           // Apply kern op
+            OpJoinShapes::Init() &&             // Join shapes operation
+            OpBreakShapes::Init() &&            // Break shapes operation
+            OpNodePathAddEndpoint::Init() &&    // op to add a curve or line at the end of a path
+            OpCloseNodePaths::Init() &&         // op to auto-close paths
+            OpReshapeOrAddPoint::Init() &&      // op to reform or add a point to a path
+            OpNewPath::Init() &&                // Adds a new path and starts editing it
+            OpEditRegularShape::Init() &&       // Changing a regular shape
+            OpDragRegularShape::Init() &&       // Changing a regular shape via dragging
+            OpReformShapeEdge::Init() &&        // Reforming the edges of a regular shape
+            OpToggleSmooth::Init() &&           // Toggles between smooth and cusp point
+            OpMakeSegmentsCurves::Init() &&     // Make path segments curved
+            OpMakeSegmentsLines::Init() &&      // Make path segments lines
+            OpReversePath::Init() &&            // Reverse the path(s)
+            OpMovePathPoint::Init() &&          // Move a path point operation
+//          OpEditEllipse::Init() &&            // Editing of a (old style) node ellipse
+            OpEditRectangle::Init() &&          // Editing of a (old style) node rectangle
+//          DialogBarOp::Init() &&              // init the DialogBarOp descriptors
 //#endif
-			OpDragBox::Init() &&				// drag operation base-class
-			OpQuality::Init() &&				// init the OpQuality operations
-			BmpDlg::Init() &&					// Register Bitmap Properties Dialog
-			GIFAnimationPropertyTabsDlg::Init() &&	// Register the GIF animation tabs dialog
-			AnimExOptns::Init() &&					// Register the Animation Export Options tabs dialog	
-			OpConvertPathToShapes::Declare() &&		// convert path to shapes operation
-			OpChangeBrushDefinition::Declare() &&
+            OpDragBox::Init() &&                // drag operation base-class
+            OpQuality::Init() &&                // init the OpQuality operations
+            BmpDlg::Init() &&                   // Register Bitmap Properties Dialog
+            GIFAnimationPropertyTabsDlg::Init() &&  // Register the GIF animation tabs dialog
+            AnimExOptns::Init() &&                  // Register the Animation Export Options tabs dialog
+            OpConvertPathToShapes::Declare() &&     // convert path to shapes operation
+            OpChangeBrushDefinition::Declare() &&
 #ifndef EXCLUDE_FROM_XARALX
 // WEBSTER-ranbirr-13/11/96
 #ifndef WEBSTER
-			SepsDlg::Init() &&					// Init the separation properties dialog
-			OpShowPrintBorders::Init() &&		// init the Show Print Borders operation
-#endif	//webster
+            SepsDlg::Init() &&                  // Init the separation properties dialog
+            OpShowPrintBorders::Init() &&       // init the Show Print Borders operation
+#endif  //webster
 
 // Neville 2/10/97 remove Stroking code
 #ifdef VECTOR_STROKING
-			OpTogglePressure::Init() &&			// Register the pen pressure On/Off operation
+            OpTogglePressure::Init() &&         // Register the pen pressure On/Off operation
 #endif // VECTOR_STROKING
 
-			XaraCMS::InitPrefs() &&  			// Init Xara CMS Colour manager settings
+            XaraCMS::InitPrefs() &&             // Init Xara CMS Colour manager settings
 #endif
 #else
 #ifndef EXCLUDE_FROM_XARALX
-			OpDragBox::Init() &&				// drag operation base-class
+            OpDragBox::Init() &&                // drag operation base-class
 #endif
-			OpQuality::Init() &&  				// init the OpQuality operations
+            OpQuality::Init() &&                // init the OpQuality operations
 #endif
-			CBiasGainDlg::Init() &&
-			CBrushEditDlg::Init () &&
-			OpSelectBrush::Declare() &&
-			CNameBrushDlg::Init() &&
-			CInitBrushNameDlg::Init() &&
-			OpDeactivateBrush::Declare() &&
+            CBiasGainDlg::Init() &&
+            CBrushEditDlg::Init () &&
+            OpSelectBrush::Declare() &&
+            CNameBrushDlg::Init() &&
+            CInitBrushNameDlg::Init() &&
+            OpDeactivateBrush::Declare() &&
 
-			OpZoomIn::Init() &&
-			OpZoomOut::Init() &&
+            OpZoomIn::Init() &&
+            OpZoomOut::Init() &&
 #ifndef EXCLUDE_FROM_XARALX
-			OpLiveEffect::Init() &&				// Register the liveeffects ops (now done by LiveEffecttool)
-			&& NodeBitmapEffect::Init() &&
+            OpLiveEffect::Init() &&             // Register the liveeffects ops (now done by LiveEffecttool)
+            && NodeBitmapEffect::Init() &&
 #endif
-			InitUserHelp() &&
-			TRUE;
+            InitUserHelp() &&
+            TRUE;
 }
 
 #endif
-
