@@ -112,3 +112,14 @@ function create_apply_patch_from_alt_branch {
     git --no-pager diff diff rewrite-cdraw  "wxOil/$FILE" > "$FILE.patch"
     git apply -R "$FILE".patch; make -j 8
 }
+
+function build_doxygen_files {
+    doxygen Doxyfile
+}
+
+
+
+# Setup continuous document build.
+function enable_doxygen_file_monitering {
+    inotify-hookable -f doc/doxygen/overviews/internal-coding-guide.h -c 'doxygen Doxyfile'
+}
