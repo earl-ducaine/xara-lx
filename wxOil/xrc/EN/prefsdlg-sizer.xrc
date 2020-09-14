@@ -103,51 +103,51 @@
                     <label>Bitmaps</label>
                     <font>
                         <size>8</size>
-					</font>
-					<object class="sizeritem">
-						<flag>wxALIGN_CENTER_VERTICAL|wxADJUST_MINSIZE</flag>
-          	            <border>5</border>
-              	        <option>1</option>
-						<object class="wxBoxSizer">
-							<orient>wxHORIZONTAL</orient>
-	    	                <object class="sizeritem">
-    	    	                <flag>wxALIGN_CENTER_VERTICAL|wxALL</flag>
-        	    	            <border>5</border>
-            	    	        <object class="wxCheckBox" name="IDC_OPTS_SMOOTH_BITMAPS">
-                	    	        <pos>16,130</pos>
-                    	    	    <font>
-                        	    	    <size>8</size>
-		                            </font>
-    		                        <label>N&amp;ever smooth</label>
-        		                    <checked>0</checked>
-            		            </object>
-	            	        </object>
-    	            	    <object class="sizeritem">
-        	            	    <flag>wxALIGN_CENTER_VERTICAL|wxALL|wxADJUST_MINSIZE</flag>
-            	            	<border>5</border>
-   		             	        <option>1</option>
-	                    	    <object class="wxStaticText" name="IDC_OPTS_INFO2">
-        	                	    <pos>123,130</pos>
-            	                	<font>
-                	 	               <size>8</size>
-                    		        </font>
-                        		    <style>wxALIGN_RIGHT</style>
-	                        	    <label>DPI when auto generated</label>
-	    	                    </object>
-    	    	            </object>
-        	    	        <object class="sizeritem">
-            	    	        <flag>wxALIGN_CENTER_VERTICAL|wxALL</flag>
-                	    	    <border>5</border>
-                    	    	<object class="wxTextCtrl" name="IDC_OPTS_COMPOUNDDPI">
-    	                        	<size>34,20</size>
-		                            <pos>258,126</pos>
-    	    	                    <font>
-        		                        <size>8</size>
-            		                </font>
-                		        </object>
-							</object>
-						</object>
-					</object>
+                                        </font>
+                                        <object class="sizeritem">
+                                                <flag>wxALIGN_CENTER_VERTICAL|wxADJUST_MINSIZE</flag>
+                            <border>5</border>
+                        <option>1</option>
+                                                <object class="wxBoxSizer">
+                                                        <orient>wxHORIZONTAL</orient>
+                                <object class="sizeritem">
+                                <flag>wxALIGN_CENTER_VERTICAL|wxALL</flag>
+                                    <border>5</border>
+                                <object class="wxCheckBox" name="IDC_OPTS_SMOOTH_BITMAPS">
+                                        <pos>16,130</pos>
+                                    <font>
+                                            <size>8</size>
+                                            </font>
+                                        <label>N&amp;ever smooth</label>
+                                            <checked>0</checked>
+                                    </object>
+                                </object>
+                            <object class="sizeritem">
+                                    <flag>wxALIGN_CENTER_VERTICAL|wxALL|wxADJUST_MINSIZE</flag>
+                                <border>5</border>
+                                        <option>1</option>
+                                    <object class="wxStaticText" name="IDC_OPTS_INFO2">
+                                            <pos>123,130</pos>
+                                        <font>
+                                               <size>8</size>
+                                        </font>
+                                            <style>wxALIGN_RIGHT</style>
+                                            <label>DPI when auto generated</label>
+                                    </object>
+                            </object>
+                                <object class="sizeritem">
+                                <flag>wxALIGN_CENTER_VERTICAL|wxALL</flag>
+                                    <border>5</border>
+                                <object class="wxTextCtrl" name="IDC_OPTS_COMPOUNDDPI">
+                                        <size>34,20</size>
+                                            <pos>258,126</pos>
+                                    <font>
+                                                <size>8</size>
+                                        </font>
+                                        </object>
+                                                        </object>
+                                                </object>
+                                        </object>
                     <object class="sizeritem">
                         <flag>wxALIGN_CENTER_VERTICAL|wxALL</flag>
                         <border>5</border>
@@ -161,6 +161,9 @@
                     </object>
                </object>
             </object>
+
+
+
             <object class="sizeritem">
                 <flag>wxGROW|wxLEFT|wxRIGHT|wxBOTTOM</flag>
                 <border>5</border>
@@ -175,7 +178,7 @@
                         <border>5</border>
                         <object class="wxFlexGridSizer">
                             <cols>2</cols>
-                            <rows>2</rows>
+                            <rows>4</rows>
                             <vgap>0</vgap>
                             <hgap>0</hgap>
                             <growablecols>1</growablecols>
@@ -241,10 +244,57 @@
                     </object>
                 </object>
             </object>
+
+            <object class="sizeritem">
+                <flag>wxGROW|wxLEFT|wxRIGHT|wxBOTTOM</flag>
+                <border>5</border>
+                <object class="wxStaticBoxSizer" name="IDC_OPTS_COLOURGRP">
+                    <orient>wxVERTICAL</orient>
+                    <label>Controls</label>
+                    <font>
+                        <size>8</size>
+                    </font>
+                    <object class="sizeritem">
+                        <flag>wxGROW</flag>
+                        <border>5</border>
+                        <object class="wxFlexGridSizer">
+                            <cols>2</cols>
+                            <rows>1</rows>
+                            <vgap>0</vgap>
+                            <hgap>0</hgap>
+                            <growablecols>1</growablecols>
+                            <object class="sizeritem">
+                                <flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxALL|wxADJUST_MINSIZE</flag>
+                                <border>5</border>
+                                <object class="wxStaticText" name="IDC_OPTS_CONTOL_POINT_SIZE_TEXT">
+                                    <pos>16,178</pos>
+                                    <font>
+                                        <size>8</size>
+                                    </font>
+                                    <label>&amp;Colour line size</label>
+                                </object>
+                            </object>
+
+                            <object class="sizeritem">
+                                <flag>wxALIGN_CENTER_VERTICAL|wxALL</flag>
+                                <border>5</border>
+                                <object class="wxTextCtrl" name="IDC_OPTS_COMPOUNDDPI">
+                                    <size>34,20</size>
+                                    <pos>258,126</pos>
+                                    <font>
+                                        <size>8</size>
+                                    </font>
+                                </object>
+                            </object>
+                        </object>
+                    </object>
+                </object>
+            </object>
+
         </object>
- 		<title> View </title>
-		<label> View </label>
-	</object>
+                <title> View </title>
+                <label> View </label>
+        </object>
     <object class="wxPanel" name="IDD_OPTSTAB_MISC">
         <size>309,305</size>
         <object class="wxBoxSizer">
@@ -545,9 +595,9 @@
                 </object>
             </object>
         </object>
-		<title> General </title>
-		<label> General </label>
-	</object>
+                <title> General </title>
+                <label> General </label>
+        </object>
     <object class="wxPanel" name="IDD_OPTSTAB_PAGE">
         <object class="wxBoxSizer">
             <orient>wxVERTICAL</orient>
@@ -795,9 +845,9 @@
                 </object>
             </object>
         </object>
-		<title> Page </title>
-		<label> Page </label>
-	</object>
+                <title> Page </title>
+                <label> Page </label>
+        </object>
     <object class="wxPanel" name="IDD_OPTSTAB_TUNE">
         <size>309,305</size>
         <object class="wxBoxSizer">
@@ -1120,8 +1170,8 @@
                 </object>
             </object>
         </object>
-		<title> Tune-ups </title>
-		<label> Tune-ups </label>
+                <title> Tune-ups </title>
+                <label> Tune-ups </label>
     </object>
     <object class="wxPanel" name="IDD_OPTSTAB_SCALE">
         <size>309,305</size>
@@ -1235,8 +1285,8 @@
                 </object>
             </object>
         </object>
-		<title> Scaling </title>
-		<label> Scaling </label>
+                <title> Scaling </title>
+                <label> Scaling </label>
     </object>
     <object class="wxPanel" name="IDD_OPTSTAB_POINTERS">
         <size>309,305</size>
@@ -1387,8 +1437,8 @@
                 </object>
             </object>
         </object>
- 		<title> Mouse </title>
-		<label> Mouse </label>
+                <title> Mouse </title>
+                <label> Mouse </label>
    </object>
     <object class="wxPanel" name="IDD_OPTSTAB_GRID">
         <size>309,305</size>
@@ -1581,9 +1631,9 @@
                 </object>
             </object>
         </object>
-		<title> Grid and Ruler </title>
-		<label> Grid and Ruler </label>
-	</object>
+                <title> Grid and Ruler </title>
+                <label> Grid and Ruler </label>
+        </object>
     <object class="wxPanel" name="IDD_OPTSTAB_UNITS">
         <size>309,305</size>
         <object class="wxBoxSizer">
@@ -1761,9 +1811,9 @@
                 </object>
             </object>
         </object>
-		<title> Units </title>
-		<label> Units </label>
-	</object>
+                <title> Units </title>
+                <label> Units </label>
+        </object>
     <object class="wxDialog" name="IDD_OPTS_UNITPROPERTIES">
         <size>355,183</size>
         <title>Unit properties</title>
@@ -1977,9 +2027,9 @@
                 </object>
             </object>
         </object>
-		<title>Unit properties</title>
-		<label>Unit properties</label>
-	</object>
+                <title>Unit properties</title>
+                <label>Unit properties</label>
+        </object>
     <object class="wxPanel" name="IDD_OPTSTAB_PLUGINS">
         <size>309,305</size>
         <object class="wxBoxSizer">
@@ -2102,8 +2152,8 @@
                     </object>
                 </object>
             </object>
-		</object>
-		<title>Effects &amp;&amp; Plugins</title>
-		<label>Effects &amp;&amp; Plugins</label>
-	</object>
+                </object>
+                <title>Effects &amp;&amp; Plugins</title>
+                <label>Effects &amp;&amp; Plugins</label>
+        </object>
 </resource>
