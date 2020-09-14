@@ -117,9 +117,21 @@ function build_doxygen_files {
     doxygen Doxyfile
 }
 
-
-
 # Setup continuous document build.
 function enable_doxygen_file_monitering {
-    inotify-hookable -f doc/doxygen/overviews/internal-coding-guide.h -c 'doxygen Doxyfile'
+    inotify-hookable \
+	-w doc/doxygen \
+	-w tools \
+	-w Kernel \
+	-w wxOil \
+	-w util-scripts \
+	-f Doxyfile -c 'doxygen Doxyfile'
+}
+
+function build_resources {
+    ./Scripts/build-resources.sh
+    cd wxOil/
+    mv resources.cpp resources.h
+    git checkout -f resources.cpp
+    cd ..
 }
