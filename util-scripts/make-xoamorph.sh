@@ -130,8 +130,4 @@ function enable_doxygen_file_monitering {
 
 function build_resources {
     ./Scripts/build-resources.sh
-    cd wxOil/
-    mv resources.cpp resources.h
-    git checkout -f resources.cpp
-    cd ..
 }
