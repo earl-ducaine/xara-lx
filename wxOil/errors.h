@@ -600,11 +600,9 @@ public:
 # endif
     static void CDECL TraceUser(const char *, LPCTSTR, ...);
     static void CDECL TraceAll(wxString, ...);
-    static void CDECL TraceTime(const TCHAR * t);
 #else
     static void CDECL TraceUser(const char *, LPCTSTR, ...) { }
     static void CDECL TraceAll(wxString, ...) { }
-    static void CDECL TraceTime(const TCHAR*) { }
 #endif
 
     // Stack walking stuff
@@ -802,7 +800,6 @@ UINT32 Error::GetErrorModule()
 #define TRACEALL TRACE
 #define RELTRACE Error::ReleaseTrace
 #define TRACE Error::TraceAll
-#define TRACET Error::TraceTime
 #define TRACE0 Error::TraceAll
 #define ASSERT wxASSERT
 
@@ -830,24 +827,20 @@ UINT32 Error::GetErrorModule()
 #define ERROR3IF_PF(condition, args) \
   do { } while (0)
 
-#define TRACEUSER 1 ? (void)0 : Error::TraceUser
+// #define TRACEUSER 1 ? (void)0 : Error::TraceUser
 #define TRACEALL TRACE
 #define RELTRACE Error::ReleaseTrace
 
-#define TRACE \
-  1 ? (void)0 : Error::TraceAll
+// #define TRACE \
+//   1 ? (void)0 : Error::TraceAll
 
 #define TRACE0 \
   1 ? (void)0 : Error::TraceAll
 
-#define TRACET                  \
-  1 ? (void)0 : Error::TraceAll
-
-// #define ASSERT(condition)                            do { } while (0)
-#define ASSERT(expr) do { (void)(expr); } while (0)
-
-
-
+#define ASSERT(expr) \
+    do { \
+        (void)(expr); \
+    } while (0)
 
 #endif // _DEBUG
 

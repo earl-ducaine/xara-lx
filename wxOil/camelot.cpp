@@ -662,21 +662,30 @@ bool CCamApp::OnInit()
     {
 		List::ListDebugLevel = listlevel;
     }
+
 	// Set up the username for tracing
-	// We should default this to the environment setting for (say) LOGNAME
 	wxString Username = _T("");
+
 	// Overwrite with LOGNAME if it is set
 	wxGetEnv(_T("LOGNAME"), &Username);
+
 	// Overwrite with -u option if it is set
 	parser.Found(_T("u"), &Username);
 	Error::SetUserName(Username);
-	if (Username==_T("")) {
+
+	if (Username == _T("")) {
 		TRACEUSER("ALL", _T("No user specific trace output\n"));
 	} else {
-		//      TRACEUSER("ALL",_T("Tracing output where user is %s\n"),(const char *)Username.mb_str(wxConvUTF8));
-		TRACEUSER("ALL",_T("Tracing output where user is %s\n"),(const TCHAR *)Username.c_str());
+		wxString message;
+		message.Printf(_T("Tracing output where user is: %s\n"), Username);
+		TRACEUSER("ALL", message);
 	}
-	TRACEUSER("ALL",_T("Memory debugging %d, List debugging %d\n"), SimpleCCObject::CheckMemoryFlag, List::ListDebugLevel);
+
+	TRACEUSER("ALL",
+			  _T("Memory debugging %d, List debugging %d\n"),
+			  SimpleCCObject::CheckMemoryFlag,
+			  List::ListDebugLevel);
+
 #endif
 	// OK, now we've handled the help case, and some VERY early init, we
 	// should see if another instance is running.  Set and check for
@@ -773,7 +782,7 @@ bool CCamApp::OnInit()
 	CamProfile::ActivateProfiling(TRUE);
 	// Indicate time from now on should be assigned to "OTHER"
 	CamProfile::AtBase(CAMPROFILE_OTHER);
-	TRACET(_T("CCamApp::OnInit first available time to trace"));
+	TRACE(_T("CCamApp::OnInit first available time to trace"));
 	// Initialize resources system
 	if (!CamResource::Init()) return FALSE;
 	// Initialize the art provider - needed for dialogs
@@ -786,7 +795,7 @@ bool CCamApp::OnInit()
 	// We need this pretty early so we can handle ERROR boxes etc
 	if (!DialogEventHandler::Init()) return FALSE;
 	if (!ControlList::Init()) return FALSE;
-	TRACET(_T("CCamApp::Calling Camelot.Init"));
+	TRACE(_T("CCamApp::Calling Camelot.Init"));
 	if( !Camelot.Init() )
 		return false;
 
@@ -799,12 +808,26 @@ bool CCamApp::OnInit()
 	}
 
 	// Check the resource dir exists
-	Camelot.DeclarePref( NULL, TEXT("ResourceDirOverride"), &m_strResourceDirPathOverride );
-	m_strResourceDirPath = m_strResourceDirPathOverride; // this way, the path we find never gets put within the preferences
-	if( /*bFirstRun ||*/ m_strResourceDirPath == _T("") || !wxDir::Exists( (PCTSTR)m_strResourceDirPath ) ) // AB: don't need to do this on first run especially
+	if (Camelot.DeclareSection(TEXT("Directories"), 10))
+    {
+		Camelot.DeclarePref(NULL,
+							TEXT("ResourceDirOverride"),
+							&m_strResourceDirPathOverride);
+
+		TRACE(_T("ResourceDirOverride = %s\n"), PCTSTR(m_strResourceDirPathOverride));
+
+		// This way, the path we find never gets put within the preferences
+		m_strResourceDirPath = m_strResourceDirPathOverride;
+	}
+
+	// AB: Don't need to do this on first run especially
+	if (/*bFirstRun ||*/
+		m_strResourceDirPath == _T("") ||
+		!wxDir::Exists((PCTSTR)m_strResourceDirPath))
     {
 #if !defined(RESOURCE_DIR)
-		// we can't use auto pointers here because they free using delete but BR allocates using malloc (strdup actually)
+		// we can't use auto pointers here because they free using
+		// delete but BR allocates using malloc (strdup actually)
 		char * pszDataPath = br_find_data_dir( "/usr/share" );
 		if (pszDataPath)
 		{
@@ -828,14 +851,24 @@ bool CCamApp::OnInit()
     }
 	TRACEUSER( "luke", _T("ResDir = %s\n"), PCTSTR(m_strResourceDirPath) );
 	// Get the media replay application setting
-	Camelot.DeclarePref( NULL, TEXT("MediaApplication"), &m_strMediaApplication );
-	TRACET(_T("CCamApp::Calling InitKernel"));
+
+
+	if (Camelot.DeclareSection(TEXT("Default Applications"), 10))
+    {
+		Camelot.DeclarePref(TEXT("Default Applications"),
+							TEXT("MediaApplication"),
+							&m_strMediaApplication);
+
+		TRACE(_T("MediaApplication = %s\n"), PCTSTR(m_strMediaApplication));
+	}
+
+	TRACE(_T("CCamApp::Calling InitKernel"));
 	// then initialise the kernel (and almost everything else)
 	if( !InitKernel() )
 		return false;
 	if( !Camelot.LateInit() )
 		return false;
-	TRACET(_T("CCamApp::Calling GRenderRegion::Init"));
+	TRACE(_T("CCamApp::Calling GRenderRegion::Init"));
 	if (!GRenderRegion::Init(true))
 		return false;
 	// Declare the prefs for the window size and state
@@ -845,7 +878,7 @@ bool CCamApp::OnInit()
 		Camelot.DeclarePref(NULL, TEXT("MainWndMin"), &MainWndMinimized, 0, 1);
 		Camelot.DeclarePref(NULL, TEXT("MainWndPos"), &MainWndPosString);
     }
-	TRACET(_T("CCamApp::Making Doc Manager"));
+	TRACE(_T("CCamApp::Making Doc Manager"));
 	// Create the document manager and register our doc template
 	m_docManager = std::unique_ptr<wxDocManager>( new wxDocManager() );
 
@@ -921,12 +954,12 @@ bool CCamApp::OnInit()
 		WndRect.y = ScreenSize.y / 10;
 		WndRect.height = ScreenSize.y - WndRect.y * 2;
 	}
-	TRACET(_T("CCamApp::Making Frame Window"));
+	TRACE(_T("CCamApp::Making Frame Window"));
 	m_pMainFrame = new CCamFrame( m_docManager.get(), (wxFrame *)NULL, wxT("Xara Xtreme"),
 								  WndRect.GetPosition(), WndRect.GetSize(), wxDEFAULT_FRAME_STYLE);
 	m_pMainFrame->Show(FALSE); // Don't show it yet
 #if !defined(XARA_MENUGEN)
-	TRACET(_T("CCamApp::Making Menu structure"));
+	TRACE(_T("CCamApp::Making Menu structure"));
 	//
 	// Build the MDI style file menu
 	// This is just a simple menu. The full menu is created
@@ -968,7 +1001,7 @@ bool CCamApp::OnInit()
 	// I don't know how to do this yet, but I'm looking....
 	//    wxAcceleratorTable* pAccelTable = pMenuBar->GetAccelTable();
 	//    *pAccelTable = wxAcceleratorTable();
-	TRACET(_T("CCamApp::Init Setting mainframe as top window"));
+	TRACE(_T("CCamApp::Init Setting mainframe as top window"));
 	m_pMainFrame->CreateToolbars();
 	m_pMainFrame->UpdateFrameManager();
 	// Show the main frame window
@@ -1008,7 +1041,7 @@ bool CCamApp::OnInit()
 #endif
 	Tool::SelectFirstTool();
 	// Go through the command line and load documents
-	TRACET(_T("CCamApp::Init Loading docs (if any) from command line"));
+	TRACE(_T("CCamApp::Init Loading docs (if any) from command line"));
 	if( 0 == parser.GetParamCount() ) {
 		m_docManager->CreateDocument( _T(""), wxDOC_NEW );
 	} else {
