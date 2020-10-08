@@ -6,6 +6,15 @@
 # Call with a -f argument to force build of resources even if the
 # system doesn't think it necessary
 
+# Note, this script uses wxrc. If you have not installed the toolkit
+# into /usr, you'll need to manually add the executable to your path
+# when you run this script. Something like:
+#
+#
+# export WXRC="/home/myname/dev/xara/xara-lx/wxWidgets-3.0.3/buildgtk/utils/wxrc/wxrc"; Scripts/build-resources.sh
+
+
+
 NEWRES=0
 
 if test "$1" = "-f" ; then
@@ -88,17 +97,41 @@ fi
 
 if test "$NEWRES" -eq 1 ; then
     echo "Rebuilding resources" 1>&2
-    rm -f resources.cpp xrc/xrc.check xrc/resources.xrs xrc/dialogs.xrc xrc/strings.xrc xrc/strings.lst 1>&2 2>/dev/null
+
+    rm -f resources.cpp \
+       xrc/xrc.check \
+       xrc/resources.xrs \
+       xrc/dialogs.xrc \
+       xrc/strings.xrc \
+       xrc/strings.lst 1>&2 2>/dev/null
 
     echo "Combining dialog & string resources" 1>&2 && \
-    touch xrc/strings.xrc && \
-    $TOPDIR/Scripts/combinexrc.pl -b missing.png -o xrc/dialogs.xrc $XRCDIALOGS && \
-    $TOPDIR/Scripts/combinexrc.pl -b missing.png -t -s -o xrc/strings.lst $XRCSTRINGS && \
-    ( ( perl -ne 'chomp;s/^\S+\t//;print "_(\"$_\");\n";' < xrc/strings.lst && $WXRC -g xrc/dialogs.xrc) | sort -u | \
-    perl -ne 'print unless /^_\(\"\"\)\;\s+$/;' | sed 's/&amp;/\&/g' | \
-    $XGETTEXT --force-po -k_ -C -i - --no-location --copyright-holder "Xara Group Ltd" --msgid-bugs-address=bugs@xara.com -d xaralx -o xrc/xaralx.po ) && \
-    echo "Generating resource checksum and resources.cpp" 1>&2 && \
-    ( cat xrc/dialogs.xrc xrc/strings.xrc xrc/strings.lst $XRCBITMAPS | $CHECKSUM | awk '{print $1}' > xrc/xrc.check ) && \
-    $ZIP -9 -j -q xrc/resources.xrs xrc/xrc.check xrc/dialogs.xrc xrc/strings.xrc xrc/strings.lst $XRCBITMAPS && \
-    $TOPDIR/Scripts/bin2cpp.pl -f CamResource::GetBinaryFileInfo xrc/resources.xrs resources.h
+	touch xrc/strings.xrc && \
+	$TOPDIR/Scripts/combinexrc.pl -b missing.png -o xrc/dialogs.xrc $XRCDIALOGS && \
+	$TOPDIR/Scripts/combinexrc.pl -b missing.png -t -s -o xrc/strings.lst $XRCSTRINGS && \
+	( ( perl -ne 'chomp;s/^\S+\t//;print "_(\"$_\");\n";' \
+		 < xrc/strings.lst && $WXRC -g xrc/dialogs.xrc) | \
+	      sort -u | \
+	      perl -ne 'print unless /^_\(\"\"\)\;\s+$/;' | \
+	      sed 's/&amp;/\&/g' | \
+	      $XGETTEXT --force-po \
+			-k_ \
+			-C \
+			-i \
+			- \
+			--no-location \
+			--copyright-holder "Xara Group Ltd" \
+			--msgid-bugs-address=bugs@xara.com \
+			-d xaralx \
+			-o xrc/xaralx.po ) && \
+	echo "Generating resource checksum and resources.cpp" 1>&2 && \
+	( cat xrc/dialogs.xrc xrc/strings.xrc xrc/strings.lst $XRCBITMAPS | \
+	      $CHECKSUM | \
+	      awk '{print $1}' > xrc/xrc.check ) && \
+	$ZIP -9 -j -q xrc/resources.xrs xrc/xrc.check \
+	     xrc/dialogs.xrc \
+	     xrc/strings.xrc xrc/strings.lst \
+	     $XRCBITMAPS && \
+	$TOPDIR/Scripts/bin2cpp.pl -f CamResource::GetBinaryFileInfo \
+				   xrc/resources.xrs resources.h
 fi
