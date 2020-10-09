@@ -98,8 +98,7 @@ fi
 if test "$NEWRES" -eq 1 ; then
     echo "Rebuilding resources" 1>&2
 
-    rm -f resources.cpp \
-       xrc/xrc.check \
+    rm -f xrc/xrc.check \
        xrc/resources.xrs \
        xrc/dialogs.xrc \
        xrc/strings.xrc \
@@ -114,11 +113,13 @@ if test "$NEWRES" -eq 1 ; then
 	      sort -u | \
 	      perl -ne 'print unless /^_\(\"\"\)\;\s+$/;' | \
 	      sed 's/&amp;/\&/g' | \
+	      sed 's/\\r//g' | \
 	      $XGETTEXT --force-po \
 			-k_ \
 			-C \
 			-i \
 			- \
+			--from-code "UTF-8" \
 			--no-location \
 			--copyright-holder "Xara Group Ltd" \
 			--msgid-bugs-address=bugs@xara.com \
@@ -134,4 +135,6 @@ if test "$NEWRES" -eq 1 ; then
 	     $XRCBITMAPS && \
 	$TOPDIR/Scripts/bin2cpp.pl -f CamResource::GetBinaryFileInfo \
 				   xrc/resources.xrs resources.h
+
+
 fi

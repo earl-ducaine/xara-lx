@@ -1,7 +1,7 @@
 // $Id: rndrgn.h 1445 2006-07-14 20:15:02Z phil $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
- 
+
                Xara LX, a vector drawing and manipulation program.
                     Copyright (C) 1993-2006 Xara Group Ltd.
        Copyright on certain contributions may be held in joint with their
@@ -32,7 +32,7 @@ ADDITIONAL RIGHTS
 
 Conditional upon your continuing compliance with the GNU General Public
 License described above, Xara Group Ltd grants to you certain additional
-rights. 
+rights.
 
 The additional rights are to use, modify, and distribute the software
 together with the wxWidgets library, the wxXtra library, and the "CDraw"
@@ -143,7 +143,7 @@ service marks of Xara Group Ltd. All rights in these marks are reserved.
 #define FORMAT_CALCRECT         0x00000400
 #define FORMAT_NOPREFIX         0x00000800
 #define FORMAT_INTERNAL         0x00001000
-#define DEFAULT_TEXT_FORMATTING		FORMAT_SINGLELINE | FORMAT_NOPREFIX | FORMAT_VCENTER 
+#define DEFAULT_TEXT_FORMATTING		FORMAT_SINGLELINE | FORMAT_NOPREFIX | FORMAT_VCENTER
 
 
 class Node;
@@ -218,7 +218,7 @@ class RenderCallback;
 				to indicate which aspect of the fill has changed.
 	SeeAlso:	RenderRegion::SetFillAttributes
 
-********************************************************************************************/ 
+********************************************************************************************/
 
 typedef enum
 {
@@ -242,7 +242,7 @@ typedef enum
 				to indicate which aspect of the fill has changed.
 	SeeAlso:	RenderRegion::SetLineAttributes
 
-********************************************************************************************/ 
+********************************************************************************************/
 
 typedef enum
 {
@@ -268,7 +268,7 @@ typedef enum
 				to indicate which aspect of the fill has changed.
 	SeeAlso:	RenderRegion::SetFillAttributes
 
-********************************************************************************************/ 
+********************************************************************************************/
 
 typedef enum
 {
@@ -280,7 +280,7 @@ typedef enum
 	CHANGEATTR_ASPECT,
 	CHANGEATTR_TRACKING,
 	CHANGEATTR_SIZE,
-	CHANGEATTR_JUSTIFY, 
+	CHANGEATTR_JUSTIFY,
 	CHANGEATTR_SCRIPT,
 	CHANGEATTR_BASELINE,
 	CHANGEATTR_LINESPACE,
@@ -364,17 +364,17 @@ class SubTreeRenderContext : public SubRenderContext
 				the RenderRegions previous render state if it had been interrupted or Null if
 				it has just been created.  You can then set attributes, Save/Restore them,
 				and Render objects. When rendering is complete, call ExitRender passing the
-				current render state.		
+				current render state.
 
 	SeeAlso:	class OSRenderRegion; class GRenderRegion
-		
+
 ********************************************************************************************/
 
 class CCAPI RenderRegion : public ListItem
 {
 
 	CC_DECLARE_DYNAMIC( RenderRegion )
-    
+
 public:
 	// Render Region Creation and Destruction
 	RenderRegion();
@@ -430,9 +430,9 @@ public:
 	// that means somebody above you in the tree can store a sub-render context, and
 	// hence you must not be interruptible or it'll all go wrong. (A cheap bodge by
 	// Jason to allow interruptible stroke rendering without breaking when inside a blend)
-	SubRenderContext* 	GetSubRenderState() 
+	SubRenderContext* 	GetSubRenderState()
 							{ return CurrentSubRenderState; }
-	void 	  			SetSubRenderState(SubRenderContext *SubRenderState) 
+	void 	  			SetSubRenderState(SubRenderContext *SubRenderState)
 							{
 								ERROR3IF(SubRenderStateLocked && SubRenderState != NULL, "Oi! No!");
 								CurrentSubRenderState = SubRenderState;
@@ -478,7 +478,7 @@ public:
 	// Set the background colour. This function is used for dealing with shadows.
 	void SetBackgroundColour ( DocColour &Colour );
 
-	// Functions that actually draw things		
+	// Functions that actually draw things
 	virtual void DrawPath(Path *PathToRender, PathProcessor *pCaller = NULL, PathShape psThis=PATHSHAPE_PATH);
 					// Renders a path (possibly via PathProcessors)
 
@@ -486,7 +486,7 @@ public:
 	void PushPathProcessor(PathProcessor *pProcessor);
 	void PopPathProcessor(void);
 					// Path Processor stack management functions (called by attributes)
-	
+
 	void EnableAllBrushPathProcessors(BOOL Enable);
 
 	virtual void DrawPathToOutputDevice(Path *PathToRender, PathShape shapePath=PATHSHAPE_PATH) = 0;
@@ -509,7 +509,7 @@ public:
 	virtual void DrawBitmapBlob(const DocCoord &Point, KernelBitmap* BlobShape) = 0;
 	virtual void DrawBitmapBlob(const DocCoord &Point, ResourceID resID ) = 0;
 
-	virtual SlowJobResult DrawMaskedBitmap(const DocRect &Rect, KernelBitmap* pBitmap, 
+	virtual SlowJobResult DrawMaskedBitmap(const DocRect &Rect, KernelBitmap* pBitmap,
 								  		   MaskedRenderRegion* pMask, ProgressDisplay *Progress);
 
 	virtual void DrawFixedSystemText(StringBase *TheText, DocRect &BoundsRect, UINT32 uFormat = DEFAULT_TEXT_FORMATTING);
@@ -863,7 +863,7 @@ protected:
 		BOOL ValidTransMapping	: 1;
 		BOOL ValidWindingRule	: 1;
 	} FillFlags;
-	
+
 	struct _TextFlags
 	{
 		BOOL ValidFont			: 1;
@@ -883,9 +883,9 @@ protected:
 		BOOL ValidRuler         : 1;
 
 	} TextFlags;
-	
+
 //	wxDC* DCHandle;				// This is used to recreate a CDC during BackGrnd redraw
-	Matrix RenderMatrix;		// The current Transform Matrix	
+	Matrix RenderMatrix;		// The current Transform Matrix
 	DocRect CurrentClipRect;	// The current Clipping rectangle (in DocCoords)
 	ColourContext *CurrentColContext;	// The current ouptut colour context
 
@@ -919,10 +919,10 @@ protected:
 
 	// Static vars
 	// The sizes of the Selection blobs (these are saved out as preferences)
-	static UINT32 SelectedBlobSize;
-	static UINT32 UnSelectedBlobSize;
-	static UINT32 MultiStageSelectedBlobSize;
-	static UINT32 MultiStageUnSelectedBlobSize;
+	static INT32 SelectedBlobSize;
+	static INT32 UnSelectedBlobSize;
+	static INT32 MultiStageSelectedBlobSize;
+	static INT32 MultiStageUnSelectedBlobSize;
 
 	// The ClipView blob size is not saved out as a preference, as it refers to a
 	// (fixed-width) bitmap blob.
@@ -962,7 +962,7 @@ protected:
 //	double m_dboostc;
 
 private:
-	PathProcessor *PathProcessorStack;		// A stack of currently active path processors 
+	PathProcessor *PathProcessorStack;		// A stack of currently active path processors
 };
 
 

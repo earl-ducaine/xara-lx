@@ -831,7 +831,7 @@ UINT32 Error::GetErrorModule()
 #define TRACEALL TRACE
 #define RELTRACE Error::ReleaseTrace
 
-// #define TRACE \
+// #define TRACE
 //   1 ? (void)0 : Error::TraceAll
 
 #define TRACE0 \

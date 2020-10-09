@@ -197,8 +197,8 @@ const INT32 CHUNKSIZE = 256;	// Amount to claim when memory block is resized
 	SeeAlso:	UnSelectedBlobSize
 
 ********************************************************************************************/
-UINT32 RenderRegion::SelectedBlobSize   = 3;
-UINT32 RenderRegion::MultiStageSelectedBlobSize   = 4;
+INT32 RenderRegion::SelectedBlobSize   = 3;
+INT32 RenderRegion::MultiStageSelectedBlobSize   = 4;
 
 /********************************************************************************************
 
@@ -212,8 +212,8 @@ UINT32 RenderRegion::MultiStageSelectedBlobSize   = 4;
 	SeeAlso:	SelectedBlobSize
 
 ********************************************************************************************/
-UINT32 RenderRegion::UnSelectedBlobSize = 2;
-UINT32 RenderRegion::MultiStageUnSelectedBlobSize = 3;
+INT32 RenderRegion::UnSelectedBlobSize = 2;
+INT32 RenderRegion::MultiStageUnSelectedBlobSize = 3;
 
 /********************************************************************************************
 
@@ -244,12 +244,26 @@ UINT32 RenderRegion::ClipViewBlobSize = 8;
 
 BOOL RenderRegion::InitPrefs()
 {
-	Camelot.DeclareSection( _T("Selection Blob Sizes"), 2 );
-	Camelot.DeclarePref( _T("Selection Blob Sizes"), _T("Selected Blobs"), &SelectedBlobSize, 1, 30 );
-	Camelot.DeclarePref( _T("Selection Blob Sizes"), _T("UnSelected Blobs"), &UnSelectedBlobSize, 1, 30 );
-	Camelot.DeclarePref( _T("Selection Blob Sizes"), _T("Multi Stage Selected Blobs"), &MultiStageSelectedBlobSize, 1, 30 );
-	Camelot.DeclarePref( _T("Selection Blob Sizes"), _T("Multi Stage UnSelected Blobs"), &MultiStageUnSelectedBlobSize, 1, 30 );
 
+	Camelot.DeclareSection(_T("Selection Blob Sizes"), 9);
+	Camelot.DeclarePref(_T("Selection Blob Sizes"),
+                        _T("Selected Blobs"),
+                        &RenderRegion::SelectedBlobSize,
+                        1,
+                        30);
+	Camelot.DeclarePref(_T("Selection Blob Sizes"),
+                        _T("UnSelected Blobs"),
+                        &RenderRegion::UnSelectedBlobSize,
+                        1,
+                        30);
+	Camelot.DeclarePref(_T("Selection Blob Sizes"),
+                        _T("Multi Stage Selected Blobs"),
+                        &RenderRegion::MultiStageSelectedBlobSize,
+                        1,
+                        30);
+    Camelot.DeclarePref(_T("Selection Blob Sizes"),
+                        _T("Multi Stage UnSelected Blobs"),
+                        &RenderRegion::MultiStageUnSelectedBlobSize, 1, 30);
 	return TRUE;
 }
 

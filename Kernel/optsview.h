@@ -1,7 +1,7 @@
 // $Id: optsview.h 1282 2006-06-09 09:46:49Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
- 
+
                Xara LX, a vector drawing and manipulation program.
                     Copyright (C) 1993-2006 Xara Group Ltd.
        Copyright on certain contributions may be held in joint with their
@@ -32,7 +32,7 @@ ADDITIONAL RIGHTS
 
 Conditional upon your continuing compliance with the GNU General Public
 License described above, Xara Group Ltd grants to you certain additional
-rights. 
+rights.
 
 The additional rights are to use, modify, and distribute the software
 together with the wxWidgets library, the wxXtra library, and the "CDraw"
@@ -95,7 +95,7 @@ service marks of Xara Group Ltd. All rights in these marks are reserved.
 
 =================================XARAHEADEREND============================
  */
-// Header for the handling code for the View tab of the options dialog box 
+// Header for the handling code for the View tab of the options dialog box
 
 //WEBSTER-ranbirr-13/11/96
 #ifndef WEBSTER
@@ -124,14 +124,14 @@ service marks of Xara Group Ltd. All rights in these marks are reserved.
 ********************************************************************************************/
 
 class ViewTab: public OptionsTabs
-{         
-	CC_DECLARE_DYNCREATE( ViewTab )  
+{
+	CC_DECLARE_DYNCREATE( ViewTab )
 public:
 
 	ViewTab();
 	~ViewTab();
 
-	virtual BOOL Init();                        
+	virtual BOOL Init();
 
 	// Function to handle the messages for this tab/pane window
 	virtual BOOL HandleMsg(DialogMsg* Msg);
@@ -150,13 +150,13 @@ public:
 	BOOL ChangeControlStatus(const BOOL Status); // used to grey/ungrey all controls
 	virtual BOOL UpdateSection(String_256 *DocumentName);	// Called when the user has switched to a new document
 
-//	removed 27/8/96 - transparency control DEAD 
+//	removed 27/8/96 - transparency control DEAD
 //	Special function for the view tab to get it to update the transparency switch
 //	BOOL UpdateTransparencyState(const BOOL NewState);
 
 	virtual CDlgResID GetPageID();		// Return section/page id system
 
-	virtual BOOL IsDocumentOption();	// Return True if document option  
+	virtual BOOL IsDocumentOption();	// Return True if document option
 
 	virtual BOOL IsProgramOption();		// Return True if program option
 
@@ -167,7 +167,7 @@ protected:
 	// Function to decode the selected item in automatic colour model list
 	BOOL DecodeModelListItem(BOOL *AutoColourModel, ColourModel *DisplayModel);
 	// Set up the automatic colour model list, passingin the required display model
-	// and returning the index into the display list 
+	// and returning the index into the display list
 	BOOL InitAutoColourModelList(ColourModel DisplayModel, INT32 *SelectedIndex);
 
 	// Function to get the 'Screen dither' radio button settings
@@ -180,11 +180,13 @@ private:
 	BOOL GreyStatus;			// Remember the state that we are currently in
 
 	// Variables to store the old control states.
-	BOOL OldShowTransparency;	
- 	BOOL OldBackgroundRedraw; 
+	BOOL OldShowTransparency;
+ 	BOOL OldBackgroundRedraw;
 	BOOL OldPropScroll;
 	BOOL OldViewDither;
-}; 
+	bool CommitBlobSizesPrefs(CGadgetID gadget, LPCTCHAR section, LPCTCHAR pref);
+	void GetBlobSizesPrefs(CGadgetID gadget, LPCTCHAR section, LPCTCHAR pref);
+};
 
 #endif // INC_OPTSVIEW
 

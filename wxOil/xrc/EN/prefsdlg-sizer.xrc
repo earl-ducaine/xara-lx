@@ -161,9 +161,6 @@
                     </object>
                </object>
             </object>
-
-
-
             <object class="sizeritem">
                 <flag>wxGROW|wxLEFT|wxRIGHT|wxBOTTOM</flag>
                 <border>5</border>
@@ -244,7 +241,6 @@
                     </object>
                 </object>
             </object>
-
             <object class="sizeritem">
                 <flag>wxGROW|wxLEFT|wxRIGHT|wxBOTTOM</flag>
                 <border>5</border>
@@ -274,11 +270,10 @@
                                     <label>&amp;Colour line size</label>
                                 </object>
                             </object>
-
                             <object class="sizeritem">
                                 <flag>wxALIGN_CENTER_VERTICAL|wxALL</flag>
                                 <border>5</border>
-                                <object class="wxTextCtrl" name="IDC_OPTS_COMPOUNDDPI">
+                                <object class="wxTextCtrl" name="IDC_OPTS_CONTOL_POINT_SIZE">
                                     <size>34,20</size>
                                     <pos>258,126</pos>
                                     <font>
@@ -290,11 +285,120 @@
                     </object>
                 </object>
             </object>
-
+            <object class="sizeritem">
+                <flag>wxGROW|wxLEFT|wxRIGHT|wxBOTTOM</flag>
+                <border>5</border>
+                <object class="wxStaticBoxSizer" name="IDC_OPTS_CONTOL_POINTS">
+                    <orient>wxVERTICAL</orient>
+                    <label>Controls</label>
+                    <font>
+                        <size>8</size>
+                    </font>
+                    <object class="sizeritem">
+                        <flag>wxGROW</flag>
+                        <border>5</border>
+                        <object class="wxFlexGridSizer">
+                            <cols>2</cols>
+                            <rows>4</rows>
+                            <vgap>0</vgap>
+                            <hgap>0</hgap>
+                            <growablecols>1</growablecols>
+                            <object class="sizeritem">
+                                <flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxALL|wxADJUST_MINSIZE</flag>
+                                <border>5</border>
+                                <object class="wxStaticText" name="IDC_OPTS_SELECTED_CONTOL_POINT_SIZE_TEXT">
+                                    <pos>16,178</pos>
+                                    <font>
+                                        <size>8</size>
+                                    </font>
+                                    <label>&amp;Selected control point size</label>
+                                </object>
+                            </object>
+                            <object class="sizeritem">
+                                <flag>wxALIGN_CENTER_VERTICAL|wxALL</flag>
+                                <border>5</border>
+                                <object class="wxTextCtrl" name="IDC_OPTS_SELECTED_CONTOL_POINT_SIZE">
+                                    <size>34,20</size>
+                                    <pos>258,126</pos>
+                                    <font>
+                                        <size>8</size>
+                                    </font>
+                                </object>
+                            </object>
+                            <object class="sizeritem">
+                                <flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxALL|wxADJUST_MINSIZE</flag>
+                                <border>5</border>
+                                <object class="wxStaticText" name="IDC_OPTS_UNSELECTED_CONTOL_POINT_SIZE_TEXT">
+                                    <pos>16,178</pos>
+                                    <font>
+                                        <size>8</size>
+                                    </font>
+                                    <label>&amp;Unselected control point size</label>
+                                </object>
+                            </object>
+                            <object class="sizeritem">
+                                <flag>wxALIGN_CENTER_VERTICAL|wxALL</flag>
+                                <border>5</border>
+                                <object class="wxTextCtrl" name="IDC_OPTS_UNSELECTED_CONTOL_POINT_SIZE">
+                                    <size>34,20</size>
+                                    <pos>258,126</pos>
+                                    <font>
+                                        <size>8</size>
+                                    </font>
+                                </object>
+                            </object>
+                            <object class="sizeritem">
+                                <flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxALL|wxADJUST_MINSIZE</flag>
+                                <border>5</border>
+                                <object class="wxStaticText" name="IDC_OPTS_SELECTED_MULTI_CONTOL_POINT_SIZE_TEXT">
+                                    <pos>16,178</pos>
+                                    <font>
+                                        <size>8</size>
+                                    </font>
+                                    <label>&amp;Selected multi-stage control point size</label>
+                                </object>
+                            </object>
+                            <object class="sizeritem">
+                                <flag>wxALIGN_CENTER_VERTICAL|wxALL</flag>
+                                <border>5</border>
+                                <object class="wxTextCtrl" name="IDC_OPTS_SELECTED_MULTI_CONTOL_POINT_SIZE">
+                                    <size>34,20</size>
+                                    <pos>258,126</pos>
+                                    <font>
+                                        <size>8</size>
+                                    </font>
+                                </object>
+                            </object>
+                            <object class="sizeritem">
+                                <flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxALL|wxADJUST_MINSIZE</flag>
+                                <border>5</border>
+                                <object class="wxStaticText" name="IDC_OPTS_UNSELECTED_MULTI_CONTOL_POINT_SIZE_TEXT">
+                                    <pos>16,178</pos>
+                                    <font>
+                                        <size>8</size>
+                                    </font>
+                                    <label>&amp;Unselected multi-stage control point size</label>
+                                </object>
+                            </object>
+                            <object class="sizeritem">
+                                <flag>wxALIGN_CENTER_VERTICAL|wxALL</flag>
+                                <border>5</border>
+                                <object class="wxTextCtrl" name="IDC_OPTS_UNSELECTED_MULTI_CONTOL_POINT_SIZE">
+                                    <size>34,20</size>
+                                    <pos>258,126</pos>
+                                    <font>
+                                        <size>8</size>
+                                    </font>
+                                </object>
+                            </object>
+                        </object>
+                    </object>
+                </object>
+            </object>
         </object>
-                <title> View </title>
-                <label> View </label>
-        </object>
+        <title> View </title>
+        <label> View </label>
+    </object>
     <object class="wxPanel" name="IDD_OPTSTAB_MISC">
         <size>309,305</size>
         <object class="wxBoxSizer">

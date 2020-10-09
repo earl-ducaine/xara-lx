@@ -9,9 +9,9 @@ function build_wx_30 {
     fi
     cd wxWidgets-3.0.3
     if [ -d buildgtk ]; then
-	cd buildgtk
-	make uninstall
-	cd ..
+	#cd buildgtk
+	# make uninstall
+	#cd ..
 	rm -rf buildgtk
     fi
     mkdir buildgtk
@@ -117,7 +117,14 @@ function build_doxygen_files {
     doxygen Doxyfile
 }
 
-# Setup continuous document build.
+# >   funcction DocView : public View
+#
+#     Author:     Xoanon Graphics Dev Team
+#     Created:    09/16/2020
+#     Purpose:
+#
+#         Setup continuous document build. To use make sure that you
+#         have inotify-hookable installed. On Debian derived systems:
 function enable_doxygen_file_monitering {
     inotify-hookable \
 	-w doc/doxygen \
