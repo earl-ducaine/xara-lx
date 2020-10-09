@@ -46,3 +46,13 @@ doc/en/*.xml
 doc/en/*.css
 doc/en/*.ico
 doc/en/*.png
+
+# Some working directories for builds
+
+doc/en/whdata/
+doc/en/whgdata/
+doc/en/whxdata/
+doc/en/xarax/
+doc/misc/
+docs/
+doc/en/image/
