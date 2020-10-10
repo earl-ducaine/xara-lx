@@ -1,30 +1,32 @@
 #!/usr/bin/env bash
 
+WXWIDGETS_VERSION=3.0.5.1
+WXWIDGETS_VERSION_NAME=wxWidgets-$WXWIDGETS_VERSION
+
+# Needed to compile wxWidgets-3.0.5.1
+DISABLE_WEBVIEWWEBKIT="--disable-webviewwebkit"
+
 function build_wx_30 {
-    if [ ! -d wxWidgets-3.0.3 ]; then
-	if [ ! -f wxGTK-3.0.3.tar.gz ]; then
-	    curl -LO https://github.com/wxWidgets/wxWidgets/releases/download/v3.0.3/wxWidgets-3.0.3.tar.bz2
+    if [ ! -d $WXWIDGETS_VERSION_NAME ]; then
+	if [ ! -f $WXWIDGETS_VERSION_NAME.tar.gz ]; then
+	    curl -LO https://github.com/wxWidgets/wxWidgets/releases/download/v3.0.5.1/$WXWIDGETS_VERSION_NAME.tar.bz2
 	fi
-	tar xf wxWidgets-3.0.3.tar.bz2
+	tar xf $WXWIDGETS_VERSION_NAME.tar.bz2
     fi
-    cd wxWidgets-3.0.3
+    cd $WXWIDGETS_VERSION_NAME
     if [ -d buildgtk ]; then
-	#cd buildgtk
-	# make uninstall
-	#cd ..
 	rm -rf buildgtk
     fi
     mkdir buildgtk
     cd buildgtk
-    ../configure --enable-debug --enable-unicode --enable-aui --with-gtk=3 --disable-shared
-#    ../configure --with-gtk --enable-debug --enable-unicode --enable-aui --with-libpng=builtin
+    ../configure --enable-debug --enable-unicode --enable-aui --with-gtk=3 --disable-shared \
+		 $DISABLE_WEBVIEWWEBKIT
     make -j 8
     cd ..
     cd ..
 }
 
 function build_wx_from_git {
-    # https://github.com/wxWidgets/wxWidgets.git
     VERSION=$1
     if [ ! -d $VERSION ]; then
 	git clone --depth=1 https://github.com/wxWidgets/wxWidgets.git $VERSION
@@ -67,7 +69,7 @@ function build_xoamorph_debug {
 
 function build_xoamorph {
     # Don't rebuild wxWidgets if folder already exists.
-    if [ ! -d wxWidgets-3.0.3 ]; then
+    if [ ! -d $WXWIDGETS_VERSION_NAME ]; then
 	echo "Building xwWidgets..."
 	build_wx_30
     fi
@@ -76,8 +78,9 @@ function build_xoamorph {
 	echo "Building freetype-2.8..."
 	build_freetype_281
     fi
-    autoreconf -i -f
-    ./configure $1 --with-wx-config=wxWidgets-3.0.3/buildgtk/wx-config \
+    # set ACLOCAL_PATH to specify autoconfig macro location
+    export ACLOCAL_PATH=$WXWIDGETS_VERSION_NAME; autoreconf -i -f
+    ./configure $1 --with-wx-config=$WXWIDGETS_VERSION_NAME/buildgtk/wx-config \
 		--enable-static-exec \
 		--with-freetype-config=freetype-2.8.1/builds/unix/freetype-config \
 	|| echo "Unable to build Xoamporph. Check make-error.txt"
@@ -86,8 +89,6 @@ function build_xoamorph {
     # cd ../..
     # ar -xv libCDraw.a
     export PATH="/usr/lib/ccache:$PATH"; make -j 4 1> make-out.txt 2>make-error.txt
-    # make -j 4
-    # Turn off debug
 }
 
 function make_tags {
