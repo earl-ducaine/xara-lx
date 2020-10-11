@@ -815,32 +815,22 @@ UINT32 Error::GetErrorModule()
 #define ERROR2IF_PF(condition, retvalue, args) \
   do { if (condition) ERROR2_PF(retvalue, args); } while(0)
 
-#define ERROR3(literal) \
-  do { } while (0)
+#define ERROR3(literal)
+#define ERROR3IF(condition, literal)
+#define ERROR3_PF(args)
+#define ERROR3IF_PF(condition, args)
 
-#define ERROR3IF(condition, literal) \
-  do { } while (0)
-
-#define ERROR3_PF(args)             \
-  do { } while (0)
-
-#define ERROR3IF_PF(condition, args) \
-  do { } while (0)
-
-// #define TRACEUSER 1 ? (void)0 : Error::TraceUser
+#define TRACEUSER(...)
 #define TRACEALL TRACE
 #define RELTRACE Error::ReleaseTrace
 
-// #define TRACE
-//   1 ? (void)0 : Error::TraceAll
+// There are some places that expect TRACE to expand into an expression. Until they're
+// 'fixed' use this hack.
+#define TRACE(...) (void)0
 
-#define TRACE0 \
-  1 ? (void)0 : Error::TraceAll
-
+#define TRACE0
 #define ASSERT(expr) \
-    do { \
-        (void)(expr); \
-    } while (0)
+
 
 #endif // _DEBUG
 
