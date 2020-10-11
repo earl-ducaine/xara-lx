@@ -84,11 +84,13 @@ function build_xoamorph {
 		--enable-static-exec \
 		--with-freetype-config=freetype-2.8.1/builds/unix/freetype-config \
 	|| echo "Unable to build Xoamporph. Check make-error.txt"
+    # For now don't use ccache and don't build assembly code.
     # cd libs/x86_64
-    #  ar -s -r libCDraw.a *.o
+    # ar -s -r libCDraw.a *.o
     # cd ../..
     # ar -xv libCDraw.a
-    export PATH="/usr/lib/ccache:$PATH"; make -j 4 1> make-out.txt 2>make-error.txt
+    # export PATH="/usr/lib/ccache:$PATH";
+    make -j 4 1> make-out.txt 2>make-error.txt
 }
 
 function make_tags {
