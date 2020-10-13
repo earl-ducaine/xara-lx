@@ -63,11 +63,11 @@ function build_freetype_281 {
     cd ..
 }
 
-function build_xoamorph_debug {
-    build_xoamorph "--enable-debug"
+function build_xoanon_graphics_debug {
+    build_xoanon_graphics "--enable-debug"
 }
 
-function build_xoamorph {
+function build_xoanon_graphics {
     # Don't rebuild wxWidgets if folder already exists.
     if [ ! -d $WXWIDGETS_VERSION_NAME ]; then
 	echo "Building xwWidgets..."
