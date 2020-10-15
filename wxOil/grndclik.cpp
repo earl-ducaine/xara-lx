@@ -404,7 +404,12 @@ BitmapContents GRenderClickColour::GetContents( BOOL JustMiddle )
 		{
 			// something has been drawn - is it the middle?
 			BYTE middleT = pMiddle[3];				// Read transp channel
-			if (middleT < GRenderRegion::ClickTranspLimit)
+
+			/*
+			*	changed for_cairo (2x)
+			*/
+			/*	if (middleT < GRenderRegion::ClickTranspLimit)	*/
+			if (middleT > (( ~GRenderRegion::ClickTranspLimit) & 0xFF))
 				return BITMAPCONTENTS_CENTRE;
 
 			// if only interested in centre pixel then we're out of here
@@ -417,7 +422,7 @@ BitmapContents GRenderClickColour::GetContents( BOOL JustMiddle )
 			size_t Count = pBitmapInfo->bmiHeader.biSizeImage >> 2;
 			while (Count--)
 			{
-				if (pSearch[3] < GRenderRegion::ClickTranspLimit)
+				if (pSearch[3] >  ((~GRenderRegion::ClickTranspLimit) & 0xFF))
 					return BITMAPCONTENTS_ANY;
 				pSearch += 4;
 			}

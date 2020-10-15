@@ -369,26 +369,6 @@ case $host in
         DarwinLink="no";;
 esac
 
-CDRAW_LIB_DIR=""
-AC_MSG_CHECKING([CDraw location])
-case $target in
-    *-*-darwin*)
-	AC_MSG_RESULT([libs/darwin])
-	CDRAW_LIB_DIR="libs/darwin";;
-    i?86-*)
-	AC_MSG_RESULT([libs/x86])
-	CDRAW_LIB_DIR="libs/x86";;
-    amd64-* | x86_64-*)
-	AC_MSG_RESULT([libpng-1.6.29/.libs])
-	PNG_LIB_DIR="libpng-1.6.29/.libs"
-	AC_MSG_RESULT([libs/x86_64])
-	CDRAW_LIB_DIR="libs/x86_64";;
-    powerpc-*)
-        AC_MSG_RESULT([libs/ppc])
-        CDRAW_LIB_DIR="libs/ppc";;
-    *)
-	AC_MSG_ERROR([Architecture $target not supported])
-esac
 CDRAW_LIB_ALT_DIR="libs/x86_64/cdraw-alt"
 PODIR=""
 BUILDRESFLAGS=""
@@ -441,7 +421,6 @@ AC_SUBST(WXRC)
 AC_SUBST(VERSION)
 AC_SUBST(GTK_CFLAGS)
 AC_SUBST(GTK_LIBS)
-AC_SUBST(CDRAW_LIB_DIR)
 AC_SUBST(PNG_LIB_DIR)
 AC_SUBST(LIBXML2_LIBS)
 AC_SUBST(PODIR)

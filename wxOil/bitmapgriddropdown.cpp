@@ -125,7 +125,7 @@ service marks of Xara Group Ltd. All rights in these marks are reserved.
 #include "qualattr.h"
 
 
-
+#include <algorithm> // for "find_if"  for_cairo
 
 //-----------------------------------------------------------------------------------------
 // This must be defined AFTER all CC_IMPLEMENT_DYNCREATE calls

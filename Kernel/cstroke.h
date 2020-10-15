@@ -236,6 +236,9 @@ TypeDef( DASH )
 
 /************************************************************************/
 
+	/*  commented out undefined virtual functions ( to prevent linker errors...) : ed */
+	/* for_cairo   ( this is just a marker...) */
+
 class GenStroke
 {
 
@@ -403,7 +406,7 @@ protected :
 		  cGBOOL IsCurve,
 		  cGBOOL bOSign,cGBOOL bISign
 		  ) ;
-  virtual void GenLineEdge() ;
+	//virtual void GenLineEdge() ;
 
   void GenStrokeCurves(
 		       cFPOINT P0,cFPOINT P1,cFPOINT P2,cFPOINT P3,
@@ -425,18 +428,18 @@ protected :
   void GenRoundCap( cFPOINT C,cFPOINT O ) ;
   void CalcCurveOffset() ;
   void AddPoint( UINT32 n ) ;
-  virtual void MoveTo_Start( cDOUBLE X,cDOUBLE Y ) ;
-  virtual void LineTo_Start( cDOUBLE X,cDOUBLE Y ) ;
-  virtual void LineTo_End  ( cDOUBLE X,cDOUBLE Y ) ;
+	//virtual void MoveTo_Start( cDOUBLE X,cDOUBLE Y ) ;
+	//virtual void LineTo_Start( cDOUBLE X,cDOUBLE Y ) ;
+	//virtual void LineTo_End  ( cDOUBLE X,cDOUBLE Y ) ;
   virtual void Close() ;
-  virtual void LineTo(
-		      cFPOINT C0,cFPOINT C1,
-		      cFPOINT P0,cFPOINT P1
-		      ) ;
-  virtual void CurveTo(
-		       cFPOINT C0,cFPOINT C1,cFPOINT C2,cFPOINT C3,
-		       cFPOINT P0,cFPOINT P1,cFPOINT P2,cFPOINT P3
-		       ) ;
+	//virtual void LineTo(
+	//			cFPOINT C0,cFPOINT C1,
+	//			cFPOINT P0,cFPOINT P1
+	//		) ;
+	//virtual void CurveTo(
+	//			cFPOINT C0,cFPOINT C1,cFPOINT C2,cFPOINT C3,
+	//			cFPOINT P0,cFPOINT P1,cFPOINT P2,cFPOINT P3
+	//		) ;
   void Set_Prev( cFPOINT P ) ;
   virtual void PathOpen () {} ;
   virtual void PathClose() {} ;
