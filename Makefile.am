@@ -58,7 +58,7 @@ endif
 # 	$(libpng_LIBS) -lz
 
 XaraLX_LDFLAGS = --debug -L$(srcdir)/$(CDRAW_LIB_DIR) \
- 	$(LIBXML2_LIBS) -lpangoft2-1.0 -lfreetype -lz \	
+	$(LIBXML2_LIBS) -lpangoft2-1.0 -lfreetype -lz \
 	-llzma  $(WX_LIBS) -licuuc
 
 XaraLX_LD ?= $(CXX)

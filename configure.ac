@@ -427,4 +427,4 @@ AC_SUBST(PODIR)
 AC_SUBST(BUILDRESFLAGS)
 
 
-AC_OUTPUT(Makefile PreComp/Makefile Kernel/Makefile wxOil/Makefile tools/Makefile wxXtra/Makefile xarlib/Makefile libs/Makefile libs/x86_64/Makefile libs/x86_64/cdraw-alt/Makefile xarlib/Xar.pc po/Makefile.in)
+AC_OUTPUT(Makefile PreComp/Makefile Kernel/Makefile wxOil/Makefile tools/Makefile wxXtra/Makefile xarlib/Makefile libs/Makefile libs/x86_64/Makefile libs/x86_64/cdraw-alt/Makefile xarlib/Xar.pc po/Makefile.in GDraw/Makefile)
