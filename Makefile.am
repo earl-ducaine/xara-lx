@@ -33,7 +33,8 @@ if INTERNATIONAL_ENABLE
 PO=po
 endif
 
-SUBDIRS = $(PRECOMPILE_DIR) libs wxXtra wxOil Kernel tools GDraw $(XARLIB_DIR) $(FILTERS_DIRS) $(PO)
+#SUBDIRS = $(PRECOMPILE_DIR) libs wxXtra wxOil Kernel tools GDraw $(XARLIB_DIR) $(FILTERS_DIRS) $(PO)
+SUBDIRS = $(PRECOMPILE_DIR) wxXtra wxOil Kernel tools GDraw $(XARLIB_DIR) $(FILTERS_DIRS) $(PO)
 
 # We clean these here not in the wxOil makefile to prevent a loop
 MOSTLYCLEANFILES=wxOil/xrc/xrc.d wxOil/xrc/xrc.stamp Resources/*
