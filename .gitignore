@@ -1,5 +1,12 @@
-*.o
 *.a
+!libs/ppc/libCDraw.a
+!libs/x86/libCDraw.a
+!libs/darwin/libCDraw.a
+!libs/x86_64/libCDraw/libCDraw.a
+
+*.o
+!libs/x86_64/orphaned-object-files/*.o
+
 *.deps
 *.m4
 *.pc
