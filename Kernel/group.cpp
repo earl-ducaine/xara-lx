@@ -626,9 +626,10 @@ double NodeGroup::GetTightGroupPixelsPerInch(RenderRegion* pRender) const
 		if (pRender==NULL)
 		{
 			View* pView = View::GetCurrent();
-			if (pView)
+			if (pView) {
 				dViewPPI = 72000.0 / pView->GetPixelWidth().MakeDouble();
 				dViewScaledPPI = 72000.0 / pView->GetScaledPixelWidth().MakeDouble();
+			}
 		}
 		else
 		{

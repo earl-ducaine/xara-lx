@@ -503,7 +503,7 @@ We can't use the CCLexFile stuff because it has not yet been initiated.
 ***************************************************************************/
 
 BOOL CamResource::ReadStringTableFile() {
-  TRACET(_T("ReadStringTableFile() called"));
+  TRACE(_T("ReadStringTableFile() called"));
   CamResource res;
   INT32 count = 0;
   // NB destructor of 'res' deletes this
@@ -680,7 +680,7 @@ void CamResource::ProcessWindowAndChildren(wxWindow * pWindow)
 
 BOOL CamResource::InitXmlResource()
 {
-	TRACET(_T("CamResource::InitXmlResource() called, doing Load() of strings.xrc"));
+	TRACE(_T("CamResource::InitXmlResource() called, doing Load() of strings.xrc"));
 
 	if (!wxXmlResource::Get()->Load(GetResourceFilePath(_T("strings.xrc"))))
 	{
@@ -688,7 +688,7 @@ BOOL CamResource::InitXmlResource()
 		return FALSE;
 	}
 
-	TRACET(_T("CamResource::InitXmlResource() called - loaded strings"));
+	TRACE(_T("CamResource::InitXmlResource() called - loaded strings"));
 
 	return true;
 }
@@ -1328,17 +1328,17 @@ wxImage* CamResource::GetCachedBitmap(const TCHAR* pName) {
 
 BOOL CamResource::LoadBitmaps()
 {
-	TRACET(_T("LoadBitmaps() called"));
+	TRACE(_T("LoadBitmaps() called"));
 	wxString ExternalRes = GetResourceFilePath(wxString(_T("")), TRUE);
 	wxString InternalRes = GetResourceFilePath(wxString(_T("")), FALSE);
-	TRACET(_T("LoadBitmaps() adding External bitmaps"));
+	TRACE(_T("LoadBitmaps() adding External bitmaps"));
 	if (!AddBitmaps(ExternalRes)) return FALSE;
-	TRACET(_T("LoadBitmaps() adding Internal bitmaps"));
+	TRACE(_T("LoadBitmaps() adding Internal bitmaps"));
 	if (InternalRes != ExternalRes)
 		if (!AddBitmaps(InternalRes)) return FALSE;
-	TRACET(_T("LoadBitmaps() making grey copies"));
+	TRACE(_T("LoadBitmaps() making grey copies"));
 	MakeVariantBitmaps(); // make grey copies of each bitmap
-	TRACET(_T("LoadBitmaps() done"));
+	TRACE(_T("LoadBitmaps() done"));
 	return TRUE;
 }
 
@@ -1360,7 +1360,7 @@ BOOL CamResource::LoadBitmaps()
 BOOL CamResource::Init() {
   void * pFile=NULL;
   UINT32 Length=0;
-  TRACET(_T("CamResource::Init() called"));
+  TRACE(_T("CamResource::Init() called"));
   pHash = new (ResIDToString);
   if (!pHash) {
     return FALSE;
@@ -1430,11 +1430,11 @@ BOOL CamResource::Init() {
     else wxFileSystem::AddHandler(new wxMemoryFSHandler);
   }
 
-  TRACET(_T("CamResource::Init() added MemoryFSHandler"));
+  TRACE(_T("CamResource::Init() added MemoryFSHandler"));
 
   wxFileSystem::AddHandler(new wxZipFSHandler);
 
-  TRACET(_T("CamResource::Init() added Zip handler, now doing AddFile() on resources"));
+  TRACE(_T("CamResource::Init() added Zip handler, now doing AddFile() on resources"));
 
   GetBinaryFileInfo(&pFile, &Length);
 
@@ -1460,19 +1460,19 @@ BOOL CamResource::Init() {
   m_pLocale->AddCatalog(_T("XaraLX"));
 
 #if !defined(EXCLUDE_FROM_XARLIB)
-  TRACET(_T("CamResource::Init() launching splash screen"));
+  TRACE(_T("CamResource::Init() launching splash screen"));
   if (!Splash()) return FALSE;
 #endif
 
 #ifdef XML_STRINGS
-  TRACET(_T("CamResource::Init() now loading internal "
+  TRACE(_T("CamResource::Init() now loading internal "
 	    "resources, calling InitXmlResource"));
   // Load the internal resources
   // We should offer the possibility of loading them from a non-XML file here
   if (!InitXmlResource()) return FALSE;
   // yield again to allow repaint
   wxYield();
-  TRACET(_T("CamResource::Init() starting to load string table dialog"));
+  TRACE(_T("CamResource::Init() starting to load string table dialog"));
   // Read the string table into the hash map
   wxDialog * pStringTable = wxXmlResource::Get()->LoadDialog(NULL, _T("STRINGTABLE"));
   if (!pStringTable) {
@@ -1481,14 +1481,14 @@ BOOL CamResource::Init() {
     return FALSE;
   }
   wxYield(); // yield again to allow repaint
-  TRACET(_T("CamResource::Init() starting to process string table"));
+  TRACE(_T("CamResource::Init() starting to process string table"));
   // Now do a depth-first search of this window's children
   ProcessWindowAndChildren(pStringTable);
   wxYield(); // yield again to allow repaint
-  TRACET(_T("CamResource::Init() and deleting the dialog"));
+  TRACE(_T("CamResource::Init() and deleting the dialog"));
   delete pStringTable;
 #else
-  TRACET(_T("CamResource::Init() now loading internal resources, "
+  TRACE(_T("CamResource::Init() now loading internal resources, "
 	    "calling ReadStringTableFile()"));
   if (!ReadStringTableFile()) {
       // We can hardly internationalize the message box, as we have no
@@ -1500,7 +1500,7 @@ BOOL CamResource::Init() {
     }
 
 #endif
-  TRACET(_T("CamResource::Init() done processing string table, "
+  TRACE(_T("CamResource::Init() done processing string table, "
 	    "starting to load bitmaps"));
   wxYield(); // yield again to allow repaint
 #if !defined(EXCLUDE_FROM_XARLIB)
@@ -1509,7 +1509,7 @@ BOOL CamResource::Init() {
   if (!LoadBitmaps()) {
     return FALSE;
   }
-  TRACET(_T("CamResource::Init() done processing bitmaps, "
+  TRACE(_T("CamResource::Init() done processing bitmaps, "
 	    "starting to load toolbar images"));
   // yield again to allow repaint
   wxYield();
@@ -1532,7 +1532,7 @@ BOOL CamResource::Init() {
 //   LoadwxImage(imageTextTool, _T("ltexttool32.png") );
 //   LoadwxImage(imageTransTool, _T("ltransptool32.png") );
 //   LoadwxImage(imageZoomTool, _T("lzoomtool32.png") );
-//   TRACET(_T("CamResource::Init() Added images"));
+//   TRACE(_T("CamResource::Init() Added images"));
 //   wxYield(); // yield again to allow repaint
   m_pHelpProvider = new wxHelpControllerHelpProvider;
   if (!m_pHelpProvider) {
@@ -1543,7 +1543,7 @@ BOOL CamResource::Init() {
     TRACE(_T("Could not load dialogs.xrc"));
     return FALSE;
   }
-  TRACET(_T("CamResource::Init - loaded dialogs"));
+  TRACE(_T("CamResource::Init - loaded dialogs"));
   // yield again to allow repaint
   wxYield();
 #endif
@@ -1708,7 +1708,7 @@ BOOL CamResource::DeInit()
 *********************************************************************/
 
 BOOL CamResource::Splash() {
-  TRACET(_T("CamResource::Splash() called"));
+  TRACE(_T("CamResource::Splash() called"));
   if (pSplashBitmap) {
     delete pSplashBitmap;
   }
@@ -1765,7 +1765,7 @@ BOOL CamResource::Splash() {
 ***************************************************************************/
 
 BOOL CamResource::DoneInit(BOOL CanYield /*=TRUE*/) {
-  TRACET(_T("CamResource::DoneInit() called"));
+  TRACE(_T("CamResource::DoneInit() called"));
 #if !defined(EXCLUDE_FROM_XARLIB)
   if (pSplashScreen && CanYield) {
     ::wxYield();
