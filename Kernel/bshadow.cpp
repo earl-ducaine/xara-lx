@@ -503,14 +503,15 @@ void CBitmapShadow::Blur8BppBitmap(LPBITMAPINFOHEADER  pSrcBMIHeader,
       pTranslationTable[i] = uCount>>24 ;
       uCount += uInc ;
     }
-	/*
-	*	for_cairo 2010
-	*	Don't know how to use the values in pTranslationTable yet
-	*	To make a simple wallshadow work ( in GDraw/bshadow2_cairo.cpp)
-	*	i put the blursize in pTranslationTable[0] for now.
-	*/
-	pTranslationTable[0]= uSize & 0x000000FF;
-
+    /*
+     *	for_cairo 2010
+     *	Don't know how to use the values in pTranslationTable yet
+     *	To make a simple wallshadow work ( in GDraw/bshadow2_cairo.cpp)
+     *	i put the blursize in pTranslationTable[0] for now.
+     */
+#if HAVE_CAIRO
+    pTranslationTable[0]= uSize & 0x000000FF;
+#endif
 
   /////////////////////////////////////////////////////////////////////////////////
   // call gavin's routine to do the shadowing.

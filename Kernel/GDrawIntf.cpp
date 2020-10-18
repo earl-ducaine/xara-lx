@@ -1018,12 +1018,15 @@ BOOL GDrawAsm::SetupBitmap( INT32 Width, INT32 Height, INT32 Depth, LPBYTE Bits,
 
 		while(Index < BMPSIZE)
 		{
-	/*		pSetBits[Index++] = 0xFF000000;	  */
+#if !HAVE_CAIRO
+			pSetBits[Index++] = 0xFF000000;
+#else
 			/* 	changed 2010 for_cairo
 			*	i wonder if this is necessary at all as clearing is also done in
 			*	wxOil/grndrgn.cpp. ( ah....it calls SetBitmap, not SetupBitmap )
 			*/
 			 pSetBits[Index++] = 0x00000000;
+#endif
 		}
 	}
 

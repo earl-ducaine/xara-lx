@@ -216,14 +216,7 @@ enum TransparencyEnum {
 //
 // Graduation styles - as used by GColour_SetGraduation
 //
-enum GradEnum {
-	GRAD_LINEAR,
-	GRAD_RADIAL,
-	GRAD_CONICAL,
-	GRAD_SQUARE,
-	GRAD_3COLOUR,
-	GRAD_4COLOUR
-};
+enum GradEnum { GRAD_LINEAR, GRAD_RADIAL, GRAD_CONICAL, GRAD_SQUARE, GRAD_3COLOUR, GRAD_4COLOUR } ;
 
 //
 // Dither styles - used by GColour_SetDitherStyle and GColour_ConvertBitmap
@@ -241,13 +234,13 @@ enum DitherStyle {
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
-
 struct GCONTEXT {
 	DWORD Valid ;			// Valid if set to C90FDAA2.
 	DWORD Data[1] ;
 } ;
 
 	
+
 struct DitherBlock {
 	DWORD Data[4] ;
 } ;
@@ -269,7 +262,6 @@ struct GraduationTable32 {				// This structure is used with 32bpp bitmaps.
 struct TransparentGradTable {
 	BYTE Table[0x100] ;
 } ;
-
 
 struct RGBT {
 	BYTE Red ;

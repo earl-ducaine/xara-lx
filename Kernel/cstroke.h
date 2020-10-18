@@ -406,8 +406,9 @@ protected :
 		  cGBOOL IsCurve,
 		  cGBOOL bOSign,cGBOOL bISign
 		  ) ;
-	//virtual void GenLineEdge() ;
-
+#if !HAVE_CAIRO
+  virtual void GenLineEdge() ;
+#endif
   void GenStrokeCurves(
 		       cFPOINT P0,cFPOINT P1,cFPOINT P2,cFPOINT P3,
 		       cFPOINT N00,cFPOINT N33
@@ -428,18 +429,22 @@ protected :
   void GenRoundCap( cFPOINT C,cFPOINT O ) ;
   void CalcCurveOffset() ;
   void AddPoint( UINT32 n ) ;
-	//virtual void MoveTo_Start( cDOUBLE X,cDOUBLE Y ) ;
-	//virtual void LineTo_Start( cDOUBLE X,cDOUBLE Y ) ;
-	//virtual void LineTo_End  ( cDOUBLE X,cDOUBLE Y ) ;
+#if !HAVE_CAIRO
+  virtual void MoveTo_Start( cDOUBLE X,cDOUBLE Y ) ;
+  virtual void LineTo_Start( cDOUBLE X,cDOUBLE Y ) ;
+  virtual void LineTo_End  ( cDOUBLE X,cDOUBLE Y ) ;
+#endif
   virtual void Close() ;
-	//virtual void LineTo(
-	//			cFPOINT C0,cFPOINT C1,
-	//			cFPOINT P0,cFPOINT P1
-	//		) ;
-	//virtual void CurveTo(
-	//			cFPOINT C0,cFPOINT C1,cFPOINT C2,cFPOINT C3,
-	//			cFPOINT P0,cFPOINT P1,cFPOINT P2,cFPOINT P3
-	//		) ;
+#if !HAVE_CAIRO
+  virtual void LineTo(
+		      cFPOINT C0,cFPOINT C1,
+		      cFPOINT P0,cFPOINT P1
+		      ) ;
+  virtual void CurveTo(
+		       cFPOINT C0,cFPOINT C1,cFPOINT C2,cFPOINT C3,
+		       cFPOINT P0,cFPOINT P1,cFPOINT P2,cFPOINT P3
+		       ) ;
+#endif
   void Set_Prev( cFPOINT P ) ;
   virtual void PathOpen () {} ;
   virtual void PathClose() {} ;

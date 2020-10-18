@@ -194,29 +194,3 @@ xcl_set_cairo_path(
 
 
 #endif /*	define GDRAW_CAIRO_PRIVATE_H */
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

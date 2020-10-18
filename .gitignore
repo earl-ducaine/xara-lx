@@ -1,12 +1,9 @@
-
+*.o
+*.a
 *.deps
 *.m4
 *.pc
 *~
-
-GDraw/*.o
-Kernel/*.o
-libs/x86_64/orphaned-object-files/*.o
 
 Makefile
 Makefile.in
@@ -17,27 +14,21 @@ config.guess
 config.status
 config.sub
 configure
+compile
+config.log
+depcomp
+install-sh
+missing
 
-filters/*.o
+po/POTFILES
+po/remove-potcdate.sed
+po/stamp-po
+po/xaralx.pot
 
 libpng-*
-
-po/*.o
-tools/*.o
-wxGTK-2.8.12/*.o
-wxOil/*.o
-wxXtra/*.o
-xarlib/*.o
-
 freetype-*
 wxWidgets-*
 
-
-libs/x86_64/libCDraw_la*.o
-libs/x86_64/libCDraw.a
-
-libs/x86_64/cdraw-alt/libCDraw-alt.a
-libs/x86_64/cdraw-alt/libCDraw_alt_a-bshadow2.o
 doc/en/*.gif
 doc/en/*.jpg
 doc/en/*.htm
@@ -56,3 +47,14 @@ doc/en/xarax/
 doc/misc/
 docs/
 doc/en/image/
+
+PreComp/camtypes.h.gch
+wxOil/resources.h
+wxOil/svnversion.h
+wxOil/xrc/dialogs.xrc
+wxOil/xrc/resources.xrs
+wxOil/xrc/strings.lst
+wxOil/xrc/xaralx.po
+wxOil/xrc/xrc.check
+
+make-out-err.txt

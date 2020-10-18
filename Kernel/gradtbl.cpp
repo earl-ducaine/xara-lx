@@ -1374,9 +1374,7 @@ BOOL TranspGradTable::BuildHighQualityRepeatTable(INT32 StartTransp, INT32 EndTr
 		SetTableSize(TRUE);
 
 		if (m_pTable == NULL)
-		{
 			return FALSE;
-		}
 
 		GDrawContext *pContext = GRenderRegion::GetStaticDrawContext();
 

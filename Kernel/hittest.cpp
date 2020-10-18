@@ -425,7 +425,6 @@ NodeRenderableInk* NodeRenderableInk::FindSimpleAtPoint(Spread* pSpread,
 #endif
 						// Check if any of the pixels in the render-region were affected by the
 						// last rendering.
-
 						BitmapContents bcDrawCode = OSRenderBitmap::GetContents(pRegion, FALSE);
 
 						if (pNode->IsCompoundClass() && !pRegion->IsClean())

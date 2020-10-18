@@ -1095,37 +1095,40 @@ void GRenderRegion::InitBmpBits()
         if(UseInternalFormat)
         {
 //          TRACEUSER( "Gerry", _T("Initialising GRR to transparent black\n"));
-/*			while(Index < BmpSize)
-			{*/
+#if !HAVE_CAIRO
+            while(Index < BmpSize)
+            {
                 // initial values for using internal alpha channelled format
                 // fully transparent black bacground
-/*
+
                 pSetBits[Index++] = 0x00;
                 pSetBits[Index++] = 0x00;
                 pSetBits[Index++] = 0x00;
                 pSetBits[Index++] = 0xFF;
-
-
-			}*/
-			/*  changed 2010 for_cairo		 */
-			memset( pBits, 0x00, BmpSize );
-			/*printf("INIT TRANSP %d   x  %d\n", bh->biWidth, bh->biHeight );*/
+            }
+#else
+            /*  changed 2010 for_cairo		 */
+            memset( pBits, 0x00, BmpSize );
+            /*printf("INIT TRANSP %d   x  %d\n", bh->biWidth, bh->biHeight );*/
+#endif
         }
         else
         {
 //          TRACEUSER( "Gerry", _T("Initialising GRR to opaque white\n"));
-/*			while(Index < BmpSize)
-			{*/
+#if !HAVE_CAIRO
+            while(Index < BmpSize)
+            {
                 // fully opaque white background
-/*				pSetBits[Index++] = 0xFF;
+                pSetBits[Index++] = 0xFF;
                 pSetBits[Index++] = 0xFF;
                 pSetBits[Index++] = 0xFF;
                 pSetBits[Index++] = 0x00;
-
             }
-*/			/*  changed 2010 for_cairo		 */
-			memset( pBits, 0xFF, BmpSize );
-			/*printf("INIT WHITE %d   x  %d\n", bh->biWidth, bh->biHeight );*/
+#else
+            /*  changed 2010 for_cairo		 */
+            memset( pBits, 0xFF, BmpSize );
+            /*printf("INIT WHITE %d   x  %d\n", bh->biWidth, bh->biHeight );*/
+#endif
         }
     }
     else
@@ -3993,18 +3996,21 @@ BOOL GRenderRegion::GetTransparencyFill(TranspGradTable* pTranspTable, DWORD* St
             }
             else
             {
+#if !HAVE_CAIRO
+                pTranspTable->BuildHighQualityRepeatTable(StartTransp, EndTransp, pTranspRamp);
+#else
 /*printf(" grndrgn.cpp :: BuildHighQualityRepeatTable\n");*/
 
-				/*
-				*	Can't get a decent transp. table and it crashes when trying to set a profile
-				*	Changed this for now....
-				*	Currently no table is filled : start and end val are given in "build table" : always linear ramp
-				* 	Just to get smth. working here...
-				*	See : Kernel/gradtbl.cpp ( where table's are build )
-				*	Ed : 10-2-10 for_cairo   BUG!
-				*/
-				pTranspTable->BuildTable(StartTransp, EndTransp, pTranspRamp);
-				/*pTranspTable->BuildHighQualityRepeatTable(StartTransp, EndTransp, pTranspRamp);*/
+               /*
+                *	Can't get a decent transp. table and it crashes when trying to set a profile
+                *	Changed this for now....
+                *	Currently no table is filled : start and end val are given in "build table" : always linear ramp
+                * 	Just to get smth. working here...
+                *	See : Kernel/gradtbl.cpp ( where table's are build )
+                *	Ed : 10-2-10 for_cairo   BUG!
+                */
+                pTranspTable->BuildTable(StartTransp, EndTransp, pTranspRamp);
+#endif
             }
         }
     }
@@ -7550,7 +7556,7 @@ PORTNOTE("cms", "Disabled XaraCMS")
     }
     else
     {
-		/*	for_cairo  :  changed transp. value from FF to 0	*/
+        /*	for_cairo  :  changed transp. value from FF to 0	*/
         const RGBQUAD TOnly = {0, 0, 0, 0xFF}; ; // 0xFF000000 on LittleEndian;
         const DWORD DTOnly = *(DWORD *)(&TOnly);
         // First we need to set all the pixels as transparent
@@ -7946,31 +7952,37 @@ if (dPPI!=PixelsPerInch)
 
         ENSURE(pNewCapture->lpBitmapInfo->bmiHeader.biBitCount==32,"Non-32bpp bitmap in offscreen rendering!");
 
-		if (bTransparent){
-/*			while (Index < BmpSize)
-			{*/
+        if (bTransparent) {
+#if !HAVE_CAIRO
+            while (Index < BmpSize)
+            {
                 // initial values for using internal alpha channelled format
                 // fully transparent black bacground
-/*
+
                 pSetBits[Index++] = 0x00;
                 pSetBits[Index++] = 0x00;
                 pSetBits[Index++] = 0x00;
-				pSetBits[Index++] = 0x00;*//* 0xFF;*/ /* for_cairo */
-			/*}*/
-			memset( pSetBits, 0x00, BmpSize );
-			/*printf("SET TRANSP %d   x  %d\n", bmInfo->bmiHeader.biWidth, bmInfo->bmiHeader.biHeight );*/
-		}else{
-/*			while (Index < BmpSize)
-			{*/
-                // fully opaque white background
-				/*pSetBits[Index++] = 0xFF;
                 pSetBits[Index++] = 0xFF;
-                pSetBits[Index++] = 0xFF;
-				pSetBits[Index++] = 0xFF;*/ /*0x00;*/ /* for_cairo */
-			/*}*/
-			memset( pSetBits, 0xFF, BmpSize );
-			/*printf("SET WHITE %d   x  %d\n", bmInfo->bmiHeader.biWidth, bmInfo->bmiHeader.biHeight );*/
             }
+#else
+            memset( pSetBits, 0x00, BmpSize );
+            /*printf("SET TRANSP %d   x  %d\n", bmInfo->bmiHeader.biWidth, bmInfo->bmiHeader.biHeight );*/
+#endif
+        } else {
+#if !HAVE_CAIRO
+            while (Index < BmpSize)
+            {
+                // fully opaque white background
+                pSetBits[Index++] = 0xFF;
+                pSetBits[Index++] = 0xFF;
+                pSetBits[Index++] = 0xFF;
+                pSetBits[Index++] = 0x00;
+            }
+#else
+            memset( pSetBits, 0xFF, BmpSize );
+            /*printf("SET WHITE %d   x  %d\n", bmInfo->bmiHeader.biWidth, bmInfo->bmiHeader.biHeight );*/
+#endif
+        }
     }
 
     // Put this new capture on the top of the capture stack
