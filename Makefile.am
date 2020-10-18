@@ -33,8 +33,11 @@ if INTERNATIONAL_ENABLE
 PO=po
 endif
 
-#SUBDIRS = $(PRECOMPILE_DIR) libs wxXtra wxOil Kernel tools GDraw $(XARLIB_DIR) $(FILTERS_DIRS) $(PO)
-SUBDIRS = $(PRECOMPILE_DIR) wxXtra wxOil Kernel tools GDraw $(XARLIB_DIR) $(FILTERS_DIRS) $(PO)
+if CAIRO_LINK
+GDRAW = GDraw
+endif
+
+SUBDIRS = $(PRECOMPILE_DIR) libs wxXtra wxOil Kernel tools $(GDRAW) $(XARLIB_DIR) $(FILTERS_DIRS) $(PO)
 
 # We clean these here not in the wxOil makefile to prevent a loop
 MOSTLYCLEANFILES=wxOil/xrc/xrc.d wxOil/xrc/xrc.stamp Resources/*
@@ -44,12 +47,21 @@ bin_PROGRAMS		= XaraLX
 XaraLX_CXXFLAGS = $(XARALXCXXFLAGS) $(AM_CFLAGS) $(libpng_CFLAGS)
 XaraLX_CPPFLAGS = $(XARALXCPPFLAGS) $(AM_CPPFLAGS) $(libpng_CPPFLAGS)
 
+
 if DARWIN_LINK
-    XaraLX_SOURCES	= Kernel/*.o wxOil/*.o tools/*.o wxXtra/*.o GDraw/*.o
-    XaraLX_LDSOURCE = $(XaraLX_SOURCES)
+if CAIRO_LINK
+    XaraLX_SOURCES = Kernel/*.o wxOil/*.o tools/*.o wxXtra/*.o GDraw/*.o
 else
-    XaraLX_SOURCES	= Kernel/libKernel.a wxOil/libwxOil.a tools/libTools.a wxXtra/libwxXtra.a GDraw/libGDraw-cairo.a
-    XaraLX_LDSOURCE = -Wl,--start-group $(XaraLX_SOURCES) -Wl,--end-group
+    XaraLX_SOURCES = Kernel/*.o wxOil/*.o tools/*.o wxXtra/*.o
+endif
+XaraLX_LDSOURCE = $(XaraLX_SOURCES)
+else
+if CAIRO_LINK
+    XaraLX_SOURCES = Kernel/libKernel.a wxOil/libwxOil.a tools/libTools.a wxXtra/libwxXtra.a GDraw/libGDraw-cairo.a
+else
+    XaraLX_SOURCES = Kernel/libKernel.a wxOil/libwxOil.a tools/libTools.a wxXtra/libwxXtra.a
+endif
+XaraLX_LDSOURCE = -Wl,--start-group $(XaraLX_SOURCES) -Wl,--end-group
 endif
 
 # XaraLX_LDFLAGS = --debug -L$(srcdir)/$(CDRAW_LIB_DIR) \
@@ -58,8 +70,8 @@ endif
 # 	-lgdk_pixbuf-2.0 -lcairo -lpango-1.0 -lfreetype -lfontconfig -lgobject-2.0 -lglib-2.0 \
 # 	$(libpng_LIBS) -lz
 
-XaraLX_LDFLAGS = --debug -L$(srcdir)/$(CDRAW_LIB_DIR) \
-	$(LIBXML2_LIBS) -lpangoft2-1.0 -lfreetype -lz \
+XaraLX_LDFLAGS = --debug $(CDRAW_DIR_LDFLAGS) \
+	$(LIBXML2_LIBS) $(CDRAW_LIB_LDFLAGS) -lpangoft2-1.0 -lfreetype -lz \
 	-llzma  $(WX_LIBS) -licuuc
 
 XaraLX_LD ?= $(CXX)

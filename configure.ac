@@ -176,6 +176,11 @@ AC_ARG_WITH(resource-dir,
     fi
 ])
 
+AC_ARG_WITH([cairo],
+	[AS_HELP_STRING([--with-cairo], [Render using Cairo instead of CDraw])],
+	[],
+	[with_cairo=no])
+
 wxversion=0
 
 AC_DEFUN([WXTEST],
@@ -369,6 +374,26 @@ case $host in
         DarwinLink="no";;
 esac
 
+CDRAW_LIB_DIR=""
+AC_MSG_CHECKING([CDraw location])
+case $target in
+    *-*-darwin*)
+	AC_MSG_RESULT([libs/darwin])
+	CDRAW_LIB_DIR="libs/darwin";;
+    i?86-*)
+	AC_MSG_RESULT([libs/x86])
+	CDRAW_LIB_DIR="libs/x86";;
+    amd64-* | x86_64-*)
+	AC_MSG_RESULT([libpng-1.6.29/.libs])
+	PNG_LIB_DIR="libpng-1.6.29/.libs"
+	AC_MSG_RESULT([libs/x86_64])
+	CDRAW_LIB_DIR="libs/x86_64";;
+    powerpc-*)
+        AC_MSG_RESULT([libs/ppc])
+        CDRAW_LIB_DIR="libs/ppc";;
+    *)
+	AC_MSG_ERROR([Architecture $target not supported])
+esac
 CDRAW_LIB_ALT_DIR="libs/x86_64/cdraw-alt"
 PODIR=""
 BUILDRESFLAGS=""
@@ -400,16 +425,22 @@ XARALXCPPFLAGS="$CPPFLAGS"
 CXXFLAGS=""
 CPPFLAGS=""
 
+CDRAW_DIR_LDFLAGS=
+CDRAW_LIB_LDFLAGS=
+if test "x$with_cairo" = xno; then
+	CDRAW_DIR_LDFLAGS="-L$srcdir/$CDRAW_LIB_DIR -L$srcdir/$CDRAW_LIB_ALT_DIR"
+	CDRAW_LIB_LDFLAGS="-lCDraw -lCDraw-alt"
+fi
 
 AM_CONDITIONAL(PRECOMPILE_ENABLE, [test "$PrecompileEnable" = "yes"])
 AM_CONDITIONAL(STATIC_ENABLE, [test "$StaticEnable" = "yes"])
 AM_CONDITIONAL(DARWIN_LINK, [test "$DarwinLink" = "yes"])
+AM_CONDITIONAL(CAIRO_LINK, [test "$with_cairo" = "yes"])
 AM_CONDITIONAL(INTERNATIONAL_ENABLE, [test "$InternationalEnable" = "yes"])
 #AM_CONDITIONAL(SVNVERSION_ENABLE, [test "$SvnVersionEnable" = "yes"])
 AM_CONDITIONAL(XARLIB_ENABLE, [test "$XarLibEnable" = "yes"])
 AM_CONDITIONAL(FILTERS_ENABLE, [test "$FiltersEnable" = "yes"])
 
-#AC_SUBST(CDRAW_LIB_ALT_DIR)
 AC_SUBST(XARALXCXXFLAGS)
 AC_SUBST(XARALXCPPFLAGS)
 AC_SUBST(TOPDIR)
@@ -425,7 +456,7 @@ AC_SUBST(PNG_LIB_DIR)
 AC_SUBST(LIBXML2_LIBS)
 AC_SUBST(PODIR)
 AC_SUBST(BUILDRESFLAGS)
+AC_SUBST(CDRAW_DIR_LDFLAGS)
+AC_SUBST(CDRAW_LIB_LDFLAGS)
 
-
-#AC_OUTPUT(Makefile PreComp/Makefile Kernel/Makefile wxOil/Makefile tools/Makefile wxXtra/Makefile xarlib/Makefile libs/Makefile libs/x86_64/Makefile libs/x86_64/cdraw-alt/Makefile xarlib/Xar.pc po/Makefile.in GDraw/Makefile)
-AC_OUTPUT(Makefile PreComp/Makefile Kernel/Makefile wxOil/Makefile tools/Makefile wxXtra/Makefile xarlib/Makefile xarlib/Xar.pc po/Makefile.in GDraw/Makefile)
+AC_OUTPUT(Makefile PreComp/Makefile Kernel/Makefile wxOil/Makefile tools/Makefile GDraw/Makefile wxXtra/Makefile xarlib/Makefile libs/Makefile libs/x86_64/Makefile libs/x86_64/cdraw-alt/Makefile xarlib/Xar.pc po/Makefile.in)
