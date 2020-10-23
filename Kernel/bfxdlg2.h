@@ -1,7 +1,7 @@
 // $Id: bfxdlg2.h 751 2006-03-31 15:43:49Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
- 
+
                Xara LX, a vector drawing and manipulation program.
                     Copyright (C) 1993-2006 Xara Group Ltd.
        Copyright on certain contributions may be held in joint with their
@@ -32,7 +32,7 @@ ADDITIONAL RIGHTS
 
 Conditional upon your continuing compliance with the GNU General Public
 License described above, Xara Group Ltd grants to you certain additional
-rights. 
+rights.
 
 The additional rights are to use, modify, and distribute the software
 together with the wxWidgets library, the wxXtra library, and the "CDraw"
@@ -130,36 +130,36 @@ class OpParam;
 
 // main class definition
 class BfxPlugInDlg : public DialogOp
-{         
-	CC_DECLARE_DYNCREATE( BfxPlugInDlg )  
+{
+	CC_DECLARE_DYNCREATE( BfxPlugInDlg )
 public:
 
-	BfxPlugInDlg(CDlgResID id = BfxPlugInDlg::IDD); 
+	BfxPlugInDlg(CDlgResID id = BfxPlugInDlg::IDD);
 	~BfxPlugInDlg();
 
-	MsgResult Message( Msg* Message ); 
-	 
-	void Do(OpDescriptor*);		// "Do" function        
+	MsgResult Message( Msg* Message );
+
+	void Do(OpDescriptor*);		// "Do" function
 	void DoWithParam(OpDescriptor* pOp, OpParam* pParam);
 
-	static BOOL Init();                        
-	static OpState GetState(String_256*, OpDescriptor*);	
+	static BOOL Init();
+	static OpState GetState(String_256*, OpDescriptor*);
 
-	static const CDlgMode Mode; 
+	static const CDlgMode Mode;
 
-	// We need to give our dialog's a unique resource ID as this is used to 
+	// We need to give our dialog's a unique resource ID as this is used to
 	static UINT32 IDD;
 
 protected:
-	
+
 	INT32 Param1;
 	INT32 Param2;
 	INT32 Param3;
 	double Matrix[9];
 
 	// Message handlers for each page in the tabbed dialog
-	void HandleFlipAndRotateMsg(DialogMsg* Msg, BOOL * pCommitValues, BOOL * pEndDialog); 
-	void HandleResizeMsg(DialogMsg* Msg, BOOL * pCommitValues, BOOL * pEndDialog); 
+	void HandleFlipAndRotateMsg(DialogMsg* Msg, BOOL * pCommitValues, BOOL * pEndDialog);
+	void HandleResizeMsg(DialogMsg* Msg, BOOL * pCommitValues, BOOL * pEndDialog);
 	void HandleBrightnessAndContrastMsg(DialogMsg* Msg, BOOL * pCommitValues, BOOL * pEndDialog);
 	void HandleDitherMsg(DialogMsg* Msg, BOOL * pCommitValues, BOOL * pEndDialog);
 	void HandleSpecialEffectsMsg(DialogMsg* Msg, BOOL * pCommitValues, BOOL * pEndDialog);
@@ -188,55 +188,54 @@ protected:
 	BitmapInfo * pOrigInfo;
 	BOOL Clean;
 
-	CList < String_256, String_256 > m_p24BitCopyNames;
+	// CList < String_256, String_256 > m_p24BitCopyNames;
+	std::list< String_256 > m_p24BitCopyNames;
 	BOOL m_UseInitial;
 
 	AccusoftBitmapEffect * pFX;
 
 	CDlgResID OpenPage;
 
-	static BOOL InteractiveBCC;	
+	static BOOL InteractiveBCC;
 
 	Document* m_pDocument;
 	OpParam * m_pParam;
-}; 
-                 
+};
+
 // these just start up the correct dialog boxes
 class BfxBrightnessContrastDlg : public BfxPlugInDlg
 {
-	CC_DECLARE_DYNCREATE( BfxBrightnessContrastDlg )  
+	CC_DECLARE_DYNCREATE( BfxBrightnessContrastDlg )
 public:
 	BfxBrightnessContrastDlg();
 };
 
 class BfxSpecialEffectsDlg : public BfxPlugInDlg
 {
-	CC_DECLARE_DYNCREATE( BfxSpecialEffectsDlg )  
+	CC_DECLARE_DYNCREATE( BfxSpecialEffectsDlg )
 public:
 	BfxSpecialEffectsDlg();
 };
 
 class BfxResizeDlg : public BfxPlugInDlg
 {
-	CC_DECLARE_DYNCREATE( BfxResizeDlg )  
+	CC_DECLARE_DYNCREATE( BfxResizeDlg )
 public:
 	BfxResizeDlg();
 };
 
 class BfxFlipAndRotateDlg : public BfxPlugInDlg
 {
-	CC_DECLARE_DYNCREATE( BfxFlipAndRotateDlg )  
+	CC_DECLARE_DYNCREATE( BfxFlipAndRotateDlg )
 public:
 	BfxFlipAndRotateDlg();
 };
 
 class BfxColourDepthDlg : public BfxPlugInDlg
 {
-	CC_DECLARE_DYNCREATE( BfxColourDepthDlg )  
+	CC_DECLARE_DYNCREATE( BfxColourDepthDlg )
 public:
 	BfxColourDepthDlg();
 };
 
 #endif  // INC_BFXPLUGINDLG
-
-

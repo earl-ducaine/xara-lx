@@ -1,6 +1,6 @@
 <?xml version="1.0" ?>
 <resource>
-	<object class="wxDialog" name="IDD_BFXDLG_PG1">
+	<object class="wxPanel" name="IDD_BFXDLG_PG1">
 			 <pos>0,0d</pos> <size>182,160d</size>
 		<object class="wxStaticText" name="IDC_BFXDLG_ORIGFRAME">
 			 <pos>2,3d</pos> <size>80,73d</size>
@@ -44,7 +44,7 @@
 		<title>Flip &amp; Rotate</title>
 		<label>Flip &amp; Rotate</label>
 	</object>
-	<object class="wxDialog" name="IDD_BFXDLG_PG2">
+	<object class="wxPanel" name="IDD_BFXDLG_PG2">
 			 <pos>0,0d</pos> <size>182,160d</size>
 		<object class="wxStaticText" name="IDC_BFXDLG_ORIGFRAME">
 			 <pos>2,3d</pos> <size>80,73d</size>
@@ -97,7 +97,7 @@
 		<title>Resize</title>
 		<label>Resize</label>
 	</object>
-	<object class="wxDialog" name="IDD_BFXDLG_PG3">
+	<object class="wxPanel" name="IDD_BFXDLG_PG3">
 			 <pos>0,0d</pos> <size>182,160d</size>
 		<object class="wxStaticText" name="IDC_BFXDLG_ORIGFRAME">
 			 <pos>2,3d</pos> <size>80,73d</size>
@@ -144,7 +144,7 @@
 		<title>Brightness &amp; Contrast</title>
 		<label>Brightness &amp; Contrast</label>
 	</object>
-	<object class="wxDialog" name="IDD_BFXDLG_PG4">
+	<object class="wxPanel" name="IDD_BFXDLG_PG4">
 			 <pos>0,0d</pos> <size>182,160d</size>
 		<object class="wxStaticText" name="IDC_BFXDLG_ORIGFRAME">
 			 <pos>2,3d</pos> <size>80,73d</size>
@@ -198,7 +198,7 @@
 		<title>Colour depth</title>
 		<label>Colour depth</label>
 	</object>
-	<object class="wxDialog" name="IDD_BFXDLG_PG5">
+	<object class="wxPanel" name="IDD_BFXDLG_PG5">
 			 <pos>0,0d</pos> <size>182,160d</size>
 		<object class="wxStaticText" name="IDC_BFXDLG_ORIGFRAME">
 			 <pos>2,3d</pos> <size>80,73d</size>
@@ -264,7 +264,7 @@
 		<title>Special Effects</title>
 		<label>Special Effects</label>
 	</object>
-	<object class="wxDialog" name="IDD_BFXDLG_PG6">
+	<object class="wxPanel" name="IDD_BFXDLG_PG6">
 			 <pos>0,0d</pos> <size>182,160d</size>
 		<object class="wxStaticText" name="IDC_BFXDLG_ORIGFRAME">
 			 <pos>2,3d</pos> <size>80,73d</size>

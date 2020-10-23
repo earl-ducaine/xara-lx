@@ -1,7 +1,7 @@
 // $Id: ensure.cpp 1282 2006-06-09 09:46:49Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
- 
+
                Xara LX, a vector drawing and manipulation program.
                     Copyright (C) 1993-2006 Xara Group Ltd.
        Copyright on certain contributions may be held in joint with their
@@ -32,7 +32,7 @@ ADDITIONAL RIGHTS
 
 Conditional upon your continuing compliance with the GNU General Public
 License described above, Xara Group Ltd grants to you certain additional
-rights. 
+rights.
 
 The additional rights are to use, modify, and distribute the software
 together with the wxWidgets library, the wxXtra library, and the "CDraw"
@@ -96,7 +96,7 @@ service marks of Xara Group Ltd. All rights in these marks are reserved.
 =================================XARAHEADEREND============================
  */
 
-#include "camtypes.h"  
+#include "camtypes.h"
 
 //#include "ensure.h" - in camtypes.h [AUTOMATICALLY REMOVED]
 //#include "errors.h" - in camtypes.h [AUTOMATICALLY REMOVED]
@@ -105,8 +105,8 @@ service marks of Xara Group Ltd. All rights in these marks are reserved.
 //#include "simon.h"				// for _R(IDS_CONTINUE)
 //#include "errorbox.h"			// for CInformErrorDialog::GetSafeParent
 #include "wxmbstowcs.h"
-			    
-#ifdef AFX_DBG1_SEG                                               
+
+#ifdef AFX_DBG1_SEG
 #pragma code_seg(AFX_DBG1_SEG)
 #endif
 
@@ -115,11 +115,11 @@ service marks of Xara Group Ltd. All rights in these marks are reserved.
 #ifdef _DEBUG
 #undef THIS_FILE
 static char BASED_CODE THIS_FILE[] = __FILE__;
-#endif      
+#endif
 #endif
 
 #ifdef _ENSURES
-INT32 			AssertBusy = FALSE;				  // for testing diagnostics			
+INT32 			AssertBusy = FALSE;				  // for testing diagnostics
 #endif
 
 // Setup DEBUGBREAK macro
@@ -127,7 +127,7 @@ INT32 			AssertBusy = FALSE;				  // for testing diagnostics
 	#ifdef __WXMSW__
 		#define DEBUGBREAK DebugBreak()
 	#else
-		#define DEBUGBREAK ::wxTrap()
+		#define DEBUGBREAK wxTrap()
 	#endif
 #else
 	#define DEBUGBREAK {}
@@ -169,19 +169,19 @@ static void InternalAssert(const TCHAR * AssertDescription, const char * lpszFil
 	if (AssertDescription != NULL)
 	{
 		camSnprintf(sz, 255,
-			szMessage,                       
-			AssertDescription, 
-			lpszRealFile, 
-			nLine);    
+			szMessage,
+			AssertDescription,
+			lpszRealFile,
+			nLine);
 	}
-	else   
+	else
 	{
 		camSnprintf(sz, 255,
 			szMessageNoReason,
 			nLine,
 			lpszRealFile);
 	}
-	
+
 #ifdef _DEBUG
 //PORTNOTE("other","Remove afxTraceEnabled")
 //#ifndef EXCLUDE_FROM_XARALX
@@ -209,7 +209,7 @@ static void InternalAssert(const TCHAR * AssertDescription, const char * lpszFil
 	if (AssertBusy > 0)
 	{
 		// getting assertion while inside an assertion
-		//  - it has already been traced, but 
+		//  - it has already been traced, but
 		// break into the debugger (or Dr Watson log)
 		DEBUGBREAK;									// else Win32s might die (just beeps)
 		return;
@@ -222,7 +222,7 @@ static void InternalAssert(const TCHAR * AssertDescription, const char * lpszFil
 		TRACE( wxT("In RenderThread so clearing up system") );
 		Error::RenderThreadReset();
 													// Commented out - no problem using wx for render errors
-//		UseMFC = FALSE;								// mustn't use MFC for render errors 
+//		UseMFC = FALSE;								// mustn't use MFC for render errors
 	}
 
 	INT32					result;
@@ -272,7 +272,7 @@ static void InternalAssert(const TCHAR * AssertDescription, const char * lpszFil
 		// uses MFC. Instead we use good old MessageBox
 
 #if !defined(EXCLUDE_FROM_RALPH) && !defined(EXCLUDE_FROM_XARALX)
-		wxWindow	   *pParent = AfxGetApp().GetTopWindow(); 
+		wxWindow	   *pParent = AfxGetApp().GetTopWindow();
 PORTNOTE("other","Use CInformErrorDialog::GetSafeParent() when implemented")
 #ifndef EXCLUDE_FROM_XARALX
 		CInformErrorDialog::GetSafeParent();
@@ -335,7 +335,7 @@ PORTNOTE("other","We can never use MFC again")
 			Error::SetErrorSerious( RealErrorMsg );		// restore previous error msg
 		else
 			Error::ClearError();
-	} 
+	}
 #endif
 #else
 	// parameters not used if non-debug
@@ -352,23 +352,23 @@ PORTNOTE("other","We can never use MFC again")
 
 	Author:		Simon_Maneggio (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	3/5/93
-	Inputs:		AssertDescription: Reason for failure description  
+	Inputs:		AssertDescription: Reason for failure description
 				lpszFileName:      Filename of file that caused failure
 				nLine:             Line number that caused failure
 	Outputs:	-
-	Returns:	-     
-	Purpose:    This function should only ever be invoked from the ENSURE macro 
-				which is similar to the ASSERT macro, the only difference being that 
-				it takes a parameter which describes the reason for the failure. 
+	Returns:	-
+	Purpose:    This function should only ever be invoked from the ENSURE macro
+				which is similar to the ASSERT macro, the only difference being that
+				it takes a parameter which describes the reason for the failure.
 	Errors:		-
 	SeeAlso:	-
 
 ***********************************************************************************************/
-/* Technical notes: 
+/* Technical notes:
 
 This function is an almost direct copy of the AfxAssertFailedLine function which is
 called from the ASSERT macro.
-*/ 
+*/
 
 void EnsureFailedLine(const TCHAR * AssertDescription, const char * lpszFileName, INT32 nLine)
 {
@@ -384,7 +384,7 @@ void EnsureFailedLine(const TCHAR * AssertDescription, const char * lpszFileName
 	Inputs:		lpszFileName:      Filename of file that caused failure
 				nLine:             Line number that caused failure
 	Outputs:	-
-	Returns:	-     
+	Returns:	-
 	Purpose:    This is a more robust version than MFC provides.
 	Errors:		-
 	SeeAlso:	-
@@ -413,7 +413,3 @@ void AFXAPI AfxAssertFailedLine(LPCSTR lpszFileName, INT32 nLine)
 	return FALSE;
 	#endif
 }
-
-
-
-

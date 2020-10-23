@@ -1,7 +1,7 @@
 // $Id: bitmapfx.cpp 1282 2006-06-09 09:46:49Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
- 
+
                Xara LX, a vector drawing and manipulation program.
                     Copyright (C) 1993-2006 Xara Group Ltd.
        Copyright on certain contributions may be held in joint with their
@@ -32,7 +32,7 @@ ADDITIONAL RIGHTS
 
 Conditional upon your continuing compliance with the GNU General Public
 License described above, Xara Group Ltd grants to you certain additional
-rights. 
+rights.
 
 The additional rights are to use, modify, and distribute the software
 together with the wxWidgets library, the wxXtra library, and the "CDraw"
@@ -114,7 +114,68 @@ DECLARE_SOURCE("$Revision: 1282 $");
 CC_IMPLEMENT_DYNCREATE(BitmapEffect, BitmapEffectBase)
 CC_IMPLEMENT_DYNCREATE(AccusoftBitmapEffect, BitmapEffect)
 
-CC_IMPLEMENT_DYNCREATE(ABFXFlipX, AccusoftBitmapEffect)
+// CC_IMPLEMENT_DYNCREATE(ABFXFlipX, AccusoftBitmapEffect)
+
+// #define CC_IMPLEMENT_DYNCREATE(class_name, base_class_name) \
+// 	Implement the Construct() function \
+// 	void PASCAL class_name::Construct(void* p) \
+// 		{ new(p) class_name; } \
+// 	_CC_IMPLEMENT_RUNTIMECLASS(class_name, base_class_name, 0xFFFF, \
+// 		class_name::Construct)
+
+
+void ABFXFlipX::Construct(void* p)
+{
+	new (p) ABFXFlipX;
+}
+
+
+
+// #define _CC_IMPLEMENT_RUNTIMECLASS(class_name, base_class_name, wSchema, pfnNew) \
+// 	/* Provide textual name of class */ \
+// 	static TCHAR BASED_CODE _lpsz##class_name[] = wxT( #class_name ); \
+// 	/* Declare runtime class information for this class */ \
+// 	CCRuntimeClass class_name::cc_class##class_name = { \
+// 		_lpsz##class_name, sizeof(class_name), wSchema, pfnNew, \
+// 			CC_RUNTIME_CLASS(base_class_name), NULL }; \
+// 	/* Declare the CC_CLASSINIT structure so that the class info is linked in */ \
+// 	static CC_CLASSINIT _init_##class_name(&class_name::cc_class##class_name); \
+// 	/* Implement GetRuntimeClass() */ \
+// 	CCRuntimeClass* class_name::GetRuntimeClass() const \
+// 		{ return &class_name::cc_class##class_name; } \
+// 	/* Implement GetMyClass() (a static function) */ \
+// 	CCRuntimeClass* class_name::GetMyClass() \
+// 		{ return &class_name::cc_class##class_name; } \
+//
+// _CC_IMPLEMENT_RUNTIMECLASS(ABFXFlipX, AccusoftBitmapEffect, 0xFFFF, ABFXFlipX::Construct)
+
+
+static TCHAR BASED_CODE _lpszABFXFlipX[] = wxT( "ABFXFlipX" );
+
+CCRuntimeClass ABFXFlipX::cc_classABFXFlipX = {
+	_lpszABFXFlipX,
+	sizeof(ABFXFlipX),
+	0xFFFF,
+	ABFXFlipX::Construct,
+	CC_RUNTIME_CLASS(AccusoftBitmapEffect),
+	NULL
+};
+
+static CC_CLASSINIT _init_ABFXFlipX(&ABFXFlipX::cc_classABFXFlipX);
+
+CCRuntimeClass* ABFXFlipX::GetRuntimeClass() const
+{
+	return &ABFXFlipX::cc_classABFXFlipX;
+}
+
+CCRuntimeClass* ABFXFlipX::GetMyClass()
+{
+	return &ABFXFlipX::cc_classABFXFlipX;
+}
+
+
+
+
 CC_IMPLEMENT_DYNCREATE(ABFXFlipY, AccusoftBitmapEffect)
 CC_IMPLEMENT_DYNCREATE(ABFXRotate90, AccusoftBitmapEffect)
 CC_IMPLEMENT_DYNCREATE(ABFXRotate180, AccusoftBitmapEffect)
@@ -140,7 +201,7 @@ CC_IMPLEMENT_DYNCREATE(ABFXRemoveDither, AccusoftBitmapEffect)
 /********************************************************************************************
 
 >	KernelBitmap * AccusoftBitmapEffect::DoALUWork()
-					
+
 	Author:		Alex_Bligh (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	27/01/95
 	Inputs:		None
@@ -161,7 +222,7 @@ KernelBitmap *  AccusoftBitmapEffect::DoALUWork()
 /********************************************************************************************
 
 >	BOOL AccusoftBitmapEffect::SetParameters(INT32 p1=0, INT32 p2=0, INT32 p3=0, double * pD=NULL)
-					
+
 	Author:		Alex_Bligh (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	27/01/95
 	Inputs:		The generic parameters to set
@@ -179,7 +240,7 @@ KernelBitmap *  AccusoftBitmapEffect::DoALUWork()
 /********************************************************************************************
 
 >	KernelBitmap * AccusoftBitmapEffect::GetProcessedBitmap(KernelBitmap * pOriginal)
-					
+
 	Author:		Alex_Bligh (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	27/01/95
 	Inputs:		None
@@ -231,7 +292,33 @@ if (!ALU->ALUFunction(&Result, Param1, Param2, (BOOL)Param3)) return NULL; retur
 KernelBitmap * ABFX##ALUFunction::DoALUWork() { KernelBitmap * Result = NULL; \
 if (!ALU->ALUFunction(&Result, Param1, Param2, (enum TraceMethod)(INT32)Param3)) return NULL; return Result; }
 
-MakeDoALUWork(FlipX)
+
+
+// #define MakeDoALUWork(ALUFunction)			\
+// 	KernelBitmap * ABFX##ALUFunction::DoALUWork()	\
+// 	{						\
+// 		KernelBitmap * Result = NULL;		\
+// 		if (!ALU->ALUFunction(&Result))		\
+// 			return NULL;			\
+// 		return Result;				\
+// 	}
+
+// MakeDoALUWork(FlipX)
+
+
+KernelBitmap* ABFXFlipX::DoALUWork()
+{
+	KernelBitmap * Result = NULL;
+	if (!((BfxALU*)ALU)->FlipX(&Result))
+		return NULL;
+	return Result;
+}
+
+
+
+
+
+
 MakeDoALUWork(FlipY)
 MakeDoALUWork(Rotate90)
 MakeDoALUWork(Rotate180)

@@ -1869,6 +1869,11 @@ wxMDIChildFrame *CCamApp::CreateChildFrame(wxDocument *doc, wxView *view)
     other_menu->Append( _R(IDD_BUTTBAR_FEATHER),            _T("Feather Bar"        "\tHmmm"), wxT(""),wxITEM_CHECK  );
 
 
+    other_menu->Append( _R(IDD_BFXDLG_PG1),           _T("bitmap effects"       "\tHrm"), wxT(""),wxITEM_CHECK  );
+
+
+
+
     help_menu->Append( _R(DOCVIEW_ABOUT),                   wxT("&About..."         "\tF1"));
 
     wxMenuBar* menu_bar = new wxMenuBar;

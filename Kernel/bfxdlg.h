@@ -1,7 +1,7 @@
 // $Id: bfxdlg.h 1282 2006-06-09 09:46:49Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
- 
+
                Xara LX, a vector drawing and manipulation program.
                     Copyright (C) 1993-2006 Xara Group Ltd.
        Copyright on certain contributions may be held in joint with their
@@ -32,7 +32,7 @@ ADDITIONAL RIGHTS
 
 Conditional upon your continuing compliance with the GNU General Public
 License described above, Xara Group Ltd grants to you certain additional
-rights. 
+rights.
 
 The additional rights are to use, modify, and distribute the software
 together with the wxWidgets library, the wxXtra library, and the "CDraw"
@@ -144,14 +144,14 @@ public:
 ********************************************************************************************/
 
 class CCAPI BfxOp: public UndoableOperation
-{                             
+{
 	CC_DECLARE_DYNCREATE( BfxOp )
 public:
 	BfxOp();								// Constructor
 	static BOOL		Init();					// Register an OpDescriptor
 	                                        // Read the state of an operation
-	static OpState	GetState(String_256*, OpDescriptor*);		
-	void	DoWithParam(OpDescriptor* pOp, OpParam* pParam);	     
+	static OpState	GetState(String_256*, OpDescriptor*);
+	void	DoWithParam(OpDescriptor* pOp, OpParam* pParam);
 protected:
 	BOOL FindCentreInsertionPosition(Spread** Spread, DocCoord* Position);
 };
@@ -162,7 +162,7 @@ class BfxOpParam: public OpParam
 public:
 	KernelBitmap * * ppBitmap;
 };
-     
+
 
 /********************************************************************************************
 
@@ -174,38 +174,41 @@ public:
 
 ********************************************************************************************/
 
-#define OPTOKEN_BFXDLG _T("BfxDlg")    
-   
+#define OPTOKEN_BFXDLG _T("BfxDlg")
+
 class BfxDlg: public DialogTabOp
-{         
-	CC_DECLARE_DYNCREATE( BfxDlg )  
+{
+	CC_DECLARE_DYNCREATE( BfxDlg )
 public:
 
-	BfxDlg(); 
+	BfxDlg();
 	~BfxDlg();
 
-	MsgResult Message( Msg* Message ); 
-	 
-	void Do(OpDescriptor*);		// "Do" function        
-	void DoWithParam(OpDescriptor* pOp, OpParam* pParam);
-	static BOOL Init();                        
-	static OpState GetState(String_256*, OpDescriptor*);	
-	virtual BOOL RegisterYourPagesInOrderPlease(); 
-	static const CDlgMode Mode; 
+	MsgResult Message( Msg* Message );
 
-	// We need to give our Tab dialog's a unique resource ID as this is used to 
+	void Do(OpDescriptor*);		// "Do" function
+	void DoWithParam(OpDescriptor* pOp, OpParam* pParam);
+	static BOOL Init();
+	static OpState GetState(String_256*, OpDescriptor*);
+	virtual BOOL RegisterYourPagesInOrderPlease();
+	static const CDlgMode Mode;
+
+	// We need to give our Tab dialog's a unique resource ID as this is used to
 	static const UINT32 IDD;
 
+	// Not really but needed to show panels. Should be: is notebook.
+	virtual BOOL IsAGallery() {return TRUE; }	// We are a gallery
+
 	private:
-	
+
 	INT32 Param1;
 	INT32 Param2;
 	INT32 Param3;
 	double Matrix[9];
 
 	// Message handlers for each page in the tabbed dialog
-	void HandleFlipAndRotateMsg(DialogMsg* Msg, BOOL * pCommitValues, BOOL * pEndDialog); 
-	void HandleResizeMsg(DialogMsg* Msg, BOOL * pCommitValues, BOOL * pEndDialog); 
+	void HandleFlipAndRotateMsg(DialogMsg* Msg, BOOL * pCommitValues, BOOL * pEndDialog);
+	void HandleResizeMsg(DialogMsg* Msg, BOOL * pCommitValues, BOOL * pEndDialog);
 	void HandleBrightnessAndContrastMsg(DialogMsg* Msg, BOOL * pCommitValues, BOOL * pEndDialog);
 	void HandleDitherMsg(DialogMsg* Msg, BOOL * pCommitValues, BOOL * pEndDialog);
 	void HandleSpecialEffectsMsg(DialogMsg* Msg, BOOL * pCommitValues, BOOL * pEndDialog);
@@ -236,10 +239,8 @@ public:
 
 	CDlgResID OpenPage;
 
-	static BOOL InteractiveBCC;	
-}; 
-                   
+	static BOOL InteractiveBCC;
+};
+
 
 #endif  // INC_BFXDLG
-
-

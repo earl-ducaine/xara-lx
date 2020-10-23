@@ -354,7 +354,7 @@ PORTNOTE("other","Removed Lots of init functions")
 //#ifndef EXCLUDE_BFX
 //#ifndef STANDALONE
 //#ifndef WEBSTER
-//          BfxDlg::Init() &&                   // Register bitmap effects dialog
+         BfxDlg::Init() &&                   // Register bitmap effects dialog
 //#endif //WEBSTER
 //#endif
 //#endif
@@ -513,6 +513,8 @@ PORTNOTE("other","Removed various bevel usage")
             && NodeBitmapEffect::Init() &&
 #endif
             InitUserHelp() &&
+            BfxDlg::Init() &&                   // Register bitmap effects dialog
+
             TRUE;
 }
 

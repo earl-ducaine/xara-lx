@@ -91,6 +91,7 @@ function build_xoanon_graphics {
     # ar -xv libCDraw.a
     # export PATH="/usr/lib/ccache:$PATH";
     make -j 4 2>&1 | tee make-out-err.txt
+
 }
 
 function make_tags {
@@ -139,5 +140,8 @@ function enable_doxygen_file_monitering {
 }
 
 function build_resources {
-    ./Scripts/build-resources.sh
+    export WXRC="$(pwd)/$WXWIDGETS_VERSION_NAME/buildgtk/utils/wxrc/wxrc"; \
+	Scripts/build-resources.sh
+
+    # ./Scripts/build-resources.sh
 }

@@ -115,14 +115,14 @@ fi
 
 # Setup our build flags (if not set by user)
 if test -z "$CFLAGS"; then
-	CFLAGS="-Wall -fno-pie -Wno-unknown-pragmas -g -fexceptions $OPT_FLAGS $WARN_FLAGS $DEBUG_FLAGS"
+	CFLAGS="-Wall -fno-pie -Wno-unknown-pragmas -DPHOTOSHOPPLUGINS_NEW -g -fexceptions $OPT_FLAGS $WARN_FLAGS $DEBUG_FLAGS"
 else
-	CFLAGS="-Wall -fno-pie -Wno-unknown-pragmas -g -fexceptions $OPT_FLAGS $WARN_FLAGS $DEBUG_FLAGS $CFLAGS"
+	CFLAGS="-Wall -fno-pie -Wno-unknown-pragmas -DPHOTOSHOPPLUGINS_NEW -g -fexceptions $OPT_FLAGS $WARN_FLAGS $DEBUG_FLAGS $CFLAGS"
 fi
 if test -z "$CXXFLAGS"; then
-	CXXFLAGS="-Wall -fno-pie -Wno-unknown-pragmas -g -fexceptions $OPT_FLAGS $WARN_FLAGS $DEBUG_FLAGS"
+	CXXFLAGS="-Wall -fno-pie -Wno-unknown-pragmas -DPHOTOSHOPPLUGINS_NEW -g -fexceptions $OPT_FLAGS $WARN_FLAGS $DEBUG_FLAGS"
 else
-	CXXFLAGS="-Wall -fno-pie -Wno-unknown-pragmas -g -fexceptions $OPT_FLAGS $WARN_FLAGS $DEBUG_FLAGS $CXXFLAGS"
+	CXXFLAGS="-Wall -fno-pie -Wno-unknown-pragmas -DPHOTOSHOPPLUGINS_NEW -g -fexceptions $OPT_FLAGS $WARN_FLAGS $DEBUG_FLAGS $CXXFLAGS"
 fi
 
 # Set language - this should be taken from a configure option

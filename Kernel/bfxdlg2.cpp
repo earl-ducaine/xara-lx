@@ -155,6 +155,8 @@ CC_IMPLEMENT_DYNCREATE(BfxResizeDlg, BfxPlugInDlg)
 CC_IMPLEMENT_DYNCREATE(BfxFlipAndRotateDlg, BfxPlugInDlg)
 CC_IMPLEMENT_DYNCREATE(BfxColourDepthDlg, BfxPlugInDlg)
 
+CC_IMPLEMENT_DYNAMIC(BfxMsg, Msg)
+
 // This will get Camelot to display the filename and linenumber of any memory allocations
 // that are not released at program exit
 #define new CAM_DEBUG_NEW
@@ -754,7 +756,7 @@ BOOL BfxPlugInDlg::FixOriginalComboBox()
 					}
 					else
 					{
-						//SetCustomComboGadgetValue ( _R(IDC_BFXDLG_ORIGCOMBO), theItem, TRUE, 0);
+						// SetCustomComboGadgetValue ( _R(IDC_BFXDLG_ORIGCOMBO), theItem, TRUE, 0);
 						Index++;
 					}
 				}
@@ -1316,16 +1318,16 @@ void BfxPlugInDlg::HandleFlipAndRotateMsg(DialogMsg* Msg, BOOL *pCommitValues, B
 
     case DIM_SOFT_COMMIT:
     case DIM_COMMIT:
-        if (GetBoolGadgetSelected(_R(IDC_BFXDLG_FLIPX)))
-            SetEffect(CC_RUNTIME_CLASS(ABFXFlipX));
-        if (GetBoolGadgetSelected(_R(IDC_BFXDLG_FLIPY)))
-            SetEffect(CC_RUNTIME_CLASS(ABFXFlipY));
-        if (GetBoolGadgetSelected(_R(IDC_BFXDLG_ROTATE90) ))
-            SetEffect(CC_RUNTIME_CLASS(ABFXRotate90 ));
-        if (GetBoolGadgetSelected(_R(IDC_BFXDLG_ROTATE180)))
-            SetEffect(CC_RUNTIME_CLASS(ABFXRotate180));
-        if (GetBoolGadgetSelected(_R(IDC_BFXDLG_ROTATE270)))
-            SetEffect(CC_RUNTIME_CLASS(ABFXRotate270));
+        // if (GetBoolGadgetSelected(_R(IDC_BFXDLG_FLIPX)))
+        //     SetEffect(CC_RUNTIME_CLASS(ABFXFlipX));
+        // if (GetBoolGadgetSelected(_R(IDC_BFXDLG_FLIPY)))
+        //     SetEffect(CC_RUNTIME_CLASS(ABFXFlipY));
+        // if (GetBoolGadgetSelected(_R(IDC_BFXDLG_ROTATE90) ))
+        //     SetEffect(CC_RUNTIME_CLASS(ABFXRotate90 ));
+        // if (GetBoolGadgetSelected(_R(IDC_BFXDLG_ROTATE180)))
+        //     SetEffect(CC_RUNTIME_CLASS(ABFXRotate180));
+        // if (GetBoolGadgetSelected(_R(IDC_BFXDLG_ROTATE270)))
+        //     SetEffect(CC_RUNTIME_CLASS(ABFXRotate270));
 
         break;
 
@@ -1448,7 +1450,7 @@ void BfxPlugInDlg::HandleResizeMsg(DialogMsg* Msg, BOOL *pCommitValues, BOOL *pE
     case DIM_SOFT_COMMIT:
     case DIM_COMMIT:
     {
-        SetEffect(CC_RUNTIME_CLASS(ABFXResize));
+        // SetEffect(CC_RUNTIME_CLASS(ABFXResize));
         INT32 NewX = GetLongGadgetValue(_R(IDC_BFXDLG_NEWXSIZE),0,10000000);
         INT32 NewY = GetLongGadgetValue(_R(IDC_BFXDLG_NEWYSIZE),0,10000000);
         if (NewX<2)
@@ -1544,14 +1546,15 @@ void BfxPlugInDlg::HandleBrightnessAndContrastMsg(DialogMsg* Msg, BOOL *pCommitV
         {
             if (InteractiveBCC)
             {
-                if ((!pFX) || (!pFX->IsKindOf(CC_RUNTIME_CLASS(ABFXBrightnessContrast))) ||
-                    (Brightness!=Param1) || (Contrast!=Param2) || (Colour!=Param3))
-                {
-                    *pCommitValues = TRUE;
-                    *pEndDialog = FALSE;
-                    SetDirty(FALSE); // no redraw right now
-                }
-                else break;
+                // if ((!pFX) || (!pFX->IsKindOf(CC_RUNTIME_CLASS(ABFXBrightnessContrast))) ||
+                //     (Brightness!=Param1) || (Contrast!=Param2) || (Colour!=Param3))
+                // {
+                //     *pCommitValues = TRUE;
+                //     *pEndDialog = FALSE;
+                //     SetDirty(FALSE); // no redraw right now
+                // }
+                // else
+                //     break;
             }
             else
             {
@@ -1559,7 +1562,7 @@ void BfxPlugInDlg::HandleBrightnessAndContrastMsg(DialogMsg* Msg, BOOL *pCommitV
                 break;
             }
         }
-        SetEffect(CC_RUNTIME_CLASS(ABFXBrightnessContrast));
+        // SetEffect(CC_RUNTIME_CLASS(ABFXBrightnessContrast));
         SetParameters(Brightness, Contrast, Colour);
         break;
     }
@@ -1644,22 +1647,22 @@ void BfxPlugInDlg::HandleDitherMsg(DialogMsg* Msg, BOOL *pCommitValues, BOOL *pE
 
     case DIM_SOFT_COMMIT:
     case DIM_COMMIT:
-        if (GetBoolGadgetSelected(_R(IDC_BFXDLG_BAYERMONO)))
-            SetEffect(CC_RUNTIME_CLASS(ABFXBayerMono));
-        if (GetBoolGadgetSelected(_R(IDC_BFXDLG_HALFTONEMONO)))
-            SetEffect(CC_RUNTIME_CLASS(ABFXHalftoneMono));
-        if (GetBoolGadgetSelected(_R(IDC_BFXDLG_DIFFUSIONMONO)))
-            SetEffect(CC_RUNTIME_CLASS(ABFXDiffusionMono));
-        if (GetBoolGadgetSelected(_R(IDC_BFXDLG_BAYERCOLOUR)))
-            SetEffect(CC_RUNTIME_CLASS(ABFXBayerColour));
-        if (GetBoolGadgetSelected(_R(IDC_BFXDLG_DIFFUSIONCOLOUR)))
-            SetEffect(CC_RUNTIME_CLASS(ABFXDiffusionColour));
-        if (GetBoolGadgetSelected(_R(IDC_BFXDLG_POPULARITY)))
-            SetEffect(CC_RUNTIME_CLASS(ABFXPopularityColour));
-        if (GetBoolGadgetSelected(_R(IDC_BFXDLG_MAKEGREYSCALE)))
-            SetEffect(CC_RUNTIME_CLASS(ABFXMakeGreyscale));
-        if (GetBoolGadgetSelected(_R(IDC_BFXDLG_OCTREECOLOUR)))
-            SetEffect(CC_RUNTIME_CLASS(ABFXOctree));
+        // if (GetBoolGadgetSelected(_R(IDC_BFXDLG_BAYERMONO)))
+        //     SetEffect(CC_RUNTIME_CLASS(ABFXBayerMono));
+        // if (GetBoolGadgetSelected(_R(IDC_BFXDLG_HALFTONEMONO)))
+        //     SetEffect(CC_RUNTIME_CLASS(ABFXHalftoneMono));
+        // if (GetBoolGadgetSelected(_R(IDC_BFXDLG_DIFFUSIONMONO)))
+        //     SetEffect(CC_RUNTIME_CLASS(ABFXDiffusionMono));
+        // if (GetBoolGadgetSelected(_R(IDC_BFXDLG_BAYERCOLOUR)))
+        //     SetEffect(CC_RUNTIME_CLASS(ABFXBayerColour));
+        // if (GetBoolGadgetSelected(_R(IDC_BFXDLG_DIFFUSIONCOLOUR)))
+        //     SetEffect(CC_RUNTIME_CLASS(ABFXDiffusionColour));
+        // if (GetBoolGadgetSelected(_R(IDC_BFXDLG_POPULARITY)))
+        //     SetEffect(CC_RUNTIME_CLASS(ABFXPopularityColour));
+        // if (GetBoolGadgetSelected(_R(IDC_BFXDLG_MAKEGREYSCALE)))
+        //     SetEffect(CC_RUNTIME_CLASS(ABFXMakeGreyscale));
+        // if (GetBoolGadgetSelected(_R(IDC_BFXDLG_OCTREECOLOUR)))
+        //     SetEffect(CC_RUNTIME_CLASS(ABFXOctree));
         break;
     default:
         break;
@@ -1813,39 +1816,39 @@ void BfxPlugInDlg::HandleSpecialEffectsMsg(DialogMsg* Msg, BOOL *pCommitValues, 
         case 7:
         case 8:
         case 9:
-            SetEffect(CC_RUNTIME_CLASS(ABFXSpecialEffect));
+            // SetEffect(CC_RUNTIME_CLASS(ABFXSpecialEffect));
             SetParameters((INT32) Choice);
             break;
         case 10:
-            SetEffect(CC_RUNTIME_CLASS(ABFXSharpenBlur));
-            SetParameters(((INT32) 127-GetLongGadgetValue(_R(IDC_BFXDLG_AMOUNT),0,127)), 1);
+            // SetEffect(CC_RUNTIME_CLASS(ABFXSharpenBlur));
+            // SetParameters(((INT32) 127-GetLongGadgetValue(_R(IDC_BFXDLG_AMOUNT),0,127)), 1);
             break;
         case 11:
-            SetEffect(CC_RUNTIME_CLASS(ABFXSharpenBlur));
-            SetParameters(((INT32) 127-GetLongGadgetValue(_R(IDC_BFXDLG_AMOUNT),0,127)), 2);
+            // SetEffect(CC_RUNTIME_CLASS(ABFXSharpenBlur));
+            // SetParameters(((INT32) 127-GetLongGadgetValue(_R(IDC_BFXDLG_AMOUNT),0,127)), 2);
             break;
         case 12:
-            SetEffect(CC_RUNTIME_CLASS(ABFXSharpenBlur));
-            SetParameters(((INT32) 127-GetLongGadgetValue(_R(IDC_BFXDLG_AMOUNT),0,127)), 3);
+            // SetEffect(CC_RUNTIME_CLASS(ABFXSharpenBlur));
+            // SetParameters(((INT32) 127-GetLongGadgetValue(_R(IDC_BFXDLG_AMOUNT),0,127)), 3);
             break;
         case 13:
-            SetEffect(CC_RUNTIME_CLASS(ABFXSharpenBlur));
-            SetParameters(((INT32) GetLongGadgetValue(_R(IDC_BFXDLG_AMOUNT),0,127))-127, 1);
+            // SetEffect(CC_RUNTIME_CLASS(ABFXSharpenBlur));
+            // SetParameters(((INT32) GetLongGadgetValue(_R(IDC_BFXDLG_AMOUNT),0,127))-127, 1);
             break;
         case 14:
-            SetEffect(CC_RUNTIME_CLASS(ABFXSharpenBlur));
-            SetParameters(((INT32) GetLongGadgetValue(_R(IDC_BFXDLG_AMOUNT),0,127))-127, 2);
+            // SetEffect(CC_RUNTIME_CLASS(ABFXSharpenBlur));
+            // SetParameters(((INT32) GetLongGadgetValue(_R(IDC_BFXDLG_AMOUNT),0,127))-127, 2);
             break;
         case 15:
-            SetEffect(CC_RUNTIME_CLASS(ABFXSharpenBlur));
-            SetParameters(((INT32) GetLongGadgetValue(_R(IDC_BFXDLG_AMOUNT),0,127))-127, 3);
+            // SetEffect(CC_RUNTIME_CLASS(ABFXSharpenBlur));
+            // SetParameters(((INT32) GetLongGadgetValue(_R(IDC_BFXDLG_AMOUNT),0,127))-127, 3);
             break;
         case 16:
         case 17:
         case 18:
         case 19:
-            SetEffect(CC_RUNTIME_CLASS(ABFXRemoveDither));
-            SetParameters((127-((INT32) GetLongGadgetValue(_R(IDC_BFXDLG_AMOUNT),0,127)))<<1, 30, Choice-16);
+            // SetEffect(CC_RUNTIME_CLASS(ABFXRemoveDither));
+            // SetParameters((127-((INT32) GetLongGadgetValue(_R(IDC_BFXDLG_AMOUNT),0,127)))<<1, 30, Choice-16);
             break;
         }
         break;
@@ -2085,7 +2088,7 @@ BOOL BfxPlugInDlg::Init()
         GREY_WHEN_NO_CURRENT_DOC | DONT_GREY_WHEN_SELECT_INSIDE
         );
 
-	ok = ok && BfxOp::Init();
+	// ok = ok && BfxOp::Init();
 
 	return ok;
 }
