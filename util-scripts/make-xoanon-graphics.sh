@@ -90,7 +90,7 @@ function build_xoanon_graphics {
     # cd ../..
     # ar -xv libCDraw.a
     # export PATH="/usr/lib/ccache:$PATH";
-    make -j 4 1> make-out.txt 2>make-error.txt
+    make -j 4 2>&1 | tee make-out-err.txt
 }
 
 function make_tags {

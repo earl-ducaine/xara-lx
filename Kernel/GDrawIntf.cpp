@@ -1010,7 +1010,7 @@ BOOL GDrawAsm::SetupBitmap( INT32 Width, INT32 Height, INT32 Depth, LPBYTE Bits,
 	if(DoBiCompression == TRUE && Bits != NULL)
 	{
 		// Another point stated in the GDraw 2.008 Docs is that the 32bit BMP should be
-		// Initialized to 00,00,00,FF for every pixel!
+		// Initialized to 00,00,00,FF for every pixel!  !!!! NOT i.c.o. cairo !!!!!
 
 		DWORD* pSetBits = (DWORD*)Bits;
 		DWORD BMPSIZE = (Width * Height);// >> 2;		// Ilan - why was there a ">> 2"??
@@ -1018,7 +1018,15 @@ BOOL GDrawAsm::SetupBitmap( INT32 Width, INT32 Height, INT32 Depth, LPBYTE Bits,
 
 		while(Index < BMPSIZE)
 		{
+#if !HAVE_CAIRO
 			pSetBits[Index++] = 0xFF000000;
+#else
+			/* 	changed 2010 for_cairo
+			*	i wonder if this is necessary at all as clearing is also done in
+			*	wxOil/grndrgn.cpp. ( ah....it calls SetBitmap, not SetupBitmap )
+			*/
+			 pSetBits[Index++] = 0x00000000;
+#endif
 		}
 	}
 

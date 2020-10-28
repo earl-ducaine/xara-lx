@@ -27,7 +27,7 @@
       script: 
 
       #+BEGIN_SRC sh
-        . util-scripts/make-xoamorph.sh
+        . util-scripts/make-xoamorph-graphics.sh
       #+END_SRC
    4) Build and install the dev version of wxWidgets 4.8:
       #+BEGIN_SRC sh
@@ -39,7 +39,7 @@
       #+END_SRC
    6) Finally build Xara LX
       #+BEGIN_SRC sh
-        build_xoamorph
+        build_xoamorph_graphics
       #+END_SRC
 
 

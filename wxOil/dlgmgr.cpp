@@ -2818,8 +2818,14 @@ void get_descendants(CWindowID WindowID) {
 ***************************************************************************/
 
 wxWindow* DialogManager::GetGadget(CWindowID WindowID, int Gadget) {
+#if !HAVE_CAIRO
   ERROR2IF(!WindowID || !WindowID->IsKindOf(CLASSINFO(wxWindow)),
 	   FALSE, "Bad Window ID passed");
+#else
+  if(!WindowID || !WindowID->IsKindOf(CLASSINFO(wxWindow)))
+    return NULL;
+#endif
+
   // get_descendants(WindowID);
   wxWindow* pGadget = WindowID->FindWindow(Gadget);
   // TRACEUSER("amb",_T("pwxDialog=0x%016llx Gadget=%d(%s) pGadget=0x%016llx"),

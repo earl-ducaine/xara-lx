@@ -176,6 +176,11 @@ AC_ARG_WITH(resource-dir,
     fi
 ])
 
+AC_ARG_WITH([cairo],
+	[AS_HELP_STRING([--with-cairo], [Render using Cairo instead of CDraw])],
+	[],
+	[with_cairo=no])
+
 wxversion=0
 
 AC_DEFUN([WXTEST],
@@ -420,16 +425,25 @@ XARALXCPPFLAGS="$CPPFLAGS"
 CXXFLAGS=""
 CPPFLAGS=""
 
+if test "x$with_cairo" = xno; then
+	CDRAW_DIR_LDFLAGS="-L$srcdir/$CDRAW_LIB_DIR -L$srcdir/$CDRAW_LIB_ALT_DIR"
+	CDRAW_LIB_LDFLAGS="-lCDraw -lCDraw-alt"
+	AC_DEFINE([HAVE_CAIRO], [0])
+else
+	CDRAW_DIR_LDFLAGS=
+	CDRAW_LIB_LDFLAGS=
+	AC_DEFINE([HAVE_CAIRO], [1])
+fi
 
 AM_CONDITIONAL(PRECOMPILE_ENABLE, [test "$PrecompileEnable" = "yes"])
 AM_CONDITIONAL(STATIC_ENABLE, [test "$StaticEnable" = "yes"])
 AM_CONDITIONAL(DARWIN_LINK, [test "$DarwinLink" = "yes"])
+AM_CONDITIONAL(CAIRO_LINK, [test "$with_cairo" = "yes"])
 AM_CONDITIONAL(INTERNATIONAL_ENABLE, [test "$InternationalEnable" = "yes"])
 #AM_CONDITIONAL(SVNVERSION_ENABLE, [test "$SvnVersionEnable" = "yes"])
 AM_CONDITIONAL(XARLIB_ENABLE, [test "$XarLibEnable" = "yes"])
 AM_CONDITIONAL(FILTERS_ENABLE, [test "$FiltersEnable" = "yes"])
 
-AC_SUBST(CDRAW_LIB_ALT_DIR)
 AC_SUBST(XARALXCXXFLAGS)
 AC_SUBST(XARALXCPPFLAGS)
 AC_SUBST(TOPDIR)
@@ -441,11 +455,11 @@ AC_SUBST(WXRC)
 AC_SUBST(VERSION)
 AC_SUBST(GTK_CFLAGS)
 AC_SUBST(GTK_LIBS)
-AC_SUBST(CDRAW_LIB_DIR)
 AC_SUBST(PNG_LIB_DIR)
 AC_SUBST(LIBXML2_LIBS)
 AC_SUBST(PODIR)
 AC_SUBST(BUILDRESFLAGS)
+AC_SUBST(CDRAW_DIR_LDFLAGS)
+AC_SUBST(CDRAW_LIB_LDFLAGS)
 
-
-AC_OUTPUT(Makefile PreComp/Makefile Kernel/Makefile wxOil/Makefile tools/Makefile wxXtra/Makefile xarlib/Makefile libs/Makefile libs/x86_64/Makefile libs/x86_64/cdraw-alt/Makefile xarlib/Xar.pc po/Makefile.in)
+AC_OUTPUT(Makefile PreComp/Makefile Kernel/Makefile wxOil/Makefile tools/Makefile GDraw/Makefile wxXtra/Makefile xarlib/Makefile libs/Makefile libs/x86_64/Makefile libs/x86_64/cdraw-alt/Makefile xarlib/Xar.pc po/Makefile.in)
