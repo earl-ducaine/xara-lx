@@ -12,6 +12,23 @@
 *.pc
 *~
 
+GDraw/*.o
+Kernel/*.o
+PreComp/camtypes.h.gch
+filters/*.o
+libs/x86_64/cdraw-alt/libCDraw-alt.a
+libs/x86_64/cdraw-alt/libCDraw_alt_a-bshadow2.o
+libs/x86_64/libCDraw.a
+libs/x86_64/libCDraw_la*.o
+libs/x86_64/orphaned-object-files/*.o
+po/*.o
+tools/*.o
+wxGTK-2.8.12/*.o
+wxOil/*.o
+wxXtra/*.o
+xarlib/*.o
+
+>>>>>>> Tweak .gitignore
 Makefile
 Makefile.in
 TAGS
@@ -26,11 +43,6 @@ config.log
 depcomp
 install-sh
 missing
-
-po/POTFILES
-po/remove-potcdate.sed
-po/stamp-po
-po/xaralx.pot
 
 libpng-*
 freetype-*
@@ -55,13 +67,15 @@ doc/misc/
 docs/
 doc/en/image/
 
-PreComp/camtypes.h.gch
-wxOil/resources.h
-wxOil/svnversion.h
-wxOil/xrc/dialogs.xrc
-wxOil/xrc/resources.xrs
-wxOil/xrc/strings.lst
-wxOil/xrc/xaralx.po
-wxOil/xrc/xrc.check
+# Generated resource files
 
-make-out-err.txt
+po/POTFILES
+wxOil/resources.h      
+wxOil/svnversion.h     
+wxOil/xrc/dialogs.xrc  
+wxOil/xrc/resources.xrs
+wxOil/xrc/strings.lst  
+wxOil/xrc/xaralx.po    
+wxOil/xrc/xrc.check    
+wxXtra/libwxXtra.a     
+
