@@ -81,16 +81,11 @@ function build_xoanon_graphics {
     # set ACLOCAL_PATH to specify autoconfig macro location
     export ACLOCAL_PATH=$WXWIDGETS_VERSION_NAME; autoreconf -i -f
     ./configure $1 --with-wx-config=$WXWIDGETS_VERSION_NAME/buildgtk/wx-config \
-		--enable-static-exec \
-		--with-freetype-config=freetype-2.8.1/builds/unix/freetype-config \
+     --enable-static-exec \
+     --with-freetype-config=freetype-2.8.1/builds/unix/freetype-config \
+     --with-cairo \
 	|| echo "Unable to build Xoamporph. Check make-error.txt"
-    # For now don't use ccache and don't build assembly code.
-    # cd libs/x86_64
-    # ar -s -r libCDraw.a *.o
-    # cd ../..
-    # ar -xv libCDraw.a
-    # export PATH="/usr/lib/ccache:$PATH";
-    make -j 4 2>&1 | tee make-out-err.txt
+    make -j 8 2>&1 | tee make-out-err.txt
 
 }
 
