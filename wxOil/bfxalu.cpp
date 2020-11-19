@@ -2918,6 +2918,140 @@ BOOL BfxErrorRegionList::Sort()
 
 /********************************************************************************************
 
+>   BOOL BfxALU::MakeCairoHandle(INT32* handle_ptr)
+
+    Author:     Alex_Bligh (Xara Group Ltd) <camelotdev@xara.com>
+    Created:    27/01/95
+    Inputs:     DoBodge - tries to get round a bug in the Accusoft linear interpolation resize code
+    Outputs:    *pHandle = Accusoft handle
+    Returns:    TRUE if succeeded, FALSE & error set if not
+    Purpose:    A new accusoft bitmap handle is created for the B reg
+    Errors:     Error 2 if init hasn't been called or GDraw fails
+                Error 3 if windows and some other Oil layer are stangely mixed...
+    Scope:      Public
+    SeeAlso:    -
+
+This actually copies the bitmap. Note we'll have to fudge 32bit bmps somehow
+
+********************************************************************************************/
+
+BOOL BfxALU::MakeCairoHandle(INT32* handle_ptr)
+{
+
+    BITMAPINFOHEADER* bitmap_info_header_ptr = &(((CWxBitmap *)(B->ActualBitmap))->BMInfo->bmiHeader);
+
+    DWORD palette_used = bitmap_info_header_ptr->biClrUsed;
+
+    // Handle wierd palette stuff
+    if (bitmap_info_header_ptr->biBitCount > 8)
+    {
+        palette_used = 0;
+    } else {
+        switch (bitmap_info_header_ptr->biBitCount)
+        {
+        case 1:
+            palette_used = 2;    //Why bother? Just in case!
+            break;
+        case 2:
+            palette_used = 4;
+            break;
+        case 4:
+            palette_used = 16;
+            break;
+        case 8:
+            palette_used = 256;
+            break;
+        default:
+            break;
+        }
+    }
+
+    INT32 size_image = bitmap_info_header_ptr->biSizeImage;
+    INT32 depth = 0;
+    if (bitmap_info_header_ptr->biBitCount == 32)
+        depth = 24;
+    else
+        depth = bitmap_info_header_ptr->biBitCount;
+
+    if (bitmap_info_header_ptr->biBitCount == 32)
+    {
+        UINT32 scan_line_size = DIBUtil::ScanlineSize(bitmap_info_header_ptr->biWidth, 24);
+        size_image = scan_line_size * bitmap_info_header_ptr->biHeight;
+    }
+
+
+    // HGLOBAL HMem = GlobalAlloc(GHND, sizeof(BITMAPINFOHEADER) + (sizeof(DWORD)*palette_used) + SizeImage);
+    // LPBYTE memory = (LPBYTE) (void *) GlobalLock(HMem);
+    LPBYTE memory;
+
+
+    BITMAPINFOHEADER* bitmap_header_info_ptr = (BITMAPINFOHEADER*)memory;
+    LPBYTE pallet_ptr = memory + sizeof(BITMAPINFOHEADER);
+    LPBYTE pBits = pallet_ptr + (sizeof(DWORD)*palette_used);
+
+    bitmap_header_info_ptr->biSize = bitmap_info_header_ptr->biSize;
+
+    bitmap_header_info_ptr->biWidth = bitmap_info_header_ptr->biWidth;
+    bitmap_header_info_ptr->biHeight = bitmap_info_header_ptr->biHeight;
+    bitmap_header_info_ptr->biPlanes = 1;
+    bitmap_header_info_ptr->biBitCount = depth;
+    bitmap_header_info_ptr->biCompression = BI_RGB;
+    bitmap_header_info_ptr->biSizeImage = size_image;
+    bitmap_header_info_ptr->biXPelsPerMeter = bitmap_info_header_ptr->biXPelsPerMeter;
+    bitmap_header_info_ptr->biYPelsPerMeter = bitmap_info_header_ptr->biYPelsPerMeter;
+
+    if (palette_used)
+    {
+        bitmap_header_info_ptr->biClrUsed = palette_used;
+        bitmap_header_info_ptr->biClrImportant = /*bitmap_info_header_ptr->biClrImportant;*/palette_used;
+    } else {
+        bitmap_header_info_ptr->biClrUsed = 0;
+        bitmap_header_info_ptr->biClrImportant = 0;
+    }
+
+    // Copy the palette across
+    if (palette_used)
+    {
+        memcpy(pallet_ptr,
+               ((LPBYTE)(bitmap_info_header_ptr)) + sizeof(BITMAPINFOHEADER),
+               sizeof(DWORD) * palette_used);
+    }
+
+    if (bitmap_info_header_ptr->biBitCount != 32)
+    {
+        memcpy(pBits,
+               ((CWxBitmap *)(B->ActualBitmap))->BMBytes,
+               bitmap_info_header_ptr->biSizeImage);
+    }
+    else
+    {
+        GC->ConvertBitmap(bitmap_info_header_ptr,
+                          ((CWxBitmap *)(B->ActualBitmap))->BMBytes,
+                          bitmap_header_info_ptr,
+                          pBits,
+                          8);
+    }
+
+    if (bitmap_info_header_ptr->biBitCount==1)
+    {
+        FixMono(pBits, bitmap_info_header_ptr->biSizeImage);
+    }
+
+    // INT32 result = AccusoftFilters::pfnIMG_create_handle_keep(bitmap_header_info_ptr);
+    INT32 result = 0;
+    if (result < 0)
+    {
+        // GlobalUnlock(HMem);
+        // GlobalFree(HMem);
+    }
+    *handle_ptr = result;
+
+    return TRUE;
+}
+
+
+/********************************************************************************************
+
 >   BOOL BfxErrorRegionList::GetCurrent(INT32 * XCoord, INT32 * YCoord, INT32 * Area)
 
     Author:     Alex_Bligh (Xara Group Ltd) <camelotdev@xara.com>
@@ -3628,18 +3762,26 @@ if (pBBMI)
 
 ********************************************************************************************/
 
-BOOL BfxALU::FlipX(KernelBitmap * * ppOutput)
+BOOL BfxALU::FlipX(KernelBitmap** ppOutput)
 {
-    ERROR2IF((!ppOutput),FALSE, "BfxALU output parameter must be non-null");
+    ERROR2IF((!ppOutput), FALSE, "BfxALU output parameter must be non-null");
     INT32 AccusoftHandle = -1;
-    if (!MakeAccusoftHandle(&AccusoftHandle)) return FALSE;
+
+    if (!MakeCairoHandle(&AccusoftHandle))
+        return FALSE;
+
     INT32 result = AccusoftFilters::pfnIMG_flip_bitmapx(AccusoftHandle);
     if (result < 0)
     {
         AccusoftFilters::pfnIMG_delete_bitmap(AccusoftHandle);
         ERROR1(FALSE, _R(IDE_ACCUSOFT_ERROR) - result);
     }
-        return MakeKernelBitmap(AccusoftHandle, ppOutput, FALSE, &(B->ActualBitmap->GetName()), _R(IDS_BFX_FLIPX));
+
+    return MakeKernelBitmap(AccusoftHandle,
+                            ppOutput,
+                            FALSE,
+                            &(B->ActualBitmap->GetName()),
+                            _R(IDS_BFX_FLIPX));
 }
 
 /********************************************************************************************

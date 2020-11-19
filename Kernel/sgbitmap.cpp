@@ -737,7 +737,8 @@ void SGDisplayKernelBitmap::HandleRedraw(SGRedrawInfo *RedrawInfo, SGMiscInfo *M
     if (TheKernelBitmap == NULL || TheKernelBitmap->ActualBitmap == NULL)
         return;
 
-    StartRendering(RedrawInfo, MiscInfo);
+    // Not needed in the current rendering model
+    // StartRendering(RedrawInfo, MiscInfo);
 
     DocRect MyRect(FormatRect);     // Get my redraw position from the cached FormatRect
 
@@ -747,13 +748,15 @@ void SGDisplayKernelBitmap::HandleRedraw(SGRedrawInfo *RedrawInfo, SGMiscInfo *M
     {
         // No, so just ignore it
         // Erroring here is not good, as we are in the middle of a redraw loop
-        StopRendering(RedrawInfo, MiscInfo);
+        //
+        // Not needed in the current rendering model
+        // StopRendering(RedrawInfo, MiscInfo);
         return;
     }
 
     // Check the rectangle is at least our minimum height,
     // and adjust it if not
-    //INT32 SelHeight = 16000;
+    // INT32 SelHeight = 16000;
     // Changed to allow a third line of text.
     INT32 SelHeight = 23000;
 
@@ -794,17 +797,17 @@ void SGDisplayKernelBitmap::HandleRedraw(SGRedrawInfo *RedrawInfo, SGMiscInfo *M
         INT32 YSize;
         switch (MiscInfo->DisplayMode)
         {
-            case 1:                     // 1 - Small full info
-                YSize = GridLock(MiscInfo, SG_DefaultSmallBmp);
-                break;
+        case 1:                     // 1 - Small full info
+            YSize = GridLock(MiscInfo, SG_DefaultSmallBmp);
+            break;
 
-            case 2:                     // 2 - Large icon with name
-                YSize = GridLock(MiscInfo, SG_DefaultLargeBmp);
-                break;
+        case 2:                     // 2 - Large icon with name
+            YSize = GridLock(MiscInfo, SG_DefaultLargeBmp);
+            break;
 
-            default:                    // 0 - Full Info
-                YSize = GridLock(MiscInfo, SG_DefaultLargeBmp);
-                break;
+        default:                    // 0 - Full Info
+            YSize = GridLock(MiscInfo, SG_DefaultLargeBmp);
+            break;
         }
 
         // If the bitmap is very Wide and Thin, then we need to scale it
@@ -882,16 +885,16 @@ void SGDisplayKernelBitmap::HandleRedraw(SGRedrawInfo *RedrawInfo, SGMiscInfo *M
 /*  Renderer->SetUsingSmoothedBitmaps(bScaleDown);
     if (bScaleDown)
     {
-        Quality qual;
-        qual.SetQuality(QUALITY_MAX);
-        QualityAttribute *pQuality = new QualityAttribute(qual);
-        Renderer->SetQuality(pQuality, TRUE);           // Temp
+    Quality qual;
+    qual.SetQuality(QUALITY_MAX);
+    QualityAttribute *pQuality = new QualityAttribute(qual);
+    Renderer->SetQuality(pQuality, TRUE);           // Temp
     }
     else
     {
-        Quality qual;   // QUALITY_DEFAULT is implied
-        QualityAttribute *pQuality = new QualityAttribute(qual);
-        Renderer->SetQuality(pQuality, TRUE);           // Temp
+    Quality qual;   // QUALITY_DEFAULT is implied
+    QualityAttribute *pQuality = new QualityAttribute(qual);
+    Renderer->SetQuality(pQuality, TRUE);           // Temp
     }*/
 
     GridLockRect(MiscInfo, &MyRect);    // Ensure the new 'MyRect' is pixel-grid-aligned
@@ -978,7 +981,8 @@ void SGDisplayKernelBitmap::HandleRedraw(SGRedrawInfo *RedrawInfo, SGMiscInfo *M
             {
                 // Just exit if we're out of memory
                 SGLibDisplayItem::DrawNullBitmapRect(Renderer, MiscInfo, &ThumbnailRect, FALSE);
-                StopRendering(RedrawInfo, MiscInfo);
+                // Not needed in the current rendering model
+                // StopRendering(RedrawInfo, MiscInfo);
                 return;
             }
 
@@ -1009,7 +1013,8 @@ void SGDisplayKernelBitmap::HandleRedraw(SGRedrawInfo *RedrawInfo, SGMiscInfo *M
     if (DummyBmp == NULL)
     {
         // Just exit if we're out of memory
-        StopRendering(RedrawInfo, MiscInfo);
+        // Not needed in the current rendering model
+        // StopRendering(RedrawInfo, MiscInfo);
         return;
     }
 
@@ -1053,49 +1058,49 @@ void SGDisplayKernelBitmap::HandleRedraw(SGRedrawInfo *RedrawInfo, SGMiscInfo *M
 
         switch (bpp)
         {
-            case 1:
-                if (HasTransparency)
-                    BitmapCols = _R(IDS_SGBITMAP_MONOCHROME_T); // "Monochrome, transparent";
-                else
-                    BitmapCols = _R(IDS_SGBITMAP_MONOCHROME);   // "Monochrome";
-                break;
+        case 1:
+            if (HasTransparency)
+                BitmapCols = _R(IDS_SGBITMAP_MONOCHROME_T); // "Monochrome, transparent";
+            else
+                BitmapCols = _R(IDS_SGBITMAP_MONOCHROME);   // "Monochrome";
+            break;
 
-            case 2:
-                if (HasTransparency)
-                    BitmapCols = _R(IDS_SGBITMAP_4COLOURS_T);   // "3 colours, transparent";
-                else
-                    BitmapCols = _R(IDS_SGBITMAP_4COLOURS);     // "4 colours";
-                break;
+        case 2:
+            if (HasTransparency)
+                BitmapCols = _R(IDS_SGBITMAP_4COLOURS_T);   // "3 colours, transparent";
+            else
+                BitmapCols = _R(IDS_SGBITMAP_4COLOURS);     // "4 colours";
+            break;
 
-            case 4:
-                if (HasTransparency)
-                    BitmapCols = _R(IDS_SGBITMAP_16COLOURS_T);  // "15 colours, transparent";
-                else
-                    BitmapCols = _R(IDS_SGBITMAP_16COLOURS);    // "16 colours";
-                break;
+        case 4:
+            if (HasTransparency)
+                BitmapCols = _R(IDS_SGBITMAP_16COLOURS_T);  // "15 colours, transparent";
+            else
+                BitmapCols = _R(IDS_SGBITMAP_16COLOURS);    // "16 colours";
+            break;
 
-            case 8:
-                if (HasTransparency)
-                    BitmapCols = _R(IDS_SGBITMAP_256COLOURS_T); // "255 colours, transparent";
-                else
-                    BitmapCols = _R(IDS_SGBITMAP_256COLOURS);   // "256 colours";
-                break;
+        case 8:
+            if (HasTransparency)
+                BitmapCols = _R(IDS_SGBITMAP_256COLOURS_T); // "255 colours, transparent";
+            else
+                BitmapCols = _R(IDS_SGBITMAP_256COLOURS);   // "256 colours";
+            break;
 
-            case 16:
-                BitmapCols = _R(IDS_SGBITMAP_65COLOURS);        // "65K colours";
-                break;
+        case 16:
+            BitmapCols = _R(IDS_SGBITMAP_65COLOURS);        // "65K colours";
+            break;
 
-            case 24:
-                BitmapCols = _R(IDS_SGBITMAP_MILLIONS_COLOURS); // "Millions of colours";
-                break;
+        case 24:
+            BitmapCols = _R(IDS_SGBITMAP_MILLIONS_COLOURS); // "Millions of colours";
+            break;
 
-            case 32:
-                BitmapCols = _R(IDS_SGBITMAP_32_BIT); // "Millions of colours";
-                break;
+        case 32:
+            BitmapCols = _R(IDS_SGBITMAP_32_BIT); // "Millions of colours";
+            break;
 
-            default:
-                BitmapCols = "";
-                break;
+        default:
+            BitmapCols = "";
+            break;
         }
 
         // Now get its pixel Width and Height
@@ -1117,9 +1122,9 @@ void SGDisplayKernelBitmap::HandleRedraw(SGRedrawInfo *RedrawInfo, SGMiscInfo *M
         BitmapSource* pSource = NULL;
         BaseBitmapFilter* pDummyFilter;
 
-PORTNOTE("other", "Removed XPE hook")
+        PORTNOTE("other", "Removed XPE hook")
 #ifndef EXCLUDE_FROM_XARALX
-        KernelBitmap* pMaster = NULL;
+            KernelBitmap* pMaster = NULL;
         IXMLDOMDocumentPtr pEdits = NULL;
         TheKernelBitmap->GetXPEInfo(pMaster, pEdits);
         BOOL bIsXPE = (pMaster!=NULL && pEdits!=NULL);
@@ -1205,45 +1210,46 @@ PORTNOTE("other", "Removed XPE hook")
 
         switch(RestoreType)
         {
-            case GDM_NONE:
-            {
-                String_256 BottomLine;
-                String_256 Nothing(_R(IDS_NOTHING));
-                BottomLine.MakeMsg(_R(IDS_SGBITMAP_DELAY_RESTORE_BOTTOMLINE), (TCHAR*)Delay, (TCHAR*)Nothing);
-                Renderer->DrawFixedSystemText(&BottomLine, BottomRect);
-            }
-            break;
-            case  GDM_LEAVE:
-            {
-                String_256 BottomLine;
-                String_256 Leave(_R(IDS_LEAVE));
-                BottomLine.MakeMsg(_R(IDS_SGBITMAP_DELAY_RESTORE_BOTTOMLINE), (TCHAR*)Delay, (TCHAR*)Leave);
-                Renderer->DrawFixedSystemText(&BottomLine, BottomRect);
-            }
-            break;
-            case GDM_BACKTOBACK:
-            {
-                String_256 BottomLine;
-                String_256 Back(_R(IDS_BACKGROUND));
-                BottomLine.MakeMsg(_R(IDS_SGBITMAP_DELAY_RESTORE_BOTTOMLINE), (TCHAR*)Delay, (TCHAR*)Back);
-                Renderer->DrawFixedSystemText(&BottomLine, BottomRect);
-            }
-            break;
-            case GDM_PREVIOUS:
-            {
-                String_256 BottomLine;
-                String_256 Previous(_R(IDS_PREVIOUS));
-                BottomLine.MakeMsg(_R(IDS_SGBITMAP_DELAY_RESTORE_BOTTOMLINE), (TCHAR*)Delay, (TCHAR*)Previous);
-                Renderer->DrawFixedSystemText(&BottomLine, BottomRect);
-            }
-            break;
+        case GDM_NONE:
+        {
+            String_256 BottomLine;
+            String_256 Nothing(_R(IDS_NOTHING));
+            BottomLine.MakeMsg(_R(IDS_SGBITMAP_DELAY_RESTORE_BOTTOMLINE), (TCHAR*)Delay, (TCHAR*)Nothing);
+            Renderer->DrawFixedSystemText(&BottomLine, BottomRect);
+        }
+        break;
+        case  GDM_LEAVE:
+        {
+            String_256 BottomLine;
+            String_256 Leave(_R(IDS_LEAVE));
+            BottomLine.MakeMsg(_R(IDS_SGBITMAP_DELAY_RESTORE_BOTTOMLINE), (TCHAR*)Delay, (TCHAR*)Leave);
+            Renderer->DrawFixedSystemText(&BottomLine, BottomRect);
+        }
+        break;
+        case GDM_BACKTOBACK:
+        {
+            String_256 BottomLine;
+            String_256 Back(_R(IDS_BACKGROUND));
+            BottomLine.MakeMsg(_R(IDS_SGBITMAP_DELAY_RESTORE_BOTTOMLINE), (TCHAR*)Delay, (TCHAR*)Back);
+            Renderer->DrawFixedSystemText(&BottomLine, BottomRect);
+        }
+        break;
+        case GDM_PREVIOUS:
+        {
+            String_256 BottomLine;
+            String_256 Previous(_R(IDS_PREVIOUS));
+            BottomLine.MakeMsg(_R(IDS_SGBITMAP_DELAY_RESTORE_BOTTOMLINE), (TCHAR*)Delay, (TCHAR*)Previous);
+            Renderer->DrawFixedSystemText(&BottomLine, BottomRect);
+        }
+        break;
 
-            default:
-                break;
+        default:
+            break;
         }
     }
 
-    StopRendering(RedrawInfo, MiscInfo);
+    // Not needed in the current rendering model
+    // StopRendering(RedrawInfo, MiscInfo);
 }
 
 

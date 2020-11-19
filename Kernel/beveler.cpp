@@ -4,7 +4,7 @@
 // DMc 2/6/98
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
- 
+
                Xara LX, a vector drawing and manipulation program.
                     Copyright (C) 1993-2006 Xara Group Ltd.
        Copyright on certain contributions may be held in joint with their
@@ -35,7 +35,7 @@ ADDITIONAL RIGHTS
 
 Conditional upon your continuing compliance with the GNU General Public
 License described above, Xara Group Ltd grants to you certain additional
-rights. 
+rights.
 
 The additional rights are to use, modify, and distribute the software
 together with the wxWidgets library, the wxXtra library, and the "CDraw"
@@ -142,6 +142,7 @@ service marks of Xara Group Ltd. All rights in these marks are reserved.
 // 256 * 16 = 4096 pixels and scaled by 4 = 1024 * 64 = 65536 pixels!!!
 
 CC_IMPLEMENT_DYNAMIC(CBeveler, CCObject)
+
 
 /********************************************************************************************
 
@@ -264,7 +265,7 @@ BOOL CBeveler::SetUpBeveler(MILLIPOINT Indent, JointType jtype,
 							NormCoord * lightVec, BOOL bOuter,
 							INT32 Contrast, RenderRegion * pRegion,
 							MILLIPOINT Flatness)
-{	
+{
 	// Check to see if the indent is zero. This is not bad, but just means there`s no bitmap needed!
 	if (Indent == 0)
 		return TRUE;
@@ -339,9 +340,9 @@ BOOL CBeveler::SetBevelerSize(INT32 Width, INT32 Height)
 	Author:		David_McClarnon (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	17/10/99
 
-	Inputs:		
-	Returns:	
-				
+	Inputs:
+	Returns:
+
 	Purpose:	Renders the bitmap in strips
 	Errors:		FALSE for failure
 	SeeAlso:	-
@@ -385,7 +386,7 @@ BOOL CBeveler::RenderInStripsToBitmap(KernelBitmap * pBitmap, DocCoord* pSubPixO
 	INT32 LargestBevelWidth = 0;
 	INT32 LargestBevelHeight = BEVELMAXBITMAPHEIGHT;
 	INT32 LeftOverWidth = width % BEVELMAXBITMAPWIDTH;
-	
+
 	// At this point we have a destination bitmap which is larger than the max size bmp for GDraw2!
 	// What we need to do is render in strips. For this we require two bitmaps to be setup.
 	// Bitmap 1 is of MaxBevelWidthin width and Bitmap2 is the modulus left over in width.
@@ -440,9 +441,9 @@ BOOL CBeveler::RenderInStripsToBitmap(KernelBitmap * pBitmap, DocCoord* pSubPixO
 			{
 				delete pFullStripBitmap;
 				delete pRemainderStripBitmap;
-				return FALSE;			
+				return FALSE;
 			}
-			
+
 			// copy the source bitmap into the destination bitmap at the correct place
 			CopyBitmapIntoBitmap(pFullStripBitmap, pBitmap, x, y);
 		}
@@ -466,9 +467,9 @@ BOOL CBeveler::RenderInStripsToBitmap(KernelBitmap * pBitmap, DocCoord* pSubPixO
 			{
 				delete pFullStripBitmap;
 				delete pRemainderStripBitmap;
-				return FALSE;			
+				return FALSE;
 			}
-			
+
 			// copy the source bitmap into the destination bitmap at the correct place
 			CopyBitmapIntoBitmap(pRemainderStripBitmap, pBitmap, x, y);
 
@@ -519,7 +520,7 @@ void CBeveler::ToWinCoord(const DocCoord * dc, WinCoord * wc)
 		wc->x = (INT32)(m_dBmpToWinX*(dc->x-m_BevelBounds.lo.x)) ;
 		wc->y = (INT32)(m_dBmpToWinY*(dc->y-m_BevelBounds.lo.y)) ;
 	}
-	
+
 	return ;
 }
 
@@ -642,7 +643,7 @@ void CBeveler::CalcInnerPath() {
 	Created:	15/10/98
 	Purpose:	Renders the bevel bitmap (after the initial render by CreateBevelBitmap)
 				to a given bitmap (thus changes in light angle, type etc don't cause the
-				beveler to regenerate the normal list etc). 
+				beveler to regenerate the normal list etc).
 	Inputs:		The bitmap to render to - MUST be of the same size as m_Width and m_Height and
 				8-bit
 				Also Whether to resample the bitmap
@@ -701,9 +702,9 @@ BOOL CBeveler::RenderToBitmap(KernelBitmap * pRetnBitmap, BOOL bResample, DocCoo
 	if ( !bResample )
 	{
 		KernelBitmap* pBitmap = new KernelBitmap( m_Width, m_Height, 32, 96, TRUE );
-		
+
 		ERRORIF(pBitmap == NULL, _R(IDE_NOMORE_MEMORY), FALSE);
-		
+
 		UINT32 nLength = m_Width*m_Height;
 		DWORD* pBits = (DWORD*)pBitmap->GetBitmapBits() ;
 		UINT32 i ;
@@ -712,22 +713,22 @@ BOOL CBeveler::RenderToBitmap(KernelBitmap * pRetnBitmap, BOOL bResample, DocCoo
 			pBits[i] = 0xffff007f ;
 #else
 			pBits[i] = 0x7f00ffff ;
-#endif	
-	
+#endif
+
 		BITMAPINFOHEADER Header;
 		Header.biWidth		 = m_Width ;
 		Header.biHeight		 = m_Height ;
 		Header.biPlanes		 = 1 ;
 		Header.biBitCount	 = 32 ;
 		Header.biCompression = BI_RGB ;
-		
+
 		INT32 Error = SetDIBitmap( &Header, (BYTE*)pBits ) ;
 		if (Error != GERROR_NO_ERROR)
 		{
 			delete pBitmap;
 			ERROR(_R(IDE_NOMORE_MEMORY), FALSE);
 		}
-		
+
 		BEVEL_FACE* pFace = (BEVEL_FACE*)m_pFaceList ;
 		for ( i=0 ; i<m_NumFaces ; i++ )
 		{
@@ -790,7 +791,7 @@ BOOL CBeveler::RenderToBitmap(KernelBitmap * pRetnBitmap, BOOL bResample, DocCoo
 		for ( UINT32 j=0 ; j<(UINT32)m_Height ; j++ )
 		{
 			for ( i=0 ; i<(UINT32)m_Width ; i++ )
-			{		
+			{
 				*pDestPtr++ = *pSrcPtr;
 				pSrcPtr += 4;
 			}
@@ -802,7 +803,7 @@ BOOL CBeveler::RenderToBitmap(KernelBitmap * pRetnBitmap, BOOL bResample, DocCoo
 	{
 		// render with sampling
 		if ( !RenderInStripsToBitmap(pRetnBitmap, &SubPixOffset) )
-			return FALSE;		
+			return FALSE;
 	}
 
 #ifdef DEBUG
@@ -822,7 +823,7 @@ BOOL CBeveler::RenderToBitmap(KernelBitmap * pRetnBitmap, BOOL bResample, DocCoo
 	Purpose:	Passes parameters to GDraw2_SetDIBitmap adjusted for inner bevelling.
 	Inputs:		pHeader	- pointer to bitmap info header
 				pBits	- pointer to bitmap bytes
-	Returns:	
+	Returns:
 	SeeAlso:	-
 
 ********************************************************************************************/
@@ -896,7 +897,7 @@ INT32 CBeveler::SetDIBitmap( BITMAPINFOHEADER* pHeader, BYTE* pBits )
 	Purpose:	Resamples the 32 bit DIB given into the bits specified by pKB
 				and pMaskBitmap
 	Inputs:		p32BitDIB		- pointer to the DIB bits to resample
-				Width, Height	- The width & height of the 32 bit DIB 
+				Width, Height	- The width & height of the 32 bit DIB
 				pDestBits		- The bitmap to sample into
 				pMaskBitmap		- Optional mask bitmap pointer (can be NULL)
 
@@ -908,7 +909,7 @@ INT32 CBeveler::SetDIBitmap( BITMAPINFOHEADER* pHeader, BYTE* pBits )
 				Width * Height / (BEVELBITMAPSCALE * BEVELBITMAPSCALE)
 				i.e. the width & height of the destination bitmaps are Width/BEVELBITMAPSCALE,
 				Height/BEVELBITMAPSCALE
-	Returns:	
+	Returns:
 	SeeAlso:	-
 
 ********************************************************************************************/
@@ -919,7 +920,7 @@ void CBeveler::ResampleBitmap(BYTE * p32BitDIB, UINT32 SrcWidth, UINT32 SrcHeigh
 
 	UINT32 Width  = SrcWidth /BEVELBITMAPSCALE;
 	UINT32 Height = SrcHeight/BEVELBITMAPSCALE;
-	
+
 	UINT32 Scanline8  = DIBUtil::ScanlineSize(Width,8);
 	UINT32 Scanline32 = Width*4 * BEVELBITMAPSCALE;
 
@@ -986,7 +987,7 @@ void CBeveler::ResampleBitmap(BYTE * p32BitDIB, UINT32 SrcWidth, UINT32 SrcHeigh
 		pDestPtr += Scanline8;
 		pMaskPtr += Scanline8;
 	}
-}		
+}
 
 /********************************************************************************************
 
@@ -998,7 +999,7 @@ void CBeveler::ResampleBitmap(BYTE * p32BitDIB, UINT32 SrcWidth, UINT32 SrcHeigh
 				between the screen paths and the bitmap
 	Inputs:		The image bitmap to embolden, and the mask bitmap to use.
 	Outputs:	New mask bitmap.
-	Returns:	
+	Returns:
 	SeeAlso:	-
 
 ********************************************************************************************/
@@ -1245,9 +1246,9 @@ BOOL CBeveler::EmboldenBitmap(KernelBitmap * pImgBitmap, KernelBitmap * pMaskBit
 							(in pixels)
 				OffsetY - the y offset to add to the y coords of the areas to be rendered
 							(in pixels)
-				
+
 	Returns:	TRUE for success, FALSE for failure
-	Notes:		OffsetX & OffsetY denote the origin of the super-bitmap where the bitmap 
+	Notes:		OffsetX & OffsetY denote the origin of the super-bitmap where the bitmap
 				which this fn creates is to be placed
 				This is so that this function can create an area in a larger bitmap to
 				avoid the maximum width & height of bitmap that GDraw2 can cope with
@@ -1413,7 +1414,7 @@ BOOL CBeveler::RenderWithResampling(KernelBitmap * pBitmap, INT32 OrigOffsetX, I
 				DestX		- the pixel X position to start the copy
 				DestY		- the pixel Y position to start the copy
 
-	Returns:	
+	Returns:
 	Notes:		Accounts for overshoots i.e. if
 					pSrcBitmap->GetWidth () > pDestBitmap->GetWidth ()+DestX or
 					pSrcBitmap->GetHeight() > pDestBitmap->GetHeight()+DestY

@@ -388,6 +388,9 @@ PORTNOTE("other", "Remove accusoft effects")
 PORTNOTE("other", "Remove accusoft effects")
 // #ifndef EXCLUDE_FROM_XARALX
     virtual BOOL MakeAccusoftHandle(INT32 * pHandle, BOOL DoBodge = FALSE);
+
+    BOOL MakeCairoHandle(INT32* handle_ptr);
+
     virtual BOOL MakeKernelBitmap(INT32 Handle, KernelBitmap * * ppOutput, BOOL Make32Bits = FALSE,
                                   String_256 * pName = NULL, UINT32 ResID = 0, BOOL DoBodge = FALSE);
 // #endif

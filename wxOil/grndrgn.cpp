@@ -1107,7 +1107,7 @@ void GRenderRegion::InitBmpBits()
                 pSetBits[Index++] = 0xFF;
             }
 #else
-            /*  changed 2010 for_cairo		 */
+            /*  changed 2010 for_cairo       */
             memset( pBits, 0x00, BmpSize );
             /*printf("INIT TRANSP %d   x  %d\n", bh->biWidth, bh->biHeight );*/
 #endif
@@ -1125,7 +1125,7 @@ void GRenderRegion::InitBmpBits()
                 pSetBits[Index++] = 0x00;
             }
 #else
-            /*  changed 2010 for_cairo		 */
+            /*  changed 2010 for_cairo       */
             memset( pBits, 0xFF, BmpSize );
             /*printf("INIT WHITE %d   x  %d\n", bh->biWidth, bh->biHeight );*/
 #endif
@@ -4002,12 +4002,12 @@ BOOL GRenderRegion::GetTransparencyFill(TranspGradTable* pTranspTable, DWORD* St
 /*printf(" grndrgn.cpp :: BuildHighQualityRepeatTable\n");*/
 
                /*
-                *	Can't get a decent transp. table and it crashes when trying to set a profile
-                *	Changed this for now....
-                *	Currently no table is filled : start and end val are given in "build table" : always linear ramp
-                * 	Just to get smth. working here...
-                *	See : Kernel/gradtbl.cpp ( where table's are build )
-                *	Ed : 10-2-10 for_cairo   BUG!
+                *   Can't get a decent transp. table and it crashes when trying to set a profile
+                *   Changed this for now....
+                *   Currently no table is filled : start and end val are given in "build table" : always linear ramp
+                *   Just to get smth. working here...
+                *   See : Kernel/gradtbl.cpp ( where table's are build )
+                *   Ed : 10-2-10 for_cairo   BUG!
                 */
                 pTranspTable->BuildTable(StartTransp, EndTransp, pTranspRamp);
 #endif
@@ -6309,174 +6309,202 @@ void GRenderRegion::PlotBitmap( wxDC* hDC, UINT32 ColourFlag,
     pBits=StaticPlotBitmap(hDC, ColourFlag, pBitmapInfo, pBits, Left, Top, Width, Height, hPalette, SourceLeft, SourceTop);
 }
 
-LPBYTE GRenderRegion::StaticPlotBitmap( wxDC* hDC, UINT32 ColourFlag,
-        LPBITMAPINFO lpBitmapInfo, LPBYTE lpBits,
-        INT32 Left,INT32 Top, UINT32 Width,UINT32 Height, wxPalette* hPalette, INT32 SourceLeft,INT32 SourceTop) {
-  if( Width==0 || Height==0 )
-    return lpBits;
 
-  // Test preconditions
-  ERROR3IF((lpBitmapInfo->bmiHeader.biSize==0x00000000) /*||
-                              (lpBitmapInfo->bmiHeader.biSize==0xdddddddd) ||
-                              (lpBitmapInfo->bmiHeader.biSize==0xcdcdcdcd) */,"Illegal BitmapInfo structure passed to PlotBitmap");
-  // AB commented second two checks out as bmiHeader.biSize is a WORD, i.e. 16 bits in size, according to compatdef.h
-  //    TRACE( _T("SrcRect(%d, %d, %d, %d) - (%d, %d)"), rectDraw.GetLeft(), rectDraw.GetTop(),
-  //        rectDraw.GetWidth(), rectDraw.GetHeight(), pBitmap->GetWidth(), pBitmap->GetHeight() );
+/********************************************************************************************
 
-  CamProfile cp(CAMPROFILE_BLIT);
+>   void GRenderRegion::PlotBitmap( HDC hDC, UINT32 ColourFlag, LPBITMAPINFO BitmapInfo,
+            LPBYTE Bits, INT32 Left, INT32 Top, INT32 Width, INT32 Height, HPALETTE hPal,
+            INT32 SourceLeft, INT32 SourceTop )
+
+    Author:     Andy_Pennell (Xara Group Ltd) <camelotdev@xara.com>
+    Created:    3/3/94
+    Inputs:     ColourFlag as used in SetDIBitsToDevice (e.g. DIB_RGB_COLORS). hPal must
+                already be selected into the device. Left & Top are the destination in
+                screen coords. SourceLeft and SourceTop are the offset from logical top left
+                of the source bitmap to be plotted.
+    Outputs:    -
+    Returns:    -
+    Purpose:    Plot the DIB as fast as possible to the display surface. IMPORTANT: Only
+                works on SCREEN devices.
+    Errors:     -
+    Scope:      Static
+
+********************************************************************************************/
+
+LPBYTE GRenderRegion::StaticPlotBitmap(wxDC* hDC,
+                                       UINT32 ColourFlag,
+                                       LPBITMAPINFO lpBitmapInfo,
+                                       LPBYTE lpBits,
+                                       INT32 Left,INT32 Top,
+                                       UINT32 Width,UINT32 Height,
+                                       wxPalette* hPalette,
+                                       INT32 SourceLeft,
+                                       INT32 SourceTop) {
+    if( Width==0 || Height==0 )
+        return lpBits;
+
+    // Test preconditions
+    ERROR3IF((lpBitmapInfo->bmiHeader.biSize==0x00000000) /*||
+                                                            (lpBitmapInfo->bmiHeader.biSize==0xdddddddd) ||
+                                                            (lpBitmapInfo->bmiHeader.biSize==0xcdcdcdcd) */,"Illegal BitmapInfo structure passed to PlotBitmap");
+    // AB commented second two checks out as bmiHeader.biSize is a WORD, i.e. 16 bits in size, according to compatdef.h
+    //    TRACE( _T("SrcRect(%d, %d, %d, %d) - (%d, %d)"), rectDraw.GetLeft(), rectDraw.GetTop(),
+    //        rectDraw.GetWidth(), rectDraw.GetHeight(), pBitmap->GetWidth(), pBitmap->GetHeight() );
+
+    CamProfile cp(CAMPROFILE_BLIT);
 
 #if !USE_wxBITMAP
 
-  ERROR3IF(lpBitmapInfo->bmiHeader.biBitCount!=32,"Image must (currently) be 32bpp");
+    ERROR3IF(lpBitmapInfo->bmiHeader.biBitCount!=32,"Image must (currently) be 32bpp");
 
-  wxBitmap Bitmap(Width,Height,32);
-  wxAlphaPixelData BitmapData(Bitmap);
-  //
-  // Copy source (or part of source) into wxBitmap.
-  //
-  DWORD* pSBuffer =
-    (DWORD*)lpBits +
-    lpBitmapInfo->bmiHeader.biWidth*(lpBitmapInfo->bmiHeader.biHeight-1-SourceTop) +
-    SourceLeft;
-  DWORD* pDBuffer = (DWORD*)Bitmap.GetRawData(BitmapData,32);
-  DWORD* pDLine = pDBuffer;
-  INT32 nStep = Width;
-  if ( BitmapData.GetRowStride()<0 )
-    nStep = -nStep;
-  for( UINT32 y=0 ; y<Height ; ++y )
+    wxBitmap Bitmap(Width,Height,32);
+    wxAlphaPixelData BitmapData(Bitmap);
+    //
+    // Copy source (or part of source) into wxBitmap.
+    //
+    DWORD* pSBuffer =
+        (DWORD*)lpBits +
+        lpBitmapInfo->bmiHeader.biWidth*(lpBitmapInfo->bmiHeader.biHeight-1-SourceTop) +
+        SourceLeft;
+    DWORD* pDBuffer = (DWORD*)Bitmap.GetRawData(BitmapData,32);
+    DWORD* pDLine = pDBuffer;
+    INT32 nStep = Width;
+    if ( BitmapData.GetRowStride()<0 )
+        nStep = -nStep;
+    for( UINT32 y=0 ; y<Height ; ++y )
     {
-      //
-      // Set all pixels to be opaque. (We don't want to plot with alpha here
-      // so inverting the alpha channel would not be correct, and it's
-      // possible that the transparency channel will not always be zero).
-      //
+        //
+        // Set all pixels to be opaque. (We don't want to plot with alpha here
+        // so inverting the alpha channel would not be correct, and it's
+        // possible that the transparency channel will not always be zero).
+        //
 #if defined(__WXGTK__)
-      for( UINT32 x=0; x<Width; ++x )
-    {
-      BYTE* pS = pBYTE(pSBuffer+x);
-      BYTE* pD = pBYTE(pDLine  +x);
-      pD[0] = pS[2];
-      pD[1] = pS[1];
-      pD[2] = pS[0];
-      pD[3] = 0xFF;
-    }
+        for( UINT32 x=0; x<Width; ++x )
+        {
+            BYTE* pS = pBYTE(pSBuffer+x);
+            BYTE* pD = pBYTE(pDLine  +x);
+            pD[0] = pS[2];
+            pD[1] = pS[1];
+            pD[2] = pS[0];
+            pD[3] = 0xFF;
+        }
 #else
-      for( UINT32 x=0; x<Width; ++x )
-    pDLine[x] = pSBuffer[x];
+        for( UINT32 x=0; x<Width; ++x )
+            pDLine[x] = pSBuffer[x];
 #endif
-      pSBuffer -= lpBitmapInfo->bmiHeader.biWidth;
-      pDLine += nStep;
+        pSBuffer -= lpBitmapInfo->bmiHeader.biWidth;
+        pDLine += nStep;
     }
-  if ( ScreenHinting==CONVHINT_FINAL16  ||
-       ScreenHinting==CONVHINT_FINAL555 ||
-       ScreenHinting==CONVHINT_FINAL565 ||
-       ScreenHinting==CONVHINT_FINAL655 ||
-       ScreenHinting==CONVHINT_FINAL664 )
+    if ( ScreenHinting==CONVHINT_FINAL16  ||
+         ScreenHinting==CONVHINT_FINAL555 ||
+         ScreenHinting==CONVHINT_FINAL565 ||
+         ScreenHinting==CONVHINT_FINAL655 ||
+         ScreenHinting==CONVHINT_FINAL664 )
     {
-      INT32 int32_width = Width <= INT_MAX ? Width : INT_MAX;
-      INT32 int32_height = Height <= INT_MAX ? Height : INT_MAX;
-      BITMAPINFOHEADER Info = {sizeof(BITMAPINFOHEADER), int32_width, int32_height, 1, 32} ;
-      if ( nStep<0 )
-    pDBuffer += (Height-1)*nStep;
-      UINT32 uHint;
-      switch (ScreenHinting)
-    {
-    case CONVHINT_FINAL565: uHint = 8+0; break;
-    case CONVHINT_FINAL655: uHint = 8+1; break;
-    case CONVHINT_FINAL664: uHint = 8+3; break;
-    default:                uHint = 8+2; break;
+        INT32 int32_width = Width <= INT_MAX ? Width : INT_MAX;
+        INT32 int32_height = Height <= INT_MAX ? Height : INT_MAX;
+        BITMAPINFOHEADER Info = {sizeof(BITMAPINFOHEADER), int32_width, int32_height, 1, 32} ;
+        if ( nStep<0 )
+            pDBuffer += (Height-1)*nStep;
+        UINT32 uHint;
+        switch (ScreenHinting)
+        {
+        case CONVHINT_FINAL565: uHint = 8+0; break;
+        case CONVHINT_FINAL655: uHint = 8+1; break;
+        case CONVHINT_FINAL664: uHint = 8+3; break;
+        default:                uHint = 8+2; break;
+        }
+        GRenderRegion::GetStaticDrawContext()->ConvertBitmap(&Info,(BYTE*)pDBuffer,&Info,(BYTE*)pDBuffer,uHint);
     }
-      GRenderRegion::GetStaticDrawContext()->ConvertBitmap(&Info,(BYTE*)pDBuffer,&Info,(BYTE*)pDBuffer,uHint);
-    }
-  Bitmap.UngetRawData(BitmapData) ;
+    Bitmap.UngetRawData(BitmapData) ;
 
 #ifdef _DEBUG
-  // Alex's test to test scaling
-  if ((hDC->LogicalToDeviceX(wxCoord(72000)))!=wxCoord(72000))
+    // Alex's test to test scaling
+    if ((hDC->LogicalToDeviceX(wxCoord(72000)))!=wxCoord(72000))
     {
-      ERROR3("X coordinate out");
+        ERROR3("X coordinate out");
     }
-  if ((hDC->LogicalToDeviceY(wxCoord(72000)))!=wxCoord(72000))
+    if ((hDC->LogicalToDeviceY(wxCoord(72000)))!=wxCoord(72000))
     {
-      ERROR3("Y coordinate out");
+        ERROR3("Y coordinate out");
     }
 #endif
 
-  {
-    //      CamProfile cp(CAMPROFILE_BLIT);
-    hDC->DrawBitmap(Bitmap,Left,Top) ;
-  }
+    {
+        //      CamProfile cp(CAMPROFILE_BLIT);
+        hDC->DrawBitmap(Bitmap,Left,Top) ;
+    }
 
 #else
 
 #if defined(__WXGTK__)
-  RGBT* pBuffer = (RGBT*)lpBits + pBitmapData->m_width*SourceTop + SourceLeft;
-  for( UINT32 y=0 ; y<Height ; ++y )
+    RGBT* pBuffer = (RGBT*)lpBits + pBitmapData->m_width*SourceTop + SourceLeft;
+    for( UINT32 y=0 ; y<Height ; ++y )
     {
-      //
-      // Set all pixels to be opaque. (We don't want to plot with alpha here
-      // so inverting the alpha channel would not be correct as it's
-      // possible that the transparency channel will not always be zero).
-      //
-      for( UINT32 x=0; x<Width; ++x )
-    pBuffer[x].Transparency = 0xFF;
-      pBuffer += pBitmapData->m_width;
+        //
+        // Set all pixels to be opaque. (We don't want to plot with alpha here
+        // so inverting the alpha channel would not be correct as it's
+        // possible that the transparency channel will not always be zero).
+        //
+        for( UINT32 x=0; x<Width; ++x )
+            pBuffer[x].Transparency = 0xFF;
+        pBuffer += pBitmapData->m_width;
     }
 #endif
 
-  BITMAPINFOHEADER Info = { sizeof(BITMAPINFOHEADER),Width,Height,1,32 } ;
+    BITMAPINFOHEADER Info = { sizeof(BITMAPINFOHEADER),Width,Height,1,32 } ;
 
-  bool bIs16Bit = false ;
-  UINT32 uHint = 8+2;
-  if ( ScreenHinting==CONVHINT_FINAL16  ||
-       ScreenHinting==CONVHINT_FINAL555 ||
-       ScreenHinting==CONVHINT_FINAL565 ||
-       ScreenHinting==CONVHINT_FINAL655 ||
-       ScreenHinting==CONVHINT_FINAL664 )
+    bool bIs16Bit = false ;
+    UINT32 uHint = 8+2;
+    if ( ScreenHinting==CONVHINT_FINAL16  ||
+         ScreenHinting==CONVHINT_FINAL555 ||
+         ScreenHinting==CONVHINT_FINAL565 ||
+         ScreenHinting==CONVHINT_FINAL655 ||
+         ScreenHinting==CONVHINT_FINAL664 )
     {
-      switch (ScreenHinting)
-    {
-    case CONVHINT_FINAL565: uHint = 8+0; break;
-    case CONVHINT_FINAL655: uHint = 8+1; break;
-    case CONVHINT_FINAL664: uHint = 8+3; break;
-    default:                             break;
+        switch (ScreenHinting)
+        {
+        case CONVHINT_FINAL565: uHint = 8+0; break;
+        case CONVHINT_FINAL655: uHint = 8+1; break;
+        case CONVHINT_FINAL664: uHint = 8+3; break;
+        default:                             break;
+        }
+        bIs16Bit = true ;
     }
-      bIs16Bit = true ;
-    }
-  if ( SourceLeft || SourceTop || Width!=pBitmap->GetWidth() || Height!=pBitmap->GetHeight() )
+    if ( SourceLeft || SourceTop || Width!=pBitmap->GetWidth() || Height!=pBitmap->GetHeight() )
     {
-      pBitmap->UngetRawData(*pBitmapData) ;
-      wxBitmap bmp = pBitmap->GetSubBitmap( wxRect(SourceLeft,SourceTop,Width,Height) ) ;
-      if ( bIs16Bit )
-    {
-      wxAlphaPixelData bmpData(bmp);
-      BYTE* pData = (BYTE*)bmp.GetRawData(bmpData,32);
-      if ( bmpData.GetRowStride()<0 )
-        pData += bmpData.GetRowStride()*(Height-1);
-      GRenderRegion::GetStaticDrawContext()->ConvertBitmap(&Info,pData,&Info,pData,uHint);
-      bmp.UngetRawData(bmpData) ;
+        pBitmap->UngetRawData(*pBitmapData) ;
+        wxBitmap bmp = pBitmap->GetSubBitmap( wxRect(SourceLeft,SourceTop,Width,Height) ) ;
+        if ( bIs16Bit )
+        {
+            wxAlphaPixelData bmpData(bmp);
+            BYTE* pData = (BYTE*)bmp.GetRawData(bmpData,32);
+            if ( bmpData.GetRowStride()<0 )
+                pData += bmpData.GetRowStride()*(Height-1);
+            GRenderRegion::GetStaticDrawContext()->ConvertBitmap(&Info,pData,&Info,pData,uHint);
+            bmp.UngetRawData(bmpData) ;
+        }
+        {
+            //          CamProfile cp(CAMPROFILE_BLIT);
+            hDC->DrawBitmap(bmp,Left,Top);
+        }
+        TRACE( _T("DrawBitmap(%08x,%04x,%04x),%04x,%04x\n"),hDC,Left,Top,Width,Height);
     }
-      {
-    //          CamProfile cp(CAMPROFILE_BLIT);
-    hDC->DrawBitmap(bmp,Left,Top);
-      }
-      TRACE( _T("DrawBitmap(%08x,%04x,%04x),%04x,%04x\n"),hDC,Left,Top,Width,Height);
-    }
-  else
+    else
     {
-      if ( bIs16Bit )
-    GRenderRegion::GetStaticDrawContext()->ConvertBitmap(&Info,lpBits,&Info,lpBits,uHint);
-      pBitmap->UngetRawData(*pBitmapData) ;
-      {
-    //          CamProfile cp(CAMPROFILE_BLIT);
-    hDC->DrawBitmap(*pBitmap,Left,Top) ;
-      }
-      TRACE( _T("DrawBitmap(%08x,%04x,%04x)\n"),hDC,Left,Top);
+        if ( bIs16Bit )
+            GRenderRegion::GetStaticDrawContext()->ConvertBitmap(&Info,lpBits,&Info,lpBits,uHint);
+        pBitmap->UngetRawData(*pBitmapData) ;
+        {
+            //          CamProfile cp(CAMPROFILE_BLIT);
+            hDC->DrawBitmap(*pBitmap,Left,Top) ;
+        }
+        TRACE( _T("DrawBitmap(%08x,%04x,%04x)\n"),hDC,Left,Top);
     }
 
-  lpBits = (BYTE*)pBitmap->GetRawData(*pBitmapData,uBitmapDepth);
+    lpBits = (BYTE*)pBitmap->GetRawData(*pBitmapData,uBitmapDepth);
 #endif
-  return lpBits;
+    return lpBits;
 }
 
 
@@ -7556,7 +7584,7 @@ PORTNOTE("cms", "Disabled XaraCMS")
     }
     else
     {
-        /*	for_cairo  :  changed transp. value from FF to 0	*/
+        /*  for_cairo  :  changed transp. value from FF to 0    */
         const RGBQUAD TOnly = {0, 0, 0, 0xFF}; ; // 0xFF000000 on LittleEndian;
         const DWORD DTOnly = *(DWORD *)(&TOnly);
         // First we need to set all the pixels as transparent

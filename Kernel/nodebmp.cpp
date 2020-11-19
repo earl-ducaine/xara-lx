@@ -1,7 +1,7 @@
 // $Id: nodebmp.cpp 1771 2007-06-17 20:14:43Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
- 
+
                Xara LX, a vector drawing and manipulation program.
                     Copyright (C) 1993-2006 Xara Group Ltd.
        Copyright on certain contributions may be held in joint with their
@@ -32,7 +32,7 @@ ADDITIONAL RIGHTS
 
 Conditional upon your continuing compliance with the GNU General Public
 License described above, Xara Group Ltd grants to you certain additional
-rights. 
+rights.
 
 The additional rights are to use, modify, and distribute the software
 together with the wxWidgets library, the wxXtra library, and the "CDraw"
@@ -174,7 +174,7 @@ service marks of Xara Group Ltd. All rights in these marks are reserved.
 #ifdef PHOTOSHOPPLUGINS
 // Only add in if required - general plug-in removal at present
 #include "plugmngr.h"	// OPTOKEN_PLUGINS_MENU
-#include "plugop.h"		// PlugInsContextMenu 
+#include "plugop.h"		// PlugInsContextMenu
 #endif
 
 DECLARE_SOURCE("$Revision: 1771 $");
@@ -191,61 +191,61 @@ CC_IMPLEMENT_DYNCREATE(ChangeBitmapPtrAction, Action);
 
 /********************************************************************************************
 
->	NodeBitmap::NodeBitmap(Node* ContextNode,  
-						   AttachNodeDirection Direction,  
-					       BOOL Locked, 
-						   BOOL Mangled,  
-						   BOOL Marked, 
+>	NodeBitmap::NodeBitmap(Node* ContextNode,
+						   AttachNodeDirection Direction,
+					       BOOL Locked,
+						   BOOL Mangled,
+						   BOOL Marked,
 						   BOOL Selected)
 
 	Author:		Tim_Browse (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	30/08/94
 
-    Inputs: 	ContextNode: Pointer to a node which this node is to be attached to.     
-		
-				Direction: 
-			
-					Specifies the direction in which the node is to be attached to the 
-					ContextNode. The values this variable can take are as follows: 
-								  
+    Inputs: 	ContextNode: Pointer to a node which this node is to be attached to.
+
+				Direction:
+
+					Specifies the direction in which the node is to be attached to the
+					ContextNode. The values this variable can take are as follows:
+
 					PREV      : Attach node as a previous sibling of the context node
 					NEXT      : Attach node as a next sibling of the context node
 					FIRSTCHILD: Attach node as the first child of the context node
-					LASTCHILD : Attach node as a last child of the context node                               
-					      
-				The remaining inputs specify the status of the node: 
-			
+					LASTCHILD : Attach node as a last child of the context node
+
+				The remaining inputs specify the status of the node:
+
 				Locked:     Is node locked ?
 				Mangled:    Is node mangled ?
 				Marked:     Is node marked ?
 				Selected:   Is node selected ?
-			
-    Purpose: 	This constructor initialises the nodes flags and links it to ContextNode in 
-    			the direction specified by Direction. All neccesary tree links are updated.         
-			
-	Note:   	SetUpPath() must be called before the NodeBitmap is in a state in which it 
-				can be used. 		
-                
-    SeeAlso: 	SetUpPath   
-    
+
+    Purpose: 	This constructor initialises the nodes flags and links it to ContextNode in
+    			the direction specified by Direction. All neccesary tree links are updated.
+
+	Note:   	SetUpPath() must be called before the NodeBitmap is in a state in which it
+				can be used.
+
+    SeeAlso: 	SetUpPath
+
     Errors: 	An assertion error will occur if ContextNode is NULL
 
 ********************************************************************************************/
 
-NodeBitmap::NodeBitmap(Node* ContextNode,  
-					AttachNodeDirection Direction,  
-					BOOL Locked, 
-					BOOL Mangled,  
-					BOOL Marked, 
-					BOOL Selected    
-			  ):NodeRect(ContextNode, Direction, Locked, Mangled, Marked, Selected )  
-{                         
+NodeBitmap::NodeBitmap(Node* ContextNode,
+					AttachNodeDirection Direction,
+					BOOL Locked,
+					BOOL Mangled,
+					BOOL Marked,
+					BOOL Selected
+			  ):NodeRect(ContextNode, Direction, Locked, Mangled, Marked, Selected )
+{
 	Colour = COLOUR_NONE;
 	EndColour = COLOUR_NONE;
 
 	ApplyContoneColour = FALSE;
-}                        
- 
+}
+
 
 /********************************************************************************************
 
@@ -254,12 +254,12 @@ NodeBitmap::NodeBitmap(Node* ContextNode,
 	Author:		Tim_Browse (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	30/08/94
     Purpose: 	This constructor creates a NodeBitmap linked to no other with all status
-		 	  	flags false and an uninitialized bounding rectangle.           
-			
-				NB. SetUpPath() must be called before the NodeBitmap is in a state in which 
-					it can be used. 		
-                
-    SeeAlso: 	SetUpPath                                                        
+		 	  	flags false and an uninitialized bounding rectangle.
+
+				NB. SetUpPath() must be called before the NodeBitmap is in a state in which
+					it can be used.
+
+    SeeAlso: 	SetUpPath
 
 ********************************************************************************************/
 
@@ -290,9 +290,9 @@ Node* NodeBitmap::SimpleCopy()
 	NodeBitmap* NodeCopy = new NodeBitmap();
     if (NodeCopy)
     	CopyNodeContents(NodeCopy);
-    
+
 	return NodeCopy;
-}            
+}
 
 
 /***********************************************************************************************
@@ -336,7 +336,7 @@ void NodeBitmap::CopyNodeContents(NodeBitmap* NodeCopy)
     Purpose:    Polymorphically copies the contents of this node to another
 	Errors:     An assertion failure will occur if NodeCopy is NULL
     Scope:      protected
-								     
+
 ***********************************************************************************************/
 
 void NodeBitmap::PolyCopyNodeContents(NodeRenderable* pNodeCopy)
@@ -357,27 +357,27 @@ void NodeBitmap::PolyCopyNodeContents(NodeRenderable* pNodeCopy)
 	Author:		Simon_Maneggio (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	25/6/93
 	Inputs:		Plural: Flag indicating if the string description should be plural or
-				singular. 
-	Returns:	Description of the object                                    
-	Purpose:	To return a description of the NodeBitmap object in either the singular or the 
+				singular.
+	Returns:	Description of the object
+	Purpose:	To return a description of the NodeBitmap object in either the singular or the
 				plural. This method is called by the DescribeRange method.
-				The description will always begin with a lower case letter.   
-	Errors:		A resource exception will be thrown if a problem occurs when loading the 
-				string resource. 
+				The description will always begin with a lower case letter.
+	Errors:		A resource exception will be thrown if a problem occurs when loading the
+				string resource.
 
 ********************************************************************************************/
-              
-String NodeBitmap::Describe(BOOL Plural, BOOL Verbose) 
-{     
+
+String NodeBitmap::Describe(BOOL Plural, BOOL Verbose)
+{
 #if !defined(EXCLUDE_FROM_RALPH)
 	if (Plural)
 	{
-		return(String(_R(IDS_BITMAP_DESCRP)));  
+		return(String(_R(IDS_BITMAP_DESCRP)));
 	}
 	else
 	{
 		if (GetBitmap() == NULL || GetBitmap()->ActualBitmap == NULL)
-			return(String(_R(IDS_BITMAP_DESCRS))); 
+			return(String(_R(IDS_BITMAP_DESCRS)));
 
 		// If we have a bitmap, then include it's name and actual dpi
 		// in the desciption
@@ -430,7 +430,7 @@ String NodeBitmap::Describe(BOOL Plural, BOOL Verbose)
 		}
 	}
 #else
-	return(String(_R(IDS_BITMAP_DESCRP)));  
+	return(String(_R(IDS_BITMAP_DESCRP)));
 #endif
 }
 
@@ -494,16 +494,16 @@ UINT32 NodeBitmap::GetBitmapDPI()
 
 	Author:		Simon_Maneggio (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	6/10/93
-	Returns:	The size of the node in bytes 
-	Purpose:	For finding the size of the node 
+	Returns:	The size of the node in bytes
+	Purpose:	For finding the size of the node
 	SeeAlso:	Node::GetSubtreeSize
 
 ********************************************************************************************/
 
-UINT32 NodeBitmap::GetNodeSize() const 
-{     
-	return (sizeof(NodeBitmap)); 
-}  
+UINT32 NodeBitmap::GetNodeSize() const
+{
+	return (sizeof(NodeBitmap));
+}
 
 
 
@@ -570,7 +570,7 @@ PORTNOTE("liveeffects", "XPE menu option disabled")
 	Author:		Tim_Browse (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	30/8/94
 	Inputs:		Pointer to a render region
-	Purpose:	Will render the bitmap contained within the object to the given render 
+	Purpose:	Will render the bitmap contained within the object to the given render
 				region.
 
 ********************************************************************************************/
@@ -584,7 +584,7 @@ void NodeBitmap::Render(RenderRegion* pRender)
 		// Render the transformed bitmap
 		pRender->DrawTransformedBitmap(this);
 	}
-}  
+}
 
 
 /********************************************************************************************
@@ -594,15 +594,15 @@ void NodeBitmap::Render(RenderRegion* pRender)
 	Author:		Tim_Browse (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	12/10/94
 	Inputs:		Ignored
-	Purpose:	Prevent the base class NodeRect::PreExportRender() function from exporting 
-				anything to mark this as a rectangle object - because it's not; it's a 
+	Purpose:	Prevent the base class NodeRect::PreExportRender() function from exporting
+				anything to mark this as a rectangle object - because it's not; it's a
 				bitmap object.
 
 ********************************************************************************************/
 
 void NodeBitmap::PreExportRender(RenderRegion*)
 {
-	// No action, and we want to stop the base class from exporting any 'rectangly' 
+	// No action, and we want to stop the base class from exporting any 'rectangly'
 	// information that might confuse us.
 }
 
@@ -622,7 +622,7 @@ void NodeBitmap::PreExportRender(RenderRegion*)
 
 ********************************************************************************************/
 
-BOOL NodeBitmap::ExportRender(RenderRegion* pRegion) 
+BOOL NodeBitmap::ExportRender(RenderRegion* pRegion)
 {
 #ifdef DO_EXPORT
 	if (pRegion->IsKindOf(CC_RUNTIME_CLASS(CamelotEPSRenderRegion)))
@@ -654,12 +654,12 @@ BOOL NodeBitmap::ExportRender(RenderRegion* pRegion)
 		{
 			// We only need to worry about this for < 8BPP
 			NodeAttribute* pLineAttr;
-	
+
 			// So we find the applied Stroke Colour ...
 			if (FindAppliedAttribute(CC_RUNTIME_CLASS(AttrStrokeColour), &pLineAttr))
 			{
 				Node* pParent = pLineAttr->FindParent();
-				
+
 				// And if it has been applied to a Mould ...
 				if (pParent && IS_A(pParent, NodeMould))
 				{
@@ -746,7 +746,7 @@ BOOL NodeBitmap::ExportRender(RenderRegion* pRegion)
 
 				pDC->OutputNewLine();
 			}
-		
+
 			// Co-ords first,
 			for (INT32 i = 0; i <= 3; i++)
 				pDC->OutputCoord(Coords[i]);
@@ -775,7 +775,7 @@ BOOL NodeBitmap::ExportRender(RenderRegion* pRegion)
 			// some extra stuff to tell the import routines that it's
 			// not a bitmap fill, but really a bitmap object.
 			// This means it will look correct in the Viewer (they'll
-			// be loaded as bitmap filled paths), but will appear as 
+			// be loaded as bitmap filled paths), but will appear as
 			// bitmaps when loaded into the main program.
 
 			// So first we'll output a new eps object (which will be Ignored by
@@ -821,17 +821,17 @@ BOOL NodeBitmap::ExportRender(RenderRegion* pRegion)
 			pDC->OutputToken(_T("F"));	// Filled path
 			pDC->OutputNewLine();
 #pragma GCC diagnostic pop
-		}		
+		}
 		// Now force the Fill Colour, Line Colour, and Line Width
 		// attribute to output themselves again, 'cus old versions
-		// (including the Viewer) will corrupt these attributes for 
+		// (including the Viewer) will corrupt these attributes for
 		// any subsequent objects
 
 		// Get rid of the current copies of the last output attrs
 		delete pCamelotRegion->LastOutputAttrs[ATTR_FILLGEOMETRY].pAttr;
 		delete pCamelotRegion->LastOutputAttrs[ATTR_STROKECOLOUR].pAttr;
 		delete pCamelotRegion->LastOutputAttrs[ATTR_LINEWIDTH].pAttr;
-		
+
 		// NULL the pointers
 		pCamelotRegion->LastOutputAttrs[ATTR_FILLGEOMETRY].pAttr = NULL;
 		pCamelotRegion->LastOutputAttrs[ATTR_STROKECOLOUR].pAttr = NULL;
@@ -919,18 +919,18 @@ INT32 NodeBitmap::GetSizeOfExport(Filter *pFilter)
 
 /********************************************************************************************
 
->	BOOL NodeBitmap::RequiresAttrib(NodeAttribute* pAttrib, 
+>	BOOL NodeBitmap::RequiresAttrib(NodeAttribute* pAttrib,
 									BOOL Search = FALSE)
 
 	Author:		Will_Cowling (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	14/4/95
 	Inputs:		pAttrib - specifies the attribute being enquired about.
-				Search - See NodeRenderableInk::RequiresAttrib (Has no effect in this fn) 
+				Search - See NodeRenderableInk::RequiresAttrib (Has no effect in this fn)
 	Returns:	TRUE => object supports this kind of attribute.
 				FALSE => object does not support this kind of attribute, and so it
 						 should not be applied.
 	Purpose:	Determine which attributes a bitmap object supports a particular type of
-				attribute.   A bitmap only supports transparent fill geometries, 
+				attribute.   A bitmap only supports transparent fill geometries,
 				mappings, and effects - all other attributes are rejected.
 	SeeAlso:	NodeRenderableInk::RequiresAttrib
 
@@ -945,7 +945,7 @@ BOOL NodeBitmap::RequiresAttrib(NodeAttribute* pAttrib, BOOL Search /*= FALSE*/)
 		 pAttrib->IS_KIND_OF(AttrStrokeColourChange)))
 	{
 		// Someone's trying to apply a contone colour
-		// Remember this, so we can do a conversion in the 
+		// Remember this, so we can do a conversion in the
 		// AllowOp routine.
 		ApplyContoneColour = TRUE;
 
@@ -988,15 +988,15 @@ PORTNOTE("other","Removed AttrWebAddress")
 				to be NONE initially, and also need to ensure the line width is 0.
 				There is now an optional pointer to a transparent bitmap fill to be applied
 				over the current bitmap node. This is used by the transparent GIF import code.
-				
+
 
 ********************************************************************************************/
 
 /* Note by Will 12/1/96
 
 	Removed Line transparency attr (AttrStrokeTransp), because this is no longer needed,
-	and caused a bug where outlines disappeared when transparency is turned on (eg. after 
-	slicing a bitmap and applying a line colour). It is no longer required because the 
+	and caused a bug where outlines disappeared when transparency is turned on (eg. after
+	slicing a bitmap and applying a line colour). It is no longer required because the
 	rendering code now looks at the line colour, rather than relying on the Line
 	transparency attr being present.
 
@@ -1076,9 +1076,9 @@ BOOL NodeBitmap::ApplyDefaultBitmapAttrs(UndoableOperation* pOp,
 	Inputs:		pClass: The class of object
 				pNumObjects = ptr to place number of objects of type pClass that will be created (Note: can be NULL).
 							  *pNumObects in undefined on entry
-	Returns:	TRUE if the node, or any of its children can transmogrify themselves to become 
+	Returns:	TRUE if the node, or any of its children can transmogrify themselves to become
 				an InkClass object
-	Purpose:	This function is used by the convert to shapes operation. It determines if 
+	Purpose:	This function is used by the convert to shapes operation. It determines if
 				the node or any of its children can convert themselves into an InkClass object.
 				In the case of a node bitmap we must stop it from it having the make shapes
 				applied as otherwise we will loose the bitmap from view.
@@ -1106,7 +1106,7 @@ BOOL NodeBitmap::CanBecomeA(BecomeA* pBecomeA)
 
 /********************************************************************************************
 
->	virtual BOOL NodeBitmap::DoBecomeA(CCRuntimeClass* InkClass, UndoableOperation* pOp) 
+>	virtual BOOL NodeBitmap::DoBecomeA(CCRuntimeClass* InkClass, UndoableOperation* pOp)
 
 	Author:		Will_Cowling (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	16/2/95
@@ -1115,7 +1115,7 @@ BOOL NodeBitmap::CanBecomeA(BecomeA* pBecomeA)
 	Outputs:	-
 	Returns:	TRUE if the object has been transformed, FALSE if we run out of memory
 
-	Purpose:	Transforms the object into another type of object. 
+	Purpose:	Transforms the object into another type of object.
 				Note: changed 7/10/94 by MarkN to take the pBecomeA param, so that more data
 				could be passed	to these functions in the future without causing massive
 				rebuilds due to the editing of node.h
@@ -1142,15 +1142,15 @@ BOOL NodeBitmap::DoBecomeA(BecomeA* pBecomeA)
 	if (pBecomeA->BAPath())
 	{
 		// We need to create a new NodePath, no matter what the reason.
-		
+
 		// Allocate a new NodePath node
-		ALLOC_WITH_FAIL(pNewNodePath, (new NodePath), pBecomeA->GetUndoOp()); 
+		ALLOC_WITH_FAIL(pNewNodePath, (new NodePath), pBecomeA->GetUndoOp());
 		Success = (pNewNodePath != NULL);
 
 		// Initialise the path
 		if (Success) CALL_WITH_FAIL(pNewNodePath->InkPath.Initialise(InkPath.GetNumCoords(),12), pBecomeA->GetUndoOp(), Success);
 		if (Success) CALL_WITH_FAIL(pNewNodePath->InkPath.CopyPathDataFrom(&InkPath), pBecomeA->GetUndoOp(), Success);
-		
+
 		if (Success) pNewNodePath->InkPath.IsFilled = TRUE;
 
 		// If Success is TRUE, then we now have a new NodePath object that contains this shape's path
@@ -1160,7 +1160,7 @@ BOOL NodeBitmap::DoBecomeA(BecomeA* pBecomeA)
 			// Remember the contone colours before we go and hide the applied attributes
 			DocColour* ContoneStart = GetStartColour();
 			DocColour* ContoneEnd   = GetEndColour();
-		
+
 		 	switch (pBecomeA->GetReason())
 			{
 		 		case BECOMEA_REPLACE :
@@ -1179,7 +1179,7 @@ BOOL NodeBitmap::DoBecomeA(BecomeA* pBecomeA)
 					{
 						Node* pThisChild = pChild;
 						pChild = pChild->FindNext();	// Find next before we hide this child
-												
+
 						if (pThisChild->IsAnAttribute())
 						{
 							NodeAttribute* pAttr = (NodeAttribute*)pThisChild;
@@ -1190,7 +1190,7 @@ BOOL NodeBitmap::DoBecomeA(BecomeA* pBecomeA)
 								if (pUndoOp)
 								{
 									// Hide and Fill or Line colour attributes
-									NodeHidden* pNodeHidden; 
+									NodeHidden* pNodeHidden;
 									Success = pBecomeA->GetUndoOp()->DoHideNode(pAttr, TRUE, &pNodeHidden);
 								}
 								else
@@ -1205,7 +1205,7 @@ BOOL NodeBitmap::DoBecomeA(BecomeA* pBecomeA)
 					// Now make a Bitmap Fill that is equivalent to this NodeBitmap
 					AttrFillGeometry* pBitmapFill;
 					ALLOC_WITH_FAIL(pBitmapFill , new AttrBitmapColourFill(), pBecomeA->GetUndoOp());
-					
+
 					if (pBitmapFill)
 					{
 						pBitmapFill->AttachBitmap(GetBitmap());
@@ -1218,17 +1218,17 @@ BOOL NodeBitmap::DoBecomeA(BecomeA* pBecomeA)
 						pBitmapFill->SetStartPoint(&Parallel[3]);
 						pBitmapFill->SetEndPoint(&Parallel[2]);
 						pBitmapFill->SetEndPoint2(&Parallel[0]);
-						
+
 						pBitmapFill->AttachNode(this, FIRSTCHILD);
 
 						if (pUndoOp)
 						{
-							// Create a hide node action to hide the node when we undo 
-							HideNodeAction* UndoHideNodeAction;     
+							// Create a hide node action to hide the node when we undo
+							HideNodeAction* UndoHideNodeAction;
 							Success = (HideNodeAction::Init(pBecomeA->GetUndoOp(),
 										  			 pBecomeA->GetUndoOp()->GetUndoActionList(),
-								 					 pBitmapFill, 
-								 					 TRUE, 		 // Include subtree size 
+								 					 pBitmapFill,
+								 					 TRUE, 		 // Include subtree size
 						  		 					 ( Action**)(&UndoHideNodeAction))
 						  		  					 != AC_FAIL);
 						}
@@ -1237,48 +1237,48 @@ BOOL NodeBitmap::DoBecomeA(BecomeA* pBecomeA)
 					// We also need to make sure it has no line colour
 					AttrFillGeometry* pStrokeColour;
 					ALLOC_WITH_FAIL(pStrokeColour , new AttrStrokeColour(), pBecomeA->GetUndoOp());
-					
+
 					if (pStrokeColour)
 					{
 						// Ensure the line colour is set to NONE
 						DocColour NoCol = COLOUR_NONE;
 						pStrokeColour->SetStartColour(&NoCol);
-						
+
 						pStrokeColour->AttachNode(this, FIRSTCHILD);
 
 						if (pUndoOp)
 						{
-							// Create a hide node action to hide the node when we undo 
-							HideNodeAction* UndoHideNodeAction;     
+							// Create a hide node action to hide the node when we undo
+							HideNodeAction* UndoHideNodeAction;
 							Success = (HideNodeAction::Init(pBecomeA->GetUndoOp(),
 										  			 pBecomeA->GetUndoOp()->GetUndoActionList(),
-								 					 pStrokeColour, 
-								 					 TRUE, 		 // Include subtree size 
+								 					 pStrokeColour,
+								 					 TRUE, 		 // Include subtree size
 						  		 					 ( Action**)(&UndoHideNodeAction))
 						  		  					 != AC_FAIL);
 						}
 					}
 
 					// Copy the node's attributes
-					CALL_WITH_FAIL(CopyChildrenTo(pNewNodePath), pBecomeA->GetUndoOp(), Success); 
+					CALL_WITH_FAIL(CopyChildrenTo(pNewNodePath), pBecomeA->GetUndoOp(), Success);
 
 					// Insert the new NodePath into the tree, next to this node
 					pNewNodePath->AttachNode(this,NEXT);
 
 					if (Success)
 					{
-						// Set the bounds  
+						// Set the bounds
 						pNewNodePath->InvalidateBoundingRect();
 						pNewNodePath->SetSelected(IsSelected());
 
 						if (pUndoOp)
 						{
-							// Create a hide node action to hide the node when we undo 
-							HideNodeAction* UndoHideNodeAction;     
+							// Create a hide node action to hide the node when we undo
+							HideNodeAction* UndoHideNodeAction;
 							Success = (HideNodeAction::Init(pBecomeA->GetUndoOp(),
 										  			 pBecomeA->GetUndoOp()->GetUndoActionList(),
-								 					 pNewNodePath, 
-								 					 TRUE, 		 // Include subtree size 
+								 					 pNewNodePath,
+								 					 TRUE, 		 // Include subtree size
 						  		 					 ( Action**)(&UndoHideNodeAction))
 						  		  					 != AC_FAIL);
 						}
@@ -1297,7 +1297,7 @@ BOOL NodeBitmap::DoBecomeA(BecomeA* pBecomeA)
 					// Now hide this NodeBitmap
 					if (pUndoOp)
 					{
-						NodeHidden* pNodeHidden; 
+						NodeHidden* pNodeHidden;
 						Success = pBecomeA->GetUndoOp()->DoHideNode(this, TRUE, &pNodeHidden);
 					}
 					else
@@ -1323,11 +1323,11 @@ BOOL NodeBitmap::DoBecomeA(BecomeA* pBecomeA)
 					// Now make a copy of the applied attributes map
 					pCopyOfAttrMap = pAttribMap->Copy ();//new CCAttrMap(AttrCount);
 					if (pCopyOfAttrMap != NULL)
-					{			
+					{
 						// We've made a copy of the Attr map now, so we don't need
 						// the old one anymore
 						delete pAttribMap;
-					 
+
 					 	// Replace the Fill and Line Colour attributes
 						// in the Attr Map copy
 
@@ -1401,7 +1401,7 @@ BOOL NodeBitmap::DoBecomeA(BecomeA* pBecomeA)
 		{
 			// Delete all the NodePath's children (if it has any) and unlink it from the tree (if it's linked)
 			// This is all done by CascadeDelete()
-			pNewNodePath->CascadeDelete(); 
+			pNewNodePath->CascadeDelete();
 			delete pNewNodePath;
 			pNewNodePath = NULL;
 		}
@@ -1425,14 +1425,14 @@ BOOL NodeBitmap::DoBecomeA(BecomeA* pBecomeA)
 
 				The ObjChangeParam class contains flags that describe how it will change the node
 
-				For example, the op could change the node's appearence (e.g. attr application, editing a path), 
+				For example, the op could change the node's appearence (e.g. attr application, editing a path),
 				replace the node with another node (e.g. because it uses hidden nodes to hide the original and put another
 				node in its place, or "make shapes"), delete the node (e.g. the delete and cut ops), etc.
 
 				This function gives the node a chance to say NO.  It also gives the parents a chance to say no too.
 				E.g. a blend node will allow itself to be deleted, but it will NOT allow a child of itself to be deleted).
 
-				This call should only be made on selected, or parents of selected, nodes.  It makes a decision as a 
+				This call should only be made on selected, or parents of selected, nodes.  It makes a decision as a
 				straight node if it is selected.  It makes a decision as a parent if it has selected children.
 
 				E.g. NodeBlend::AllowOp(...op delete...)
@@ -1453,13 +1453,13 @@ BOOL NodeBitmap::DoBecomeA(BecomeA* pBecomeA)
 					if FALSE is returned, then the node's op permission state will be PERMISSION_DENIED,
 						AND all it's parents (up to the layer) will be set to PERMISSION_DENIED
 
-					Also, all parents of this node are called via their AllowOp() func with the same state 
+					Also, all parents of this node are called via their AllowOp() func with the same state
 					as this node.  This means that after this call, you can guarantee that all of its parents will
 					have either a PERMISSION_DENIED or PERMISSION_ALLOWED state.
 
 					Note: Even if this node tries to set all it's parents to have a PERMISSION_DENIED state, if any
 					of its parents have previously been set to PERMISSION_ALLOWED they will remain in that state (see
-					SetOpPermission()). Why? Well, it is possible for a parent node to have one child with a 
+					SetOpPermission()). Why? Well, it is possible for a parent node to have one child with a
 					PERMISSION_DENIED and another child with a PERMISSION_ALLOWED.  It this state the parent MUST be
 					in state PERMISSION_ALLOWED, because at least one of its children will allow the op to happen to it.
 
@@ -1498,7 +1498,7 @@ BOOL NodeBitmap::AllowOp(ObjChangeParam* pParam, BOOL SetOpPermissionState)
 
 	// at this point we must have been called directly by the op or via a child AllowOp()
 
-	// decide if we allow it ... 
+	// decide if we allow it ...
 	BOOL allowed=TRUE;
 	ObjChangeFlags Flags = pParam->GetChangeFlags();
 
@@ -1516,8 +1516,8 @@ BOOL NodeBitmap::AllowOp(ObjChangeParam* pParam, BOOL SetOpPermissionState)
 		{
 			// 'ApplyContoneColour' is set in the 'RequiresAttrib()'
 			// function if a contone colour change attr is applied.
-			allowed = MakeContoneBitmap(pParam->GetOpPointer());		
-		}		
+			allowed = MakeContoneBitmap(pParam->GetOpPointer());
+		}
 	}
 
 	// if we allowed it, see if our parents do ...
@@ -1567,7 +1567,7 @@ BOOL NodeBitmap::MakeContoneBitmap(UndoableOperation* pOperation)
 
 /********************************************************************************************
 
->	static KernelBitmap* NodeBitmap::CheckGreyscaleBitmap(	KernelBitmap* pBitmap, 
+>	static KernelBitmap* NodeBitmap::CheckGreyscaleBitmap(	KernelBitmap* pBitmap,
 															UINT32 PromptID, UINT32 OkID)
 
 	Author:		Will_Cowling (Xara Group Ltd) <camelotdev@xara.com>
@@ -1584,33 +1584,33 @@ KernelBitmap* NodeBitmap::CheckGreyscaleBitmap(KernelBitmap* pBitmap, UINT32 Pro
 
 	// Don't need to do anything here now, as the greyscale bitmap is generated on the
 	// fly when rendering
-	
+
 	return pBitmap;
 #else
 	ERROR3("NodeBitmap::CheckGreyscaleBitmap");
 	return NULL;
 #endif
 }
-		   
+
 /********************************************************************************************
 
 >	KernelBitmap* NodeBitmap::GetBitmap()
 
 	Author:		Will_Cowling (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	12/1/95
-	Purpose:	Get the bitmap referenced by this node. 
+	Purpose:	Get the bitmap referenced by this node.
 
 ********************************************************************************************/
 
 KernelBitmap* NodeBitmap::GetBitmap()
 {
 	KernelBitmap* pBitmap = BitmapRef.GetBitmap();
-	
+
 	// Check for a deleted bitmap
 	if (pBitmap && pBitmap->HasBeenDeleted())
 	{
 		ERROR2IF(pBitmap->GetParentBitmapList() == NULL, NULL, "Deleted bitmap has no parent list");
-		
+
 		// Use the default bitmap instead
 		pBitmap = pBitmap->GetParentBitmapList()->FindDefaultBitmap();
 
@@ -1654,7 +1654,7 @@ BOOL NodeBitmap::HidingNode()
      Author:    Will_Cowling (Xara Group Ltd) <camelotdev@xara.com>
      Created:   11/1/94
 	 Returns:   TRUE if all was ok. FALSE if an error occured (eg Out of memory).
-     Purpose:   This virtual function is called whenever the node is re-shown after being 
+     Purpose:   This virtual function is called whenever the node is re-shown after being
      			Hidden.
 	 			It allows the node to reconstruct itself if it was optimised or
 	 			send a message to let others know it is back etc.
@@ -1733,7 +1733,7 @@ DocColour* NodeBitmap::GetStartColour()
 //	if (GetBitmap()->GetBPP() <= 8)
 //	{
 		NodeAttribute* pLineAttr;
-		
+
 		if (!FindAppliedAttribute(CC_RUNTIME_CLASS(AttrStrokeColour), &pLineAttr))
 			return NULL;
 
@@ -1768,7 +1768,7 @@ DocColour* NodeBitmap::GetEndColour()
 //	if (GetBitmap()->GetBPP() <= 8)
 //	{
 		NodeAttribute* pFillAttr;
-		
+
 		if (!FindAppliedAttribute(CC_RUNTIME_CLASS(AttrFillGeometry), &pFillAttr))
 			return NULL;
 
@@ -1840,7 +1840,7 @@ BOOL NodeBitmap::HasSimpleOrientation(RenderRegion *pRegion)
 	{
 		// Yes - simple rectangular orientation.
 		return TRUE;
-	} 
+	}
 #endif
 	// Complex bitmap orientation
 	return FALSE;
@@ -1915,7 +1915,7 @@ Matrix NodeBitmap::GetInstanceTransform()
 	Author:		Phil_Martin (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	27/07/2005
 	Inputs:		-
-	Returns:	DocRect containing the size of the bitmap if it were placed on the 
+	Returns:	DocRect containing the size of the bitmap if it were placed on the
 				page untransformed.
 	Purpose:	Find the starting point for the instance transform
 
@@ -1974,7 +1974,7 @@ BOOL NodeBitmap::GetDirectBitmap(RenderRegion* pRender, LPBITMAPINFO* plpInfo, L
 	// be specially processed...
 	if (plpInfo && plpBits && HasBitmapAttrs())
 	{
-		// Lookup processed bitmap in cache 
+		// Lookup processed bitmap in cache
 		CBitmapCache* pBitmapCache = Camelot.GetBitmapCache();
 		if (pBitmapCache==NULL)
 			return FALSE;
@@ -2119,7 +2119,7 @@ BOOL NodeBitmap::GetDirectBitmap(RenderRegion* pRender, LPBITMAPINFO* plpInfo, L
 
 			if (GetStartColour())
 				pBitmapAttr->SetStartColour(GetStartColour());
-		
+
 			if (GetEndColour())
 				pBitmapAttr->SetEndColour(GetEndColour());
 
@@ -2345,7 +2345,7 @@ BOOL NodeBitmap::SupportsClipboardFormat(InternalClipboardFormat *Format) const
 	Inputs:		-
 	Outputs:	-
 	Returns:	TRUE if this node requires transparency mode to render properly.
-	Purpose:	Called 
+	Purpose:	Called
 	Errors:		-
 	SeeAlso:	Node::AttachNode
 
@@ -2370,7 +2370,7 @@ BOOL NodeBitmap::NeedsTransparency() const
 			if (pNonConst->GetBitmap()->GetTransparencyIndex(&TranspIndex))
 				return TRUE;
 		}
-		
+
 		if(pNonConst->GetBitmap()->GetBPP() == 32)
 		{
 			// Mark H - If we`ve got a 32 bit bitmap then we must make sure we render into a 32bit
@@ -2387,7 +2387,7 @@ BOOL NodeBitmap::NeedsTransparency() const
 
 >	BOOL WritePreChildrenWeb(BaseCamelotFilter* pFilter);
 	BOOL WritePreChildrenNative(BaseCamelotFilter* pFilter);
-	
+
 	Author:		Andy_Hayward (Xara Group Ltd) <camelotdev@xara.com>
 	Created:	14/06/96
 	Inputs:		pFilter - file filter to save to
@@ -2459,8 +2459,8 @@ KernelBitmap *NodeBitmap::EnumerateBitmaps(UINT32 Count)
 	Created:	07/08/2006
 
 	Inputs:		pBitmap		- pointer to a KernelBitmap
-	Returns:	
-	Purpose:	
+	Returns:
+	Purpose:
 
 ****************************************************************************/
 
@@ -2517,7 +2517,7 @@ double NodeBitmap::GetEffectiveBitmapMinDPI(KernelBitmap* pBitmap)
 	Inputs:		pOrigBitmap	- pointer to a KernelBitmap
 				pNewBitmap	- pointer to a KernelBitmap
 	Returns:	TRUE if ok, FALSE if bother
-	Purpose:	
+	Purpose:
 
 ****************************************************************************/
 
@@ -2698,11 +2698,11 @@ void NodeBitmap::SetAspectRatio(double dExWidth, double dExHeight, BOOL bPathAnd
 	Created:	31/1/95
 	Inputs:		-
 	Outputs:	-
-	Returns:	TRUE if the operation could be successfully initialised 
-				FALSE if no more memory could be allocated 
-				
+	Returns:	TRUE if the operation could be successfully initialised
+				FALSE if no more memory could be allocated
+
 	Purpose:	OpCreateNodeBitmap initialiser method
-	Errors:		ERROR will be called if there was insufficient memory to allocate the 
+	Errors:		ERROR will be called if there was insufficient memory to allocate the
 				operation.
 	SeeAlso:	-
 
@@ -2719,8 +2719,8 @@ BOOL OpCreateNodeBitmap::Init()
 	 							0,	/* help ID */
 	 							0,
 	 							0	/* bitmap ID */));
-}               
-    
+}
+
 /********************************************************************************************
 
 >	OpState	OpCreateNodeBitmap::GetState(String_256*, OpDescriptor*)
@@ -2730,7 +2730,7 @@ BOOL OpCreateNodeBitmap::Init()
 	Inputs:		-
 	Outputs:	-
 	Returns:	The state of the OpCreateNodeBitmap operation
-	Purpose:	For finding the OpCreateNodeBitmap's state. 
+	Purpose:	For finding the OpCreateNodeBitmap's state.
 	Errors:		-
 	SeeAlso:	-
 
@@ -2765,7 +2765,7 @@ void OpCreateNodeBitmap::DoWithParam(OpDescriptor* OpDesc, OpParam* pOpParam)
 {
 	BOOL ok = FALSE;
 
-	ERROR3IF(pOpParam == NULL, "NULL OpParam passed to OpCreateNodeBitmap"); 
+	ERROR3IF(pOpParam == NULL, "NULL OpParam passed to OpCreateNodeBitmap");
 
 	KernelBitmap* KernelBmp = (KernelBitmap*)(void *)pOpParam->Param1;
 	PageDropInfo* pDropInfo = (PageDropInfo*)(void *)pOpParam->Param2;
@@ -2820,7 +2820,7 @@ void OpCreateNodeBitmap::DoWithParam(OpDescriptor* OpDesc, OpParam* pOpParam)
 		// This Must be done before the NodeBitmap is inserted into the tree
 		if (!pNodeBitmap->ApplyDefaultBitmapAttrs(this))
 			goto EndOp;
-			
+
 		// Insert the node
 		if (!DoInsertNewNode(pNodeBitmap, pSpread, TRUE))
 		{
@@ -2828,7 +2828,7 @@ void OpCreateNodeBitmap::DoWithParam(OpDescriptor* OpDesc, OpParam* pOpParam)
 			delete pNodeBitmap;
 			goto EndOp;
 		}
-	
+
 		// Get the spread's bounding rectangle and convert it to spread coords.
 		DocRect SpreadRect = pSpread->GetPasteboardRect();
 		pSpread->DocCoordToSpreadCoord(&SpreadRect);
@@ -2887,7 +2887,7 @@ void OpCreateNodeBitmap::DoWithParam(OpDescriptor* OpDesc, OpParam* pOpParam)
 					docrectBounds.hi.y = docrectView.hi.y + docrectView.lo.y - docrectBounds.lo.y;
 				else
 					docrectBounds.lo.y = docrectView.lo.y - docrectBounds.hi.y + docrectView.hi.y;
-				
+
 				// No, zoom out so the all the bitmap can be seen
 				OpZoomFitRectDescriptor* pOpDesc = (OpZoomFitRectDescriptor*)OpDescriptor::FindOpDescriptor( OPTOKEN_ZOOMRECT );
 				if( NULL != pOpDesc )
@@ -2967,11 +2967,11 @@ ChangeBitmapPtrAction::ChangeBitmapPtrAction()
 	Outputs:	NewAction is a pointer to a pointer to an action, allowing the function to return
 				a pointer to the created action
 	Returns:	ActionCode, one of AC_OK, AC_NO_RECORD or AC_FAIL
-	Purpose:	This is the function which creates an instance of this action. If there is no room 
+	Purpose:	This is the function which creates an instance of this action. If there is no room
 				in the undo buffer (which is determined by the base class Init function called within)
-				the function will either return AC_NO_RECORD which means the operation can continue, 
+				the function will either return AC_NO_RECORD which means the operation can continue,
 				but no undo information needs to be stored, or AC_OK which means the operation should
-				continue AND record undo information. If the function returns AC_FAIL, there was not 
+				continue AND record undo information. If the function returns AC_FAIL, there was not
 				enough memory to record the undo information, and the user has decided not to continue
 				with the operation.
 	Errors:		-
@@ -3000,7 +3000,7 @@ ActionCode ChangeBitmapPtrAction::Init( Operation* pOp,
 	Inputs:		pBmpNode, is the NodeBitmap that is being changed.
 	Outputs:	-
 	Returns:	-
-	Purpose:	This function initialises the array pointers in this action. Note that the 
+	Purpose:	This function initialises the array pointers in this action. Note that the
 				variable NumElements is initialised in the Init function
 	Errors:		-
 	SeeAlso:	-
@@ -3028,7 +3028,7 @@ void ChangeBitmapPtrAction::StoreChanges(NodeBitmap* pBmpNode)
 	Outputs:	-
 	Returns:	Action code, one of AC_OK, AC_NORECORD or AC_FAIL.
 	Purpose:	This is the virtual function that is called when the action is executed
-				by the Undo/Redo system. This is the function that actually undoes the 
+				by the Undo/Redo system. This is the function that actually undoes the
 				ChangeBitmapPtr action by changing the attribute values, and
 				records redo information from the current values.
 	Errors:		-
@@ -3039,7 +3039,7 @@ void ChangeBitmapPtrAction::StoreChanges(NodeBitmap* pBmpNode)
 ActionCode ChangeBitmapPtrAction::Execute()
 {
 	ChangeBitmapPtrAction* ModAction;
-	
+
 	ActionCode Act;
 	Act = ChangeBitmapPtrAction::Init(pOperation, pOppositeActLst, (Action**)(&ModAction));
 	if (Act == AC_FAIL)

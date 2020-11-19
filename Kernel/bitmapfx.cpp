@@ -1,3 +1,4 @@
+// -*- tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4; fill-column: 90 -*-
 // $Id: bitmapfx.cpp 1282 2006-06-09 09:46:49Z alex $
 /* @@tag:xara-cn@@ DO NOT MODIFY THIS LINE
 ================================XARAHEADERSTART===========================
@@ -117,35 +118,35 @@ CC_IMPLEMENT_DYNCREATE(AccusoftBitmapEffect, BitmapEffect)
 // CC_IMPLEMENT_DYNCREATE(ABFXFlipX, AccusoftBitmapEffect)
 
 // #define CC_IMPLEMENT_DYNCREATE(class_name, base_class_name) \
-// 	Implement the Construct() function \
-// 	void PASCAL class_name::Construct(void* p) \
-// 		{ new(p) class_name; } \
-// 	_CC_IMPLEMENT_RUNTIMECLASS(class_name, base_class_name, 0xFFFF, \
-// 		class_name::Construct)
+//  Implement the Construct() function \
+//  void PASCAL class_name::Construct(void* p) \
+//      { new(p) class_name; } \
+//  _CC_IMPLEMENT_RUNTIMECLASS(class_name, base_class_name, 0xFFFF, \
+//      class_name::Construct)
 
 
 void ABFXFlipX::Construct(void* p)
 {
-	new (p) ABFXFlipX;
+    new (p) ABFXFlipX;
 }
 
 
 
 // #define _CC_IMPLEMENT_RUNTIMECLASS(class_name, base_class_name, wSchema, pfnNew) \
-// 	/* Provide textual name of class */ \
-// 	static TCHAR BASED_CODE _lpsz##class_name[] = wxT( #class_name ); \
-// 	/* Declare runtime class information for this class */ \
-// 	CCRuntimeClass class_name::cc_class##class_name = { \
-// 		_lpsz##class_name, sizeof(class_name), wSchema, pfnNew, \
-// 			CC_RUNTIME_CLASS(base_class_name), NULL }; \
-// 	/* Declare the CC_CLASSINIT structure so that the class info is linked in */ \
-// 	static CC_CLASSINIT _init_##class_name(&class_name::cc_class##class_name); \
-// 	/* Implement GetRuntimeClass() */ \
-// 	CCRuntimeClass* class_name::GetRuntimeClass() const \
-// 		{ return &class_name::cc_class##class_name; } \
-// 	/* Implement GetMyClass() (a static function) */ \
-// 	CCRuntimeClass* class_name::GetMyClass() \
-// 		{ return &class_name::cc_class##class_name; } \
+//  /* Provide textual name of class */ \
+//  static TCHAR BASED_CODE _lpsz##class_name[] = wxT( #class_name ); \
+//  /* Declare runtime class information for this class */ \
+//  CCRuntimeClass class_name::cc_class##class_name = { \
+//      _lpsz##class_name, sizeof(class_name), wSchema, pfnNew, \
+//          CC_RUNTIME_CLASS(base_class_name), NULL }; \
+//  /* Declare the CC_CLASSINIT structure so that the class info is linked in */ \
+//  static CC_CLASSINIT _init_##class_name(&class_name::cc_class##class_name); \
+//  /* Implement GetRuntimeClass() */ \
+//  CCRuntimeClass* class_name::GetRuntimeClass() const \
+//      { return &class_name::cc_class##class_name; } \
+//  /* Implement GetMyClass() (a static function) */ \
+//  CCRuntimeClass* class_name::GetMyClass() \
+//      { return &class_name::cc_class##class_name; } \
 //
 // _CC_IMPLEMENT_RUNTIMECLASS(ABFXFlipX, AccusoftBitmapEffect, 0xFFFF, ABFXFlipX::Construct)
 
@@ -153,24 +154,24 @@ void ABFXFlipX::Construct(void* p)
 static TCHAR BASED_CODE _lpszABFXFlipX[] = wxT( "ABFXFlipX" );
 
 CCRuntimeClass ABFXFlipX::cc_classABFXFlipX = {
-	_lpszABFXFlipX,
-	sizeof(ABFXFlipX),
-	0xFFFF,
-	ABFXFlipX::Construct,
-	CC_RUNTIME_CLASS(AccusoftBitmapEffect),
-	NULL
+    _lpszABFXFlipX,
+    sizeof(ABFXFlipX),
+    0xFFFF,
+    ABFXFlipX::Construct,
+    CC_RUNTIME_CLASS(AccusoftBitmapEffect),
+    NULL
 };
 
 static CC_CLASSINIT _init_ABFXFlipX(&ABFXFlipX::cc_classABFXFlipX);
 
 CCRuntimeClass* ABFXFlipX::GetRuntimeClass() const
 {
-	return &ABFXFlipX::cc_classABFXFlipX;
+    return &ABFXFlipX::cc_classABFXFlipX;
 }
 
 CCRuntimeClass* ABFXFlipX::GetMyClass()
 {
-	return &ABFXFlipX::cc_classABFXFlipX;
+    return &ABFXFlipX::cc_classABFXFlipX;
 }
 
 
@@ -200,38 +201,38 @@ CC_IMPLEMENT_DYNCREATE(ABFXRemoveDither, AccusoftBitmapEffect)
 
 /********************************************************************************************
 
->	KernelBitmap * AccusoftBitmapEffect::DoALUWork()
+>   KernelBitmap * AccusoftBitmapEffect::DoALUWork()
 
-	Author:		Alex_Bligh (Xara Group Ltd) <camelotdev@xara.com>
-	Created:	27/01/95
-	Inputs:		None
-	Outputs:	None
-	Returns:	TRUE if succeeded, FALSE & error set if not
-	Purpose:	Overridden by derived classes
-	Errors:		None
-	Scope:		Public
-	SeeAlso:	-
+    Author:     Alex_Bligh (Xara Group Ltd) <camelotdev@xara.com>
+    Created:    27/01/95
+    Inputs:     None
+    Outputs:    None
+    Returns:    TRUE if succeeded, FALSE & error set if not
+    Purpose:    Overridden by derived classes
+    Errors:     None
+    Scope:      Public
+    SeeAlso:    -
 
 ********************************************************************************************/
 
 KernelBitmap *  AccusoftBitmapEffect::DoALUWork()
 {
-	ERROR2(FALSE, "Base class AccusoftBitmapEffect::DoALUWork() called");
+    ERROR2(FALSE, "Base class AccusoftBitmapEffect::DoALUWork() called");
 }
 
 /********************************************************************************************
 
->	BOOL AccusoftBitmapEffect::SetParameters(INT32 p1=0, INT32 p2=0, INT32 p3=0, double * pD=NULL)
+>   BOOL AccusoftBitmapEffect::SetParameters(INT32 p1=0, INT32 p2=0, INT32 p3=0, double * pD=NULL)
 
-	Author:		Alex_Bligh (Xara Group Ltd) <camelotdev@xara.com>
-	Created:	27/01/95
-	Inputs:		The generic parameters to set
-	Outputs:	None
-	Returns:	TRUE if succeeded, FALSE & error set if not
-	Purpose:	Overridden by derived classes
-	Errors:		None
-	Scope:		Public
-	SeeAlso:	-
+    Author:     Alex_Bligh (Xara Group Ltd) <camelotdev@xara.com>
+    Created:    27/01/95
+    Inputs:     The generic parameters to set
+    Outputs:    None
+    Returns:    TRUE if succeeded, FALSE & error set if not
+    Purpose:    Overridden by derived classes
+    Errors:     None
+    Scope:      Public
+    SeeAlso:    -
 
 ********************************************************************************************/
 
@@ -239,27 +240,27 @@ KernelBitmap *  AccusoftBitmapEffect::DoALUWork()
 
 /********************************************************************************************
 
->	KernelBitmap * AccusoftBitmapEffect::GetProcessedBitmap(KernelBitmap * pOriginal)
+>   KernelBitmap * AccusoftBitmapEffect::GetProcessedBitmap(KernelBitmap * pOriginal)
 
-	Author:		Alex_Bligh (Xara Group Ltd) <camelotdev@xara.com>
-	Created:	27/01/95
-	Inputs:		None
-	Outputs:	None
-	Returns:	TRUE if succeeded, FALSE & error set if not
-	Purpose:	Overridden by derived classes
-	Errors:		None
-	Scope:		Public
-	SeeAlso:	-
+    Author:     Alex_Bligh (Xara Group Ltd) <camelotdev@xara.com>
+    Created:    27/01/95
+    Inputs:     None
+    Outputs:    None
+    Returns:    TRUE if succeeded, FALSE & error set if not
+    Purpose:    Overridden by derived classes
+    Errors:     None
+    Scope:      Public
+    SeeAlso:    -
 
 ********************************************************************************************/
 
 KernelBitmap * AccusoftBitmapEffect::GetProcessedBitmap(KernelBitmap * pOriginal)
 {
-	KernelBitmap * pDest;
-	if (!ALU->SetB(pOriginal)) return FALSE;
-	pDest=DoALUWork();
-	if (!pDest) return FALSE;
-	return pDest;
+    KernelBitmap * pDest;
+    if (!ALU->SetB(pOriginal)) return FALSE;
+    pDest=DoALUWork();
+    if (!pDest) return FALSE;
+    return pDest;
 }
 
 // Now the DoALUWork functions. These are so obvious and repetitive I'm not going to doc them all
@@ -292,30 +293,28 @@ if (!ALU->ALUFunction(&Result, Param1, Param2, (BOOL)Param3)) return NULL; retur
 KernelBitmap * ABFX##ALUFunction::DoALUWork() { KernelBitmap * Result = NULL; \
 if (!ALU->ALUFunction(&Result, Param1, Param2, (enum TraceMethod)(INT32)Param3)) return NULL; return Result; }
 
+// Note, the below is an example of how MakeDoALUWork expands.
+//
+// MakeDoALUWork(FlipX) -->
+//
+// #define MakeDoALUWork(ALUFunction)           \
+//  KernelBitmap * ABFX##ALUFunction::DoALUWork()   \
+//  {                       \
+//      KernelBitmap* Result = NULL;       \
+//      if (!ALU->ALUFunction(&Result))     \
+//          return NULL;            \
+//      return Result;              \
+//  }
 
-
-// #define MakeDoALUWork(ALUFunction)			\
-// 	KernelBitmap * ABFX##ALUFunction::DoALUWork()	\
-// 	{						\
-// 		KernelBitmap * Result = NULL;		\
-// 		if (!ALU->ALUFunction(&Result))		\
-// 			return NULL;			\
-// 		return Result;				\
-// 	}
-
-// MakeDoALUWork(FlipX)
 
 
 KernelBitmap* ABFXFlipX::DoALUWork()
 {
-	KernelBitmap * Result = NULL;
-	if (!((BfxALU*)ALU)->FlipX(&Result))
-		return NULL;
-	return Result;
+    KernelBitmap* Result = NULL;
+    if (!((BfxALU*)ALU)->FlipX(&Result))
+        return NULL;
+    return Result;
 }
-
-
-
 
 
 

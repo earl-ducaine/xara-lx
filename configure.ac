@@ -1,7 +1,14 @@
 AC_INIT([XaraLX], [0.7])
 AC_CONFIG_SRCDIR([wxOil/camelot.cpp])
 AC_CANONICAL_TARGET
+
+# automake-1.16: warnings are treated as errors
+# /usr/share/automake-1.16/am/library.am: warning: 'libGDraw-cairo.a': linking libraries using a non-POSIX
+# /usr/share/automake-1.16/am/library.am: archiver requires 'AM_PROG_AR' in 'configure.ac'
+
 AM_INIT_AUTOMAKE([subdir-objects foreign])
+
+# TODO -- Is this needed?
 AC_DEFUN([AC_DATAROOTDIR_CHECKED])
 
 AC_PREFIX_PROGRAM(pkg-config)
