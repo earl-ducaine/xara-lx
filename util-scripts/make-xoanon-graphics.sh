@@ -74,7 +74,7 @@ function build_xoanon_graphics_debug {
 # force gcc to recompile Kernel/paths.cpp and Kernel/beveler.cpp after
 # getting the message it will work.
 
-function build_xoanon_graphics {
+function build_xoanon_graphics_gdraw {
     # Don't rebuild wxWidgets if folder already exists.
     if [ ! -d $WXWIDGETS_VERSION_NAME ]; then
 	echo "Building xwWidgets..."
