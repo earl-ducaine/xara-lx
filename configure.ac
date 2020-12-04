@@ -437,8 +437,8 @@ if test "x$with_cairo" = xno; then
 	CDRAW_LIB_LDFLAGS="-lCDraw -lCDraw-alt"
 	AC_DEFINE([HAVE_CAIRO], [0])
 else
-	CDRAW_DIR_LDFLAGS=
-	CDRAW_LIB_LDFLAGS=
+	CDRAW_DIR_LDFLAGS="-L$srcdir/$CDRAW_LIB_DIR -L$srcdir/$CDRAW_LIB_ALT_DIR"
+	CDRAW_LIB_LDFLAGS="-lCDraw -lCDraw-alt"
 	AC_DEFINE([HAVE_CAIRO], [1])
 fi
 
