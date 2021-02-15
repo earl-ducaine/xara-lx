@@ -278,7 +278,7 @@ protected:
 	BOOL ThrowExceptions;					// Flag to say whether we throw exceptions
 
 	BOOL CompressData;						// Flag to say compress the output
-	UINT32 GZipErrorID;						// current zip file error id
+	INT32 GZipErrorID;						// current zip file error id
 };
 
 

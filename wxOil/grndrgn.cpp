@@ -6386,6 +6386,7 @@ LPBYTE GRenderRegion::StaticPlotBitmap(wxDC* hDC,
             pD[0] = pS[2];
             pD[1] = pS[1];
             pD[2] = pS[0];
+            printf("%x, %x, %x\n", pS[0], pS[1], pS[2]);
             pD[3] = 0xFF;
         }
 #else

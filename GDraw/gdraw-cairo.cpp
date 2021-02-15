@@ -1387,9 +1387,9 @@ GColour_SetTilePattern (
 */
 /*	printf("TileOffset = %d\n", TileOffset);*/
 
-	if(BitmapInfo->biBitCount !=24
-	&& BitmapInfo->biBitCount !=32)
-		return 0;
+//	if(BitmapInfo->biBitCount !=24
+//	&& BitmapInfo->biBitCount !=32)
+//		return 0;
 
 	INT32 width, height;
 	GCDATA *data=dp_list[pContext->Data[0]];
@@ -1445,8 +1445,8 @@ GColour_SetTilePattern (
 	cd=cs=0;
 	t=width * height;
 
-	if(BitmapInfo->biBitCount==24)
-	{
+//	if(BitmapInfo->biBitCount==24)
+//	{
 		BYTE *pout=(BYTE *)dd;
 		BYTE *pin=(BYTE *)ss;
 		UINT32 ww=width % 4;
@@ -1464,22 +1464,22 @@ GColour_SetTilePattern (
 			}
 			pin +=ww;
 		}
-	}
-	else if(BitmapInfo->biBitCount==32)
-	{
-		UINT32 alpha;
-		while(cd < t)
-		{
-			alpha= (~ss[cd] & 0xFF000000) >> 24;
-			/*	premultiply alpha	*/
-
-			dd[cd]= (((ss[cd] & 0xFF0000) * alpha)/255) & 0xFF0000 |
-					(((ss[cd] & 0xFF00) * alpha)/255) & 0xFF00 |
-					((ss[cd] & 0xFF) * alpha)/255 | alpha << 24;
-
-			cd++;
-		}
-	}
+//	}
+//	else if(BitmapInfo->biBitCount==32)
+//	{
+//		UINT32 alpha;
+//		while(cd < t)
+//		{
+//			alpha= (~ss[cd] & 0xFF000000) >> 24;
+//			/*	premultiply alpha	*/
+//
+//			dd[cd]= (((ss[cd] & 0xFF0000) * alpha)/255) & 0xFF0000 |
+//					(((ss[cd] & 0xFF00) * alpha)/255) & 0xFF00 |
+//					((ss[cd] & 0xFF) * alpha)/255 | alpha << 24;
+//
+//			cd++;
+//		}
+//	}
 /*	if(xcl_add_to_bm_cache(Bitmap, data->surface))
 		printf("BM CACHE FULL...\n");
 	else
