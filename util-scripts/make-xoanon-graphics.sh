@@ -67,7 +67,14 @@ function build_xoanon_graphics_debug {
     build_xoanon_graphics "--enable-debug"
 }
 
-function build_xoanon_graphics {
+
+
+# Note, there is a build bug, when going from build_xoanon_graphics to
+# build_xoanon_graphics_cairo, gcc will complain when linking. If you
+# force gcc to recompile Kernel/paths.cpp and Kernel/beveler.cpp after
+# getting the message it will work.
+
+function build_xoanon_graphics_gdraw {
     # Don't rebuild wxWidgets if folder already exists.
     if [ ! -d $WXWIDGETS_VERSION_NAME ]; then
 	echo "Building xwWidgets..."
@@ -78,19 +85,46 @@ function build_xoanon_graphics {
 	echo "Building freetype-2.8..."
 	build_freetype_281
     fi
+    configure
+    make -j 8 2>&1 | tee make-out-err.txt
+}
+
+
+
+function build_xoanon_graphics_cairo {
+    # Don't rebuild wxWidgets if folder already exists.
+    if [ ! -d $WXWIDGETS_VERSION_NAME ]; then
+	echo "Building xwWidgets..."
+	build_wx_30
+    fi
+    # Don't rebuild freetype if folder already exists.
+    if [ ! -d freetype-2.8 ]; then
+	echo "Building freetype-2.8..."
+	build_freetype_281
+    fi
+    configure_cairo
+    make -j 8 2>&1 | tee make-out-err.txt
+}
+
+function configure_cairo {
     # set ACLOCAL_PATH to specify autoconfig macro location
     export ACLOCAL_PATH=$WXWIDGETS_VERSION_NAME; autoreconf -i -f
     ./configure $1 --with-wx-config=$WXWIDGETS_VERSION_NAME/buildgtk/wx-config \
-		--enable-static-exec \
-		--with-freetype-config=freetype-2.8.1/builds/unix/freetype-config \
+     --enable-static-exec \
+     --with-freetype-config=freetype-2.8.1/builds/unix/freetype-config \
+     --enable-debug \
+     --with-cairo \
 	|| echo "Unable to build Xoamporph. Check make-error.txt"
-    # For now don't use ccache and don't build assembly code.
-    # cd libs/x86_64
-    # ar -s -r libCDraw.a *.o
-    # cd ../..
-    # ar -xv libCDraw.a
-    # export PATH="/usr/lib/ccache:$PATH";
-    make -j 4 2>&1 | tee make-out-err.txt
+}
+
+function configure {
+    # set ACLOCAL_PATH to specify autoconfig macro location
+    export ACLOCAL_PATH=$WXWIDGETS_VERSION_NAME; autoreconf -i -f
+    ./configure $1 --with-wx-config=$WXWIDGETS_VERSION_NAME/buildgtk/wx-config \
+     --enable-static-exec \
+     --enable-debug \
+     --with-freetype-config=freetype-2.8.1/builds/unix/freetype-config \
+	|| echo "Unable to build Xoamporph. Check make-error.txt"
 }
 
 function make_tags {
@@ -139,5 +173,6 @@ function enable_doxygen_file_monitering {
 }
 
 function build_resources {
-    ./Scripts/build-resources.sh
+    export WXRC="$(pwd)/$WXWIDGETS_VERSION_NAME/buildgtk/utils/wxrc/wxrc"; \
+	Scripts/build-resources.sh
 }
