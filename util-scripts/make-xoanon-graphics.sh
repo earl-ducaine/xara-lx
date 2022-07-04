@@ -67,13 +67,10 @@ function build_xoanon_graphics_debug {
     build_xoanon_graphics "--enable-debug"
 }
 
-
-
 # Note, there is a build bug, when going from build_xoanon_graphics to
 # build_xoanon_graphics_cairo, gcc will complain when linking. If you
 # force gcc to recompile Kernel/paths.cpp and Kernel/beveler.cpp after
 # getting the message it will work.
-
 function build_xoanon_graphics_gdraw {
     # Don't rebuild wxWidgets if folder already exists.
     if [ ! -d $WXWIDGETS_VERSION_NAME ]; then
@@ -88,8 +85,6 @@ function build_xoanon_graphics_gdraw {
     configure
     make -j 8 2>&1 | tee make-out-err.txt
 }
-
-
 
 function build_xoanon_graphics_cairo {
     # Don't rebuild wxWidgets if folder already exists.

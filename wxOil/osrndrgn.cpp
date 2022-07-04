@@ -4404,6 +4404,447 @@ static inline INT32 GetDiagonal( const WinRect& Rectangle )
 
 ********************************************************************************************/
 
+#if HAVE_CAIRO
+
+BOOL OSRenderRegion::RenderBitmapFill(Path *PathToDraw, BitmapFillAttribute* Fill)
+{
+    if (Fill->GetBitmap() == NULL || Fill->GetBitmap()->ActualBitmap == NULL)
+        // if no bitmap
+        return FALSE;
+
+    // If rendering to a bitmap, return FALSE so it is rendered solid. Test should be in
+    // caller code in RenderBitmapFillAttribute but here is OK for now.
+    if ((RenderFlags.VeryMono) || (RFlags.Metafile))
+        return FALSE;
+
+    ENSURE( Fill->GetBitmap()->ActualBitmap->IsKindOf( CC_RUNTIME_CLASS( CWxBitmap ) ), "Strange bitmapfill");
+
+    // Since the GDI cannot cope with anything other than very simple bitmaps, we will get
+    // GDraw to render the bitmap into a screen compatible DIB, and then get the GDI to
+    // plot that
+
+    GDrawContext* GD = GRenderRegion::GetStaticDrawContext();
+    CWxBitmap *WxBM = NULL;
+    CWxBitmap *OrigWxBM = NULL;
+
+    const INT32 bpp = Fill->GetBitmap()->GetBPP();
+    BYTE *pGreyTable = NULL;
+
+    if (Fill->GetStartColour() != NULL && Fill->GetEndColour() != NULL)
+    {
+        // The bitmap is contoned ... so we need to use the greyscale version
+        WxBM = (CWxBitmap*)Fill->GetBitmap()->GetGreyscaleVersion();
+
+        if (WxBM == NULL && bpp == 8)
+        {
+            // Aha, we're gunna do some clever palette jiggery pokery
+            pGreyTable = Fill->GetBitmap()->ActualBitmap->GetGreyscaleTable();
+        }
+    }
+
+    // Now make sure that if the WinBitmap is 32 that we RENDER it into a tempory FULLY TRANSPARENT WHITE BMP.
+    // This stops the CONVERT function later on stripping the alpha channel off producing solid, non-transparent
+    // coloured objects on black black backgrounds! - MarkH 20/7/99.
+    if (WxBM == NULL)
+    {
+        if (bpp != 32)
+        {
+            WxBM = (CWxBitmap*)Fill->GetBitmap()->ActualBitmap;
+        }
+        else
+        {
+            WxBM = (CWxBitmap*)CBMPBits::RenderBMPFillAttrToTransparentWhiteRect(Fill);
+        }
+    }
+
+    if (!WxBM)              // we really should check this pointer!
+    {
+        return (FALSE);
+    }
+
+    if( (WxBM->BMInfo==NULL) || (WxBM->BMBytes==NULL) )
+        return FALSE;
+
+    // Work out what Tempory bitmap we need
+
+// Note we are forcing the bitmap to be a horizontal rectangular bitmap,
+// as the GDI can't cope with rotating them
+
+    wxPoint BottomLeft  = DocCoordToWin( Fill->StartPoint );
+    wxPoint BottomRight = DocCoordToWin( Fill->EndPoint   );
+    wxPoint TopLeft     = DocCoordToWin( Fill->EndPoint2  );
+
+    INT32 DestWidth  = BottomRight.x - BottomLeft.x;
+    INT32 DestHeight = BottomLeft.y  - TopLeft.y;
+    if (DestWidth==0 || DestHeight==0)
+    {
+        return TRUE;
+    }
+
+    if (IsPrinting())
+    {
+        if (CurrentColContext->GetColourPlate() == NULL ||
+            CurrentColContext->GetColourPlate()->IsDisabled())
+        {
+            PORTNOTE("other", "No StretchDIBits call in OSRenderRegion::RenderBitmapFill")
+#ifndef EXCLUDE_FROM_XARALX
+                // going to a printer? - let its driver stretch it about etc
+                const LPBITMAPINFO bmInfo = WxBM->BMInfo;
+
+#if 1
+            // this is the correct legit code
+            const BOOL SendDirectToPrinter = true;
+#else
+            // test code
+            const BOOL SendDirectToPrinter = RFlags.Metafile;           // only metafiles
+#endif
+
+            if (SendDirectToPrinter)
+            {
+                // pass bitmap straight to driver. Might have to band this call
+                // up on low-capacity machines at some point. Also does this for
+                // metafiles too.
+                StretchDIBits( RenderDC->m_hDC,
+                               BottomLeft.x, TopLeft.y,                // dest XY
+                               DestWidth, DestHeight,                  // dest WH
+                               0,0,                                    // source 0,0
+                               bmInfo->bmiHeader.biWidth,          // source W
+                               bmInfo->bmiHeader.biHeight,         // source H
+                               WinBM->BMBytes,
+                               bmInfo,
+                               DIB_RGB_COLORS,
+                               SRCCOPY );
+
+                return TRUE;
+            }
+#endif
+
+            // if 16- or 32-bit, leave for later. We get Gavin to scale it to an output bitmap
+            // then PlotDeepDIB it. Sadly, this requires serious amounts of RAM, so is prone
+            // to failure. The solution would be a ScaleDeepDIB call, like PlotDeepDIB but
+            // that can scale appropriately. Such a function would then be called here, avoiding
+            // the need for a huge intermediate bitmap
+        }
+    }
+
+// Setup a default matrix (we'll do everything in pixel-speak)
+
+    GMATRIX GMatrix;
+
+    GMatrix.AX = 1<<(16 + FX);
+    GMatrix.AY = 0;
+    GMatrix.BX = 0;
+    GMatrix.BY = 1<<(16 + FX);
+
+    GMatrix.CX = 0;
+    GMatrix.CY = 0;
+
+// Create a Tempory bitmap compatible with the output device
+
+    LPBITMAPINFO TempInfo;
+    LPBYTE TempBits;
+    INT32 DeviceDepth;
+
+    if (IsPrinting())
+    {
+        // if printing, always convert to 24-bit (which as Gavin can't do 24- means 32-bit)
+        // as all drivers can handle those (source bitmap only 16- or 32-bit anyway)
+        DeviceDepth = 32;
+    }
+    else
+    {
+        PORTNOTE("other", "Assume 24 bit output device in OSRenderRegion::RenderBitmapFill")
+#ifndef EXCLUDE_FROM_XARALX
+            DeviceDepth = GetDeviceCaps( RenderDC->m_hDC, BITSPIXEL ) *
+            GetDeviceCaps( RenderDC->m_hDC, PLANES );
+#else
+        DeviceDepth=24; // assume true colour
+#endif
+
+        if (DeviceDepth ==24)
+            DeviceDepth = 32;   // GDraw cannot plot to 24-bit bitmaps
+    }
+
+    TempInfo = AllocDIB(DestWidth, DestHeight, DeviceDepth, &TempBits);
+
+    if (TempInfo==NULL)
+    {
+        TRACEALL( _T("Out of memory during OSRenderRegion::RenderBitmapFill") );
+        return FALSE;
+    }
+
+// We may need to get a palette for the DIB.
+
+    UINT32 DIBPal = DIB_RGB_COLORS;
+
+    if (DeviceDepth <= 8)   // We only need a palette for 256 colours or less.
+    {
+        DIBPal = GRenderRegion::SetPaletteEntries( TempInfo, RenderDC );
+    }
+
+// Setup GDraw with our Tempory Bitmap and Identity Matrix
+
+    GD->SetupBitmap(TempInfo->bmiHeader.biWidth,
+                    TempInfo->bmiHeader.biHeight,
+                    TempInfo->bmiHeader.biBitCount,
+                    TempBits );
+
+    GD->SetMatrix( &GMatrix );
+
+    COLORREF DefaultColour = 0xFFFFFFFF;
+
+    // --- Colour-correct and/or Contone the bitmap as necessary
+    RGBQUAD *Palette = NULL;
+
+    // Do the colour correction. This may produce a new pointer in Palette or BitmapBits,
+    // which we should CCFree() when we are done with it - see the end of this function
+    ColourCorrectBitmap(Fill, WxBM->BMInfo, &Palette);
+
+    // Now see if we need to muck around with the palette for the contoning
+    if (pGreyTable != NULL)
+    {
+        ERROR3IF(bpp != 8, "Greytable should only be here when rendering an 8bpp bitmap");
+        RGBQUAD *OldPalette = Palette;
+
+        // Create a new palette
+        Palette = (RGBQUAD *) CCMalloc(256 * sizeof(RGBQUAD));
+        if (Palette == NULL)
+        {
+            ERROR3("No memory for palette");
+            return FALSE;
+        }
+
+        // Copy the entries from the contone palette into the new one,
+        // using the Grey table as a guide
+        for (INT32 i=0; i<256; i++)
+        {
+            Palette[i] = OldPalette[pGreyTable[i]];
+        }
+
+        if (OldPalette != WxBM->BMInfo->bmiColors)
+            CCFree(OldPalette);         // Don't need the contone palette any more
+    }
+
+    // If we didn't create a temporary palette, then we'll use the original bitmap
+    if (Palette == NULL)
+        Palette = WxBM->BMInfo->bmiColors;
+
+    // Search for a transparent colour setting the Style flags if necessary...
+    if (bpp <= 8)
+    {
+        INT32 NumCols;
+        switch (bpp)
+        {
+        case 1:
+            NumCols = 2;
+            break;
+
+        case 2:
+            NumCols = 4;
+            break;
+
+        case 4:
+            NumCols = 16;
+            break;
+
+        case 8:
+            NumCols = 256;
+            break;
+
+        default:
+            NumCols = 256;
+            break;
+        }
+
+        for (INT32 i=0; i<NumCols; i++)
+        {
+            if (Palette[i].rgbReserved == 0xFF)
+            {
+                RGBQUAD* TempPalette = (RGBQUAD*)CCMalloc(NumCols * sizeof(RGBQUAD));
+                if (TempPalette)
+                {
+                    // We'll use a copy of the palette ...
+                    memcpy(TempPalette, Palette, NumCols*sizeof(RGBQUAD));
+
+                    // so we can force this entry to be white
+                    TempPalette[i].rgbRed       = 0xFF;
+                    TempPalette[i].rgbGreen     = 0xFF;
+                    TempPalette[i].rgbBlue      = 0xFF;
+
+                    Palette = TempPalette;
+                    break;
+                }
+            }
+        }
+    }
+
+// Now set the bitmap fill
+
+    POINT PGram[3];
+    PGram[0].x = 0;             PGram[0].y = 0;
+    PGram[1].x = DestWidth;     PGram[1].y = 0;
+    PGram[2].x = 0;             PGram[2].y = DestHeight;
+
+    DWORD Style = 1;
+    BOOL bDoBitmapFill = TRUE;
+    BYTE* pSepTables = NULL;
+    BGR *pCyanSepTable = NULL;
+    BGR *pMagentaSepTable = NULL;
+    BGR *pYellowSepTable = NULL;
+    BGR *pBlackSepTable = NULL;
+    BYTE *pUnderColourRemovalTable = NULL;
+    BYTE *pBlackGenerationTable = NULL;
+    CWxBitmap* pNewBitmap = NULL;
+
+    PORTNOTE("other", "No colour separation OSRenderRegion::RenderBitmapFill")
+#ifndef EXCLUDE_FROM_XARALX
+    // --- Add Separation Style bits as approriate to the current colour separation mode
+    if (bpp > 8)    // Only needed for deep bitmaps
+    {
+        // If we've got a valid colour plate and it is a composite preview
+        if (CurrentColContext->GetColourPlate() != NULL &&
+            !CurrentColContext->GetColourPlate()->IsDisabled())
+        {
+            if (CurrentColContext->GetColourPlate()->GetType() == COLOURPLATE_COMPOSITE)
+            {
+                // Fall through (shouldn't be used at the moment)
+            }
+            else if (CurrentColContext->GetColourPlate()->GetType() == COLOURPLATE_SPOT)
+            {
+                GD->SetColour(0xFFFFFF);
+                bDoBitmapFill = FALSE;
+            }
+            else if (CurrentColContext->GetColourPlate()->GetType() != COLOURPLATE_NONE)
+            {
+                // Create a colour separated copy of the bitmap and render that instead
+                pSepTables = (BYTE *) CCMalloc(5 * 256 * sizeof(BYTE));
+                if (pSepTables != NULL)
+                {
+                    XaraCMS* lpCMSMan = GetApplication()->GetCMSManager();
+                    String_256 PrintProfile;
+                    if (lpCMSMan)
+                        lpCMSMan->GetPrinterProfile(&PrintProfile);
+                    ColourContextCMYK *cc = new ColourContextCMYK(RenderView, &PrintProfile);
+                    if (cc->GetProfileTables(pSepTables))
+                    {
+                        // Make a copy of the bitmap
+                        pNewBitmap = (CWxBitmap*)WxBM->MakeSeparatedCopy(RenderView->GetColourPlate(), pSepTables);
+                        OrigWxBM = WxBM;                    // Save original bitmap pointer
+                        WxBM = pNewBitmap;                  // Use this bitmap instead
+                    }
+                    delete cc;
+                }
+            }
+        }
+    }
+#endif
+
+    // Set the context to the default values
+
+    GD->SetDefaultBitmapParameters();
+
+    GD->SetTileSmoothingFlag(TRUE/*FALSE*/);
+    GD->SetTileFilteringFlag(TRUE/*FALSE*/);
+
+    if (bDoBitmapFill)
+    {
+        GD->SetBitmapFill(  &(WxBM->BMInfo->bmiHeader),
+                            WxBM->BMBytes,
+                            Style,
+                            PGram,
+                            DefaultColour,
+                            Palette,
+                            NULL, NULL, NULL,
+                            NULL,
+                            0
+            );
+    }
+
+// Now plot a filled rectangle
+
+    RECT BmpRect;
+    BmpRect.left    =  0;
+    BmpRect.top     =  DestHeight;
+    BmpRect.right   =  DestWidth;
+    BmpRect.bottom  =  0;
+
+    GD->FillRectangle(&BmpRect);
+
+
+    if (IsPrinting())
+    {
+        // we are going to the printer. We had a 16- or 32-bit DIB which we have now converted
+        // into a 32-bit one, so send it out
+
+        // PlotDeepDIB ends up doing a SetDIBitsToDevice in 24-bit slices
+        DIBUtil::PlotDeepDIB( RenderDC, TempInfo, TempBits,
+                              BottomLeft.x, TopLeft.y,
+                              DestWidth,DestHeight,
+                              0,0,
+                              CONVHINT_PRINTER );
+    }
+    else
+    {
+        // get the HPALETTE to pass to the plot bitmap call - crucial for quality Win32s DDB plotting
+        wxPalette * hPal = NULL;
+        if (RFlags.UsePalette)
+            hPal = PaletteManager::GetPalette();
+
+        // Finally call PlotBitmap, to render the DIB using the GDI.
+        // If the screen cannot cope with the depth of the bitmap, it will be converted
+        // for us. Isn't PlotBitmap wonderful?
+
+        GRenderRegion::StaticPlotBitmap( RenderDC,
+                                         DIBPal,
+                                         TempInfo,
+                                         TempBits,
+                                         BottomLeft.x,
+                                         TopLeft.y,
+                                         DestWidth,
+                                         DestHeight,
+                                         hPal,
+                                         0,0
+            );
+    }
+
+    FreeDIB(TempInfo, TempBits);
+
+    if (pNewBitmap)
+    {
+        WxBM = OrigWxBM;
+        delete pNewBitmap;
+    }
+
+    // Free any memory used for colour-corrected bitmap palettes.
+    // If this pointer doesn't point at the original palette, then it has
+    // been temporarily allocated by ColourCorrectBitmap, above.
+    if (Palette != WxBM->BMInfo->bmiColors)
+        CCFree(Palette);
+
+    if (pSepTables)
+    {
+        GD->SetSeparationTables();  // Defaults to setting everything to NULL
+        CCFree(pSepTables);
+    }
+
+    if (pCyanSepTable)
+        CCFree(pCyanSepTable);
+    if (pMagentaSepTable)
+        CCFree(pMagentaSepTable);
+    if (pYellowSepTable)
+        CCFree(pYellowSepTable);
+    if (pBlackSepTable)
+        CCFree(pBlackSepTable);
+    if (pUnderColourRemovalTable)
+        CCFree(pUnderColourRemovalTable);
+    if (pBlackGenerationTable)
+        CCFree(pBlackGenerationTable);
+
+    return TRUE;
+}
+
+#else
+
 BOOL OSRenderRegion::RenderBitmapFill(Path *PathToDraw, BitmapFillAttribute* Fill)
 {
     if (Fill->GetBitmap() == NULL || Fill->GetBitmap()->ActualBitmap == NULL)
@@ -4839,6 +5280,8 @@ BOOL OSRenderRegion::RenderBitmapFill(Path *PathToDraw, BitmapFillAttribute* Fil
 
     return TRUE;
 }
+
+#endif
 
 
 MILLIPOINT OSRenderRegion::CalcDistance(DocCoord a, DocCoord b)
